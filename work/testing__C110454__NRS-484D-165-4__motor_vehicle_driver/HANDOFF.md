@@ -93,3 +93,9 @@ proposals, offline/compatibility/process-saved proofs, and execution manifest.
 Do not infer that low-beam state bits establish emitted intensity or physical
 beam aim. `delivery_audit.py` requires later full video decoding and source
 inspection before any physical acceptance claim.
+
+## 2026-11-24 original four-camera recorder checkpoint
+
+`camera_recorder.py` now attaches to four caller-owned CARLA camera sensors, requires each callback to match the current Native frame and valid BGRA dimensions, converts those original bytes to lossless PNG, and stores one ZIP archive per view under the attempt directory. Its `finish` method seals each archive with a SHA-256 and exact source-frame count. `native_capture.capture_interval` starts and closes this adapter, includes the four media references in its observational receipt, and releases listeners even when a camera frame drifts. A fake 4-frame Native run reopens and decodes original PNGs; a drifted callback rejects capture before actor-state sources are emitted. These are software tests, not a physical claim about light emission, beam aim or visibility.
+
+The same interface can now supply the `media` references required by the saved delivery integrity auditor after writing the Native receipt. Worker-owned CPU work remains: reviewed site packet and actor-spawn/world-ownership runner, actual depressed-beam-aim alternative if available, canonical semantic proposals, three exact inline bundles, offline/compatibility/process-saved proofs, and full independent source decode/physical review. Keep this assignment partial until the strict gate passes.

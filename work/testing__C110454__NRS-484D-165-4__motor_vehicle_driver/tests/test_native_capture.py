@@ -5,10 +5,12 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as N
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lamp_probe import measure
 from native_capture import capture_interval
+from camera_recorder import CameraRecorder
 from saved_lamps import process_saved
 
 
@@ -153,6 +155,62 @@ class NativeCaptureTests(unittest.TestCase):
         world.get_map = lambda: N(name="TownTest", to_opendrive=lambda: "different-map")
         with self.assertRaisesRegex(ValueError, "OpenDRIVE differs"):
             self.capture(world=world)
+
+    def test_original_four_camera_pixels_retained_and_sealed(self):
+        class Sensor:
+            def __init__(self):
+                self.callback = None
+                self.stopped = False
+            def listen(self, callback):
+                self.callback = callback
+            def stop(self):
+                self.stopped = True
+        sensors = {view: Sensor() for view in
+                   ("overview", "approach", "reference_corner", "driver_reference")}
+        class CameraWorld(World):
+            def tick(self):
+                frame = super().tick()
+                for sensor in sensors.values():
+                    sensor.callback(N(frame=frame, width=2, height=2,
+                                      raw_data=bytes([1, 2, 3, 255] * 4)))
+                return frame
+        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01)
+        vehicle = Vehicle()
+        receipt = capture_interval(CameraWorld(), vehicle, Bits, self.control,
+                                   recorder, self.site, self.root,
+                                   case_id="exact__low_beam", mode="low_beam", ticks=4)
+        self.assertEqual(set(receipt["original_camera_media"]), set(sensors))
+        self.assertTrue(all(sensor.stopped for sensor in sensors.values()))
+        import zipfile
+        for view, media in receipt["original_camera_media"].items():
+            path = self.root / media["path"]
+            self.assertEqual(media["sha256"], hashlib.sha256(path.read_bytes()).hexdigest())
+            with zipfile.ZipFile(path) as archive:
+                self.assertEqual(len(archive.namelist()), 4)
+                with Image.open(archive.open("101.png")) as image:
+                    image.load()
+                    self.assertEqual(image.size, (2, 2))
+
+    def test_camera_callback_frame_drift_stops_listeners(self):
+        class Sensor:
+            def listen(self, callback): self.callback = callback
+            def stop(self): self.stopped = True
+        sensors = {view: Sensor() for view in
+                   ("overview", "approach", "reference_corner", "driver_reference")}
+        class DriftWorld(World):
+            def tick(self):
+                frame = super().tick()
+                for sensor in sensors.values():
+                    sensor.callback(N(frame=frame + 1, width=2, height=2,
+                                      raw_data=bytes([1, 2, 3, 255] * 4)))
+                return frame
+        recorder = CameraRecorder(sensors, self.root, timeout_seconds=.01)
+        with self.assertRaisesRegex(ValueError, "callback frame mismatch"):
+            capture_interval(DriftWorld(), Vehicle(), Bits, self.control,
+                             recorder, self.site, self.root,
+                             case_id="exact__low_beam", mode="low_beam", ticks=4)
+        self.assertTrue(all(sensor.stopped for sensor in sensors.values()))
+        self.assertFalse((self.root / "actor-state.jsonl").exists())
 
 
 if __name__ == "__main__":

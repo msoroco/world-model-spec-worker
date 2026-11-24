@@ -44,7 +44,8 @@ def finalize(folder: Path, *, case_id: str) -> dict:
         raise ValueError("Original capture case identity mismatch")
     if receipt.get("physical_acceptance_claimed") is not False:
         raise ValueError("Original capture receipt claims physical acceptance")
-    if set(receipt.get("sources", {})) != SOURCES or not receipt.get("site_packet_sha256"):
+    source_keys = set(receipt.get("sources", {}))
+    if source_keys not in (SOURCES, SOURCES | {"device_samples"}) or not receipt.get("site_packet_sha256"):
         raise ValueError("Original capture source inventory incomplete")
     originals = {key: _read(folder, ref) for key, ref in receipt["sources"].items()}
     dispatch = json.loads(originals["dispatch_context"])
@@ -64,8 +65,17 @@ def finalize(folder: Path, *, case_id: str) -> dict:
         raise ValueError("Documented event interval invalid")
     rows = [json.loads(line) for line in originals["device_trace"].splitlines()]
     cameras = [json.loads(line) for line in originals["camera_trace"].splitlines()]
+    samples = ([json.loads(line) for line in originals["device_samples"].splitlines()]
+               if "device_samples" in originals else None)
     if len(rows) != 900 or len(cameras) != 900:
         raise ValueError("Original frame count incomplete")
+    if samples is not None and len(samples) != 900:
+        raise ValueError("Independent device sample count incomplete")
+    if samples is not None and (any(not isinstance(sample, dict) or
+                                    not isinstance(sample.get("sample_id"), str) or
+                                    not sample["sample_id"] for sample in samples) or
+                                len({sample["sample_id"] for sample in samples}) != 900):
+        raise ValueError("Independent device sample identity missing or reused")
     first_native = receipt.get("native_first_frame")
     if type(first_native) is not int or receipt.get("native_last_frame") != first_native + 899:
         raise ValueError("Original native frame bounds invalid")
@@ -79,6 +89,14 @@ def finalize(folder: Path, *, case_id: str) -> dict:
             raise ValueError("Original command or device readback missing")
         if row.get("device_source_type") in (None, "", "command_echo") or not row.get("device_source_citation"):
             raise ValueError("Independent device readback source missing")
+        if samples is not None:
+            sample = samples[tick]
+            if (sample.get("native_frame") != row["native_frame"] or
+                    sample.get("siren_active") != row["siren_active"] or
+                    sample.get("warning_lamp_active") != row["warning_lamp_active"] or
+                    sample.get("source_type") != row["device_source_type"] or
+                    sample.get("source_citation") != row["device_source_citation"]):
+                raise ValueError("Independent device sample and trace mismatch")
         if set(camera.get("sources", {})) != {"front", "rear", "left", "right"} or not all(camera["sources"].values()):
             raise ValueError("Four original camera references missing")
     observed = audit(folder, receipt)

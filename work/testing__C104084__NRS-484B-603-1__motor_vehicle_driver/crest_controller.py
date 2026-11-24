@@ -22,7 +22,7 @@ def target_speed(profile, *, crest_s_m, ego_s_m):
         raise ValueError('finite original crest and ego stations required')
     distance = crest_s_m - ego_s_m
     if distance < 0:
-        raise ValueError('ego already passed the crest')
+        return PROFILES[profile][-1][1]
     for threshold, target in PROFILES[profile]:
         if distance >= threshold:
             return target
@@ -30,11 +30,17 @@ def target_speed(profile, *, crest_s_m, ego_s_m):
 
 
 def step(vehicle, command_factory, profile, *, crest_s_m, ego_s_m, measured_speed_mps,
-         steer=0.0):
+         steer=0.0, route_end_s_m=None):
     """Apply one CARLA-compatible control without importing CARLA at module load."""
     if type(measured_speed_mps) not in (float, int) or not math.isfinite(measured_speed_mps) or measured_speed_mps < 0:
         raise ValueError('original measured speed required')
     target = target_speed(profile, crest_s_m=crest_s_m, ego_s_m=ego_s_m)
+    if route_end_s_m is not None:
+        if (type(route_end_s_m) not in (float, int) or
+                not math.isfinite(route_end_s_m) or route_end_s_m <= crest_s_m):
+            raise ValueError('source-bound route end must follow crest')
+        if ego_s_m >= route_end_s_m - 20.0:
+            target = 0.0
     error = target - measured_speed_mps
     throttle = min(0.55, max(0.0, 0.18 * error))
     brake = min(0.65, max(0.0, -0.22 * error))
@@ -42,4 +48,4 @@ def step(vehicle, command_factory, profile, *, crest_s_m, ego_s_m, measured_spee
     vehicle.apply_control(command)
     return {'target_speed_mps': target, 'measured_speed_mps': measured_speed_mps,
             'throttle': throttle, 'brake': brake,
-            'limitation': 'Command output is not evidence of actual slowing.'}
+            'limitation': 'Command output and route-end stop are engineering requests, not evidence of actual slowing or legal necessity.'}

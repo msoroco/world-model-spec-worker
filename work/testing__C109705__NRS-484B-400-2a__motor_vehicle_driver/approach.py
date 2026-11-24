@@ -96,7 +96,8 @@ def body_position(context, vertices):
 def _verified(attempt, name, acquisition):
     path = attempt / name
     declared = acquisition.get(name, {})
-    if not path.is_file() or declared.get('kind') != 'original_native':
+    if (path.is_symlink() or path.resolve().parent != attempt.resolve() or
+            not path.is_file() or declared.get('kind') != 'original_native'):
         raise ValueError('missing original Native source: ' + name)
     actual = hashlib.sha256(path.read_bytes()).hexdigest()
     if actual != declared.get('sha256'):
@@ -122,7 +123,8 @@ def measure(attempt):
     approach = []
     departure = []
     views = {'overview', 'approach', 'reference_corner', 'driver_reference'}
-    for row, video in zip(rows, frame_rows):
+    identity_keys = {'video_frame', 'carla_frame', 'native_frame'}
+    for index, (row, video) in enumerate(zip(rows, frame_rows)):
         frame, time_s = row.get('frame'), row.get('time_s')
         if type(frame) is not int or type(time_s) not in (int, float) or not math.isfinite(time_s):
             raise ValueError('invalid original frame/time')
@@ -132,11 +134,25 @@ def measure(attempt):
         video_time = video.get('time_s')
         if video.get('frame') != frame or type(video_time) not in (int, float) or not math.isfinite(video_time) or abs(video_time - time_s) > .005:
             raise ValueError('original four-camera frame identity mismatch')
+        if identity_keys & video.keys() and (
+                set(video) & identity_keys != identity_keys or
+                type(video.get('video_frame')) is not int or
+                video['video_frame'] != index or
+                any(type(video.get(key)) is not int or video[key] != frame
+                    for key in ('carla_frame', 'native_frame'))):
+            raise ValueError('canonical original frame identity mismatch')
         camera_frames = video.get('camera_frames')
         if not isinstance(camera_frames, dict) or set(camera_frames) != views or any(
                 type(camera_frames[name]) is not int or camera_frames[name] != frame
                 for name in views):
             raise ValueError('original four-camera synchronized frames missing')
+        camera_times = video.get('camera_times_s')
+        if camera_times is not None and (
+                not isinstance(camera_times, dict) or set(camera_times) != views or
+                any(type(camera_times[name]) not in (int, float) or
+                    not math.isfinite(camera_times[name]) or
+                    abs(camera_times[name] - time_s) > .001 for name in views)):
+            raise ValueError('original four-camera timestamp drift')
         yaw = row.get('ego_heading_rad')
         if type(yaw) not in (int, float) or not math.isfinite(yaw):
             raise ValueError('original ego heading missing')

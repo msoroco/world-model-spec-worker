@@ -1,0 +1,77 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-253",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "opponent_initial_position",
+      "range_or_domain": "within intersection versus approaching outside"
+    },
+    {
+      "kind": "controller",
+      "name": "initial_yield_controller",
+      "range_or_domain": "wait versus proceed before initial opponent clears"
+    },
+    {
+      "kind": "controller",
+      "name": "ego_left_signal_controller",
+      "range_or_domain": "request left signal versus omit signal"
+    },
+    {
+      "kind": "controller",
+      "name": "later_opponent_response_controller",
+      "range_or_domain": "later opposing actor waits versus proceeds"
+    },
+    {
+      "kind": "controller",
+      "name": "commanded_turn_path",
+      "range_or_domain": "connected left-turn waypoint plan"
+    },
+    {
+      "kind": "controller",
+      "name": "commanded_approach_speed",
+      "range_or_domain": "finite positive approach speed in m/s"
+    }
+  ],
+  "quote": "The driver of a vehicle within an intersection intending to turn to the left shall yield the right-of-way to any vehicle approaching from the opposite direction which is within the intersection or so close thereto as to constitute an immediate hazard, but such driver, having so yielded and having given a signal when and as required, may make such left turn and the drivers of all other vehicles approaching the intersection from the opposite direction shall yield the right-of-way to the vehicle making the left turn.",
+  "structure": {
+    "activation": {
+      "condition": "Vehicle within a source-reviewed intersection intends to turn left.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Conditional permission and later reciprocal duty; not an assumed legal exception.",
+        "effect": "Left-turn permission becomes available",
+        "replacement_obligation": "Later opposite-direction vehicles yield to the turning vehicle",
+        "source_clause": "having so yielded and having given a signal when and as required, may make such left turn",
+        "trigger": "Yield and applicable signal duty are established"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Approach proximity and speed are observable; legal hazard judgment remains open.",
+        "phrase": "immediate hazard"
+      },
+      {
+        "note": "Original trajectories and control response are measurable; legal priority is not inferred.",
+        "phrase": "yield the right-of-way"
+      },
+      {
+        "note": "Original signal state is measurable; the separate signal requirement must be sourced.",
+        "phrase": "when and as required"
+      }
+    ],
+    "law_id": "NRS-484B-253",
+    "obligation": {
+      "description": "Yield to an opposite-direction vehicle within the intersection or constituting an immediate hazard.",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Observe initial approach, yield, turn commitment and later opposing approach separately.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-253@motor_vehicle_driver"
+}

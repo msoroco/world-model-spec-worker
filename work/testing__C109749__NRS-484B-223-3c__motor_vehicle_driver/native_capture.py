@@ -139,6 +139,9 @@ def capture_original(attempt_root, case_id, site_packet, frame_reader, count, *,
         xy = reading.get('body_centre_xy_m')
         if not isinstance(xy, (list, tuple)) or len(xy) != 2 or any(not isinstance(v, (int, float)) or not isfinite(v) for v in xy):
             raise ValueError('missing original body centre')
+        receiving_id = reading.get('receiving_vehicle_actor_id')
+        if receiving_id is not None and (type(receiving_id) is not int or receiving_id <= 0):
+            raise ValueError('receiving traffic actor identity invalid')
         turn = reading.get('left_turn_onto_highway_complete') is True
         merge = reading.get('merged_into_through_lane') is True
         if turn and lane != 'shared_center_turn':
@@ -157,8 +160,11 @@ def capture_original(attempt_root, case_id, site_packet, frame_reader, count, *,
             if not camera_file.is_relative_to(root) or not camera_file.is_file():
                 raise ValueError('missing original camera source')
             camera_hashes[view] = hashlib.sha256(camera_file.read_bytes()).hexdigest()
-        samples.append({'frame': frame, 'elapsed_seconds': elapsed, 'body_centre_xy_m': list(xy), 'lane': lane,
-                        'lane_id': lane_id, 'left_turn_onto_highway_complete': turn, 'merged_into_through_lane': merge})
+        sample = {'frame': frame, 'elapsed_seconds': elapsed, 'body_centre_xy_m': list(xy), 'lane': lane,
+                  'lane_id': lane_id, 'left_turn_onto_highway_complete': turn, 'merged_into_through_lane': merge}
+        if receiving_id is not None:
+            sample['receiving_vehicle_actor_id'] = receiving_id
+        samples.append(sample)
         mappings.append({'frame': frame, 'camera_sources': cameras, 'camera_sha256': camera_hashes})
     if turn_count != 1:
         raise ValueError('exactly one observed turn completion required')

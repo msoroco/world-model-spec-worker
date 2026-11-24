@@ -22,6 +22,11 @@ def check_scene(scene_path=Path('scene.json')):
     base = 'testing__C125714__NRS-484B-250-2__motor_vehicle_driver'
     require(scene.get('case_id') in {base + '__' + s for s in CASE_SUFFIXES},
             'wrong exact C125714 case')
+    suffix = scene['case_id'].removeprefix(base+'__')
+    policy = scene.get('control_policy','timed_release')
+    required_policy = {'yield_wait_for_other_clear':'wait_for_other_clear',
+                       'advance_at_release':'advance_at_release'}.get(suffix,'timed_release')
+    require(policy == required_policy, 'exact case/controller policy differs')
     require(scene.get('cell_id') == 'C125714' and
             scene.get('law_id') == 'NRS-484B-250-2' and
             scene.get('actor') == 'motor_vehicle_driver', 'wrong law/cell/actor')

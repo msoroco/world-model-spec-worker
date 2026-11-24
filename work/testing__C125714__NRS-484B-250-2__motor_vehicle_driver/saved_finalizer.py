@@ -16,7 +16,8 @@ entry = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(entry)
 ASSIGNMENT = entry.ASSIGNMENT
 ALLOWED = {ASSIGNMENT + '__' + suffix for suffix in (
-    'timing_below_training', 'timing_inside_training', 'timing_above_training')}
+    'timing_below_training', 'timing_inside_training', 'timing_above_training',
+    'yield_wait_for_other_clear', 'advance_at_release')}
 
 
 def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> dict:
@@ -31,7 +32,7 @@ def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> d
             measured['other_left_turn_intent'] is not False or \
             measured['subsection_4_context_reviewed'] is not True:
         raise ValueError('selected left-yields-right crossing context not source established')
-    return {'format': 'worker-c125714-selected-diagnostic-v1',
+    result = {'format': 'worker-c125714-selected-diagnostic-v1',
             'assignment_id': ASSIGNMENT, 'case_id': case_id,
             'selected_requirement': 'NRS-484B-250-2 left yields to right at different-highway intersection',
             'measurement': 'intersection_entry_time_difference_s',
@@ -50,6 +51,24 @@ def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> d
             'approximately_same_time': 'unresolved_judgment',
             'right_of_way_yielding': 'unresolved_original_behavior_review',
             'legal_verdict_claimed': False}
+    if case_id.endswith(('__yield_wait_for_other_clear','__advance_at_release')):
+        from branch_alternatives import observe_brake, sha
+        root = Path(attempt)
+        manifest = json.loads((root/('original-bindings.json' if diagnostic_fixture
+                                  else 'source-manifest.json')).read_text())
+        kind = 'diagnostic_fixture' if diagnostic_fixture else 'original_native'
+        for name in ('controller-history.jsonl','video_frames.jsonl'):
+            path = root/name
+            if (not path.is_file() or path.is_symlink() or
+                    manifest.get(name,{}).get('kind') != kind or
+                    manifest[name].get('sha256') != sha(path)):
+                raise ValueError('Missing required source: '+name)
+        brake = observe_brake(root/'controller-history.jsonl',
+                              root/'video_frames.jsonl',
+                              measured['other_entry']['upper_time_s'])
+        result['ego_brake_before_other_entry'] = brake
+        result['source_sha256'].update(brake['source_sha256'])
+    return result
 
 
 def main() -> None:

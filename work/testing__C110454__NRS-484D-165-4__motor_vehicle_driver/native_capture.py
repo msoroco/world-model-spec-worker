@@ -58,8 +58,10 @@ def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
     parking = reviewed_site["parking_polygon_xy_m"]
     intersection = reviewed_site["intersection_polygon_xy_m"]
     rows, maps = [], []
-    commanded = command_lights(vehicle, light_enum, mode)
+    if hasattr(frame_reader, "start"):
+        frame_reader.start()
     try:
+        commanded = command_lights(vehicle, light_enum, mode)
         for _ in range(ticks):
             vehicle.apply_control(parking_control)
             frame = world.tick()
@@ -98,12 +100,18 @@ def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
         for name, values in (("actor-state.jsonl", rows), ("camera-frame-map.jsonl", maps)):
             (root / name).write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in values))
         hashes = {name: _sha(root / name) for name in ("actor-state.jsonl", "camera-frame-map.jsonl")}
+        media = frame_reader.finish(ticks) if hasattr(frame_reader, "finish") else None
         return {"format": "parked-headlamp-native-source-v1", "case_id": case_id,
                 "requested_mode": mode, "commanded": commanded, "frame_count": len(rows),
                 "light_masks": {"low_beam": int(light_enum.LowBeam),
                                 "high_beam": int(light_enum.HighBeam)},
                 "site_source_sha256": reviewed_site["source_sha256"],
                 "diagnostic_site": bool(reviewed_site.get("diagnostic_fixture", False)),
-                "source_hashes": hashes, "physical_acceptance_claimed": False}
+                "source_hashes": hashes, "original_camera_media": media,
+                "physical_acceptance_claimed": False}
     finally:
-        vehicle.apply_control(parking_control)
+        try:
+            vehicle.apply_control(parking_control)
+        finally:
+            if hasattr(frame_reader, "close"):
+                frame_reader.close()

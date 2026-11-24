@@ -52,12 +52,16 @@ def audit_archive(path: Path, expected_size: tuple[int, int],
             'full_pixel_sha256': pixel_hash.hexdigest(), 'format': 'png-zip-source'}
 
 
-def audit_cameras(root: Path, cameras: dict) -> dict:
+def audit_cameras(root: Path, cameras: dict, profile: dict | None = None,
+                  expected_frames: int = FRAME_COUNT) -> dict:
     """Verify all original archive hashes, then decode against the fixed profile."""
+    sizes = PROFILE if profile is None else profile
+    if not isinstance(sizes, dict) or set(sizes) != set(PROFILE):
+        raise ValueError('incomplete camera dimension profile')
     if not isinstance(cameras, dict) or set(cameras) != set(PROFILE):
         raise ValueError('all four original camera archives required')
     result = {}
-    for name, dimensions in PROFILE.items():
+    for name, dimensions in sizes.items():
         source = cameras[name]
         if not isinstance(source, dict) or set(source) != {'path', 'sha256'}:
             raise ValueError(name + ' camera source path and sha256 required')
@@ -71,7 +75,7 @@ def audit_cameras(root: Path, cameras: dict) -> dict:
         if digest.hexdigest() != source['sha256']:
             raise ValueError(name + ' camera archive sha256 mismatch')
         result[name] = {'source_sha256': source['sha256'],
-                        **audit_archive(path, dimensions)}
+                        **audit_archive(path, dimensions, expected_frames)}
     return result
 
 

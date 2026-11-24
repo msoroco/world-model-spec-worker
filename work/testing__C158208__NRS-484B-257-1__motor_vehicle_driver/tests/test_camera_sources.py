@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from source_tick_capture import TickCapture, write_capture_identity
 from camera_sources import CAMERAS, audit_camera_sources, write_camera_sources
+from saved_finalizer import finalize
 
 
 GEOMETRY = {"ego_route_origin_xy_m": [-10, 5], "ego_route_axis_xy": [1, 0],
@@ -70,6 +71,38 @@ def fixture(attempt):
 
 
 class CameraSourcesTests(unittest.TestCase):
+    def test_saved_finalizer_joins_measurement_and_decoded_pixels(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / "attempt"
+            frames = fixture(attempt)
+            write_camera_sources(attempt, frames, diagnostic_fixture=True)
+            output = Path(directory) / "report.json"
+            report = finalize(attempt, output, diagnostic_fixture=True)
+            self.assertEqual(report["measurement"]["first_view"]["index"], 1)
+            self.assertEqual(report["measurement"]["intersection_entry"]["index"], 2)
+            self.assertEqual(report["decoded_images"], 12)
+            self.assertEqual(report["legal_status"], "unresolved")
+            self.assertEqual(json.loads(output.read_text()), report)
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                finalize(attempt, output, diagnostic_fixture=True)
+
+    def test_saved_finalizer_rejects_missing_media_and_false_review_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / "attempt"
+            fixture(attempt)
+            with self.assertRaises(FileNotFoundError):
+                finalize(attempt, Path(directory) / "report.json", diagnostic_fixture=True)
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory) / "attempt"
+            frames = fixture(attempt)
+            write_camera_sources(attempt, frames, diagnostic_fixture=True)
+            packet_path = attempt / "nearest-view-saved-packet.json"
+            packet = json.loads(packet_path.read_text())
+            packet["reviewed_context"]["viewpoint_reviewed"] = False
+            packet_path.write_text(json.dumps(packet) + "\n")
+            with self.assertRaisesRegex(ValueError, "saved packet source hash"):
+                finalize(attempt, Path(directory) / "report.json", diagnostic_fixture=True)
+
     def test_saved_full_decode_joins_every_original_tick_and_camera(self):
         with tempfile.TemporaryDirectory() as directory:
             attempt = Path(directory)

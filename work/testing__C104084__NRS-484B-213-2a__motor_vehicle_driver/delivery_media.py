@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 import subprocess
 from fractions import Fraction
@@ -61,11 +62,26 @@ def audit(attempt_dir, source_hashes, *, expected_frames=900, expected_fps=20,
             raise ValueError(f'camera dimensions missing: {name}')
         if expected_dimensions is not None and (width, height) != tuple(expected_dimensions[camera]):
             raise ValueError(f'camera dimensions mismatch: {name}')
+        frame_probe = json.loads(_run(['ffprobe', '-v', 'error',
+                                       '-select_streams', 'v:0',
+                                       '-show_entries', 'frame=best_effort_timestamp_time',
+                                       '-of', 'json', str(source)]))
+        frames = frame_probe.get('frames')
+        if not isinstance(frames, list) or len(frames) != expected_frames:
+            raise ValueError(f'camera presentation frame count mismatch: {name}')
+        for index, frame in enumerate(frames):
+            try:
+                presentation = float(frame['best_effort_timestamp_time'])
+            except (KeyError, TypeError, ValueError) as error:
+                raise ValueError(f'camera presentation timestamp missing: {name}') from error
+            if not math.isfinite(presentation) or abs(presentation - index / expected_fps) > 0.002:
+                raise ValueError(f'camera presentation timing mismatch: {name}')
         _run(['ffmpeg', '-v', 'error', '-xerror', '-i', str(source), '-map', '0:v:0',
               '-f', 'null', '-'])
         receipts[camera] = {'source': name, 'sha256': actual_hash,
                             'codec': stream.get('codec_name'), 'frames_decoded': expected_frames,
-                            'fps': expected_fps, 'width': width, 'height': height}
+                            'fps': expected_fps, 'width': width, 'height': height,
+                            'presentation_timing_checked': True}
     return {'format': 'crest-four-camera-decode', 'origin_verified': False,
             'cameras': receipts, 'physical_visibility_reviewed': False,
             'limitations': 'Full source decode establishes readable synchronized media shape, not actual vehicle, crest, or sight-line visibility.'}

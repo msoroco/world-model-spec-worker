@@ -2,14 +2,14 @@
   "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
   "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
   "status": "partial",
-  "readiness_kind": "partial_cpu_construction",
+  "readiness_kind": "partial_two_exact_offline_bundles_and_saved_finalizer",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "1a3bae0912c1aa950804ad614925acaa93af9fd583ae4d40aac24762ee751fa7"
+      "sha256": "97bd02b6bbbcb7bb45aa13b833eafe1ef945a8639fa48a83fdeab87112a167aa"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/alley_geometry.py --scene work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/alley-scene.json",
@@ -27,11 +27,47 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-preflight.log",
-      "sha256": "1b2223bf500d152663b5f589d51b59ea6235f8f26382e5d8c5e86609adf98a51"
+      "sha256": "fff19d70d7e7fd42ad00feb0c70d5cafc92810a57128c64b0d600a1855b4cebe"
+    },
+    {
+      "command": "saved_finalizer.main --attempt TEST_FIXTURE --case EXACT_ID --output TEST_RECEIPT --allow-diagnostic (in focused unittest)",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "97bd02b6bbbcb7bb45aa13b833eafe1ef945a8639fa48a83fdeab87112a167aa"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-gate.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-draft-bundles.log",
+      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-offline-steady-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-steady.log",
+      "sha256": "8de872171d6dd927125c35b159e35adbe4f43cd59f075e062fe31a798c592c9f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-offline-variation-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-variation.log",
+      "sha256": "e8b79199ddbd45dc1aded1585956ce19f9f9795f8468202ec699a99a8e984c0d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-bundle-tests.log",
+      "sha256": "17757b200aca44cd2a5bab020dd71e07979f2f3491c923199448a05f12fe0cf3"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "CPU-tested 900-frame 20 Hz four-camera Native capture, same-tick ego/context join, source-hashed site and original PNGs, saved-source recomputation/full image decode, and two-case saved comparison are implemented. Saved comparison CLI now replays both exact attempts and writes a receipt only after the full audit; diagnostic captures are rejected by default. Exact manifest bundles, canonical semantic proposals, runtime offline/compatibility/saved-only proofs and reviewed Native site/camera physical realization remain incomplete worker preparation. Exterior data cannot establish interior attention or legal compliance."
+  "reason": "Both exact alley cases now have pinned diagnostic bundles that pass runtime.py offline, bind their distinct control profiles and four-camera 900-frame plan, and refuse Native capture without a reviewed site. The saved finalizer independently audits 900 original frames and 3,600 camera PNGs while preserving interior attention and legal judgment as unresolved. Twenty-three focused tests and pinned preflight pass. Canonical manifest, semantic proposals, source-shaped positive/negative compatibility, process-saved and independent delivery proofs, and reviewed Native site realization remain unfinished CPU work."
 }

@@ -67,6 +67,10 @@ class BackingTests(unittest.TestCase):
         wrong_actor["pedestrian_blueprint_id"] = "vehicle.audi.a2"
         with self.assertRaises(ValueError):
             geometry.validate(wrong_actor)
+        nonfinite = packet()
+        nonfinite["vehicle_half_width_m"] = float("nan")
+        with self.assertRaisesRegex(ValueError, "extents"):
+            geometry.validate(nonfinite)
 
     def test_controller_commands_reverse_hold_and_release(self):
         vehicle = Vehicle()

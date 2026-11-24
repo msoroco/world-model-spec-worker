@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from saved_backing import ASSIGNMENT, process
 from saved_comparison import audit
+from media_decode import audit_media, process_delivery
+from backing_semantics import response_witness
 
 
 def point(x, y):
@@ -48,6 +50,52 @@ def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
 
 
 class SavedBackingTests(unittest.TestCase):
+    def test_full_camera_decode_and_frame_count_rejection(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt = fixture(root)
+            for name in ("front", "rear", "left", "right"):
+                video = root / (name + ".mkv")
+                subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                    "-f", "lavfi", "-i", "testsrc2=size=16x16:rate=20", "-frames:v", "3",
+                    "-c:v", "ffv1", str(video)], check=True, capture_output=True)
+                receipt["media"][name] = {"path": video.name,
+                    "sha256": hashlib.sha256(video.read_bytes()).hexdigest()}
+            result = audit_media(root, receipt, expected_frames=3,
+                                 dimensions={name: (16, 16) for name in receipt["media"]})
+            self.assertTrue(result["actual_pixels_decoded"])
+            self.assertEqual(result["cameras"]["rear"]["decoded_frames"], 3)
+            self.assertFalse(result["physical_visibility_confirmed"])
+            with self.assertRaisesRegex(ValueError, "decoded frame count differs"):
+                audit_media(root, receipt, expected_frames=4,
+                            dimensions={name: (16, 16) for name in receipt["media"]})
+            with self.assertRaisesRegex(ValueError, "dimensions differ"):
+                audit_media(root, receipt, expected_frames=3,
+                            dimensions={name: (32, 16) for name in receipt["media"]})
+            (root / "rear.mkv").write_bytes(b"changed")
+            with self.assertRaisesRegex(ValueError, "hash differs"):
+                audit_media(root, receipt, expected_frames=3,
+                            dimensions={name: (16, 16) for name in receipt["media"]})
+
+    def test_saved_measurement_with_full_camera_decode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt = fixture(root)
+            for name in ("front", "rear", "left", "right"):
+                video = root / (name + ".mkv")
+                subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                    "-f", "lavfi", "-i", "testsrc2=size=16x16:rate=20", "-frames:v", "900",
+                    "-c:v", "ffv1", str(video)], check=True, capture_output=True)
+                receipt["media"][name] = {"path": video.name,
+                    "sha256": hashlib.sha256(video.read_bytes()).hexdigest()}
+            write(root, "acquisition.json", receipt)
+            output = process_delivery(root, ASSIGNMENT + "__pedestrian_yield",
+                                      dimensions={name: (16, 16) for name in receipt["media"]})
+            self.assertEqual(output["media_decode"]["frame_count"], 900)
+            self.assertTrue(output["full_video_decode"])
+            self.assertTrue(output["actual_pixels"])
+            self.assertFalse(output["physical_completion"])
+
     def _paired(self, root):
         left = root / "yield"
         right = root / "continue"
@@ -79,6 +127,35 @@ class SavedBackingTests(unittest.TestCase):
             self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["comparison_id"],
                              "pedestrian_yield_response")
 
+    def test_case_response_witnesses_are_original_and_case_specific(self):
+        with tempfile.TemporaryDirectory() as directory:
+            left, right, _ = self._paired(Path(directory))
+            yielded = process(left, ASSIGNMENT + "__pedestrian_yield")
+            continued = process(right, ASSIGNMENT + "__pedestrian_continue")
+            self.assertGreaterEqual(yielded["response_witness"]["first_frame"], 20)
+            self.assertEqual(yielded["response_witness"]["policy"], "pedestrian_yield")
+            self.assertEqual(continued["response_witness"]["policy"], "pedestrian_continue")
+            self.assertEqual(yielded["response_witness"]["legal_judgment"], "unresolved")
+
+    def test_response_rejects_transient_or_wrong_case_behavior(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt = fixture(root)
+            frames = json.loads((root / "telemetry.json").read_text(encoding="utf-8"))
+            for row in frames[20:]:
+                row["brake"] = 0.0
+                row["vehicle_velocity_xy"] = [-.5, 0]
+            receipt["telemetry"] = write(root, "telemetry.json", frames)
+            write(root, "acquisition.json", receipt)
+            with self.assertRaisesRegex(ValueError, "response witness missing"):
+                process(root, ASSIGNMENT + "__pedestrian_yield")
+            measured = {"source_id": "original:test", "frames": [
+                {"frame": i, "pedestrian_in_corridor": True, "pedestrian_speed_mps": .2,
+                 "reverse_gear": True, "brake": 1.0, "reverse_speed_mps": .2}
+                for i in range(20)]}
+            with self.assertRaisesRegex(ValueError, "response witness missing"):
+                response_witness(measured, case_id=ASSIGNMENT + "__pedestrian_yield")
+
     def test_saved_comparison_rejects_changed_context_and_tamper(self):
         with tempfile.TemporaryDirectory() as directory:
             left, right, receipt = self._paired(Path(directory))
@@ -97,10 +174,28 @@ class SavedBackingTests(unittest.TestCase):
             left, right, receipt = self._paired(Path(directory))
             frames = json.loads((right / "telemetry.json").read_text(encoding="utf-8"))
             frames[100]["pedestrian_xy"] = [9, 9]
+            frames[100]["pedestrian_in_corridor"] = False
             receipt["telemetry"] = write(right, "telemetry.json", frames)
             write(right, "acquisition.json", receipt)
             with self.assertRaisesRegex(ValueError, "exposure differs"):
                 audit(left, right)
+
+    def test_saved_corridor_flag_is_checked_against_original_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt = fixture(root)
+            frames = json.loads((root / "telemetry.json").read_text(encoding="utf-8"))
+            frames[100]["pedestrian_in_corridor"] = False
+            receipt["telemetry"] = write(root, "telemetry.json", frames)
+            write(root, "acquisition.json", receipt)
+            with self.assertRaisesRegex(ValueError, "corridor flag differs"):
+                process(root, ASSIGNMENT + "__pedestrian_yield")
+            frames[100]["pedestrian_in_corridor"] = True
+            frames[100]["pedestrian_xy"] = [9, 9]
+            receipt["telemetry"] = write(root, "telemetry.json", frames)
+            write(root, "acquisition.json", receipt)
+            with self.assertRaisesRegex(ValueError, "corridor flag differs"):
+                process(root, ASSIGNMENT + "__pedestrian_yield")
 
     def test_sealed_original_join(self):
         with tempfile.TemporaryDirectory() as directory:

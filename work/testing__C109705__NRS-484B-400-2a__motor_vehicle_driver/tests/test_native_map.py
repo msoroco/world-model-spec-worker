@@ -25,6 +25,38 @@ class FakeWorld:
 
 
 class NativeMapTests(unittest.TestCase):
+    def test_reviewed_source_is_bound_to_map_roads_and_context(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = '<OpenDRIVE>surveyed</OpenDRIVE>'
+            digest = hashlib.sha256(source.encode()).hexdigest()
+            review_path = root / 'highway-review.txt'
+            review_path.write_text('Original reviewed highway-source dossier for the two named roads.\n')
+            ctx = context()
+            ctx['public_highway_source'] = review_path.name
+            review = {'status': 'reviewed', 'opendrive_sha256': digest,
+                      'approach_road_id': ctx['approach_road_id'],
+                      'departure_road_id': ctx['departure_road_id'],
+                      'source': {'path': review_path.name,
+                                 'sha256': hashlib.sha256(review_path.read_bytes()).hexdigest()}}
+            packet = {'context': ctx, 'map_name': 'TownTest',
+                      'source_sha256': digest, 'left_turn_route_waypoint_ids': [11, 12, 13],
+                      'ego_blueprint_id': 'vehicle.test',
+                      'camera_plan': 'four cameras, 20 Hz',
+                      'public_highway_review': review}
+            packet_path = root / 'map-packet.json'
+            packet_path.write_text(json.dumps(packet))
+            self.assertTrue(verify_live_map(FakeWorld(), packet_path, CASE)
+                            ['public_highway_reviewed'])
+            review_path.write_text('changed\n')
+            with self.assertRaisesRegex(ValueError, 'source hash differs'):
+                verify_live_map(FakeWorld(), packet_path, CASE)
+            review_path.write_text('Original reviewed highway-source dossier for the two named roads.\n')
+            packet['public_highway_review']['departure_road_id'] = 'different'
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, 'road binding differs'):
+                verify_live_map(FakeWorld(), packet_path, CASE)
+
     def test_exact_loaded_map_source_and_case_binding(self):
         with tempfile.TemporaryDirectory() as temp:
             packet_path = Path(temp) / "map-packet.json"

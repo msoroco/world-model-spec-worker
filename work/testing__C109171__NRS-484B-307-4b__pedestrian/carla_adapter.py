@@ -7,6 +7,7 @@ It neither invents official signal status nor a pedestrian permission device.
 from __future__ import annotations
 
 import io
+import math
 from queue import Empty, Queue
 
 from PIL import Image
@@ -71,9 +72,30 @@ class CarlaAdapter:
         if not isinstance(world_frame, int) or (self.last_world_frame is not None and world_frame != self.last_world_frame + 1):
             raise SourceError('Native world frame drift')
         self.last_world_frame = world_frame
+        snapshot = self.world.get_snapshot()
+        if snapshot.frame != world_frame:
+            raise SourceError('Native snapshot world-frame drift')
+        native_time = snapshot.timestamp.elapsed_seconds
+        location = self.walker.get_location()
+        if not all(math.isfinite(float(value)) for value in
+                   (native_time, location.x, location.y)):
+            raise SourceError('Native pedestrian position or time invalid')
         event = self.original_state_reader(frame, world_frame)
         if not isinstance(event, dict) or event.get('frame') != frame:
             raise SourceError('original state reader returned wrong frame')
+        reported_xy = event.get('pedestrian_xy')
+        if (event.get('world_frame') != world_frame or
+                not isinstance(reported_xy, (list, tuple)) or len(reported_xy) != 2 or
+                any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in reported_xy) or
+                abs(reported_xy[0] - location.x) > 1e-4 or
+                abs(reported_xy[1] - location.y) > 1e-4):
+            raise SourceError('original pedestrian position/world-frame mismatch')
+        reported_time = event.get('sim_time_seconds')
+        if (type(reported_time) not in (int, float) or
+                not math.isfinite(reported_time) or
+                abs(reported_time - native_time) > 1e-4):
+            raise SourceError('original event/snapshot time mismatch')
         cameras = {}
         for name in CAMERAS:
             try:

@@ -2,7 +2,7 @@
   "assignment_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver",
   "input_sha256": "545d571b598d72cc8a16461803998c2565e7d7768f70dc095646071d94f298aa",
   "status": "partial",
-  "readiness_kind": "construction_draft",
+  "readiness_kind": "five_exact_diagnostic_offline_constructions",
   "applied_update": 0,
   "tests": [
     {
@@ -10,10 +10,52 @@
       "exit_code": 0,
       "log": "cpu-tests.log",
       "sha256": "fd40fec62e2c5d01921225da93c04b93c51dae15bad484635ebbf3b19f050bd1"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-bundle-build.log",
+      "sha256": "150a8753e60bc7626b406e747436a701fa419bcd6d8595ad04ccd07eb6938ace"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --output .runtime-work/c102642-offline-open_near_overlap-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-open_near_overlap.log",
+      "sha256": "0794fd864eca7d8df643e171ac52518e246eff9292c8f745035356b3a460b08c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --output .runtime-work/c102642-offline-open_near_clear-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-open_near_clear.log",
+      "sha256": "83346d7e6adedfca82e9ce6e8a962f489904006fa8bdc86ab985bc2638496e68"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --output .runtime-work/c102642-offline-open_far_side-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-open_far_side.log",
+      "sha256": "dd93344c02e611eef222b9b9c9b530c144260743206b22b2d78757ba7aff2774"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --output .runtime-work/c102642-offline-board_near-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-board_near.log",
+      "sha256": "9ce89884797ede2d239438bc91dd5de26ca2ea41e59bfdcfdf0595efb6f93803"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --output .runtime-work/c102642-offline-alight_near-v1",
+      "exit_code": 0,
+      "log": "cpu-offline-alight_near.log",
+      "sha256": "6942cffbed304655090721b13c7d538ce06397b63b426638ed5285676a7e6c9d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-bundle-tests.log",
+      "sha256": "d7fc16d49a81020b35270d152cf71752c6590de19364650632638c1fe566fbb9"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source-bound five-case Native/saved capture, full 3,600-image decode, stronger framewise passing-trajectory comparison invariants, and replayable exact-plan compare_saved.py CLI pass 18 focused CPU tests. Concrete CARLA adapter, original driver boarding/alighting realization, exact manifest, pinned offline/compatibility proofs, semantic proposals, and complete delivery audit remain CPU work."
+  "reason": "Five exact diagnostic door-action bundles now pass pinned runtime.py offline with source-hashed case plan, exact act/side/clearance choice, 900-frame/four-camera profile and diagnostic capture refusal. Source-bound Native/saved capture, 3,600-image decode and replayable exact-plan comparison remain CPU-tested; 20 focused tests pass. Concrete CARLA act adapter, surveyed hill-crest realization, canonical manifest, positive/negative compatibility and saved processing, semantic proposals and complete delivery audit remain CPU work."
 }

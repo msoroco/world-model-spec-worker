@@ -113,11 +113,22 @@ class SavedCrestTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'authority'):
                 saved.measure(attempt, hashes, case_id=context['case_id'], assignment_id=ASSIGNMENT,
                               expected_frames=3)
-            context['one_way_authority'] = {'source_ref': 'original traffic order', 'sha256': 'a' * 64}
+            authority = attempt / saved.ONE_WAY_AUTHORITY
+            authority.write_text('{"designation":"source fixture for one-way road"}\n', encoding='utf-8')
+            authority_hash = hashlib.sha256(authority.read_bytes()).hexdigest()
+            hashes[authority.name] = authority_hash
+            context['one_way_authority'] = {'source_ref': 'original traffic order',
+                                             'sha256': authority_hash}
             path.write_text(json.dumps(context), encoding='utf-8')
             hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
             self.assertEqual(saved.measure(attempt, hashes, case_id=context['case_id'],
                                            assignment_id=ASSIGNMENT, expected_frames=3)['lane_allocation'], 'one_way')
+            context['one_way_authority']['sha256'] = 'a' * 64
+            path.write_text(json.dumps(context), encoding='utf-8')
+            hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'authority source hash differs'):
+                saved.measure(attempt, hashes, case_id=context['case_id'],
+                              assignment_id=ASSIGNMENT, expected_frames=3)
 
     def test_rejects_timestamp_drift_and_observes_target_miss(self):
         with tempfile.TemporaryDirectory() as temp:

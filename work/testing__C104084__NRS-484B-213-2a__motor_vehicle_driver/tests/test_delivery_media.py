@@ -60,6 +60,21 @@ class MediaAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'media decode failed'):
                 media.audit(attempt, hashes, expected_frames=20)
 
+    def test_rejects_delayed_frame_with_nominal_rate_and_count(self):
+        with tempfile.TemporaryDirectory() as temp:
+            attempt = Path(temp)
+            hashes = fixture(attempt)
+            source = attempt / 'camera-left.mp4'
+            source.unlink()
+            subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
+                            'color=c=blue:s=32x24:r=20', '-frames:v', '20',
+                            '-vf', r'setpts=PTS+0.05/TB*gte(N\,10)',
+                            '-fps_mode', 'vfr', '-c:v', 'mpeg4', str(source)],
+                           check=True)
+            hashes[source.name] = hashlib.sha256(source.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'presentation timing mismatch'):
+                media.audit(attempt, hashes, expected_frames=20)
+
 
 if __name__ == '__main__':
     unittest.main()

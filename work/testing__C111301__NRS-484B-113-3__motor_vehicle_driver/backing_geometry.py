@@ -3,7 +3,7 @@
 This module never asserts that a named cell has a usable reverse path. The
 operator must export an original CARLA/OpenDRIVE packet and validate it first.
 """
-from math import hypot
+from math import hypot, isfinite
 
 
 def _point(value):
@@ -11,7 +11,10 @@ def _point(value):
         raise ValueError("original coordinate and source reference required")
     if not value["source_ref"]:
         raise ValueError("empty coordinate source")
-    return float(value["x_m"]), float(value["y_m"])
+    point = float(value["x_m"]), float(value["y_m"])
+    if not all(isfinite(coordinate) for coordinate in point):
+        raise ValueError("finite original coordinate required")
+    return point
 
 
 def _distance_to_segment(point, start, end):
@@ -59,7 +62,7 @@ def validate(packet):
         raise ValueError("pedestrian route contains degenerate segment")
     width = float(packet["vehicle_half_width_m"])
     radius = float(packet["pedestrian_radius_m"])
-    if width <= 0 or radius <= 0:
+    if not isfinite(width) or not isfinite(radius) or width <= 0 or radius <= 0:
         raise ValueError("actor extents must be positive")
     closest = min(_segment_gap(v[i],v[i+1],w[j],w[j+1])
                   for i in range(len(v)-1) for j in range(len(w)-1))
@@ -70,3 +73,20 @@ def validate(packet):
             "pedestrian_blueprint_id": packet["pedestrian_blueprint_id"],
             "route_gap_m": closest, "route_conflict": True,
             "physical_realization": "pending original Native execution"}
+
+
+def pedestrian_in_reverse_corridor(packet, pedestrian_xy):
+    """Compute route-corridor occupancy from original map and person position."""
+    validate(packet)
+    if (not isinstance(pedestrian_xy, (list, tuple)) or len(pedestrian_xy) != 2 or
+            any(type(value) not in (int, float) or not isfinite(value)
+                for value in pedestrian_xy)):
+        raise ValueError("finite original pedestrian position required")
+    route = [_point(point) for point in packet["vehicle_reverse_route"]]
+    person = tuple(float(value) for value in pedestrian_xy)
+    gap = min(_distance_to_segment(person, a, b)
+              for a, b in zip(route, route[1:]))
+    limit = float(packet["vehicle_half_width_m"]) + float(packet["pedestrian_radius_m"])
+    return {"in_corridor": gap <= limit, "distance_to_reverse_route_m": gap,
+            "corridor_extent_m": limit,
+            "basis": "original_map_reverse_route_and_original_pedestrian_position"}

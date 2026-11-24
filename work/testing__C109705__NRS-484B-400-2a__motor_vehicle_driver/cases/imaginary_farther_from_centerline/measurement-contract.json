@@ -1,0 +1,56 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
+  "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "vehicle driver intends left turn at intersection",
+      "source": "NRS 484B.400(2)(a)",
+      "output_key": "left_turn_observed",
+      "method": "measure_left_turn",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection-context.json",
+        "approach-history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "both intersecting highways two-directional",
+      "source": "NRS 484B.400(2)(a)",
+      "output_key": "two_directional_roads",
+      "method": "measure_two_directional",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection-context.json",
+        "approach-history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "approach body in right half nearest approach centerline",
+      "source": "NRS 484B.400(2)(a)",
+      "output_key": "approach_right_half",
+      "method": "measure_right_half",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "intersection-context.json",
+        "approach-history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "intersection-context.json"
+    ],
+    "error_contains": "Missing required source: intersection-context.json"
+  },
+  "scope": "original source-bound geometry and motion only; legal nearest-portion judgment unresolved"
+}

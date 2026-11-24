@@ -45,6 +45,9 @@ class World:
                                         raw_data=bytes([1, 2, 3, 255] * 4))
                 sensor.callback(image)
         return self.frame
+    def get_snapshot(self):
+        return SimpleNamespace(frame=self.frame,
+                               timestamp=SimpleNamespace(elapsed_seconds=self.frame * 0.05))
 
 
 class CarlaAdapterTest(unittest.TestCase):
@@ -58,8 +61,9 @@ class CarlaAdapterTest(unittest.TestCase):
     def make(self, world):
         return CarlaAdapter(world, self.walker, self.sensors,
                             lambda frame, world_frame: {'frame': frame,
-                                'sim_time_seconds': frame * 0.05,
-                                'world_frame': world_frame},
+                                'sim_time_seconds': world_frame * 0.05,
+                                'world_frame': world_frame,
+                                'pedestrian_xy': [-2.0, 1.0]},
                             self.factory, self.vector, timeout_seconds=0.01)
 
     def test_reads_original_camera_callbacks_and_stops(self):
@@ -102,6 +106,38 @@ class CarlaAdapterTest(unittest.TestCase):
                                                      fixed_delta_seconds=0.05)
         with self.assertRaisesRegex(SourceError, 'synchronous 20 Hz'):
             self.make(world).start(self.site, 'assignment__arrow_wait')
+
+    def test_reject_invented_pedestrian_position(self):
+        adapter = self.make(World(self.sensors))
+        adapter.original_state_reader = lambda frame, world_frame: {
+            'frame': frame, 'world_frame': world_frame,
+            'sim_time_seconds': world_frame * 0.05,
+            'pedestrian_xy': [1.0, 1.0]}
+        adapter.start(self.site, 'assignment__arrow_wait')
+        with self.assertRaisesRegex(SourceError, 'pedestrian position'):
+            adapter.read(0)
+        adapter.close()
+
+    def test_reject_invented_simulation_time(self):
+        adapter = self.make(World(self.sensors))
+        adapter.original_state_reader = lambda frame, world_frame: {
+            'frame': frame, 'world_frame': world_frame,
+            'sim_time_seconds': 999.0,
+            'pedestrian_xy': [-2.0, 1.0]}
+        adapter.start(self.site, 'assignment__arrow_wait')
+        with self.assertRaisesRegex(SourceError, 'snapshot time'):
+            adapter.read(0)
+        adapter.close()
+
+    def test_reject_snapshot_frame_drift(self):
+        world = World(self.sensors)
+        world.get_snapshot = lambda: SimpleNamespace(frame=world.frame + 1,
+            timestamp=SimpleNamespace(elapsed_seconds=world.frame * 0.05))
+        adapter = self.make(world)
+        adapter.start(self.site, 'assignment__arrow_wait')
+        with self.assertRaisesRegex(SourceError, 'snapshot world-frame drift'):
+            adapter.read(0)
+        adapter.close()
 
 
 if __name__ == '__main__':

@@ -2,97 +2,363 @@
   "cell_id": "C10307",
   "actor": "cycle_or_scooter_operator",
   "status": "draft",
-  "law_id": "LVMC-11-40-130",
   "cases": [
+    {
+      "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared physical context only; no legal label.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "visibility_condition": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry"
+        },
+        "pedestrian_near_rack": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
       "target_law_id": "LVMC-11-40-130",
       "target_type": "judgment_sweep",
-      "gap_ids": [
-        "no_accepted_bicycle_speed_history"
-      ],
-      "purpose": "Measure actual bicycle speed and contemporaneous alley conditions",
       "rationale": "Measure actual bicycle speed with contemporaneous conditions; no target speed establishes the legal standard.",
-      "world_setup": {
-        "layout": "alley",
-        "maneuver": "travel",
-        "control": "bicycle_rack",
-        "bicycle": "human-powered, excluding moped",
-        "municipal_jurisdiction": "City of Las Vegas; to verify against the actual map",
-        "visibility_condition": "clear",
-        "surface_condition": "dry",
-        "pedestrian_condition": "no pedestrian near rack"
+      "paired_probe_id": "speed_under_clear_conditions",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_speed",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "target_speed_mps": 3.0,
+          "visibility": "clear",
+          "surface": "dry",
+          "pedestrian": false
+        }
       },
-      "controller": {
-        "target_speed_mps": 3.0
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "visibility_condition": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry"
+        },
+        "pedestrian_near_rack": {
+          "kind": "world_setup",
+          "value": false
+        }
       },
-      "subject_behavior": {
-        "observed_speed_mps": null,
-        "legal_prudence": null
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
       },
-      "recording_description": "20 Hz original bicycle velocity and frame map; four-camera synchronized full episode; original weather, surface, visibility, pedestrian and alley/rack geometry context.",
       "unresolved_judgment_calls": [
         "reasonable and prudent under the conditions then existing"
+      ],
+      "sweep_id": "c10307-speed-under-clear-conditions",
+      "sweep_spec_version": "ad90129e8dad70de85030b7836ce10f34db4fdd6a1a9f258c96ebbc977d8891d",
+      "sweep_point": {
+        "commanded_approach_speed": 3.0
+      },
+      "selection_rank": 0,
+      "judgment_refs": [
+        {
+          "phrase": "reasonable and prudent under the conditions then existing",
+          "note": "The text supplies no numeric prudence threshold; actual conditions require source review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "commanded_approach_speed",
+          "observable": "commanded_approach_speed",
+          "unit": "m/s",
+          "measurement": {
+            "method": "Read the commanded target from the frozen case controller and retain Native body velocity in the raw trace.",
+            "time_window": "The original 0 to 30 s capture window.",
+            "statistic": "first"
+          }
+        }
       ]
     },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster",
       "target_law_id": "LVMC-11-40-130",
       "target_type": "judgment_sweep",
-      "gap_ids": [
-        "no_accepted_bicycle_speed_history"
-      ],
-      "purpose": "Measure actual bicycle speed and contemporaneous alley conditions",
       "rationale": "Measure actual bicycle speed with contemporaneous conditions; no target speed establishes the legal standard.",
-      "world_setup": {
-        "layout": "alley",
-        "maneuver": "travel",
-        "control": "bicycle_rack",
-        "bicycle": "human-powered, excluding moped",
-        "municipal_jurisdiction": "City of Las Vegas; to verify against the actual map",
-        "visibility_condition": "clear",
-        "surface_condition": "dry",
-        "pedestrian_condition": "no pedestrian near rack"
+      "paired_probe_id": "speed_under_clear_conditions",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_speed",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "target_speed_mps": 5.0,
+          "visibility": "clear",
+          "surface": "dry",
+          "pedestrian": false
+        }
       },
-      "controller": {
-        "target_speed_mps": 5.0
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 5.0
+        },
+        "visibility_condition": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry"
+        },
+        "pedestrian_near_rack": {
+          "kind": "world_setup",
+          "value": false
+        }
       },
-      "subject_behavior": {
-        "observed_speed_mps": null,
-        "legal_prudence": null
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
       },
-      "recording_description": "20 Hz original bicycle velocity and frame map; four-camera synchronized full episode; original weather, surface, visibility, pedestrian and alley/rack geometry context.",
       "unresolved_judgment_calls": [
         "reasonable and prudent under the conditions then existing"
+      ],
+      "sweep_id": "c10307-speed-under-clear-conditions",
+      "sweep_spec_version": "ad90129e8dad70de85030b7836ce10f34db4fdd6a1a9f258c96ebbc977d8891d",
+      "sweep_point": {
+        "commanded_approach_speed": 5.0
+      },
+      "selection_rank": 1,
+      "judgment_refs": [
+        {
+          "phrase": "reasonable and prudent under the conditions then existing",
+          "note": "The text supplies no numeric prudence threshold; actual conditions require source review."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "commanded_approach_speed",
+          "observable": "commanded_approach_speed",
+          "unit": "m/s",
+          "measurement": {
+            "method": "Read the commanded target from the frozen case controller and retain Native body velocity in the raw trace.",
+            "time_window": "The original 0 to 30 s capture window.",
+            "statistic": "first"
+          }
+        }
       ]
     },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility",
       "target_law_id": "LVMC-11-40-130",
       "target_type": "judgment_sweep",
-      "gap_ids": [
-        "no_accepted_bicycle_speed_history"
-      ],
-      "purpose": "Measure actual bicycle speed and contemporaneous alley conditions",
       "rationale": "Measure actual bicycle speed with contemporaneous conditions; no target speed establishes the legal standard.",
-      "world_setup": {
-        "layout": "alley",
-        "maneuver": "travel",
-        "control": "bicycle_rack",
-        "bicycle": "human-powered, excluding moped",
-        "municipal_jurisdiction": "City of Las Vegas; to verify against the actual map",
-        "visibility_condition": "reduced",
-        "surface_condition": "dry",
-        "pedestrian_condition": "no pedestrian near rack"
+      "paired_probe_id": "visibility_at_reference_speed",
+      "deliberate_differences": [
+        "visibility_condition"
+      ],
+      "probe": {
+        "primary_variable": "visibility_condition",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "target_speed_mps": 3.0,
+          "visibility": "reduced",
+          "surface": "dry",
+          "pedestrian": false
+        }
       },
-      "controller": {
-        "target_speed_mps": 3.0
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "visibility_condition": {
+          "kind": "world_setup",
+          "value": "reduced"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry"
+        },
+        "pedestrian_near_rack": {
+          "kind": "world_setup",
+          "value": false
+        }
       },
-      "subject_behavior": {
-        "observed_speed_mps": null,
-        "legal_prudence": null
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
       },
-      "recording_description": "20 Hz original bicycle velocity and frame map; four-camera synchronized full episode; original weather, surface, visibility, pedestrian and alley/rack geometry context.",
       "unresolved_judgment_calls": [
         "reasonable and prudent under the conditions then existing"
       ]
@@ -101,29 +367,80 @@
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack",
       "target_law_id": "LVMC-11-40-130",
       "target_type": "judgment_sweep",
-      "gap_ids": [
-        "no_accepted_bicycle_speed_history"
-      ],
-      "purpose": "Measure actual bicycle speed and contemporaneous alley conditions",
       "rationale": "Measure actual bicycle speed with contemporaneous conditions; no target speed establishes the legal standard.",
-      "world_setup": {
-        "layout": "alley",
-        "maneuver": "travel",
-        "control": "bicycle_rack",
-        "bicycle": "human-powered, excluding moped",
-        "municipal_jurisdiction": "City of Las Vegas; to verify against the actual map",
-        "visibility_condition": "clear",
-        "surface_condition": "dry",
-        "pedestrian_condition": "pedestrian near rack"
+      "paired_probe_id": "pedestrian_at_reference_speed",
+      "deliberate_differences": [
+        "pedestrian_near_rack"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_near_rack",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "target_speed_mps": 3.0,
+          "visibility": "clear",
+          "surface": "dry",
+          "pedestrian": true
+        }
       },
-      "controller": {
-        "target_speed_mps": 3.0
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "visibility_condition": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "dry"
+        },
+        "pedestrian_near_rack": {
+          "kind": "world_setup",
+          "value": true
+        }
       },
-      "subject_behavior": {
-        "observed_speed_mps": null,
-        "legal_prudence": null
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
       },
-      "recording_description": "20 Hz original bicycle velocity and frame map; four-camera synchronized full episode; original weather, surface, visibility, pedestrian and alley/rack geometry context.",
       "unresolved_judgment_calls": [
         "reasonable and prudent under the conditions then existing"
       ]
@@ -132,129 +449,161 @@
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface",
       "target_law_id": "LVMC-11-40-130",
       "target_type": "judgment_sweep",
-      "gap_ids": [
-        "no_accepted_bicycle_speed_history"
-      ],
-      "purpose": "Measure actual bicycle speed and contemporaneous alley conditions",
       "rationale": "Measure actual bicycle speed with contemporaneous conditions; no target speed establishes the legal standard.",
-      "world_setup": {
-        "layout": "alley",
-        "maneuver": "travel",
-        "control": "bicycle_rack",
-        "bicycle": "human-powered, excluding moped",
-        "municipal_jurisdiction": "City of Las Vegas; to verify against the actual map",
-        "visibility_condition": "clear",
-        "surface_condition": "wet",
-        "pedestrian_condition": "no pedestrian near rack"
+      "paired_probe_id": "surface_at_reference_speed",
+      "deliberate_differences": [
+        "surface_condition"
+      ],
+      "probe": {
+        "primary_variable": "surface_condition",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "target_speed_mps": 3.0,
+          "visibility": "clear",
+          "surface": "wet",
+          "pedestrian": false
+        }
       },
-      "controller": {
-        "target_speed_mps": 3.0
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0
+        },
+        "visibility_condition": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "surface_condition": {
+          "kind": "world_setup",
+          "value": "wet"
+        },
+        "pedestrian_near_rack": {
+          "kind": "world_setup",
+          "value": false
+        }
       },
-      "subject_behavior": {
-        "observed_speed_mps": null,
-        "legal_prudence": null
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
       },
-      "recording_description": "20 Hz original bicycle velocity and frame map; four-camera synchronized full episode; original weather, surface, visibility, pedestrian and alley/rack geometry context.",
       "unresolved_judgment_calls": [
         "reasonable and prudent under the conditions then existing"
       ]
     }
   ],
-  "comparisons": [
+  "sweep_specs": [
     {
-      "comparison_id": "speed_under_clear_conditions",
-      "case_ids": [
+      "sweep_id": "c10307-speed-under-clear-conditions",
+      "target_law_id": "LVMC-11-40-130",
+      "judgment_refs": [
+        {
+          "phrase": "reasonable and prudent under the conditions then existing",
+          "note": "The text supplies no numeric prudence threshold; actual conditions require source review."
+        }
+      ],
+      "status": "complete",
+      "rationale": "Finite physical speed sampling at fixed clear, dry, pedestrian-absent conditions; legal prudence remains unresolved.",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "commanded_approach_speed",
+          "observable": "commanded_approach_speed",
+          "unit": "m/s",
+          "min": 3.0,
+          "max": 5.0,
+          "spacing": 2.0,
+          "range_rationale": "The two frozen clear/dry source cases command 3 and 5 m/s; these endpoints sample physical speed without setting a legal threshold.",
+          "spacing_rationale": "A single 2 m/s interval retains both authored case targets and avoids inventing an unbuilt case.",
+          "feasibility_evidence": "The pinned offline and compatibility proofs execute the 3 and 5 m/s controller profiles; physical realization remains unverified until a Native source run.",
+          "measurement": {
+            "method": "Read the commanded target from the frozen case controller and retain Native body velocity in the raw trace.",
+            "time_window": "The original 0 to 30 s capture window.",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "actual_bicycle_speed",
+            "unit": "m/s",
+            "method": "saved velocity magnitude",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Native velocity readback and diagnostic source limits",
+            "sampling_rate_hz": 20
+          },
+          {
+            "name": "contemporaneous_conditions",
+            "unit": "structured",
+            "method": "saved context time join",
+            "time_window": "all synchronized source frames",
+            "reference_frame": "world",
+            "uncertainty": "Source context and visibility require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "jurisdiction",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          },
+          {
+            "name": "bicycle_classification",
+            "unit": "structured",
+            "method": "source-bound context packet"
+          }
+        ],
+        "limitations": [
+          "Diagnostic media and context cannot establish physical cause or legal prudence."
+        ]
+      },
+      "spec_version": "ad90129e8dad70de85030b7836ce10f34db4fdd6a1a9f258c96ebbc977d8891d",
+      "planned_case_count": 2,
+      "selection_order": [
         "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
         "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster"
-      ],
-      "fixed_conditions": [
-        "same alley and bicycle-rack geometry",
-        "same human-powered bicycle classification",
-        "same route and four-camera contract",
-        "same clear visibility",
-        "same dry surface",
-        "same pedestrian state"
-      ],
-      "deliberate_differences": [
-        "controller speed target only; compare actual measured speed"
-      ],
-      "audit_measurements": [
-        "actual bicycle speed time history",
-        "original contemporaneous condition history"
-      ],
-      "legal_prudence": "unresolved"
-    },
-    {
-      "comparison_id": "visibility_at_reference_speed",
-      "case_ids": [
-        "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
-        "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility"
-      ],
-      "fixed_conditions": [
-        "same alley and bicycle-rack geometry",
-        "same human-powered bicycle classification",
-        "same route and four-camera contract",
-        "same speed target",
-        "same dry surface",
-        "same pedestrian state"
-      ],
-      "deliberate_differences": [
-        "visibility condition only; compare original weather and visibility sources"
-      ],
-      "audit_measurements": [
-        "actual bicycle speed time history",
-        "original contemporaneous condition history"
-      ],
-      "legal_prudence": "unresolved"
-    },
-    {
-      "comparison_id": "pedestrian_at_reference_speed",
-      "case_ids": [
-        "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
-        "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack"
-      ],
-      "fixed_conditions": [
-        "same alley and bicycle-rack geometry",
-        "same human-powered bicycle classification",
-        "same route and four-camera contract",
-        "same speed target",
-        "same clear visibility",
-        "same dry surface"
-      ],
-      "deliberate_differences": [
-        "pedestrian presence near rack only; compare actor tracks and video"
-      ],
-      "audit_measurements": [
-        "actual bicycle speed time history",
-        "original contemporaneous condition history"
-      ],
-      "legal_prudence": "unresolved"
-    },
-    {
-      "comparison_id": "surface_at_reference_speed",
-      "case_ids": [
-        "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
-        "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface"
-      ],
-      "fixed_conditions": [
-        "same alley and bicycle-rack geometry",
-        "same human-powered bicycle classification",
-        "same route and four-camera contract",
-        "same speed target",
-        "same clear visibility",
-        "same pedestrian state"
-      ],
-      "deliberate_differences": [
-        "surface condition only; compare original surface and weather sources"
-      ],
-      "audit_measurements": [
-        "actual bicycle speed time history",
-        "original contemporaneous condition history"
-      ],
-      "legal_prudence": "unresolved"
+      ]
     }
   ],
-  "sweeps_expanded": true,
-  "sweep_specs": [],
-  "legal_prudence": "unresolved"
+  "sweeps_expanded": true
 }

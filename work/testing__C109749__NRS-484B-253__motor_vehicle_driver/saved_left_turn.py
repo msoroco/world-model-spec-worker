@@ -24,7 +24,7 @@ def _load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def process(*, case_id, map_path, trace_path, receipt_path):
+def process(*, case_id, map_path, trace_path, receipt_path, allow_diagnostic=False):
     """Return measured histories with exact map/trace/receipt source bindings."""
     if not case_id.startswith(ASSIGNMENT_ID + "__"):
         raise ValueError("exact assignment case ID required")
@@ -35,7 +35,7 @@ def process(*, case_id, map_path, trace_path, receipt_path):
             raise ValueError("acquisition receipt missing " + key)
     if receipt["assignment_id"] != ASSIGNMENT_ID or receipt["case_id"] != case_id:
         raise ValueError("acquisition receipt identity mismatch")
-    if receipt["diagnostic_fixture"]:
+    if receipt["diagnostic_fixture"] and not allow_diagnostic:
         raise ValueError("diagnostic fixture cannot establish delivered original measurement")
     if receipt["simulator_frame_rate_hz"] != 20:
         raise ValueError("original trace must use 20 Hz fixed timestep")
@@ -78,5 +78,6 @@ def process(*, case_id, map_path, trace_path, receipt_path):
                      "source_bindings": {"map_packet_sha256": receipt["map_sha256"],
                                          "original_trace_sha256": receipt["trace_sha256"],
                                          "acquisition_receipt_sha256": _sha(receipt_path)},
+                     "diagnostic_fixture": receipt["diagnostic_fixture"],
                      "physical_acceptance": "unverified", "legal_judgment": "unresolved"})
     return measured

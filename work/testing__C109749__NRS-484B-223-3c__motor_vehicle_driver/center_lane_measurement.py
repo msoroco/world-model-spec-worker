@@ -42,6 +42,10 @@ def measure_center_lane_distance(packet):
     start = turns[0]
     if samples[start].get("lane") != "shared_center_turn":
         raise ValueError("turn did not finish in shared center lane")
+    all_merge_indices = [i for i, row in enumerate(samples)
+                         if row.get("merged_into_through_lane") is True]
+    if len(all_merge_indices) > 1 or any(i <= start for i in all_merge_indices):
+        raise ValueError("merge event must occur once after turn completion")
     merge_indices = [i for i in range(start + 1, len(samples)) if samples[i].get("merged_into_through_lane") is True]
     end = merge_indices[0] if merge_indices else len(samples) - 1
     for row in samples[start:end]:

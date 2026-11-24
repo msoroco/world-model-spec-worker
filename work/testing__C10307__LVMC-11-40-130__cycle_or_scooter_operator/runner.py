@@ -1,9 +1,7 @@
-"""Reference bicycle/rack construction entrypoint.
+"""Source-gated bicycle/rack construction and original Native acquisition.
 
-The CPU check verifies the exact materialized route and case. Native execution
-requires original local asset, jurisdiction and context sources. A full camera
-acquisition is still under construction, so this entrypoint refuses to claim a
-finished delivery attempt.
+The CPU check is offline. Native execution requires SHA-bound local scene and
+asset inventories, a supplied endpoint, and full source readback.
 """
 from __future__ import annotations
 
@@ -60,7 +58,9 @@ def main() -> None:
         return
     if not args.output_dir:
         parser.error("Native attempt requires --output-dir")
-    raise RuntimeError("four live camera acquisition and source-gated Native integration not yet complete")
+    from native_run import run_native
+    config = json.loads((ROOT / "config.json").read_text())
+    print(json.dumps(run_native(args.output_dir, args.host, args.port, config), sort_keys=True))
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
       "kind": "delivery",
       "construction": "cases/timing_inside_training/construction.json",
-      "construction_sha256": "c384789fe5832b35c57ba96fdae708a4a480fc6227dcf2bd6041dcf5c9532941",
+      "construction_sha256": "12b52b01e0764f3f817fc8ac64f5457262f15e25e5efb0bef37c311f0888804a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
@@ -15,14 +15,298 @@
       "candidates": [],
       "measurement_contract": "cases/timing_inside_training/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "saved_finalizer.py"
+        "entrypoint": "analysis.py"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "proof_status": "offline_pending_source_review_and_compatibility_pending"
+      "proof_status": "offline_and_positive_negative_compatibility_passed_with_native_capture_source_review_gate",
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/diagnostic-recipe.json",
+      "acquisition": {
+        "ego_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "ego-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "other_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "other-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "intersection_entry_time_difference_s": {
+          "entrypoint": "analysis.py",
+          "evidence": "sealed ego and other body histories",
+          "method": "original entry transition timestamps"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --output .runtime-work/c125714-2502-timing_inside_training-offline-20261123-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "12b52b01e0764f3f817fc8ac64f5457262f15e25e5efb0bef37c311f0888804a",
+        "log": "cases/timing_inside_training/primary-offline.log",
+        "log_sha256": "d793006d2c23bb4ecfbd04e6c9af6a8e6b6687b4296849bf0c7c5f1a05a47e69"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --output .runtime-work/c125714-2502-timing_inside_training-compatibility-20261123-j --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/timing_inside_training/primary-compatibility.json",
+        "sha256": "558e32a5a070f4ac5b83256f921a9a5403f088b6a418fcd55400fabc4c32e687",
+        "log": "cases/timing_inside_training/primary-compatibility-analysis.log",
+        "negative_log": "cases/timing_inside_training/primary-negative-analysis.log"
+      },
+      "negative": {
+        "exit_code": 1,
+        "log": "cases/timing_inside_training/primary-negative-analysis.log",
+        "log_sha256": "b2ce0d6fe8d0ffa7e233d33ea53d6c1b6f95a508da3dbe8e896e6923a914a526",
+        "expected_error": "Missing required source: ego-body-history.jsonl"
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+      "kind": "delivery",
+      "construction": "cases/timing_below_training/construction.json",
+      "construction_sha256": "120ea303ca3edb8712cc25c76b4af83d5c5d6af1a4f628e082bebab8e3ab07ff",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+      },
+      "candidates": [],
+      "measurement_contract": "cases/timing_below_training/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "proof_status": "offline_and_positive_negative_compatibility_passed_with_native_capture_source_review_gate",
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/cases/timing_below_training/diagnostic-recipe.json",
+      "acquisition": {
+        "ego_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "ego-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "other_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "other-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "intersection_entry_time_difference_s": {
+          "entrypoint": "analysis.py",
+          "evidence": "sealed ego and other body histories",
+          "method": "original entry transition timestamps"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --output .runtime-work/c125714-2502-timing_below_training-offline-20261123-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "120ea303ca3edb8712cc25c76b4af83d5c5d6af1a4f628e082bebab8e3ab07ff",
+        "log": "cases/timing_below_training/primary-offline.log",
+        "log_sha256": "994cb8e195ca06d15c14e0436b0f2963cbfa4d6b4382be9f7f36b60ba75b8424"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --output .runtime-work/c125714-2502-timing_below_training-compatibility-20261123-j --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/timing_below_training/primary-compatibility.json",
+        "sha256": "12100bab66d76c74fa7ba1e56da721cbd5440b94d0e28f2007a113c9f04727d1",
+        "log": "cases/timing_below_training/primary-compatibility-analysis.log",
+        "negative_log": "cases/timing_below_training/primary-negative-analysis.log"
+      },
+      "negative": {
+        "exit_code": 1,
+        "log": "cases/timing_below_training/primary-negative-analysis.log",
+        "log_sha256": "a1c70413539aa8c4bdf6dd4c32ce4031dfd899cd6019b2d08745a3257e899ff4",
+        "expected_error": "Missing required source: ego-body-history.jsonl"
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+      "kind": "delivery",
+      "construction": "cases/timing_above_training/construction.json",
+      "construction_sha256": "2d77211a05f155d6afb1569daa48253bde818236889b19822f6cb2bd1982230f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+      },
+      "candidates": [],
+      "measurement_contract": "cases/timing_above_training/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "proof_status": "offline_and_positive_negative_compatibility_passed_with_native_capture_source_review_gate",
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/cases/timing_above_training/diagnostic-recipe.json",
+      "acquisition": {
+        "ego_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "ego-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "other_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "other-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "intersection_entry_time_difference_s": {
+          "entrypoint": "analysis.py",
+          "evidence": "sealed ego and other body histories",
+          "method": "original entry transition timestamps"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --output .runtime-work/c125714-2502-timing_above_training-offline-20261123-j --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "2d77211a05f155d6afb1569daa48253bde818236889b19822f6cb2bd1982230f",
+        "log": "cases/timing_above_training/primary-offline.log",
+        "log_sha256": "ca261d250aa3ab21a662afdb328a41a9f163bc9befaf44afb41ba2748fb6fe97"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --output .runtime-work/c125714-2502-timing_above_training-compatibility-20261123-j --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/timing_above_training/primary-compatibility.json",
+        "sha256": "154d2600c238eceaff907de7fc3e9f05e7591a91704e3a32aee100f54f8038b4",
+        "log": "cases/timing_above_training/primary-compatibility-analysis.log",
+        "negative_log": "cases/timing_above_training/primary-negative-analysis.log"
+      },
+      "negative": {
+        "exit_code": 1,
+        "log": "cases/timing_above_training/primary-negative-analysis.log",
+        "log_sha256": "c2fdc32b00a64becd2c783c369244d547bdc39242dcaf1c11626586ee030e0b2",
+        "expected_error": "Missing required source: ego-body-history.jsonl"
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+      "kind": "delivery",
+      "construction": "cases/yield_wait_for_other_clear/construction.json",
+      "construction_sha256": "9a024347c3539517fd13945ade3839072ad60a5e634666799cbd795c01201673",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+      },
+      "candidates": [],
+      "measurement_contract": "cases/yield_wait_for_other_clear/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "proof_status": "offline_and_positive_negative_compatibility_passed_with_source_bound_controller_history",
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/cases/yield_wait_for_other_clear/diagnostic-recipe.json",
+      "acquisition": {
+        "ego_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "ego-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "other_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "other-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "intersection_entry_time_difference_s": {
+          "entrypoint": "analysis.py",
+          "evidence": "sealed ego and other body histories",
+          "method": "original entry transition timestamps"
+        },
+        "ego_original_brake": {
+          "entrypoint": "native_capture.py",
+          "evidence": "controller-history.jsonl",
+          "method": "original Native control each tick"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --output .runtime-work/c125714-yield-offline-20261123-b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "9a024347c3539517fd13945ade3839072ad60a5e634666799cbd795c01201673",
+        "log": "cases/yield_wait_for_other_clear/primary-offline.log",
+        "log_sha256": "cab7fda398e3aeb8f711812e4712820ddb45030084a4bd9c142b287df04c22df"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear --output .runtime-work/c125714-yield-compat-20261123-d --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/yield_wait_for_other_clear/primary-compatibility.json",
+        "sha256": "5e368d15666689d930a5ce25413af6182f7604a7c304550e82aa4375c6e7cbf6",
+        "log": "cases/yield_wait_for_other_clear/primary-compatibility-analysis.log",
+        "negative_log": "cases/yield_wait_for_other_clear/primary-negative-analysis.log"
+      },
+      "negative": {
+        "exit_code": 1,
+        "log": "cases/yield_wait_for_other_clear/primary-negative-analysis.log",
+        "log_sha256": "838d736bedb2f1d1c57244d6be15b8c4dd36da1e41b1266d92fd0a4c64e91c25",
+        "expected_error": "Missing required source: ego-body-history.jsonl"
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release",
+      "kind": "delivery",
+      "construction": "cases/advance_at_release/construction.json",
+      "construction_sha256": "e3c4002d772cf7e46381b7c26db3dc0497f278328a0830b51c20ff4c42eaf7bc",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual entry timing may differ from requested release offset or vehicles may miss the same crossing."
+      },
+      "candidates": [],
+      "measurement_contract": "cases/advance_at_release/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "proof_status": "offline_and_positive_negative_compatibility_passed_with_source_bound_controller_history",
+      "fixture_recipe": "work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/cases/advance_at_release/diagnostic-recipe.json",
+      "acquisition": {
+        "ego_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "ego-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "other_original_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "other-body-history.jsonl",
+          "method": "original actor body each tick"
+        },
+        "intersection_entry_time_difference_s": {
+          "entrypoint": "analysis.py",
+          "evidence": "sealed ego and other body histories",
+          "method": "original entry transition timestamps"
+        },
+        "ego_original_brake": {
+          "entrypoint": "native_capture.py",
+          "evidence": "controller-history.jsonl",
+          "method": "original Native control each tick"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --output .runtime-work/c125714-advance-offline-20261123-a --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "exit_code": 0,
+        "construction_sha256": "e3c4002d772cf7e46381b7c26db3dc0497f278328a0830b51c20ff4c42eaf7bc",
+        "log": "cases/advance_at_release/primary-offline.log",
+        "log_sha256": "736268166d241b9efa67c1e43ad61d66af9b01f976d164957789a75dab269489"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125714__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release --output .runtime-work/c125714-advance-compat-20261123-a --library runtime/library --validator .runtime-work/c179789-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "cases/advance_at_release/primary-compatibility.json",
+        "sha256": "264b9fed67b2e8ce2e3925460eacaf07d66ac37d180089ae4c30dfba30734dd6",
+        "log": "cases/advance_at_release/primary-compatibility-analysis.log",
+        "negative_log": "cases/advance_at_release/primary-negative-analysis.log"
+      },
+      "negative": {
+        "exit_code": 1,
+        "log": "cases/advance_at_release/primary-negative-analysis.log",
+        "log_sha256": "5fa605db55d0c287a86b8443b0d319290445c5d373ee355e06c915e2398cf0b7",
+        "expected_error": "Missing required source: ego-body-history.jsonl"
+      }
     }
   ]
 }

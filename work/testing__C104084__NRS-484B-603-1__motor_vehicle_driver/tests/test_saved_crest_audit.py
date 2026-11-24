@@ -47,6 +47,18 @@ class SavedCrestAuditTests(unittest.TestCase):
             self.assertTrue(result['checks']['time_join'])
             self.assertFalse(result['checks']['actual_pixels'])
             self.assertEqual(result['physical_measurements']['crest_station_m'], 250)
+            self.assertGreater(result['crest_crossing']['crossing_station_m'], 249)
+
+    def test_rejects_saved_motion_that_never_crosses_crest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            motion = json.loads((root/'motion.json').read_text())
+            for frame in motion:
+                frame['ego_s_m'] = min(frame['ego_s_m'], 249.5)
+            manifest['motion_source'] = write(root, 'motion.json', json.dumps(motion))
+            with self.assertRaisesRegex(ValueError, 'crest crossing'):
+                audit(root, manifest)
 
     def test_rejects_source_or_case_tamper(self):
         with tempfile.TemporaryDirectory() as tmp:

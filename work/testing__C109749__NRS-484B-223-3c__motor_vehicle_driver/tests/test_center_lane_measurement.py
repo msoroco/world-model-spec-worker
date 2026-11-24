@@ -60,6 +60,17 @@ class MeasurementTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exactly one"):
             MODULE.measure_center_lane_distance(p)
 
+    def test_duplicate_or_pre_turn_merge_event_rejected(self):
+        p = packet()
+        p["samples"].append({"frame": 104, "body_centre_xy_m": [18, 0],
+                             "lane": "receiving_through", "merged_into_through_lane": True})
+        with self.assertRaisesRegex(ValueError, "merge event must occur once"):
+            MODULE.measure_center_lane_distance(p)
+        p = packet()
+        p["samples"][0]["merged_into_through_lane"] = True
+        with self.assertRaisesRegex(ValueError, "merge event must occur once"):
+            MODULE.measure_center_lane_distance(p)
+
     def test_invalid_frame_and_position_rejected(self):
         p = packet()
         p["samples"][2]["frame"] = 101

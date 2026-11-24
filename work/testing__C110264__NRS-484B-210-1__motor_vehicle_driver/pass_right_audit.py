@@ -13,6 +13,7 @@ from pathlib import Path
 
 from pass_right_measure import load_sealed_trace, observe
 from pass_right_route import build_case, load_map_packet
+from pass_right_media import audit_cameras
 
 ASSIGNMENT = 'testing__C110264__NRS-484B-210-1__motor_vehicle_driver'
 VARIANTS = {'left_signal', 'left_turn', 'neither'}
@@ -110,6 +111,18 @@ def audit_case(root: Path, manifest: dict) -> dict:
     }
 
 
+def audit_delivery(root: Path, manifest: dict, *, diagnostic_profile=None) -> dict:
+    """Require source audit plus a complete independent decode of all cameras."""
+    source_audit = audit_case(root, manifest)
+    decoded = audit_cameras(root, manifest['cameras'], profile=diagnostic_profile)
+    source_audit['full_original_camera_decode'] = True
+    source_audit['production_camera_profile_verified'] = diagnostic_profile is None
+    source_audit['camera_pixel_sha256'] = {
+        name: decoded[name]['full_pixel_sha256'] for name in sorted(CAMERAS)}
+    source_audit['physical_visibility_confirmed'] = False
+    return source_audit
+
+
 def audit_comparison(a: dict, b: dict, comparison_id: str) -> dict:
     pairs = {
         'left_signal_presence': {'left_signal', 'neither'},
@@ -156,12 +169,15 @@ def main() -> None:
     parser.add_argument('--manifest-b', type=Path)
     parser.add_argument('--comparison-id')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--full-media', action='store_true')
     args = parser.parse_args()
     if args.attempt and args.manifest and not args.comparison_id:
-        result = audit_case(args.attempt, json.loads(args.manifest.read_text()))
+        loaded = json.loads(args.manifest.read_text())
+        result = audit_delivery(args.attempt, loaded) if args.full_media else audit_case(args.attempt, loaded)
     elif all((args.attempt_a, args.manifest_a, args.attempt_b, args.manifest_b, args.comparison_id)):
-        a = audit_case(args.attempt_a, json.loads(args.manifest_a.read_text()))
-        b = audit_case(args.attempt_b, json.loads(args.manifest_b.read_text()))
+        audit_function = audit_delivery if args.full_media else audit_case
+        a = audit_function(args.attempt_a, json.loads(args.manifest_a.read_text()))
+        b = audit_function(args.attempt_b, json.loads(args.manifest_b.read_text()))
         result = audit_comparison(a, b, args.comparison_id)
     else:
         parser.error('choose one case attempt or one exact comparison')

@@ -17,6 +17,7 @@ except ImportError:  # package loading in tests
                      'left_crest_clear', 'left_one_way_obstructed')
 
 CAMERAS = ('forward', 'left', 'right', 'rear')
+ONE_WAY_AUTHORITY = 'one-way-authority.json'
 
 
 def _write_json(path, value):
@@ -38,6 +39,8 @@ def capture(adapter, output_dir, *, assignment_id, case_id, frames=900):
         raise ValueError('invalid capture duration')
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
+    if any(output.iterdir()):
+        raise ValueError('retain prior attempt; choose a fresh empty output directory')
     history, rays = [], []
     camera_map = {name: [] for name in CAMERAS}
     try:
@@ -49,8 +52,14 @@ def capture(adapter, output_dir, *, assignment_id, case_id, frames=900):
         if not context.get('highway_source_ref') or not context.get('center_reference_source_ref'):
             raise ValueError('original highway or center reference absent')
         if case_id.endswith('left_one_way_obstructed'):
-            if context.get('lane_allocation') != 'one_way' or not context.get('one_way_authority'):
+            authority = context.get('one_way_authority')
+            if (context.get('lane_allocation') != 'one_way' or not isinstance(authority, dict)
+                    or not authority.get('source_ref') or not authority.get('sha256')):
                 raise ValueError('one-way authority source absent')
+            authority_file = output / ONE_WAY_AUTHORITY
+            if (authority_file.is_symlink() or not authority_file.is_file() or
+                    hashlib.sha256(authority_file.read_bytes()).hexdigest() != authority['sha256']):
+                raise ValueError('one-way authority source file differs')
         elif context.get('lane_allocation') != 'two_way' or not context.get('opposing_lane_source_ref'):
             raise ValueError('opposing lane source absent')
         last_time = None
@@ -90,7 +99,8 @@ def capture(adapter, output_dir, *, assignment_id, case_id, frames=900):
             if not path.is_file() or not path.stat().st_size:
                 raise ValueError(f'original camera video missing: {camera}')
         names = ('frames.jsonl', 'crest-rays.jsonl', 'lane-context.json',
-                 'frame-map.json', *(f'camera-{name}.mp4' for name in CAMERAS))
+                 'frame-map.json', *(f'camera-{name}.mp4' for name in CAMERAS),
+                 *([ONE_WAY_AUTHORITY] if case_id.endswith('left_one_way_obstructed') else []))
         hashes = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
                   for name in names}
         _write_json(output / 'source-hashes.json', hashes)

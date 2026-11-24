@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import tempfile
 import unittest
@@ -16,13 +17,27 @@ CASE = ASSIGNMENT + '__left_crest_obstructed'
 
 
 class FakeAdapter:
-    def __init__(self, *, broken_camera=False, broken_lane=False):
+    def __init__(self, *, broken_camera=False, broken_lane=False, authority_root=None,
+                 broken_authority=False):
         self.frame = -1
         self.closed = False
         self.broken_camera = broken_camera
         self.broken_lane = broken_lane
+        self.authority_root = authority_root
+        self.broken_authority = broken_authority
 
     def begin(self, case):
+        if case.endswith('left_one_way_obstructed'):
+            authority = self.authority_root / capture.ONE_WAY_AUTHORITY
+            authority.write_text('{"designation":"source fixture"}\n', encoding='utf-8')
+            return {'case_id': case, 'law_id': 'NRS-484B-213-2a',
+                    'highway_source_ref': 'Native public-road context',
+                    'center_reference_source_ref': 'Native road center',
+                    'lane_allocation': 'one_way',
+                    'one_way_authority': {
+                        'source_ref': 'source fixture',
+                        'sha256': 'a' * 64 if self.broken_authority else
+                        hashlib.sha256(authority.read_bytes()).hexdigest()}}
         return {'case_id': case, 'law_id': 'NRS-484B-213-2a',
                 'highway_source_ref': 'Native public-road context',
                 'center_reference_source_ref': 'Native road center',
@@ -86,6 +101,35 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'wrong exact crest case'):
                 capture.capture(adapter, temp, assignment_id=ASSIGNMENT,
                                 case_id=ASSIGNMENT + '__invented', frames=3)
+
+    def test_rejects_existing_attempt_without_rewriting_sources(self):
+        with tempfile.TemporaryDirectory() as temp:
+            prior = Path(temp) / 'frames.jsonl'
+            prior.write_text('retained original\n', encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'fresh empty output'):
+                capture.capture(FakeAdapter(), temp, assignment_id=ASSIGNMENT,
+                                case_id=CASE, frames=3)
+            self.assertEqual(prior.read_text(encoding='utf-8'), 'retained original\n')
+
+    def test_one_way_authority_bytes_bound_before_capture(self):
+        case = ASSIGNMENT + '__left_one_way_obstructed'
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            adapter = FakeAdapter(authority_root=root)
+            receipt = capture.capture(adapter, root, assignment_id=ASSIGNMENT,
+                                      case_id=case, frames=3)
+            self.assertTrue(adapter.closed)
+            self.assertIn(capture.ONE_WAY_AUTHORITY, receipt['source_sha256'])
+            self.assertEqual(saved.measure(root, receipt['source_sha256'],
+                                           case_id=case, assignment_id=ASSIGNMENT,
+                                           expected_frames=3)['lane_allocation'], 'one_way')
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            adapter = FakeAdapter(authority_root=root, broken_authority=True)
+            with self.assertRaisesRegex(ValueError, 'authority source file differs'):
+                capture.capture(adapter, root, assignment_id=ASSIGNMENT,
+                                case_id=case, frames=3)
+            self.assertTrue(adapter.closed)
 
 
 if __name__ == '__main__':

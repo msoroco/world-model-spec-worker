@@ -90,7 +90,10 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
             actual_elapsed = snapshot.timestamp.elapsed_seconds - first_timestamp
             if not math.isfinite(actual_elapsed) or abs(actual_elapsed - elapsed) > 0.003:
                 raise ValueError("Native frame timing not 20 Hz")
-            observed = device_readback(ego)
+            if hasattr(device_readback, "for_frame"):
+                observed = device_readback.for_frame(ego, native_frame)
+            else:
+                observed = device_readback(ego)
             if not isinstance(observed, dict) or type(observed.get("siren_active")) is not bool or type(observed.get("warning_lamp_active")) is not bool:
                 raise ValueError("Independent device readback missing")
             if observed.get("source_type") in (None, "", "command_echo") or not observed.get("source_citation"):
@@ -113,6 +116,9 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
             "dispatch_context": _source(out, "dispatch_context.json", dispatch),
             "equipment_record": _source(out, "equipment_record.json", equipment),
         }
+        if hasattr(device_readback, "seal"):
+            sources["device_samples"] = device_readback.seal(
+                out, rows[0]["native_frame"], rows[-1]["native_frame"])
         receipt = {"case_id": case_id, "source_kind": "original_capture",
                    "site_packet_sha256": actors["site_packet_sha256"], "sources": sources,
                    "native_first_frame": rows[0]["native_frame"],

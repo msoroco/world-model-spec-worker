@@ -15,12 +15,13 @@ from pathlib import Path
 REQUIRED_SOURCES = ('frames.jsonl', 'lane-context.json', 'crest-rays.jsonl',
                     'frame-map.json', 'camera-forward.mp4', 'camera-left.mp4',
                     'camera-right.mp4', 'camera-rear.mp4')
+ONE_WAY_AUTHORITY = 'one-way-authority.json'
 CASE_SUFFIXES = ('right_crest_obstructed', 'left_crest_obstructed',
                  'left_crest_clear', 'left_one_way_obstructed')
 
 
 def _original(attempt: Path, name: str, hashes: dict) -> Path:
-    if name not in REQUIRED_SOURCES or name not in hashes:
+    if name not in (*REQUIRED_SOURCES, ONE_WAY_AUTHORITY) or name not in hashes:
         raise ValueError(f'missing required original source: {name}')
     expected = hashes[name]
     if not isinstance(expected, str) or len(expected) != 64 or any(c not in '0123456789abcdef' for c in expected):
@@ -64,6 +65,9 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
         authority = context.get('one_way_authority')
         if lane_allocation != 'one_way' or not isinstance(authority, dict) or not authority.get('source_ref') or not re.fullmatch(r'[0-9a-f]{64}', str(authority.get('sha256', ''))):
             raise ValueError('one-way exception lacks original authority binding')
+        authority_path = _original(attempt, ONE_WAY_AUTHORITY, source_hashes)
+        if hashlib.sha256(authority_path.read_bytes()).hexdigest() != authority['sha256']:
+            raise ValueError('one-way authority source hash differs')
     elif lane_allocation != 'two_way' or not context.get('opposing_lane_source_ref'):
         raise ValueError('two-way crest lacks original opposing-lane binding')
     if not context.get('highway_source_ref') or not context.get('center_reference_source_ref'):
@@ -114,7 +118,8 @@ def measure(attempt_dir, source_hashes, *, case_id, assignment_id, expected_fram
                        (expected_blocked or bool(clear_frames)))
     return {
         'case_id': case_id,
-        'source_sha256': {name: source_hashes[name] for name in REQUIRED_SOURCES},
+        'source_sha256': {name: source_hashes[name] for name in
+                          (*REQUIRED_SOURCES, *([ONE_WAY_AUTHORITY] if lane_allocation == 'one_way' else []))},
         'frame_count': len(frames),
         'first_frame': frame_ids[0],
         'last_frame': frame_ids[-1],

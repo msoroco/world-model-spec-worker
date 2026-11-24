@@ -100,7 +100,8 @@ def measure(attempt: Path, diagnostic_fixture: bool = False) -> dict:
         require(provenance.get('provenance_kind') == 'native' and
                 provenance.get('diagnostic_fixture') is False,
                 'original Native provenance differs')
-    manifest_path = attempt / "source-manifest.json"
+    manifest_path = attempt / ("original-bindings.json" if diagnostic_fixture else
+                               "source-manifest.json")
     require(manifest_path.is_file() and not manifest_path.is_symlink(), "source manifest missing")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     kind = 'diagnostic_fixture' if diagnostic_fixture else 'original_native'

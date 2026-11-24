@@ -6,11 +6,14 @@ import json
 import sys
 import tempfile
 import unittest
+import io
 from pathlib import Path
+from zipfile import ZipFile
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from pass_right_audit import audit_case, audit_comparison
+from pass_right_audit import audit_case, audit_comparison, audit_delivery
 from pass_right_route import build_case
 from pass_right_live import bind_live_route
 from test_pass_right_route import map_packet
@@ -47,6 +50,30 @@ def attempt(root, variant):
 
 
 class TestSavedSourceAudit(unittest.TestCase):
+    def test_delivery_audit_decodes_all_four_original_camera_archives(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = attempt(root, 'left_signal')
+            buffer = io.BytesIO()
+            Image.new('RGB', (8, 4), (12, 34, 56)).save(buffer, format='PNG')
+            frame = buffer.getvalue()
+            for name in ('front', 'rear', 'left', 'right'):
+                path = root / (name + '.zip')
+                with ZipFile(path, 'w') as archive:
+                    for index in range(900):
+                        archive.writestr(f'{index:06d}.png', frame)
+                manifest['cameras'][name] = {'path': path.name,
+                    'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+            profile = {name: (8, 4) for name in manifest['cameras']}
+            receipt = audit_delivery(root, manifest, diagnostic_profile=profile)
+            self.assertTrue(receipt['full_original_camera_decode'])
+            self.assertFalse(receipt['production_camera_profile_verified'])
+            self.assertEqual(len(receipt['camera_pixel_sha256']), 4)
+            self.assertFalse(receipt['physical_visibility_confirmed'])
+            manifest['cameras']['rear']['sha256'] = '0' * 64
+            with self.assertRaisesRegex(ValueError, 'sha256 mismatch'):
+                audit_delivery(root, manifest, diagnostic_profile=profile)
+
     def test_case_and_both_comparisons_from_reopened_sources(self):
         with tempfile.TemporaryDirectory() as tmp:
             roots = [Path(tmp) / name for name in ('signal', 'turn', 'neither')]

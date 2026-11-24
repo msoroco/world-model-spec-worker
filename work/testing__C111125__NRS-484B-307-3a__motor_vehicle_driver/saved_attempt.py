@@ -8,6 +8,36 @@ from dual_green import measure_original, read_source, require
 from camera_audit import audit_cameras
 
 
+CASE_EXPECTATIONS = {
+    "dual_clear": None,
+    "dual_vehicle_present": ("motor_vehicle", "intersection"),
+    "dual_pedestrian_present": ("pedestrian", "adjacent_crosswalk"),
+    "dual_pedestrian_late": ("pedestrian", "outside"),
+}
+
+
+def check_case_observation(case_id, measured):
+    """Check the planned contrast against original positions, without a legal verdict."""
+    suffix = case_id.rsplit("__", 1)[-1]
+    require(suffix in CASE_EXPECTATIONS, "unknown exact dual-green case")
+    users = measured["exhibition"]["other_users"]
+    expected = CASE_EXPECTATIONS[suffix]
+    if expected is None:
+        require(not users, "clear case has another user at exhibition")
+        return {"case_suffix": suffix, "observed_difference": "clear_at_exhibition"}
+    kind, region = expected
+    require(len(users) == 1 and users[0]["kind"] == kind and users[0]["region"] == region,
+            "other-user exhibition contrast not observed")
+    if suffix == "dual_pedestrian_late":
+        pedestrian_id = users[0]["id"]
+        first_frame = measured["exhibition"]["frame"]
+        require(any(row["frame"] > first_frame and any(
+            user["id"] == pedestrian_id and user["region"] == "adjacent_crosswalk"
+            for user in row["other_users"]) for row in measured["records"]),
+            "late pedestrian never entered adjacent crosswalk")
+    return {"case_suffix": suffix, "observed_difference": region + "_at_exhibition"}
+
+
 def measure_saved(site, source_root, attempt_dir, case_id):
     attempt = Path(attempt_dir)
     receipt = json.loads((attempt / "native-attempt.json").read_text(encoding="utf-8"))
@@ -42,9 +72,11 @@ def measure_saved(site, source_root, attempt_dir, case_id):
         previous_time = elapsed
         previous_frame = row["frame"]
     measured = measure_original(site, source_root, event_ref, event_root=attempt)
+    case_observation = check_case_observation(case_id, measured)
     return {"case_id": case_id, "frame_count": receipt["frame_count"],
             "exhibition": measured["exhibition"], "records": measured["records"],
             "original_sources": measured["original_sources"],
+            "case_observation": case_observation,
             "permission_verdict": None, "right_of_way_verdict": None,
             "physical_acceptance_claimed": False}
 

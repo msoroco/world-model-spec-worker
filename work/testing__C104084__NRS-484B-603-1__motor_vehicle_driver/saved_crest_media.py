@@ -38,13 +38,22 @@ def decode_camera(path: Path, *, width: int, height: int) -> dict:
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     digest = hashlib.sha256()
     decoded_bytes = 0
-    assert process.stdout is not None
-    for block in iter(lambda: process.stdout.read(1024 * 1024), b''):
-        digest.update(block)
-        decoded_bytes += len(block)
-    stderr = process.stderr.read() if process.stderr is not None else b''
-    if process.wait():
-        raise ValueError(f'camera decode tool failed: {stderr.decode(errors="replace")[-500:]}')
+    try:
+        assert process.stdout is not None
+        for block in iter(lambda: process.stdout.read(1024 * 1024), b''):
+            digest.update(block)
+            decoded_bytes += len(block)
+        stderr = process.stderr.read() if process.stderr is not None else b''
+        if process.wait():
+            raise ValueError(f'camera decode tool failed: {stderr.decode(errors="replace")[-500:]}')
+    finally:
+        if process.stdout is not None:
+            process.stdout.close()
+        if process.stderr is not None:
+            process.stderr.close()
+        if process.poll() is None:
+            process.kill()
+            process.wait()
     frame_bytes = width * height * 3
     if decoded_bytes != frame_bytes * FRAME_COUNT:
         raise ValueError('complete original 900-frame camera decode required')

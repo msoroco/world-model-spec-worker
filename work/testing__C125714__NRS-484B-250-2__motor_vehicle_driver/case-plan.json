@@ -29,7 +29,7 @@
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
       "target_law_id": "NRS-484B-250-2",
       "target_type": "judgment_range_coverage_probe",
-      "preparation_status": "source_bound_constructor_and_selected_diagnostic_cpu_tested_runtime_proofs_pending",
+      "preparation_status": "exact_bundle_offline_and_diagnostic_compatibility_cpu_passed_physical_review_pending",
       "gap_ids": [
         "unverified-law-coverage"
       ],
@@ -50,7 +50,7 @@
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
       "target_law_id": "NRS-484B-250-2",
       "target_type": "judgment_range_coverage_probe",
-      "preparation_status": "source_bound_constructor_and_selected_diagnostic_cpu_tested_runtime_proofs_pending",
+      "preparation_status": "exact_bundle_offline_and_diagnostic_compatibility_cpu_passed_physical_review_pending",
       "gap_ids": [
         "unverified-law-coverage"
       ],
@@ -71,7 +71,7 @@
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
       "target_law_id": "NRS-484B-250-2",
       "target_type": "judgment_range_coverage_probe",
-      "preparation_status": "source_bound_constructor_and_selected_diagnostic_cpu_tested_runtime_proofs_pending",
+      "preparation_status": "exact_bundle_offline_and_diagnostic_compatibility_cpu_passed_physical_review_pending",
       "gap_ids": [
         "unverified-law-coverage"
       ],
@@ -87,6 +87,50 @@
       "physical_acceptance_claimed": false,
       "construction": "native_crossing.py construct/apply_timing",
       "saved_finalizer": "saved_finalizer.py finalize"
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_yielding_policy_probe",
+      "preparation_status": "exact_bundle_offline_passed_compatibility_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -0.02500000037252903,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "measurement_method": "First original footprint-intersection transition upper timestamp for each actor; retain consecutive sample brackets without interpolation",
+      "measurement_source": "entry_timing.py and branch_alternatives.py over sealed original body and controller histories",
+      "physical_risk": "Two vehicles may not enter the same reviewed intersection at the requested offset; assess actual motion and image coverage before selecting a fallback",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "construction": "controlled_yielding.py Controller and native_capture.py",
+      "saved_finalizer": "saved_finalizer.py finalize",
+      "control_policy": "wait_for_other_clear"
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_yielding_policy_probe",
+      "preparation_status": "exact_bundle_offline_passed_compatibility_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -0.02500000037252903,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "measurement_method": "First original footprint-intersection transition upper timestamp for each actor; retain consecutive sample brackets without interpolation",
+      "measurement_source": "entry_timing.py and branch_alternatives.py over sealed original body and controller histories",
+      "physical_risk": "Two vehicles may not enter the same reviewed intersection at the requested offset; assess actual motion and image coverage before selecting a fallback",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "construction": "controlled_yielding.py Controller and native_capture.py",
+      "saved_finalizer": "saved_finalizer.py finalize",
+      "control_policy": "advance_at_release"
     }
   ],
   "comparisons": [
@@ -108,6 +152,23 @@
         "requested crossing-entry timing offset only"
       ],
       "status": "planned_unexecuted_source_measurement_cpu_tested",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "comparison_id": "ego_control_policy",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed C125714 crossing, roads, vehicles, cameras and duration",
+        "same other-vehicle release and ego requested release",
+        "same selected law and original measurement channels"
+      ],
+      "deliberate_differences": [
+        "ego controller waits for other original footprint to clear versus advancing at authored release"
+      ],
+      "status": "exact_cpu_construction_offline_passed_compatibility_pending",
       "legal_judgment": "unresolved"
     }
   ],
@@ -433,7 +494,9 @@
       "case_ids": [
         "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
         "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
-        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training"
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release"
       ],
       "evidence_or_gap": "Three timing probes have source-bound saved diagnostic and construction adapter; physical and yielding evidence pending."
     },

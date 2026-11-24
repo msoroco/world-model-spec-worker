@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import native_capture
 import saved_delivery
+import saved_finalizer
 
 SITE = {"fps": 20, "site_source_sha256": "b" * 64,
         "alley_route_source_sha256": "c" * 64,
@@ -91,12 +92,30 @@ class NativeCaptureTests(unittest.TestCase):
             audit = saved_delivery.audit(output, case_id)
             self.assertEqual(audit["decoded_original_pngs"], 3600)
             self.assertEqual(audit["attention_state"], "unobserved")
+            with self.assertRaisesRegex(ValueError, "diagnostic capture"):
+                saved_finalizer.finalize(output, case_id)
+            finalized = saved_finalizer.finalize(output, case_id, allow_diagnostic=True)
+            self.assertEqual(finalized["operation_measurement"]["frame_count"], 900)
+            self.assertEqual(finalized["decoded_original_pngs"], 3600)
+            self.assertEqual(finalized["attention_state"], "unobserved")
+            self.assertEqual(finalized["legal_judgment"], "unresolved")
+            measurement_path = output / "saved-measurement.json"
+            self.assertEqual(saved_finalizer.main(["--attempt", str(output),
+                "--case", case_id, "--output", str(measurement_path),
+                "--allow-diagnostic"]), 0)
+            self.assertEqual(json.loads(measurement_path.read_text())["case_id"], case_id)
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                saved_finalizer.main(["--attempt", str(output), "--case", case_id,
+                    "--output", str(measurement_path), "--allow-diagnostic"])
             second_case = next(c for c in native_capture.CASE_PROFILES if c != case_id)
             second_output = output / "second"
             second_output.mkdir()
             with patch.object(native_capture, "sample_from_native", side_effect=context):
                 native_capture.capture(Adapter(), Actor(), carla, SITE,
                     second_case, "person-test", second_output)
+            other_finalized = saved_finalizer.finalize(second_output, second_case,
+                                                       allow_diagnostic=True)
+            self.assertEqual(other_finalized["case_id"], second_case)
             steady = output if case_id.endswith("__steady_travel") else second_output
             variation = second_output if steady == output else output
             receipt_path = output / "pair-receipt.json"
@@ -120,6 +139,8 @@ class NativeCaptureTests(unittest.TestCase):
             image.write_bytes(b"broken")
             with self.assertRaisesRegex(ValueError, "image hash mismatch"):
                 saved_delivery.audit(output, case_id)
+            with self.assertRaisesRegex(ValueError, "image hash mismatch"):
+                saved_finalizer.finalize(output, case_id, allow_diagnostic=True)
             with self.assertRaisesRegex(ValueError, "image hash mismatch"):
                 saved_delivery.audit_comparison({case_id: output,
                                                   second_case: second_output})

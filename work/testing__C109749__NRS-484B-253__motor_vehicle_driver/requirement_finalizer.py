@@ -78,7 +78,7 @@ def measure_reciprocal(rows):
 METHODS = {name: globals()[name] for _, name in BRANCHES.values()}
 
 
-def finalize(*, case_id, attempt):
+def finalize(*, case_id, attempt, allow_diagnostic=False):
     """Read one sealed acquisition and return a source-bound case observation."""
     if not case_id.startswith(ASSIGNMENT_ID + "__"):
         raise ValueError("exact assignment case ID required")
@@ -93,7 +93,8 @@ def finalize(*, case_id, attempt):
         if not (attempt / name).is_file():
             raise ValueError("Missing required source: " + name)
     measured = process(case_id=case_id, map_path=map_path,
-                       trace_path=trace_path, receipt_path=receipt_path)
+                       trace_path=trace_path, receipt_path=receipt_path,
+                       allow_diagnostic=allow_diagnostic)
     index, method = BRANCHES[suffix]
     sources = {name: _sha(attempt / name) for name in
                ("original-map.json", "original-trace.jsonl", "acquisition-receipt.json")}
@@ -110,6 +111,7 @@ def finalize(*, case_id, attempt):
             "measurements": {output_key: {"method": method, "value": observations,
                                           "sources": core_sources}},
             "original_frame_count": len(measured["frames"]),
+            "diagnostic_fixture": measured["diagnostic_fixture"],
             "physical_acceptance": "unverified", "legal_judgment": "unresolved"}
 
 
@@ -118,6 +120,7 @@ def main():
     parser.add_argument("--case")
     parser.add_argument("--attempt", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--diagnostic-fixture", action="store_true")
     args = parser.parse_args()
     case_id = args.case
     if case_id is None:
@@ -125,7 +128,8 @@ def main():
         if not receipt.is_file():
             raise ValueError("Missing required source: acquisition-receipt.json")
         case_id = json.loads(receipt.read_text(encoding="utf-8"))["case_id"]
-    result = finalize(case_id=case_id, attempt=args.attempt)
+    result = finalize(case_id=case_id, attempt=args.attempt,
+                      allow_diagnostic=args.diagnostic_fixture)
     Path(args.output).write_text(json.dumps(result, sort_keys=True, indent=2) + "\n", encoding="utf-8")
 
 

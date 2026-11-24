@@ -67,6 +67,45 @@ def write_data(root, data, index, name):
 
 
 class SavedMeasurementTests(unittest.TestCase):
+    def test_exact_case_witness_rejects_startup_and_wrong_half(self):
+        scene = json.loads(SCENE.read_text())
+        rows = [{'pedestrian_in_crosswalk': True,
+                 'pedestrian_on_destination_half': True} for _ in range(600)]
+        witness = m.check_planned_observation(scene, rows)
+        self.assertEqual(witness['longest_matching_run_frames'], 400)
+        for row in rows[100:500]:
+            row['pedestrian_on_destination_half'] = False
+        with self.assertRaisesRegex(m.SavedSourceError, 'destination-half crosswalk witness'):
+            m.check_planned_observation(scene, rows)
+        for row in rows[100:119]:
+            row['pedestrian_on_destination_half'] = True
+        with self.assertRaisesRegex(m.SavedSourceError, 'destination-half crosswalk witness'):
+            m.check_planned_observation(scene, rows)
+
+    def test_clear_and_opposite_case_require_measured_region(self):
+        rows = [{'pedestrian_in_crosswalk': True,
+                 'pedestrian_on_destination_half': True} for _ in range(600)]
+        clear = {'case_id': 'example__destination_clear_absent'}
+        with self.assertRaisesRegex(m.SavedSourceError, 'clear case'):
+            m.check_planned_observation(clear, rows)
+        opposite = {'case_id': 'example__opposite_close_absent'}
+        with self.assertRaisesRegex(m.SavedSourceError, 'opposite-half'):
+            m.check_planned_observation(opposite, rows)
+        for row in rows[100:500]:
+            row['pedestrian_on_destination_half'] = False
+        self.assertEqual(m.check_planned_observation(opposite, rows)['longest_matching_run_frames'], 400)
+
+    def test_observed_device_must_match_exact_scene(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = pathlib.Path(folder)
+            data, index = fixture(root)
+            data['site']['official_devices']['entries'] = [{
+                'official': True, 'relevant': True, 'source_ref': 'native/device.jsonl',
+                'state_by_frame': {str(i): 'not_operating' for i in range(600)}}]
+            write_data(root, data, index, 'site')
+            with self.assertRaisesRegex(m.SavedSourceError, 'differs from exact scene'):
+                m.process(root, SCENE, root/'out.json')
+
     def test_600_original_frames_and_sealed_sources(self):
         with tempfile.TemporaryDirectory() as folder:
             root = pathlib.Path(folder)

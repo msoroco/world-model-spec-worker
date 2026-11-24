@@ -12,6 +12,7 @@ import math
 from pathlib import Path
 
 from crest_speed import measure
+from crest_crossing import assess
 
 
 ASSIGNMENT = 'testing__C104084__NRS-484B-603-1__motor_vehicle_driver'
@@ -83,13 +84,14 @@ def audit(attempt, manifest: dict) -> dict:
         raise ValueError('four original camera sources required')
     media_sha = {camera: _source(root, media[camera])[1] for camera in CAMERAS}
     measured = measure(waypoints, frames, approach_start_m=manifest.get('approach_start_m'))
+    crossing = assess(waypoints, frames, approach_start_m=manifest.get('approach_start_m'))
     if measured['last_precrest_speed_mps'] is None:
         raise ValueError('precrest speed measurement required')
     return {
         'format': 'worker-crest-saved-source-audit', 'case_id': case_id,
         'source_sha256': {'grade': grade_sha, 'motion': motion_sha, 'frame_map': map_sha,
                           'cameras': media_sha}, 'frame_count': FRAME_COUNT,
-        'physical_measurements': measured,
+        'physical_measurements': measured, 'crest_crossing': crossing,
         'checks': {'native_source': True, 'all_participants': True,
                    'time_join': True, 'full_video_decode': False,
                    'actual_pixels': False, 'physical_completion': False},

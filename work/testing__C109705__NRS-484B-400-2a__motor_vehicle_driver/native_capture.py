@@ -33,6 +33,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     ``adapter`` exposes world, start(plan), tick(), read_ego(frame),
     read_cameras(frame), brake(), and cleanup(). The capture rejects missing
     callbacks, frame gaps, cadence drift, and malformed original PNG headers.
+    Each camera callback supplies its own Native presentation time.
     """
     if case_id not in {PREFIX + suffix for suffix in SUFFIXES}:
         raise ValueError('unknown exact approach case')
@@ -69,15 +70,25 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
             camera_rows = adapter.read_cameras(frame)
             if not isinstance(camera_rows, dict) or set(camera_rows) != CAMERAS:
                 raise ValueError('Native four-camera callback set missing')
+            camera_times = {}
             for name in sorted(CAMERAS):
                 camera = camera_rows[name]
                 raw = camera.get('png')
                 if (camera.get('frame') != frame or not isinstance(raw, bytes) or
                         len(raw) < 16 or not raw.startswith(b'\x89PNG\r\n\x1a\n')):
                     raise ValueError('Native original camera PNG/frame missing: ' + name)
+                camera_time = camera.get('time_s')
+                if (type(camera_time) not in (int, float) or
+                        not math.isfinite(camera_time) or
+                        abs(camera_time - time_s) > .001):
+                    raise ValueError('Native original camera timestamp drift: ' + name)
+                camera_times[name] = camera_time
                 archives[name].writestr(f'{index:04d}-{frame}.png', raw)
-            frame_map.append({'frame': frame, 'time_s': time_s,
-                              'camera_frames': {name: frame for name in sorted(CAMERAS)}})
+            frame_map.append({'frame': frame, 'video_frame': index,
+                              'carla_frame': frame, 'native_frame': frame,
+                              'time_s': time_s,
+                              'camera_frames': {name: frame for name in sorted(CAMERAS)},
+                              'camera_times_s': camera_times})
     except BaseException:
         shutil.rmtree(root)
         raise

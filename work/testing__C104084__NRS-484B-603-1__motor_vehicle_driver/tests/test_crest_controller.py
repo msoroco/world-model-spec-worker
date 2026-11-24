@@ -29,9 +29,20 @@ class CrestControllerTests(unittest.TestCase):
         self.assertGreater(result['brake'], 0)
         self.assertEqual(result['throttle'], 0)
 
-    def test_rejects_postcrest_and_missing_speed(self):
-        with self.assertRaisesRegex(ValueError, 'passed'):
-            target_speed('early_decrease', crest_s_m=100, ego_s_m=101)
+    def test_postcrest_continuation_and_route_end_stop(self):
+        self.assertEqual(target_speed('early_decrease', crest_s_m=100, ego_s_m=101), 8)
+        self.assertEqual(target_speed('late_decrease', crest_s_m=100, ego_s_m=101), 8)
+        self.assertEqual(target_speed('steady_approach', crest_s_m=100, ego_s_m=101), 12)
+        vehicle = Vehicle()
+        result = step(vehicle, dict, 'steady_approach', crest_s_m=100,
+                      ego_s_m=281, measured_speed_mps=12, route_end_s_m=300)
+        self.assertEqual(result['target_speed_mps'], 0)
+        self.assertGreater(result['brake'], 0)
+        with self.assertRaisesRegex(ValueError, 'route end'):
+            step(Vehicle(), dict, 'early_decrease', crest_s_m=100,
+                 ego_s_m=101, measured_speed_mps=8, route_end_s_m=99)
+
+    def test_rejects_missing_speed(self):
         with self.assertRaisesRegex(ValueError, 'measured speed'):
             step(Vehicle(), dict, 'early_decrease', crest_s_m=100,
                  ego_s_m=75, measured_speed_mps=float('nan'))

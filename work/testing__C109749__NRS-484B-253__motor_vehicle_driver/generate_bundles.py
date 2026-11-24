@@ -17,7 +17,24 @@ SOURCES = {
     "saved_left_turn.py": "saved_left_turn.py",
     "native_acquisition.py": "native_acquisition.py",
     "saved_media_audit.py": "saved_media_audit.py",
+    "delivery_audit.py": "delivery_audit.py",
     "requirement_finalizer.py": "requirement_finalizer.py",
+    "analysis.py": "analysis.py",
+}
+
+RECORDING_DESCRIPTION = {
+    "channels": [
+        {"name": name, "unit": unit, "method": "original source-bound actor sample",
+         "time_window": "full original recording", "reference_frame": "original CARLA world frame",
+         "uncertainty": "diagnostic software fixture or unreviewed Native sensor accuracy",
+         "sampling_rate_hz": 20}
+        for name, unit in (("ego_body_history", "structured"),
+                           ("opponent_body_history", "structured"),
+                           ("ego_signal_history", "categorical"))],
+    "context_inputs": [{"name": "intersection_geometry", "unit": "structured",
+                        "method": "source-hashed original map packet"}],
+    "limitations": ["Immediate hazard, legal yield and signal duty require separate judgment.",
+                    "Diagnostic sources do not establish physical realization."],
 }
 
 
@@ -50,6 +67,13 @@ def generate():
                   "controller": {"wait_for_initial_opponent": wait, "signal_left": signal,
                                  "wait_for_later_opponent": later_wait, "target_speed_mps": 5.0},
                   "native_map_survey": "required_before_capture",
+                  "case": {"recording_description": RECORDING_DESCRIPTION},
+                  "physical_completion": {"criterion": "intersection_clearance",
+                                          "motion_source": "interaction_history.jsonl",
+                                          "body_key": "subject_body_vertices_m",
+                                          "context_sources": ["road_geometry.json"],
+                                          "intersection_polygon_xy_m": [[-5, -5], [5, -5], [5, 5], [-5, 5]],
+                                          "exit_axis": 1, "exit_sign": -1},
                   "physical_realization": "unverified"}
         files = [{"path": target, "source": str((ROOT / source).relative_to(ROOT.parents[1])),
                   "content": (ROOT / source).read_text(encoding="utf-8")}
@@ -73,7 +97,7 @@ def generate():
         bundle = {"law_id": "NRS-484B-253", "cell_id": "C109749",
                   "actor": "motor_vehicle_driver", "case_id": case_id,
                   "entrypoint": "runner.py", "files": files,
-                  "recording_description": "Original 20 Hz left-turn and opposite approach body/control histories, full four-camera frames and exact intersection geometry; all legal judgments unresolved",
+                  "recording_description": RECORDING_DESCRIPTION,
                   "measurement_plan": ["full-body intersection occupancy", "opposite approach and clearance", "left-signal and turn commitment", "source-bound four-camera frame join"],
                   "source_kind": "diagnostic_offline_only_native_map_survey_required"}
         path = ROOT / "cases" / suffix / "construction.json"
@@ -82,7 +106,7 @@ def generate():
                         "construction_sha256": _sha(path), "kind": "partial_offline_bundle"})
     manifest = {"format": "worker-offline-checkpoint-manifest", "assignment_id": ASSIGNMENT_ID,
                 "cases": entries, "delivery_ready": False}
-    _write(ROOT / "offline-checkpoint-manifest.json", manifest)
+    _write(ROOT / "bundle-checkpoint-manifest.json", manifest)
     return manifest
 
 

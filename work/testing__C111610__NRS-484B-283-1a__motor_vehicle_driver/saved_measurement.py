@@ -48,6 +48,45 @@ def _rows(value, label, expected):
     return value
 
 
+def _run_length(values):
+    longest = current = 0
+    for value in values:
+        current = current + 1 if value else 0
+        longest = max(longest, current)
+    return longest
+
+
+def check_planned_observation(scene, observations):
+    """Require a stable source-measured case witness, without a danger cutoff."""
+    suffix = scene['case_id'].rsplit('__', 1)[-1]
+    require(suffix in {'destination_clear_absent', 'destination_occupied_absent',
+                       'destination_occupied_nonoperating', 'destination_occupied_operating',
+                       'opposite_close_absent', 'opposite_far_absent',
+                       'outside_crosswalk_absent'}, 'unknown exact crosswalk case')
+    # Ignore the first/last five seconds so a startup pose cannot be the witness.
+    stable = observations[100:500]
+    require(len(stable) == 400, 'stable observation window missing')
+    in_crosswalk = [r['pedestrian_in_crosswalk'] for r in stable]
+    destination = [r['pedestrian_on_destination_half'] for r in stable]
+    if suffix.startswith('destination_occupied'):
+        witness = _run_length([a and b for a, b in zip(in_crosswalk, destination)])
+        require(witness >= 20, 'destination-half crosswalk witness missing')
+    elif suffix.startswith('opposite_'):
+        witness = _run_length([a and not b for a, b in zip(in_crosswalk, destination)])
+        require(witness >= 20, 'opposite-half crosswalk witness missing')
+    elif suffix == 'outside_crosswalk_absent':
+        require(not any(in_crosswalk), 'outside-crosswalk case entered crosswalk')
+        witness = _run_length(destination)
+        require(witness >= 20, 'outside-crosswalk destination-half witness missing')
+    else:
+        require(not any(a and b for a, b in zip(in_crosswalk, destination)),
+                'clear case has destination-half crosswalk occupancy')
+        witness = 400
+    return {'case_suffix': suffix, 'window_frames': [100, 499],
+            'longest_matching_run_frames': witness,
+            'danger_judgment': None}
+
+
 def process(attempt, scene_path, output):
     root = Path(attempt)
     index_path = root / 'source-index.json'
@@ -88,6 +127,9 @@ def process(attempt, scene_path, output):
     conditions = {row['device_condition'] for row in observations}
     require(len(conditions) == 1, 'official device state changed during capture')
     measured_condition = next(iter(conditions))
+    require(measured_condition == scene['official_device_condition'],
+            'observed device condition differs from exact scene')
+    observed_case = check_planned_observation(scene, observations)
     occupied = sum(row['pedestrian_in_crosswalk'] and row['pedestrian_on_destination_half']
                    for row in observations)
     brake = sum(row['ego_brake'] for row in observations)
@@ -99,6 +141,7 @@ def process(attempt, scene_path, output):
                          'pedestrian': person_source, 'exception_review': exception_source},
         'frame_count': frames, 'rate_hz': 20, 'duration_s': 30,
         'measurements': observations,
+        'observed_case': observed_case,
         'summary': {'measured_device_condition': measured_condition,
                     'planned_device_condition_matches': measured_condition == scene['official_device_condition'],
                     'crosswalk_and_destination_half_frames': occupied,

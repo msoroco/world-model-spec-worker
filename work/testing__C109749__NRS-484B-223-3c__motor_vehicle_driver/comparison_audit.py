@@ -31,8 +31,16 @@ def audit_numeric_triple(rows):
             raise ValueError("fixed condition differs: " + key)
     if len({rows[suffix]["original_trace_sha256"] for suffix in expected}) != 3:
         raise ValueError("case traces must be distinct")
+    measured = {suffix: rows[suffix]["distance_ft"] for suffix in expected}
+    # This tolerance is only a capture probe for the authored at-boundary case.
+    # It does not resolve vehicle reference-point or legal interpretation.
+    if not (measured["below_50ft"] < 50.0 and
+            abs(measured["at_50ft"] - 50.0) <= 0.25 and
+            measured["above_50ft"] > 50.0 and
+            measured["below_50ft"] < measured["at_50ft"] < measured["above_50ft"]):
+        raise ValueError("original measurements do not realize below/at/above probes")
     return {"comparison_id": "post_turn_center_lane_distance", "fixed_conditions_verified": list(fixed),
-            "measured_distance_ft": {suffix: rows[suffix]["distance_ft"] for suffix in expected},
+            "measured_distance_ft": measured, "at_boundary_probe_tolerance_ft": 0.25,
             "original_sources": {suffix: rows[suffix]["original_trace_source"] for suffix in expected},
             "legal_judgment": None}
 

@@ -46,6 +46,20 @@ class ComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "observed merge"):
             MODULE.audit_numeric_triple(p)
 
+    def test_rejects_unrealized_boundary_probe(self):
+        p = triple()
+        p["below_50ft"]["distance_ft"] = 50.2
+        with self.assertRaisesRegex(ValueError, "below/at/above probes"):
+            MODULE.audit_numeric_triple(p)
+        p = triple()
+        p["at_50ft"]["distance_ft"] = 50.4
+        with self.assertRaisesRegex(ValueError, "below/at/above probes"):
+            MODULE.audit_numeric_triple(p)
+        p = triple()
+        p["above_50ft"]["distance_ft"] = 49.8
+        with self.assertRaisesRegex(ValueError, "below/at/above probes"):
+            MODULE.audit_numeric_triple(p)
+
     def test_merge_comparison_requires_censoring(self):
         merged = row("below", 49.1)
         no_merge = row("no_merge", 62.0, False)

@@ -2,68 +2,572 @@
   "assignment_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
   "input_sha256": "8d628f180d24b0a1977ce607edb3030cd369af28b3930f84f968679104d764b5",
   "status": "partial",
-  "readiness_kind": "exact_bundle_offline_partial",
+  "readiness_kind": "partial_five_exact_cpu_packages_with_physical_preparation_fixtures",
   "applied_update": 0,
   "tests": [
     {
-      "name": "focused_suite",
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/tests -v",
-      "exit_code": 0,
-      "log": "cpu-bundle-tests.log",
-      "sha256": "ffd86b5aaf99329d98565c1bd636213f0d55bedf55bf4be595f277ae98d2b5a1"
-    },
-    {
-      "name": "static",
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete",
-      "exit_code": 0,
-      "log": "cpu-static-check.log",
-      "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1"
-    },
-    {
-      "name": "strict",
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "name": "offline_reference",
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --output .runtime-work/c10307-offline-reference-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
-      "exit_code": 0,
-      "log": "cpu-offline-reference.log",
-      "sha256": "3d97e57fa770284aad5f9969a65edc1e49ab94334147f0f6290c1313b2c6aa88"
+      "path": "cpu-offline-reference.log",
+      "sha256": "72c70f67ea7f460c1637300ae91ac2ea578e71c779e3040a809e4382780cc1d3",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_reference",
+      "path": "cpu-compat-reference.log",
+      "sha256": "4c5a2561e2c6c2283b0e8c3fad0403e78a8cf01581f5f5b0eaba0615752f3dc6",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_receipt_reference",
+      "path": "cpu-compatibility-reference.json",
+      "sha256": "4c5a2561e2c6c2283b0e8c3fad0403e78a8cf01581f5f5b0eaba0615752f3dc6",
+      "exit_code": 0
+    },
+    {
+      "name": "negative_reference",
+      "path": "cpu-negative-analysis-reference.log",
+      "sha256": "19a076b4f0618a36aa89b66a61dfc97426f0e1472bbd8162c7b0051ecf827fed",
+      "exit_code": 0
+    },
+    {
+      "name": "source_media_reference",
+      "path": "cpu-source-media-reference.json",
+      "sha256": "54f02eeff11ce4a7b373ae53637ec4a683563d36a8a00c02d0ca72be1e0c1002",
+      "exit_code": 0
     },
     {
       "name": "offline_faster",
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --output .runtime-work/c10307-offline-faster-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
-      "exit_code": 0,
-      "log": "cpu-offline-faster.log",
-      "sha256": "a230c45fe2a45a28aefd9b081daea4692ac950936c1083bd7b974d84b3b9a31f"
+      "path": "cpu-offline-faster.log",
+      "sha256": "7737dccdc01a65c45c574967dd28bbb2b7f407117395c0e591abb8a311306a70",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_faster",
+      "path": "cpu-compat-faster.log",
+      "sha256": "abe913ebce99ac0f6400531239e3424300b9d9f072e617e56229175e533d0016",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_receipt_faster",
+      "path": "cpu-compatibility-faster.json",
+      "sha256": "abe913ebce99ac0f6400531239e3424300b9d9f072e617e56229175e533d0016",
+      "exit_code": 0
+    },
+    {
+      "name": "negative_faster",
+      "path": "cpu-negative-analysis-faster.log",
+      "sha256": "b3fda4db7bff21b7c5ea7770da29f72e7ed395162b79424ea44e15d73448f9cd",
+      "exit_code": 0
+    },
+    {
+      "name": "source_media_faster",
+      "path": "cpu-source-media-faster.json",
+      "sha256": "2e807282bdc2e2cb9df6fe8c9b8a2fa438839f7a8ca4fc8f0dd47aae142b33cf",
+      "exit_code": 0
     },
     {
       "name": "offline_reduced_visibility",
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --output .runtime-work/c10307-offline-reduced_visibility-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
-      "exit_code": 0,
-      "log": "cpu-offline-reduced_visibility.log",
-      "sha256": "c2b833976d7bde4483fc209c26c97059012bb7c264d8fd4dcc13359c600d4046"
+      "path": "cpu-offline-reduced_visibility.log",
+      "sha256": "623a88755380630c7769da6ff8f17436c434ccdd7443b4c8e2d6043d972bf44d",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_reduced_visibility",
+      "path": "cpu-compat-reduced_visibility.log",
+      "sha256": "cf36936608db3a930f442dcad64a95b0a8364dac69d8eb7163b1252e201e8bfe",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_receipt_reduced_visibility",
+      "path": "cpu-compatibility-reduced_visibility.json",
+      "sha256": "cf36936608db3a930f442dcad64a95b0a8364dac69d8eb7163b1252e201e8bfe",
+      "exit_code": 0
+    },
+    {
+      "name": "negative_reduced_visibility",
+      "path": "cpu-negative-analysis-reduced_visibility.log",
+      "sha256": "122521bed9687478eea63df36bd93b347bc041c334f8c72fa66320970c52f00b",
+      "exit_code": 0
+    },
+    {
+      "name": "source_media_reduced_visibility",
+      "path": "cpu-source-media-reduced_visibility.json",
+      "sha256": "8b672ca6e0e52a5bf5c41ef6f8064b146de11918f0e2f635902e287abe962df7",
+      "exit_code": 0
     },
     {
       "name": "offline_pedestrian_near_rack",
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --output .runtime-work/c10307-offline-pedestrian_near_rack-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
-      "exit_code": 0,
-      "log": "cpu-offline-pedestrian_near_rack.log",
-      "sha256": "4220663a4cfa75ed88cfbf9e413f9485d8448efd391ad827cc29fa8696db7ece"
+      "path": "cpu-offline-pedestrian_near_rack.log",
+      "sha256": "d35a884a31fda8c4d7ded098dac6d0a6d236c7571ae9505bcf2aca7e7c2ff0e8",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_pedestrian_near_rack",
+      "path": "cpu-compat-pedestrian_near_rack.log",
+      "sha256": "de44e30dec0d2bd1a197d83b388fdee8aff3ea76b9637de09875400921302377",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_receipt_pedestrian_near_rack",
+      "path": "cpu-compatibility-pedestrian_near_rack.json",
+      "sha256": "de44e30dec0d2bd1a197d83b388fdee8aff3ea76b9637de09875400921302377",
+      "exit_code": 0
+    },
+    {
+      "name": "negative_pedestrian_near_rack",
+      "path": "cpu-negative-analysis-pedestrian_near_rack.log",
+      "sha256": "5d9ea46254e4258fb5117281d5e48dfee3cb10c85f9f4ee3addcee630d32129c",
+      "exit_code": 0
+    },
+    {
+      "name": "source_media_pedestrian_near_rack",
+      "path": "cpu-source-media-pedestrian_near_rack.json",
+      "sha256": "7a9e80da38bfaf908f6e7885e8be4348c6d0075b642b71f3c1e7d9afd20b0b3f",
+      "exit_code": 0
     },
     {
       "name": "offline_wet_surface",
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --output .runtime-work/c10307-offline-wet_surface-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+      "path": "cpu-offline-wet_surface.log",
+      "sha256": "a01c0caec47f62308c1a526582f67cd1a05289889ee5ecaca46e4498ce21d4b6",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_wet_surface",
+      "path": "cpu-compat-wet_surface.log",
+      "sha256": "05225a0602a46b37e3edd67a9fcd72f48ca70a9b27a25f14cf261dbbec7efd36",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_receipt_wet_surface",
+      "path": "cpu-compatibility-wet_surface.json",
+      "sha256": "05225a0602a46b37e3edd67a9fcd72f48ca70a9b27a25f14cf261dbbec7efd36",
+      "exit_code": 0
+    },
+    {
+      "name": "negative_wet_surface",
+      "path": "cpu-negative-analysis-wet_surface.log",
+      "sha256": "3a439d71eab880a5d1f1788a3b5eb7a99d46a75de03c6e0c349733a433a69142",
+      "exit_code": 0
+    },
+    {
+      "name": "source_media_wet_surface",
+      "path": "cpu-source-media-wet_surface.json",
+      "sha256": "e15a60751f276865e72956322d1152b2c80e28c621183204752ecbce8a2410a6",
+      "exit_code": 0
+    },
+    {
+      "name": "focused_suite",
+      "path": "cpu-bundle-tests.log",
+      "sha256": "87be899a369223378498df66a8f7bf718cd5b87934b395a5bb8f59e1564b8191",
+      "exit_code": 0
+    },
+    {
+      "name": "receipt_check",
+      "path": "cpu-receipt-check.log",
+      "sha256": "50b543146a3c3bf96abf2c835f87a39c66c6c5b98b89261fa79e2ae690a31b1e",
+      "exit_code": 0
+    },
+    {
+      "name": "static",
+      "path": "cpu-static-check.log",
+      "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1",
+      "exit_code": 0
+    },
+    {
+      "name": "strict",
+      "path": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a",
+      "exit_code": 1
+    },
+    {
+      "name": "decoder_build",
+      "path": "cpu-build-decoder.log",
+      "sha256": "4e10ac53a6cd2ab4cdc8ac3e5825a7ed903207f7ac428c88ecc897c2663876cd",
+      "exit_code": 0
+    },
+    {
+      "name": "semantic_stage_tests",
+      "path": "cpu-semantic-tests.log",
+      "sha256": "0adf3c9e817dcb095a17fea3aa58037cc2d5c3cb3679cc35c3b375513b3ffac8",
+      "exit_code": 0
+    },
+    {
+      "name": "comparison_audit_tests",
+      "path": "cpu-comparison-v2-tests.log",
+      "sha256": "c3fcb14d190dd9ed617aec4ef615e087a5229b24bdf5cfe5939a96167de51f0c",
+      "exit_code": 0
+    },
+    {
+      "name": "all_focused_tests_v4",
+      "path": "cpu-all-tests-v4.log",
+      "sha256": "cc29dfe0ec2625c222e9e448ea7aec4406f4eda29db98b1fedb306c883e53010",
+      "exit_code": 0
+    },
+    {
+      "name": "diagnostic_build_v4",
+      "path": "cpu-diagnostic-build-v4.log",
+      "sha256": "e11c4acee43dcbf86a8e5dbf7a8f3a3756a387d5fe74e91bd88292b81270fb61",
+      "exit_code": 0
+    },
+    {
+      "name": "offline_v4",
+      "path": "cpu-offline-v4.log",
+      "sha256": "737c4120010a19535deb10f4cb1a6adfd5303af4c6a1e7d968e80b2f33fe8a37",
+      "exit_code": 0
+    },
+    {
+      "name": "compatibility_v4",
+      "path": "cpu-compatibility-v4.log",
+      "sha256": "bfd654cd4de7c45e3924548dffb0b2dfb02016ae9fbd0fb3bda6e0ea7bdac23b",
+      "exit_code": 0
+    },
+    {
+      "name": "saved_only_v2",
+      "path": "cpu-saved-v2.log",
+      "sha256": "ad5bd2d987fcdf87c2ce25281ee9fb9cd3c454a7820879ce10a753fd1d50b2e9",
+      "exit_code": 0
+    },
+    {
+      "name": "saved_missing_context_v2",
+      "path": "cpu-saved-negative-v2.log",
+      "sha256": "dfe9f25d0c927e7d6e11ea6552f86bab182b52ba15562a787283f2e32db3dd7b",
+      "exit_code": 0
+    },
+    {
+      "name": "scoped_static_v4",
+      "path": "cpu-static-check-v4.log",
+      "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1",
+      "exit_code": 0
+    },
+    {
+      "name": "scoped_strict_v4",
+      "path": "cpu-strict-check-v4.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a",
+      "exit_code": 1
+    },
+    {
+      "name": "receipt_check_v4",
+      "path": "cpu-receipt-check-v4.log",
+      "sha256": "50b543146a3c3bf96abf2c835f87a39c66c6c5b98b89261fa79e2ae690a31b1e",
+      "exit_code": 0
+    },
+    {
+      "name": "scoped_static_v5",
+      "path": "cpu-static-check-v5.log",
+      "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1",
+      "exit_code": 0
+    },
+    {
+      "name": "scoped_strict_v5",
+      "path": "cpu-strict-check-v5.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a",
+      "exit_code": 1
+    },
+    {
+      "name": "semantic_sweep_v6",
+      "path": "cpu-semantic-tests.log",
+      "sha256": "0adf3c9e817dcb095a17fea3aa58037cc2d5c3cb3679cc35c3b375513b3ffac8",
+      "exit_code": 0
+    },
+    {
+      "name": "all_focused_v6",
+      "path": "cpu-all-tests-v6.log",
+      "sha256": "0eba791ed7a88a758a5d5ac6ba3e3da1494b4338d70c33d78b86ffb5d1b056e1",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reference_offline",
+      "path": "cpu-fallback1-reference-offline.log",
+      "sha256": "6f4f7282dbb3c7f8ce8cde60bca7b7fc30a85bc877d7cd6f888b59ff84b35694",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reference_compat",
+      "path": "cpu-fallback1-reference-compat.log",
+      "sha256": "2a40109b5174009fa79a0ecb73ceb18c2154cb5973fe06531812562f6a1f1b58",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reference_compat-analysis",
+      "path": "cpu-fallback1-reference-compat-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reference_negative-analysis",
+      "path": "cpu-fallback1-reference-negative-analysis.log",
+      "sha256": "eec25c9f686055f6d3ea5d886097908867329dbd1c64423c55b0ad8714d50d3f",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reference_delivery-check",
+      "path": "cpu-delivery-check-reference.log",
+      "sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reference_delivery-negative",
+      "path": "cpu-delivery-negative-reference.log",
+      "sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+      "exit_code": 1
+    },
+    {
+      "name": "fallback_or_delivery_faster_offline",
+      "path": "cpu-fallback1-faster-offline.log",
+      "sha256": "81a818617e8b573621c9a7df123a0ba38615633f90c6b6ec90bf381f165328dc",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_faster_compat",
+      "path": "cpu-fallback1-faster-compat.log",
+      "sha256": "125cfa6b3aff4a16685d9c11080edd2a7cae1c47c522f269a8ce01ede3e46321",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_faster_compat-analysis",
+      "path": "cpu-fallback1-faster-compat-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_faster_negative-analysis",
+      "path": "cpu-fallback1-faster-negative-analysis.log",
+      "sha256": "0e0270af2bc2fc8a0e8ec4b677357a311c66ddd6d163c24706777c788acdffaf",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_faster_delivery-check",
+      "path": "cpu-delivery-check-faster.log",
+      "sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_faster_delivery-negative",
+      "path": "cpu-delivery-negative-faster.log",
+      "sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+      "exit_code": 1
+    },
+    {
+      "name": "fallback_or_delivery_reduced_visibility_offline",
+      "path": "cpu-fallback1-reduced_visibility-offline.log",
+      "sha256": "0321c707aeb377b23cae58d48f11b056685bf9973400462f6dac680059e5b053",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reduced_visibility_compat",
+      "path": "cpu-fallback1-reduced_visibility-compat.log",
+      "sha256": "a251e3a8658b27251521db496673dd86ffaf3284e95aee1f656fe5fe03352c88",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reduced_visibility_compat-analysis",
+      "path": "cpu-fallback1-reduced_visibility-compat-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reduced_visibility_negative-analysis",
+      "path": "cpu-fallback1-reduced_visibility-negative-analysis.log",
+      "sha256": "4674bae7fae94783c64b6d06d2602fc015820e4391c4cbd64638dc0d5fa329dc",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reduced_visibility_delivery-check",
+      "path": "cpu-delivery-check-reduced_visibility.log",
+      "sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_reduced_visibility_delivery-negative",
+      "path": "cpu-delivery-negative-reduced_visibility.log",
+      "sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+      "exit_code": 1
+    },
+    {
+      "name": "fallback_or_delivery_pedestrian_near_rack_offline",
+      "path": "cpu-fallback1-pedestrian_near_rack-offline.log",
+      "sha256": "5df346db63f051111782bcb541b0135e9ab14bdff544da8e17135f19784ef327",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_pedestrian_near_rack_compat",
+      "path": "cpu-fallback1-pedestrian_near_rack-compat.log",
+      "sha256": "c98a929a3fae4658c6e37d306cbf23f0d166ab0caffafa3f8578c2edd727ff96",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_pedestrian_near_rack_compat-analysis",
+      "path": "cpu-fallback1-pedestrian_near_rack-compat-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_pedestrian_near_rack_negative-analysis",
+      "path": "cpu-fallback1-pedestrian_near_rack-negative-analysis.log",
+      "sha256": "e95628d845b6ca460e677b88a572d50a12cb9223cbcf83e6dd94137b533e4c61",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_pedestrian_near_rack_delivery-check",
+      "path": "cpu-delivery-check-pedestrian_near_rack.log",
+      "sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_pedestrian_near_rack_delivery-negative",
+      "path": "cpu-delivery-negative-pedestrian_near_rack.log",
+      "sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+      "exit_code": 1
+    },
+    {
+      "name": "fallback_or_delivery_wet_surface_offline",
+      "path": "cpu-fallback1-wet_surface-offline.log",
+      "sha256": "b6d451d3a3df6cd3f5571e260c6e6d99c4d8c0298a9906121e079086caf07454",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_wet_surface_compat",
+      "path": "cpu-fallback1-wet_surface-compat.log",
+      "sha256": "94328303e34f0f0e6f5755b7d8d6e6ba3163bdd878478383b2c0017482f99eff",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_wet_surface_compat-analysis",
+      "path": "cpu-fallback1-wet_surface-compat-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_wet_surface_negative-analysis",
+      "path": "cpu-fallback1-wet_surface-negative-analysis.log",
+      "sha256": "4875654d450422b55b8035df694739a8f87a982e13b894278f1b3b31cb3290f8",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_wet_surface_delivery-check",
+      "path": "cpu-delivery-check-wet_surface.log",
+      "sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+      "exit_code": 0
+    },
+    {
+      "name": "fallback_or_delivery_wet_surface_delivery-negative",
+      "path": "cpu-delivery-negative-wet_surface.log",
+      "sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+      "exit_code": 1
+    },
+    {
+      "name": "scoped_static_v6",
+      "path": "cpu-static-check-v6.log",
+      "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1",
+      "exit_code": 0
+    },
+    {
+      "name": "scoped_strict_v6",
+      "path": "cpu-strict-check-v6.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a",
+      "exit_code": 1
+    },
+    {
+      "command": "physical fixture generator: five cases, three outcomes and lifecycle",
       "exit_code": 0,
-      "log": "cpu-offline-wet_surface.log",
-      "sha256": "5ae935aa41ca977d58b2e345b92fda586d98f33e57b25c04ffc9273db068e504"
+      "log": "cpu-physical-preparation.log",
+      "sha256": "a7374d9505ce79bc95e1119bfa23bec8ce2ec21571970870f0d91b27e7991374"
+    },
+    {
+      "command": "pinned physical_preparation.validate for all five cases",
+      "exit_code": 0,
+      "log": "cpu-physical-validation.log",
+      "sha256": "53e36aa8daec4e947a2701f01592aefc936e2f59d032be147429456a5cca8219"
+    },
+    {
+      "command": "pinned execution_manifest.validate for all five cases",
+      "exit_code": 0,
+      "log": "cpu-manifest-validation.log",
+      "sha256": "8ed67ffbd55b0452f9430c68650642291c45a987ce10bbfdafd1e07735caa753"
+    },
+    {
+      "command": "focused unittest discovery (60 tests)",
+      "exit_code": 0,
+      "log": "cpu-all-tests-v7.log",
+      "sha256": "15c1a632263a2732bb4189fd17a48af25288f4d7aa120edb76295364afb02c1b"
+    },
+    {
+      "command": "runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-v7.log",
+      "sha256": "0171f8871a24d46daa8819ddf6edfb6a88c71010b25dc92b6aaa2b2b3ce0d061"
+    },
+    {
+      "command": "worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check-v7.log",
+      "sha256": "ba5fc03c965fa5607af895a01acf107e566a34ca2bcbed7fd88390f883c24cb1"
+    },
+    {
+      "command": "worker_check.py --assignment testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check-v7.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/tests -v",
+      "exit_code": 0,
+      "log": "cpu-comparison-join-tests.log",
+      "sha256": "6f41d7842cfb65bf9f58d1610ebd1e42ec5580b1a9cd44a0ce105c2979a3b1d0"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA bicycle/rack motion and full four-camera pixel visibility after CPU package completion"
   ],
-  "reason": "All five exact inline constructions materialize and pass pinned offline checks; a source-bound 900-frame saved finalizer and 47 focused tests pass. Live Native camera acquisition, package compatibility, process-saved integration, semantic stage proposals, candidate fallbacks and independent delivery/comparison receipts remain CPU work. Scoped strict gate exits 1 because status is partial."
+  "reason": "Five exact delivery cases include source-hashed physical-preparation receipts and passing canonical manifest checks. The comparison audit now recomputes mean speed from original samples and joins condition observations to their time axis; 63 focused tests pass. These are synthetic software decisions only; source-reviewed municipal map, human-powered bicycle/rack assets, original Native motion, positive pixel review, production owner release and independent delivery/comparison acceptance remain unverified. Strict readiness remains partial.",
+  "diagnostic_compatibility": {
+    "case_count": 5,
+    "passed": true,
+    "scope": "CPU synthetic fixture only",
+    "construction_sha256": {
+      "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference": "a99ec9121ea138fce6849d5d09e5681dad200f89084b25b38646f0198d6e9c3b",
+      "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster": "0397d3c898c0ed12eff765f482c1e3f24850ae7512ed3faf92f606c047969fd9",
+      "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility": "b934008947a139ea21435c588cebbad22ca66c52d730c68980c3fb974d775dfb",
+      "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack": "0d001fd9c93ddb7960e5de537523e5f723ade956f7c595cba523ef170a188843",
+      "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface": "d727d9c825bd0c528cd08596838a35c54cc0691c5823e40f514ba2508cf5b061"
+    },
+    "measurement_contract_sha256": "545d8ddb7f44074b7246d02ddaa61e037767a36169749ccd7db40528d36c155d",
+    "finalizer_sha256": "e41ccfa8b5a9abfc36f6089f2a3f0704e13d3a12a2c0d5a9a1d6c5c9527c499b",
+    "manifest_sha256": "6972c509939c2825b69c3eb45edf6a16ec2fd842bf85c06f14b563ff3f65910e"
+  },
+  "native_adapter": {
+    "runner_sha256": "b4c01c10f2e2b21abeea0f46477cc6113ab331a4716554800e5feecd9172e6ae",
+    "native_run_sha256": "129a3a53f56112c2ee578b7d66f385cc8b9f1ec2d7c148e1ee9e0e5556f6b954",
+    "native_capture_sha256": "b64910e8841702c52488987b8a7c80881e4db0e3cd367405d3d7a32ff84fd997",
+    "delivery_audit_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+    "capture_scope": "source-gated local Native path; no CARLA execution in CPU worker"
+  },
+  "semantic_stage_chain": {
+    "status": "validated_draft_with_complete_speed_sweep",
+    "index_sha256": "088bfd8dc4bc599f5f93753a34ae5be84de5b8f1fd21ec4d53396c17e2213f6d",
+    "stage_count": 6,
+    "selected_cases": 5,
+    "source_negative_test": true
+  },
+  "saved_only_processing": {
+    "scope": "synthetic source software proof; not production physical acceptance",
+    "positive_cases": 5,
+    "missing_context_rejected_cases": 5,
+    "all_originals_preserved": true,
+    "native_replay_requested": false
+  },
+  "comparison_audit_sha256": "cba874f250e19480e5c5602fc6a0eaea960e0ec50eb9f1efd216eb09cccb9f6c",
+  "physical_fallbacks": {
+    "case_count": 5,
+    "candidate_id": "fallback1",
+    "manifest_sha256": "dc51a852df45fa2981781beb6754f6fd0b5c07e1f2774b0b66a162ea0be2fbf3",
+    "scope": "rack-camera pose alternative; Native physical trigger remains unverified"
+  },
+  "delivery_acceptance_cpu": {
+    "case_count": 5,
+    "script_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+    "scope": "synthetic checker positives and missing-rack negative; no physical acceptance"
+  },
+  "comparison_delivery_contracts_sha256": "74edb4368e401b3bdcccabd7625b96c1061db3dbb13f442ff50c813604a2f099",
+  "canonical_cases_sha256": "2bcf0e26b3f6d24d7306d8baddcdeeebf029945611b4dd27dcc33a546949d4df"
 }

@@ -7,140 +7,565 @@
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "e3bd82de830c95993e3fdb2480db5118e64d2d501f667325bd90fbce61e8305a",
+      "construction_sha256": "a99ec9121ea138fce6849d5d09e5681dad200f89084b25b38646f0198d6e9c3b",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual bicycle motion and rack pixel coverage may fail; source-based fallback remains CPU work."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reference/fallback1-construction.json",
+          "construction_sha256": "f35e17ebf9677ebf6389224facba583cdd53a14a08cdcdaeb5e32680c8a9de42",
+          "trigger": {
+            "source": "original reference_corner RGB and frame map from the selected primary Native run",
+            "metric": "rack pixels visible and bicycle/rack co-occurrence over original frames",
+            "failure_condition": "rack occluded or outside reference_corner source frames during bicycle approach"
+          },
+          "changed_knobs": [
+            "reference_corner camera position from (0,10,6) m to (0,7,7) m and pitch from -20 to -25 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-fallback1-offline-reference --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "f35e17ebf9677ebf6389224facba583cdd53a14a08cdcdaeb5e32680c8a9de42",
+            "log": "cpu-fallback1-reference-offline.log",
+            "log_sha256": "6f4f7282dbb3c7f8ce8cde60bca7b7fc30a85bc877d7cd6f888b59ff84b35694"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-reference-compatibility.json",
+            "sha256": "2a40109b5174009fa79a0ecb73ceb18c2154cb5973fe06531812562f6a1f1b58",
+            "log": "cpu-fallback1-reference-compat-analysis.log",
+            "negative_log": "cpu-fallback1-reference-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "",
+      "fixture_recipe": "work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/fixture-recipe-reference.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --output .runtime-work/c10307-offline-reference-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-offline-native-v4-reference --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "e3bd82de830c95993e3fdb2480db5118e64d2d501f667325bd90fbce61e8305a",
+        "construction_sha256": "a99ec9121ea138fce6849d5d09e5681dad200f89084b25b38646f0198d6e9c3b",
         "log": "cpu-offline-reference.log",
-        "log_sha256": "3d97e57fa770284aad5f9969a65edc1e49ab94334147f0f6290c1313b2c6aa88"
+        "log_sha256": "72c70f67ea7f460c1637300ae91ac2ea578e71c779e3040a809e4382780cc1d3"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-reference.json",
+        "sha256": "4c5a2561e2c6c2283b0e8c3fad0403e78a8cf01581f5f5b0eaba0615752f3dc6",
+        "log": "cpu-compat-analysis-reference.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-reference.log"
+      },
+      "acquisition": {
+        "actual_bicycle_speed": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "bicycle-motion.json and frame-map.json"
+        },
+        "contemporaneous_conditions": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "context.json and frame-map.json"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reference-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reference --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reference-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reference --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-process-saved-reference.log",
+        "test_log_sha256": "41259b51d036c8d772d002d5fdba3b62ad2a137527794627c41de3db12718840",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-check-reference.log",
+        "test_log_sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent physical review lacks required positive checks",
+        "negative_log": "cpu-delivery-negative-reference.log",
+        "negative_log_sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+        "scope": "CPU synthetic checker test only; physical source review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-reference-receipt.json",
+        "sha256": "bc1f1166b4120679e056afa54d6d87ae9f91529ac7b727d9af73b20bf043d018"
       }
     },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster",
       "kind": "delivery",
       "construction": "cases/faster/construction.json",
-      "construction_sha256": "b012febb91aa2a9fa38bd4d1738201d23bd801ea502caed9bacee8a878b94db8",
+      "construction_sha256": "0397d3c898c0ed12eff765f482c1e3f24850ae7512ed3faf92f606c047969fd9",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual bicycle motion and rack pixel coverage may fail; source-based fallback remains CPU work."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/faster/fallback1-construction.json",
+          "construction_sha256": "d2534e2c753e4b40398d5b9c41ac91fcb1f51f466d9ffb176459582717ed57bc",
+          "trigger": {
+            "source": "original reference_corner RGB and frame map from the selected primary Native run",
+            "metric": "rack pixels visible and bicycle/rack co-occurrence over original frames",
+            "failure_condition": "rack occluded or outside reference_corner source frames during bicycle approach"
+          },
+          "changed_knobs": [
+            "reference_corner camera position from (0,10,6) m to (0,7,7) m and pitch from -20 to -25 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-fallback1-offline-faster --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d2534e2c753e4b40398d5b9c41ac91fcb1f51f466d9ffb176459582717ed57bc",
+            "log": "cpu-fallback1-faster-offline.log",
+            "log_sha256": "81a818617e8b573621c9a7df123a0ba38615633f90c6b6ec90bf381f165328dc"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-faster-compatibility.json",
+            "sha256": "125cfa6b3aff4a16685d9c11080edd2a7cae1c47c522f269a8ce01ede3e46321",
+            "log": "cpu-fallback1-faster-compat-analysis.log",
+            "negative_log": "cpu-fallback1-faster-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "",
+      "fixture_recipe": "work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/fixture-recipe-faster.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --output .runtime-work/c10307-offline-faster-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-offline-native-v4-faster --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "b012febb91aa2a9fa38bd4d1738201d23bd801ea502caed9bacee8a878b94db8",
+        "construction_sha256": "0397d3c898c0ed12eff765f482c1e3f24850ae7512ed3faf92f606c047969fd9",
         "log": "cpu-offline-faster.log",
-        "log_sha256": "a230c45fe2a45a28aefd9b081daea4692ac950936c1083bd7b974d84b3b9a31f"
+        "log_sha256": "7737dccdc01a65c45c574967dd28bbb2b7f407117395c0e591abb8a311306a70"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-faster.json",
+        "sha256": "abe913ebce99ac0f6400531239e3424300b9d9f072e617e56229175e533d0016",
+        "log": "cpu-compat-analysis-faster.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-faster.log"
+      },
+      "acquisition": {
+        "actual_bicycle_speed": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "bicycle-motion.json and frame-map.json"
+        },
+        "contemporaneous_conditions": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "context.json and frame-map.json"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-faster-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-faster --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-faster-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-faster --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-process-saved-faster.log",
+        "test_log_sha256": "d945fef2a6ba21a7b02074bd1d52f6fa206f4e7bff0c619ee68624c57234a6f4",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-check-faster.log",
+        "test_log_sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__faster --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent physical review lacks required positive checks",
+        "negative_log": "cpu-delivery-negative-faster.log",
+        "negative_log_sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+        "scope": "CPU synthetic checker test only; physical source review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-faster-receipt.json",
+        "sha256": "7de1dd170ca6b91b9500689715b7c651fb6afc8ff3081dc906cdbc5f31e21469"
       }
     },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility",
       "kind": "delivery",
       "construction": "cases/reduced_visibility/construction.json",
-      "construction_sha256": "df3f08201fa4b988f8256e5365c9ccf2cef71366e6472b5cfd042563815e59cb",
+      "construction_sha256": "b934008947a139ea21435c588cebbad22ca66c52d730c68980c3fb974d775dfb",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual bicycle motion and rack pixel coverage may fail; source-based fallback remains CPU work."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/reduced_visibility/fallback1-construction.json",
+          "construction_sha256": "ac4af53f82cb2db1a13bd8221dc1f86903265f5c4be1e37d08ab28169a428951",
+          "trigger": {
+            "source": "original reference_corner RGB and frame map from the selected primary Native run",
+            "metric": "rack pixels visible and bicycle/rack co-occurrence over original frames",
+            "failure_condition": "rack occluded or outside reference_corner source frames during bicycle approach"
+          },
+          "changed_knobs": [
+            "reference_corner camera position from (0,10,6) m to (0,7,7) m and pitch from -20 to -25 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-fallback1-offline-reduced_visibility --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ac4af53f82cb2db1a13bd8221dc1f86903265f5c4be1e37d08ab28169a428951",
+            "log": "cpu-fallback1-reduced_visibility-offline.log",
+            "log_sha256": "0321c707aeb377b23cae58d48f11b056685bf9973400462f6dac680059e5b053"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-reduced_visibility-compatibility.json",
+            "sha256": "a251e3a8658b27251521db496673dd86ffaf3284e95aee1f656fe5fe03352c88",
+            "log": "cpu-fallback1-reduced_visibility-compat-analysis.log",
+            "negative_log": "cpu-fallback1-reduced_visibility-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "",
+      "fixture_recipe": "work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/fixture-recipe-reduced_visibility.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --output .runtime-work/c10307-offline-reduced_visibility-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-offline-native-v4-reduced_visibility --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "df3f08201fa4b988f8256e5365c9ccf2cef71366e6472b5cfd042563815e59cb",
+        "construction_sha256": "b934008947a139ea21435c588cebbad22ca66c52d730c68980c3fb974d775dfb",
         "log": "cpu-offline-reduced_visibility.log",
-        "log_sha256": "c2b833976d7bde4483fc209c26c97059012bb7c264d8fd4dcc13359c600d4046"
+        "log_sha256": "623a88755380630c7769da6ff8f17436c434ccdd7443b4c8e2d6043d972bf44d"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-reduced_visibility.json",
+        "sha256": "cf36936608db3a930f442dcad64a95b0a8364dac69d8eb7163b1252e201e8bfe",
+        "log": "cpu-compat-analysis-reduced_visibility.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-reduced_visibility.log"
+      },
+      "acquisition": {
+        "actual_bicycle_speed": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "bicycle-motion.json and frame-map.json"
+        },
+        "contemporaneous_conditions": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "context.json and frame-map.json"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reduced_visibility-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reduced_visibility --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reduced_visibility-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-reduced_visibility --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-process-saved-reduced_visibility.log",
+        "test_log_sha256": "51d12c3212145082f459826a74b22c2e3280770bdd64be62eabb59c5a450f6af",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-check-reduced_visibility.log",
+        "test_log_sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reduced_visibility --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent physical review lacks required positive checks",
+        "negative_log": "cpu-delivery-negative-reduced_visibility.log",
+        "negative_log_sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+        "scope": "CPU synthetic checker test only; physical source review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-reduced_visibility-receipt.json",
+        "sha256": "6c013ed5be1d73856fdb340596ed10ea9787a2e85d779e106668afd7b2a7fd7c"
       }
     },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack",
       "kind": "delivery",
       "construction": "cases/pedestrian_near_rack/construction.json",
-      "construction_sha256": "b5636dc292f3c26f6bf4985741fee991e8a26822f0b4a4f738b288fc151d2acb",
+      "construction_sha256": "0d001fd9c93ddb7960e5de537523e5f723ade956f7c595cba523ef170a188843",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual bicycle motion and rack pixel coverage may fail; source-based fallback remains CPU work."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/pedestrian_near_rack/fallback1-construction.json",
+          "construction_sha256": "b1583e71ca8dd8ff3f8763470aa139a4fcf6e044223f0b7668f4e2a6e2f8d387",
+          "trigger": {
+            "source": "original reference_corner RGB and frame map from the selected primary Native run",
+            "metric": "rack pixels visible and bicycle/rack co-occurrence over original frames",
+            "failure_condition": "rack occluded or outside reference_corner source frames during bicycle approach"
+          },
+          "changed_knobs": [
+            "reference_corner camera position from (0,10,6) m to (0,7,7) m and pitch from -20 to -25 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-fallback1-offline-pedestrian_near_rack --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b1583e71ca8dd8ff3f8763470aa139a4fcf6e044223f0b7668f4e2a6e2f8d387",
+            "log": "cpu-fallback1-pedestrian_near_rack-offline.log",
+            "log_sha256": "5df346db63f051111782bcb541b0135e9ab14bdff544da8e17135f19784ef327"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-pedestrian_near_rack-compatibility.json",
+            "sha256": "c98a929a3fae4658c6e37d306cbf23f0d166ab0caffafa3f8578c2edd727ff96",
+            "log": "cpu-fallback1-pedestrian_near_rack-compat-analysis.log",
+            "negative_log": "cpu-fallback1-pedestrian_near_rack-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "",
+      "fixture_recipe": "work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/fixture-recipe-pedestrian_near_rack.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --output .runtime-work/c10307-offline-pedestrian_near_rack-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-offline-native-v4-pedestrian_near_rack --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "b5636dc292f3c26f6bf4985741fee991e8a26822f0b4a4f738b288fc151d2acb",
+        "construction_sha256": "0d001fd9c93ddb7960e5de537523e5f723ade956f7c595cba523ef170a188843",
         "log": "cpu-offline-pedestrian_near_rack.log",
-        "log_sha256": "4220663a4cfa75ed88cfbf9e413f9485d8448efd391ad827cc29fa8696db7ece"
+        "log_sha256": "d35a884a31fda8c4d7ded098dac6d0a6d236c7571ae9505bcf2aca7e7c2ff0e8"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-pedestrian_near_rack.json",
+        "sha256": "de44e30dec0d2bd1a197d83b388fdee8aff3ea76b9637de09875400921302377",
+        "log": "cpu-compat-analysis-pedestrian_near_rack.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-pedestrian_near_rack.log"
+      },
+      "acquisition": {
+        "actual_bicycle_speed": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "bicycle-motion.json and frame-map.json"
+        },
+        "contemporaneous_conditions": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "context.json and frame-map.json"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-pedestrian_near_rack-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-pedestrian_near_rack --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-pedestrian_near_rack-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-pedestrian_near_rack --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-process-saved-pedestrian_near_rack.log",
+        "test_log_sha256": "763e7a6371e3cfeed44fda506975e54e87b1aaf5bdf72e8fac0bbbad8ad5c054",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-check-pedestrian_near_rack.log",
+        "test_log_sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__pedestrian_near_rack --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent physical review lacks required positive checks",
+        "negative_log": "cpu-delivery-negative-pedestrian_near_rack.log",
+        "negative_log_sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+        "scope": "CPU synthetic checker test only; physical source review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-pedestrian_near_rack-receipt.json",
+        "sha256": "ac391ee084f6b1f36d57a3f1fa42afbdcfd73e642003722b4ec1bcf0d72f6d30"
       }
     },
     {
       "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface",
       "kind": "delivery",
       "construction": "cases/wet_surface/construction.json",
-      "construction_sha256": "be60168dd97ed5ed43e92800dac2432839754b8f49af8ef6fbdb127427da650f",
+      "construction_sha256": "d727d9c825bd0c528cd08596838a35c54cc0691c5823e40f514ba2508cf5b061",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual bicycle motion and rack pixel coverage may fail; source-based fallback remains CPU work."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/wet_surface/fallback1-construction.json",
+          "construction_sha256": "ac81c41e19f2a2475f160410ef0713aa95ddf4f1ab73752d2219b2832931468f",
+          "trigger": {
+            "source": "original reference_corner RGB and frame map from the selected primary Native run",
+            "metric": "rack pixels visible and bicycle/rack co-occurrence over original frames",
+            "failure_condition": "rack occluded or outside reference_corner source frames during bicycle approach"
+          },
+          "changed_knobs": [
+            "reference_corner camera position from (0,10,6) m to (0,7,7) m and pitch from -20 to -25 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-fallback1-offline-wet_surface --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ac81c41e19f2a2475f160410ef0713aa95ddf4f1ab73752d2219b2832931468f",
+            "log": "cpu-fallback1-wet_surface-offline.log",
+            "log_sha256": "b6d451d3a3df6cd3f5571e260c6e6d99c4d8c0298a9906121e079086caf07454"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-wet_surface-compatibility.json",
+            "sha256": "94328303e34f0f0e6f5755b7d8d6e6ba3163bdd878478383b2c0017482f99eff",
+            "log": "cpu-fallback1-wet_surface-compat-analysis.log",
+            "negative_log": "cpu-fallback1-wet_surface-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "",
+      "fixture_recipe": "work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/fixture-recipe-wet_surface.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --output .runtime-work/c10307-offline-wet_surface-20261124c --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-offline-native-v4-wet_surface --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "be60168dd97ed5ed43e92800dac2432839754b8f49af8ef6fbdb127427da650f",
+        "construction_sha256": "d727d9c825bd0c528cd08596838a35c54cc0691c5823e40f514ba2508cf5b061",
         "log": "cpu-offline-wet_surface.log",
-        "log_sha256": "5ae935aa41ca977d58b2e345b92fda586d98f33e57b25c04ffc9273db068e504"
+        "log_sha256": "a01c0caec47f62308c1a526582f67cd1a05289889ee5ecaca46e4498ce21d4b6"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-wet_surface.json",
+        "sha256": "05225a0602a46b37e3edd67a9fcd72f48ca70a9b27a25f14cf261dbbec7efd36",
+        "log": "cpu-compat-analysis-wet_surface.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-wet_surface.log"
+      },
+      "acquisition": {
+        "actual_bicycle_speed": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "bicycle-motion.json and frame-map.json"
+        },
+        "contemporaneous_conditions": {
+          "entrypoint": "native_acquisition.py",
+          "method": "seal_original_acquisition",
+          "evidence": "context.json and frame-map.json"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-wet_surface-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-wet_surface --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-wet_surface-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-saved-v2-wet_surface --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c10307-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-process-saved-wet_surface.log",
+        "test_log_sha256": "8523c4b3a31cfd774f26440945e89b8a446e1a6e9b905701947dcc218ea4a0c4",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "294ce9341795c15370d7edbf578110e66486959da4f8b7b9908529497f250e98",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-check-wet_surface.log",
+        "test_log_sha256": "41e5c06977efeebb5f29b27f328fa52b88518b9fff10c84edc7d055ada80abe7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/prove_delivery_acceptance.py --case testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__wet_surface --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent physical review lacks required positive checks",
+        "negative_log": "cpu-delivery-negative-wet_surface.log",
+        "negative_log_sha256": "d44e102c53fd092e541b3b532d7eaa430155d4698929807681d3d343325fecab",
+        "scope": "CPU synthetic checker test only; physical source review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-wet_surface-receipt.json",
+        "sha256": "d0be0d3a49be2c7d2aebd7fa880b18484e18737033cbda45ede2ba40aedc1699"
       }
     }
   ]

@@ -35,7 +35,48 @@
         "at approximately the same time",
         "right-of-way yielding behavior and subsection-4 applicability"
       ],
-      "recording_description": "Two original Native vehicle footprint histories at 20 Hz, reviewed crossing/map/device context, four synchronized camera sources and composed video."
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "other_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "intersection_entry_time_difference_s",
+            "unit": "s",
+            "method": "first original footprint crossing upper timestamps; retain brackets",
+            "sampling_rate_hz": 20,
+            "time_window": "through both entries",
+            "reference_frame": "original Native frame clock",
+            "uncertainty": "approximately same time is legal judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_crossing",
+            "unit": "source-hashed OpenDRIVE and authority",
+            "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+          }
+        ],
+        "limitations": [
+          "Engineering candidate map does not establish legal highway/intersection status.",
+          "Requested release schedule does not prove actual entry timing or yielding."
+        ]
+      }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
@@ -52,7 +93,48 @@
         "at approximately the same time",
         "right-of-way yielding behavior and subsection-4 applicability"
       ],
-      "recording_description": "Two original Native vehicle footprint histories at 20 Hz, reviewed crossing/map/device context, four synchronized camera sources and composed video."
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "other_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "intersection_entry_time_difference_s",
+            "unit": "s",
+            "method": "first original footprint crossing upper timestamps; retain brackets",
+            "sampling_rate_hz": 20,
+            "time_window": "through both entries",
+            "reference_frame": "original Native frame clock",
+            "uncertainty": "approximately same time is legal judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_crossing",
+            "unit": "source-hashed OpenDRIVE and authority",
+            "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+          }
+        ],
+        "limitations": [
+          "Engineering candidate map does not establish legal highway/intersection status.",
+          "Requested release schedule does not prove actual entry timing or yielding."
+        ]
+      }
     },
     {
       "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
@@ -69,7 +151,172 @@
         "at approximately the same time",
         "right-of-way yielding behavior and subsection-4 applicability"
       ],
-      "recording_description": "Two original Native vehicle footprint histories at 20 Hz, reviewed crossing/map/device context, four synchronized camera sources and composed video."
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "other_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "intersection_entry_time_difference_s",
+            "unit": "s",
+            "method": "first original footprint crossing upper timestamps; retain brackets",
+            "sampling_rate_hz": 20,
+            "time_window": "through both entries",
+            "reference_frame": "original Native frame clock",
+            "uncertainty": "approximately same time is legal judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_crossing",
+            "unit": "source-hashed OpenDRIVE and authority",
+            "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+          }
+        ],
+        "limitations": [
+          "Engineering candidate map does not establish legal highway/intersection status.",
+          "Requested release schedule does not prove actual entry timing or yielding."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__yield_wait_for_other_clear",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_yielding_policy_probe",
+      "rationale": "Compare original ego brake and crossing entry while holding the reviewed intersection, other vehicle and timing target fixed; do not infer legal yielding.",
+      "variable_assignments": {
+        "requested_entry_offset_s": {
+          "kind": "controller",
+          "value": -0.02500000037252903
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "wait_for_other_clear"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "right-of-way yielding behavior and subsection-4 applicability"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "other_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "intersection_entry_time_difference_s",
+            "unit": "s",
+            "method": "first original footprint crossing upper timestamps; retain brackets",
+            "sampling_rate_hz": 20,
+            "time_window": "through both entries",
+            "reference_frame": "original Native frame clock",
+            "uncertainty": "approximately same time is legal judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_crossing",
+            "unit": "source-hashed OpenDRIVE and authority",
+            "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+          }
+        ],
+        "limitations": [
+          "Engineering candidate map does not establish legal highway/intersection status.",
+          "Requested release schedule does not prove actual entry timing or yielding."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__advance_at_release",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "controlled_yielding_policy_probe",
+      "rationale": "Compare original ego brake and crossing entry while holding the reviewed intersection, other vehicle and timing target fixed; do not infer legal yielding.",
+      "variable_assignments": {
+        "requested_entry_offset_s": {
+          "kind": "controller",
+          "value": -0.02500000037252903
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "advance_at_release"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "at approximately the same time",
+        "right-of-way yielding behavior and subsection-4 applicability"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "other_original_footprint",
+            "unit": "m",
+            "method": "Native actor world bounding box each original 20 Hz tick",
+            "sampling_rate_hz": 20,
+            "time_window": "whole crossing approach and entry",
+            "reference_frame": "OpenDRIVE world XY",
+            "uncertainty": "actual map and crossing authority require source review"
+          },
+          {
+            "name": "intersection_entry_time_difference_s",
+            "unit": "s",
+            "method": "first original footprint crossing upper timestamps; retain brackets",
+            "sampling_rate_hz": 20,
+            "time_window": "through both entries",
+            "reference_frame": "original Native frame clock",
+            "uncertainty": "approximately same time is legal judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_crossing",
+            "unit": "source-hashed OpenDRIVE and authority",
+            "method": "Source-sealed original OpenDRIVE and reviewed intersection context packet"
+          }
+        ],
+        "limitations": [
+          "Engineering candidate map does not establish legal highway/intersection status.",
+          "Requested release schedule does not prove actual entry timing or yielding."
+        ]
+      }
     }
   ]
 }

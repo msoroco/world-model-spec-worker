@@ -1,6 +1,7 @@
 """Independent measurement comparison; never labels legal prudence."""
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -50,6 +51,36 @@ def audit(plan: dict, comparison_id: str, left: dict, right: dict) -> dict:
             "legal_prudence": "unresolved", "source_kind": "original_native"}
 
 
+def _sha(path: Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def audit_saved_pair(plan: dict, comparison_id: str, left_path: Path,
+                     right_path: Path, left_receipt_path: Path,
+                     right_receipt_path: Path) -> dict:
+    """Bind both selected measurements to independent saved delivery audits."""
+    paths = (Path(left_path), Path(right_path))
+    receipt_paths = (Path(left_receipt_path), Path(right_receipt_path))
+    records = [json.loads(path.read_text()) for path in paths]
+    receipts = [json.loads(path.read_text()) for path in receipt_paths]
+    required = {"native_source", "all_participants", "time_join", "full_video_decode",
+                "actual_pixels", "physical_completion"}
+    for record, receipt, path in zip(records, receipts, paths):
+        if (receipt.get("format") != "worker-delivery-audit" or
+                receipt.get("passed") is not True or
+                receipt.get("case_id") != record.get("case_id") or
+                not required <= set(receipt.get("checks", [])) or
+                receipt.get("native_result_sha256") != _sha(path)):
+            raise ValueError("comparison lacks source-bound independent delivery audit")
+        if record.get("diagnostic_fixture") is True:
+            raise ValueError("comparison cannot use diagnostic fixture")
+    result = audit(plan, comparison_id, *records)
+    result["measurement_sha256"] = [_sha(path) for path in paths]
+    result["delivery_audit_sha256"] = [_sha(path) for path in receipt_paths]
+    result["independent_delivery_audits"] = True
+    return result
+
+
 def main():
     import argparse
     p = argparse.ArgumentParser()
@@ -57,9 +88,18 @@ def main():
     p.add_argument("--comparison", required=True)
     p.add_argument("--left", type=Path, required=True)
     p.add_argument("--right", type=Path, required=True)
+    p.add_argument("--left-delivery-audit", type=Path)
+    p.add_argument("--right-delivery-audit", type=Path)
     args = p.parse_args()
-    print(json.dumps(audit(json.loads(args.plan.read_text()), args.comparison,
-                           json.loads(args.left.read_text()), json.loads(args.right.read_text()))))
+    plan = json.loads(args.plan.read_text())
+    if bool(args.left_delivery_audit) != bool(args.right_delivery_audit):
+        raise ValueError("both independent delivery audits are required")
+    result = (audit_saved_pair(plan, args.comparison, args.left, args.right,
+                               args.left_delivery_audit, args.right_delivery_audit)
+              if args.left_delivery_audit else
+              audit(plan, args.comparison,
+                    json.loads(args.left.read_text()), json.loads(args.right.read_text())))
+    print(json.dumps(result))
 
 
 if __name__ == "__main__":

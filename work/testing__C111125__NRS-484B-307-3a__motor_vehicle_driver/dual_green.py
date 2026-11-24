@@ -99,6 +99,13 @@ def measure_original(site, root, event_ref, event_root=None):
         result.append(observed)
     require(exhibition is not None, "no simultaneous circular green and arrow")
     require(not result[0]["ego_in_intersection"] and any(r["ego_in_intersection"] for r in result), "ego crossing not observed")
+    require(not exhibition["ego_in_intersection"],
+            "first dual-green exhibition occurred after ego entered intersection")
+    crossing_index = next(i for i, row in enumerate(result) if row["ego_in_intersection"])
+    exhibition_index = next(i for i, row in enumerate(result) if row is exhibition)
+    require(exhibition_index < crossing_index and
+            all(row["dual_green"] for row in result[exhibition_index:crossing_index + 1]),
+            "dual-green observation does not span ego entry")
     return {"exhibition": exhibition, "records": result, "original_sources": site["original_sources"] + [event_ref], "permission_verdict": None, "right_of_way_verdict": None}
 
 

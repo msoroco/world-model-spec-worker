@@ -10,7 +10,8 @@ import math
 
 
 CASE_SUFFIXES = ('timing_below_training', 'timing_inside_training',
-                 'timing_above_training')
+                 'timing_above_training', 'yield_wait_for_other_clear',
+                 'advance_at_release')
 
 
 def require(ok, message):

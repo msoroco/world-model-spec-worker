@@ -106,6 +106,19 @@ class ApproachTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'four-camera synchronized'):
                 measure(path)
 
+    def test_original_source_symlink_rejected_even_with_matching_hash(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            attempt = root / 'attempt'
+            attempt.mkdir()
+            write_attempt(attempt)
+            external = root / 'external-context.json'
+            source = attempt / 'intersection-context.json'
+            source.rename(external)
+            source.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, 'missing original Native source'):
+                measure(attempt)
+
     def test_right_turn_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)

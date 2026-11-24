@@ -74,6 +74,23 @@ class DualGreenTests(unittest.TestCase):
         with self.assertRaisesRegex(green.EvidenceError, "no simultaneous"):
             green.measure_original(self.site, self.root, self.event_ref(["circular_green", "green_right_arrow"]))
 
+    def test_dual_green_must_start_before_and_span_ego_entry(self):
+        event_ref = self.event_ref()
+        path = self.root / event_ref["path"]
+        rows = json.loads(path.read_text())
+        rows[0]["lit_aspects"] = ["circular_green"]
+        path.write_text(json.dumps(rows))
+        event_ref["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(green.EvidenceError, "after ego entered"):
+            green.measure_original(self.site, self.root, event_ref)
+
+        rows[0]["lit_aspects"] = ["circular_green", "green_left_arrow"]
+        rows[1]["lit_aspects"] = ["circular_green"]
+        path.write_text(json.dumps(rows))
+        event_ref["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(green.EvidenceError, "does not span ego entry"):
+            green.measure_original(self.site, self.root, event_ref)
+
     def test_source_mutation_rejected(self):
         (self.root / "signal.json").write_text("changed")
         with self.assertRaisesRegex(green.EvidenceError, "hash mismatch"):
@@ -246,6 +263,39 @@ class DualGreenTests(unittest.TestCase):
         self.assertEqual(measured["frame_count"], 3)
         self.assertEqual(measured["exhibition"]["other_users"][0]["region"], "adjacent_crosswalk")
         self.assertIsNone(measured["right_of_way_verdict"])
+
+    def test_saved_rejects_case_observation_mismatch(self):
+        attempt, _, _ = self.native_fixture(other=True)
+        wrong_case = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear"
+        receipt_path = attempt / "native-attempt.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["case_id"] = wrong_case
+        receipt_path.write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(green.EvidenceError, "clear case has another user"):
+            saved.measure_saved(self.site, self.root, attempt, wrong_case)
+
+    def test_late_pedestrian_requires_observed_crosswalk_entry(self):
+        case_id = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late"
+        outside = {"id": "walk-1", "kind": "pedestrian", "region": "outside"}
+        measured = {"exhibition": {"frame": 10, "other_users": [outside]},
+                    "records": [{"frame": 10, "other_users": [outside]},
+                                {"frame": 11, "other_users": [outside]}]}
+        with self.assertRaisesRegex(green.EvidenceError, "never entered"):
+            saved.check_case_observation(case_id, measured)
+        measured["records"][1]["other_users"] = [dict(outside, region="adjacent_crosswalk")]
+        self.assertEqual(saved.check_case_observation(case_id, measured)["case_suffix"],
+                         "dual_pedestrian_late")
+
+    def test_present_case_rejects_wrong_kind_or_region(self):
+        case_id = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present"
+        measured = {"exhibition": {"frame": 10, "other_users": [
+            {"id": "2", "kind": "pedestrian", "region": "intersection"}]},
+                    "records": []}
+        with self.assertRaisesRegex(green.EvidenceError, "contrast not observed"):
+            saved.check_case_observation(case_id, measured)
+        measured["exhibition"]["other_users"][0]["kind"] = "motor_vehicle"
+        self.assertEqual(saved.check_case_observation(case_id, measured)["case_suffix"],
+                         "dual_vehicle_present")
 
     def test_saved_rejects_lamp_mutation_and_wrong_case(self):
         attempt, case_id, _ = self.native_fixture()

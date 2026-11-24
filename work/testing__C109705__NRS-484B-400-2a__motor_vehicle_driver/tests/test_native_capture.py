@@ -12,6 +12,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from native_capture import capture
+from approach import measure
+from analysis import finalize
 from saved_delivery import audit, audit_original_pixels
 from test_approach import body, context
 from test_native_map import CASE, FakeWorld
@@ -24,11 +26,12 @@ CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 class FakeAdapter:
-    def __init__(self, *, drift_at=None, omit_camera=None, invalid_png=False,
+    def __init__(self, *, drift_at=None, camera_drift_at=None, omit_camera=None, invalid_png=False,
                  cleanup_failure=False):
         self.world = FakeWorld()
         self.count = 0
         self.drift_at = drift_at
+        self.camera_drift_at = camera_drift_at
         self.omit_camera = omit_camera
         self.invalid_png = invalid_png
         self.cleanup_failure = cleanup_failure
@@ -54,7 +57,8 @@ class FakeAdapter:
 
     def read_cameras(self, frame):
         raw = b'\x89PNG\r\n\x1a\n' + b'bad-image' if self.invalid_png else PNG
-        return {name: {'frame': frame, 'png': raw}
+        return {name: {'frame': frame, 'time_s': (frame - 100) * .05 +
+                       (.02 if frame - 100 == self.camera_drift_at else 0), 'png': raw}
                 for name in CAMERAS if name != self.omit_camera}
 
     def brake(self):
@@ -85,6 +89,17 @@ class NativeCaptureTests(unittest.TestCase):
             adapter = FakeAdapter()
             result = capture(adapter, CASE, survey, root / 'attempt')
             self.assertEqual(result['frame_count'], 900)
+            frames = [json.loads(line) for line in
+                      (root / 'attempt' / 'video_frames.jsonl').read_text().splitlines()]
+            self.assertEqual(len(frames), 900)
+            self.assertEqual([(row['video_frame'], row['carla_frame'],
+                               row['native_frame'], row['frame']) for row in frames],
+                             [(index, 100 + index, 100 + index, 100 + index)
+                              for index in range(900)])
+            self.assertTrue(all(set(row['camera_times_s']) == set(CAMERAS)
+                                and all(abs(value - row['time_s']) < .001
+                                        for value in row['camera_times_s'].values())
+                                for row in frames))
             self.assertTrue(adapter.braked and adapter.cleaned)
             with self.assertRaisesRegex(ValueError, 'diagnostic'):
                 audit(root / 'attempt', CASE)
@@ -98,6 +113,7 @@ class NativeCaptureTests(unittest.TestCase):
 
     def test_frame_drift_and_missing_camera_are_rejected_with_cleanup(self):
         for kwargs, error in (({'drift_at': 4}, 'cadence'),
+                              ({'camera_drift_at': 4}, 'camera timestamp drift'),
                               ({'omit_camera': 'approach'}, 'four-camera')):
             with self.subTest(kwargs=kwargs), tempfile.TemporaryDirectory() as temp:
                 root = Path(temp)
@@ -109,6 +125,42 @@ class NativeCaptureTests(unittest.TestCase):
                 self.assertTrue(adapter.braked and adapter.cleaned)
                 self.assertFalse((root / 'attempt').exists())
                 self.assertFalse(list(root.glob('attempt.incomplete-*')))
+
+    def test_rebound_canonical_frame_identity_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            mapping = attempt / 'video_frames.jsonl'
+            rows = [json.loads(line) for line in mapping.read_text().splitlines()]
+            rows[4]['video_frame'] = 5
+            mapping.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            acquisition_path = attempt / 'acquisition.json'
+            acquisition = json.loads(acquisition_path.read_text())
+            acquisition['video_frames.jsonl']['sha256'] = hashlib.sha256(mapping.read_bytes()).hexdigest()
+            acquisition_path.write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'canonical original frame identity'):
+                measure(attempt)
+
+    def test_rebound_camera_timestamp_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            mapping = attempt / 'video_frames.jsonl'
+            rows = [json.loads(line) for line in mapping.read_text().splitlines()]
+            rows[4]['camera_times_s']['approach'] += .02
+            mapping.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+            acquisition_path = attempt / 'acquisition.json'
+            acquisition = json.loads(acquisition_path.read_text())
+            acquisition['video_frames.jsonl']['sha256'] = hashlib.sha256(mapping.read_bytes()).hexdigest()
+            acquisition_path.write_text(json.dumps(acquisition))
+            with self.assertRaisesRegex(ValueError, 'four-camera timestamp drift'):
+                measure(attempt)
 
     def test_invalid_image_bytes_never_publish_an_attempt(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -144,6 +196,26 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertTrue(adapter.braked and adapter.cleaned)
             self.assertFalse((root / 'attempt').exists())
             self.assertFalse(list(root.glob('attempt.incomplete-*')))
+
+    def test_selected_requirement_finalizer_reopens_originals(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            report = finalize(attempt, CASE)
+            self.assertEqual(set(report['measurements']),
+                             {'left_turn_observed', 'two_directional_roads',
+                              'approach_right_half'})
+            self.assertTrue(report['measurements']['approach_right_half']['value']
+                            ['all_sampled_body_in_right_half'])
+            with self.assertRaisesRegex(ValueError, 'wrong exact saved case'):
+                finalize(attempt, CASE + '__wrong')
+            (attempt / 'intersection-context.json').unlink()
+            with self.assertRaisesRegex(ValueError,
+                                        'Missing required source: intersection-context.json'):
+                finalize(attempt, CASE)
 
 
 if __name__ == '__main__':

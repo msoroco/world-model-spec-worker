@@ -8,6 +8,12 @@ Cell: C104081 (hill_crest, travel, obstruction); actor: pedestrian.
 Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
 Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
 
+## 2026-11-23 measured Native walking controller checkpoint
+
+`native_walking.py` now accepts the exact constructed route and SHA-bound surveyed local-to-world transform. Its 900-tick, 20 Hz `WalkerControl` loop requests movement but records original pose/frame/time readback, rejects wrong start, stale frames, stalled movement and route departure, verifies a measured endpoint, and commands a stop in `finally`. `native_construction.construct_native` retains the checked route and survey digest for that bridge. The controller leaves due care, side-as-possible and practicability unresolved.
+
+`tests/test_native_walking.py` exercises completed measured movement, stale/missing motion, route departure, invalid start, wrong duration and changed survey bytes. The full focused suite passes 66 tests; pinned CPU preflight passes. This is a CPU fake-world proof of the route controller and source bridge, not actual CARLA motion or camera evidence. The complete CARLA adapter, four-camera Native capture, exact inline bundles and semantic/compatibility/saved delivery proofs remain to be authored.
+
 ## Current constructed plan
 
 `case-plan.json` now specifies five exact cases: `__clear_intervening`, `__blocked_intervening`, `__blocked_opposite`, `__blocked_late_return`, and `__missing_sidewalk`, each prefixed by this assignment ID. It specifies four controlled comparisons: intervening-area condition, travel direction, sidewalk-return opportunity, and sidewalk-obstruction type. Every case carries source gap IDs and a physical-risk assessment. Frozen `evidence.json` has zero accepted recordings, so source-backed reuse is unavailable. No judgment range entry matches this law and actor, and no numeric legal cutoff is assumed.

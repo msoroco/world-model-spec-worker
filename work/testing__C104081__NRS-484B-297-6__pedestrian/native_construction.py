@@ -84,7 +84,9 @@ def construct_native(plan: dict, case_id: str, survey_path: Path,
         if readback.get("obstacle_count") != len(scene.obstacles):
             raise ValueError("Native obstacle readback differs from construction")
         return {"case_id": case_id, "design": design_receipt, "owned_handles": owned,
-                "native_readback": readback, "site_map_id": survey["map_id"]}
+                "native_readback": readback, "site_map_id": survey["map_id"],
+                "route_local_xy_m": [list(point) for point in scene.route],
+                "survey_sha256": survey_sha256}
     except Exception:
         for handle in reversed(owned):
             adapter.destroy(handle)

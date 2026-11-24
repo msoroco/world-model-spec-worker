@@ -68,7 +68,7 @@ class SavedComparisonTests(unittest.TestCase):
             write_data(left, left_data, left_index, 'ego')
             left_data['pedestrian'] = [dict(row, body_center_xy_m=[1, 2]) for row in left_data['pedestrian']]
             write_data(left, left_data, left_index, 'pedestrian')
-            with self.assertRaisesRegex(audit.ComparisonError, 'variable did not differ'):
+            with self.assertRaisesRegex(ValueError, 'clear case has destination-half crosswalk occupancy'):
                 self.compare(left, right, root)
 
     def test_rejects_source_hash_tamper(self):
