@@ -41,6 +41,8 @@ def measure(folder):
     rows = [json.loads(line) for line in (folder / 'frames.jsonl').read_text().splitlines()]
     require(len(rows) == FRAMES, '600 source frames required')
     first_seen = first_deceleration = first_stop = first_release = first_contact = None
+    first_sustained_stop = None
+    stop_run = longest_stop_run = 0
     near_while_stopped = 0
     min_gap_before_release = math.inf
     min_ttc_before_release = math.inf
@@ -73,6 +75,13 @@ def measure(folder):
         lateral_conflict = abs(ped_y - road['ego_lane_y_m']) <= 1.0
         if first_seen is not None and first_stop is None and speed <= 0.05 and gap > 0:
             first_stop = i
+        if first_seen is not None and speed <= 0.05 and gap > 0:
+            stop_run += 1
+            longest_stop_run = max(longest_stop_run, stop_run)
+            if stop_run == RATE_HZ and first_sustained_stop is None:
+                first_sustained_stop = i - RATE_HZ + 1
+        else:
+            stop_run = 0
         if first_stop is not None and first_release is None and i > first_stop and speed > 0.05:
             first_release = i
         if first_stop is not None and first_release is None:
@@ -93,6 +102,8 @@ def measure(folder):
         'first_marker_observed_frame': first_seen,
         'first_deceleration_frame': first_deceleration,
         'first_full_stop_frame': first_stop,
+        'first_sustained_full_stop_frame': first_sustained_stop,
+        'longest_full_stop_run_frames': longest_stop_run,
         'first_post_stop_release_frame': first_release,
         'first_geometric_contact_frame': first_contact,
         'release_person_y_m': release_person_y,

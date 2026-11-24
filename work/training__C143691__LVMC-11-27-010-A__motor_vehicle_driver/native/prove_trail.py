@@ -17,6 +17,7 @@ def context():
             "vehicle_identity_sha256": "5" * 64,
             "official_designation": "nonmotorized_trail", "city_dedication": True,
             "posted_prohibition": True, "vehicle_class": "motorized_vehicle",
+            "exception_kind": "none", "exception_source_sha256": "6" * 64,
             "barrier_clear_gap_m": 3.2, "vehicle_width_m": 1.9,
             "trail_right_of_way_m": {"min_x": 10, "max_x": 90, "min_y": -2, "max_y": 2}}
 
@@ -53,6 +54,22 @@ if __name__ == "__main__":
     assert a["occupancy_frames"] == 0 and b["occupancy_frames"] > 0
     assert not a["ever_within_right_of_way"] and b["ever_within_right_of_way"]
     assert a["legal_compliance"] == b["legal_compliance"] == "unassessed"
+    exception_branches = {}
+    for kind, additions in (
+            ("emergency_vehicle", {}),
+            ("right_of_way_maintenance", {"maintenance_of_this_right_of_way": True}),
+            ("mobility_device", {"designed_for_mobility_impairment": True,
+                                  "used_by_mobility_impaired_person": True})):
+        variant = copy.deepcopy(source)
+        variant.update(additions)
+        variant["exception_kind"] = kind
+        result = measure(variant, within)
+        assert result["exception_kind_source_claim"] == kind
+        assert result["ever_within_right_of_way"] is True
+        assert result["legal_compliance"] == "unassessed"
+        exception_branches[kind] = {"occupancy_frames": result["occupancy_frames"],
+                                    "exception_kind_source_claim": kind,
+                                    "legal_compliance": result["legal_compliance"]}
     negative = []
     for field, expected in (("designation_document_sha256", "Missing source hash"),
                             ("dedication_document_sha256", "Missing source hash"),
@@ -69,6 +86,16 @@ if __name__ == "__main__":
     bad = copy.deepcopy(source)
     bad["barrier_clear_gap_m"] = 1.0
     negative.append(reject("blocked_barrier", bad, within, "vehicle clearance"))
+    bad = copy.deepcopy(source)
+    bad.pop("exception_source_sha256")
+    negative.append(reject("missing_exception_source", bad, within, "Exception source hash"))
+    bad = copy.deepcopy(source)
+    bad["exception_kind"] = "right_of_way_maintenance"
+    negative.append(reject("maintenance_not_on_right_of_way", bad, within, "Maintenance of this right-of-way"))
+    bad = copy.deepcopy(source)
+    bad["exception_kind"] = "mobility_device"
+    bad["designed_for_mobility_impairment"] = True
+    negative.append(reject("mobility_use_missing", bad, within, "Mobility-device design and use"))
     negative.append(reject("short_capture", source, within[:-1], "Incomplete 30-second"))
     bad_rows = copy.deepcopy(within)
     bad_rows[200]["source_cameras"].pop("trail_side")
@@ -78,7 +105,8 @@ if __name__ == "__main__":
     negative.append(reject("repeated_native_frame", source, bad_rows, "Native frame identity"))
     proof = {"format": "worker-cpu-trail-occupancy-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
-             "positive": {"outside": a, "within": b}, "negative": negative}
+             "positive": {"outside": a, "within": b},
+             "exception_branch_diagnostics": exception_branches, "negative": negative}
     path = Path(__file__).with_name("trail-proof.json")
     path.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({"passed": True, "negative_count": len(negative),

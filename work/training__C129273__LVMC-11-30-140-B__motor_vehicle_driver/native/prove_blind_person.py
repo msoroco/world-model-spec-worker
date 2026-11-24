@@ -36,7 +36,8 @@ def make(folder, mode, marker='white_red_tipped_cane', blindness='wholly'):
     })
     rows = []
     x = 0.0
-    release = {'stop': 260, 'early_release': 140, 'nonstop': None}[mode]
+    release = {'stop': 260, 'early_release': 140,
+               'brief_stop': 120, 'nonstop': None}[mode]
     for i in range(FRAMES):
         if mode == 'nonstop':
             speed = 8.0
@@ -87,6 +88,7 @@ def prove():
             'assisted_stop': ('stop', 'assisted_person', 'wholly'),
             'red_tipped_nonstop': ('nonstop', 'white_red_tipped_cane', 'wholly'),
             'red_tipped_early_release': ('early_release', 'white_red_tipped_cane', 'wholly'),
+            'red_tipped_brief_stop': ('brief_stop', 'white_red_tipped_cane', 'wholly'),
         }
         results = {}
         for key, args in scenarios.items():
@@ -95,6 +97,8 @@ def prove():
         for key in ('red_tipped_stop', 'white_cane_partial_stop', 'assisted_stop'):
             row = results[key]
             assert row['first_full_stop_frame'] == 119
+            assert row['first_sustained_full_stop_frame'] == 119
+            assert row['longest_full_stop_run_frames'] >= 20
             assert row['first_post_stop_release_frame'] == 260
             assert row['first_geometric_contact_frame'] is None
             assert row['release_person_y_m'] == 5.0
@@ -107,6 +111,9 @@ def prove():
         assert results['red_tipped_early_release']['first_post_stop_release_frame'] == 140
         assert results['red_tipped_early_release']['first_geometric_contact_frame'] is not None
         assert results['red_tipped_early_release']['release_person_y_m'] == 0.0
+        assert results['red_tipped_brief_stop']['first_full_stop_frame'] == 119
+        assert results['red_tipped_brief_stop']['first_sustained_full_stop_frame'] is None
+        assert results['red_tipped_brief_stop']['longest_full_stop_run_frames'] == 1
         assert results['red_tipped_stop']['source_sha256']['road.json'] == results['red_tipped_nonstop']['source_sha256']['road.json']
         assert results['red_tipped_stop']['source_sha256']['pedestrian.json'] == results['red_tipped_nonstop']['source_sha256']['pedestrian.json']
         negatives = {}

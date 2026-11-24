@@ -7,7 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from measure_parking import CAMERAS, FRAMES, measure
+from measure_parking import CAMERAS, FRAMES, FEET_TO_METRES, POUNDS_TO_KG, measure
 
 
 def context():
@@ -63,6 +63,24 @@ def run():
     assert a["park_frontage_overlap_at_rest"] is False
     assert b["park_frontage_overlap_at_rest"] is True
     assert a["legal_compliance"] == b["legal_compliance"] == "unassessed"
+    size_branches = {}
+    for label, length_m, mass_kg, expected_length, expected_mass in (
+            ("length_only", 24 * FEET_TO_METRES, 8000 * POUNDS_TO_KG, True, False),
+            ("weight_only", 24 * FEET_TO_METRES - .001, 8000 * POUNDS_TO_KG + .001, False, True),
+            ("neither", 24 * FEET_TO_METRES - .001, 8000 * POUNDS_TO_KG, False, False),
+            ("both", 8.0, 4000.0, True, True)):
+        variant = copy.deepcopy(source)
+        variant["vehicle_overall_length_m"] = length_m
+        variant["vehicle_unladen_mass_kg"] = mass_kg
+        measured = measure(variant, beside)
+        assert measured["length_at_least_24_feet"] is expected_length
+        assert measured["unladen_mass_over_8000_pounds"] is expected_mass
+        assert measured["size_or_weight_scope_observed"] is (expected_length or expected_mass)
+        assert measured["legal_compliance"] == "unassessed"
+        size_branches[label] = {key: measured[key] for key in (
+            "vehicle_overall_length_m", "vehicle_unladen_mass_kg",
+            "length_at_least_24_feet", "unladen_mass_over_8000_pounds",
+            "size_or_weight_scope_observed")}
     negative = []
     bad = copy.deepcopy(source)
     bad.pop("park_status_document_sha256")
@@ -89,6 +107,7 @@ def run():
     negative.append(rejects("no_rest", source, bad_rows, "No measured five-second"))
     return {"format": "worker-cpu-parking-proof", "diagnostic_only": True,
             "fixtures_are_original_native": False, "positive": {"away": a, "beside": b},
+            "size_or_weight_diagnostics": size_branches,
             "negative": negative, "passed": True}
 
 

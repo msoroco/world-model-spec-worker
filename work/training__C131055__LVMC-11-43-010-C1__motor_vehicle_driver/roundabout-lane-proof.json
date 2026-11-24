@@ -1,0 +1,88 @@
+{
+  "format": "worker-cpu-roundabout-lane-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "scenes": {
+    "left_lane": {
+      "case": "left_lane",
+      "waypoint_count": 49,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "native_topology_verified": false
+    },
+    "right_lane": {
+      "case": "right_lane",
+      "waypoint_count": 49,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "native_topology_verified": false
+    }
+  },
+  "positive": {
+    "left_lane": {
+      "format": "worker-source-roundabout-lane-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "circulation_frame_count": 301,
+      "left_lane_frame_count": 301,
+      "right_lane_frame_count": 0,
+      "lane_change_count": 0,
+      "angular_sweep_rad": 4.71238898038469,
+      "exit_heading_deg": 180.0,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lane labels depend on original roundabout lane topology and body-footprint review.",
+        "Left-turn exit intention requires independent source; geometry alone cannot prove intent.",
+        "No statutory numerical lane-occupancy threshold is inferred."
+      ]
+    },
+    "right_lane": {
+      "format": "worker-source-roundabout-lane-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "circulation_frame_count": 301,
+      "left_lane_frame_count": 0,
+      "right_lane_frame_count": 301,
+      "lane_change_count": 0,
+      "angular_sweep_rad": 4.71238898038469,
+      "exit_heading_deg": 180.0,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lane labels depend on original roundabout lane topology and body-footprint review.",
+        "Left-turn exit intention requires independent source; geometry alone cannot prove intent.",
+        "No statutory numerical lane-occupancy threshold is inferred."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_lane_source",
+      "rejected": "Missing source hash: roundabout_lanes"
+    },
+    {
+      "test": "unsourced_intention",
+      "rejected": "Roundabout topology or exit intention unsourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "outside_ring",
+      "rejected": "Ego left both inventoried lanes"
+    },
+    {
+      "test": "wrong_exit",
+      "rejected": "Left-turn exit trajectory not observed"
+    }
+  ]
+}

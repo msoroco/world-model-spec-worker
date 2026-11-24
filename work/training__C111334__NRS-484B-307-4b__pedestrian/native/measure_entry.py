@@ -41,6 +41,7 @@ def measure(folder):
     rows = [json.loads(line) for line in (folder / 'frames.jsonl').read_text().splitlines()]
     require(len(rows) == FRAMES, '600 source frames required')
     first_entry = first_permission = None
+    permission_at_first_entry = None
     entry_frames = arrow_frames = permission_frames = 0
     previous_y = None
     for i, row in enumerate(rows):
@@ -79,11 +80,13 @@ def measure(folder):
             entry_frames += 1
             if first_entry is None:
                 first_entry = i
+                permission_at_first_entry = row['other_device_permits_proceed']
     before_permission = first_entry is not None and (
-        first_permission is None or first_entry < first_permission)
+        permission_at_first_entry is not True)
     return {'format': 'c111334-entry-measurement-v1',
             'first_highway_entry_frame': first_entry,
             'first_other_device_permission_frame': first_permission,
+            'other_device_permission_at_first_entry': permission_at_first_entry,
             'entry_before_permission': before_permission,
             'highway_occupancy_frames': entry_frames,
             'arrow_alone_facing_frames': arrow_frames,

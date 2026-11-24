@@ -26,3 +26,9 @@ Accepted membership: 0 distinct recording IDs. Their contents and exact source-h
 Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
 
 Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+
+## 2026-11-23 entrant prior-yield antecedent checkpoint
+
+`prove-entrant-antecedent.py` SHA-256 `ded4d708ae88c3f6d33f53560959bf7d7873436aeeb8d684dc9f1e80e2cadea9` reuses the exact paired 600-frame synthetic source generator and saved meter with a separate hash-bound fixture directory under `.runtime-work/`. `entrant-antecedent-proof.json` SHA-256 `abcba847ed60fbe999023419289e0a0ded37edc8606cd5184f40e4579b7b3c67` records 140 pre-entry stopped frames in the positive source and rejects three independently rehashed mutations: no prior stop, only one stopped frame, and missing entrant history. It binds the existing meter SHA-256 `630474714350b29b36d1af2c919bd65a74bf8804ca8dd453f53df73f594a690e` and each source hash.
+
+This proves the software meter's source-shape antecedent check, not lawful prior yielding. Original entrant/through motion, through-highway legal designation, four-camera saved source, current-runtime compatibility/process-saved, selected delivery and independent audit remain worker-owned CPU work. Status stays partial.

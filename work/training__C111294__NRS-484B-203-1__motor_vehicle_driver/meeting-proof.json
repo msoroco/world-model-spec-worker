@@ -1,0 +1,74 @@
+{
+  "format": "worker-cpu-opposite-meeting-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "requested_0.45": {
+      "format": "worker-source-opposite-meeting-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_meeting_frame": 230,
+      "last_meeting_frame": 250,
+      "ego_right_paved_half_footprint_fraction_min": 0.45,
+      "ego_right_paved_half_footprint_fraction_max": 0.45,
+      "minimum_lateral_surface_gap_m": 0.3999999999999999,
+      "ego_passed_to_right_of_other_center": true,
+      "paved_width_m": 8.0,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Vehicle-footprint fraction is an engineering diagnostic, not the statutory allocation of at least half the paved portion.",
+        "As nearly as possible requires original road and surrounding constraints review.",
+        "Both opposite-direction bodies, pavement edges and lane count require original source and pixel review."
+      ]
+    },
+    "requested_0.55": {
+      "format": "worker-source-opposite-meeting-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_meeting_frame": 230,
+      "last_meeting_frame": 250,
+      "ego_right_paved_half_footprint_fraction_min": 0.55,
+      "ego_right_paved_half_footprint_fraction_max": 0.55,
+      "minimum_lateral_surface_gap_m": 0.6000000000000001,
+      "ego_passed_to_right_of_other_center": true,
+      "paved_width_m": 8.0,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Vehicle-footprint fraction is an engineering diagnostic, not the statutory allocation of at least half the paved portion.",
+        "As nearly as possible requires original road and surrounding constraints review.",
+        "Both opposite-direction bodies, pavement edges and lane count require original source and pixel review."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_pavement_source",
+      "rejected": "Missing source hash: paved_bounds_sha256"
+    },
+    {
+      "test": "wrong_lane_count",
+      "rejected": "One lane per direction not sourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "same_direction",
+      "rejected": "Opposite motion or vehicle extent missing"
+    },
+    {
+      "test": "no_meeting",
+      "rejected": "No observed opposite-direction meeting"
+    }
+  ]
+}

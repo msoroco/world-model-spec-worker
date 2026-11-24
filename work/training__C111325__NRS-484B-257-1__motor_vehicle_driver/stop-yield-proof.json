@@ -1,0 +1,113 @@
+{
+  "format": "worker-cpu-stop-yield-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "scenes": {
+    "complete_stop_then_yield": {
+      "case": "complete_stop_then_yield",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    },
+    "roll_through_conflict": {
+      "case": "roll_through_conflict",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    }
+  },
+  "positive": {
+    "complete_stop_then_yield": {
+      "format": "worker-source-stop-yield-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_line_crossing_frame": 254,
+      "first_intersection_entry_frame": 264,
+      "last_intersection_frame": 310,
+      "pre_line_stopped_frame_count": 150,
+      "first_pre_line_stopped_frame": 100,
+      "through_road_occupied_at_entry": false,
+      "simultaneous_intersection_occupancy_frames": [],
+      "minimum_through_vehicle_distance_to_conflict_edge_m": 12.0,
+      "legal_immediate_hazard": "unassessed",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "0.1 m/s is an engineering diagnostic for recorded rest, not a statutory cutoff.",
+        "Intersection occupancy uses body extents and requires original Native body and road readback.",
+        "Immediate hazard and right-of-way remain independent judgments over original motion and pixels."
+      ]
+    },
+    "roll_through_conflict": {
+      "format": "worker-source-stop-yield-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_line_crossing_frame": 147,
+      "first_intersection_entry_frame": 157,
+      "last_intersection_frame": 203,
+      "pre_line_stopped_frame_count": 0,
+      "first_pre_line_stopped_frame": null,
+      "through_road_occupied_at_entry": false,
+      "simultaneous_intersection_occupancy_frames": [
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203
+      ],
+      "minimum_through_vehicle_distance_to_conflict_edge_m": -4.0,
+      "legal_immediate_hazard": "unassessed",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "0.1 m/s is an engineering diagnostic for recorded rest, not a statutory cutoff.",
+        "Intersection occupancy uses body extents and requires original Native body and road readback.",
+        "Immediate hazard and right-of-way remain independent judgments over original motion and pixels."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_line_source",
+      "rejected": "Missing source hash: stop_line"
+    },
+    {
+      "test": "signal_exception",
+      "rejected": "Police or signal control exception unresolved"
+    },
+    {
+      "test": "no_marked_line",
+      "rejected": "Governing stop sign and marked line required"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    }
+  ]
+}

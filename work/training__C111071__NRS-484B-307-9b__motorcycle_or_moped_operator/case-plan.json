@@ -54,8 +54,11 @@
       "source": "NRS 484B.307(9)(b)",
       "branch": "yield to pedestrians and lawful traffic",
       "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "case_ids": [
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
+      ],
+      "evidence_or_gap": "Two 600-frame authored source requests measure entry during versus after requested pedestrian/traffic occupation and reject four missing/forged source changes. Native original presence, lawful status, causation, selected compatibility and saved audit remain unproven."
     },
     {
       "requirement": "NRS-484B-307-9b",
@@ -98,6 +101,34 @@
         "full-train"
       ],
       "construction_manifest": "draft-manifest.json"
+    },
+    {
+      "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+      "target_law_id": "NRS-484B-307-9b",
+      "kind": "unselected_native_request",
+      "target_type": "below",
+      "physical_target": "straight movement after pedestrians and lawful traffic clear",
+      "comparison_variable": "yield_after_two_cycles",
+      "source_branch": "yield to pedestrians and lawful traffic",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "native_construction": "native/yield_request.py"
+    },
+    {
+      "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy",
+      "target_law_id": "NRS-484B-307-9b",
+      "kind": "unselected_native_request",
+      "target_type": "controlled_attempt",
+      "physical_target": "straight movement during occupied crosswalk/conflict traffic",
+      "comparison_variable": "yield_after_two_cycles",
+      "source_branch": "yield to pedestrians and lawful traffic",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "native_construction": "native/yield_request.py"
     }
   ],
   "comparisons": [
@@ -113,6 +144,19 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__comparison_yield",
+      "case_ids": [
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
+      ],
+      "deliberate_differences": [
+        "yield_after_two_cycles"
+      ],
+      "fixed_conditions": [
+        "motorcycle, nearest-side crosswalk, red with green right arrow, two complete unchanged cycles, no prohibiting device"
       ]
     }
   ],

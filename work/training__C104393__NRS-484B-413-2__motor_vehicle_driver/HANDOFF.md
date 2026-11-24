@@ -100,3 +100,9 @@ This is CPU delivery preparation. `carla_executed` and `recordings_accepted` rem
 ## 2026-11-23 assignment check checkpoint
 
 Scoped `--complete` passed, log SHA-256 `ef02677b2686c92a34994066a496c0f75c4367712281b54da0578b3bff2574e2`. Scoped `--complete --require-delivery-ready` exited 1 on `Preparation acceptance failed: partial/missing packages remain`, log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`. Status remains partial.
+
+## Separate district clause CPU construction (2026-11-23)
+
+`native/measure_district_signal.py` now supplies an unselected source-bound meter for the statutory 100-foot business/residential district clause. It requires original land-use/frontage survey and map hashes, indicator, pose, course-change and weather source hashes, 840 monotone Native/frame/time joins and all four cameras. It integrates sampled ego path length during the uninterrupted directional signal immediately before the observed course change. `native/district-signal-contract.json` records the source and review requirements. `native/prove_district_signal.py` passed four source-shaped positives (90/100/110 ft plus 100 ft in rain) and seven negative/sensitivity controls, including missing frontage proof, wrong district, missing camera, duplicate frame and an indicator gap that reduces continuous distance. Proof SHA-256 `4e518ec6e05b2e1084c569a544786911b6f88f7fd8fd6261d5ec39fcdfc5e3a0`. The hashes and motion in these CPU fixtures are invented and the meter reports no legal verdict.
+
+This diagnostic does not reclassify any of the six selected `any_other_area` cases or change their source-hashed constructions. Original Native district survey, indicator pixels, physical turn, current selected cutover compatibility and full saved/audit chain remain. Status stays partial.

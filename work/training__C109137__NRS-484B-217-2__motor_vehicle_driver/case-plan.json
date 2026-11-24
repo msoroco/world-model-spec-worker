@@ -54,8 +54,11 @@
       "source": "NRS 484B.217(2); with 484B.217(3), 484B.217(4)",
       "branch": "oncoming and following traffic safety",
       "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "case_ids": [
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic",
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake"
+      ],
+      "evidence_or_gap": "Controlled 600-frame authored traffic-response requests and source meter distinguish 0 versus 8 m/s following speed drop at the same crossing, with four negative source mutations. Original oncoming/following trajectories, statutory no-impediment judgment, Native capture, selected compatibility and saved audit remain unproven."
     }
   ],
   "neutral_baseline": {
@@ -90,6 +93,34 @@
         "full-train"
       ],
       "native_construction": "native/zone/draft-execution-manifest.json"
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic",
+      "target_law_id": "NRS-484B-217-2",
+      "kind": "unselected_native_request",
+      "target_type": "below",
+      "physical_target": "adjoining-highway crossing with clear oncoming and following traffic",
+      "comparison_variable": "following_traffic_response_at_crossing",
+      "source_branch": "oncoming and following traffic safety",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "native_construction": "native/zone/traffic_impediment.py"
+    },
+    {
+      "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake",
+      "target_law_id": "NRS-484B-217-2",
+      "kind": "unselected_native_request",
+      "target_type": "controlled_attempt",
+      "physical_target": "adjoining-highway crossing with following traffic braking",
+      "comparison_variable": "following_traffic_response_at_crossing",
+      "source_branch": "oncoming and following traffic safety",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "native_construction": "native/zone/traffic_impediment.py"
     }
   ],
   "comparisons": [
@@ -105,6 +136,19 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__comparison_traffic_impediment",
+      "case_ids": [
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic",
+        "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake"
+      ],
+      "deliberate_differences": [
+        "following_traffic_response_at_crossing"
+      ],
+      "fixed_conditions": [
+        "same-cell no-passing zone, adjoining-highway crossing, signal-onset request and oncoming traffic request"
       ]
     }
   ],
@@ -206,7 +250,8 @@
   ],
   "blockers": [
     "Eight exact copied Native requests, source/compatibility and synthetic saved CPU proofs, independent audit, and pinned offline constructions now exist. Original CARLA generated-road/striping, reviewed crossing and signal, statutory zone designation, adjoining-highway identity, no-impediment and legal outcome remain unverified.",
-    "Subsections 3 and 4, the distinct left-turn alternative and traffic safety branch require separate runnable controlled coverage."
+    "Subsections 3 and 4, the distinct left-turn alternative and traffic safety branch require separate runnable controlled coverage.",
+    "Traffic safety branch has authored diagnostic and controlled plan only; Native original multi-actor response and no-impediment audit remain worker-owned CPU work."
   ],
   "selected_branch": null,
   "observations": [

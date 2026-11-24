@@ -21,3 +21,7 @@ Resume: validate source alternatives and exceptions against the exact law; imple
 Physical prerequisites: Use an installed uncovered but physically inoperative vehicular signal; verify stop-line, near crosswalk and nearest-view-point hierarchy, actual halt, cautious movement and priority.
 
 Legal limit: The inoperative-signal branch cannot be replaced with an ordinary functioning red-light stop.
+
+## 2026-11-23 source-driven controller replay
+
+`native/prove_source_controller.py` regenerates the retained 600-frame halt and roll inputs under `.runtime-work/c111277/source-controller/`, verifies their source indexes, then feeds their actual geometry, signal, ego speed and conflicting vehicle rows through the controller. The halt trace enters hold at frame 151, yield at 170 and releases at 241 after the other vehicle clears. The rolling trace crosses the selected crosswalk boundary before release and is rejected; an altered raw row file fails its source hash. Script SHA-256 `2fe0fa9daa3ad64f960d0824ba78b7d9a8fc61becbcbc0b83fbf101fdc631cdf`; proof SHA-256 `2b1490d060fe0d823e8dcb4df2b98653c9666d6debd1a8e249129e597c4dece2`. This binds the earlier policy to source-shaped observations but does not establish physical signal failure or a legal outcome. Status remains partial.

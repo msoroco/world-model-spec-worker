@@ -15,7 +15,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def finalize(bundle, saved):
+def finalize(bundle, saved, raw=None):
     bundle, saved = Path(bundle), Path(saved)
     measurement = measure(bundle, saved)
     receipt = json.loads((saved / 'preparation-receipt.json').read_text())
@@ -29,6 +29,14 @@ def finalize(bundle, saved):
         raise ValueError('saved source inventory changed')
     if len(receipt.get('raw_hashes', {})) != 5:
         raise ValueError('retained raw source inventory incomplete')
+    if raw is not None:
+        raw = Path(raw)
+        for name, expected in receipt['raw_hashes'].items():
+            if not (raw / name).is_file() or sha(raw / name) != expected:
+                raise ValueError('retained raw source changed: ' + name)
+        for name, expected in receipt.get('media_hashes', {}).items():
+            if not (raw / name).is_file() or sha(raw / name) != expected:
+                raise ValueError('retained camera source changed: ' + name)
     return {
         'format': 'c10374-zone-source-finalization-v1',
         'case_id': measurement['case_id'],
@@ -38,6 +46,7 @@ def finalize(bundle, saved):
             'preparation_receipt_sha256': sha(saved / 'preparation-receipt.json'),
             'saved_hashes': {name: sha(saved / name) for name in SAVED},
             'raw_hashes': receipt['raw_hashes'],
+            'raw_source_reverified': raw is not None,
             'config_sha256': sha(bundle / 'config.json'),
         },
         'target_check': {
@@ -57,9 +66,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--bundle', required=True)
     parser.add_argument('--saved', required=True)
+    parser.add_argument('--raw')
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = finalize(args.bundle, args.saved)
+    result = finalize(args.bundle, args.saved, args.raw)
     Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({'case_id': result['case_id'],
                       'overlap_frames': result['target_check']['measured'],

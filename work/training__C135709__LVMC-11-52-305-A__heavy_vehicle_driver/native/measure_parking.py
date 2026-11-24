@@ -10,6 +10,8 @@ from pathlib import Path
 RATE_HZ = 20
 FRAMES = 600
 CAMERAS = ("overview", "ego_front", "curb", "rear")
+FEET_TO_METRES = 0.3048
+POUNDS_TO_KG = 0.45359237
 
 
 def finite(value, name):
@@ -45,6 +47,8 @@ def measure(context, rows):
     weight = finite(context.get("vehicle_unladen_mass_kg"), "unladen mass")
     if length <= 0 or weight <= 0:
         raise ValueError("Invalid vehicle dimensions")
+    length_at_least_24_feet = length >= 24 * FEET_TO_METRES
+    mass_over_8000_pounds = weight > 8000 * POUNDS_TO_KG
     street = rectangle(context.get("street_bounds_m"), "street")
     park = rectangle(context.get("park_bounds_m"), "park")
     if context.get("park_status") != "public_park":
@@ -107,6 +111,9 @@ def measure(context, rows):
         "park_frontage_overlap_count": sum(during_rest),
         "vehicle_overall_length_m": length,
         "vehicle_unladen_mass_kg": weight,
+        "length_at_least_24_feet": length_at_least_24_feet,
+        "unladen_mass_over_8000_pounds": mass_over_8000_pounds,
+        "size_or_weight_scope_observed": length_at_least_24_feet or mass_over_8000_pounds,
         "legal_compliance": "unassessed",
         "limitations": ["Source hashes require independent origin review", "Loading, permission and service exceptions require separate evidence", "A rectangle proxy does not decide statutory adjacency"],
     }

@@ -47,6 +47,19 @@ def measure(context, rows):
         raise ValueError("Posted prohibition not established")
     if context.get("vehicle_class") != "motorized_vehicle":
         raise ValueError("Motorized vehicle identity not established")
+    exception_kind = context.get("exception_kind")
+    if exception_kind not in ("none", "emergency_vehicle", "right_of_way_maintenance", "mobility_device"):
+        raise ValueError("Exception identity not sourced")
+    exception_hash = context.get("exception_source_sha256")
+    if not isinstance(exception_hash, str) or len(exception_hash) != 64 or any(
+            char not in "0123456789abcdef" for char in exception_hash):
+        raise ValueError("Exception source hash absent")
+    if exception_kind == "right_of_way_maintenance" and context.get("maintenance_of_this_right_of_way") is not True:
+        raise ValueError("Maintenance of this right-of-way not sourced")
+    if exception_kind == "mobility_device" and not (
+            context.get("designed_for_mobility_impairment") is True and
+            context.get("used_by_mobility_impaired_person") is True):
+        raise ValueError("Mobility-device design and use not sourced")
     corridor = box(context.get("trail_right_of_way_m"), "trail right-of-way")
     gap = number(context.get("barrier_clear_gap_m"), "barrier clear gap")
     width = number(context.get("vehicle_width_m"), "vehicle width")
@@ -82,6 +95,8 @@ def measure(context, rows):
             "rate_hz": RATE_HZ, "occupancy_intervals": intervals,
             "occupancy_frames": sum(inside), "ever_within_right_of_way": any(inside),
             "administrative_prerequisites_source_claimed": True,
+            "exception_kind_source_claim": exception_kind,
+            "exception_source_sha256": exception_hash,
             "legal_compliance": "unassessed", "physical_source_review": "pending_independent_review",
             "limitations": ["Document and pixel hashes require original independent review",
                             "Exception status and sign appropriateness are not decided by occupancy geometry"]}

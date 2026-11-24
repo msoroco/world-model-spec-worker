@@ -12,6 +12,8 @@
       "occupancy_frames": 0,
       "ever_within_right_of_way": false,
       "administrative_prerequisites_source_claimed": true,
+      "exception_kind_source_claim": "none",
+      "exception_source_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
       "legal_compliance": "unassessed",
       "physical_source_review": "pending_independent_review",
       "limitations": [
@@ -32,12 +34,31 @@
       "occupancy_frames": 309,
       "ever_within_right_of_way": true,
       "administrative_prerequisites_source_claimed": true,
+      "exception_kind_source_claim": "none",
+      "exception_source_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
       "legal_compliance": "unassessed",
       "physical_source_review": "pending_independent_review",
       "limitations": [
         "Document and pixel hashes require original independent review",
         "Exception status and sign appropriateness are not decided by occupancy geometry"
       ]
+    }
+  },
+  "exception_branch_diagnostics": {
+    "emergency_vehicle": {
+      "occupancy_frames": 309,
+      "exception_kind_source_claim": "emergency_vehicle",
+      "legal_compliance": "unassessed"
+    },
+    "right_of_way_maintenance": {
+      "occupancy_frames": 309,
+      "exception_kind_source_claim": "right_of_way_maintenance",
+      "legal_compliance": "unassessed"
+    },
+    "mobility_device": {
+      "occupancy_frames": 309,
+      "exception_kind_source_claim": "mobility_device",
+      "legal_compliance": "unassessed"
     }
   },
   "negative": [
@@ -64,6 +85,18 @@
     {
       "test": "blocked_barrier",
       "rejected": "Barrier has no sourced vehicle clearance"
+    },
+    {
+      "test": "missing_exception_source",
+      "rejected": "Exception source hash absent"
+    },
+    {
+      "test": "maintenance_not_on_right_of_way",
+      "rejected": "Maintenance of this right-of-way not sourced"
+    },
+    {
+      "test": "mobility_use_missing",
+      "rejected": "Mobility-device design and use not sourced"
     },
     {
       "test": "short_capture",

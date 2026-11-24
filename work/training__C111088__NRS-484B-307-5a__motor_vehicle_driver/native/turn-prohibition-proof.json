@@ -1,0 +1,90 @@
+{
+  "format": "worker-cpu-straight-arrow-turn-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "straight": {
+      "format": "worker-source-straight-arrow-turn-observation",
+      "frame_count": 840,
+      "rate_hz": 20,
+      "first_intersection_frame": 200,
+      "last_intersection_frame": 400,
+      "maximum_heading_change_in_intersection_deg": 0.0,
+      "turn_observed_by_30_degree_diagnostic": false,
+      "requested_route_direction": "straight",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty degrees is a motion diagnostic, not the statutory definition of a turn.",
+        "The governing signal face and lamp exclusivity require original actor and pixel review.",
+        "A turn-attempt branch needs a compatible frozen cell or approved source-bound extension."
+      ]
+    },
+    "left_turn": {
+      "format": "worker-source-straight-arrow-turn-observation",
+      "frame_count": 840,
+      "rate_hz": 20,
+      "first_intersection_frame": 200,
+      "last_intersection_frame": 400,
+      "maximum_heading_change_in_intersection_deg": 70.0,
+      "turn_observed_by_30_degree_diagnostic": true,
+      "requested_route_direction": "left",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty degrees is a motion diagnostic, not the statutory definition of a turn.",
+        "The governing signal face and lamp exclusivity require original actor and pixel review.",
+        "A turn-attempt branch needs a compatible frozen cell or approved source-bound extension."
+      ]
+    },
+    "right_turn": {
+      "format": "worker-source-straight-arrow-turn-observation",
+      "frame_count": 840,
+      "rate_hz": 20,
+      "first_intersection_frame": 200,
+      "last_intersection_frame": 400,
+      "maximum_heading_change_in_intersection_deg": 70.0,
+      "turn_observed_by_30_degree_diagnostic": true,
+      "requested_route_direction": "right",
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Thirty degrees is a motion diagnostic, not the statutory definition of a turn.",
+        "The governing signal face and lamp exclusivity require original actor and pixel review.",
+        "A turn-attempt branch needs a compatible frozen cell or approved source-bound extension."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_pixel_review",
+      "rejected": "Missing source hash: signal_pixel_review_sha256"
+    },
+    {
+      "test": "unverified_sole_arrow",
+      "rejected": "Governing sole straight arrow not sourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Invalid bounds or incomplete 42-second Native trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "turn_lamp_on",
+      "rejected": "Sole straight arrow not maintained during intersection occupancy"
+    },
+    {
+      "test": "other_phase",
+      "rejected": "Sole straight arrow not maintained during intersection occupancy"
+    },
+    {
+      "test": "no_intersection_entry",
+      "rejected": "No observed intersection entry"
+    }
+  ]
+}

@@ -35,7 +35,9 @@ def make(folder, mode):
                      'vehicle_head_id': 'turn-arrow-1',
                      'pedestrian_device_id': 'ped-head-1',
                      'green_turn_arrow_alone': True,
-                     'other_device_permits_proceed': mode == 'permitted' and i >= 100,
+                     'other_device_permits_proceed':
+                     (mode == 'permitted' and i >= 100) or
+                     (mode == 'revoked' and 100 <= i < 110),
                      'body_polygon_xy_m': body})
     (folder / 'frames.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n'
                                                 for row in rows))
@@ -66,7 +68,7 @@ def prove():
     with tempfile.TemporaryDirectory(prefix='c111334-entry-', dir=ROOT / '.runtime-work') as name:
         scratch = Path(name)
         results = {}
-        for mode in ('wait', 'early', 'permitted'):
+        for mode in ('wait', 'early', 'permitted', 'revoked'):
             make(scratch / mode, mode)
             results[mode] = measure(scratch / mode)
         assert results['wait']['first_highway_entry_frame'] is None
@@ -78,6 +80,11 @@ def prove():
         assert results['permitted']['first_highway_entry_frame'] == first_entry
         assert results['permitted']['first_other_device_permission_frame'] == 100
         assert results['permitted']['entry_before_permission'] is False
+        assert results['permitted']['other_device_permission_at_first_entry'] is True
+        assert results['revoked']['first_highway_entry_frame'] == first_entry
+        assert results['revoked']['first_other_device_permission_frame'] == 100
+        assert results['revoked']['other_device_permission_at_first_entry'] is False
+        assert results['revoked']['entry_before_permission'] is True
         assert results['early']['highway_occupancy_frames'] == results['permitted']['highway_occupancy_frames']
         broken = scratch / 'changed_hash'
         shutil.copytree(scratch / 'early', broken)

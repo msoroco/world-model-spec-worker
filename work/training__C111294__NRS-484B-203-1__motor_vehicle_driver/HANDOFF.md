@@ -1,17 +1,9 @@
-# training__C111294__NRS-484B-203-1__motor_vehicle_driver
+# NRS 484B.203(1) at C111294
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Frozen cell: opposing vehicle meeting on a one-lane-each-direction road. Exact statutory source and the two proposed 0.45/0.55 footprint-fraction probes are in `case-plan.json`. Two full-train membership IDs are unreviewed; no equivalence or reuse receipt is claimed.
 
-## Source and scope
+Built source-bound 30-second, 600-frame, four-camera meeting meter (`measure_meeting.py`) and authored two-direction OpenDRIVE road plus paired ego/oncoming requests (`meeting_scene.py`). `meeting-measurement-contract.json` maps all frozen observation terms to original map, pavement, body and motion sources. CPU proof `meeting-proof.json` distinguishes 0.45/0.55 ego right-half body fractions and passing gaps, with seven negative controls. `meeting-scene-proof.json` tests the fixed road/oncoming/camera conditions and requested lateral placement, with four negative controls. Fixture hashes and motion are invented; authored geometry has not executed in Native.
 
-NRS 484B.203(1): Drivers of vehicles proceeding in opposite directions shall pass each other keeping to the right, and upon highways having width for not more than one line of traffic in each direction, each driver shall give to the other at least one-half of the paved portion of the highway as nearly as possible.
+The statute requires keeping right and giving at least one-half the paved portion as nearly as possible. The body's fraction in the right half is only a measurement diagnostic; it is not the statutory allocation and no legal verdict is inferred. Original road edges, lane count, physical constraints and both vehicle bodies need independent source review. The two planned cases remain unselected.
 
-Cell: intersection / travel / other_vehicle; actor: motor_vehicle_driver. Frozen witness count: 1. Membership rows: {'full-train': 2}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
-
-## Proposed comparison
-
-opposite-direction meeting on road of no more than one lane per direction; geometry and both vehicles held Vary only `ego_right_half_occupancy` (fraction) across [0.45, 0.55]. Measure paved width, center, both footprints and lateral allocation during meeting. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. As nearly as possible is an unresolved judgment; compare side occupancy without legal cutoff. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Next: create four distinct source-preserving Native candidate constructions per selected case, run pinned offline and positive/negative compatibility, capture four source cameras/600 frames, then actual recorded-only saved processing and independent acceptance/comparison audits. Keep partial until scoped strict readiness passes.

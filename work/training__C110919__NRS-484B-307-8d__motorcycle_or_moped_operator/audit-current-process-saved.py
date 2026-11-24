@@ -8,6 +8,7 @@ ROOT=HERE.parents[1]
 MANIFEST=HERE/'saved-diagnostic-manifest.json'
 POSITIVE=HERE/'native/current-process-saved-proof.json'
 NEGATIVE=HERE/'native/current-process-saved-negative-proof.json'
+POSITIVE_B=HERE/'native/current-process-saved-proof-b.json'
 
 
 def sha(path):
@@ -51,6 +52,15 @@ def main():
         raise ValueError('Current saved diagnostic identity or status changed')
     good=verify_sources(positive)
     bad=verify_sources(negative)
+    second=json.loads(POSITIVE_B.read_text())
+    if (not second['passed'] or second['case_id']!=manifest['cases'][1]['case_id'] or
+            second['manifest_sha256']!=sha(MANIFEST) or
+            second['source']['construction_sha256']!=manifest['cases'][1]['construction_sha256'] or
+            second['selected_delivery'] or second['original_native_observed'] or
+            second['processing_receipt']['missing_evidence'] or
+            second['processing_receipt']['case_id']!=second['case_id']):
+        raise ValueError('Condition B saved diagnostic identity changed')
+    second_good=verify_sources(second)
     if (positive['processing_receipt']['missing_evidence'] or
             negative['processing_receipt']['missing_evidence'] is not True or
             negative['classification']!='incomplete_or_unavailable_law_evidence' or
@@ -64,13 +74,15 @@ def main():
             'positive_proof_sha256':sha(POSITIVE),
             'negative_proof_sha256':sha(NEGATIVE),
             'positive':good,'negative':bad,
+            'condition_b_positive_proof_sha256':sha(POSITIVE_B),
+            'condition_b_positive':second_good,
             'missing_source':'road_geometry.json',
             'original_native_observed':False,'selected_delivery':False,
             'physical_acceptance_claimed':False,'legal_verdict_claimed':False}
     target=HERE/'native/current-process-saved-audit.json'
     target.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({'passed':True,'audit_sha256':sha(target),
-                      'source_counts':[good['sources'],bad['sources']]}))
+                      'source_counts':[good['sources'],bad['sources'],second_good['sources']]}))
 
 
 if __name__=='__main__':

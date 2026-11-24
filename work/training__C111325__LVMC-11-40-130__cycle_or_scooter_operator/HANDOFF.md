@@ -19,3 +19,7 @@ Exact law: “It shall be unlawful for any person to operate a bicycle at a spee
 ## Remaining CPU work
 
 Implement an actual bicycle Native mechanism rather than substituting a motor vehicle; obtain contemporaneous source measurements for speed, visibility, weather/surface, curvature, users and clearance. Provide four synchronized cameras, source-only current compatibility and actual process-saved positive/negative checks, selected case construction and risk candidates, semantic proposals, independent delivery and comparison audits, then rerun the strict scoped gate. Preserve the legal judgment “reasonable and prudent under the conditions then existing” as unresolved; a measured speed or surrogate cannot decide it on its own. Keep this result partial until all CPU preparation proves ready.
+
+## 2026-11-23 four-camera timing diagnostic
+
+`native/prove_camera_sources.py` bound each exact 600-row bicycle request to a video-frame map and four 600-frame FFV1 CPU streams using the camera names in `native/bicycle_setup.py`. All eight diagnostic streams decoded to 600 frames. The source-derived stop frames remain 337 for the 3 m/s request and 222 for the 5 m/s request, with the context and route fixed. Script SHA-256 `a5d04bfbf2427d9942f19fcd95128e51db9db02696ac7bf63e10d19f953b16b4`; returned `four-camera-cpu-proof.json` SHA-256 `ba0419b275af3f093c8ea0cafa83af5aa4d1beb9f920bf60e6227ebb66c3155a`. These 32x32 black software videos do not establish a real bicycle, rider, visible road conditions or prudence finding. Status remains partial.

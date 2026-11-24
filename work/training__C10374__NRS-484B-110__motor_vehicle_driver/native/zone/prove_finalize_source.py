@@ -26,10 +26,12 @@ def main():
         ('a', 'condition_a', 60), ('b', 'condition_b', 0)):
         bundle = assignment / 'native/zone/offline/bundles' / ('selected_c5852cfd__' + suffix) / 'primary'
         saved = work / ('c10374-current-saved-' + condition)
-        result = finalize(bundle, saved)
+        raw = work / ('c10374-current-graph-' + condition)
+        result = finalize(bundle, saved, raw)
         assert result['target_check']['measured'] == expected
         assert result['source_kind'] == 'synthetic_cpu'
         assert not result['physical_acceptance_claimed']
+        assert result['source_bindings']['raw_source_reverified']
         results.append({'condition': suffix, 'overlap_frames': expected,
                         'receipt_sha256': result['source_bindings']['preparation_receipt_sha256']})
     bundle = assignment / 'native/zone/offline/bundles/selected_c5852cfd__condition_a/primary'
@@ -53,16 +55,27 @@ def main():
             pass
         else:
             raise AssertionError('missing saved review accepted')
+        raw = Path(temp) / 'raw'
+        shutil.copytree(work / 'c10374-current-graph-a', raw)
+        source = raw / 'native-raw-actors.jsonl'
+        source.write_bytes(source.read_bytes() + b'\n')
+        try:
+            finalize(bundle, work / 'c10374-current-saved-a', raw)
+        except ValueError as exc:
+            assert 'retained raw source changed' in str(exc)
+        else:
+            raise AssertionError('altered raw source accepted')
     receipt = {
         'format': 'c10374-zone-source-finalization-proof-v1', 'passed': True,
         'finalizer_sha256': sha(Path(__file__).with_name('finalize_source.py')),
         'conditions': results, 'changed_saved_source_rejected': True,
         'missing_saved_source_rejected': True,
+        'changed_raw_source_rejected': True,
         'physical_acceptance_claimed': False, 'legal_outcome_claimed': False,
     }
     Path(args.output).write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps({'passed': True, 'overlap_frames': [60, 0],
-                      'negative_cases': 2}))
+                      'negative_cases': 3}))
 
 
 if __name__ == '__main__':

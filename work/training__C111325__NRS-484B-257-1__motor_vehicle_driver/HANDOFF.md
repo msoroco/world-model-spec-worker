@@ -1,17 +1,15 @@
-# training__C111325__NRS-484B-257-1__motor_vehicle_driver
+# C111325 / NRS 484B.257(1) CPU checkpoint
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. Neither case is selected for delivery. No original Native event, legal verdict, physical success, or accepted-recording reuse is claimed.
 
-## Source and scope
+The frozen witness is a stop sign, marked stop line, and through-highway occupancy in cell C111325. The exact statute also covers the yield-sign alternative, the stop-line/crosswalk/nearest-viewpoint hierarchy, the duty while crossing or within the intersection, and police and signal-control exceptions. Existing nine demo and nine full-train membership rows are not source-hashed proof of what those recordings show; inspect the frozen evidence inventory before allocating duplicate recordings.
 
-NRS 484B.257(1): Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.
+## Constructed diagnostic
 
-Cell: intersection / travel / stop_sign; actor: motor_vehicle_driver. Frozen witness count: 2. Membership rows: {'demo-train': 9, 'full-train': 9}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+`stop_yield_scene.py` authors perpendicular roads, a governing STOP sign, a marked approach line, a through-highway vehicle, distinct ego controller policies, and four cameras for 600 frames at 20 Hz. `measure_stop_yield.py` requires hashes of original map, sign, line, road, vehicle bodies/motion, control state and visibility, joins every Native frame to four camera identities, and measures front-bumper line crossing, recorded pre-line rest, the full intersection crossing interval, and simultaneous through-vehicle occupancy. `stop-yield-measurement-contract.json` records the engineering diagnostics and unresolved legal judgments.
 
-## Proposed comparison
+Run `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_stop_yield.py`. The generated `stop-yield-proof.json` contains source-shaped synthetic fixtures for `complete_stop_then_yield` and `roll_through_conflict`, plus six negative source, control, frame and camera tests. Fixture hashes and motion are synthetic; the proof is not an exact runtime offline/compatibility or process-saved receipt.
 
-stop sign with marked stop line and through-highway vehicle; no police/signal control Vary only `ego_stop_and_yield_sequence` (category) across ['complete_stop_then_yield', 'roll_through_conflict']. Measure wheel speed, stop-line crossing, other-vehicle approach and gap, ego crossing interval. The definitions are not selected recordings, and requested settings are not measured results.
+## Remaining CPU work
 
-## Blockers and resumption
-
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Yield-sign alternative and stop-line/crosswalk/no-mark hierarchy require distinct branches; safety judgment unresolved. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Review accepted recording source packets and write source-backed reuse or gaps. Resolve statutory alternative branches in compatible cells, select exact cases, implement the pinned runtime construction/controller and source acquisition, run exact offline and positive/negative compatibility for primary and risk-based fallbacks, run actual saved processing, then implement independent delivery and comparison audits and semantic proposals. Promote only after the scoped strict gate passes. CARLA execution, pixel review and canonical acceptance remain local operator work.

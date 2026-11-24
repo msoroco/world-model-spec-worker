@@ -248,5 +248,29 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "cpu_construction": {
+    "status": "authored_diagnostic_only",
+    "scene_script": "roundabout_scene.py",
+    "measurement_script": "measure_roundabout_lane.py",
+    "proof_script": "prove_roundabout_lane.py",
+    "proof": "roundabout-lane-proof.json",
+    "measurement_contract": "roundabout-lane-measurement-contract.json",
+    "frames": 600,
+    "rate_hz": 20,
+    "cameras": [
+      "overview",
+      "ego_front",
+      "entry_lane",
+      "exit_lane"
+    ],
+    "observed_native": false,
+    "selected_delivery": false
+  },
+  "cpu_source_observation_mapping": {
+    "roundabout_topology": "native map, circulatory lane and entry/exit link hashes required",
+    "left_lane": "inner of two sourced circulatory lanes with body occupancy measured each frame",
+    "left_turn_exit": "sourced exit intention plus entry/exit heading and path sweep",
+    "lane_change": "changes in measured ring lane occupancy; no assumption from requested policy"
+  }
 }

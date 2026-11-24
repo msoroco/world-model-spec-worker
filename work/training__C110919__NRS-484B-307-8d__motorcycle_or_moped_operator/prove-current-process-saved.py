@@ -3,6 +3,7 @@
 This diagnostic never represents a Native capture or operator owner release.
 """
 import hashlib
+import argparse
 import importlib.util
 import json
 import math
@@ -14,7 +15,7 @@ from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
-CASE='training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator__selected_109a5dbc__condition_a'
+CASE_PREFIX='training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator__selected_109a5dbc__'
 MANIFEST=HERE/'saved-diagnostic-manifest.json'
 LIBRARY=ROOT/'runtime/pipeline/library'
 VALIDATOR=ROOT/'.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck'
@@ -33,13 +34,14 @@ def write_rows(path,items):
     path.write_text(''.join(json.dumps(item,separators=(',',':'))+'\n' for item in items))
 
 
-def build_attempt(destination):
+def build_attempt(destination, condition):
     spec=importlib.util.spec_from_file_location('saved_fixture',HERE/'saved-fixture-proof.py')
     fixture=importlib.util.module_from_spec(spec)
     spec.loader.exec_module(fixture)
-    fixture.make_attempt(destination,'condition_a')
+    fixture.make_attempt(destination,condition)
     manifest=json.loads(MANIFEST.read_text())
-    construction=json.loads((HERE/manifest['cases'][0]['construction']).read_text())
+    entry=next(item for item in manifest['cases'] if item['case_id']==CASE_PREFIX+condition)
+    construction=json.loads((HERE/entry['construction']).read_text())
     (destination/'construction.json').write_text(json.dumps(construction,indent=2)+'\n')
     for item in construction['files']:
         target=destination/item['path']
@@ -89,31 +91,37 @@ def build_attempt(destination):
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--condition',choices=('condition_a','condition_b'),default='condition_a')
+    condition=parser.parse_args().condition
+    case=CASE_PREFIX+condition
     if not VALIDATOR.is_file():
         raise ValueError('Current validator absent')
     scratch=Path(tempfile.mkdtemp(prefix='c110919-process-saved-',dir=ROOT/'.runtime-work'))
     attempt=scratch/'attempt'
-    source=build_attempt(attempt)
+    source=build_attempt(attempt,condition)
     output=scratch/'processed'
     command=[sys.executable,str(ROOT/'runtime.py'),'process-saved',
-             '--manifest',str(MANIFEST),'--case',CASE,'--attempt',str(attempt),
+             '--manifest',str(MANIFEST),'--case',case,'--attempt',str(attempt),
              '--output',str(output),'--library',str(LIBRARY),
              '--validator',str(VALIDATOR)]
     run=subprocess.run(command,text=True,stdout=subprocess.PIPE,
                        stderr=subprocess.STDOUT,timeout=1800)
-    (HERE/'native/current-process-saved-command.log').write_text(run.stdout)
+    suffix='-b' if condition=='condition_b' else ''
+    log=HERE/('native/current-process-saved-command'+suffix+'.log')
+    log.write_text(run.stdout)
     if run.returncode:
         raise RuntimeError(f'Current process-saved failed (exit {run.returncode}); see command log; scratch {scratch}')
     receipt=json.loads(run.stdout)
     if not receipt.get('passed') or receipt.get('missing_evidence') or not receipt.get('originals_preserved'):
         raise ValueError('Saved processing did not produce a complete positive diagnostic')
     result={'format':'c110919-current-process-saved-diagnostic-v1',
-            'passed':True,'case_id':CASE,'manifest_sha256':sha(MANIFEST),
+            'passed':True,'case_id':case,'manifest_sha256':sha(MANIFEST),
             'source':source,'processing_receipt':receipt,
-            'command_log_sha256':sha(HERE/'native/current-process-saved-command.log'),
+            'command_log_sha256':sha(log),
             'original_native_observed':False,'selected_delivery':False,
             'physical_acceptance_claimed':False,'legal_verdict_claimed':False}
-    target=HERE/'native/current-process-saved-proof.json'
+    target=HERE/('native/current-process-saved-proof'+suffix+'.json')
     target.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({'passed':True,'proof_sha256':sha(target),'scratch':str(scratch)}))
 
