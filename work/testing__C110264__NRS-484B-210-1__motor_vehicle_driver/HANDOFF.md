@@ -70,3 +70,21 @@ Next CPU work: bind a reviewed Native map/paved corridor and actual actor/sensor
 `pass_right_finalizer.py:finalize` now validates the selected `left_signal`, `left_turn` or `neither` case, invokes the independent saved source audit and full four-camera decoder, and returns the measured target signal, measured left-turn motion, right-pass and intersection-passage findings with source and pixel digests. It refuses a saved trace that lacks the exact pass. Its CLI writes only a fresh result and binds the saved manifest SHA256. `tests/test_pass_right_finalizer.py` exercises full 900-frame camera ZIP decode, wrong-case rejection and missing-trace rejection with source-shaped diagnostic fixtures; fixture dimensions are marked outside the production camera profile. No physical visibility, legal permission or acceptance is asserted.
 
 Pinned preflight and scoped static check passed. The 27-test focused suite passed in `cpu-finalizer-tests.log`. The exact scoped strict gate exited 1 on partial status in `cpu-strict-finalizer.log`; the four current log hashes are retained in `result.json`. Canonical semantic proposals, complete manifest, production Native runner, runtime compatibility/process-saved receipts and independent delivery/comparison receipt chain remain CPU work.
+
+## 2026-11-24 synchronized Native camera adapter checkpoint
+
+`pass_right_sensor.py` now provides a CARLA-lazy acquisition adapter for one attempt. The caller supplies a previously source-bound world, four owned camera sensors, an actor sampler, road context and a controller callback. Before acquisition it requires synchronous 0.05-second Native ticks. It runs the controller before each tick, verifies each snapshot frame and the front/rear/left/right callback IDs, checks production camera dimensions and BGRA buffer lengths, encodes original PNGs into ordered ZIP archives, and sends the complete 900-row actor/camera trace through `collect_native_trace` and the shared FrameMap. A failed callback, mismatched frame or malformed image discards all partial archives. No physical behavior, highway status or legal outcome is inferred. The real actor/controller construction and source-reviewed map packet remain separate CPU work.
+
+`build_offline_draft.py` now embeds this adapter in each of the three exact paragraph-(a) diagnostic bundles. The 32-test focused suite covers callback acquisition, full media decode, pre-tick controller ordering, wrong clock, missing camera and stale camera frame. Pinned preflight, three exact `runtime.py offline` checks and assignment static check passed. The exact scoped strict gate exited 1 because the package remains truthfully partial. Diagnostic 8x4 camera images prove software joins only; they are not production footage.
+
+SHA-256 bound check logs:
+
+- `cpu-sensor-tests.log`: `5e2512a23916fbc555f58b878c0ad5515b3aeccfab14f5ab428dcdfea02f381b` (exit 0)
+- `cpu-sensor-preflight.log`: `ca94e14748a1678e5c7687be5ea20979aa9396bff2f4c97fdcf84de4e108ba2a` (exit 0)
+- `cpu-sensor-offline-left_signal.log`: `28160ee6bde9adfd18a5d9675e4d3c9c672162ebfa6aae5ad308b9586dcddf45` (exit 0)
+- `cpu-sensor-offline-left_turn.log`: `6387fd1da5da582ca8ab34aa9e3198063de3b53a3ca8096cb05ba7b4610e1e65` (exit 0)
+- `cpu-sensor-offline-neither.log`: `af322fb4b14b9c96afc58ea5f4db938f94178007fed6de0db34b2dbb2e1655a6` (exit 0)
+- `cpu-sensor-static.log`: `571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04` (exit 0)
+- `cpu-sensor-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+Next CPU work: acquire and review a source Native map packet; implement the CARLA actor spawn, source-station-to-world placement, right-pass controller and live pose/signal sampler; connect this adapter and saved finalizer to a canonical selected-case manifest; author semantic proposals and complete positive/negative compatibility, process-saved, independent delivery and controlled-comparison receipts. Preserve the partial status until the exact scoped strict gate passes.

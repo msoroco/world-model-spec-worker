@@ -45,10 +45,12 @@ class RunnerTests(unittest.TestCase):
                  jurisdiction="Las Vegas municipal", road_kind="street",
                  entering_arms=["north", "west", "east"], ego_road_through=False,
                  traffic_controlled_intersection=False,
+                 intersection_boundary_xy=[0, 0],
                  ego_route_xy=[[0, -40], [0, 0], [0, 15]], source_files={})
         for field in runner.SOURCE_FIELDS:
             name = field + ".json"
-            data = json.dumps({"source_kind": field, "value": p.get(field),
+            value = p["intersection_boundary_xy"] if field == "boundary" else p.get(field)
+            data = json.dumps({"source_kind": field, "value": value,
                                "reviewer": "test reviewer", "source_citation": "fixture"},
                               sort_keys=True).encode()
             (self.root / name).write_bytes(data)
@@ -97,6 +99,19 @@ class RunnerTests(unittest.TestCase):
         packet["source_files"]["road_kind"]["sha256"] = digest
         self.packet.write_text(json.dumps(packet))
         with self.assertRaisesRegex(ValueError, "claim mismatch"):
+            runner.read_reviewed_site(self.packet, case_key="clear_at", world=self.world)
+
+    def test_rehashed_wrong_boundary_rejected(self):
+        packet = json.loads(self.packet.read_text())
+        source = self.root / "boundary.json"
+        data = json.dumps({"source_kind": "boundary", "value": [8, 8],
+                           "reviewer": "test reviewer", "source_citation": "fixture"}).encode()
+        source.write_bytes(data)
+        digest = hashlib.sha256(data).hexdigest()
+        packet["boundary_source_sha256"] = digest
+        packet["source_files"]["boundary"]["sha256"] = digest
+        self.packet.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError, "claim mismatch: boundary"):
             runner.read_reviewed_site(self.packet, case_key="clear_at", world=self.world)
 
     def test_camera_start_failure_stops_partial_listeners(self):

@@ -30,7 +30,9 @@ class Adapter:
             event = dict(self.rows[frame], frame=frame + 1)
         else:
             event = self.rows[frame]
-        cameras = {name: {'frame': frame, 'png': self.png} for name in CAMERAS}
+        cameras = {name: {'frame': frame,
+                          'png': self.png[name] if isinstance(self.png, dict) else self.png}
+                   for name in CAMERAS}
         if self.bad_camera and frame == 1:
             cameras[self.bad_camera]['frame'] = 99
         return {'event': event, 'cameras': cameras}
@@ -136,7 +138,7 @@ class NativeCaptureTest(unittest.TestCase):
         result = process(self.root, self.site_ref, captured['events_ref'],
                          captured['frame_map_ref'],
                          ASSIGNMENT + '__arrow_walk_entry', output,
-                         expected_frames=4)
+                         expected_frames=4, delivery_profile=False)
         self.assertEqual(result, json.loads(output.read_text()))
         self.assertEqual(result['measurement']['first_highway_entry']['frame'], 2)
         self.assertEqual(result['media_audit']['camera_frames_audited'], 16)
@@ -144,7 +146,7 @@ class NativeCaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(SourceError, 'already exists'):
             process(self.root, self.site_ref, captured['events_ref'],
                     captured['frame_map_ref'], ASSIGNMENT + '__arrow_walk_entry',
-                    output, expected_frames=4)
+                    output, expected_frames=4, delivery_profile=False)
 
     def test_saved_process_rejects_changed_camera_without_output(self):
         captured = self.run_case('arrow_wait', False, False)
@@ -153,8 +155,35 @@ class NativeCaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(SourceError, 'camera source hash mismatch'):
             process(self.root, self.site_ref, captured['events_ref'],
                     captured['frame_map_ref'], ASSIGNMENT + '__arrow_wait',
+                    output, expected_frames=4, delivery_profile=False)
+        self.assertFalse(output.exists())
+
+    def test_saved_process_requires_pinned_delivery_dimensions_by_default(self):
+        captured = self.run_case('arrow_wait', False, False)
+        output = self.root / 'production_receipt.json'
+        with self.assertRaisesRegex(SourceError, 'dimensions differ from pinned profile'):
+            process(self.root, self.site_ref, captured['events_ref'],
+                    captured['frame_map_ref'], ASSIGNMENT + '__arrow_wait',
                     output, expected_frames=4)
         self.assertFalse(output.exists())
+
+    def test_saved_process_writes_profile_verified_receipt(self):
+        from delivery_media import PROFILE_SIZES
+        originals = {}
+        for name, size in PROFILE_SIZES.items():
+            stream = io.BytesIO()
+            Image.new('RGB', size, (1, 2, 3)).save(stream, format='PNG')
+            originals[name] = stream.getvalue()
+        captured = capture(self.site, self.site_ref, self.root,
+                           Adapter(self.rows(), originals),
+                           ASSIGNMENT + '__arrow_wait', 4)
+        output = self.root / 'verified_receipt.json'
+        receipt = process(self.root, self.site_ref, captured['events_ref'],
+                          captured['frame_map_ref'], ASSIGNMENT + '__arrow_wait',
+                          output, expected_frames=4)
+        self.assertTrue(receipt['delivery_media_audit']['pinned_dimensions_verified'])
+        self.assertEqual(receipt['delivery_media_audit']['decoded_source_frames'], 16)
+        self.assertEqual(json.loads(output.read_text()), receipt)
 
     def test_reject_diagnostic_site(self):
         site = dict(self.site, source_kind='diagnostic')

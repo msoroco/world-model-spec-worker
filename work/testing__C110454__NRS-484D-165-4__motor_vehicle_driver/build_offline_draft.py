@@ -10,7 +10,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "lamp_probe.py", "parking_geometry.py", "native_capture.py",
     "camera_recorder.py", "saved_lamps.py", "delivery_audit.py",
-    "comparison_audit.py", "owned_capture.py",
+    "comparison_audit.py", "owned_capture.py", "acquisition_finalizer.py",
 )
 
 RUNNER = '''"""Exact parked-headlamp bundle preflight."""

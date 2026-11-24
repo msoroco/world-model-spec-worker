@@ -69,8 +69,8 @@ def audit_saved_attempts(plan: dict, comparison_id: str, left_attempt: Path,
         if inventory.get("diagnostic_fixture") is True:
             raise ValueError("comparison requires non-diagnostic original inventory")
         record = measure(attempt, inventory, case_id)
-        if len(record["samples"]) < 900:
-            raise ValueError("comparison requires full original bicycle window")
+        if len(record["samples"]) != 900:
+            raise ValueError("comparison requires exact 900-frame original bicycle window")
         check_record(record)
         records.append(record)
         native_hashes.append(_sha(native_path))

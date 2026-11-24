@@ -11,7 +11,7 @@ from saved_measurement import ASSIGNMENT, EXPECTED
 HERE = Path(__file__).resolve().parent
 SOURCES = ('native_scene.py', 'pedestrian_control.py', 'carla_adapter.py',
            'native_capture.py', 'saved_measurement.py', 'saved_process.py',
-           'comparison_audit.py')
+           'comparison_audit.py', 'delivery_media.py')
 
 RUNNER = '''"""Exact C109171 diagnostic preflight; reviewed originals required for capture."""
 import argparse

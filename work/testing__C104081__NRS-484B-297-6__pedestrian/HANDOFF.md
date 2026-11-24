@@ -131,6 +131,12 @@ Current SHA-256 bound CPU logs:
 - `cpu-offline-blocked_late_return.log`: `fac507a6672d7d1a28203a9a8941b6a267f2f5e654093cd56cd02c45b3877169` (exit 0)
 - `cpu-offline-missing_sidewalk.log`: `402f15cf8ea81adaad998c60761beeb564bcad0f5569ddb21bd29c228494e9dc` (exit 0)
 
+## 2026-11-24 20 Hz Native clock construction checkpoint
+
+`native_attempt.configure_original_clock` now requests synchronous mode with a fixed 0.05 s world step and reads both settings back before any pedestrian, obstruction or camera capture begins. A refused setting prevents construction and still invokes the pinned world restoration path. The successful fake-world test checks the requested clock; the failure test checks that no capture or success receipt is produced. This is a CPU test of the Native control boundary, not actual CARLA motion.
+
+`build_offline_draft.py` regenerated all five exact diagnostic bundles with the current attempt wrapper. With `SCENARIO_PIPELINE_OUTPUT_ROOT`, `TMPDIR` and `MPLCONFIGDIR` under `.runtime-work/` and `PYTHONPATH=$PWD/runtime`, `cpu-clock-tests.log` records 102 passing tests. `cpu-clock-preflight.log`, all five `cpu-clock-offline-<case>.log` files, and `cpu-clock-static.log` exit 0. `cpu-clock-strict.log` exits 1 at the truthful partial status. The nine new logs are SHA-bound in `result.json`; the five offline bundles retain diagnostic status. Next CPU work is a real surveyed hill-crest site adapter and owned four-camera actor binding, followed by canonical proposals, exact compatibility and saved delivery/comparison proofs. Due care, far-to-side placement and prompt return remain unjudged pending original observations.
+
 ## 2026-11-23 canonical saved result checkpoint
 
 Added `saved_finalizer.py` to join the independently audited saved packet with recomputed exact-case measurements and write the canonical Native `result.json` through `native_output.write_result`. Five measured case targets retain source packet hashes and explicitly leave physical cause, completion and legal judgment unresolved. The finalizer refuses a missing saved source, mismatched audit packet and overwrite of an existing result. The focused suite passes 101 tests; pinned preflight and scoped static pass. Five earlier exact offline constructions remain passing. The exact scoped strict exits 1 on truthful `partial`. Original-source compatibility, canonical manifest/proposals, saved-only processing and delivery/comparison receipts still need construction and proof.
@@ -146,3 +152,9 @@ Current CPU log SHA-256 receipts:
 - `cpu-offline-blocked_opposite.log`: `047b6b6d54611510c2ced68a953430ae7e22074f9dda2e16791c4fde3522294c` (exit 0)
 - `cpu-offline-blocked_late_return.log`: `fac507a6672d7d1a28203a9a8941b6a267f2f5e654093cd56cd02c45b3877169` (exit 0)
 - `cpu-offline-missing_sidewalk.log`: `402f15cf8ea81adaad998c60761beeb564bcad0f5569ddb21bd29c228494e9dc` (exit 0)
+
+## 2026-11-24 Native lifecycle source-seal join
+
+`native_attempt.run_native_attempt` now requires the independently recomputed saved audit's `source_packet_sha256` to equal the actual sealed `source-packet.json` bytes before writing a lifecycle receipt. A changed audit seal aborts camera encoders, destroys owned actors, restores the world and leaves no success receipt. The fake Native test covers that rejection. All five exact diagnostic bundles were regenerated with this guard.
+
+`cpu-seal-tests.log` records 103 passing focused tests; `cpu-seal-preflight.log`, all five `cpu-seal-offline-<case>.log` files and `cpu-seal-static.log` exit 0. `cpu-seal-strict.log` exits 1 on truthful partial status. Nine new logs are SHA-bound in `result.json` (27 total). Actual site survey, a concrete CARLA actor/camera adapter, canonical stage proposals and manifest, source-bound compatibility, saved processing and independent delivery/comparison proofs remain worker-owned CPU work. Original motion, camera pixels and legal judgments remain unverified.

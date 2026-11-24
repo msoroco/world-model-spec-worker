@@ -238,10 +238,58 @@
       "exit_code": 0,
       "log": "cpu-owned-offline-high_beam.log",
       "sha256": "a30da7bb85deea249ed52b3c76b7a7cdb09af857afa78525bc782d173f2459e3"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-acquisition-build.log",
+      "sha256": "00beba5ec219a22edc73458ecda127ad8537ac3a73791c9b7da7808559b2b82b"
+    },
+    {
+      "command": "PYTHONPATH=$PWD/runtime .venv-cpu/bin/python -m unittest discover -s work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-acquisition-tests.log",
+      "sha256": "5f0dc54635d18fabc6ab95d22816f17ccdb19299c0211d2869631f935c826c15"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-acquisition-preflight.log",
+      "sha256": "b1caeb24eed364e45c3e0bb889af13df05dcb83117960a3ed0c392a5ec8d3695"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --output .runtime-work/c110454-finalizer/offline-unlit --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-acquisition-offline-unlit.log",
+      "sha256": "c9da25b7ccd4598359b7edd994157089efdecdc161a28c1c94f76324bbbd08cf"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --output .runtime-work/c110454-finalizer/offline-low_beam --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-acquisition-offline-low_beam.log",
+      "sha256": "49a18dd78e4c1bdeb9256d5de8bd49aaceec3d413f1bc77a427f906c42c5fbdb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --output .runtime-work/c110454-finalizer/offline-high_beam --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-acquisition-offline-high_beam.log",
+      "sha256": "8232a11196f398ea4eeb13733f3a9fac552f2f9f0a22281fa6f2b7c1ee2e3421"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-acquisition-static.log",
+      "sha256": "718f8cc5dcda62dcf0f81f4249dab89bbeec8a36ef2530dcfb1c01ed938f8e69"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-acquisition-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "A source-gated operator-owned parked-headlamp Native capture wrapper now validates the exact site/map, spawns one vehicle and four profile cameras, seals the 900-frame source receipt, and restores world settings/weather with actor cleanup on success or failure. Its generated exact-case runner binds CARLA lazily. A 27-test CPU suite, all three pinned offline bundles, preflight and scoped static pass. Reviewed original parking/intersection source and physical beam emission/aim remain unresolved; positive/negative compatibility, canonical manifest and saved delivery receipts remain CPU work."
+  "reason": "The acquisition finalizer now creates the saved manifest only from a sealed 900-frame exact-case Native receipt and original four-camera media hashes, invokes the independent saved audit, and rolls back on failure. Thirty focused tests, pinned preflight, three rebuilt diagnostic offline bundles and scoped static pass. Strict remains partial pending reviewed site and beam-aim sources, canonical manifest, positive/negative compatibility, true Native saved-delivery receipts and physical emission/aim review."
 }

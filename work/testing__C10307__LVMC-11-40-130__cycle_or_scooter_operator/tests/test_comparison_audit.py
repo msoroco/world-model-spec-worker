@@ -165,6 +165,30 @@ class ComparisonAuditTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "stale required source"):
                 audit_saved_attempts(self.plan, "speed_under_clear_conditions",
                                      *attempts, *receipts)
+            changed["samples"][2]["velocity_mps"][0] = 5.0
+            changed["samples"].append({"frame": 1900, "time_s": 901 / 20,
+                                       "velocity_mps": [5.0, 0, 0]})
+            motion_path.write_text(json.dumps(changed))
+            context_path = attempts[1] / "context.json"
+            context = json.loads(context_path.read_text())
+            context["samples"].append({"frame": 1900, "time_s": 901 / 20,
+                                       "weather": "clear", "surface": "dry",
+                                       "visibility": "clear", "pedestrians": "none",
+                                       "curvature": "straight"})
+            context_path.write_text(json.dumps(context))
+            map_path = attempts[1] / "frame-map.json"
+            frame_map = json.loads(map_path.read_text())
+            frame_map["frames"].append({"frame": 1900, "time_s": 901 / 20})
+            map_path.write_text(json.dumps(frame_map))
+            updated_inventory_path = attempts[1] / "inventory.json"
+            updated_inventory = json.loads(updated_inventory_path.read_text())
+            for key, path in (("frame_map", map_path),
+                              ("bicycle_motion", motion_path), ("context", context_path)):
+                updated_inventory["sources"][key]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+            updated_inventory_path.write_text(json.dumps(updated_inventory))
+            with self.assertRaisesRegex(ValueError, "exact 900-frame"):
+                audit_saved_attempts(self.plan, "speed_under_clear_conditions",
+                                     *attempts, *receipts)
 
 
 if __name__ == "__main__":

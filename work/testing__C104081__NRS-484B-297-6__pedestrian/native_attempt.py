@@ -7,11 +7,26 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from delivery_audit import audit_saved
 from native_construction import construct_native
 from native_source_packet import capture_constructed_sources
+
+
+def configure_original_clock(world) -> None:
+    """Request and read back the fixed 20 Hz Native capture clock."""
+    settings = world.get_settings()
+    settings.synchronous_mode = True
+    settings.fixed_delta_seconds = 0.05
+    world.apply_settings(settings)
+    actual = world.get_settings()
+    delta = getattr(actual, "fixed_delta_seconds", None)
+    if (getattr(actual, "synchronous_mode", None) is not True or
+            type(delta) not in (int, float) or not math.isfinite(delta) or
+            not math.isclose(delta, 0.05, abs_tol=1e-9)):
+        raise ValueError("Native 20 Hz synchronous clock readback differs")
 
 
 def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Path,
@@ -37,6 +52,7 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
     receipt = None
     try:
         world = client.get_world()
+        configure_original_clock(world)
         constructed = construct_native(plan, case_id, Path(survey_path),
                                        survey_sha256, adapter)
         owned = constructed["owned_handles"]
@@ -55,9 +71,11 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
         audit = audit_saved(output, case_id, decode_media=True)
         if not audit["checks"]["full_video_decode"]:
             raise ValueError("full saved camera decode required")
+        packet_sha256 = hashlib.sha256((output / "source-packet.json").read_bytes()).hexdigest()
+        if audit.get("source_packet_sha256") != packet_sha256:
+            raise ValueError("saved audit and Native source packet seal differ")
         receipt = {"format": "worker-pedestrian-native-attempt-lifecycle",
-                   "case_id": case_id, "source_packet_sha256":
-                   hashlib.sha256((output / "source-packet.json").read_bytes()).hexdigest(),
+                   "case_id": case_id, "source_packet_sha256": packet_sha256,
                    "saved_audit": audit, "physical_acceptance": "not_assessed"}
     except BaseException as exc:
         primary_error = exc

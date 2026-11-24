@@ -64,7 +64,8 @@ def check_materialized_package(output, scene):
     config = json.loads((output / "config.json").read_text())
     if (package.get("case_id") != scene["case_id"] or
             config.get("selected_case_id") != scene["case_id"] or
-            json.loads((output / "scene.json").read_text()) != scene):
+            json.loads((output / "scene.json").read_text()) !=
+            json.loads(json.dumps(scene))):
         raise ValueError("Native source-bound scene differs from selected package")
 
 

@@ -12,7 +12,18 @@ from native_attempt import run_native_attempt
 
 
 class World:
-    pass
+    def __init__(self):
+        self.synchronous_mode = False
+        self.fixed_delta_seconds = None
+        self.refuse_settings = False
+
+    def get_settings(self):
+        return self
+
+    def apply_settings(self, settings):
+        if self.refuse_settings:
+            self.synchronous_mode = False
+            self.fixed_delta_seconds = None
 
 
 class Client:
@@ -79,13 +90,21 @@ class NativeAttemptTests(unittest.TestCase):
 
     def test_success_seals_audit_and_restores_after_reverse_destruction(self):
         constructed = {"owned_handles": ["obstacle", "walker"]}
+        client = Client()
         def capture(*args, **kwargs):
             self.output.mkdir()
             (self.output / "source-packet.json").write_text('{"sealed": true}\n')
+        packet_sha256 = hashlib.sha256(b'{"sealed": true}\n').hexdigest()
         with patch("native_attempt.construct_native", return_value=constructed), \
              patch("native_attempt.capture_constructed_sources", side_effect=capture), \
-             patch("native_attempt.audit_saved", return_value={"checks": {"full_video_decode": True}}):
-            result = self.run_attempt()
+             patch("native_attempt.audit_saved", return_value={"checks": {"full_video_decode": True},
+                                                               "source_packet_sha256": packet_sha256}):
+            result = run_native_attempt(
+                client, object(), {}, self.case, self.survey, "c" * 64,
+                self.adapter, lambda *args: lambda sample: {}, self.recorder,
+                self.output, **self.kwargs)
+        self.assertTrue(client.world.synchronous_mode)
+        self.assertEqual(client.world.fixed_delta_seconds, 0.05)
         self.assertEqual(self.adapter.destroyed, ["walker", "obstacle"])
         self.assertEqual(self.restore.calls, ["snapshot", "restore"])
         self.assertEqual(result["source_packet_sha256"], hashlib.sha256(
@@ -103,6 +122,21 @@ class NativeAttemptTests(unittest.TestCase):
         self.assertTrue(self.recorder.aborted)
         self.assertFalse((self.output / "lifecycle-receipt.json").exists())
 
+    def test_changed_saved_audit_source_prevents_receipt(self):
+        def capture(*args, **kwargs):
+            self.output.mkdir()
+            (self.output / "source-packet.json").write_text('{"sealed": true}\n')
+        with patch("native_attempt.construct_native", return_value={"owned_handles": ["walker"]}), \
+             patch("native_attempt.capture_constructed_sources", side_effect=capture), \
+             patch("native_attempt.audit_saved", return_value={"checks": {"full_video_decode": True},
+                                                               "source_packet_sha256": "0" * 64}):
+            with self.assertRaisesRegex(ValueError, "source packet seal differ"):
+                self.run_attempt()
+        self.assertEqual(self.adapter.destroyed, ["walker"])
+        self.assertTrue(self.recorder.aborted)
+        self.assertEqual(self.restore.calls, ["snapshot", "restore"])
+        self.assertFalse((self.output / "lifecycle-receipt.json").exists())
+
     def test_restore_failure_prevents_success_receipt(self):
         self.restore.fail = True
         with patch("native_attempt.construct_native", return_value={"owned_handles": ["walker"]}), \
@@ -118,6 +152,19 @@ class NativeAttemptTests(unittest.TestCase):
                                "c" * 64, self.adapter, lambda *args: None,
                                None, self.output, **self.kwargs)
         self.assertEqual(self.restore.calls, [])
+
+    def test_clock_readback_failure_prevents_capture_and_restores(self):
+        client = Client()
+        client.world.refuse_settings = True
+        with patch("native_attempt.construct_native") as construct:
+            with self.assertRaisesRegex(ValueError, "20 Hz synchronous clock"):
+                run_native_attempt(client, object(), {}, self.case, self.survey,
+                                   "c" * 64, self.adapter,
+                                   lambda *args: lambda sample: {}, self.recorder,
+                                   self.output, **self.kwargs)
+        construct.assert_not_called()
+        self.assertEqual(self.restore.calls, ["snapshot", "restore"])
+        self.assertFalse((self.output / "lifecycle-receipt.json").exists())
 
 
 if __name__ == "__main__":

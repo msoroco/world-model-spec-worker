@@ -135,7 +135,24 @@ def measure(site, root, events_ref):
         if in_highway and first_entry is None:
             first_entry = fact
     require(not measurements[0]['in_highway'], 'capture starts after highway entry')
-    return {'first_highway_entry': first_entry, 'measurements': measurements,
+    entry_index = next((i for i, fact in enumerate(measurements) if fact['in_highway']), None)
+    entry_transition = None
+    if entry_index is not None:
+        entry = measurements[entry_index]
+        before = measurements[entry_index - 1]
+        entry_transition = {
+            'before_frame': before['frame'],
+            'entry_frame': entry['frame'],
+            'before_device_mode': before['other_device_mode'],
+            'entry_device_mode': entry['other_device_mode'],
+            'before_device_indication': before['other_device_indication'],
+            'entry_device_indication': entry['other_device_indication'],
+            'before_green_alone': before['green_alone'],
+            'entry_green_alone': entry['green_alone'],
+            'entered_within_crosswalk': entry['in_crosswalk'],
+        }
+    return {'first_highway_entry': first_entry, 'entry_transition': entry_transition,
+            'measurements': measurements,
             'crosswalk_kind': site['crosswalk_kind'], 'frame_count': len(rows),
             'original_sources': refs_with_events(site['original_sources'], events_ref),
             'legal_verdict': None, 'physical_acceptance': False}

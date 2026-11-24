@@ -18,16 +18,26 @@ CASE_EXPECTATIONS = {
 
 def check_case_observation(case_id, measured):
     """Check the planned contrast against original positions, without a legal verdict."""
-    suffix = case_id.rsplit("__", 1)[-1]
+    prefix = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__"
+    require(case_id.startswith(prefix), "wrong exact dual-green assignment")
+    suffix = case_id[len(prefix):]
     require(suffix in CASE_EXPECTATIONS, "unknown exact dual-green case")
     users = measured["exhibition"]["other_users"]
+    records = measured["records"]
+    require(records and any(row["frame"] == measured["exhibition"]["frame"] for row in records),
+            "exhibition absent from saved records")
     expected = CASE_EXPECTATIONS[suffix]
     if expected is None:
-        require(not users, "clear case has another user at exhibition")
+        require(not users and all(not row["other_users"] for row in records),
+                "clear case has another user")
         return {"case_suffix": suffix, "observed_difference": "clear_at_exhibition"}
     kind, region = expected
     require(len(users) == 1 and users[0]["kind"] == kind and users[0]["region"] == region,
             "other-user exhibition contrast not observed")
+    require(all(len(row["other_users"]) == 1 and
+                row["other_users"][0]["id"] == users[0]["id"] and
+                row["other_users"][0]["kind"] == kind for row in records),
+            "other-user identity or kind changed across saved frames")
     if suffix == "dual_pedestrian_late":
         pedestrian_id = users[0]["id"]
         first_frame = measured["exhibition"]["frame"]

@@ -8,12 +8,13 @@ import json
 from pathlib import Path
 
 from native_capture import audit_frame_map
+from delivery_media import audit_delivery_media
 from native_scene import SourceError
 from saved_measurement import ASSIGNMENT, EXPECTED, measure_saved
 
 
 def process(attempt, site_ref, events_ref, frame_map_ref, case_id, output,
-            *, expected_frames=900):
+            *, expected_frames=900, delivery_profile=True):
     if case_id not in {ASSIGNMENT + '__' + suffix for suffix in EXPECTED}:
         raise SourceError('unknown exact pedestrian case')
     output = Path(output)
@@ -28,6 +29,9 @@ def process(attempt, site_ref, events_ref, frame_map_ref, case_id, output,
             measurement['original_site_sha256'] != site_ref['sha256'] or
             media['camera_frames_audited'] != 4 * expected_frames):
         raise SourceError('saved event and original camera audit differ')
+    profile = (audit_delivery_media(attempt, frame_map_ref, events_ref,
+                                    expected_frames=expected_frames)
+               if delivery_profile else None)
     result = {
         'format': 'c109171-saved-process-v1',
         'case_id': case_id,
@@ -36,6 +40,7 @@ def process(attempt, site_ref, events_ref, frame_map_ref, case_id, output,
         'frame_map_source_sha256': frame_map_ref['sha256'],
         'measurement': measurement,
         'media_audit': media,
+        'delivery_media_audit': profile,
         'physical_acceptance': False,
         'statutory_permission': 'unresolved',
         'legal_verdict': None,

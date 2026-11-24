@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from sight_construction import CASES, spawn_occluder, validate_site
@@ -47,10 +48,17 @@ def read_reviewed_site(packet_path: Path, *, case_key: str, world) -> dict:
         if digest != ref.get("sha256") or digest != packet.get(field + "_source_sha256"):
             raise ValueError("Reviewed source hash mismatch: " + field)
         document = json.loads(data)
+        expected_value = (packet.get("intersection_boundary_xy") if field == "boundary"
+                          else packet.get(field))
         if (document.get("source_kind") != field or not document.get("reviewer")
                 or not document.get("source_citation")
-                or (field != "boundary" and document.get("value") != packet.get(field))):
+                or document.get("value") != expected_value):
             raise ValueError("Reviewed source claim mismatch: " + field)
+        if field == "boundary" and (not isinstance(expected_value, list) or
+                len(expected_value) != 2 or
+                any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in expected_value)):
+            raise ValueError("Reviewed intersection boundary coordinate invalid")
     validate_site(packet, CASES[case_key])
     return packet
 

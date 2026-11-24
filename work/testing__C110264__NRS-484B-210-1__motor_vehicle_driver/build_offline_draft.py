@@ -10,6 +10,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "pass_right_route.py", "pass_right_live.py", "pass_right_capture.py",
     "pass_right_measure.py", "pass_right_audit.py", "pass_right_media.py",
+    "pass_right_sensor.py",
 )
 
 RUNNER = '''"""Exact paragraph-(a) right-pass bundle preflight."""

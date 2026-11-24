@@ -187,3 +187,7 @@ Current proof log SHA-256 receipts:
 - `cpu-frame-profile-red_lane_drive.log`: `a95e60cb89c3751687741976f8f5955c09b28cf5ddc880b172aea32e527875e8` (exit 0)
 - `cpu-frame-profile-static.log`: `a52f2a201bac16ac78e4a36598523ac9ae085e28d7e53b2a2a57ff0c97e5e575` (exit 0)
 - `cpu-frame-profile-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-24 mandatory original camera frame map
+
+`original_media_profile.audit` now rejects a missing saved `camera-frame-map.jsonl` before reading four FFV1 streams. The previous optional map path allowed valid videos without an original CARLA frame identity and cadence join. The real FFmpeg test now checks missing-map rejection and retains extra-stream, wrong-rate, changed-camera, frame-gap and timing negatives. All 34 assignment tests, four current diagnostic profile CLI probes, pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial. Eight new SHA-bound logs are in `result.json`. This validates saved diagnostic media structure, not rendered red-X visibility or physical/legal sufficiency. Remaining source review, nondiagnostic proofs and queue integration are unchanged.

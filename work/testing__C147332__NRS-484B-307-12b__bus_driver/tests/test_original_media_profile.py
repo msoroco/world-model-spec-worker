@@ -24,11 +24,11 @@ class MediaProfileTest(unittest.TestCase):
                      "-f", "lavfi", "-i", f"color=c=red:s={width}x{height}:r=20",
                      "-frames:v", "2", "-an", "-c:v", "ffv1", "-threads", "1",
                      str(root / (name + ".mkv"))], check=True, capture_output=True)
-            self.assertEqual(set(audit(root)["cameras"]), set(CAMERAS))
             (root / "camera-frame-map.jsonl").write_text(
                 "\n".join(json.dumps({"frame": frame, "elapsed_seconds": (frame - 1) / 20,
                                       "camera_names": list(CAMERAS)})
                           for frame in (1, 2)) + "\n")
+            self.assertEqual(set(audit(root)["cameras"]), set(CAMERAS))
             self.assertEqual(audit(root)["frame_map_count"], 2)
             (root / "camera-frame-map.jsonl").write_text(json.dumps(
                 {"frame": 1, "elapsed_seconds": 0.0, "camera_names": list(CAMERAS)}) + "\n")
@@ -50,6 +50,12 @@ class MediaProfileTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "wrong camera identity"):
                 audit(root)
             (root / "camera-frame-map.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "frame map missing"):
+                audit(root)
+            (root / "camera-frame-map.jsonl").write_text(
+                "\n".join(json.dumps({"frame": frame, "elapsed_seconds": (frame - 1) / 20,
+                                      "camera_names": list(CAMERAS)})
+                          for frame in (1, 2)) + "\n")
             extra = root / "extra.mkv"
             subprocess.run(
                 ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",

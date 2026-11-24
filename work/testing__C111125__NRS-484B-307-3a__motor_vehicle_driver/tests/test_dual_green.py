@@ -290,12 +290,33 @@ class DualGreenTests(unittest.TestCase):
         case_id = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present"
         measured = {"exhibition": {"frame": 10, "other_users": [
             {"id": "2", "kind": "pedestrian", "region": "intersection"}]},
-                    "records": []}
+                    "records": [{"frame": 10, "other_users": [
+                        {"id": "2", "kind": "pedestrian", "region": "intersection"}]}]}
         with self.assertRaisesRegex(green.EvidenceError, "contrast not observed"):
             saved.check_case_observation(case_id, measured)
         measured["exhibition"]["other_users"][0]["kind"] = "motor_vehicle"
+        measured["records"][0]["other_users"][0]["kind"] = "motor_vehicle"
         self.assertEqual(saved.check_case_observation(case_id, measured)["case_suffix"],
                          "dual_vehicle_present")
+
+    def test_saved_contrast_rejects_participant_swap_and_late_clear_user(self):
+        prefix = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__"
+        user = {"id": "2", "kind": "motor_vehicle", "region": "intersection"}
+        exhibition = {"frame": 10, "other_users": [user]}
+        measured = {"exhibition": exhibition, "records": [exhibition,
+                    {"frame": 11, "other_users": [dict(user, id="3")]}]}
+        with self.assertRaisesRegex(green.EvidenceError, "identity or kind changed"):
+            saved.check_case_observation(prefix + "dual_vehicle_present", measured)
+        measured["records"][1]["other_users"] = [user]
+        self.assertEqual(saved.check_case_observation(prefix + "dual_vehicle_present", measured)
+                         ["case_suffix"], "dual_vehicle_present")
+        empty = {"frame": 10, "other_users": []}
+        measured = {"exhibition": empty, "records": [empty,
+                    {"frame": 11, "other_users": [user]}]}
+        with self.assertRaisesRegex(green.EvidenceError, "clear case has another user"):
+            saved.check_case_observation(prefix + "dual_clear", measured)
+        with self.assertRaisesRegex(green.EvidenceError, "wrong exact dual-green assignment"):
+            saved.check_case_observation("other__dual_clear", measured)
 
     def test_saved_rejects_lamp_mutation_and_wrong_case(self):
         attempt, case_id, _ = self.native_fixture()

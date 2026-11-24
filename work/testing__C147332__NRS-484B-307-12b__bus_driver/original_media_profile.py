@@ -14,6 +14,8 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 def audit(attempt: Path) -> dict:
     attempt = Path(attempt)
     frame_map = attempt / "camera-frame-map.jsonl"
+    if not frame_map.is_file():
+        raise ValueError("original camera frame map missing")
     expected_frames = None
     if frame_map.is_file():
         rows = [json.loads(line) for line in frame_map.read_text().splitlines() if line.strip()]

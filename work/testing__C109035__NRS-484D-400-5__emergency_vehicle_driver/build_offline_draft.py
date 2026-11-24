@@ -10,7 +10,8 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "emergency_scene.py", "native_scene.py", "native_capture.py",
-    "camera_recorder.py", "device_readback.py", "saved_finalizer.py",
+    "camera_recorder.py", "device_readback.py", "original_adapters.py",
+    "saved_finalizer.py",
     "warning_audit.py", "pixel_audit.py", "comparison_audit.py",
 )
 

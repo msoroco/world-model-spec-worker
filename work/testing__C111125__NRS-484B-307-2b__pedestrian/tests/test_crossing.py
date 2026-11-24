@@ -106,6 +106,29 @@ class CrossingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'countdown lacks observed'):
             crossing.measure(self.site, self.root, ref)
 
+    def test_entry_transition_preserves_before_and_at_device_modes(self):
+        self.events('DONT_WALK')
+        rows = json.loads((self.root / 'frames.json').read_text())
+        rows[0]['other_device_mode'] = 'flashing_countdown'
+        rows[0]['other_device_countdown'] = 8
+        rows[1]['other_device_mode'] = 'steady'
+        rows[1]['other_device_countdown'] = None
+        facts = crossing.measure(self.site, self.root, self.write('frames.json', json.dumps(rows)))
+        transition = facts['entry_transition']
+        self.assertEqual((transition['before_frame'], transition['entry_frame']), (0, 1))
+        self.assertEqual((transition['before_device_mode'], transition['entry_device_mode']),
+                         ('flashing_countdown', 'steady'))
+        self.assertTrue(transition['entry_green_alone'])
+        self.assertTrue(transition['entered_within_crosswalk'])
+        self.assertIsNone(facts['legal_verdict'])
+
+    def test_no_highway_entry_has_no_entry_transition(self):
+        self.events()
+        rows = json.loads((self.root / 'frames.json').read_text())
+        rows[1]['pedestrian_xy'] = [-1, 5]
+        facts = crossing.measure(self.site, self.root, self.write('frames.json', json.dumps(rows)))
+        self.assertIsNone(facts['entry_transition'])
+
     def test_outside_route_and_entry(self):
         self.site['route_crosswalk_expected'] = False
         self.site['pedestrian_route_xy'] = [[-2,8],[2,8],[11,8]]
