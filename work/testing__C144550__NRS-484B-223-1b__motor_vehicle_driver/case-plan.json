@@ -85,6 +85,40 @@
         },
         "limitations": "Synthetic CPU diagnostic only; no statutory safe-gap threshold or Native safety ascertainment claimed."
       }
+    },
+    {
+      "comparison_id": "lane_change_direction",
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap"
+      ],
+      "fixed_conditions": [
+        "same longitudinal ego and target paths, frame schedule, camera map and target body gap"
+      ],
+      "deliberate_differences": [
+        "mirrored lateral road geometry, exchanged source and target lane identities, and matching left versus right indication"
+      ],
+      "cpu_diagnostic_audit": {
+        "status": "passed_synthetic_source_comparison",
+        "frame_count": 900,
+        "fixed_originals": [
+          "longitudinal ego and target trajectories",
+          "frame and camera map",
+          "capture timing",
+          "target longitudinal body gap"
+        ],
+        "deliberate_transform": "reflect lateral coordinates as y_right = 0.5 - y_left, exchange source and target Native lane IDs, and replace left indication with right in original state, trace and graph evidence",
+        "left_gap_m": 8.0,
+        "right_gap_m": 8.0,
+        "right_signal_before_movement": true,
+        "source_sha256": {
+          "left_lane_history": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+          "right_lane_history": "199d764441945a356bdf3e8514101f574f40606455ff0c71a51e1ff6fa4d69ff",
+          "left_context": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+          "right_context": "f6a915d0b44cec57a6b9eb7d1f714d43355f0f0e2c0d94d298af20857fa48ec3"
+        },
+        "limitations": "Synthetic CPU source comparison only; Native lane appearance and actual driver safety ascertainment remain unresolved."
+      }
     }
   ],
   "evidence_review": {
@@ -1033,5 +1067,128 @@
       "close_capture_evidence": "5177aa55075c7fdbce8d2e1b2476223a28846a2a7c03387a23965395afc88e8b"
     },
     "limitations": "Synthetic CPU diagnostic only; no statutory safe-gap threshold or Native safety ascertainment claimed."
+  },
+  "close_gap_primary_cpu_proof": {
+    "status": "passed_draft_synthetic_diagnostic",
+    "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap",
+    "measurement": {
+      "appropriate_signal_before_movement": true,
+      "indicator_at_movement": "left",
+      "nearest_target_body_longitudinal_gap_at_movement_m": 3.0
+    },
+    "artifacts": {
+      "diagnostic-sources/close-lane_history.jsonl": {
+        "sha256": "67cd05fa62e7905bef0a94b63382b8c5f904c26eca097dc26068a7f095308b52",
+        "bytes": 237874
+      },
+      "diagnostic-sources/close-capture-evidence.jsonl": {
+        "sha256": "5177aa55075c7fdbce8d2e1b2476223a28846a2a7c03387a23965395afc88e8b",
+        "bytes": 1684818
+      },
+      "diagnostic-sources/close-capture-manifest.json": {
+        "sha256": "4614395f91e303784c3f0257538d173c1dc5c312dfbad22af1b339e17dca22dc",
+        "bytes": 581
+      },
+      "cases/left_signal_before_close_gap/diagnostic.json": {
+        "sha256": "e4d6f5410219b225bcb3627225a437f471f7326425e46d3493ebda208af979a7",
+        "bytes": 1420580
+      },
+      "cases/left_signal_before_close_gap/diagnostic-recipe.json": {
+        "sha256": "543a50977d104fc3bd1fedeb58b21b7b94ddcb68358b79ccde84f74be5f5a506",
+        "bytes": 2461
+      },
+      "cases/left_signal_before_close_gap/primary-compatibility.json": {
+        "sha256": "2019518ded8c9810512ca02c0b9e57e578037f01ee8cd9bb4dea71545f21c72c",
+        "bytes": 230427
+      },
+      "cases/left_signal_before_close_gap/primary-negative-analysis.log": {
+        "sha256": "7c765e86111d2a7b40bbd6bf55f2f9a92478362aec9635d5f4dc610e9f185872",
+        "bytes": 955
+      },
+      "cases/left_signal_before_close_gap/primary-saved-processing.json": {
+        "sha256": "cacb27142cb5e6090f0cc50bf90882a0530cf6ed4648c52db40f234c9407b194",
+        "bytes": 234024
+      }
+    },
+    "execution_manifest_sha256": "280768de32add0604a97f006508060dcf9f8aa2eb6f4d345cb83f84471568113",
+    "static_check_log_sha256": "3b3e8cb8817d04aff0bdce979b3697f89abc5d6f747e3bcd8af05a486b493696",
+    "scoped_check_log_sha256": "730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31",
+    "remaining": "Right-direction exact primary; all fallback compatibility and saved proofs; canonical semantic stages and independent delivery audits; Native physical review."
+  },
+  "left_right_direction_source_comparison_cpu_audit": {
+    "status": "passed_synthetic_source_comparison",
+    "frame_count": 900,
+    "fixed_originals": [
+      "longitudinal ego and target trajectories",
+      "frame and camera map",
+      "capture timing",
+      "target longitudinal body gap"
+    ],
+    "deliberate_transform": "reflect lateral coordinates as y_right = 0.5 - y_left, exchange source and target Native lane IDs, and replace left indication with right in original state, trace and graph evidence",
+    "left_gap_m": 8.0,
+    "right_gap_m": 8.0,
+    "right_signal_before_movement": true,
+    "source_sha256": {
+      "left_lane_history": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+      "right_lane_history": "199d764441945a356bdf3e8514101f574f40606455ff0c71a51e1ff6fa4d69ff",
+      "left_context": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+      "right_context": "f6a915d0b44cec57a6b9eb7d1f714d43355f0f0e2c0d94d298af20857fa48ec3"
+    },
+    "limitations": "Synthetic CPU source comparison only; Native lane appearance and actual driver safety ascertainment remain unresolved."
+  },
+  "right_direction_primary_cpu_proof": {
+    "status": "passed_draft_synthetic_diagnostic",
+    "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap",
+    "measurement": {
+      "appropriate_signal_before_movement": true,
+      "indicator_at_movement": "right",
+      "nearest_target_body_longitudinal_gap_at_movement_m": 8.0
+    },
+    "artifacts": {
+      "diagnostic-sources/right-lane_context.json": {
+        "sha256": "f6a915d0b44cec57a6b9eb7d1f714d43355f0f0e2c0d94d298af20857fa48ec3",
+        "bytes": 680
+      },
+      "diagnostic-sources/right-lane_history.jsonl": {
+        "sha256": "199d764441945a356bdf3e8514101f574f40606455ff0c71a51e1ff6fa4d69ff",
+        "bytes": 245960
+      },
+      "diagnostic-sources/right-trace.jsonl": {
+        "sha256": "aa1afaa117f5db462f3dbe556d208cfa9bb2a5a35e4708f5c6a6e9b6ed220618",
+        "bytes": 243354
+      },
+      "diagnostic-sources/right-capture-evidence.jsonl": {
+        "sha256": "3403e01c16cd0aab1b75a452657f3e9643c8131eb4af29386ad0145f57143b41",
+        "bytes": 1709056
+      },
+      "diagnostic-sources/right-capture-manifest.json": {
+        "sha256": "ec56504e3798e804989a38ed4d9765eef86e678b60603628b875bceb25e35db1",
+        "bytes": 582
+      },
+      "cases/right_signal_before_clear_gap/diagnostic.json": {
+        "sha256": "974bab636bdfd2fe3b0d7a98d21724e2f33fbb3436e831c6bdf03209620de7e6",
+        "bytes": 1436749
+      },
+      "cases/right_signal_before_clear_gap/diagnostic-recipe.json": {
+        "sha256": "1878850e7355d9fcc4b537202413c719dd1cce2b04ac094d2df36299347e1161",
+        "bytes": 2474
+      },
+      "cases/right_signal_before_clear_gap/primary-compatibility.json": {
+        "sha256": "3207cdc924d6b7b7635170a2a103aab2c8920ffa25f9d7a5460b34838d096328",
+        "bytes": 230429
+      },
+      "cases/right_signal_before_clear_gap/primary-negative-analysis.log": {
+        "sha256": "00b39b6ebb85dfc45cc4b6dc2f8abbbf5944e41907c61a42eaf2c07092a18b0a",
+        "bytes": 955
+      },
+      "cases/right_signal_before_clear_gap/primary-saved-processing.json": {
+        "sha256": "13f3d685b34edeb5d8bb9aa1f4f991c695ccd4f6db5f84c26d9be726d52e8801",
+        "bytes": 234026
+      }
+    },
+    "execution_manifest_sha256": "33ecbe8e210b4adf755870d24f08b1011e0955e02c49a8902252810b9ee605e4",
+    "static_check_log_sha256": "23986e8f3ff2656b92a2880cc2ca51e859f035083a2223e4eb3bdda342373a44",
+    "scoped_check_log_sha256": "730d7a22fe4a4c84ed7acea83c697fedd9d657f0ef0a9c8496949ad412f94a31",
+    "remaining": "All 15 fallback compatibility and saved proofs, canonical semantic stages and independent delivery audits; Native physical review."
   }
 }

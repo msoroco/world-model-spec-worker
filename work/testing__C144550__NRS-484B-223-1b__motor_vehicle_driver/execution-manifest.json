@@ -676,7 +676,7 @@
       "kind": "delivery",
       "construction": "cases/right_signal_before_clear_gap/construction.json",
       "construction_sha256": "f3e743ae27f8e24a7b34dd7336a3ca4f1667b22bcaf1eee826aa564f4c2483db",
-      "status": "draft_exact_primary_and_fallback_offline_passed",
+      "status": "draft_right_primary_compatibility_and_saved_passed",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
@@ -809,6 +809,33 @@
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
         }
+      },
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/right_signal_before_clear_gap/diagnostic-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "lane_change_measurements.py"
+      },
+      "compatibility": {
+        "receipt": "cases/right_signal_before_clear_gap/primary-compatibility.json",
+        "sha256": "3207cdc924d6b7b7635170a2a103aab2c8920ffa25f9d7a5460b34838d096328",
+        "log": "primary-compatibility-analysis.log",
+        "negative_log": "cases/right_signal_before_clear_gap/primary-negative-analysis.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap --output .runtime-work/c144550-right-compat-v1-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "cases/right_signal_before_clear_gap/primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap --attempt .runtime-work/c144550-right-compat-v1-20261123 --output .runtime-work/c144550-right-saved-v1-20261123 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c144550-right-saved-v1-20261123/v0001/feedback.json",
+        "test_log": "cases/right_signal_before_clear_gap/primary-saved-processing.json",
+        "test_log_sha256": "13f3d685b34edeb5d8bb9aa1f4f991c695ccd4f6db5f84c26d9be726d52e8801",
+        "test_exit_code": 0
+      },
+      "diagnostic_saved_processing": {
+        "receipt": "cases/right_signal_before_clear_gap/primary-saved-processing.json",
+        "sha256": "13f3d685b34edeb5d8bb9aa1f4f991c695ccd4f6db5f84c26d9be726d52e8801"
       }
     }
   ]

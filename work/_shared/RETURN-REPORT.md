@@ -1,4 +1,12 @@
-Current return count is 8,600 of the 8,600-file limit; the earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
+Current return count is 8,600 of the 8,600-file limit; earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
+
+## 2026-11-23 C144550 five-primary proof checkpoint
+
+All five exact primaries now pass current source-bound compatibility, missing-source negative checks and recorded-only saved processing on distinct synthetic originals. All five bound receipts pass pinned static verification and the C144550 scoped nonready complete check passes. The right-direction case reflects lateral geometry and swaps lane identities with right-lamp original observations; its departure has the appropriate right signal and an 8.0 m measured target gap. A 900-frame controlled left/right source comparison passed. C144550 remains partial until 15 fallback compatibility/saved proofs, semantic stages and independent delivery audits are done. C129731 passed scoped strict revalidation after historical acceptance archival (log SHA256 `1696edaf644ea53e8cfee4c90aee8dbba6b02160eb195d7760b601de26a8ee95`). The shared archive was consolidated at SHA256 `31a6d2b328009382fe20c037bc4c7f7ccf57631b6f65dd4524edd577f55dc1c9`; recovery is indexed in shared HANDOFF.
+
+## 2026-11-23 C144550 close-gap primary
+
+The fourth exact primary passed current source-bound compatibility, missing-source negative and recorded-only saved processing. The 900-frame controlled source comparison preserved ego, indicator and capture timing and shifted the target body 5 m; measured gaps are 8.0 m clear and 3.0 m close. Four-primary pinned receipt validation and the C144550 scoped nonready complete check passed. C144550 stays partial while the right-direction primary, fallbacks, semantic stages and delivery audits remain. Seventeen unbound historical C129731 acceptance JSON files were byte-preserved in `work/_shared/c129731-unbound-canonical-acceptance-20261123.tar.xz`; its scoped strict ready recheck passed.
 
 ## 2026-11-23 C144550 wrong-direction primary
 
