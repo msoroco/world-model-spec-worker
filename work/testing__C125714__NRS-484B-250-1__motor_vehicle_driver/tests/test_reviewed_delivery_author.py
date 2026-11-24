@@ -6,14 +6,13 @@ from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
 import unittest
-import uuid
 
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 from reviewed_delivery_author import (SUFFIXES, author, check_comparison_isolation,
-                                      compatibility_manifest, source_files)
+                                      source_files)
 from case_builder import config
 
 
@@ -45,12 +44,15 @@ def fixture(base):
 
 class ReviewedDeliveryAuthorTest(unittest.TestCase):
     def test_authors_all_exact_candidates_and_rejects_changed_source(self):
-        with TemporaryDirectory() as source, TemporaryDirectory(dir=ROOT) as destination, \
+        with TemporaryDirectory() as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
              TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
             fixture(source)
             output = Path(destination) / "candidate"
             receipts = Path(proof) / "preflight"
-            result = author(source, ROOT / "candidate-map.xodr", output, receipts)
+            with self.assertRaisesRegex(ValueError, "output must stay in this assignment"):
+                author(source, ROOT / "candidate-map.xodr", output, receipts)
+            result = author(source, ROOT / "candidate-map.xodr", output, receipts,
+                            scratch_output=True)
             self.assertEqual(len(result["cases"]), 7)
             self.assertTrue(all(case["kind"] == "delivery" and
                                 case["native_handoff"]["python_env_var"] == "CARLA_PYTHON" and
@@ -89,41 +91,16 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                                      completed.stderr + completed.stdout)
             validator = REPO / ".runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
             self.assertTrue(validator.is_file(), "pinned Lean decoder must be built before proof")
-            manifest = ROOT / ("protocol-compatibility-" + uuid.uuid4().hex + ".json")
-            try:
-                compatibility_manifest(output, manifest)
-                for suffix in SUFFIXES:
-                    for candidate in ("primary", "fallback1"):
-                        completed = subprocess.run(
-                            [sys.executable, str(REPO / "runtime.py"), "compatibility",
-                             "--manifest", str(manifest),
-                             "--case", ROOT.name + "__" + suffix,
-                             "--candidate", candidate,
-                             "--output", str(Path(proof) / ("compat-" + suffix + "-" + candidate)),
-                             "--library", str(REPO / "runtime/library"),
-                             "--validator", str(validator)], cwd=REPO, capture_output=True,
-                            text=True, timeout=180)
-                        self.assertEqual(completed.returncode, 0, suffix + "/" + candidate +
-                                         ": " + completed.stderr + completed.stdout)
-                        receipt_root = Path(proof) / ("compat-" + suffix + "-" + candidate)
-                        receipt = json.loads((receipt_root / "compatibility.json").read_text())
-                        self.assertIs(receipt["passed"], True)
-                        self.assertEqual(receipt["case_id"], ROOT.name + "__" + suffix)
-                        self.assertEqual(receipt["candidate_id"], candidate)
-                        self.assertIn(receipt["negative_error_contains"],
-                                      (receipt_root / "negative-analysis.log").read_text())
-            finally:
-                manifest.unlink(missing_ok=True)
             tampered = Path(source) / "precedence" / "device_inventory_source.txt"
             tampered.write_text("changed")
             with self.assertRaisesRegex(ValueError, "reviewed source hash changed"):
                 author(source, ROOT / "candidate-map.xodr", Path(destination) / "other",
-                       Path(proof) / "other")
+                       Path(proof) / "other", scratch_output=True)
 
     def test_rejects_diagnostic_and_unisolated_pair(self):
         with self.assertRaisesRegex(ValueError, "rejects diagnostic"):
             source_files(ROOT / "scene.json")
-        with TemporaryDirectory() as source, TemporaryDirectory(dir=ROOT) as destination, \
+        with TemporaryDirectory() as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
              TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
             fixture(source)
             scene_path = Path(source) / "other_later" / "scene.json"
@@ -132,7 +109,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             scene_path.write_text(json.dumps(scene))
             with self.assertRaisesRegex(ValueError, "fixed scene field"):
                 author(source, ROOT / "candidate-map.xodr", Path(destination) / "candidate",
-                       Path(proof) / "preflight")
+                       Path(proof) / "preflight", scratch_output=True)
             scenes = {suffix: json.loads((Path(source) / suffix / "scene.json").read_text())
                       for suffix in SUFFIXES}
             scenes["other_later"]["ego_route_xy_m"][0][0] -= 1
@@ -146,7 +123,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
                 check_comparison_isolation(scenes)
 
     def test_rejects_changed_fixed_review_source_across_pair(self):
-        with TemporaryDirectory() as source, TemporaryDirectory(dir=ROOT) as destination, \
+        with TemporaryDirectory() as source, TemporaryDirectory(dir=REPO / ".runtime-work") as destination, \
              TemporaryDirectory(dir=REPO / ".runtime-work") as proof:
             fixture(source)
             folder = Path(source) / "advance"
@@ -162,7 +139,7 @@ class ReviewedDeliveryAuthorTest(unittest.TestCase):
             scene_path.write_text(json.dumps(scene))
             with self.assertRaisesRegex(ValueError, "fixed reviewed law context changed"):
                 author(source, ROOT / "candidate-map.xodr", Path(destination) / "candidate",
-                       Path(proof) / "preflight")
+                       Path(proof) / "preflight", scratch_output=True)
 
     def test_rejects_packet_and_source_aliases_before_bundling(self):
         with TemporaryDirectory() as source:

@@ -97,7 +97,7 @@ def finalize(folder: Path, *, case_id: str) -> dict:
                     sample.get("source_type") != row["device_source_type"] or
                     sample.get("source_citation") != row["device_source_citation"]):
                 raise ValueError("Independent device sample and trace mismatch")
-        if set(camera.get("sources", {})) != {"front", "rear", "left", "right"} or not all(camera["sources"].values()):
+        if set(camera.get("sources", {})) != {"overview", "approach", "reference_corner", "driver_reference"} or not all(camera["sources"].values()):
             raise ValueError("Four original camera references missing")
     observed = audit(folder, receipt)
     commanded_siren = sum(row["siren_commanded"] for row in rows)

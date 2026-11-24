@@ -46,7 +46,7 @@ def audit(folder: Path, source_manifest: dict) -> dict:
         if len(camera_samples) != 900 or [x.get("frame") for x in camera_samples] != list(range(900)):
             raise ValueError("Original camera frame sequence incomplete")
         for device, camera in zip(samples, camera_samples):
-            if camera.get("native_frame") != device.get("native_frame") or set(camera.get("sources", {})) != {"front", "rear", "left", "right"}:
+            if camera.get("native_frame") != device.get("native_frame") or set(camera.get("sources", {})) != {"overview", "approach", "reference_corner", "driver_reference"}:
                 raise ValueError("Original camera/source synchronization mismatch")
     if "device_samples" in documents:
         original_samples = [json.loads(line) for line in documents["device_samples"].splitlines()]

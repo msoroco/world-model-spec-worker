@@ -72,3 +72,17 @@ Scoped static `--complete` passes; exact scoped strict remains an expected failu
 Forty-four focused tests pass in `cpu-saved-process-tests.log` (SHA256 `f8e8fce2a2dc3cabb3c7373aba5e96303d8e2eef57934e3cb8e8d246a86bbcba`). Pinned CPU preflight exits 0 (`cpu-saved-process-preflight.log`, SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`). Scoped static exits 0 (`cpu-saved-process-static.log`, SHA256 `2c4e093e0f1887e9048e23e9569eb9ef8191c0ef171690075be4dbc5944a4e3b`). Exact scoped strict exits 1 on truthful partial status (`cpu-saved-process-strict.log`, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`).
 
 Next CPU work: verified original official head and pedestrian-device reader for the exact surveyed site, four canonical inline bundles and semantic proposals, positive/negative compatibility, exact manifest and independent delivery receipt. No Native physical camera visibility or NRS 484B.283 permission alternative has been accepted.
+
+## 2026-11-23 four-case offline diagnostic bundle checkpoint
+
+`build_offline_draft.py` now packages all four exact arrow wait/entry and separate-device observation cases with unchanged Native scene, controller, CARLA adapter, capture, measurement, saved process and comparison source. Each inline runner binds the case-plan SHA256, exact case behavior, current 20-Hz/600-frame diagnostic timeline and four camera names, then refuses launch without reviewed original map, official arrow head, separate pedestrian device, Native event and original camera sources. `tests/test_offline_bundles.py` verifies exact coverage, copied source text and construction SHA256. All four pinned `runtime.py offline` checks pass without starting simulation; 45 focused tests, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. These bundles are diagnostic only: the current 600-frame/front-left-right-rear capture still requires canonical 900-frame pinned overview/approach/reference_corner/driver_reference delivery alignment, then source-shaped compatibility, semantic proposals, manifest and independent delivery audit. No physical visibility or NRS 484B.283 legal permission is inferred.
+
+- `cpu-bundles-offline-arrow_wait.log` SHA256 `eac949014b821654d1c4e5ff91b1c102c8bb82aeb81764da1d92fb5868246f3a`.
+- `cpu-bundles-offline-arrow_early_entry.log` SHA256 `ea1e854dadbc4987a0e7503bf635dde26acc32f6da2b68bf68b2710a99d8b5e2`.
+- `cpu-bundles-offline-arrow_walk_entry.log` SHA256 `22b196b375cc572506442ba3a7055d79ad4aa000bfee597cfda167b5e9b81221`.
+- `cpu-bundles-offline-arrow_walk_wait.log` SHA256 `b9e90afc56db715f643345ae945507cce68a47dc2b05cad257cede6afedf7030`.
+- `cpu-bundles-build.log` SHA256 `0dbebc73f48782108fa8a9274836dfd3adf150bebea7ae7a0fa31df335d758f4`.
+- `cpu-bundles-tests.log` SHA256 `ae7c6e49c1b590d9064f97e492bc51082cfc4325bcc7213a94229ec54c8e97d9`.
+- `cpu-bundles-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
+- `cpu-bundles-static.log` SHA256 `2c4e093e0f1887e9048e23e9569eb9ef8191c0ef171690075be4dbc5944a4e3b`.
+- `cpu-bundles-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.

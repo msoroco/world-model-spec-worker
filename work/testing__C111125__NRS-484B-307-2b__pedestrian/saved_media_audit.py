@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from io import BytesIO
 from pathlib import Path
 from zipfile import ZipFile
@@ -32,6 +33,15 @@ def audit(attempt_root):
         raise ValueError('original frame count mismatch')
     if [row['frame'] for row in rows] != list(range(receipt['first_frame'], receipt['last_frame'] + 1)):
         raise ValueError('original frame sequence mismatch')
+    if receipt.get('fps') != 20:
+        raise ValueError('original capture rate mismatch')
+    times = [row.get('elapsed_seconds') for row in rows]
+    if any(not isinstance(value, (int, float)) or isinstance(value, bool) or
+           not math.isfinite(value) for value in times):
+        raise ValueError('original frame time missing')
+    if any(not 0.035 <= later - earlier <= 0.065
+           for earlier, later in zip(times, times[1:])):
+        raise ValueError('original 20 Hz frame time gap')
     sources = receipt.get('camera_sources')
     if not isinstance(sources, dict) or set(sources) != set(CAMERAS):
         raise ValueError('four original camera sources missing')

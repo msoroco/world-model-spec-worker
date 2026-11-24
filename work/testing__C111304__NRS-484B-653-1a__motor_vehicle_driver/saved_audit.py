@@ -232,3 +232,52 @@ def audit_saved_timing_pair(left_attempt: Path, right_attempt: Path,
             'min_ego_occupant_center_distance_m': [a, b],
             'actual_pixels': False, 'physical_completion': False,
             'legal_judgment': None}
+
+
+def audit_saved_property_pair(near_attempt: Path, far_attempt: Path) -> dict:
+    """Reopen both sealed captures for the declared property-position pair.
+
+    This compares measured center distances, without inferring damage, risk,
+    visibility, or the driver's state of mind from position alone.
+    """
+    from encounter import CASES
+
+    by_id = {case.case_id: case for case in CASES}
+    near = finalize_saved_measurements(near_attempt, by_id['property_near'])
+    far = finalize_saved_measurements(far_attempt, by_id['property_far'])
+    receipts = [json.loads((path / 'native-receipt.json').read_text(encoding='utf-8'))
+                for path in (near_attempt, far_attempt)]
+    fixed_receipt = ('site_sha256', 'map_sha256', 'camera_plan_sha256',
+                     'public_access_basis', 'ego_target_speed_mps',
+                     'crossing_target_speed_mps', 'crossing_release_s',
+                     'frame_count', 'original_fps')
+    for key in fixed_receipt:
+        if receipts[0].get(key) != receipts[1].get(key):
+            raise ValueError(f'comparison fixed condition changed: {key}')
+    first_rows = []
+    for path in (near_attempt, far_attempt):
+        with (path / 'original-history.jsonl').open(encoding='utf-8') as source:
+            first_rows.append(json.loads(source.readline()))
+    fixed_actor = ('ego_blueprint', 'crossing_blueprint', 'property_blueprint',
+                   'ego_id', 'crossing_vehicle_id', 'occupant_id',
+                   'occupant_vehicle_id', 'ego_xy', 'occupant_xy')
+    for key in fixed_actor:
+        if first_rows[0].get(key) != first_rows[1].get(key):
+            raise ValueError(f'comparison fixed condition changed: {key}')
+    if first_rows[0].get('property_xy') == first_rows[1].get('property_xy'):
+        raise ValueError('comparison property position difference missing')
+    a = near['measurements']['min_ego_property_center_distance_m']
+    b = far['measurements']['min_ego_property_center_distance_m']
+    if not a < b:
+        raise ValueError('comparison measured near/far property order missing')
+    return {'comparison_id': 'highway_property_position',
+            'case_ids': [near['case_id'], far['case_id']],
+            'original_history_sha256': [near['original_history_sha256'],
+                                        far['original_history_sha256']],
+            'native_receipt_sha256': [near['native_receipt_sha256'],
+                                      far['native_receipt_sha256']],
+            'first_property_xy': [first_rows[0]['property_xy'],
+                                  first_rows[1]['property_xy']],
+            'min_ego_property_center_distance_m': [a, b],
+            'actual_pixels': False, 'physical_completion': False,
+            'legal_judgment': None}

@@ -74,7 +74,7 @@ class CaptureTests(unittest.TestCase):
                     'warning_lamp_active': self.commands[-1][1], 'source_type': 'instrument_test',
                     'source_citation': 'synthetic CPU test'},
                 'drive_step': lambda ego, pedestrian, tick: None,
-                'camera_capture': lambda frame: {key: f'test-{key}-{frame}' for key in ('front','rear','left','right')}}
+                'camera_capture': lambda frame: {key: f'test-{key}-{frame}' for key in ('overview','approach','reference_corner','driver_reference')}}
         args.update(overrides)
         return subject.capture(**args)
     def test_full_source_seal_and_distinct_command_readback(self):
@@ -95,7 +95,7 @@ class CaptureTests(unittest.TestCase):
         camera_ref = receipt['sources']['camera_trace']
         camera_path = self.folder/'out'/camera_ref['path']
         rows = camera_path.read_text().splitlines()
-        rows[2] = json.dumps({'frame': 2, 'native_frame': 99, 'sources': {'front': 'bad'}})
+        rows[2] = json.dumps({'frame': 2, 'native_frame': 99, 'sources': {'overview': 'bad'}})
         changed = '\n'.join(rows) + '\n'
         camera_path.write_text(changed)
         receipt['sources']['camera_trace']['sha256'] = hashlib.sha256(changed.encode()).hexdigest()
@@ -109,7 +109,7 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(self.commands[-1], (False, False))
     def test_camera_gap_rejected(self):
         with self.assertRaisesRegex(ValueError, 'Four synchronized camera'):
-            self.run_capture(camera_capture=lambda frame: {'front': 'only'})
+            self.run_capture(camera_capture=lambda frame: {'overview': 'only'})
         self.assertTrue(all(a.destroyed for a in self.world.actors))
     def test_undocumented_dispatch_rejected_before_spawn(self):
         doc = json.loads(self.dispatch.read_text()); doc.pop('source_citation')
@@ -144,7 +144,7 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'frame or dimensions mismatch'):
             self.run_capture(camera_capture=recorder)
         self.assertTrue(recorder.closed)
-        self.assertFalse((self.folder / 'out' / 'front.zip').exists())
+        self.assertFalse((self.folder / 'out' / 'overview.zip').exists())
 
 
 if __name__ == '__main__': unittest.main()

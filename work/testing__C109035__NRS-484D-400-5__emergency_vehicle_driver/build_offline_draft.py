@@ -38,7 +38,7 @@ def check():
         raise ValueError("Event or device commands changed")
     if config["rate_hz"] != HZ or config["frame_count"] != FRAMES:
         raise ValueError("Original timebase changed")
-    if config["duration_s"] != 45 or config["cameras"] != ["front", "rear", "left", "right"]:
+    if config["duration_s"] != 45 or config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]:
         raise ValueError("Camera or duration contract changed")
     if config["required_sources"] != ["site_packet", "dispatch_context", "equipment_record", "device_samples", "camera_media"]:
         raise ValueError("Original source requirements changed")
@@ -105,7 +105,7 @@ def build():
             "plan_sha256": hashlib.sha256(source).hexdigest(),
             "case": {"event": item["authored_event_context"], "siren": item["requested_siren"], "lamps": item["requested_warning_lamps"]},
             "approach": "eastbound", "rate_hz": 20, "frame_count": 900,
-            "duration_s": 45, "cameras": ["front", "rear", "left", "right"],
+            "duration_s": 45, "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
             "required_sources": ["site_packet", "dispatch_context", "equipment_record", "device_samples", "camera_media"],
             "required_atoms": [], "diagnostic_only": True,
         }

@@ -48,6 +48,10 @@ class OriginalPixelTests(unittest.TestCase):
     def test_all_3600_original_pixels_decode(self):
         result = pixel_audit.audit_pixels(self.folder, case_id=CASE, diagnostic=True)
         self.assertEqual(result["decoded_original_pixels"], 3600)
+        self.assertEqual(set(result["media_sha256"]),
+                         {"overview", "approach", "reference_corner", "driver_reference"})
+        for camera in result["media_sha256"]:
+            self.assertTrue((self.folder / (camera + ".zip")).is_file())
         self.assertEqual(result["physical_visibility"], "requires_independent_review")
         self.assertFalse(result["capture_profile_dimensions_verified"])
 
@@ -56,19 +60,19 @@ class OriginalPixelTests(unittest.TestCase):
             pixel_audit.audit_pixels(self.folder, case_id=CASE)
 
     def test_duplicate_frame_name_rejected(self):
-        archive_path = self.folder / "front.zip"
+        archive_path = self.folder / "overview.zip"
         with zipfile.ZipFile(archive_path, "a") as archive:
             archive.writestr("101.png", b"duplicate")
         manifest_path = self.folder / "camera_media.json"
         manifest = json.loads(manifest_path.read_text())
-        manifest["cameras"]["front"]["sha256"] = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+        manifest["cameras"]["overview"]["sha256"] = hashlib.sha256(archive_path.read_bytes()).hexdigest()
         manifest_path.write_text(json.dumps(manifest) + "\n")
         with self.assertRaisesRegex(ValueError, "duplicate frame names"):
             pixel_audit.audit_pixels(self.folder, case_id=CASE, diagnostic=True)
 
     def test_rebound_camera_source_rejected(self):
         traces = [json.loads(line) for line in (self.folder / "camera_trace.jsonl").read_text().splitlines()]
-        traces[40]["sources"]["front"] = "rear.zip#141.png"
+        traces[40]["sources"]["overview"] = "approach.zip#141.png"
         self.source.write_source("camera_trace", traces, "jsonl")
         self.source.save_receipt()
         manifest_path = self.folder / "camera_media.json"
@@ -80,7 +84,7 @@ class OriginalPixelTests(unittest.TestCase):
             pixel_audit.audit_pixels(self.folder, case_id=CASE, diagnostic=True)
 
     def test_tampered_camera_archive_rejected(self):
-        with (self.folder / "front.zip").open("ab") as handle:
+        with (self.folder / "overview.zip").open("ab") as handle:
             handle.write(b"tamper")
         with self.assertRaisesRegex(ValueError, "source hash mismatch"):
             pixel_audit.audit_pixels(self.folder, case_id=CASE, diagnostic=True)

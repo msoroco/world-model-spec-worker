@@ -68,6 +68,14 @@ class TimingAdapter(Adapter):
         return packet
 
 
+class PropertyAdapter(Adapter):
+    def read_actor(self, actor):
+        packet = super().read_actor(actor)
+        if actor == 'property':
+            packet['xy'][1] += 0.0 if self.case.case_id == 'property_near' else 8.0
+        return packet
+
+
 def site():
     return {'site_sha256': 'a' * 64, 'map_sha256': 'b' * 64,
             'camera_plan_sha256': 'c' * 64, 'public_access_basis': 'highway'}
@@ -80,6 +88,43 @@ def actors(case):
 
 
 class NativeAcquisitionTests(unittest.TestCase):
+    def test_saved_property_pair_reopens_sources_and_measures_position(self):
+        near, far = encounter.CASES[4:6]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'near', Path(tmp) / 'far'
+            left.mkdir(); right.mkdir()
+            native.capture(PropertyAdapter(case=near), actors(near), near, site(), left)
+            native.capture(PropertyAdapter(case=far), actors(far), far, site(), right)
+            result = saved_audit.audit_saved_property_pair(left, right)
+            self.assertEqual(result['comparison_id'], 'highway_property_position')
+            self.assertLess(*result['min_ego_property_center_distance_m'])
+            self.assertNotEqual(*result['first_property_xy'])
+            self.assertFalse(result['physical_completion'])
+            with self.assertRaisesRegex(ValueError, 'exact case mismatch'):
+                saved_audit.audit_saved_property_pair(right, left)
+            packet = right / 'original-packets.jsonl'
+            packet.write_bytes(packet.read_bytes() + b'\n')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                saved_audit.audit_saved_property_pair(left, right)
+
+    def test_saved_property_pair_rejects_unchanged_property_and_site(self):
+        near, far = encounter.CASES[4:6]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'near', Path(tmp) / 'far'
+            left.mkdir(); right.mkdir()
+            native.capture(Adapter(case=near), actors(near), near, site(), left)
+            native.capture(Adapter(case=far), actors(far), far, site(), right)
+            with self.assertRaisesRegex(ValueError, 'position difference missing'):
+                saved_audit.audit_saved_property_pair(left, right)
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'near', Path(tmp) / 'far'
+            left.mkdir(); right.mkdir()
+            native.capture(PropertyAdapter(case=near), actors(near), near, site(), left)
+            changed = site(); changed['map_sha256'] = 'd' * 64
+            native.capture(PropertyAdapter(case=far), actors(far), far, changed, right)
+            with self.assertRaisesRegex(ValueError, 'fixed condition changed: map_sha256'):
+                saved_audit.audit_saved_property_pair(left, right)
+
     def test_saved_timing_pair_reopens_both_original_attempts(self):
         early, late = encounter.CASES[0:2]
         with TemporaryDirectory() as tmp:

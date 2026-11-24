@@ -149,12 +149,13 @@ def check_comparison_isolation(by_name, packets=None):
                     raise ValueError("fixed reviewed law context changed: " + left + "/" + right + "/" + key)
 
 
-def author(source_root, map_path, output_root, proof_root):
+def author(source_root, map_path, output_root, proof_root, *, scratch_output=False):
     source_root, map_path, output_root, proof_root = map(
         Path, (source_root, map_path, output_root, proof_root))
     if output_root.exists() or proof_root.exists():
         raise ValueError("use fresh candidate and preflight output directories")
-    if not output_root.resolve().is_relative_to(ROOT):
+    allowed_output = REPO / ".runtime-work" if scratch_output else ROOT
+    if not output_root.resolve().is_relative_to(allowed_output):
         raise ValueError("delivery candidate output must stay in this assignment")
     if not proof_root.resolve().is_relative_to(REPO / ".runtime-work"):
         raise ValueError("preflight output must stay under .runtime-work")

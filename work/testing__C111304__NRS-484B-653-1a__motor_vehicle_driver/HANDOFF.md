@@ -72,3 +72,20 @@ The focused suite passes 23 tests (`cpu-tests.log`); scoped static check exits 0
 Other proof hashes: `cpu-tests.log` `1d41e224a81184e42ea560aada7643f636681f7ab9dec732545864fb6bac0a86`; `cpu-preflight-bundles.log` `8ed8e83e191ef2ee6576c16ff729ef759a58f355a687575729e012a9369c72d4`; `cpu-static-check.log` `474d50a70a3c70eb63d92525483a56f036392efa4cd4bd434fe9f4b3e25ab296`; `strict-check.log` `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1, truthful partial).
 
 Next CPU work: bind reviewed original C111304 highway and public-access-premises site packets and a CARLA world/camera adapter; promote all eight bundles to executable Native delivery runners and canonical manifest; supply exact semantic proposals, selected-requirement finalizers, positive/negative compatibility, saved processing and independent delivery/comparison receipts. Physical motion, original pixels, capture quality, and willful/wanton legal judgment require subsequent original review.
+
+## 2026-11-23 saved property-position comparison checkpoint
+
+Added `saved_audit.audit_saved_property_pair` for the exact `property_near` and `property_far` comparison. It independently reopens both sealed 900-frame Native captures, verifies exact case identities and fixed site, map, public-access, camera, speed, release, frame rate, blueprint and actor conditions, then requires distinct original property positions and measured near/far ego-to-property distance order. Distances remain engineering observations only; no damage, visibility, physical completion, or willful/wanton legal conclusion is inferred. Negative tests reject swapped cases, a tampered source packet, unchanged property position, and changed map source. The focused suite passes 27 tests. All eight diagnostic constructions were regenerated to copy revised audit source, and all eight offline checks pass without starting simulation. Pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial status. Reviewed original site/actor/camera capture, canonical delivery, compatibility and approach-direction saved comparison remain CPU work.
+
+- `cpu-offline-person_north_early-property-pair.log` SHA256 `37796eda848167c5bdf0407e88229d2eaece27ab38b80ff112ba89d0cb81a8ce`.
+- `cpu-offline-person_north_late-property-pair.log` SHA256 `c35928b8d7952d8bf47e2c534d96f839cc3f0b98d9de0532cdc5f61505295f2e`.
+- `cpu-offline-person_south_early-property-pair.log` SHA256 `0f96e746c3b65fca1fa0b311bbdffe9ca6acb1975b4243dccad00c9d6018c77c`.
+- `cpu-offline-person_south_late-property-pair.log` SHA256 `69c3a0cda0dccb8ada44e5ad44c6bdb1ce39f95a532f074fbadec52888d99988`.
+- `cpu-offline-property_near-property-pair.log` SHA256 `05655dc31afab8a30483ff5fbf9592f4cf11105176d1185d51fa10b9af8c7591`.
+- `cpu-offline-property_far-property-pair.log` SHA256 `11635cc07564f6429365d4881ec03f010747919a0796a1ee3a3e3cd08939e209`.
+- `cpu-offline-premises_person_early-property-pair.log` SHA256 `43997fdc1ef6f4c78429d9bc7abe25efce168cfbb6002074080cb0c7485914fe`.
+- `cpu-offline-premises_person_late-property-pair.log` SHA256 `6bdb03495c66100cffaa20ca46133bedf4eff90f6997e37cf3335db94515efbd`.
+- `cpu-tests-property-pair.log` SHA256 `e6609fce2254f49b6cb355b0b8bd8d2979232bdbcdc1e5ded8f6d2131363d0e0`.
+- `cpu-preflight-property-pair.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
+- `cpu-static-property-pair.log` SHA256 `474d50a70a3c70eb63d92525483a56f036392efa4cd4bd434fe9f4b3e25ab296`.
+- `strict-property-pair.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.

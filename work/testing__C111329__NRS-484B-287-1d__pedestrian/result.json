@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1d__pedestrian",
   "input_sha256": "08b4c204ffa107222be5348b86f2ade77eeae2a7675089a2aa0a583e6bad036b",
   "status": "partial",
-  "readiness_kind": "source_bound_native_camera_cpu_checkpoint",
+  "readiness_kind": "partial_saved_source_join",
   "applied_update": 0,
   "tests": [
     {
@@ -22,10 +22,34 @@
       "exit_code": 1,
       "log": "strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-saved-process-tests.log",
+      "sha256": "f55edb340dfdfc24ec23033239d193eee0f20c73f7ef8c3ecc9066265c787433"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-saved-process-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-saved-process-static.log",
+      "sha256": "919f8b6412581054281596ec1e35fb7358841d0580c5df80c3035ab86d498f20"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-saved-process-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four cases and three controlled comparisons remain planned. Native original-frame walker/device capture now can persist and hash every original camera PNG; independent saved-only audit checks four-camera frame coverage, source hashes and full pixel decode. Thirteen focused CPU tests pass. A real source-surveyed map/device packet, exact runtime construction bundles, semantic proposals, per-case offline and compatibility proofs, complete saved-only processing and independent delivery acceptance audit remain CPU work; exact strict gate rejects partial status."
+  "reason": "Four exact cases remain partial. Saved-only processor now reopens hash-bound site, Native acquisition and camera manifest; joins exact case route/authorization measurement to full original PNG decode before writing a receipt. Sixteen focused tests, pinned preflight and scoped static pass; strict still rejects partial. Reviewed site/device, canonical bundles and semantic proposals, compatibility and independent delivery acceptance remain CPU work. No physical or legal finding is claimed."
 }

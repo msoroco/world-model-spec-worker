@@ -10,8 +10,8 @@ CAMERAS=[{'name':name,'width':1920 if name=='overview' else 1280,
           'height':1080 if name=='overview' else 720,'fov_deg':75,
           'pose_strategy':'complete pedestrian crossing and both curbs'}
          for name in ('overview','approach','reference_corner','driver_reference')]
-COMMON=['runner.py','crossing_geometry.py','native_controller.py','native_capture.py','walker_pipeline_capture.py','delivery_audit.py',
-        'saved_measurement.py','comparison_audit.py','analysis.py']
+COMMON=['runner.py','crossing_geometry.py','native_crosswalk_readback.py','native_controller.py','native_capture.py','walker_pipeline_capture.py','delivery_audit.py',
+        'physical_geometry_audit.py','saved_measurement.py','comparison_audit.py','analysis.py']
 
 def dump(p,obj): p.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n')
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()

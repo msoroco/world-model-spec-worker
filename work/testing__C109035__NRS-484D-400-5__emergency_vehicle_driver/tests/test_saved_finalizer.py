@@ -34,7 +34,7 @@ class SavedFinalizerTests(unittest.TestCase):
                          "device_source_citation": "synthetic CPU fixture"})
             cameras.append({"frame": tick, "native_frame": 101 + tick,
                             "sources": {key: f"fixture-{key}-{tick}" for key in
-                                        ("front", "rear", "left", "right")}})
+                                        ("overview", "approach", "reference_corner", "driver_reference")}})
         self.write_source("device_trace", rows, "jsonl")
         self.write_source("camera_trace", cameras, "jsonl")
         self.write_source("dispatch_context", {

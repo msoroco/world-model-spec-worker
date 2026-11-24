@@ -12,7 +12,7 @@ from PIL import Image
 from saved_finalizer import PREFIX, _read
 from camera_recorder import PROFILE_SIZES
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def audit_pixels(folder: Path, *, case_id: str, diagnostic: bool = False) -> dict:

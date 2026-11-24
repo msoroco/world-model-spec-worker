@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -12,6 +13,7 @@ sys.path.insert(0,str(HERE))
 from bicycle_encounter import SourceError, construct_native, measure_attempt, verify_site
 from encounter_control import command
 from comparison_audit import ComparisonError, audit
+from saved_attempt import finalize, probe_video
 
 class Actor:
     def __init__(self,id):self.type_id=id;self.destroyed=False
@@ -87,5 +89,52 @@ class EncounterTests(unittest.TestCase):
         with self.assertRaisesRegex(ComparisonError,'fixed condition'):audit(l,r)
         r['camera_profile_sha256']='sealed';r['intent_verdict']=True
         with self.assertRaisesRegex(ComparisonError,'unsupported legal verdict'):audit(l,r)
+
+    def test_saved_full_history_and_four_camera_sources(self):
+        frames=900
+        rows=[]
+        for i in range(frames):
+            rows.append({'frame':i,'camera_frame':i,'ego_id':'ego','rider_id':'rider',
+                         'ego_blueprint_id':self.site['ego_blueprint_id'],
+                         'rider_blueprint_id':self.site['bicycle_blueprint_id'],
+                         'mode_command':'maintain_clearance','command_source':'controller_log',
+                         'target_speed_mps':0 if 100<=i<200 else 6,
+                         'rider_visual_present':i>=50,
+                         'ego_xy':[-10+i/60,0],'rider_xy':[0,-10+i/60]})
+        event_path=self.root/'events.json';event_path.write_text(json.dumps(rows),encoding='utf-8')
+        event_ref={'path':'events.json','sha256':hashlib.sha256(event_path.read_bytes()).hexdigest()}
+        cameras={}
+        for view in ('overview','approach','reference_corner','driver_reference'):
+            path=self.root/(view+'.mp4');path.write_bytes(('test-'+view).encode())
+            cameras[view]={'path':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+        def probe(path):
+            return {'fps':20,'frame_count':frames,'width':1920,'height':1080}
+        summary=finalize(self.site,self.root,event_ref,cameras,'maintain_clearance',probe)
+        self.assertEqual(summary['frame_count'],frames)
+        self.assertEqual(summary['waiting_command_frames'],100)
+        self.assertGreater(summary['observed_rider_motion_m'],0)
+        self.assertFalse(summary['pixel_visibility_verified'])
+        self.assertIsNone(summary['interference_verdict'])
+        broken=dict(cameras);broken.pop('driver_reference')
+        with self.assertRaisesRegex(SourceError,'four exact camera'):
+            finalize(self.site,self.root,event_ref,broken,'maintain_clearance',probe)
+        with self.assertRaisesRegex(SourceError,'camera frame rate'):
+            finalize(self.site,self.root,event_ref,cameras,'maintain_clearance',
+                     lambda path:dict(probe(path),frame_count=899))
+        wrong=dict(cameras);wrong['approach']=dict(cameras['approach'],sha256='0'*64)
+        with self.assertRaisesRegex(SourceError,'hash mismatch'):
+            finalize(self.site,self.root,event_ref,wrong,'maintain_clearance',probe)
+        rows[10]['camera_frame']=11
+        event_path.write_text(json.dumps(rows),encoding='utf-8')
+        event_ref['sha256']=hashlib.sha256(event_path.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(SourceError,'frame join'):
+            finalize(self.site,self.root,event_ref,cameras,'maintain_clearance',probe)
+
+    def test_probe_counts_decoded_video_frames(self):
+        path=self.root/'tiny.mp4'
+        subprocess.run(['ffmpeg','-v','error','-f','lavfi','-i','color=c=blue:s=32x32:r=20',
+                        '-frames:v','3','-c:v','mpeg4',str(path)],check=True)
+        self.assertEqual(probe_video(path),
+                         {'fps':20.0,'frame_count':3,'width':32,'height':32})
 
 if __name__=='__main__':unittest.main()

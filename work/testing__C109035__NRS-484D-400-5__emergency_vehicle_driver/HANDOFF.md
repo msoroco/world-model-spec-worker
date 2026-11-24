@@ -101,3 +101,20 @@ Current log SHA-256 receipts:
 - `cpu-profile-offline-unqualified_lamps_only.log`: `a087de4dcd0ae15ec513e35a9cae32b6bf4cc40f478bb6708f318a3ff8b78ee6` (exit 0)
 - `cpu-profile-static.log`: `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d` (exit 0)
 - `cpu-profile-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-23 pinned four-camera naming checkpoint
+
+Aligned the original Native capture, camera recorder, pixel decoder/audit, saved finalizer, source audit, diagnostic bundle config and synthetic tests to the pinned `overview`, `approach`, `reference_corner`, `driver_reference` capture profile. The overview remains 1920x1080 and the three detail views remain 1280x720. The positive 3,600-image decode test now asserts the exact archive/key set; tampered archive, duplicate frame, and rebound source negatives still pass. This repairs the named profile mismatch without claiming a reviewed camera placement or physical visibility. All seven diagnostic constructions were regenerated and all seven exact offline checks pass without starting simulation. The 38-test suite, pinned preflight and scoped static check pass; scoped strict exits 1 on truthful partial status. Canonical proposals/manifest, production site and device sources, compatibility, saved-only delivery and independent delivery/comparison receipts remain CPU work.
+
+- `cpu-profile-alignment-offline-response_siren_pedestrian.log` SHA256 `92ed178db8191659386e2e31472686f02d3b0f54944d274ff461460fd00fb546`.
+- `cpu-profile-alignment-offline-response_lamps_only.log` SHA256 `24aacb0ee6dc4544959100de506d6860d2b54751a45cb3e1ce64e46c26db10f0`.
+- `cpu-profile-alignment-offline-response_silent.log` SHA256 `822c589db4f4952c6863bb593de06d54c55972354001b74a8e10e3bd21aab64d`.
+- `cpu-profile-alignment-offline-pursuit_actual_siren.log` SHA256 `4ec0d46ba4a86f42b10bb5c6823453778a808a22bdf3dfe04f813be7c2a4f06a`.
+- `cpu-profile-alignment-offline-pursuit_suspected_siren.log` SHA256 `7d686c84807729d267104c488fa609fafb56bc5605279e96fc63750e40b5421f`.
+- `cpu-profile-alignment-offline-unqualified_siren.log` SHA256 `8e0792586099417d4584af662a1ef56bd5fe1203524cc36097a7f2a7947ee9df`.
+- `cpu-profile-alignment-offline-unqualified_lamps_only.log` SHA256 `3f224c4e4b10fd253a33fd225cfdf253c681bc7c0645574cf0ccf544f7dcfd71`.
+- `cpu-profile-alignment-build.log` SHA256 `87cc665f6677a9dae1a03cb93d988d280f65490d6edec95bb7cfd1f70142b331`.
+- `cpu-profile-alignment-tests.log` SHA256 `e447714186fc0f73278847b906aa1962f05074ba1d6b7ef0e7a8c5ce2fe2649e`.
+- `cpu-profile-alignment-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
+- `cpu-profile-alignment-static.log` SHA256 `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d`.
+- `cpu-profile-alignment-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.

@@ -40,3 +40,19 @@ Cycle measurement now counts aspect-return cycles only when both boundary frames
 Next CPU actions: implement actual Native adapter and source-surveyed signal/stop hierarchy; bind the media decoder to source-sealed real capture and physical pixel review; finish six exact case bundles, semantic proposals, offline and compatibility receipts, saved-only processing, and justified candidates. Rerun focused and strict checks before any ready claim.
 
 The saved-media command line now accepts an exact source-hashed manifest, requires 900 frames at 20 Hz for all four views, and writes a case-bound decode receipt while leaving physical visibility unreviewed. A temporary 900-frame FFV1 positive test and manifest-hash negative test exercise this path.
+
+## 2026-11-23 six-case offline diagnostic bundle checkpoint
+
+`build_offline_draft.py` now packages all six exact straight-route cases with source-sealed construction, 900-frame capture, saved measurement, comparison, delivery and media-decode modules. Each runner binds its case parameters and case-plan SHA256, requires 20 Hz for 45 seconds and pinned overview/approach/reference_corner/driver_reference camera names, and refuses unsourced Native launch. `tests/test_offline_bundles.py` verifies exact case coverage, construction hashes, copied source files and per-case parameters. All six exact `runtime.py offline` checks pass without starting simulation; 22 focused tests, pinned preflight and scoped static pass. Scoped strict exits 1 on truthful partial. These are diagnostic bundles; production Native adapter, source-surveyed map/head/stop/detector facts, canonical proposals and manifest, positive/negative compatibility, saved-only delivery and independent audit receipts remain CPU work. No physical or legal acceptance is inferred.
+
+- `cpu-bundles-offline-two_cycles_clear.log` SHA256 `17e295c6bd47297b1f1c190f96cb01e49955c63cbe583ec6983d21b61eb7ed23`.
+- `cpu-bundles-offline-one_cycle_entry.log` SHA256 `b39d0f5f8fa60679fd887000cdfe918cbb89ed882e1f39e84350078897ca8fe2`.
+- `cpu-bundles-offline-rolling_entry.log` SHA256 `50a74f77e0e88b79b9e2183665dbac00a1f43374459c6380aafc53a7b17f5fe0`.
+- `cpu-bundles-offline-no_causal_record.log` SHA256 `fe0ab571db084b42f4f644d8c3619316ce8e778ffb11e8a56e0c9bbebf58b159`.
+- `cpu-bundles-offline-pedestrian_crosswalk.log` SHA256 `715dc6d37f110a779b4e9cd52939041bbf97019f9fec8c57b891f7bead87778a`.
+- `cpu-bundles-offline-lawful_traffic.log` SHA256 `844cc8cbf854d696a901b086f5b58e64ce466de708452755e763300a73897c9d`.
+- `cpu-bundles-build.log` SHA256 `b79e7729570b9217e7d2c99557393d9657190f277abd6ec82ff4b2bf49436d0a`.
+- `cpu-bundles-tests.log` SHA256 `cc6c6b964b89e7a625a691d2fce5a7e1d674f7f6c971c20ba65e0c4abc7dec72`.
+- `cpu-bundles-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
+- `cpu-bundles-static.log` SHA256 `d335ac8877e30febadcb5366d0c1d9ab7b2949d3897022e1d86298fe7ffec1e4`.
+- `cpu-bundles-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.

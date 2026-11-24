@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -23,6 +24,7 @@ sys.path.insert(0, str(ROOT))
 measurement = module('saved_measurement')
 capture_module = module('native_capture')
 media_audit = module('saved_media_audit')
+delivery = module('delivery_audit')
 
 
 class CrossingTests(unittest.TestCase):
@@ -369,6 +371,76 @@ class CrossingTests(unittest.TestCase):
             diagnostic, ticks=2)
         with self.assertRaisesRegex(ValueError, 'four-camera capture missing'):
             media_audit.audit(diagnostic)
+
+    def test_saved_camera_audit_rechecks_original_time_after_rehash(self):
+        from io import BytesIO
+        from PIL import Image
+        stream = BytesIO()
+        Image.new('RGB', (8, 6)).save(stream, format='PNG')
+        png = stream.getvalue()
+        readers = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+                   for name in capture_module.CAMERAS}
+        actor, world, head, device = self.native_fakes()
+        attempt = self.root / 'time-gap'
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            attempt, ticks=3, camera_readers=readers,
+            camera_dimensions={name: (8, 6) for name in capture_module.CAMERAS})
+        self.assertEqual(media_audit.audit(attempt)['decoded_images'], 16)
+        receipt['fps'] = 10
+        (attempt / 'capture-receipt.json').write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, 'capture rate mismatch'):
+            media_audit.audit(attempt)
+        receipt['fps'] = 20
+        frames = attempt / 'original-frames.json'
+        rows = json.loads(frames.read_text())
+        rows[2]['elapsed_seconds'] += 0.1
+        frames.write_text(json.dumps(rows))
+        receipt['original_frames']['sha256'] = hashlib.sha256(frames.read_bytes()).hexdigest()
+        (attempt / 'capture-receipt.json').write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, '20 Hz frame time gap'):
+            media_audit.audit(attempt)
+
+    def test_delivery_protocol_joins_original_clearance_and_pixels(self):
+        from io import BytesIO
+        from PIL import Image
+        stream = BytesIO()
+        Image.new('RGB', (8, 6)).save(stream, format='PNG')
+        png = stream.getvalue()
+        readers = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+                   for name in capture_module.CAMERAS}
+        self.write('site.json', json.dumps(self.site))
+        site_ref = {'path': 'site.json',
+                    'sha256': hashlib.sha256((self.root / 'site.json').read_bytes()).hexdigest()}
+        actor, world, head, device = self.native_fakes()
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            self.root, ticks=240, camera_readers=readers,
+            camera_dimensions={name: (8, 6) for name in capture_module.CAMERAS})
+        result = delivery.audit(self.root, site_ref, 'marked_cross')
+        self.assertTrue(result['source_join_passed'])
+        self.assertEqual(result['decoded_images'], 964)
+        self.assertFalse(result['physical_acceptance'])
+        (self.root / 'site-ref.json').write_text(json.dumps(site_ref))
+        output = self.root / 'delivery-protocol.json'
+        completed = subprocess.run([sys.executable, str(ROOT / 'delivery_audit.py'),
+            '--attempt-root', str(self.root), '--site-ref', str(self.root / 'site-ref.json'),
+            '--case-suffix', 'marked_cross', '--output', str(output)],
+            capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(json.loads(output.read_text())['decoded_images'], 964)
+        with self.assertRaisesRegex(ValueError, 'case mismatch'):
+            delivery.audit(self.root, site_ref, 'unmarked_cross')
+        frame_path = self.root / receipt['original_frames']['path']
+        rows = json.loads(frame_path.read_text())
+        for row in rows:
+            if row['pedestrian_xy'][0] > 9.8:
+                row['pedestrian_xy'][0] = 9.8
+        frame_path.write_text(json.dumps(rows))
+        receipt['original_frames']['sha256'] = hashlib.sha256(frame_path.read_bytes()).hexdigest()
+        (self.root / 'capture-receipt.json').write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, 'clearance missing'):
+            delivery.audit(self.root, site_ref, 'marked_cross')
 
 
 if __name__ == '__main__':

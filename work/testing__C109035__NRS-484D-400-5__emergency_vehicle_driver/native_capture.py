@@ -99,7 +99,7 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
             if observed.get("source_type") in (None, "", "command_echo") or not observed.get("source_citation"):
                 raise ValueError("Independent device-state source missing")
             camera_ref = camera_capture(native_frame)
-            if not isinstance(camera_ref, dict) or set(camera_ref) != {"front", "rear", "left", "right"} or not all(camera_ref.values()):
+            if not isinstance(camera_ref, dict) or set(camera_ref) != {"overview", "approach", "reference_corner", "driver_reference"} or not all(camera_ref.values()):
                 raise ValueError("Four synchronized camera source references missing")
             cameras.append({"frame": tick, "native_frame": native_frame, "sources": camera_ref})
             rows.append({"frame": tick, "native_frame": native_frame, "elapsed_s": elapsed,

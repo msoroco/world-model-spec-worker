@@ -11,6 +11,7 @@ from xml.etree import ElementTree
 from crossing_geometry import validate_scene
 from native_capture import FourVideoRecorder, sample_original_walker
 from native_controller import request_next_control, spawn_walker
+from native_crosswalk_readback import audit_crosswalk_map
 
 FRAMES=400
 CAMERAS=('overview','approach','reference_corner','driver_reference')
@@ -65,6 +66,8 @@ def run_native(scene,scene_path,map_path,output,host,port):
     frames=[];errors=[];restoration={'restored':False}
     try:
         world=client.generate_opendrive_world(Path(map_path).read_text())
+        write(output/'native-crosswalk-readback.json',
+              audit_crosswalk_map(scene,world.get_map()))
         settings=world.get_settings();settings.synchronous_mode=True
         settings.fixed_delta_seconds=.05;settings.no_rendering_mode=False
         world.apply_settings(settings)
@@ -108,7 +111,7 @@ def run_native(scene,scene_path,map_path,output,host,port):
         write(output/'native-run-status.json',{'phase':'failed','errors':errors,
              'restoration':restoration,'captured_frames':len(frames)})
         raise RuntimeError('Native acquisition or restoration failed; retained failed attempt')
-    sources=('scene.json','candidate-crossing.xodr','road.xodr','trace.jsonl',
+    sources=('scene.json','candidate-crossing.xodr','native-crosswalk-readback.json','road.xodr','trace.jsonl',
              'walker-body-history.jsonl','video_frames.jsonl','camera-frame-joins.jsonl',
              *(name+'.mkv' for name in CAMERAS))
     write(output/'acquisition.json',{name:{'kind':'original_native','sha256':sha(output/name)} for name in sources})
