@@ -7,6 +7,7 @@ import json
 import sys
 import tempfile
 import shutil
+import tarfile
 import zlib
 from pathlib import Path
 
@@ -62,7 +63,7 @@ def run(kind,case,output):
   write(attempt/'config.json',config)
   for name in ('trace.jsonl','video_frames.jsonl','crossing_history.jsonl'):
    (attempt/name).write_text(sources[name])
-  write(attempt/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':True,
+  write(attempt/'acquisition-provenance.json',{'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
       'scope':'Synthetic CPU classifier fixture; no Native physical acceptance'})
   if kind=='lifecycle':
    claims=read(HERE/'result.json')['tests']
@@ -76,8 +77,30 @@ def run(kind,case,output):
       data=read(path)
       if data.get('passed') is True and data.get('recorded_only') is True:
        saved.append((path,data))
-   if not saved:raise ValueError('Current exact primary saved-processing claim missing')
-   saved_path,saved_data=saved[-1]
+   if saved:
+    saved_path,saved_data=saved[-1]
+    saved_sha=sha(saved_path)
+   else:
+    plan=read(HERE/'case-plan.json')['first_fallback3_fixed_duration_repair_20261124']
+    binding=plan['current_manifest_saved_replay']
+    archive=REPO/'work/_shared/small-archives-consolidated-20261123.tar.xz'
+    if sha(archive)!=plan['archive_sha256']:
+     raise ValueError('Current saved replay archive changed')
+    with tarfile.open(archive,'r:xz') as bundle:
+     index_bytes=bundle.extractfile(binding['archive_member_prefix']+'index.json').read()
+     if hashlib.sha256(index_bytes).hexdigest()!=binding['index_sha256']:
+      raise ValueError('Current saved replay index changed')
+     index=json.loads(index_bytes)
+     if index['manifest_sha256']!=binding['manifest_sha256'] or index['case_id']!=case:
+      raise ValueError('Current saved replay index differs')
+     proof=next(x for x in index['proofs'] if x['candidate']=='primary')
+     saved_bytes=bundle.extractfile(proof['member']).read()
+     saved_sha=hashlib.sha256(saved_bytes).hexdigest()
+     if saved_sha!=proof['sha256']:
+      raise ValueError('Current saved replay receipt changed')
+     saved_data=json.loads(saved_bytes)
+    if saved_data.get('passed') is not True or saved_data.get('recorded_only') is not True or saved_data.get('candidate_id')!='primary':
+     raise ValueError('Current saved replay primary did not pass')
    write(attempt/'construction.json',construction)
    (attempt/'runner.py').write_text(next(f['content'] for f in construction['files'] if f['path']=='runner.py'))
    try:
@@ -100,7 +123,7 @@ def run(kind,case,output):
    if events!=expected:raise AssertionError('Saved processing lifecycle order differs')
    result={'case_id':case,'events':events,'diagnostic_fixture':True,
        'failed_encoder_rejected':True,'premature_release_rejected':True,
-       'saved_processing_log_sha256':sha(saved_path)}
+       'saved_processing_log_sha256':saved_sha}
    write(output,result);return result
   motion=attempt/'crossing_history.jsonl'
   if kind=='missing_evidence':motion.unlink()
@@ -157,7 +180,7 @@ def run_staged(kind,case,attempt,output,candidate=None,canonical_saved_receipt=N
   fixture=Path(tmp)
   for name in ('config.json','trace.jsonl','video_frames.jsonl','crossing_history.jsonl','junction_context.json'):
    shutil.copyfile(attempt/name,fixture/name)
-  write(fixture/'acquisition-provenance.json',{'provenance_kind':'native','diagnostic_fixture':True,
+  write(fixture/'acquisition-provenance.json',{'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
        'scope':'Staged synthetic CPU classifier fixture; no Native physical acceptance'})
   if kind=='lifecycle':
    if exact is not qualified:raise ValueError('Staged lifecycle requires qualified saved claim')
