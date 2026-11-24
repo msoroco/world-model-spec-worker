@@ -2,11 +2,30 @@
   "assignment_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver",
   "input_sha256": "076657e5b90a8d964054e52074feb9300407615d2e20a062ee13caf8fe3fc89b",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "yield_reference_geometry_and_view_selector",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "3946894b4ba0ea233b8a29a510f78ca53062f787c01b4bdc3bd9f673310e37a7"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "unittest.log",
+      "sha256": "c4cb30d4ca4045697f1f2049a0b40e29722be7405103fc3f9e2e174f9d893ec8"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C24823__NRS-484A-450-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "static.log",
+      "sha256": "a96f74002126ebaa38a0ade2336ad0d75605a96f182539c75613780cbae431e8"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Five exact planned cases and three comparisons cover the crosswalk, stop-line and nearest-view hierarchy plus conditional safety necessity. A source-bound selector builds occluder sight rays and chooses the nearest candidate with a geometric view; six synthetic CPU tests pass. Actual source geometry/sight and safety review, stop trace, exact bundles, saved processing, compatibility and audits remain CPU work."
 }

@@ -1,0 +1,142 @@
+"""Source-gated official-device lamp probes for NRS 484D.100(1)."""
+from dataclasses import dataclass
+from math import isfinite
+from typing import Mapping
+
+
+@dataclass(frozen=True)
+class Case:
+    name: str
+    device_directs: bool
+    lamps_on: bool
+    context: str
+
+
+CASES = (
+    Case('day_device_lamps_on', True, True, 'day_clear'),
+    Case('day_device_lamps_off', True, False, 'day_clear'),
+    Case('day_no_device_lamps_off', False, False, 'day_clear'),
+    Case('night_device_lamps_on', True, True, 'night'),
+    Case('poor_visibility_device_lamps_on', True, True, 'poor_visibility'),
+)
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+
+def number(value):
+    return type(value) in (int, float) and isfinite(value)
+
+
+def validate_scene(scene: Mapping, case: Case):
+    require(case in CASES, 'unknown exact lamp case')
+    require(scene.get('cell_id') == 'C230294' and
+            scene.get('actor') == 'motor_vehicle_driver' and
+            scene.get('nevada_jurisdiction') is True and
+            scene.get('public_highway') is True and
+            scene.get('vehicle_class') == 'ordinary_motor_vehicle' and
+            scene.get('parked') is False, 'qualifying highway vehicle missing')
+    require(scene.get('device_directs') is case.device_directs and
+            scene.get('lamps_on_request') is case.lamps_on and
+            scene.get('context') == case.context, 'case variables changed')
+    for field in ('jurisdiction', 'highway', 'vehicle_class', 'parking_status',
+                  'required_lamp_provisions', 'device_authority',
+                  'device_geometry', 'device_message', 'device_timing',
+                  'route', 'sunset_sunrise', 'clock', 'visibility'):
+        require(scene.get(field + '_source_sha256'),
+                'original context missing: ' + field)
+    if case.device_directs:
+        require(scene.get('official_device') is True and
+                scene.get('device_message') == 'use_lamps' and
+                scene.get('device_operative') is True and
+                scene.get('device_governs_route') is True,
+                'operative official lamp direction missing')
+    required = scene.get('required_lamp_ids')
+    require(isinstance(required, list) and required and
+            all(isinstance(x, str) and x for x in required) and
+            len(set(required)) == len(required),
+            'class-specific lamp inventory missing')
+    route = scene.get('route_xy')
+    require(isinstance(route, list) and len(route) >= 2 and
+            all(isinstance(p, list) and len(p) == 2 and
+                all(number(x) for x in p) for p in route),
+            'governed vehicle route missing')
+    require(number(scene.get('sunset_time_s')) and
+            number(scene.get('sunrise_time_s')) and
+            number(scene.get('clock_time_s')) and
+            number(scene.get('visibility_ahead_m')),
+            'sun/visibility context missing')
+    if case.context == 'day_clear':
+        require(scene['sunrise_time_s'] + 1800 < scene['clock_time_s'] <
+                scene['sunset_time_s'] - 1800 and
+                scene['visibility_ahead_m'] >= 304.8,
+                'isolated daylight device context missing')
+    if case.context == 'night':
+        require(scene['clock_time_s'] >= scene['sunset_time_s'] + 1800,
+                'half-hour-after-sunset context missing')
+    if case.context == 'poor_visibility':
+        require(scene['visibility_ahead_m'] < 304.8,
+                '1,000-foot discernibility context missing')
+    return {'case_id': case.name, 'legal_judgment': None}
+
+
+def construct(adapter, scene: Mapping, case: Case):
+    context = validate_scene(scene, case)
+    owned = []
+    try:
+        if case.device_directs:
+            adapter.place_official_device(scene['device_xy'], 'use_lamps')
+        vehicle = adapter.spawn_vehicle(scene['route_xy'][0])
+        require(vehicle is not None, 'vehicle spawn failed')
+        owned.append(vehicle)
+        adapter.set_route(vehicle, scene['route_xy'])
+        for lamp_id in scene['required_lamp_ids']:
+            adapter.set_lamp(vehicle, lamp_id, case.lamps_on)
+        return {'owned': tuple(owned), **context}
+    except Exception:
+        for actor in reversed(owned):
+            adapter.destroy(actor)
+        raise
+
+
+def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
+    validate_scene(scene, case)
+    require(len(rows) == 900, 'original 900-frame capture missing')
+    first = rows[0].get('original_frame')
+    require(type(first) is int and number(rows[0].get('time_s')),
+            'original frame/time identity missing')
+    vehicle_id = None
+    lamp_counts = {lamp_id: 0 for lamp_id in scene['required_lamp_ids']}
+    for i, row in enumerate(rows):
+        require(row.get('original_frame') == first + i and
+                number(row.get('time_s')) and
+                abs(row['time_s'] - rows[0]['time_s'] - i / 20) <= .005,
+                'original frame/time join invalid')
+        for field in ('frame', 'vehicle_motion', 'lamp_state',
+                      'device_authority', 'device_message', 'device_timing',
+                      'sunset_sunrise', 'clock', 'visibility'):
+            require(row.get(field + '_source_sha256'),
+                    'original measurement source missing: ' + field)
+        require(row.get('vehicle_class_source_sha256') ==
+                scene['vehicle_class_source_sha256'] and
+                row.get('device_directs') is case.device_directs and
+                row.get('context') == case.context,
+                'original vehicle/device context changed')
+        require(row.get('vehicle_id'), 'vehicle identity missing')
+        vehicle_id = vehicle_id or row['vehicle_id']
+        require(row['vehicle_id'] == vehicle_id and
+                number(row.get('speed_mps')) and row['speed_mps'] > 0,
+                'moving vehicle identity/motion missing')
+        states = row.get('lamp_states')
+        require(isinstance(states, dict) and
+                set(states) == set(lamp_counts) and
+                all(type(value) is bool for value in states.values()),
+                'actual class-specific lamp states missing')
+        for lamp_id, on in states.items():
+            lamp_counts[lamp_id] += int(on)
+    return {'case_id': case.name, 'frame_count': 900,
+            'device_directs': case.device_directs,
+            'lamp_on_frame_counts': lamp_counts,
+            'legal_judgment': None}

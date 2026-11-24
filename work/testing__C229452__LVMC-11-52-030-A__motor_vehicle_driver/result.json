@@ -2,11 +2,30 @@
   "assignment_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver",
   "input_sha256": "b7bdf7159d452b1a69f260499186b93bcf9466358bc45e04815b19eea138c8db",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "source_gated_cpu_construction",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "log": "cpu-tests.log",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "sha256": "6e6b97d7b27420efb09529fd68dc6e5af37befcf6c813e2dd19db42cc6c19bb2"
+    },
+    {
+      "log": "cpu-preflight.log",
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "log": "cpu-static-check.log",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver",
+      "exit_code": 0,
+      "sha256": "e6c4b636ea169282984d9a421a87b9cfc75ced7f2b59036f16021bd821a5c80b"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Eleven exact red-curb cases have source-gated construction and long original event-trace measurement with four passing focused tests. Selected-case execution bundles, source-bound compatibility, semantic proposals and independent saved delivery/comparison audits remain CPU work. Strict scoped gate exits 1 because result remains truthfully partial."
 }

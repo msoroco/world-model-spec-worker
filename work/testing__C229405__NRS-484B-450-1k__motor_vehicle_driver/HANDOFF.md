@@ -18,7 +18,7 @@ The cases and six controlled comparisons are in `case-plan.json`. No accepted re
 - `cpu-static-check.log` SHA256 `4289641082f9c650199c6696d0590f3f4bb75f8367a63ad1f9dc4acf0cc08251`
 - `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
-Commands: `.venv-cpu/bin/python -m unittest discover -s work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/tests -v` exit 0 (3 tests); `.venv-cpu/bin/python runtime.py preflight` exit 0; `.venv-cpu/bin/python worker_check.py --assignment testing__C229405__NRS-484B-450-1k__motor_vehicle_driver` exit 0; same scoped command with `--complete --require-delivery-ready` exit 1 on partial status. Logs retained above.
+Commands: `.venv-cpu/bin/python -m unittest discover -s work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/tests -v` exit 0 (3 tests); `.venv-cpu/bin/python runtime.py preflight` exit 0; `.venv-cpu/bin/python worker_check.py --assignment testing__C229405__NRS-484B-450-1k__motor_vehicle_driver` exit 0; same scoped command with `--complete --require-delivery-ready` exit 1 on partial status. Logs retained above. `result.json.tests` records only passing tests/preflight/static checks with package-relative log paths, exact commands, exit code 0 and matching SHA256. The strict failure is retained for diagnosis only.
 
 ## Remaining CPU work
 

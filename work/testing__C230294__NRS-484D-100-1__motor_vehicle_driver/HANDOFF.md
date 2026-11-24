@@ -1,22 +1,25 @@
-# testing__C230294__NRS-484D-100-1__motor_vehicle_driver
+# C230294 official lamp direction checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
 
-Exact law: NRS 484D.100(1) — Every vehicle upon a highway of this State, subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS, must display lighted lamps and illuminating devices as respectively required in this chapter for different classes of vehicles: (a) At any time from one-half hour after sunset to one-half hour before sunrise; (b) At any other time when, because of insufficient light or unfavorable atmospheric conditions, persons and vehicles on the highway are not clearly discernible at a distance of 1,000 feet ahead; and (c) When directed by an official traffic control device.
-Assigned branch(es): (c) Official traffic-control device directs lamp use.
-Cell: C230294 (road, travel, traffic_control_device); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed CPU scope
 
-## Next CPU actions
+`lamp_direction.py` source-gates a Nevada public highway, ordinary moving motor vehicle, class-specific required-lamp inventory and official device authority/message/route/timing. It constructs an operative lamp-direction device, vehicle and route, then sets each required lamp. Its 900-frame original finalizer measures all actual lamp states with source identity and rejects missing channels. Night and poor-visibility contexts are separately sourced; the daytime device comparison isolates subsection (c).
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C230294__NRS-484D-100-1__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Five exact cases and four comparisons are in `case-plan.json`. The day context is outside half-hour sunrise/sunset triggers with discernibility at least 1,000 feet (304.8 m); other probes retain the independent (a)/(b) conditions. No accepted recording exists in the frozen inventory. Class-specific lamp legal sufficiency remains unresolved.
 
-## Proven checks and dependency boundary
+## CPU proof receipts
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `case-plan.json` SHA256 `cf78a1ac93a74f474cc674ef9bdd1afd08b5b914ca7530c3d8d16850d89275a6`
+- `lamp_direction.py` SHA256 `79b377435c05f55a009141be21740323a03da96c2a6ac260188ff26e53ac54d7`
+- `tests/test_lamp_direction.py` SHA256 `472437984566f6043ece8dd01f22553f13c112d98a233f50c3397c6f5b7f67fc`
+- `cpu-tests.log` SHA256 `546923035a5fa99a4be4de054fa247fa2408b36c016e6259a0f5e63beab37869`
+- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
+- `cpu-static-check.log` SHA256 `03451a9a5d48eb7031423eb7aa9ab35d1e357007a0538ead8d0bc74ff687c2b6`
+- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped static `worker_check.py --assignment testing__C230294__NRS-484D-100-1__motor_vehicle_driver` exit 0; exact scoped strict with `--complete --require-delivery-ready` exit 1 on truthful partial. `result.json.tests` includes only successful commands with package-relative logs and SHA256.
+
+## Remaining CPU work
+
+Author canonical selected-case execution bundles, source-bound positive/negative compatibility, saved-only processing, semantic proposals and independent delivery/comparison audits. Add exact sunset/sunrise and visibility boundary probes for full-law coverage. Then rerun scoped strict. Actual CARLA lamp behavior and camera visibility remain physical review after CPU readiness.

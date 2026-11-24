@@ -47,13 +47,13 @@ class SavedDrivewayTests(unittest.TestCase):
 
     def test_plan_covers_exception_and_boundary_controls(self):
         plan = json.loads((MODULE.parent / "case-plan.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(plan["cases"]), 12)
-        self.assertEqual(len(plan["comparisons"]), 9)
-        self.assertEqual(len({c["case_id"] for c in plan["cases"]}), 12)
+        self.assertEqual(len(plan["cases"]), 16)
+        self.assertEqual(len(plan["comparisons"]), 11)
+        self.assertEqual(len({c["case_id"] for c in plan["cases"]}), 16)
 
     def test_original_distance_is_observed_without_legal_decision(self):
         result = self.run_measure()
-        self.assertAlmostEqual(result["minimum_observed_body_to_mouth_m"], 1)
+        self.assertAlmostEqual(result["minimum_observed_vertex_to_mouth_m"], 1)
         self.assertEqual(result["frontage_judgment"], "unresolved")
         self.assertEqual(result["private_relationship_judgment"], "unresolved")
 

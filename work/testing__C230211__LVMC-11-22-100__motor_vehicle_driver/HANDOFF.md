@@ -1,22 +1,25 @@
-# testing__C230211__LVMC-11-22-100__motor_vehicle_driver
+# C230211 protected pavement checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
 
-Exact law: LVMC 11.22.100 — No person shall ride or drive any horse or vehicle over or across any pavement newly laid or repaired across or around which there has been placed a barrier, or at or near which there is a person or a sign warning persons against riding or driving over such pavement, or a sign stating that the highway is closed. The provisions of this Section shall not apply to the employees actually engaged in the paving or repair of such pavement.
-Assigned branch(es): Barrier protection.
-Cell: C230211 (road, travel, barrier); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed CPU scope
 
-## Next CPU actions
+`pavement_protection.py` source-gates jurisdiction, driver/vehicle, newly laid/repaired pavement, protection geometry and timing, route, and same-pavement active employee work. It constructs actual barrier or warning person/sign and vehicle route with actor cleanup. Its 900-frame original finalizer detects physical crossing versus bypass from source-linked positions; legal effect stays unresolved.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C230211__LVMC-11-22-100__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Seven exact cases and six controlled comparisons in `case-plan.json` cover across/around barrier, bypass, warning person/sign, closed-highway sign and active employee exception. Frozen evidence inventory has no accepted recording. The cell selects a motor vehicle driver; horse riding is a law alternative outside that actor scope.
 
-## Proven checks and dependency boundary
+## CPU proof receipts
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `case-plan.json` SHA256 `bde329130c1591a7dd9bad9eed9a7bc88da8b35e60a2a0e8670fce7089049d34`
+- `pavement_protection.py` SHA256 `8af918ec8597f9ab55d585c1fa88bb7fb5b93565ac66f0d1f3851b19361c840c`
+- `tests/test_pavement_protection.py` SHA256 `c65bbf10301234c6863b8fb2d2b462d23802edd6753b9b2349094774c9ae6354`
+- `cpu-tests.log` SHA256 `c41663a5c53eaa21e04f52adfd4ce5eca720c48ab11f707e2f88372b12ee8e41`
+- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
+- `cpu-static-check.log` SHA256 `2ded6905989fdd32fa4c3a9ed477bfd6b13f5f6095724655ae7f8925297b5c01`
+- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped static `worker_check.py --assignment testing__C230211__LVMC-11-22-100__motor_vehicle_driver` exit 0; same exact scoped strict with `--complete --require-delivery-ready` exit 1 on truthful partial. `result.json.tests` includes only passing commands with package-relative logs and SHA256.
+
+## Remaining CPU work
+
+Create canonical selected-case runtime bundles, source-bound positive/negative compatibility, saved-only processing, semantic proposals, and independent delivery/comparison audits. Establish physical placement timing in original captured data. Then rerun scoped strict. Actual CARLA motion and camera coverage remain physical review after CPU readiness.

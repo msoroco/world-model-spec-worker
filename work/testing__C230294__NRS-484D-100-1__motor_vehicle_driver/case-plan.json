@@ -31,9 +31,137 @@
   "topic_inventory": {
     "exact-text": "Every vehicle upon a highway of this State, subject to exceptions with respect to parked vehicles as stated in chapters 484A to 484E, inclusive, of NRS, must display lighted lamps and illuminating devices as respectively required in this chapter for different classes of vehicles: (a) At any time from one-half hour after sunset to one-half hour before sunrise; (b) At any other time when, because of insufficient light or unfavorable atmospheric conditions, persons and vehicles on the highway are not clearly discernible at a distance of 1,000 feet ahead; and (c) When directed by an official traffic control device."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+      "target_law_id": "NRS-484D-100-1",
+      "branch": "official traffic-control device directs lamp use on Nevada highway",
+      "device_directs_lamps": true,
+      "requested_lamp_state_on": true,
+      "context": "day_clear",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "lamp_direction.construct: source-gated official device on governed route, qualifying moving vehicle and class-specific lamp settings",
+      "measurement": "lamp_direction.measure_original: 900 source-linked original frames and actual states of every class-specific required lamp",
+      "physical_risk": "Native official-device authority, operative route/timing and lamp-state readback require local CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off",
+      "target_law_id": "NRS-484D-100-1",
+      "branch": "official traffic-control device directs lamp use on Nevada highway",
+      "device_directs_lamps": true,
+      "requested_lamp_state_on": false,
+      "context": "day_clear",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "lamp_direction.construct: source-gated official device on governed route, qualifying moving vehicle and class-specific lamp settings",
+      "measurement": "lamp_direction.measure_original: 900 source-linked original frames and actual states of every class-specific required lamp",
+      "physical_risk": "Native official-device authority, operative route/timing and lamp-state readback require local CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_no_device_lamps_off",
+      "target_law_id": "NRS-484D-100-1",
+      "branch": "official traffic-control device directs lamp use on Nevada highway",
+      "device_directs_lamps": false,
+      "requested_lamp_state_on": false,
+      "context": "day_clear",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "lamp_direction.construct: source-gated official device on governed route, qualifying moving vehicle and class-specific lamp settings",
+      "measurement": "lamp_direction.measure_original: 900 source-linked original frames and actual states of every class-specific required lamp",
+      "physical_risk": "Native official-device authority, operative route/timing and lamp-state readback require local CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__night_device_lamps_on",
+      "target_law_id": "NRS-484D-100-1",
+      "branch": "official traffic-control device directs lamp use on Nevada highway",
+      "device_directs_lamps": true,
+      "requested_lamp_state_on": true,
+      "context": "night",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "lamp_direction.construct: source-gated official device on governed route, qualifying moving vehicle and class-specific lamp settings",
+      "measurement": "lamp_direction.measure_original: 900 source-linked original frames and actual states of every class-specific required lamp",
+      "physical_risk": "Native official-device authority, operative route/timing and lamp-state readback require local CARLA/original review",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__poor_visibility_device_lamps_on",
+      "target_law_id": "NRS-484D-100-1",
+      "branch": "official traffic-control device directs lamp use on Nevada highway",
+      "device_directs_lamps": true,
+      "requested_lamp_state_on": true,
+      "context": "poor_visibility",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "lamp_direction.construct: source-gated official device on governed route, qualifying moving vehicle and class-specific lamp settings",
+      "measurement": "lamp_direction.measure_original: 900 source-linked original frames and actual states of every class-specific required lamp",
+      "physical_risk": "Native official-device authority, operative route/timing and lamp-state readback require local CARLA/original review",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "device_lamps_on_off",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off"
+      ],
+      "fixed_conditions": "same Nevada highway, vehicle class, device placement/authority, route, camera/duration except declared variable",
+      "deliberate_differences": [
+        "requested and measured lamp states"
+      ]
+    },
+    {
+      "comparison_id": "device_vs_no_device",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_off",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_no_device_lamps_off"
+      ],
+      "fixed_conditions": "same Nevada highway, vehicle class, device placement/authority, route, camera/duration except declared variable",
+      "deliberate_differences": [
+        "operative official-device direction"
+      ]
+    },
+    {
+      "comparison_id": "day_vs_night",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__night_device_lamps_on"
+      ],
+      "fixed_conditions": "same Nevada highway, vehicle class, device placement/authority, route, camera/duration except declared variable",
+      "deliberate_differences": [
+        "sunset/clock context"
+      ]
+    },
+    {
+      "comparison_id": "day_vs_poor_visibility",
+      "case_ids": [
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__day_device_lamps_on",
+        "testing__C230294__NRS-484D-100-1__motor_vehicle_driver__poor_visibility_device_lamps_on"
+      ],
+      "fixed_conditions": "same Nevada highway, vehicle class, device placement/authority, route, camera/duration except declared variable",
+      "deliberate_differences": [
+        "1,000-foot discernibility/visibility context"
+      ]
+    }
+  ],
+  "observations": [
+    "Nevada highway public dedication, boundaries and public access; ordinary moving motor vehicle and parking/loading status",
+    "source-validated official traffic-control device authority, message, location, governed route and operative time",
+    "class-specific required lamp provisions and actual states of all required illuminating devices",
+    "date/location/clock basis, sunset and sunrise; half-hour trigger retained separately",
+    "visibility/atmosphere and 1,000-foot (304.8 m) discernibility retained separately",
+    "no assumption that parked-vehicle exception applies to moving ego"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
@@ -58,17 +186,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Native device authority, operative timing and actual required-lamp readback need CARLA/original review.",
+    "Canonical execution bundles, compatibility, saved processing, semantic and independent audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "source": "inputs/testing__C230294__NRS-484D-100-1__motor_vehicle_driver/evidence.json",
+        "source_sha256": "fc122649f855bc4118945738f47d41f68b1077382c1a9b97f14f00f50644b117",
+        "why_existing_insufficient": "Frozen evidence inventory has no accepted recording; official device direction and actual class-specific lamp states are unproven."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_constructed_cpu_probe",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v3/testing-witness-review.json",

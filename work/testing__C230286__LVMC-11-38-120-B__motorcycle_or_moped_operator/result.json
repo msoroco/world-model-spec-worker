@@ -2,11 +2,30 @@
   "assignment_id": "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator",
   "input_sha256": "a9d9293d9b78e33df30c2812c3409dcc95334cde3a7a64ca803d6a094e45bb7b",
   "status": "partial",
-  "readiness_kind": "source_inventory",
+  "readiness_kind": "exact_case_measurement_checkpoint",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator/tests -v",
+      "exit_code": 0,
+      "log": "cpu-lamp-tests.log",
+      "sha256": "f175e2d2bb27353ae48822b68300581d9d573c3cbeaa8444e5a67e68cf5c516e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator --complete",
+      "exit_code": 0,
+      "log": "assignment-check.log",
+      "sha256": "757df303f489e04b3c2e75a79601c1379c29e24c6ab9e40db62c6a33e144d169"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "reason": "Seventeen exact vehicle-coverage, daylight/night/low-visibility, motion, lamp-burning, color and calibrated distance cases plus fourteen comparisons planned. Source-hashed original Native 20 Hz capture reader retains separate head/tail burning states, calibrated lamp color/range/mount and observed atmospheric discernibility; eight focused tests pass. Vehicle coverage, visibility and burning duty remain unresolved. Native construction/capture, finalizers/proposals, exact offline/compatibility and saved delivery/comparison audits remain worker-owned."
 }

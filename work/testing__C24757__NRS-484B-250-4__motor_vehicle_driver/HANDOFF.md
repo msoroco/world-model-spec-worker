@@ -1,22 +1,25 @@
-# testing__C24757__NRS-484B-250-4__motor_vehicle_driver
+# C24757 inoperative signal checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
 
-Exact law: NRS 484B.250(4) — When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.
-Assigned branch(es): Blind-intersection post-stop interactions under complete signal inoperability..
-Cell: C24757 (blind_intersection, travel, inoperative_signal); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed CPU scope
 
-## Next CPU actions
+`inoperative_signal.py` source-gates installed, uncovered, wholly inoperative governing vehicular heads at every inventoried entrance. It constructs an occluder and distinct ego/other vehicle routes, with stop/entry and other-history control. Its 900-frame original finalizer verifies frame/time/source joins, complete pre-entry ego stop, and other prior-stop or intersection occupancy; yielding and caution remain unresolved judgments.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Six exact cases and five comparisons in `case-plan.json` cover stop-line/crosswalk/viewpoint hierarchy, earlier-stopped and occupied vehicles, clear approach and yield versus enter policy. Frozen evidence inventory has no accepted recording. The stop-line and fallback conditions are source-gated; no numeric caution or sight threshold is invented.
 
-## Proven checks and dependency boundary
+## CPU proof receipts
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `case-plan.json` SHA256 `2597894e5aa546b3d50bc5b7cdd113b80de7b6945690cb5540241e0235807fcd`
+- `inoperative_signal.py` SHA256 `a45334e77a0132757dd67c3f7870e5473bda367626e3717f1405fbaa85c25f3a`
+- `tests/test_inoperative_signal.py` SHA256 `a63caefc5bdb30330d5facc4d51bec983c4c45d22885242720da66e5fc9a39d2`
+- `cpu-tests.log` SHA256 `9617593b39ddf898ce168d6ab3e954006675a4201a3b4a704acfd4ec553b23ec`
+- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
+- `cpu-static-check.log` SHA256 `7e897d866fa548190b8d675eca6b1457eb13d78011e0bad6620cd17ab7ac5ea7`
+- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
+Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped static `worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver` exit 0; exact scoped strict with `--complete --require-delivery-ready` exit 1 on truthful partial. `result.json.tests` includes only successful commands with package-relative logs and SHA256.
+
+## Remaining CPU work
+
+Create canonical selected-case execution bundles, source-bound positive/negative compatibility, saved-only processing, semantic proposals and independent delivery/comparison audits. Strengthen original evidence of signal inoperability specifically at entry and objective yield timing. Then rerun scoped strict. Actual CARLA signal state, physical obstruction and camera visibility remain physical review after CPU readiness.

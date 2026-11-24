@@ -77,13 +77,13 @@ def measure(case_id, context_path, trace_path, receipt_path):
         if row.get("control_state") not in {"approach", "stop", "stand", "park", "depart"}:
             raise ValueError("original activity control state required")
         observations.append({"frame": index, "time_s": row["time_s"],
-                             "minimum_body_to_mouth_m": min(distances),
+                             "minimum_sampled_vertex_to_mouth_m": min(distances),
                              "speed_mps": speed, "control_state": row["control_state"]})
     return {"assignment_id": ASSIGNMENT_ID, "case_id": case_id,
             "source_bindings": {"context_sha256": sha(context_path), "trace_sha256": sha(trace_path),
                                 "receipt_sha256": sha(receipt_path), "native_map_sha256": context["map_sha256"]},
             "driveway_kind": context["driveway_kind"], "observations": observations,
-            "minimum_observed_body_to_mouth_m": min(r["minimum_body_to_mouth_m"] for r in observations),
+            "minimum_observed_vertex_to_mouth_m": min(r["minimum_sampled_vertex_to_mouth_m"] for r in observations),
             "five_feet_m_reference_only": 1.524, "frontage_judgment": "unresolved",
             "activity_judgment": "unresolved", "necessity_judgment": "unresolved",
             "private_relationship_judgment": "unresolved", "postal_exception_judgment": "unresolved",
