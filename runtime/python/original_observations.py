@@ -17,6 +17,16 @@ def actor_state(actor):
           'body_vertices_m':[xyz(p) for p in actor.bounding_box.get_world_vertices(transform)],
           'blueprint_attributes':dict(getattr(actor,'attributes',{})),
           'light_attributes':{}}
+    try:
+        data['angular_velocity_deg_s'] = xyz(actor.get_angular_velocity())
+        data['angular_velocity_frame'] = 'world'
+        data['angular_velocity_source'] = 'original_actor_get_angular_velocity'
+    except (AttributeError, RuntimeError) as exc:
+        data['angular_velocity_error'] = str(exc)
+    from traffic_spec_adapter.yaw_rate import horizontal_heading_rate
+    yaw, yaw_projection = horizontal_heading_rate(data)
+    data['yaw_rate_projection'] = yaw_projection
+    if yaw is not None:data['yaw_rate_deg_s'] = yaw
     from traffic_spec_adapter.acceleration import horizontal_acceleration, METHOD
     value, projection = horizontal_acceleration(data)
     data['acceleration_method'] = METHOD

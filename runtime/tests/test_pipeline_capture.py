@@ -37,9 +37,15 @@ class CaptureTests(unittest.TestCase):
             sgg_module=types.ModuleType('carla_sgg');native=types.ModuleType('carla_sgg.sgg');native.__file__=str(generator);native.copy_carla_vehicle_lights=lambda attrs,actor:None;sgg_module.sgg=native
             observation_path=Path(__file__).resolve().parents[1]/'python/original_observations.py'
             obs_spec=importlib.util.spec_from_file_location('original_observations',observation_path);observations=importlib.util.module_from_spec(obs_spec);obs_spec.loader.exec_module(observations)
-            path=Path(__file__).resolve().parents[1]/'python/pipeline_capture.py'
+            import os
+            path=Path(os.environ.get('PIPELINE_CAPTURE_SOURCE',Path(__file__).resolve().parents[1]/'python/pipeline_capture.py'))
             spec=importlib.util.spec_from_file_location('capture_under_test',path);module=importlib.util.module_from_spec(spec)
-            law_evidence=types.ModuleType('carla_sgg.law_evidence');law_evidence.__file__=str(generator);law_evidence.actor_visibility=lambda *a,**k:None
+            law_evidence=types.ModuleType('carla_sgg.law_evidence');law_evidence.__file__=str(generator);visibility_calls=[]
+            law_evidence.actor_visibility=lambda *a,**k:visibility_calls.append(k) or None
+            route_model={'fixture_route_model':True};lane_inventory={}
+            law_evidence.modeled_observer_routes=lambda mapping:route_model
+            law_evidence.discover_driving_lanes=lambda mapping:lane_inventory
+            law_evidence.visibility_acquisition_contract=lambda:{'capability_method':'estimate:vehicle_reference_geometry','measurement_method':'actual_actor_body_raycast_v3'}
             with patch.dict('sys.modules',{'carla_sgg.law_evidence':law_evidence,'scene_graph_collector':collector_module,'carla_sgg':sgg_module,'carla_sgg.sgg':native,'original_observations':observations}):
                 spec.loader.exec_module(module)
                 capture=module.PipelineCapture(client,ego,root/'attempt','case')
@@ -58,6 +64,9 @@ class CaptureTests(unittest.TestCase):
             self.assertTrue(manifest['extraction_confirmed'])
             self.assertEqual(manifest['acceleration_method'],METHOD)
             self.assertIn('acceleration.py',manifest['source_components'])
+            self.assertEqual(manifest['visibility_acquisition']['capability_method'],'estimate:vehicle_reference_geometry')
+            self.assertIs(visibility_calls[0]['route_topology'],route_model)
+            self.assertIs(visibility_calls[0]['lane_inventory'],lane_inventory)
             event=json.loads((root/'attempt/capture/evidence.jsonl').read_text())
             self.assertEqual(event['original_frame'],event['replay_frame'])
             self.assertEqual(event['original_observations']['participants'][0]['speed_mps'],5.)

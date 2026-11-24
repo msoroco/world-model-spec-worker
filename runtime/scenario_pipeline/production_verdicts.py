@@ -76,7 +76,6 @@ def _measured_expectation(case, attempt, review, context):
         label,evidence = speed_cap(scenes)
         record.update(expected_label=label,evidence=evidence,
             reference_check={'id':'nrs-484b-600-1e-recorded-cap-v1',
-                             'source_sha256':file_hash(__file__),
                              'validation':'tests/test_production.py::ReferenceVerdictTests',
                              'scope':'80 mph cap across all recorded subject samples; no judgment standard'},
             evaluation_status='checked')
@@ -139,6 +138,32 @@ def canonical_hash(value):
                                      allow_nan=False).encode()).hexdigest()
 
 
+def assessment_reference(reference):
+    """Keep the assessment basis, not bookkeeping about its generator.
+
+    A method ID, scope, measured facts and written assessment explain a label.
+    A script location or implementation checksum does not establish that label
+    and must never require retaining one-time preparation code.
+    """
+    from copy import deepcopy
+    if reference is None:
+        return None
+    if not isinstance(reference, dict):
+        raise ValueError('Assessment reference must describe its method and evidence')
+    result = deepcopy(reference)
+    for key in ('source_path', 'source_sha256', 'authority_builder'):
+        result.pop(key, None)
+    implementations = result.get('source_hashes')
+    if isinstance(implementations, dict):
+        retained = {name: value for name, value in implementations.items()
+                    if Path(name).suffix not in ('.py', '.pyc', '.sh')}
+        if retained:
+            result['source_hashes'] = retained
+        else:
+            result.pop('source_hashes')
+    return result
+
+
 def source_signature(record):
     return canonical_hash({key: record.get(key) for key in
         ('case_id', 'target_law_id', 'recording_identity', 'source_hashes',
@@ -147,6 +172,33 @@ def source_signature(record):
          'classification_method', 'reference_check', 'evidence',
          'scene_assumptions', 'label_scope', 'full_recording_window_s',
          'intended_outcome', 'intention_matched', 'evaluation_method')})
+
+
+def _independent_violation(record, references, outcome):
+    """Retain unresolved terms when a different, evidenced duty is breached.
+
+    The source assessment must name its facts and explicitly establish that
+    deciding those terms is unnecessary. Merely requesting a violation does
+    not override authored legal uncertainty.
+    """
+    reference = record.get('reference_check') or {}
+    if not isinstance(reference, dict):
+        raise ValueError('Assessment reference must describe its method and evidence')
+    assessment = reference.get('independent_violation')
+    if assessment is None:
+        return False
+    if outcome != 'violation' or not references or not isinstance(assessment, dict):
+        raise ValueError('Independent breach requires a violation with unresolved legal terms')
+    requirement = assessment.get('requirement')
+    evidence_key = assessment.get('evidence_key')
+    evidence = record.get('evidence', {})
+    phrases = sorted({ref['phrase'] for ref in references})
+    if (not isinstance(requirement, str) or not requirement.strip() or
+            not isinstance(evidence_key, str) or not isinstance(evidence, dict) or
+            not isinstance(evidence.get(evidence_key), dict) or not evidence[evidence_key] or
+            assessment.get('independent_of_phrases') != phrases):
+        raise ValueError('Independent breach requires named facts and every nondecisive legal term')
+    return True
 
 
 def authoritative_record(case, measured, *, recording_identity, source_hashes):
@@ -187,10 +239,12 @@ def authoritative_record(case, measured, *, recording_identity, source_hashes):
     legal = {'classification': 'unresolved' if references else
              'not_unresolved' if phrases == [] else 'unresolved_source',
              'references': references}
+    independent = _independent_violation(record, references, outcome)
     if references:
-        if outcome not in (None, 'judgment call'):
+        if outcome not in (None, 'judgment call') and not independent:
             raise ValueError('Resolved outcome conflicts with unresolved legal phrases')
-        outcome = 'judgment call'
+        if not independent:
+            outcome = 'judgment call'
     elif outcome == 'judgment call':
         raise ValueError('Judgment call requires source-bound unresolved legal wording')
     if record.get('missing_evidence'):
@@ -210,14 +264,13 @@ def authoritative_record(case, measured, *, recording_identity, source_hashes):
         sweep_membership={'is_member': sweep, 'sweep_id': case.get('sweep_id'),
                           'source': 'frozen_case.target_type',
                           'definition_sha256': definition_hash},
-        classification_method={'id': 'source_bound_outcome', 'version': 2,
-                               'source_sha256': file_hash(__file__)},
+        classification_method={'id': 'source_bound_outcome', 'version': 2},
         evaluation_status='legal_judgment' if outcome == 'judgment call' else
                           'checked' if outcome is not None else 'blocked',
         evidence_status='needs_repair' if 'missing_observations' in reasons or
                         record.get('evidence_status') == 'needs_repair' else 'accepted')
     record.setdefault('evaluation_method', 'source_bound_retained_evidence')
-    record.setdefault('reference_check', None)
+    record['reference_check'] = assessment_reference(record.get('reference_check'))
     record.setdefault('evidence', {})
     record['source_signature'] = source_signature(record)
     return validate_authoritative(record)
@@ -231,7 +284,7 @@ def validate_authoritative(record):
         raise ValueError('Authoritative label requires case, law and recording identity')
     hashes = record.get('source_hashes', {})
     method = record.get('classification_method', {})
-    candidates = list(hashes.values()) + [method.get('source_sha256')]
+    candidates = list(hashes.values())
     if not {'definition_sha256', 'trace_sha256'} <= set(hashes) or any(
             not isinstance(v, str) or len(v) != 64 or any(c not in '0123456789abcdef' for c in v)
             for v in candidates):
@@ -258,7 +311,9 @@ def validate_authoritative(record):
     for ref in references:
         if not ref.get('phrase') or ref.get('law_id') != record['target_law_id'] or ref.get('definition_sha256') != hashes['definition_sha256']:
             raise ValueError('Legal judgment reference is not bound to the frozen definition')
-    if (outcome == 'judgment call') != (legal.get('classification') == 'unresolved'):
+    independent = _independent_violation(record, references, outcome)
+    if ((outcome == 'judgment call') != (legal.get('classification') == 'unresolved')
+            and not independent):
         raise ValueError('Judgment-call outcome disagrees with source legal classification')
     if outcome in OUTCOMES[:3] and set(reasons) & {'uncertain_applicability','unsupported_evaluation','unresolved_source'}:
         raise ValueError('Resolved outcome conflicts with unavailable applicability or evaluation')

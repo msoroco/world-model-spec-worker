@@ -14,13 +14,23 @@
                     "relations": [...]?, "env": {...}?, "assumptions": [[id, bool]...]?,
                     "intents": [{"vehicle": <track>, "target": <region>, "source": <string>,
                                  "values": [[id, bool]...]}...]?,
+                    "facts": [{"id": <fact id>, "users": [track...]?, "regions": [region]?, "value": bool}...]?,
                     "links": [[old, new]...]? } ] }
   Field names follow the structures of World.lean in snake_case; see the decoders below. A
   device's `governs` absent or null is not observed (`governsObserved` false, so whether it
-  governs a region is unknown); `[]` is observed and governs nothing. A structure's `entrance_of`
+  governs a region is unknown); `[]` is observed and governs nothing; `governs_sidewalk` and
+  `governs_parking_space` are read the same way. A sign's `legend_angle` is a number or `"none"`
+  (the legend states no angle); absent or null, it is not recorded. A structure's `entrance_of`
   is read the same way: absent or null, which carriers it marks is not observed (`entranceObserved`
   false); `[]` is observed and marks none. An intent record has exactly its four keys, and a
   non-empty `source`, which names where the declaration comes from and is not kept in the scene.
+  A declared-fact record has its `id` and `value` and no key but `users` and `regions` besides; a fact
+  the source does not decide for those subjects is left out, never written false.
+  A road user's `road_grade` (the roadway's slope at its position along its heading, a ratio, positive
+  where the road rises ahead of it) and `road_curvature` (the roadway's horizontal curvature at its
+  position, 1/m, read as a magnitude) are omitted where the source cannot determine uniquely the
+  user's position or the roadway it lies on; an omitted value is unknown. A user, structure or device
+  object may carry keys the decoders below do not read: they are ignored.
 
   A formula, a term and an argument decode strictly from the JSON Export.lean writes: the
   decoder is that encoder's inverse, so a decoded formula exported again is the canonical form.
@@ -151,10 +161,14 @@ def roadUser (path : String) (j : Json) : D RoadUser := do
          officialKind := ← opt j path "official_kind" (enum OfficialKind.ofString)
          eBikeClass := ← opt j path "e_bike_class" nat
          occupants := ← opt j path "occupants" nat
+         unladenMass := ← opt j path "unladen_mass" num
+         disabled := ← opt j path "disabled" bool
          posture := (← opt j path "posture" posture).getD {}
          kin := (← opt j path "kin" kin).getD {}
          sig := (← opt j path "sig" signals).getD {}
-         sightAlongWay := ← optList j path "sight_along_way" (pair nat num) }
+         sightAlongWay := ← optList j path "sight_along_way" (pair nat num)
+         roadGrade := ← opt j path "road_grade" num
+         roadCurvature := ← opt j path "road_curvature" num }
 
 def marking (path : String) (j : Json) : D (MarkingType × MarkingColour) :=
   pair (enum MarkingType.ofString) (enum MarkingColour.ofString) path j
@@ -181,8 +195,6 @@ def structure' (path : String) (j : Json) : D Structure := do
          paved := ← opt j path "paved" bool
          opening := ← opt j path "opening" bool
          marked := ← opt j path "marked" bool
-         curvature := ← opt j path "curvature" num
-         grade := ← opt j path "grade" num
          sightDistance := ← opt j path "sight_distance" num
          ways := ← optList j path "ways" nat
          entranceOf := ← list j path "entrance_of" nat
@@ -191,9 +203,15 @@ def structure' (path : String) (j : Json) : D Structure := do
          turnSide := ← opt j path "turn_side" (enum TurnSide.ofString)
          parkingAngle := ← opt j path "parking_angle" num
          designation := ← opt j path "designation" (enum ParkingDesignation.ofString)
+         angleMarking := ← opt j path "angle_marking" bool
+         parkingAxis := ← opt j path "axis" vec
          curbKind := ← opt j path "curb_kind" (enum CurbZoneKind.ofString)
          curbColour := ← opt j path "curb_colour" (enum CurbColour.ofString)
-         obstructionKind := ← opt j path "obstruction_kind" (enum ObstructionKind.ofString) }
+         obstructionKind := ← opt j path "obstruction_kind" (enum ObstructionKind.ofString)
+         entranceKind := ← opt j path "entrance_kind" (enum EntranceKind.ofString)
+         railwayKind := ← opt j path "railway_kind" (enum RailwayKind.ofString)
+         isProtected := ← opt j path "protected" bool
+         privateWay := ← opt j path "private" bool }
 
 def timeWindow (path : String) (j : Json) : D TimeWindow := do
   pure { weekdays := ← list j path "weekdays" nat
@@ -208,6 +226,14 @@ def conditions (path : String) (j : Json) : D Conditions := do
          vehicleClass := ← opt j path "vehicle_class" (enum RoadUserClass.ofString)
          whenChildrenPresent := (← opt j path "when_children_present" bool).getD false }
 
+/-- A sign legend's angle of parking: a number (degrees), or the string `"none"` where the source
+    confirms the legend states no angle. -/
+def legendAngle (path : String) (j : Json) : D (Option Q) :=
+  match j with
+  | .num n => pure (some (qOfNumber n))
+  | .str "none" => pure none
+  | _ => fail path "expected a number or \"none\""
+
 def device (path : String) (j : Json) : D Device := do
   pure { id := ← req j path "id" nat
          kind := ← req j path "kind" (enum DeviceKind.ofString)
@@ -215,6 +241,8 @@ def device (path : String) (j : Json) : D Device := do
          position := ← opt j path "position" vec
          governs := ← list j path "governs" nat
          governsObserved := (field? j "governs").isSome
+         governsSidewalk := ← optList j path "governs_sidewalk" nat
+         governsParkingSpace := ← optList j path "governs_parking_space" nat
          onTrack := ← opt j path "on_track" nat
          indications := ← optList j path "indications" (enum SignalIndication.ofString)
          uncovered := ← opt j path "uncovered" bool
@@ -227,6 +255,7 @@ def device (path : String) (j : Json) : D Device := do
          speedValue := ← opt j path "speed_value" num
          speedKind := ← opt j path "speed_kind" (enum SpeedSignKind.ofString)
          code := ← opt j path "code" (enum SignCode.ofString)
+         legendAngle := ← opt j path "legend_angle" legendAngle
          zoneKind := ← opt j path "zone_kind" (enum ZoneKind.ofString)
          isEnd := ← opt j path "is_end" bool
          conditions := ← opt j path "conditions" conditions
@@ -279,6 +308,16 @@ def declaredIntent (path : String) (j : Json) : D DeclaredIntent := do
            let xs ← arr p v
            (xs.zip (List.range xs.length)).mapM fun (x, i) => pair str bool s!"{p}[{i}]" x }
 
+def declaredFact (path : String) (j : Json) : D DeclaredFact := do
+  let allowed := ["id", "users", "regions", "value"]
+  let ks : List String := match j with | .obj kvs => kvs.toArray.toList.map (·.1) | _ => []
+  if !(ks.all allowed.contains) then
+    fail path s!"a declared-fact record has only the keys {allowed}; found {ks}"
+  pure { id := ← req j path "id" str
+         users := ← list j path "users" nat
+         regions := ← list j path "regions" nat
+         value := ← req j path "value" bool }
+
 def scene (path : String) (j : Json) : D Scene := do
   let users ← list j path "users" roadUser
   pure { t := ← req j path "t" int
@@ -297,6 +336,7 @@ def scene (path : String) (j : Json) : D Scene := do
          env := (← opt j path "env" env).getD {}
          assumptions := ← list j path "assumptions" (pair str bool)
          intents := ← list j path "intents" declaredIntent
+         facts := ← list j path "facts" declaredFact
          links := ← list j path "links" (pair nat nat) }
 
 def trace (j : Json) : D Trace := do
@@ -330,6 +370,8 @@ def unit (path : String) (j : Json) : D (PUnit' × Q) := do
   | "deg" | "degree" | "degrees" => pure (.degree, Q.ofInt 1)
   | "deg/s" | "degree_per_second" => pure (.degreePerSecond, Q.ofInt 1)
   | "1/m" | "per_metre" => pure (.perMetre, Q.ofInt 1)
+  | "kg" | "kilogram" | "kilograms" => pure (.kilogram, Q.ofInt 1)
+  | "lb" | "pound" | "pounds" => pure (.kilogram, Units.pounds 1)
   | "ratio" => pure (.ratio, Q.ofInt 1)
   | "count" => pure (.count, Q.ofInt 1)
   | s => fail path s!"unknown unit {s}"
@@ -352,7 +394,8 @@ def capability (path : String) (j : Json) : D Capability := do
   | "subject" => pure .subject
   | s => if s.startsWith "estimate:" then pure (.estimate ((s.drop 9).toString))
          else fail path s!"unknown capability {s}"
-/-- `{ "source": ..., "reid_gap": <seconds>?, "atoms": { "<atom id>": "exact"|"estimate:<class>"|"absent"|"subject", ... } }` -/
+/-- `{ "source": ..., "reid_gap": <seconds>?, "atoms": { "<atom id>": "exact"|"estimate:<class>"|"absent"|"subject", ... },
+      "facts": ["<fact id>", ...]? }`; `facts` absent supplies no declared fact. -/
 def manifest (j : Json) : D Manifest := do
   let atoms ← match field? j "atoms" with
     | some (.obj kvs) => kvs.toArray.toList.mapM fun (k, v) => do pure (k, ← capability s!"manifest.atoms.{k}" v)
@@ -360,7 +403,8 @@ def manifest (j : Json) : D Manifest := do
     | none => fail "manifest.atoms" "required"
   pure { source := ← req j "manifest" "source" str
          entries := atoms
-         reidGap := (← opt j "manifest" "reid_gap" num).getD Q.zero }
+         reidGap := (← opt j "manifest" "reid_gap" num).getD Q.zero
+         facts := some (← list j "manifest" "facts" str) }
 
 -- ---------------------------------------------------------------------------------------------
 -- Formulas: the inverse of Export's encoders, strict. An object must carry exactly the keys of one
@@ -419,7 +463,7 @@ def literalUnit (path : String) (j : Json) : D PUnit' := do
   match ← str path j with
   | "metre" => pure .metre | "second" => pure .second | "metre_per_second" => pure .metrePerSecond
   | "metre_per_second_sq" => pure .metrePerSecondSq | "degree" => pure .degree
-  | "degree_per_second" => pure .degreePerSecond | "per_metre" => pure .perMetre | "ratio" => pure .ratio
+  | "degree_per_second" => pure .degreePerSecond | "per_metre" => pure .perMetre | "kilogram" => pure .kilogram | "ratio" => pure .ratio
   | "count" => pure .count
   | s => fail path s!"unknown unit {s}"
 def aggOp (path : String) (j : Json) : D AggOp := do
@@ -513,6 +557,7 @@ mutual
     if keyed ks ["int", "args"] then
       let ab ← need path j "args" >>= exactly 2 arg (at_ "args") >>= pair2 (at_ "args")
       return .intent (← s "int") ab.1 ab.2
+    if keyed ks ["fact", "args"] then return .fact (← s "fact") (← args ())
     if keyed ks ["same"] then
       let ab ← need path j "same" >>= exactly 2 arg (at_ "same") >>= pair2 (at_ "same")
       return .same ab.1 ab.2
@@ -534,11 +579,34 @@ mutual
       return .atLast (← win "at_last") (← len ()) (← s "subject") (← sub "when") (← sub "body")
     if keyed ks ["count", "since", "op", "n"] then
       return .count (← sub "count") (← sub "since") (← need path j "op" >>= cmpOp (at_ "op")) (← need path j "n" >>= strictNat (at_ "n"))
+    if keyed ks ["duration_within", "length", "step", "op", "bound"] then
+      return .durationWithin (← len ()) (← need path j "step" >>= term (at_ "step")) (← sub "duration_within")
+        (← need path j "op" >>= cmpOp (at_ "op")) (← need path j "bound" >>= term (at_ "bound"))
     if keyed ks ["rises"] then return .rises (← sub "rises")
     if keyed ks ["defined_when", "body"] then return .definedWhen (← sub "defined_when") (← sub "body")
     if keyed ks ["derived", "args", "params"] then return .derived (← s "derived") (← args ()) (← params ())
     if keyed ks ["rule", "map"] then return .rule (← s "rule") (← mapOf "map")
     if keyed ks ["rule_applies", "map"] then return .ruleApplies (← s "rule_applies") (← mapOf "map")
+    if keyed ks ["rule_case", "case", "map"] then return .ruleCase (← s "rule_case") (← s "case") (← mapOf "map")
+    if keyed ks ["required_by", "who"] then
+      match Conduct.ofString (← s "required_by") with
+      | some k => return .requiredBy k (← s "who")
+      | none => fail (at_ "required_by") "no conduct of that name"
+    if keyed ks ["lawful", "who"] then
+      let sc ← need path j "lawful"
+      if sc == Json.str "every" then return .lawful .every (← s "who")
+      let sks ← keysOf (at_ "lawful") sc
+      if keyed sks ["subject_class"] then return .lawful (.subjectClass (← need (at_ "lawful") sc "subject_class" >>= str (at_ "lawful.subject_class"))) (← s "who")
+      let purp := fun (_ : Unit) => do
+        let n ← need (at_ "lawful") sc "purpose" >>= str (at_ "lawful.purpose")
+        match Purpose.ofString n with
+        | some p => pure p
+        | none => fail (at_ "lawful.purpose") "no purpose of that name"
+      if keyed sks ["purpose"] then return .lawful (.purpose (← purp ())) (← s "who")
+      if keyed sks ["as_class", "purpose"] then
+        return .lawful (.asClassPurpose (← need (at_ "lawful") sc "as_class" >>= str (at_ "lawful.as_class")) (← purp ())) (← s "who")
+      if keyed sks ["as_class"] then return .lawful (.asClass (← need (at_ "lawful") sc "as_class" >>= str (at_ "lawful.as_class"))) (← s "who")
+      fail (at_ "lawful") "a scope is \"every\", {\"subject_class\": id} or {\"as_class\": id}"
     if keyed ks ["exists_user", "body"] then return .existsUser (← s "exists_user") (← sub "body")
     if keyed ks ["forall_user", "body"] then return .forallUser (← s "forall_user") (← sub "body")
     if keyed ks ["exists_region", "var", "body"] then return .existsRegion (← kind "exists_region") (← s "var") (← sub "body")

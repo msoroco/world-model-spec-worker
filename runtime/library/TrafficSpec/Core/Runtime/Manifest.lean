@@ -30,6 +30,9 @@ structure Manifest where
   entries : List (String × Capability)     -- atom id in ATOMS.md form ↦ capability
   /-- The longest tracker break the source's re-identification links may bridge (seconds). -/
   reidGap : Q := Q.zero
+  /-- The declared-fact ids the source supplies; a declaration of any other id is dropped before
+      evaluation, so its value is unknown. `none` supplies every id (the simulator's and the tests'). -/
+  facts : Option (List FactId) := some []
   deriving Repr, Inhabited
 
 namespace Manifest
@@ -46,7 +49,9 @@ def absentIds (m : Manifest) : List String := atomIds.filter fun id => !m.observ
 def subjectIds (m : Manifest) : List String := atomIds.filter fun id => m.capability id == .subject
 /-- A manifest that observes everything exactly (the simulator's, and the tests'). -/
 def full (source : String) (gap : Q := Q.zero) : Manifest :=
-  { source := source, entries := atomIds.map fun id => (id, .exact), reidGap := gap }
+  { source := source, entries := atomIds.map fun id => (id, .exact), reidGap := gap, facts := none }
+/-- Whether the source supplies the declared fact `id`. -/
+def suppliesFact (m : Manifest) (id : FactId) : Bool := m.facts.all (·.contains id)
 end Manifest
 
 -- ---------------------------------------------------------------------------------------------
@@ -92,13 +97,15 @@ def formulaAtomIds (fs : List Formula) : List String :=
     else (atomIdOf n).toList).flatMap kindDependencies |>.eraseDups
 
 /-- The atom ids a rule reads, through its atoms, its primitives and, transitively, the
-    rules it composes. -/
+    rules it composes and, where it reads a rule-set operator, every rule of `rules`, which the
+    operator may read. -/
 def Rule.atomIds (rules : List Rule) (r : Rule) : List String :=
   let rec go (fuel : Nat) (seen : List String) (r : Rule) : List String :=
     match fuel with
     | 0 => formulaAtomIds r.formulas
     | fuel + 1 =>
-      formulaAtomIds r.formulas ++ (r.composes.flatMap fun id =>
+      let sets := r.formulas.any fun φ => !(Formula.ruleSets φ).isEmpty
+      formulaAtomIds r.formulas ++ ((r.composes ++ (if sets then rules.map (·.id) else [])).flatMap fun id =>
         if seen.contains id then [] else
         match rules.find? (·.id == id) with
         | some r' => go fuel (id :: seen) r'
@@ -147,6 +154,8 @@ def user (id : String) (u : RoadUser) : RoadUser :=
   match id with
   | "ru.subject" => u
   | "ru.occupant_count" => { u with occupants := none }
+  | "ru.unladen_mass" => { u with unladenMass := none }
+  | "ru.disabled" => { u with disabled := none }
   | "ru.rider_posture" => { u with posture := {} }
   | "kin.position" => { u with kin := { u.kin with position := none } }
   | "kin.heading" => { u with kin := { u.kin with heading := none } }
@@ -176,6 +185,8 @@ def user (id : String) (u : RoadUser) : RoadUser :=
   | "sig.door_open" => { u with sig := { u.sig with doorsOpen := none } }
   | "sig.compression_brake" => { u with sig := { u.sig with compressionBrake := none } }
   | "st.sight_along_way" => { u with sightAlongWay := none }
+  | "st.grade" => { u with roadGrade := none }
+  | "st.curvature" => { u with roadCurvature := none }
   | _ =>
     -- a class atom: the source cannot tell this class, so no user is known to have or lack it,
     -- nor the attribute the class carries
@@ -198,8 +209,6 @@ def structure' (id : String) (st : Structure) : Option Structure :=
   | "st.lane_enters" => some { st with lane := st.lane.map fun l => { l with entersIntersection := none } }
   | "st.lane_marking" => some { st with lane := st.lane.map fun l => { l with markingLeft := none, markingRight := none } }
   | "st.lane_width" => some { st with lane := st.lane.map fun l => { l with width := none } }
-  | "st.curvature" => some { st with curvature := none }
-  | "st.grade" => some { st with grade := none }
   | "st.sight_distance" => some { st with sightDistance := none }
   | "st.on_way" => some { st with ways := none }
   | "st.entrance_of" => some { st with entranceOf := [], entranceObserved := false }
@@ -207,20 +216,34 @@ def structure' (id : String) (st : Structure) : Option Structure :=
   | _ =>
     -- a kind atom: the source cannot tell this kind; a kind that refines another is unknown only on
     -- the regions labelled with one of its ancestors (`Structure.isOfKind`); an abstract kind is
-    -- never declared: what a source cannot tell of it is what it cannot tell of the kinds refining it
+    -- never declared: what a source cannot tell of it is what it cannot tell of the kinds refining it;
+    -- a parking space's angle marking and axis are blanked with their kind
     match StructureKind.ofString ((id.drop 3).toString) with
-    | some k => if k.isAbstract then some st else some { st with unobservedKinds := k :: st.unobservedKinds }
+    | some k =>
+      if k.isAbstract then some st
+      else
+        let st := { st with unobservedKinds := k :: st.unobservedKinds }
+        match k with
+        | .parkingSpace => some { st with angleMarking := none, parkingAxis := none }
+        | _ => some st
     | none => some st
 
 def device (id : String) (d : Device) : Option Device :=
   match id with
   | "dev.governs" => some { d with governs := [], governsObserved := false }
+  | "dev.governs_sidewalk" => some { d with governsSidewalk := none }
+  | "dev.governs_parking_space" => some { d with governsParkingSpace := none }
   | "dev.position" => some { d with position := none }
   | "dev.inoperative" => some { d with inoperative := none }
   | _ =>
-    -- a kind atom: the source cannot tell this kind, so no device is known to be or not be one
+    -- a kind atom: the source cannot tell this kind, so no device is known to be or not be one; a
+    -- sign's legend angle is blanked with its kind
     match DeviceKind.ofString ((id.drop 4).toString) with
-    | some k => some { d with unobservedKinds := k :: d.unobservedKinds }
+    | some k =>
+      let d := { d with unobservedKinds := k :: d.unobservedKinds }
+      match k with
+      | .regulatorySign => some { d with legendAngle := none }
+      | _ => some d
     | none => some d
 
 def env (id : String) (e : Env) : Env :=
@@ -268,8 +291,9 @@ def sceneExceptSubject (id : String) (s : Scene) : Scene :=
 end Mask
 
 /-- The scene as the source would have produced it: every absent atom blanked, every subject-only
-    atom blanked on everyone but the subject. -/
+    atom blanked on everyone but the subject, every declared fact it does not supply dropped. -/
 def mask (m : Manifest) (s : Scene) : Scene :=
+  let s := { s with facts := s.facts.filter (m.suppliesFact ·.id) }
   let s := m.absentIds.foldl (fun acc id => Mask.scene id acc) s
   m.subjectIds.foldl (fun acc id => Mask.sceneExceptSubject id acc) s
 def maskTrace (m : Manifest) (τ : Trace) : Trace := τ.map (mask m)

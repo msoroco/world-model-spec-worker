@@ -22,11 +22,14 @@
     A rule's obligation is written for an instant; the sweep over instants (Grounding) is the
     "always".
 
-  Rule composition is a callback, because the library of rules is defined above this file.
+  Rule composition is a callback, because the library of rules is defined above this file; the
+  rule-set operators reach the library through the same callback (`RuleSet`).
 -/
 import TrafficSpec.Core.Language.Formula
 import TrafficSpec.Core.Vocab.Primitives
 import TrafficSpec.Core.Vocab.Intentions
+import TrafficSpec.Core.Vocab.Facts
+import TrafficSpec.Core.Foundations.SampledDuration
 
 namespace TrafficSpec
 namespace Semantics
@@ -65,6 +68,18 @@ def resolve (β : Binding) : Arg → Except UnknownReason DArg
   | .nat k => .ok (.n k)
 
 def resolveAll (β : Binding) (args : List Arg) : Except UnknownReason (List DArg) := args.mapM (resolve β)
+
+/-- The road users and the regions a declared fact's subjects denote, each in order: every subject
+    a variable bound to a track or a region. -/
+def factSubjects (β : Binding) : List Arg → Except UnknownReason (List TrackId × List RegionId)
+  | [] => .ok ([], [])
+  | .var a :: rest =>
+    match β.lookup a with
+    | some (.track x) => (factSubjects β rest).map fun (us, rs) => (x :: us, rs)
+    | some (.region r) => (factSubjects β rest).map fun (us, rs) => (us, r :: rs)
+    | none => .error (.unboundVariable a)
+    | some _ => .error (.malformed "fact: road users or a region expected")
+  | _ :: _ => .error (.malformed "fact: road users or a region expected")
 
 private def ent (a : DArg) : Except UnknownReason Nat :=
   match a with | .v t => .ok t | .n k => .ok k | .s _ => .error (.malformed "entity expected")
@@ -108,6 +123,7 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
   | "ru_rider_posture_holding_another_vehicle", [x] => pure (b (ru_rider_posture_holding_another_vehicle s (← ent x)) name)
   | "ru_rider_posture_stunt", [x] => pure (b (ru_rider_posture_stunt s (← ent x)) name)
   | "ru_emergency_vehicle_kind", [x, k] => pure (eqEnum (ru_emergency_vehicle_kind s (← ent x)) (← enumLit EmergencyKind.ofString k) name)
+  | "ru_disabled", [x] => pure (b (ru_disabled s (← ent x)) name)
   | "ru_official_vehicle_kind", [x, k] => pure (eqEnum (ru_official_vehicle_kind s (← ent x)) (← enumLit OfficialKind.ofString k) name)
   -- control state
   | "kin_engine_running", [x] => pure (b (kin_engine_running s (← ent x)) name)
@@ -120,9 +136,14 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
   | "st_reserved_lane_class", [r, k] => pure (eqEnum (st_reserved_lane_class s (← ent r)) (← enumLit ReservedClass.ofString k) name)
   | "st_turn_lane_side", [r, k] => pure (eqEnum (st_turn_lane_side s (← ent r)) (← enumLit TurnSide.ofString k) name)
   | "st_parking_space_designation", [r, k] => pure (eqEnum (st_parking_space_designation s (← ent r)) (← enumLit ParkingDesignation.ofString k) name)
+  | "st_parking_space_angle_marking", [r] => pure (b (st_parking_space_angle_marking s (← ent r)) name)
   | "st_curb_zone_kind", [r, k] => pure (eqEnum (st_curb_zone_kind s (← ent r)) (← enumLit CurbZoneKind.ofString k) name)
   | "st_curb_zone_colour", [r, k] => pure (eqEnum (st_curb_zone_colour s (← ent r)) (← enumLit CurbColour.ofString k) name)
   | "st_obstruction_kind", [r, k] => pure (eqEnum (st_obstruction_kind s (← ent r)) (← enumLit ObstructionKind.ofString k) name)
+  | "st_obstruction_protected", [r] => pure (b (st_obstruction_protected s (← ent r)) name)
+  | "st_driveway_or_alley_entrance_kind", [r, k] => pure (eqEnum (st_driveway_or_alley_entrance_kind s (← ent r)) (← enumLit EntranceKind.ofString k) name)
+  | "st_driveway_or_alley_entrance_private", [r] => pure (b (st_driveway_or_alley_entrance_private s (← ent r)) name)
+  | "st_railway_track_kind", [r, k] => pure (eqEnum (st_railway_track_kind s (← ent r)) (← enumLit RailwayKind.ofString k) name)
   | "st_lane_adjacency", [r, sd, r'] =>
     match sd with
     | .s "left" => pure (b (st_lane_left_of s (← ent r) (← ent r')) name)
@@ -159,6 +180,7 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
   | "dev_crossing_warning_signal_active", [d] => pure (b (dev_crossing_warning_signal_active s (← ent d)) name)
   | "dev_speed_limit_sign_kind", [d, k] => pure (eqEnum (dev_speed_limit_sign_kind s (← ent d)) (← enumLit SpeedSignKind.ofString k) name)
   | "dev_regulatory_sign_code", [d, k] => pure (eqEnum (dev_regulatory_sign_code s (← ent d)) (← enumLit SignCode.ofString k) name)
+  | "dev_regulatory_sign_legend_angle_stated", [d] => pure (b (dev_regulatory_sign_legend_angle_stated s (← ent d)) name)
   | "dev_zone_sign_kind", [d, k] => pure (eqEnum (dev_zone_sign_kind s (← ent d)) (← enumLit ZoneKind.ofString k) name)
   | "dev_zone_sign_end", [d] => pure (b (dev_zone_sign_end s (← ent d)) name)
   | "dev_railway_signal_or_gate_lights", [d, k] => pure (eqEnum (dev_railway_signal_or_gate_lights s (← ent d)) (← enumLit RailLights.ofString k) name)
@@ -171,6 +193,8 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
   | "dev_school_bus_signal_amber_flashing", [d] => pure (b (dev_school_bus_signal_amber_flashing s (← ent d)) name)
   | "dev_school_bus_signal_stop_arm", [d] => pure (b (dev_school_bus_signal_stop_arm s (← ent d)) name)
   | "dev_governs", [d, r] => pure (b (dev_governs s (← ent d) (← ent r)) name)
+  | "dev_governs_sidewalk", [d, r] => pure (b (dev_governs_sidewalk s (← ent d) (← ent r)) name)
+  | "dev_governs_parking_space", [d, r] => pure (b (dev_governs_parking_space s (← ent d) (← ent r)) name)
   | "dev_inoperative", [d] => pure (b (dev_inoperative s (← ent d)) name)
   -- signals emitted
   | "sig_turn_indicator", [x, k] => pure (eqEnum (sig_turn_indicator s (← ent x)) (← enumLit TurnIndicatorState.ofString k) name)
@@ -181,6 +205,7 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
   | "sig_reverse_lamp", [x] => pure (b (sig_reverse_lamp s (← ent x)) name)
   | "sig_warning_lamp", [x, col] => pure (b (sig_warning_lamp_colour s (← ent x) (← enumLit LampColour.ofString col)) name)
   | "sig_warning_lamp", [x, col, m] => pure (b (sig_warning_lamp_shows s (← ent x) (← enumLit LampColour.ofString col) (← enumLit LampMode.ofString m)) name)
+  | "sig_warning_lamp", [x, col, m, f] => pure (b (sig_warning_lamp_facing s (← ent x) (← enumLit LampColour.ofString col) (← enumLit LampMode.ofString m) (← enumLit Facing.ofString f)) name)
   | "sig_siren", [x] => pure (b (sig_siren s (← ent x)) name)
   | "sig_horn", [x] => pure (b (sig_horn s (← ent x)) name)
   | "sig_hand_signal", [x, k] => pure (eqEnum (sig_hand_signal s (← ent x)) (← enumLit HandSignal.ofString k) name)
@@ -212,6 +237,7 @@ def evalAtomE (s : Scene) (name : String) (args : List DArg) (ps : List Q) : Exc
     | .s "right" => pure (b (rel_bearing_right s (← ent a) (← ent a')) name)
     | _ => .error (.malformed "bearing side")
   | "rel_contact", [a, a'] => pure (b (rel_contact s (← ent a) (← ent a')) name)
+  | "rel_contact_structure", [x, r] => pure (b (rel_contact_structure s (← ent x) (← ent r)) name)
   | "rel_visible", [a, a'] => pure (b (rel_visible s (← ent a) (← ent a')) name)
   -- class atoms through the generated codecs
   | n, [x] =>
@@ -240,23 +266,25 @@ where
   boolAtomNames : List String := [
     "ru_subject", "ru_aggregate", "ru_rider_posture", "ru_rider_posture_on_seat", "ru_rider_posture_standing_on_deck",
     "ru_rider_posture_holding_another_vehicle", "ru_rider_posture_stunt", "ru_emergency_vehicle_kind",
-    "ru_official_vehicle_kind", "kin_engine_running", "kin_parking_brake",
+    "ru_official_vehicle_kind", "ru_disabled", "kin_engine_running", "kin_parking_brake",
     "st_road_edge_paved", "st_shoulder_paved", "st_median_or_divider_opening",
-    "st_crosswalk_marked", "st_reserved_lane_class", "st_turn_lane_side", "st_parking_space_designation",
-    "st_curb_zone_kind", "st_curb_zone_colour", "st_obstruction_kind", "st_lane_adjacency", "st_lane_adjacency_left",
+    "st_crosswalk_marked", "st_reserved_lane_class", "st_turn_lane_side", "st_parking_space_designation", "st_parking_space_angle_marking",
+    "st_curb_zone_kind", "st_curb_zone_colour", "st_obstruction_kind", "st_obstruction_protected", "st_driveway_or_alley_entrance_kind",
+    "st_driveway_or_alley_entrance_private", "st_railway_track_kind", "st_lane_adjacency", "st_lane_adjacency_left",
     "st_lane_adjacency_right", "st_lane_connectivity", "st_lane_enters", "st_on_way", "st_entrance_of", "st_lane_marking", "st_lane_marking_left", "st_lane_marking_right",
     "rel_occupies", "dev_traffic_signal_shows", "dev_traffic_signal_uncovered", "dev_pedestrian_signal_state",
     "dev_pedestrian_signal_countdown", "dev_lane_control_signal_state", "dev_speed_limit_beacon_flashing",
-    "dev_crossing_warning_signal_active", "dev_speed_limit_sign_kind", "dev_regulatory_sign_code",
+    "dev_crossing_warning_signal_active", "dev_speed_limit_sign_kind", "dev_regulatory_sign_code", "dev_regulatory_sign_legend_angle_stated",
     "dev_zone_sign_kind", "dev_zone_sign_end", "dev_railway_signal_or_gate_lights",
     "dev_railway_signal_or_gate_gate", "dev_railway_signal_or_gate_bell", "dev_human_direction_role",
     "dev_human_direction_indication", "dev_school_bus_signal_on_track", "dev_school_bus_signal_red_flashing",
-    "dev_school_bus_signal_amber_flashing", "dev_school_bus_signal_stop_arm", "dev_governs", "dev_inoperative",
+    "dev_school_bus_signal_amber_flashing", "dev_school_bus_signal_stop_arm", "dev_governs", "dev_governs_sidewalk",
+    "dev_governs_parking_space", "dev_inoperative",
     "sig_turn_indicator", "sig_brake_lamp", "sig_hazard", "sig_headlamp", "sig_position_lamp",
     "sig_reverse_lamp", "sig_warning_lamp", "sig_siren", "sig_horn", "sig_hand_signal",
     "sig_door_open", "sig_compression_brake", "env_darkness", "env_precipitation", "env_wet_road",
     "env_ice_or_snow", "rel_ahead_behind_in_lane", "rel_ahead_in_lane", "rel_behind_in_lane", "rel_oncoming",
-    "rel_same_direction", "rel_bearing", "rel_contact", "rel_visible"]
+    "rel_same_direction", "rel_bearing", "rel_contact", "rel_contact_structure", "rel_visible"]
 
 -- ---------------------------------------------------------------------------------------------
 -- Measured atoms by name (quantity-valued), on one scene. Vector atoms take a component literal.
@@ -289,6 +317,7 @@ def evalMeasure (s : Scene) (name : String) (args : List DArg) : QR := do
   | "kin_throttle", [x] => q (kin_throttle s (← ent x)) name
   | "kin_service_brake", [x] => q (kin_service_brake s (← ent x)) name
   | "ru_occupant_count", [x] => qn (ru_occupant_count s (← ent x)) name
+  | "ru_unladen_mass", [x] => q (ru_unladen_mass s (← ent x)) name
   | "ru_rider_posture_hands_on_controls", [x] => qn (ru_rider_posture_hands_on_controls s (← ent x)) name
   | "ru_electric_bicycle_class", [x] => qn (ru_electric_bicycle_class s (← ent x)) name
   | "st_lane_direction", [r, k] => comp ((st_lane_direction s (← ent r)).bind Geom.unit) k name
@@ -300,15 +329,18 @@ def evalMeasure (s : Scene) (name : String) (args : List DArg) : QR := do
   | "st_lane_adjacency_ordinal", [r] => qn (st_lane_adjacency_ordinal s (← ent r)) name
   | "st_lane_adjacency_count", [r] => qn (st_lane_adjacency_count s (← ent r)) name
   | "st_lane_width", [r] => q (st_lane_width s (← ent r)) name
-  | "st_curvature", [r] => q (st_curvature s (← ent r)) name
-  | "st_grade", [r] => q (st_grade s (← ent r)) name
+  | "st_curvature", [x] => q (st_curvature s (← ent x)) name
+  | "st_grade", [x] => q (st_grade s (← ent x)) name
   | "st_sight_distance", [r] => q (st_sight_distance s (← ent r)) name
   | "st_sight_along_way", [x, w] => q (st_sight_along_way s (← ent x) (← ent w)) name
   | "st_parking_space_angle", [r] => q (st_parking_space_angle s (← ent r)) name
+  | "st_parking_space_axis", [r, k] => comp ((st_parking_space_axis s (← ent r)).bind Geom.unit) k name
   | "st_region_geometry", [r, k] => comp (st_region_geometry_position s (← ent r)) k name
   | "st_region_geometry_distance", [x, r] => q (st_region_geometry_distance s (← ent x) (← ent r)) name
   | "dev_position", [d, k] => comp (dev_position s (← ent d)) k name
   | "dev_speed_limit_sign_value", [d] => q (dev_speed_limit_sign_value s (← ent d)) name
+  | "dev_regulatory_sign_legend_angle", [d] => q (dev_regulatory_sign_legend_angle s (← ent d)) name
+  | "dev_zone_sign_duration_limit", [d] => q (dev_zone_sign_duration_limit s (← ent d)) name
   | "env_visibility", [] => q (env_visibility s) name
   | "env_civil_time", [k] =>
     let ct := env_civil_time s
@@ -332,11 +364,12 @@ def evalMeasure (s : Scene) (name : String) (args : List DArg) : QR := do
 where
   measureNames : List String := [
     "kin_time", "kin_position", "kin_heading", "kin_velocity", "kin_speed", "kin_accel_longitudinal",
-    "kin_yaw_rate", "kin_extent", "kin_steer_angle", "kin_path_length", "kin_gear", "kin_throttle", "kin_service_brake", "ru_occupant_count",
+    "kin_yaw_rate", "kin_extent", "kin_steer_angle", "kin_path_length", "kin_gear", "kin_throttle", "kin_service_brake", "ru_occupant_count", "ru_unladen_mass",
     "ru_rider_posture_hands_on_controls", "ru_electric_bicycle_class", "st_lane_direction", "st_lane_adjacency",
     "st_lane_adjacency_ordinal", "st_lane_adjacency_count", "st_lane_width", "st_curvature", "st_grade",
-    "st_sight_distance", "st_sight_along_way", "st_parking_space_angle", "st_region_geometry", "st_region_geometry_distance",
-    "dev_position", "dev_speed_limit_sign_value", "env_visibility", "env_civil_time",
+    "st_sight_distance", "st_sight_along_way", "st_parking_space_angle", "st_parking_space_axis", "st_region_geometry",
+    "st_region_geometry_distance", "dev_position", "dev_speed_limit_sign_value", "dev_regulatory_sign_legend_angle",
+    "dev_zone_sign_duration_limit", "env_visibility", "env_civil_time",
     "rel_centre_distance", "rel_surface_gap", "rel_longitudinal_overlap", "rel_bearing"]
 
 /-- Whether a name is known to either table (the doctor holds this against `atomIds`). -/
@@ -357,16 +390,19 @@ def atomArgSorts (name : String) : Option (List (Option EntityKind)) :=
   match name with
   | "rel_occupies" => some [t, r]
   | "ru_aggregate" => some [t, none]
-  | "dev_governs" => some [d, r]
+  | "dev_governs" | "dev_governs_sidewalk" | "dev_governs_parking_space" => some [d, r]
   | "dev_school_bus_signal_on_track" => some [d, t]
   | "st_region_geometry_distance" | "st_sight_along_way" => some [t, r]
+  | "st_curvature" | "st_grade" => some [t]
   | "st_lane_adjacency" => some [r, none, r]
   | "st_lane_adjacency_left" | "st_lane_adjacency_right" | "st_lane_connectivity" | "st_lane_enters" | "st_on_way"
   | "st_entrance_of" => some [r, r]
   | "st_lane_marking" => some [r, none, none, none]
+  | "sig_warning_lamp" => some [t, none, none, none]
   | "rel_oncoming" | "rel_same_direction" | "rel_ahead_behind_in_lane" | "rel_ahead_in_lane"
   | "rel_behind_in_lane" | "rel_contact" | "rel_visible" | "rel_centre_distance" | "rel_longitudinal_overlap" => some [t, t]
   | "rel_surface_gap" | "rel_bearing" => some [t, t, none]
+  | "rel_contact_structure" => some [t, r]
   | n =>
     if !knowsAtom n then none
     else if n.startsWith "env_" || n == "kin_time" then some []
@@ -403,12 +439,42 @@ def constOf (t : Term) (arr : Array QR) : Except UnknownReason Q := do
   if !Term.isConstant t then throw (.malformed "parameter is not a constant term")
   arr[0]?.getD (.error .outOfRange)
 
-/-- The value of a heading change's step bound: a literal or a reading parameter, read as `constOf`
-    reads a constant; any other term is malformed. -/
-def stepOf (t : Term) (arr : Array QR) : Except UnknownReason Q :=
+/-- The value of the step bound of `op` (a heading change's by default): a literal or a reading
+    parameter, read as `constOf` reads a constant; any other term is malformed. -/
+def stepOf (t : Term) (arr : Array QR) (op : String := "heading_since") : Except UnknownReason Q :=
   match t with
   | .lit _ _ | .param _ => arr[0]?.getD (.error .outOfRange)
-  | _ => .error (.malformed "heading_since step bound is not a literal or a reading parameter")
+  | _ => .error (.malformed s!"{op} step bound is not a literal or a reading parameter")
+
+/-- A comparison of a duration known to lie within `[lo, hi]` with `b`: true where every value of
+    the range satisfies it, false where none does, unknown otherwise. -/
+def _root_.TrafficSpec.CmpOp.onRange : CmpOp → Q → Q → Q → Tri
+  | .gt, lo, hi, b => if Q.gt lo b then .t else if Q.le hi b then .f else .u
+  | .ge, lo, hi, b => if Q.ge lo b then .t else if Q.lt hi b then .f else .u
+  | .lt, lo, hi, b => if Q.lt hi b then .t else if Q.ge lo b then .f else .u
+  | .le, lo, hi, b => if Q.le hi b then .t else if Q.gt lo b then .f else .u
+  | .eq, lo, hi, b => if Q.eq lo b && Q.eq hi b then .t else if Q.lt b lo || Q.lt hi b then .f else .u
+
+/-- A comparison over `Rat`. -/
+def _root_.TrafficSpec.CmpOp.holds : CmpOp → Rat → Rat → Prop
+  | .gt, a, b => b < a
+  | .ge, a, b => b ≤ a
+  | .lt, a, b => a < b
+  | .le, a, b => a ≤ b
+  | .eq, a, b => a = b
+
+/-- A decided range comparison holds, or fails, for every value of the range. -/
+theorem _root_.TrafficSpec.CmpOp.onRange_sound (op : CmpOp) (lo hi b : Q) (d : Rat) (hlo : lo.val ≤ d) (hhi : d ≤ hi.val) :
+    (op.onRange lo hi b = .t → op.holds d b.val) ∧ (op.onRange lo hi b = .f → ¬ op.holds d b.val) := by
+  have le := Q.le_iff_val; have lt := Q.lt_iff_val; have eq := Accumulate.Q.eq_iff_val
+  cases op <;> simp only [CmpOp.onRange, CmpOp.holds, Q.gt, Q.ge] <;> constructor <;> intro h <;>
+    (repeat' split at h) <;> simp_all <;> grind
+
+/-- The verdict of `durationWithin` at one observation from its bounds. -/
+def durationAt (op : CmpOp) (b : Q) (bd : SampledDuration.Bounds) : R :=
+  match op.onRange bd.lower bd.upper b with
+  | .u => ⟨.u, if bd.why.isEmpty then [.malformed "duration_within"] else bd.why⟩
+  | v => ⟨v, []⟩
 
 /-- The subject variable of a window: needed for path windows, irrelevant for time windows. -/
 def subjectFor (β : Binding) (m : Measure) (v : String) : Except UnknownReason TrackId :=
@@ -587,6 +653,10 @@ mutual
         | _, none => constU c.n (.unboundVariable b)
         | _, _ => constU c.n (.malformed "intent: a track and a region expected")
       | _, _ => constU c.n (.malformed "intent: a track and a region expected")
+    | .fact id xs =>
+      match factSubjects c.β xs with
+      | .ok (us, rs) => c.scenes.map fun s => R.ofOption (s.fact id us rs) (.factMissing id)
+      | .error w => constU c.n w
     | .same a b =>
       match resolve c.β a, resolve c.β b with
       | .ok (.v i), .ok (.v j) => const c.n (R.ofBool (i == j))
@@ -631,6 +701,14 @@ mutual
       (countEdgesAll "count" (evalAll c edge) (evalAll c sinceφ)).map fun e => match e with
         | .error w => R.u w
         | .ok m => R.ofBool (op.apply (Q.ofInt (Int.ofNat m)) (Q.ofInt (Int.ofNat k)))
+    | .durationWithin w g φ op bd =>
+      liftA c.n do
+        let wv ← constOf w (evalTAll c w)
+        let gv ← stepOf g (evalTAll c g) "duration_within"
+        let bv ← constOf bd (evalTAll c bd)
+        if Q.lt Q.zero wv && Q.lt Q.zero gv then
+          pure ((SampledDuration.boundsAll c.d.times wv gv "duration_within" (evalAll c φ)).map (durationAt op bv))
+        else throw (.malformed "duration_within window or step bound is not positive")
     | .rises φ => risesAll (evalAll c φ)
     | .definedWhen pre φ => Array.zipWith definedWhenR (evalAll c pre) (evalAll c φ)
     | .derived concept args ps =>
@@ -643,6 +721,15 @@ mutual
     | .ruleApplies id map =>
       let arr := c.compose id map c.β true
       if arr.size = c.n then arr else constU c.n (.compositionUnknown id)
+    | .requiredBy k who =>
+      let arr := c.compose (RuleSet.requiredId k) [("who", who)] c.β true
+      if arr.size = c.n then arr else constU c.n (.compositionUnknown (RuleSet.requiredId k))
+    | .lawful s who =>
+      let arr := c.compose (RuleSet.lawfulId s) [("who", who)] c.β false
+      if arr.size = c.n then arr else constU c.n (.compositionUnknown (RuleSet.lawfulId s))
+    | .ruleCase id n map =>
+      let arr := c.compose (RuleSet.caseId id n) map c.β true
+      if arr.size = c.n then arr else constU c.n (.compositionUnknown (RuleSet.caseId id n))
     | .existsUser v φ =>
       perScene c ((usersOf c).map fun t => (t, evalAll (c.bindVar v (.track t)) φ))
         (fun s t => s.tracks.contains t) R.any
@@ -757,6 +844,8 @@ mutual
     | .intent _ who target => by
         cases who <;> cases target <;> rw [evalAll] <;> (repeat' split) <;>
           simp [size_constU, SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
+    | .fact _ xs => by
+        rw [evalAll]; split <;> simp [size_constU, SemCtx.n, SemCtx.scenes, Primitives.Ctx.n]
     | .same a b => by
         rw [evalAll]; split <;> simp [size_constU, Temporal.size_const]
     | .not φ => by rw [evalAll, Temporal.size_mapNot]; exact size_evalAll c φ
@@ -797,6 +886,14 @@ mutual
           simp only [hx, hd, bind, Except.bind, pure, Except.pure] at h <;> try contradiction
         cases h; rw [Temporal.size_atLastAll]; exact size_evalAll c φ
     | .count edge sφ _ _ => by rw [evalAll, Array.size_map, Temporal.size_countEdgesAll]; exact size_evalAll c edge
+    | .durationWithin w g φ _ bd => by
+        rw [evalAll]; apply size_liftA; intro a h
+        cases hw : constOf w (evalTAll c w) <;> cases hg : stepOf g (evalTAll c g) "duration_within" <;>
+          cases hb : constOf bd (evalTAll c bd) <;>
+          simp only [hw, hg, hb, bind, Except.bind, pure, Except.pure] at h <;> try contradiction
+        split at h
+        · cases h; rw [Array.size_map, SampledDuration.size_boundsAll]; exact size_evalAll c φ
+        · cases h
     | .rises φ => by rw [evalAll, Temporal.size_risesAll]; exact size_evalAll c φ
     | .definedWhen pre φ => by rw [evalAll, Array.size_zipWith, size_evalAll c pre, size_evalAll c φ, Nat.min_self]
     | .derived _ args ps => by
@@ -806,6 +903,9 @@ mutual
         exact Primitives.size_evalB _ _ _ _ _ h
     | .rule _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
     | .ruleApplies _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
+    | .requiredBy _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
+    | .lawful _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
+    | .ruleCase _ _ _ => by rw [evalAll]; split <;> simp_all [size_constU]
     | .existsUser _ _ => by rw [evalAll]; exact size_perScene _ _ _ _
     | .forallUser _ _ => by rw [evalAll]; exact size_perScene _ _ _ _
     | .existsRegion _ _ _ => by rw [evalAll]; split; exact size_constU _ _; exact size_perScene _ _ _ _
@@ -880,6 +980,46 @@ theorem evalTAll_headingSince (s : String) (g : Term) (x : TrackId) (gv : Q)
     (hx : c.β.track s = some x) (hg : stepOf g (evalTAll c g) = .ok gv) :
     evalTAll c (.headingSince s g ψ) = Primitives.headingSince c.d x gv (evalAll c ψ) := by
   rw [evalTAll]; simp only [hx, hg, liftQ, bind, Except.bind, pure, Except.pure]
+/-- `durationWithin` is the range comparison of the sampled bounds of its body's values. -/
+theorem evalAll_durationWithin (w g bd : Term) (op : CmpOp) (wv gv bv : Q)
+    (hw : constOf w (evalTAll c w) = .ok wv) (hg : stepOf g (evalTAll c g) "duration_within" = .ok gv)
+    (hb : constOf bd (evalTAll c bd) = .ok bv) (hpos : (Q.lt Q.zero wv && Q.lt Q.zero gv) = true) :
+    evalAll c (.durationWithin w g φ op bd) =
+      (SampledDuration.boundsAll c.d.times wv gv "duration_within" (evalAll c φ)).map (durationAt op bv) := by
+  rw [evalAll]; simp only [hw, hg, hb, hpos, liftA, bind, Except.bind, pure, Except.pure, if_true]
+
+/-- Soundness of `durationWithin`: for observation times in order, where its verdict at an
+    observation is decided, every completion of the samples (`SampledDuration.Completion`: on each
+    interval the time the body held, all of it where the body is true there and the interval is
+    within the step, none where it is false there and within the step, anything otherwise and
+    before the first observation) holds, in the window behind that observation, a time that
+    satisfies the comparison where the verdict is true and fails it where it is false. -/
+theorem durationWithin_sound (w g bd : Term) (op : CmpOp) (wv gv bv : Q)
+    (hw : constOf w (evalTAll c w) = .ok wv) (hg : stepOf g (evalTAll c g) "duration_within" = .ok gv)
+    (hb : constOf bd (evalTAll c bd) = .ok bv) (hpos : (Q.lt Q.zero wv && Q.lt Q.zero gv) = true)
+    (hsort : SampledDuration.Sorted (fun k => (c.d.times[k]!).val) (c.n - 1)) (i : Nat) (hi : i < c.n)
+    (cp : SampledDuration.Completion (fun k => (c.d.times[k]!).val)
+      (SampledDuration.low c.d.times gv (evalAll c φ)) (SampledDuration.high c.d.times gv (evalAll c φ)) (c.n - 1)) :
+    ((evalAll c (.durationWithin w g φ op bd))[i]!.v = .t → op.holds (cp.held wv.val (c.d.times[i]!).val) bv.val) ∧
+      ((evalAll c (.durationWithin w g φ op bd))[i]!.v = .f → ¬ op.holds (cp.held wv.val (c.d.times[i]!).val) bv.val) := by
+  have hn := size_evalAll c φ
+  have hw0 : 0 ≤ wv.val := by
+    have := (Q.lt_iff_val _ _).mp (by simp only [Bool.and_eq_true] at hpos; exact hpos.1)
+    rw [Q.val_zero] at this; exact Rat.le_of_lt this
+  rw [evalAll_durationWithin c φ w g bd op wv gv bv hw hg hb hpos]
+  rw [getElem!_pos _ i (by simp [SampledDuration.size_boundsAll, hn, hi])]
+  simp only [Array.getElem_map]
+  rw [← getElem!_pos _ i (by simp [SampledDuration.size_boundsAll, hn, hi])]
+  obtain ⟨hl, hu⟩ := SampledDuration.bounds_val (op := "duration_within") (step := gv) (by rw [hn]; exact hsort) hw0 i (by rw [hn]; exact hi)
+  obtain ⟨cl, cu⟩ := SampledDuration.completion_within _ _ _ _ hsort cp wv.val (c.d.times[i]!).val hw0
+  rw [hn] at hl hu
+  have snd := CmpOp.onRange_sound op (SampledDuration.boundsAll c.d.times wv gv "duration_within" (evalAll c φ))[i]!.lower
+    (SampledDuration.boundsAll c.d.times wv gv "duration_within" (evalAll c φ))[i]!.upper bv
+    (cp.held wv.val (c.d.times[i]!).val) (by rw [hl]; exact cl) (by rw [hu]; exact cu)
+  unfold durationAt
+  generalize op.onRange _ _ bv = v at snd ⊢
+  cases v <;> simp_all
+
 /-- Unknown is absorbing for `not`, pointwise. -/
 theorem eval_not_u (i : Nat) (h : (eval c i φ).v = .u) (hi : i < (evalAll c φ).size) : (eval c i (.not φ)).v = .u := by
   unfold eval at *

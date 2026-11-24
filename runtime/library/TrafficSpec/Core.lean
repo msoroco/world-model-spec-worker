@@ -2,9 +2,9 @@
   TrafficSpec.Core — the frozen core, in five layers; a file imports only from its own layer and
   the layers above it in this list.
   Foundations: three-valued logic with reasons, units, time, the temporal operators, a rate
-    accumulated since a rise, the handles that name tracks, regions, devices and assumptions.
-  Vocab: the ontology enumerations, the world, the atoms, assumptions, parameters, the region
-    tables, primitives.
+    accumulated since a rise, the time a condition held in a window by the samples, the handles that name tracks, regions, devices and assumptions.
+  Vocab: the ontology enumerations, the world, the atoms, assumptions, intentions, declared facts,
+    parameters, the region tables, primitives.
   Language: formulas and their semantics, rules, concepts, the static check, export.
   Runtime: grounding, manifests, the monitor, decoding.
   Evidence: builders and adequacy for the witnesses; the lint of a written trace and the
@@ -17,6 +17,7 @@ import TrafficSpec.Core.Foundations.Handles
 import TrafficSpec.Core.Foundations.Unknown
 import TrafficSpec.Core.Foundations.Temporal
 import TrafficSpec.Core.Foundations.Accumulate
+import TrafficSpec.Core.Foundations.SampledDuration
 import TrafficSpec.Core.Vocab.Ontology.Ids
 import TrafficSpec.Core.Vocab.Ontology.RoadUser
 import TrafficSpec.Core.Vocab.Ontology.Structure
@@ -26,6 +27,7 @@ import TrafficSpec.Core.Vocab.Ontology.Dimensions
 import TrafficSpec.Core.Vocab.World
 import TrafficSpec.Core.Vocab.Assumptions
 import TrafficSpec.Core.Vocab.Intentions
+import TrafficSpec.Core.Vocab.Facts
 import TrafficSpec.Core.Vocab.Params
 import TrafficSpec.Core.Vocab.Atoms
 import TrafficSpec.Core.Vocab.RegionTable

@@ -63,7 +63,7 @@ def publish(repo, notice_file, changed_files, receipt_root, push=False):
             raise ValueError('Trusted source missing or changed: '+source['source'])
     files=set(changed_files)
     for rel in files:
-        if not rel.startswith(('skills/','inputs/','runtime/','examples/','tests/','README.md','runtime.py','overlay.py','.gitignore','START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md','worker_check.py')):
+        if not rel.startswith(('skills/','inputs/','runtime/','examples/','tests/','README.md','runtime.py','.gitignore','START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md','worker_check.py')):
             raise ValueError('Update file outside permitted inputs/code')
         within(repo,rel)
     dirty=set(git('diff','--name-only','HEAD').splitlines()) | set(git('ls-files','--others','--exclude-standard').splitlines())

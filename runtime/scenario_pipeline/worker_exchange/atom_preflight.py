@@ -22,7 +22,7 @@ def check_required_atoms(runtime, required, source_packets=(), case_config=None)
 
     library = Path(runtime) / 'library'
     ids = set(atom_ids(library))
-    capability = manifest(library)['atoms']
+    capability = manifest(library,acquisition_path='fresh')['atoms']
     if not isinstance(required, list) or any(not isinstance(atom, str) for atom in required):
         raise ValueError('Core required_atoms must be a list of ontology IDs')
     if len(required) != len(set(required)):

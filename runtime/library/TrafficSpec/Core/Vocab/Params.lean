@@ -19,7 +19,7 @@ namespace TrafficSpec
 abbrev ParamName := String
 
 inductive PUnit'
-  | metre | second | metrePerSecond | metrePerSecondSq | degree | degreePerSecond | perMetre | ratio | count
+  | metre | second | metrePerSecond | metrePerSecondSq | degree | degreePerSecond | perMetre | kilogram | ratio | count
   deriving DecidableEq, Repr, Inhabited
 
 structure ParamValue where

@@ -41,6 +41,39 @@ config.json. The evaluator does not read a requested label as measured evidence.
 '''
 
 
+def _straight_source_approaches(path):
+    """Complete native map candidates; a requested route is not evidence."""
+    import xml.etree.ElementTree as ET
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+    from traffic_spec_adapter.geometry import static_map
+    root=ET.parse(path).getroot()
+    if root.tag!='OpenDRIVE':return {},set()
+    sources={}
+    regions,_,_=static_map(path,partial=False,complete_map=True,source_regions=sources)
+    candidates={};straight=set()
+    for road in root.findall('road'):
+        rid=int(road.get('id'));geometry=road.findall('./planView/geometry')
+        lanes=[r for r in regions if r['kind']=='lane' and sources.get(r['id'],{}).get('road_id')==rid]
+        if not lanes:continue
+        shape=unary_union([Polygon(r['boundary'])for r in lanes])
+        if shape.is_valid and not shape.is_empty:candidates[rid]=shape
+        sections=road.findall('./lanes/laneSection');offsets=road.findall('./lanes/laneOffset')
+        def constant(record,start):
+            return (all(k in record.attrib for k in (start,'a','b','c','d'))and
+                    all(math.isfinite(float(record.get(k)))for k in (start,'a','b','c','d'))and
+                    float(record.get(start))==0 and
+                    all(float(record.get(k))==0 for k in ('b','c','d')))
+        if (road.get('junction','-1')!='-1' or len(geometry)!=1 or geometry[0].find('line')is None
+                or len(sections)!=1 or float(sections[0].get('s'))!=0
+                or len(offsets)>1 or any(not constant(o,'s')for o in offsets)):continue
+        lateral=sections[0].findall('./left/lane')+sections[0].findall('./right/lane')
+        if any(len(l.findall('width'))!=1 or not constant(l.find('width'),'sOffset')or
+               float(l.find('width').get('a'))<=0 for l in lateral):continue
+        straight.add(rid)
+    return candidates,straight
+
+
 def reviewed_backing(case, attempt, trace, scope_path):
     """Join a reviewed native boundary to original bodies and current Core data.
 
@@ -91,6 +124,8 @@ def reviewed_backing(case, attempt, trace, scope_path):
     rid=scope.get('intersection_region_core_id')
     if type(rid)is not int:raise ValueError('Native backing intersection identity missing')
     violating=[];count=0;first_heading=None;first_centre=None;first_actor=None;previous=None;straight=True
+    approaches,straight_roads=_straight_source_approaches(paths['road.xodr'])
+    approach_id=None;contained_approach=True
     def rows(path):
         with path.open() as stream:
             for line in stream:
@@ -133,6 +168,13 @@ def reviewed_backing(case, attempt, trace, scope_path):
         if first_heading is None:first_heading=expected_heading;first_centre=centre
         # Measurement consistency bounds, not a legal threshold for a corner.
         if max(abs(a-b)for a,b in zip(first_heading,expected_heading))>1e-6 or abs((centre[0]-first_centre[0])*first_heading[1]-(centre[1]-first_centre[1])*first_heading[0])>1e-4:straight=False
+        # All actual bodies must remain on ONE uniquely identified, nonjunction
+        # straight native approach. Small real steering corrections are kept;
+        # neither numeric straightness nor requested controller intent is assumed.
+        matches=[road for road,shape in approaches.items()if shape.intersection(footprint).area>0]
+        if (len(matches)!=1 or matches[0]not in straight_roads or not approaches[matches[0]].covers(footprint)
+                or (approach_id is not None and matches[0]!=approach_id)):contained_approach=False
+        elif approach_id is None:approach_id=matches[0]
         projection=sum(a*b for a,b in zip(expected_velocity,expected_heading))
         if projection < -1e-6 and footprint.intersection(reference).area>1e-8:violating.append(raw['frame'])
     absence_complete=False
@@ -145,12 +187,14 @@ def reviewed_backing(case, attempt, trace, scope_path):
             for ref in entry['evidence']:source(ref['path'],ref['sha256'])
     for name,checksum in used.items():
         if hashlib.sha256(Path(name).read_bytes()).hexdigest()!=checksum:raise ValueError('Native backing evidence changed during evaluation')
-    outcome='violation' if violating else 'compliant' if absence_complete and straight else None
+    no_corner=contained_approach and approach_id is not None
+    outcome='violation' if violating else 'compliant' if absence_complete and no_corner else None
     return {'expected_label':outcome,
         'processing_reasons':[] if outcome else ['unsupported_evaluation'],
         'evidence':{'measurement':'Original horizontal reverse projection and full body overlap of source-verified native intersection; current Core joins checked every frame',
             'geometry_reference':str(paths['intersection_boundary_review.json']),
             'samples':count,'violation_frames':violating,'straight_within_observation_resolution':straight,
+            'single_straight_native_approach':approach_id if no_corner else None,
             'crosswalk_absence_source_complete':absence_complete,'source_hashes':used,
             'scope':'Full recording under the retained native boundary and crosswalk-absence interpretation'}}
 
@@ -178,6 +222,10 @@ def evaluate(case, attempt, trace, context):
         raise ValueError('Complete original-tick rule evidence required')
     scenes=json.loads((attempt/'traffic_spec/trace.json').read_text())['scenes']
     if len(scenes)!=len(trace):raise ValueError('Full delivered scene join required')
+    from traffic_spec_adapter.adapter import measured_kinematics, original_participants
+    manifest_path=attempt/'capture/manifest.json'
+    acquisition=json.loads(manifest_path.read_text()).get('acquisition') if manifest_path.is_file() else None
+    participant_records=original_participants(attempt/'synchronized_motion_records.jsonl',original,acquisition)
     bodies=[]
     for t,s,o,scene in zip(trace,samples,original,scenes):
         if s['frame'] != t['frame'] or abs(s['time_s']-t['time_s']) > 1e-6 or o['original_frame'] != t['frame']:
@@ -191,7 +239,15 @@ def evaluate(case, attempt, trace, context):
             delivered=bytrack.get(participant['actor_id'])
             if delivered is None:raise ValueError('Required participant missing from delivered scene')
             pos=participant['position_m'];kin=delivered['kin']
-            if math.hypot(pos[0]-kin['position'][0],-pos[1]-kin['position'][1])>1e-4 or abs(participant['speed_mps']-kin['speed'])>1e-4:
+            observation=participant
+            if participant.get('velocity_mps') is None:
+                observation=participant_records.get(t['frame'],{}).get(participant['actor_id'],{})
+                if observation and (math.dist(pos,observation['position_m'])>1e-4 or
+                        participant.get('body_vertices_m',observation['body_vertices_m'])!=observation['body_vertices_m']):
+                    raise ValueError('Participant rule/source observations differ')
+            observed=measured_kinematics({'velocity_mps':observation.get('velocity_mps')})
+            if 'speed' not in observed:raise ValueError('Participant horizontal speed requires original velocity')
+            if math.hypot(pos[0]-kin['position'][0],-pos[1]-kin['position'][1])>1e-4 or abs(observed['speed']-kin['speed'])>1e-4:
                 raise ValueError('Participant observations differ from delivered scene')
         bodies.append(measured)
     law=case['target_law_id']

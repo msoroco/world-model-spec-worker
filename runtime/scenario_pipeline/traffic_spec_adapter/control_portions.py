@@ -84,12 +84,5 @@ def retained_authored_portion_fields(evidence,regions,highways):
     if len(matches)>1:raise ValueError("Authored road-end portion retained identity ambiguous")
     if not matches:return {}
     if road not in highways:raise ValueError("Authored road-end portion has no verified public-way source")
-    from .roadways import roadway_intervals
-    native_road=ET.parse(map_path).getroot().find("./road[@id='%s']"%road)
-    intervals=roadway_intervals(native_road,native_road.findall('./planView/geometry'),*interval)
     value={"ways":list(highways[road]),"_source_road_ids":[road],"_verified_structure_kinds":["roadway"]}
-    if intervals and intervals[0][0]==interval[0]and intervals[-1][1]==interval[1]and all(a[1]==b[0]for a,b in zip(intervals,intervals[1:])):
-        for key in ('curvature','grade'):
-            values={part[2][key]for part in intervals if key in part[2]}
-            if len(values)==1 and all(key in part[2]for part in intervals):value[key]=values.pop()
     return {matches[0]["id"]:value}

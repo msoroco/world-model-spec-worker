@@ -1,15 +1,22 @@
 """Any-body measurement, censoring, coverage and subject-relative attachment."""
 import importlib.util
+import os
 import unittest
 from pathlib import Path
 from traffic_spec_adapter.visibility import sight_distance, attach_visibility, CONVENTION
 
 base = Path(__file__).resolve().parents[1]
-path = (base/'python/carla_sgg/law_evidence.py' if (base/'python').is_dir() else
-        base.parent/'third_party/carla_scene_graphs/carla_sgg/law_evidence.py')
+path = Path(os.environ.get('LAW_EVIDENCE_SOURCE', str(base/'python/carla_sgg/law_evidence.py')))
 spec = importlib.util.spec_from_file_location('visibility_capture', path)
 capture = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(capture)
+
+
+def synthetic_lane_topology(lanes):
+    # These fake API routes stay inside a source-declared long modeled segment;
+    # neither test claims terminal continuation from an absent topology API.
+    definitions=''.join('<lane id="%s" type="driving"/>'%lane for lane in lanes)
+    return '<OpenDRIVE><road id="9" length="2000" junction="-1"><lanes><laneSection s="0"><right>'+definitions+'</right></laneSection></lanes></road></OpenDRIVE>'
 
 
 def measured(horizons):
@@ -35,6 +42,50 @@ def sdk_available():
 
 
 class VisibilityTests(unittest.TestCase):
+    def test_unselected_frames_keep_verified_actor_coverage(self):
+        import itertools, json, tempfile
+        from unittest.mock import patch
+        from traffic_spec_adapter import visibility
+        body = [list(v) for v in itertools.product((-1., 1.), repeat=3)]
+        margin = 64*2**-23
+        bounds = [{'actor_id': actor, 'low_m': [-1.-margin]*3,
+                   'high_m': [1.+margin]*3} for actor in (1, 2)]
+        participants = [{'actor_id': actor, 'blueprint': 'vehicle.test',
+                         'body_vertices_m': body} for actor in (1, 2)]
+        events = {i: {'actor_id': 1, 'recording_time_s': float(i),
+                      'participants': participants} for i in (10, 11)}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            recorder = root/'recorder.txt'
+            recorder.write_text(' Create 1: vehicle.test x\n Create 2: vehicle.test x\n Create 3: traffic.stop x\n')
+            enclosure = root/'enclosures.jsonl'
+            enclosure.write_text(''.join(json.dumps(dict(original_frame=i,
+                actor_id=1, recording_time_s=float(i), bounds=bounds))+'\n'
+                for i in (10, 11)))
+            certificate = {'opaque_vehicle_enclosures': {},
+                'opaque_enclosure_model': 'original_vehicle_body_bbox_v1',
+                'native_actor_registry': {'1': 'vehicle.test', '2': 'vehicle.test',
+                                          '3': 'traffic.stop'}}
+            inventory = {'observer_query_method': 'native_incoming_route_positions_v1',
+                'observer_query_recording_frame_count': 2,
+                'observer_query_frames': [{'original_frame': 10, 'lanes': []}]}
+            with patch('traffic_spec_adapter.body_capture.acquisition_contract'), patch.object(
+                    visibility, '_source_reference_component_models', return_value={}):
+                result, _ = visibility._source_vehicle_enclosures(certificate,
+                    {'capture/recorder_info.txt': recorder}, events,
+                    {'frames': [{'original_frame': 10}]}, lambda *args: enclosure,
+                    inventory, static_actors=(3,))
+                self.assertEqual(result[11], [bounds[1]])
+                self.assertEqual({1, 3} | {b['actor_id'] for b in result[11]}, {1, 2, 3})
+                self.assertNotIn('_source_reference_components', result[11][0])
+                invalid = dict(events, **{})
+                invalid[11] = dict(events[11], participants=participants[:1])
+                with self.assertRaisesRegex(ValueError, 'Missing or inconsistent'):
+                    visibility._source_vehicle_enclosures(certificate,
+                        {'capture/recorder_info.txt': recorder}, invalid,
+                        {'frames': [{'original_frame': 10}]}, lambda *args: enclosure,
+                        inventory, static_actors=(3,))
+
     def test_probe_checkpoint_resolves_boundary_bracket(self):
         def sample(d):
             return [{'clear': d < 152.4, 'blockers': [] if d < 152.4 else [{'label': 'wall'}]}]
@@ -53,15 +104,17 @@ class VisibilityTests(unittest.TestCase):
             get_transform=lambda: carla.Transform(carla.Location(x=20, y=7)),
             bounding_box=carla.BoundingBox(carla.Location(), carla.Vector3D(2, 1, 1)))
         def lane(lid):
-            wp = SimpleNamespace(road_id=9, lane_id=lid, s=20,
+            wp = SimpleNamespace(road_id=9, lane_id=lid, s=1000,
                                  transform=carla.Transform(carla.Location(x=20, y=lid*4)))
             def previous(d):
                 if d <= 0:raise RuntimeError('distance > 0.0')
-                return [SimpleNamespace(transform=carla.Transform(carla.Location(x=20-d,y=lid*4)))]
+                return [SimpleNamespace(road_id=9,lane_id=lid,s=1000-d,transform=carla.Transform(carla.Location(x=20-d,y=lid*4)))]
             wp.previous = previous
+            wp.next = lambda d: []
             return wp
         mapping = SimpleNamespace(get_waypoint=lambda *a, **k: lane(-1),
-                                  get_waypoint_xodr=lambda road, lid, station: lane(lid))
+                                  get_waypoint_xodr=lambda road, lid, station: lane(lid),
+                                  to_opendrive=lambda: synthetic_lane_topology([-2,-1,1]))
         world = SimpleNamespace()
         # Centre ray becomes blocked beyond 100 m; a corner remains visible.
         def ray(world, actor, eye, point):
@@ -88,11 +141,12 @@ class VisibilityTests(unittest.TestCase):
         from unittest.mock import patch
         actor=SimpleNamespace(get_transform=lambda:carla.Transform(),
             bounding_box=carla.BoundingBox(carla.Location(),carla.Vector3D(2,1,1)))
-        lane=SimpleNamespace(road_id=9,lane_id=-1,s=20,transform=carla.Transform())
+        lane=SimpleNamespace(road_id=9,lane_id=-1,s=1000,transform=carla.Transform())
         lane.previous=lambda d: [] if d>=100 else [SimpleNamespace(
-            transform=carla.Transform(carla.Location(x=-d)))]
+            road_id=9,lane_id=-1,s=1000-d,transform=carla.Transform(carla.Location(x=-d)))]
+        lane.next=lambda d: []
         mapping=SimpleNamespace(get_waypoint=lambda *a,**k:lane,
-            get_waypoint_xodr=lambda *a:lane)
+            get_waypoint_xodr=lambda *a:lane,to_opendrive=lambda:synthetic_lane_topology([-1]))
         def ray(world,actor,eye,point):
             clear=eye.x>-10
             return {'clear':clear,'blockers':[] if clear else [{'label':'wall'}]}
@@ -140,9 +194,18 @@ class VisibilityTests(unittest.TestCase):
         v = measured([{'bound': 'route_limit', 'distance_m': 100, 'unknown': True}])
         self.assertIsNone(sight_distance(v)[0])
 
-    def test_threshold_uncertainty_and_short_search_unknown(self):
-        self.assertIsNone(sight_distance(measured([boundary(152.35)]))[0])
+    def test_finite_uncertainty_retained_and_short_search_unknown(self):
+        self.assertEqual(sight_distance(measured([boundary(152.35)]))[0],152.35)
         self.assertIsNone(sight_distance(measured([{'bound': 'at_least', 'distance_m': 100}]))[0])
+
+    def test_finite_interval_does_not_decide_unknown_probe(self):
+        v=measured([{'bound':'first_sampled_occlusion','bracket_m':[129.21875,160.]}])
+        v['horizon_tolerance_m']=30.78125
+        v['approaches'][0].pop('any_sample_clear_at_probe')
+        v['approaches'][0]['probe_unknown_reason']='Saved query has one unresolved sample'
+        before=repr(v)
+        self.assertEqual(sight_distance(v)[0],129.21875)
+        self.assertEqual(repr(v),before)
 
     def test_conflicting_probe_unknown(self):
         v = measured([boundary(170)])
@@ -191,6 +254,18 @@ class VisibilityTests(unittest.TestCase):
         value.pop('eye_height_m')
         self.assertIsNone(sight_distance(value)[0])
 
+    def test_finite_minimum_is_not_censored_by_a_clear_other_direction(self):
+        from shapely.geometry import box
+        value = measured([
+            {'bound': 'first_sampled_occlusion', 'bracket_m': [9.75, 10.]},
+            {'bound': 'at_least', 'distance_m': 230.}])
+        result, mapping = attach_visibility(
+            [{'id': 1, 'kind': 'roadway'}], {1: box(0, 0, 10, 10)},
+            box(1, 1, 2, 2), value)
+        self.assertEqual(result[0]['sight_distance'], 9.75)
+        self.assertEqual(mapping['upper_bound_m'], 10.)
+        self.assertFalse(mapping['search_censored'])
+
     def test_declared_probe_is_not_hardcoded_to_500_feet(self):
         value=measured([{'bound':'at_least','distance_m':120}]);value['probe_distance_m']=100
         self.assertEqual(sight_distance(value)[0],120)
@@ -217,6 +292,90 @@ class VisibilityTests(unittest.TestCase):
         self.assertIsNone(mapping['value_m'])
         self.assertNotIn('sight_distance',result[0])
 
+
+
+
+class VisibilitySourceInventoryTests(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+        self.root=Path(self.temp.name);self.map=self.root/'road.xodr'
+        self.map.write_text('<OpenDRIVE><road id="1"><lanes><laneSection s="0"><left><lane id="1" type="driving"/><lane id="2" type="driving"/><lane id="3" type="shoulder"/></left></laneSection></lanes></road></OpenDRIVE>')
+
+    def inventory(self):
+        from traffic_spec_adapter.adapter import _visibility_lane_inventory,sha
+        return _visibility_lane_inventory(self.map,sha(self.map))
+
+    def scene_packet(self):
+        value=measured([{'bound':'at_least','distance_m':230.}]*2)
+        packet={'subject_visibility':{'subject':7,'body_vertices_m':value['ego_body_samples_m'][1:],'visibility':value}}
+        scene={'t':0,'subject':7,'users':[],'devices':[],
+            'structures':[{'id':10,'kind':'lane','boundary':[[0,0],[3,0],[3,3],[0,3]]}]}
+        return scene,packet
+
+    def test_partial_export_binding_does_not_limit_complete_source_scope(self):
+        import copy
+        from traffic_spec_adapter.adapter import repair_scene
+        scene,packet=self.scene_packet();bindings={(1,0,1):10};original=copy.deepcopy(bindings)
+        partial=copy.deepcopy(scene);repair_scene(partial,set(),packet,{}, {},bindings)
+        self.assertNotIn('sight_distance',partial['structures'][0])
+        repair_scene(scene,set(),packet,{}, {},bindings,visibility_native_lanes=self.inventory())
+        self.assertEqual(scene['structures'][0]['sight_distance'],230.)
+        self.assertEqual(bindings,original)
+
+
+    @unittest.skipUnless(hasattr(__import__('shapely'),'prepare'),'Retained processing uses the Shapely2 environment')
+    def test_reconstruct_forwards_complete_inventory_after_partial_export_match(self):
+        import copy,json
+        from unittest.mock import patch
+        from traffic_spec_adapter import adapter
+        root=self.root/'recording';e=root/'evidence';e.mkdir(parents=True)
+        road=e/'road.xodr'
+        road.write_text('<OpenDRIVE><road id="1" length="100" junction="-1"><link/><planView><geometry s="0" x="0" y="0" hdg="0" length="100"><line/></geometry></planView><elevationProfile><elevation s="0" a="0" b="0" c="0" d="0"/></elevationProfile><lanes><laneOffset s="0" a="0" b="0" c="0" d="0"/><laneSection s="0"><center><lane id="0" type="none"/></center><right><lane id="1" type="driving"><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane><lane id="2" type="driving"><width sOffset="0" a="3.5" b="0" c="0" d="0"/></lane></right></laneSection></lanes></road></OpenDRIVE>')
+        capture=e/'capture';capture.mkdir();events=capture/'evidence.jsonl'
+        events.write_text(json.dumps({'recording_time_s':0.,'actor_id':7})+'\n')
+        (root/'evidence-checksums.json').write_text(json.dumps({'evidence/road.xodr':adapter.sha(road),'evidence/capture/evidence.jsonl':adapter.sha(events)}))
+        scene,packet=self.scene_packet();scene['users']=[{'track':7}];scene['occupies']=[[7,10]]
+        trace=root/'trace.json';trace.write_text(json.dumps({'scenes':[scene]}))
+        bindings={(1,0,1):10};before=copy.deepcopy(bindings)
+        library=Path(adapter.__file__).resolve()
+        # Existing module-root library lookup is supplied by the suite runner when
+        # testing an external candidate; installed tests use the repository root.
+        import os
+        library=Path(os.environ.get('TRAFFIC_SPEC_TEST_LIBRARY',str(base/'library')))
+        with patch('traffic_spec_adapter.geometry.retained_map',return_value=({},bindings,[],{},[])),patch('traffic_spec_adapter.adapter.source_packets',return_value={0:packet}),patch('traffic_spec_adapter.adapter.validate_scene'),patch('traffic_spec_adapter.native_road_profile.source_surface_certificate',return_value=None):
+            adapter.reconstruct(trace,e,library,root/'out.json')
+        result=json.loads((root/'out.json').read_text())['scenes'][0]
+        self.assertEqual(result['structures'][0]['sight_distance'],230.)
+        self.assertEqual(bindings,before)
+
+    def test_incomplete_source_inventory_still_rejected(self):
+        from traffic_spec_adapter.adapter import repair_scene
+        scene,packet=self.scene_packet()
+        repair_scene(scene,set(),packet,{}, {},{(1,0,1):10},visibility_native_lanes={(1,0,1)})
+        self.assertNotIn('sight_distance',scene['structures'][0])
+
+    def test_source_inventory_is_not_inferred_from_measurement(self):
+        from traffic_spec_adapter.adapter import repair_scene
+        scene,packet=self.scene_packet()
+        self.map.write_text(self.map.read_text().replace('<lane id="2" type="driving"/>',''))
+        repair_scene(scene,set(),packet,{}, {},{(1,0,1):10},visibility_native_lanes=self.inventory())
+        self.assertNotIn('sight_distance',scene['structures'][0])
+
+    def test_wrong_map_hash_is_rejected(self):
+        from traffic_spec_adapter.adapter import _visibility_lane_inventory,sha
+        original=sha(self.map);self.map.write_text(self.map.read_text().replace('id="1"','id="9"',1))
+        with self.assertRaisesRegex(ValueError,'map source differs'):_visibility_lane_inventory(self.map,original)
+
+    def test_inventory_preserves_sections_and_excludes_other_lane_kinds(self):
+        self.map.write_text(self.map.read_text().replace('</lanes>','<laneSection s="10"><right><lane id="-1" type="driving"/><lane id="-2" type="biking"/></right></laneSection></lanes>'))
+        self.assertEqual(self.inventory(),frozenset({(1,0,1),(1,0,2),(1,1,-1)}))
+
+    def test_absent_source_does_not_reuse_partial_bindings(self):
+        from traffic_spec_adapter.adapter import repair_scene,_visibility_lane_inventory
+        scene,packet=self.scene_packet()
+        repair_scene(scene,set(),packet,{}, {},{(1,0,1):10},visibility_native_lanes=_visibility_lane_inventory(None,None))
+        self.assertNotIn('sight_distance',scene['structures'][0])
 
 if __name__ == '__main__': unittest.main()
 
@@ -250,7 +409,7 @@ class SightDistanceIntegration(unittest.TestCase):
         from worker_exchange.common import read, write, sha
         from worker_exchange.runtime_cli import process, render
         from worker_exchange.media import audit
-        library = base/'library' if (base/'library').is_dir() else base.parent/'repo_prep/nevada_sydney/pipeline/traffic-spec-agent/library'
+        library = base/'library' if (base/'library').is_dir() else base/'library'
         fixture = base/'fixtures/example.json' if (base/'fixtures/example.json').is_file() else base/'worker_exchange/templates/fixture-example.json'
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);attempt=root/'attempt';spec=read(fixture);generate(spec,attempt)
@@ -285,7 +444,10 @@ class SightDistanceIntegration(unittest.TestCase):
                 self.assertTrue(report['required_measurements_complete'])
                 self.assertTrue(report['decoder_validation']['passed'])
                 supplement=[json.loads(line) for line in (output/'supplementary_evidence.jsonl').read_text().splitlines()]
-                self.assertTrue(supplement[0]['visibility_mapping']['search_censored'])
+                mapping=supplement[0]['visibility_mapping']
+                self.assertFalse(mapping['search_censored'])
+                self.assertEqual(mapping['lower_bound_m'],160)
+                self.assertEqual(mapping['upper_bound_m'],160.125)
                 self.assertEqual(sha(initial),old_hash)
                 self.assertIn('/manifests/',str((output/'manifest.json').resolve()))
                 video=render(attempt,output,{'case_id':'sight-distance-diagnostic','target_law_id':None})
