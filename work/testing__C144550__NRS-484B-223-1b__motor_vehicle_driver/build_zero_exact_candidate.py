@@ -105,6 +105,19 @@ def build():
     config["signal_stage_tick"] = 1
     files["config.json"]["content"] = json.dumps(config, indent=2) + "\n"
     write_json(CASE_DIR / "construction.json", construction)
+    fallback_knobs = (("target_initial_route_distance_m", 250),
+                      ("target_speed_mps", 4.2),
+                      ("overview_along_m", 75))
+    fallback_paths = []
+    for number, (knob, value) in enumerate(fallback_knobs, 1):
+        alternative = copy.deepcopy(construction)
+        option_files = {item["path"]:item for item in alternative["files"]}
+        option_config = copy.deepcopy(config)
+        option_config[knob] = value
+        option_files["config.json"]["content"] = json.dumps(option_config, indent=2) + "\n"
+        path = CASE_DIR / ("fallback" + str(number) + "-construction.json")
+        write_json(path, alternative)
+        fallback_paths.append(path)
 
     diagnostic = json.loads((HERE / "cases" / OLD / "diagnostic.json").read_text())
     matching = [graph for graph in diagnostic["graphs"]
@@ -140,7 +153,12 @@ def build():
     entry["construction"] = "cases/" + NEW + "/construction.json"
     entry["construction_sha256"] = sha(CASE_DIR / "construction.json")
     entry["fixture_recipe"] = recipe["generator"]["source"].replace("diagnostic.json", "diagnostic-recipe.json")
-    entry["candidates"] = []
+    entry["candidates"] = [
+        {"id":"fallback"+str(number),
+         "construction":"cases/"+NEW+"/"+path.name,
+         "construction_sha256":sha(path),
+         "risk":"Native motion or camera view at the selected lane site may differ from the primary target"}
+        for number,path in enumerate(fallback_paths,1)]
     for stale in ("offline", "compatibility", "negative", "post_capture", "diagnostic_saved_processing"):
         entry.pop(stale, None)
     entry["status"] = "unselected_zero_frame_cpu_candidate"
@@ -151,6 +169,8 @@ def build():
     (staging / "cases" / NEW).mkdir(parents=True, exist_ok=True)
     (staging / "proposals").mkdir(parents=True, exist_ok=True)
     shutil.copyfile(CASE_DIR / "construction.json", staging / entry["construction"])
+    for path in fallback_paths:
+        shutil.copyfile(path, staging / "cases" / NEW / path.name)
     shutil.copyfile(HERE / "measurement-contract.json", staging / "measurement-contract.json")
     staged_plan = json.loads((HERE / "case-plan.json").read_text())
     staged_plan["requirement_dispositions"][0]["case_ids"].append(NEW_ID)
