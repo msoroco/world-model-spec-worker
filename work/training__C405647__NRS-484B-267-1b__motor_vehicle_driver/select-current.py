@@ -32,6 +32,12 @@ def main():
         target_contract.parent.mkdir(exist_ok=True)
         target_contract.write_text(json.dumps(contract, indent=2) + '\n')
         case['measurement_contract'] = target_contract.relative_to(HERE).as_posix()
+        for fallback in case['candidates']:
+            fallback['trigger']['failure_condition'] = (
+                'Original Native primary target check or required source join fails; '
+                'measure ' + fallback['trigger']['metric'] + ' against the predeclared '
+                'engineering limit before trying this distinct construction. '
+                'CPU authored values are not an observed Native trigger.')
         for item in [case] + case['candidates']:
             construction = json.loads((HERE / item['construction']).read_text())
             for file in construction['files']:

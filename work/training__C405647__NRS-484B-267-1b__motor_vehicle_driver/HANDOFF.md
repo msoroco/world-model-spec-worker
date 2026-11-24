@@ -1,91 +1,23 @@
-# training__C405647__NRS-484B-267-1b__motor_vehicle_driver
+# C405647 / NRS 484B.267(1)(b) handoff
 
-Status: partial. No delivery recording is selected or claimed.
+Status: `ready` / `delivery_prepared` on the active runtime. Exact scoped strict assignment check passed on 2026-11-24. This is CPU preparation for two selected cases, not an accepted original Native recording or a legal verdict.
 
-## Current CPU rebind (2026-11-23)
+## Reproduce the gate
 
-The canonical assignment is now bound to SHA-256 `0ee3f348d7db64723f6be4dab6257853965bc6626f68567df96d31ee3b5d01cd` through its numbered `law` object. The authored Native request and capture window now spans 600 frames at 20 Hz (30 seconds), including four original-camera channels. The current unselected construction manifest is `f88b35930aa70ea001c8e4c9cfa5b4be45e3aa05aeadcff3ac399c79d5b4db05`. All eight primary/fallback bundles passed pinned offline preflight with no simulation (`draft-offline-audit.json` SHA-256 `822bcab31a3472dca5c31ebf72bcfc731483fa77805968b167c9f6b8b7beebbb`).
+From repository root, set `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-1b-runtime-import`, `TMPDIR=$PWD/.runtime-work`, and `PYTHONDONTWRITEBYTECODE=1`, then run:
 
-The current measurement contract uses `worker-measurement-contract`. Eight exact 600-frame synthetic finalizer positives and altered-join and missing-source negatives passed (`exact-finalization-proof.json` SHA-256 `a87a415d00fdd95abafe593fde4ea6b57f7b55a61368356b116268e67ebdb3e5`; independent selected-measurement audit SHA-256 `1b96e0aa09a89db9de38a48e60684cdd914380a8dff6890b6ccb45143ff5e19a`). Four controlled comparison pairs and 16 nonposition-source mutations passed independent audit SHA-256 `5867e7f80fec5fb222ef4a4dde4240b151d28451f31e65c73f50daf7db0938ff`. Eight exact saved-package positives and removed-source negatives passed audit SHA-256 `012f8ae060fcf20c3dc300d72f6f48161920f18c16cc1e42ac0c1e8284bd38f7`. Statutory review recomputed 4,800 saved rows and 11 topic joins; audit SHA-256 `b8febda1793ef9f0ffb4c22bb9351d7e6e456c78810424f77b6cb9fc2aaa7510`. Assignment-scoped `worker_check.py --complete` passed.
+```sh
+.venv-cpu/bin/python worker_check.py --assignment training__C405647__NRS-484B-267-1b__motor_vehicle_driver --complete --require-delivery-ready
+```
 
-These are unselected CPU diagnostics. The old `full-package-*` receipts still describe a 480-frame legacy fixture and are historical; do not use them for current runtime compatibility. Next construct a source-hashed current fixture recipe with all four cameras, run `runtime.py compatibility` for each exact candidate with the 600-frame finalizer and strict measurement contract, then exercise `process-saved` and independent delivery/comparison audits. Keep original Native authority, lamp pixels, shoulder-sign qualification and legal judgment open until source review. No readiness or accepted recording is claimed.
+Exit code was 0 with `static_checks_passed: true`. `result.json` SHA-256: `ac4e63c1fa01f8ca7033a4aed7c1539699a05eb8bfbaa2d6626bb8fb86810c5f`; `case-plan.json`: `d9d799fe5ef39d879f871d4abdc6f53114720b4c28fd615641ee66a80cb29048`; `execution-manifest.json`: `3959847f66c4a64804284fe7786a383dc2ed0e8550c44fc8467ba1eaf36e614c`. Frozen assignment SHA-256: `0ee3f348d7db64723f6be4dab6257853965bc6626f68567df96d31ee3b5d01cd`; active runtime SHA-256: `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`.
 
-## New unselected CPU construction
+## Selected preparation
 
-`native/build.py` now emits an authored 260 m OpenDRIVE road with two eastbound
-driving lanes and a distinct shoulder, plus 600-frame, 20 Hz paired right-edge
-requests for both controlled cases. It emits primary and three distinct fallback
-requests per case and reflects OpenDRIVE y into proposed Native coordinates.
-The reference requests a stop at x=48 m, y=-6.0 m, parallel to the edge and
-with its authored 1.8 m body entirely inside the driving lane. The contrast
-requests the same longitudinal stop in the inner lane. Their approach actor,
-lamp request, officer-direction request, shoulder-sign context and frame plan
-are identical within each candidate pair.
+`execution-manifest.json` selects `__reference` and `__contrast`, each with a primary and two distinct fallback constructions. All six selected candidates pass current-runtime public positive compatibility, missing-source negative, pinned offline preflight, and recorded-only saved processing. Receipts and logs are in `current-public/`; source-hashed construction bundles are in `current-bundles/`. The current manifest has six selected candidate rows; older `draft-*` and `full-package-*` material describe unselected or retired proofs.
 
-`native/audit.py` independently checks the exact source and plan hashes, lane
-geometry, frame joins, y reflection, controlled pair, measured motion and
-six deliberately corrupted packets. The primary reference first moves
-laterally at frame 6, reaches the authored edge target at frame 62 and stops
-at frame 120; the approach reaches its authored catch-up threshold at frame
-159. Fallback 1 starts movement at frame 2, fallback 2 reaches the target at
-frame 43, and fallback 3 increases the authored front-lamp frustum estimate
-from 23 to 33 frames before catch-up. These are CPU request measurements, not
-observed CARLA trajectories, original camera pixels, qualifying lamps,
-vehicle authority, a finding that the response was legally immediate, or a
-legal judgment of “as close as possible.”
+The 600-frame, 20 Hz synthetic fixture has four synchronized camera streams. `current-public/comparison-audit.json` SHA-256 `f529ecbc09a3471d2689030d31ca6f91e56e6b4e46f62de7e13a6fb718a0e71a` verifies the fixed case context and intended lateral-position difference. `statutory-branch-review.json` SHA-256 `ce1f4252278af953df1a0d2bbcc9d6fa6dcb26784a48ac319861dc42696c26b2` binds all 11 supplied statutory topics to selected diagnostic measurements and identifies original qualification gaps. The canonical semantic proposals pass all eight active stages. Root CPU tests pass, log `current-public/root-tests.log` SHA-256 `79897d011a1aaa76145e639592b1207fa563cb1187e00ac85c3ee31c86a0b15f`. Delivery audit positive diagnostic rehearsal passes, and normal acceptance rejects missing original Native source.
 
-## Native and saved processing
+## Next physical and legal checks
 
-`native/runner.py` now has a CPU preflight and an unexecuted original CARLA
-capture path. It requires an idle exclusive server, imports the exact authored
-OpenDRIVE, checks starting lanes and four-wheel control geometry, records
-observed actor centers, four-vertex body footprints, headings and speeds, and
-captures four synchronized original RGB cameras as FFV1 at 20 Hz. The capture
-report retains restoration/error state and explicitly sets accepted=false.
-`native/prove_runner.py` passes all eight exact candidate preflights and three
-wrong-identity/hash negatives without importing CARLA.
-
-`native/prepare_original.py` is the saved-only bridge for a future original
-capture. It requires a sealed 600-frame capture and map readback, exact bundle
-identity, all four camera source hashes, decoded FFV1 dimensions and frame
-counts, and actor/video frame joins before reflecting Native coordinates into
-authored OpenDRIVE coordinates. `native/prove_original_bridge.py` passes three
-missing/inconsistent original-source negatives. It has no original-capture
-positive yet.
-`native/measure_saved.py` computes saved motion, body-edge, heading, stop and
-catch-up diagnostics without a legal verdict. `native/prove_saved.py` passes
-eight synthetic 600-frame positives and six corrupted-source negatives;
-`native/audit_saved.py` independently recomputes the paired edge/catch-up
-contrast. `native/measurement-contract.json` names the required original
-channels and the unresolved source/legal observations. Synthetic CPU packets
-are not original video or accepted delivery evidence.
-
-`build_offline.py` materializes the exact Native sources, authored map, both
-600-frame request tracks, the frozen assignment source, candidate config and
-three CPU tests into each of
-eight unselected bundles. All eight pinned `runtime.py offline` commands pass;
-`audit-draft-offline.py` independently checks source equality, construction
-hashes, measured fallback triggers, log hashes and three tests per bundle.
-The bundle now includes `native/finalize.py`. Eight exact synthetic saved
-finalizations emit analysis, a native-result shape and three recording channels;
-eight altered actor/trace/video frame joins reject. `prove-finalization.py`
-retains the results and `audit-finalization.py` independently checks the
-receipts. Eight exact saved-processor positives and removed-source negatives
-also pass with an independent audit. The synthetic full Core/Lean/render/final
-decode compatibility path now passes for both cases and all four exact
-candidates with a matching deleted-source negative each.
-`full-package-summary.json` and `full-package-audit.json` retain the unselected
-v1 receipts and independent audit. Strict v2 selected-measurement compatibility,
-original Native evidence and physical delivery acceptance remain unproved.
-
-## Source review
-
-Law: NRS 484B.267(1)(b); with NRS 484B.210(4). Exact text and topic inventory are referenced by hashes in `case-plan.json`. The 1 supplied witness row(s) are planning context, not execution proof. Membership rows: {'full-train': 0}. No accepted equivalence receipt was verified.
-
-## Planned controlled comparison
-
-emergency approach with fixed signal context; edge/shoulder exceptions separately. Compare only `right_edge_clear_intersection_position` (bool) while fixing cell, actor, legal context, traffic controls, weather, other controller settings, and capture plan. The 2 case definitions are unselected and have no observed values.
-
-## Blocker and resumption
-
-Original CARLA capture and strict v2 selected-measurement compatibility proofs are still absent; exact statutory exceptions and historical equivalence remain unverified. Continue with original-source bridge positive proof, strict measurement contract/recipe compatibility, independent delivery and comparison audits. Keep unsupported exception branches explicit. Only then set `ready`/`delivery_prepared` and add the exact GPU queue commands. Do not infer legal verdicts from CPU fixtures.
+The first original GPU job command is in `result.json`. On an exclusive idle CARLA server, execute the reference case and then the contrast case with their recorded source files; use fallback constructions only after their declared original-source trigger is measured. Verify actual motion and right-edge geometry, emergency vehicle authority and qualifying lamp pixels, shoulder signage and exceptions, synchronized four-view visibility and 30-second duration. Independently review the resulting original Native evidence and statutory qualifications before any physical acceptance or legal conclusion. The synthetic fixture and CPU receipts are diagnostic only; `carla_executed` is false and `recordings_accepted` is zero.

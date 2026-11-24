@@ -94,8 +94,11 @@ def run(emit=False, case="probe_a"):
             native.append({"source_kind": "original_native", "native_frame": frame,
                            "time_s": t, "ego": {"actor_id": 205,
                            "blueprint_id": "vehicle.ford.ambulance",
-                           "center_xy_m": center, "body_vertices_m": body},
-                           "other": {"body_vertices_m": body},
+                           "center_xy_m": center, "body_vertices_m": body,
+                           "speed_mps": 2},
+                           "other": {"actor_id": 202,
+                                     "blueprint_id": "vehicle.lincoln.mkz_2020",
+                                     "body_vertices_m": body},
                            "special1_native_readback": 80 <= i < 330})
             mapping.append({"video_frame": i, "carla_frame": frame,
                             "native_frame": frame, "time_s": t})
@@ -130,7 +133,9 @@ def run(emit=False, case="probe_a"):
             preserved = {name: value for name, value in example["files"].items()
                          if name not in {"trace.jsonl", "video_frames.jsonl",
                                          "capture/evidence.jsonl", "capture/manifest.json",
-                                         "capture/native/frames.jsonl"}}
+                                         "capture/native/frames.jsonl",
+                                         "alley_context.json", "body_history.jsonl",
+                                         "speed_samples.jsonl"}}
             names = ("trace.jsonl", "video_frames.jsonl", "capture/evidence.jsonl",
                      "capture/manifest.json", "native_samples.jsonl",
                      "microphone-pcm16.json", "audio_observations.jsonl",

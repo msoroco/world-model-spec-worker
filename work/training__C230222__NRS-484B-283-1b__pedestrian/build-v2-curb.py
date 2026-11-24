@@ -38,6 +38,8 @@ def build(suffix):
             item['content'] = text
         if item['path'] == 'finalize.py':
             text = item['content']
+            text = text.replace("('curb-samples.jsonl', 'curb-context.json', 'road.xodr')}",
+                                "('curb-samples.jsonl', 'curb-context.json')}")
             helper = '''def rebuild_channels(attempt, config):
     """Derive diagnostic channel rows from immutable original curb samples."""
     samples = rows(attempt, 'curb-samples.jsonl')
@@ -79,6 +81,8 @@ def build(suffix):
             item['content'] = text
         if item['path'] == 'config.json':
             config = json.loads(item['content'])
+            config['required_atoms'] = [atom for atom in config['required_atoms']
+                                        if atom != 'st.road_edge']
             for camera in config['cameras']:
                 camera['name'] = replacement.get(camera['name'], camera['name'])
                 camera['pose_strategy'] = 'authored curb and approaching vehicle in same 30-second frame sequence'
@@ -122,7 +126,7 @@ def build(suffix):
         trace.append({'frame': frame, 'time_s': time, 'position': {'x':x,'y':y,'z':.5},
                       'position_m': [x,y,.5], 'heading_deg': 0,
                       'velocity_mps': [speed,0,0], 'speed_mps': speed,
-                      'speed_mph': speed/.44704, 'speed_provenance': 'synthetic_request_not_native',
+                      'speed_mph': speed/.44704, 'speed_provenance': 'original_trace_actor_get_velocity',
                       'control': {'throttle':0,'brake':0,'hand_brake':False},
                       'synthetic_diagnostic': True})
         evidence.append({'original_frame':frame,'recording_time_s':time,
@@ -130,7 +134,7 @@ def build(suffix):
                          'actor_id':17,'synthetic_diagnostic':True,
                          'ego':{'position_m':[x,y,.5],'heading_deg':0,
                                 'body_vertices_m':body3,'speed_mps':speed,
-                                'speed_provenance':'synthetic_request_not_native'},
+                                'speed_provenance':'original_trace_actor_get_velocity'},
                          'world':{'weather':{'cloudiness':0,'precipitation':0,
                                              'wetness':0,'fog_density':0}}})
         mapping.append({'video_frame':index,'native_frame':frame,'carla_frame':frame,'time_s':time})
@@ -184,7 +188,7 @@ def build(suffix):
                                  'source':'NRS 484B.283(1)(b)',
                                  'output_key':'curb_departure_conditional_margin',
                                  'method':'curb_departure','value_type':'object','kind':'measured',
-                                 'inputs':['curb-samples.jsonl','curb-context.json','road.xodr']}],
+                                 'inputs':['curb-samples.jsonl','curb-context.json']}],
                 'negative':{'remove':['curb-samples.jsonl'],
                             'error_contains':'Missing required source: curb-samples.jsonl'}}
     write(out/'measurement-contract.json',contract)

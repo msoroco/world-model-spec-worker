@@ -37,17 +37,23 @@
       "requirement": "NRS-484B-283-1b",
       "source": "NRS 484B.283(1)(b)",
       "branch": "484B.287, 484B.290, 484B.350 cross-references",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Seven cross-references remain exact-source bound. LVMC 11.30.060(A) now has an authored same-cell marked-crosswalk road, two controlled 240-frame synthetic crossing-location traces, three damaged-source rejections, and independent geometry audit. No original marking pixels, vehicle right-of-way, designated-place prohibition or legal applicability is established; six other cross-references still lack same-cell constructions."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230222__NRS-484B-283-1b__pedestrian__probe_1",
+        "training__C230222__NRS-484B-283-1b__pedestrian__probe_2"
+      ],
+      "evidence_or_gap": "Exact cross-reference texts are bound in statutory-crossrefs.json. Both selected cases require original road/device/pedestrian context review to exclude or resolve applicability; the synthetic straight-road pair cannot establish an exception finding."
     },
     {
       "requirement": "NRS-484B-283-1b",
       "source": "NRS 484B.283(1)(b)",
       "branch": "impossibility to yield must be measured",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230222__NRS-484B-283-1b__pedestrian__probe_1",
+        "training__C230222__NRS-484B-283-1b__pedestrian__probe_2"
+      ],
+      "evidence_or_gap": "Both selected cases acquire original pedestrian/vehicle source traces and a conditional stopping range. The original vehicle response and driver capability remain separate physical and judgment review; numeric assumptions do not define statutory impossibility."
     }
   ],
   "neutral_baseline": {
@@ -58,7 +64,7 @@
     {
       "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__probe_1",
       "target_law_id": "NRS-484B-283-1b",
-      "kind": "planned_only",
+      "kind": "selected_delivery_preparation",
       "target_type": "below",
       "physical_target": "pedestrian waits until approaching vehicle can yield",
       "comparison_variable": "driver_yield_feasibility_at_curb_departure",
@@ -66,12 +72,91 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle transforms plus pedestrian footprint",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle velocity magnitudes",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.accel_longitudinal",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "Frame-differenced pedestrian velocity with event bracket",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full pedestrian footprint versus authored curb edge and vehicle path",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "Vehicle distance and speed at pedestrian roadway entry",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.stopping_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Conditional range from source speed and documented driver assumptions",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "curb_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB source frame hashes and Native frame/time joins",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Conditional stopping assumptions are not measured driver capability",
+          "Original vehicle control, curb status and camera pixels require independent saved audit",
+          "Curb timing and calculated margin alone do not assign a legal verdict"
+        ]
+      }
     },
     {
       "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__probe_2",
       "target_law_id": "NRS-484B-283-1b",
-      "kind": "planned_only",
+      "kind": "selected_delivery_preparation",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian suddenly enters path when vehicle is too close to yield",
       "comparison_variable": "driver_yield_feasibility_at_curb_departure",
@@ -79,7 +164,86 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle transforms plus pedestrian footprint",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle velocity magnitudes",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.accel_longitudinal",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "Frame-differenced pedestrian velocity with event bracket",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full pedestrian footprint versus authored curb edge and vehicle path",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "Vehicle distance and speed at pedestrian roadway entry",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.stopping_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Conditional range from source speed and documented driver assumptions",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "curb_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB source frame hashes and Native frame/time joins",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Conditional stopping assumptions are not measured driver capability",
+          "Original vehicle control, curb status and camera pixels require independent saved audit",
+          "Curb timing and calculated margin alone do not assign a legal verdict"
+        ]
+      }
     }
   ],
   "comparisons": [
@@ -121,7 +285,7 @@
     },
     {
       "term": "kin.speed",
-      "purpose": "'suddenly … walk or run' — the pedestrian's speed and its change",
+      "purpose": "'suddenly \u2026 walk or run' \u2014 the pedestrian's speed and its change",
       "status": "measurement_mapping_pending"
     },
     {
@@ -190,59 +354,44 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "Eight unselected Native bundles and fallback trigger logic pass synthetic CPU proofs. One LVMC 11.30.060(A) cross-reference branch has authored Native road and controlled synthetic geometry, but statutory applicability is not resolved. No Native observation, original pixels, physical trigger, strict v2 compatibility, verified driver impossibility or independent delivery acceptance."
+    "Original Native motion, source pixels, actual driver capability and cross-reference applicability require local physical review."
   ],
   "selected_branch": null,
   "observations": [
     {
-      "name": "ru.subject",
+      "name": "curb_camera_frame_join",
       "mandatory": true,
-      "reason": "the pedestrian judged"
-    },
-    {
-      "name": "st.road_edge",
-      "mandatory": true,
-      "reason": "the curb left"
-    },
-    {
-      "name": "st.sidewalk",
-      "mandatory": true,
-      "reason": "or other place of safety"
-    },
-    {
-      "name": "st.safety_zone",
-      "mandatory": true,
-      "reason": "the same"
-    },
-    {
-      "name": "kin.speed",
-      "mandatory": true,
-      "reason": "'suddenly … walk or run' — the pedestrian's speed and its change"
-    },
-    {
-      "name": "kin.accel_longitudinal",
-      "mandatory": true,
-      "reason": "the suddenness"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "entry into the roadway"
-    },
-    {
-      "name": "drv.time_to_conflict",
-      "mandatory": true,
-      "reason": "operationalizes 'so close that it is impossible for the driver to yield'"
+      "source": "original Native curb samples, frame map and derived saved channel"
     },
     {
       "name": "drv.stopping_distance",
       "mandatory": true,
-      "reason": "whether the driver could have stopped"
+      "source": "original Native curb samples, frame map and derived saved channel"
+    },
+    {
+      "name": "drv.time_to_conflict",
+      "mandatory": true,
+      "source": "original Native curb samples, frame map and derived saved channel"
+    },
+    {
+      "name": "kin.accel_longitudinal",
+      "mandatory": true,
+      "source": "original Native curb samples, frame map and derived saved channel"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "source": "original Native curb samples, frame map and derived saved channel"
     },
     {
       "name": "kin.speed",
       "mandatory": true,
-      "reason": "the approaching vehicle's speed"
+      "source": "original Native curb samples, frame map and derived saved channel"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "source": "original Native curb samples, frame map and derived saved channel"
     }
   ],
   "runtime_uncertainties": [
@@ -250,5 +399,133 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "Eight unselected Native bundles and fallback trigger logic pass synthetic CPU proofs. One LVMC 11.30.060(A) cross-reference branch has authored Native road and controlled synthetic geometry, but statutory applicability is not resolved. No Native observation, original pixels, physical trigger, strict v2 compatibility, verified driver impossibility or independent delivery acceptance."
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "curb, pedestrian and approaching vehicle",
+        "interval": "entire 30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "approaching vehicle and roadway entry",
+        "interval": "departure through conflict"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian footprint and curb edge",
+        "interval": "entire 30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle response and pedestrian path",
+        "interval": "departure through closure"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "ru.subject": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.safety_zone": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.accel_longitudinal": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "kin.accel_longitudinal"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.stopping_distance": {
+      "evidence": "Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.",
+      "channels": [
+        "drv.stopping_distance"
+      ],
+      "source_refs": [
+        "curb-samples.jsonl",
+        "curb-context.json",
+        "video_frames.jsonl"
+      ]
+    }
+  }
 }

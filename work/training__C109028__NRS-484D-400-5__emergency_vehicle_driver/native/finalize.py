@@ -179,10 +179,11 @@ def finalize(attempt, output):
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": config["recording_description"],
               "recording_evidence": [
-                  {"name": "siren_source", "unit": "structured",
-                   "reference": "siren_channel.jsonl"},
-                  {"name": "dispatch_authorization", "unit": "structured",
-                   "reference": "source_context.json"}],
+                  {"name": channel["name"], "unit": channel["unit"],
+                   "reference": "observables/" + channel["name"] + ".jsonl"}
+                  for channel in config["recording_description"]["channels"]] +
+                  [{"name": "dispatch_authorization", "unit": "structured",
+                    "reference": "source_context.json"}],
               "physical_failure_flags": [
                   "500ft_acoustic_and_authorization_require_independent_review",
                   "actual_pixels_and_other_driver_warning_unreviewed"],
@@ -191,11 +192,53 @@ def finalize(attempt, output):
               "accepted": False, "legal_verdict_claimed": False}
     from worker_exchange.native_output import physical_result, validate_result
     audio_rows = read_rows(attempt / "audio_observations.jsonl")
-    with (attempt / "siren_channel.jsonl").open("x") as stream:
-        for row in audio_rows:
-            stream.write(json.dumps({"time_s": row["time_s"],
-                                     "value": {"audible": row["siren_audible"]}},
-                                    allow_nan=False) + "\n")
+    dispatch_rows = read_rows(attempt / "dispatch.jsonl")
+    native_rows = read_rows(attempt / "native_samples.jsonl")
+    capture_rows = read_rows(attempt / "capture/evidence.jsonl")
+    channel_names = {row["name"] for row in config["recording_description"]["channels"]}
+    required_channels = {"ru.emergency_vehicle", "sig.siren", "sig.warning_lamp",
+                         "drv.responding_emergency", "kin.velocity", "ru.pedestrian",
+                         "ru.motor_vehicle", "drv.approaching"}
+    if not required_channels <= channel_names:
+        raise ValueError("Mandatory original source channels absent")
+    observed = attempt / "observables"
+    observed.mkdir()
+    streams = {name: (observed / (name + ".jsonl")).open("x")
+               for name in channel_names}
+    try:
+        for index, (audio_row, dispatch_row, native_row, capture_row) in enumerate(
+                zip(audio_rows, dispatch_rows, native_rows, capture_rows)):
+            ego, other = native_row["ego"], native_row["other"]
+            values = {
+                "ru.emergency_vehicle": {"actor_id": ego["actor_id"],
+                    "blueprint_id": ego["blueprint_id"],
+                    "authorization_document_identifier": value["authorization_document_identifier"]},
+                "sig.siren": {"audible": audio_row["siren_audible"],
+                              "microphone_source_sha256": value["sources"]["microphone-pcm16.json"]},
+                "sig.warning_lamp": {"special1_native_readback": native_row["special1_native_readback"]},
+                "drv.responding_emergency": {
+                    "emergency_call_documented": dispatch_row["emergency_call_documented"],
+                    "immediate_pursuit_documented": dispatch_row["immediate_pursuit_documented"]},
+                "kin.velocity": {"speed_mps": ego.get("speed_mps"),
+                                  "center_xy_m": ego["center_xy_m"]},
+                "ru.pedestrian": {"observed_count": sum(
+                    str(actor.get("blueprint", "")).startswith("walker.")
+                    for actor in capture_row.get("original_observations", {}).get("participants", []))},
+                "ru.motor_vehicle": {"actor_id": other.get("actor_id"),
+                                     "blueprint_id": other.get("blueprint_id"),
+                                     "body_vertices_m": other["body_vertices_m"]},
+                "drv.approaching": {"before_intersection":
+                    ego["center_xy_m"][0] < config["intersection_x_m"],
+                    "intersection_x_m": config["intersection_x_m"]},
+            }
+            if "siren_source" in channel_names:
+                values["siren_source"] = {"audible": audio_row["siren_audible"]}
+            for name, stream in streams.items():
+                stream.write(json.dumps({"time_s": native_row["time_s"],
+                                         "value": values[name]}, allow_nan=False) + "\n")
+    finally:
+        for stream in streams.values():
+            stream.close()
     (attempt / "source_context.json").write_text(json.dumps({
         "dispatch_authorization": {
             "authorization_document_identifier": value["authorization_document_identifier"],
