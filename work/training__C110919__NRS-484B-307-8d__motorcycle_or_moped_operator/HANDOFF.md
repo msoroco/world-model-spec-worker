@@ -1,6 +1,6 @@
 # C110919 NRS 484B.307(8)(d) motorcycle right-turn handoff
 
-Status: blocked and unselected. The draft is a same-cell CPU construction and synthetic v1 software diagnostic. It is not a strict selected v2 delivery package or an accepted recording.
+Status: partial and unselected. The draft is a same-cell CPU construction and synthetic v1 software diagnostic. It is not a strict selected v2 delivery package or an accepted recording.
 
 The exact frozen actor is `motorcycle_or_moped_operator`; the frozen cell is intersection / right_turn / traffic_light. `statutory-review.json` maps all six source topics: `text-0` steady red, `text-1` qualified rider and stop, `text-2` two complete signal cycles and nonresponse, `text-3` absence of a prohibiting device, `text-4` yield to pedestrians and directed traffic, and `reviewed-scope-0` the motorcycle failed-detection witness. Straight and left statutory alternatives fall outside this frozen right-turn maneuver. The independent `audit-statutory-review.py` checks the exact source text and branch inventory.
 
@@ -23,3 +23,11 @@ Receipts: 30-second manifest SHA-256 `62c436cea5f247a2058e413455d59a8f9735a381c2
 Cases remain unselected and result remains partial. Selected compatibility and actual `process-saved`, fallback current-Core probes, original signal/device pixels and physical detector causation, independent selected acceptance, statutory closure and GPU queue remain to construct/prove.
 
 Scoped gate checkpoint: `.venv-cpu/bin/python worker_check.py --assignment training__C110919__NRS-484B-307-8d__motorcycle_or_moped_operator --complete` exits 0 (`static_checks_passed: true`). Adding `--require-delivery-ready` exits 1 at `Preparation acceptance failed: partial/missing packages remain`; no ready promotion was made.
+
+## 2026-11-23 current saved-processing diagnostic
+
+The current frozen four-view camera names are `reference_corner` and `driver_reference` for the two detail views. `build-saved-diagnostic.py` creates a separate unselected manifest that adapts both 600-frame primary constructions to those names and supplies the nested recording descriptor needed by current missing-source feedback. The earlier eight-bundle manifest remains historical. Both revised primary constructions pass pinned `runtime.py offline` checks.
+
+`prove-current-process-saved.py` ran actual `runtime.py process-saved` on condition A with 600 synthetic source frames at 20 Hz, four full-resolution FFV1 views and 624 source files. Its receipt reports a passing Core/Lean/render/final-decode path, 600 timestamp joins, a decoded 600-frame 1920×1224 final video and preserved source hashes. `prove-current-process-saved-negative.py` removed road geometry from an otherwise identical saved attempt. The current runtime classified that as `incomplete_or_unavailable_law_evidence`, set `missing_evidence: true`, preserved 623 remaining originals and did not request replay. `audit-current-process-saved.py` independently checked manifest and construction bindings, both receipts, all staged original hashes, frame joins, final decoded video and the missing-geometry contrast. This is a software diagnostic on synthetic saved inputs; original Native behavior, statutory detector causation and accepted selected recording remain unproved.
+
+The scoped complete check passes and the scoped strict ready check fails because the package is still partial. Remaining CPU work includes current saved-processing for condition B and the six fallbacks, exact selected compatibility and independent selected acceptance. The official signal/device pixels, real motorcycle path and detector nonresponse cause require later Native evidence. `result.json` remains `partial`, with zero selected cases and zero prepared delivery cases.

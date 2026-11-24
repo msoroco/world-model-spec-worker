@@ -16,10 +16,50 @@
         "entrypoint": "finalize_rider.py",
         "output_schema": "c10052-saved-rider-conflict-diagnostic-v1"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1/construction.json",
+          "construction_sha256": "305f5d7e223eec1b0829a13fa8c22ae879e5321f70d0d62814d394e67a715e74",
+          "trigger": {
+            "source": "source-hashed original Native body and camera frames",
+            "metric": "approach_runway_m",
+            "failure_condition": "under 35 m"
+          },
+          "changed_knobs": [
+            "approach start -45 to -55 m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2/construction.json",
+          "construction_sha256": "64f9ee7645f1e01ac2b979abe3eed3cf6900a3530d36b5defe381cb4ab0c1ba2",
+          "trigger": {
+            "source": "source-hashed original Native body and camera frames",
+            "metric": "ego_entry_error_frames",
+            "failure_condition": "over 5 frames"
+          },
+          "changed_knobs": [
+            "release delayed five frames"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3/construction.json",
+          "construction_sha256": "4f0f672513c3901c2532ef49d4fb58a4b308605a450f23c900aa752b3e2ec4a5",
+          "trigger": {
+            "source": "source-hashed original Native body and camera frames",
+            "metric": "body_visible_fraction",
+            "failure_condition": "under 0.95"
+          },
+          "changed_knobs": [
+            "reference camera relocated"
+          ]
+        }
+      ],
       "id": "primary",
       "construction": "construction.json",
-      "construction_sha256": "00ec546745affca4127a1693917655ab1277d3cb9b769707d7b018993fa9e7ff"
+      "construction_sha256": "792e4832bc868c0f3c15a9037e22c241e930469589a77f86d8c278cd51699852"
     }
   ]
 }

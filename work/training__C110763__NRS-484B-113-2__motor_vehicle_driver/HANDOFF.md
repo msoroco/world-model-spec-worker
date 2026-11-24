@@ -43,3 +43,5 @@ All eight exact `runtime.py compatibility --manifest .../current-compat-matrix-m
 
 This is diagnostic software compatibility, still unselected. The four accepted membership IDs remain unreviewed as exact source-backed evidence; no equivalence is claimed. Final selected manifest and candidate risk review, semantic proposals, independent delivery/comparison acceptance audits, statutory branch closure, ordered GPU queue and original Native/pixel outcomes remain. CPU construction for those pieces is unfinished; keep partial and do not infer a legal verdict.
 
+Current CPU preflight exited 0 (`current-matrix-preflight.log`, SHA-256 `65e60272114609fc7ece8ea4cda9eb3d044ef6661ff131ade66a72b3899224dc`). Assignment-scoped `worker_check.py --complete` exited 0 (`current-matrix-scoped-complete.log`, SHA-256 `08e2319f28db7d8d7e9c5f858c4d000ba00556a8566e37072fed5bb30c026ae9`). The scoped strict gate exited 1 because this truthful partial package is not delivery ready (`current-matrix-scoped-strict.log`, SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`). Assignment files passed the 2 MiB, whitespace and conflict-marker scan.
+

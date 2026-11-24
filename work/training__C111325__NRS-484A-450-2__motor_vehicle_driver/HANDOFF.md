@@ -1,15 +1,15 @@
-# NRS-484A-450-2 at C111325
+# NRS 484A.450(2) at C111325
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `travel` / `stop_sign`.
+Status: `partial`. Actor `motor_vehicle_driver`; frozen cell `intersection` / `travel` / `stop_sign`. Exact law text remains in `case-plan.json`; extracted summary still needs source review. No legal verdict or accepted recording reuse is claimed.
 
-Exact statutory source: NRS 484A.450(2). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Near-side crosswalk.
+## 2026-11-23 CPU construction checkpoint
 
-Controlled planning variable: `stop_before_applicable_boundary`. Proposed requests: full stop before near-side crosswalk; cross near-side crosswalk without full stop. These are scene/controller targets, not observed conduct or legal verdicts.
+The near-side crosswalk branch now has two unselected, exact 600-frame, 20 Hz, four-camera construction bundles in `draft-probe-1/` and `draft-probe-2/`. `draft-manifest.json` SHA-256: `09c61559b4ace7448569b00271fb19c097dec4e735159c434f106ef6628d191e`. The pinned `runtime.py offline` check passed for both; neither started a simulation. The authored `native/road.xodr` contains a signed approach, stop signal, and near-side crosswalk. `native/runner.py` validates identity, duration, cameras and geometry, requests a halt for probe 1, and extracts source pose/body/speed; its actual Native controller and capture loop is unfinished.
 
-Statutory alternatives and exceptions still to cover or disposition: no-crosswalk marked-stop-line branch; no-crosswalk/no-line sight-point branch.
+`native/measure_stop.py` requires a source manifest, SHA-256 matches, 600 frame/time joins, full 8-vertex vehicle body, source lane role, stop sign and crosswalk geometry. It measures the first body-front crosswalk and intersection crossings and the longest pre-crosswalk stop run. The 20-frame/0.15 m/s stop thresholds are engineering diagnostics, not legal definitions. `prove-crosswalk-stop.py` supplied two controlled synthetic Native-shaped source streams: probe 1 measured a pre-crosswalk halt, probe 2 did not. It also rejected seven wrong identity, source, lane, frame, length, crossing, and sign cases. Proof SHA-256: `e7852223813b1adae1f145e05d58fd8cde55a16417d4f114fe355355bedf000c`. The source fixtures live only under `.runtime-work/c111325-crosswalk-source-proof/`; they are not physical observations. `source-observation-mapping.json` separates mapped terms from pending statutory alternatives.
 
-Accepted membership: 4 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
+CPU preflight passes in the refreshed `.venv-cpu` runtime. The assignment-scoped complete check passes while status stays partial. The strict scoped delivery gate fails because this package is partial.
 
-Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
+## Exact remaining work
 
-Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+Implement the Native controller/capture loop and produce original synchronized 600-frame four-camera source video and samples. Verify the stop sign faces/governs the subject lane, the crosswalk is physically near-side and visible, and probe 1 actually halts before the body reaches it while probe 2 does not. Add four distinct source-preserving candidates per selected case, current runtime compatibility and saved-only proofs, positive and negative saved fixtures, independent audit and physical measurement contract. Reconcile the no-crosswalk marked-stop-line and no-crosswalk/no-line sight-point alternatives against exact statutory text and physical feasibility. Review the four accepted membership IDs only with source-hashed equivalence evidence. Run `.venv-cpu/bin/python worker_check.py --assignment training__C111325__NRS-484A-450-2__motor_vehicle_driver --complete --require-delivery-ready` before any ready promotion.

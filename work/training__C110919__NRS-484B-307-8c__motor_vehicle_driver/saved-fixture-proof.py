@@ -5,7 +5,6 @@ import importlib.util
 import json
 import math
 import os
-import pickle
 from pathlib import Path
 import shutil
 import subprocess
@@ -13,6 +12,7 @@ import sys
 import tempfile
 
 ROOT=Path(__file__).resolve().parents[2]
+os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT',str(ROOT/'.runtime-work/c110919-direct-runtime'))
 FOLDER=Path(__file__).resolve().parent
 NATIVE=FOLDER/'native'
 sys.path.insert(0,str(NATIVE))
@@ -24,7 +24,8 @@ def write_rows(path,values):
     path.write_text(''.join(json.dumps(value,allow_nan=False)+'\n' for value in values))
 def digest(path):
     return {str(p.relative_to(path)):sha(p) for p in path.rglob('*')
-            if p.is_file() and p.name not in ('analysis-report.json','result.json')}
+            if p.is_file() and p.name not in ('analysis-report.json','result.json')
+            and 'channels' not in p.relative_to(path).parts}
 
 def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     destination.mkdir();(destination/'capture').mkdir()
@@ -92,25 +93,8 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':600,
                                                                    'synthetic_diagnostic':True}))
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
-    (destination/'channels').mkdir()
-    for channel in config['recording_description']['channels']:
-        name=channel['name'];values=[]
-        for i,sample in enumerate(native):
-            if name=='dev.traffic_signal':value={'observed_state':'Red','native_actor_id':601}
-            elif name=='st.stop_line':value=-14.0
-            elif name=='st.crosswalk':value=-11.0
-            elif name=='drv.stopped':value=sample['speed_mps']<.05
-            elif name=='kin.velocity':value=sample['speed_mps']
-            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_right']
-            elif name=='st.one_way_roadway':value=geometry['lanes']
-            elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied']}
-            elif name=='native_body_pose_control':value=sample
-            elif name=='camera_frame_join':value=mapping[i]
-            else:raise ValueError('Unknown channel: '+name)
-            values.append({'time_s':sample['time_s'],'value':value})
-        write_rows(destination/'channels'/(name+'.jsonl'),values)
     sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
-    for name in ('overview','approach','signal','destination'):
+    for name in ('overview','approach','reference_corner','driver_reference'):
         size=sizes[name] if full_resolution else '32x32'
         subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffmpeg'),'-nostdin','-hide_banner','-loglevel','error','-y',
             '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=30',
@@ -120,18 +104,23 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
         # Retained graph topology is diagnostic software input. Frame/pose and
         # provenance are synthesized here and never presented as original CARLA.
         sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
-        from traffic_spec_adapter.adapter import load_graph
+        import networkx as nx
+        from traffic_spec_adapter.adapter import write_adapter_graph
         from geometry import open_drive
-        graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
         graph_dir=destination/'capture/native/graphs/base';graph_dir.mkdir(parents=True)
         frame_rows=[]
         for item in mapping:
             frame=item['native_frame'];time=item['time_s']
-            graph.graph['frame']=frame
-            (graph_dir/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))
+            graph=nx.DiGraph()
+            graph.graph.update(frame=frame,simulation_time_s=time,units='m',
+                               observed_evidence='synthetic_diagnostic')
+            graph.add_node('ego',sem_class='vehicle.lincoln.mkz_2020',carla_id=107,
+                           vertex=[trace[frame-100]['position']['x'],
+                                   trace[frame-100]['position']['y'],.5])
+            graph_path=graph_dir/f'{frame:08d}.adapter.json'
+            write_adapter_graph(graph,graph_path)
             frame_rows.append({'frame':frame,'simulation_time':time,'time_s':time,
-                               'base':f'graphs/base/{frame:08d}.pkl',
-                               'abstract':f'graphs/abstract/{frame:08d}.pkl',
+                               'adapter_graph':f'graphs/base/{frame:08d}.adapter.json',
                                'synthetic_diagnostic':True})
         write_rows(destination/'capture/native/frames.jsonl',frame_rows)
         (destination/'road.xodr').write_text(open_drive())

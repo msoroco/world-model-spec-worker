@@ -1,4 +1,4 @@
-"""Materialize one 30 s rider primary without rewriting the 24 s diagnostic."""
+"""Materialize the 30 s rider primary and fallbacks from 24 s drafts."""
 import ast
 import hashlib
 import json
@@ -9,6 +9,7 @@ CASE = HERE.name + '__rider_bicycle_clear'
 SOURCE = HERE / 'draft-rider-cases/rider_bicycle_clear/primary/construction.json'
 TARGET = HERE / 'rider-30s-primary/construction.json'
 MANIFEST = HERE / 'rider-30s-primary/draft-manifest.json'
+CANDIDATES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 
 
 def replace_once(value, old, new):
@@ -21,8 +22,8 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main():
-    source = json.loads(SOURCE.read_text())
+def convert(source_path, target):
+    source = json.loads(source_path.read_text())
     construction = json.loads(json.dumps(source))
     construction['status'] = 'unselected_30s_cpu_construction'
     construction['static_checks'] = [
@@ -33,6 +34,8 @@ def main():
     ]
     for channel in construction['recording_description']['channels']:
         channel['time_window'] = 'entire original 30 s / 600-frame attempt'
+    construction['termination_rules'] = [
+        '600 original frames', 'retain failure on capture or restoration error']
     for item in construction['files']:
         name = item['path']
         content = item['content']
@@ -69,17 +72,30 @@ def main():
         if name.endswith('.py'):
             ast.parse(content, filename=name)
         item['content'] = content
-    TARGET.parent.mkdir(parents=True, exist_ok=True)
-    TARGET.write_text(json.dumps(construction, indent=2) + '\n')
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(construction, indent=2) + '\n')
+    return sha(target)
+
+
+def main():
+    digests = {}
+    for candidate in CANDIDATES:
+        source = HERE / 'draft-rider-cases/rider_bicycle_clear' / candidate / 'construction.json'
+        target = TARGET if candidate == 'primary' else \
+            TARGET.parent / candidate / 'construction.json'
+        digests[candidate] = convert(source, target)
     base_manifest = json.loads((HERE / 'draft-rider-execution-manifest.json').read_text())
     entry = next(row for row in base_manifest['cases'] if row['case_id'] == CASE)
     entry['construction'] = TARGET.name
-    entry['construction_sha256'] = sha(TARGET)
-    entry['candidates'] = []
+    entry['construction_sha256'] = digests['primary']
+    for candidate in entry['candidates']:
+        name = candidate['id']
+        candidate['construction'] = name + '/construction.json'
+        candidate['construction_sha256'] = digests[name]
     base_manifest['cases'] = [entry]
     base_manifest['status'] = 'draft_not_selected'
     MANIFEST.write_text(json.dumps(base_manifest, indent=2) + '\n')
-    print(json.dumps({'construction_sha256': sha(TARGET),
+    print(json.dumps({'construction_sha256': digests,
                       'manifest_sha256': sha(MANIFEST),
                       'expected_frames': 600, 'duration_s': 30,
                       'selected': False}))

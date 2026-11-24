@@ -1,3 +1,9 @@
+## 2026-11-23 six-window candidate source continuation
+
+`native/zone/prove_current_candidates.py` retained source-hashed, 600-frame synthetic raw actor/video/review streams under `.runtime-work/c109137-current-candidate-sources/` for both controlled probes and each crossing-preserving candidate (`primary`, `fallback1`, `fallback2`). The saved processor and an independent source event calculation agree on first stripe-body crossing, adjoining-road entry and observed left-indicator frame for all six windows. Each candidate pair preserves crossing geometry while changing the prior left indicator. Six byte-tamper tests reject altered retained raw sources. Receipt `native/zone/current-candidate-pairs-proof.json` SHA-256 `12cf783763aedd5a0043a23e94e6a9a83e3b27527bbc8ca64cad90df31ce6ed1`. The synthetic streams are diagnostics, not original Native observations or legal findings.
+
+This closes a source-only CPU comparison check across the two target-preserving fallbacks; public current-runtime compatibility and actual `process-saved` remain to be implemented and tested. The separate `fallback3` safety abort is still excluded from the crossing candidate set. Status remains partial.
+
 ## 2026-11-23 exact crossing candidate checkpoint
 
 The source-grounded adjoining-highway crossing intent (`probe_1`) now has a current-runtime manifest with one primary and two target-preserving fallback constructions: `native/zone/current-primary-intent-manifest.json` (SHA-256 `862fb6797cf76f36c25576ddc7f99d25f115b82f4350c8a4e0262aa1ddf935ac`). `fallback3` stops before the stripe, so it is retained as a safety abort request and excluded from the crossing fallback set. It cannot prove the planned crossing outcome.

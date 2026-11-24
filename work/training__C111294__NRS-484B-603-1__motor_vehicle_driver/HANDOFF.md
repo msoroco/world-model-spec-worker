@@ -1,3 +1,15 @@
+# Current 600-frame CPU checkpoint — 2026-11-23
+
+This assignment remains **partial and unselected**. The older 24-second/480-frame portable receipts below are historical diagnostics. `build-600-drafts.py` preserves them and writes eight separate 30-second/600-frame exact Native drafts under `duration-600-drafts/`. `draft-execution-manifest-600.json` SHA-256 is `49b1f63b909a7fc6b363594bb81cb04f75643f9a662dc41665bd8733f109656c`. Each controlled probe has a primary and three measured-risk fallback constructions, the same authored intersection and cross-traffic route, 20 Hz plan, four cameras and unchanged statutory identity.
+
+`prove-600-source.py` ran `runtime.py offline` for all eight exact bundles; all four bundled Native tests passed each time. It measured each materialized 600-row synthetic Native approach trace from its source hash. All eight positives show the planned early-decrease versus held-speed relation. Eight changed-hash and eight missing-source negatives rejected. `draft-600-source-proof.json` SHA-256 is `46d37120b016ffd90304e26cef39241ab08ac2f7fe37022633af1b2e688dc6f1`.
+
+`audit-600-source.py` independently checked the 600-frame/20 Hz joins, source and construction hashes, four candidate sets, fallback knob declarations, identical controlled initial state and cross-traffic trajectory, and recomputed the approach speed difference from the retained velocity rows. `draft-600-source-audit.json` SHA-256 is `afd670327aee7d3adaf5a243a09a77dc582cd8d46dabf3cd47eea4911ddd89ad`. The frozen current assignment input SHA-256 is `5144369b59ddd8c5661375847da5badffc1444db61c578fdea49cdcb852eec57`.
+
+Next CPU work: convert the 600-frame drafts to current JSON graph and explicit fixture recipe compatibility, source-derived four-camera saved processing with Core/Lean/video, selected exact manifest, full statutory branch matrix, semantic proposals and independent delivery/comparison audits, then queue integration. The synthetic diagnostics do not prove original CARLA motion, a real hazard requiring a particular reduction, original pixels, or a legal outcome.
+
+---
+
 # NRS-484B-603-1 at C111294
 
 Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `travel` / `other_vehicle`.
