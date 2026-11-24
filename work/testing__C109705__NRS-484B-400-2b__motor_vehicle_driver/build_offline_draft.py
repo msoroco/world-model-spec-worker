@@ -9,6 +9,7 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
     "construction.py", "native_map.py", "native_capture.py", "native_camera_source.py",
+    "native_ego_adapter.py", "native_seal.py",
     "departure_geometry.py", "saved_delivery.py", "saved_pixels.py",
     "finalize.py", "comparison_audit.py",
 )
@@ -20,6 +21,10 @@ import json
 from pathlib import Path
 from construction import SUFFIXES
 from native_capture import CAMERAS
+from native_capture import capture
+from native_camera_source import NativeCameraSource
+from native_ego_adapter import NativeEgoAdapter
+from native_seal import seal
 
 
 def check():
@@ -50,12 +55,53 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--survey")
+    parser.add_argument("--survey-sha256")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print("diagnostic left-turn departure bundle passed: " + case)
         return
-    raise ValueError("Reviewed original two-directional Native map and full-body/camera sources required")
+    if not args.survey or not args.survey_sha256 or not args.output_dir:
+        raise ValueError("Reviewed original two-directional Native map and full-body/camera sources required")
+    import carla
+    survey_path = Path(args.survey)
+    raw = survey_path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != args.survey_sha256:
+        raise ValueError("reviewed survey packet hash differs")
+    survey = json.loads(raw)
+    source_name = survey.get("map_source_path")
+    if not isinstance(source_name, str) or not source_name or Path(source_name).is_absolute() or ".." in Path(source_name).parts:
+        raise ValueError("reviewed original map source path missing")
+    map_source = survey_path.parent / source_name
+    if hashlib.sha256(map_source.read_bytes()).hexdigest() != survey.get("source_sha256"):
+        raise ValueError("reviewed original map source hash differs")
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(10.0)
+    world = client.get_world()
+    previous = world.get_settings()
+    if previous.synchronous_mode:
+        raise ValueError("exclusive Native synchronous world ownership required")
+    settings = world.get_settings()
+    settings.synchronous_mode = True
+    settings.fixed_delta_seconds = 0.05
+    world.apply_settings(settings)
+    try:
+        output = Path(args.output_dir)
+        adapter = NativeEgoAdapter(world, carla, survey_path, args.survey_sha256, case_id=case)
+        camera = NativeCameraSource(world, carla, survey_path, args.survey_sha256,
+                                    output / "original-cameras")
+        receipt = capture(adapter, case, survey, map_source, output, camera_source=camera)
+        receipt.update(seal(output, case_id=case, survey_path=survey_path,
+                            survey_sha256=args.survey_sha256,
+                            map_source_path=map_source, capture_receipt=receipt))
+        receipt["survey_sha256"] = args.survey_sha256
+        receipt["physical_acceptance_claimed"] = False
+        (output / "acquisition.json").write_text(json.dumps(receipt, indent=2) + "\\n")
+    finally:
+        world.apply_settings(previous)
 
 
 if __name__ == "__main__":

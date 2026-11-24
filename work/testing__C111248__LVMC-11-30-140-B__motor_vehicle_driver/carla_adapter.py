@@ -17,7 +17,7 @@ CAMERAS = ('front', 'left', 'right', 'rear')
 
 class CarlaAdapter:
     def __init__(self, world, driver, person, sensors, context_reader,
-                 control_factory, timeout_seconds=5.0):
+                 control_factory, timeout_seconds=5.0, destroy_sensors=False):
         if set(sensors) != set(CAMERAS):
             raise ValueError('four original camera sensors required')
         settings = world.get_settings()
@@ -29,6 +29,8 @@ class CarlaAdapter:
         self.world, self.driver, self.person = world, driver, person
         self.sensors, self.context_reader = sensors, context_reader
         self.control_factory, self.timeout_seconds = control_factory, timeout_seconds
+        self.destroy_sensors = destroy_sensors
+        self.closed = False
         self.queues = {camera: Queue() for camera in CAMERAS}
         self.listening = []
         self.last_frame = None
@@ -127,7 +129,12 @@ class CarlaAdapter:
         self.driver.apply_control(self.control_factory(throttle=0.0, brake=1.0))
 
     def close(self):
+        if self.closed:
+            return
+        self.closed = True
         for sensor in self.listening:
             sensor.stop()
+            if self.destroy_sensors:
+                sensor.destroy()
         self.listening.clear()
         self.emergency_stop()

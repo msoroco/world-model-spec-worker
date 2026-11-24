@@ -8,7 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCE_FILES = (
-    "blind_encounter.py", "native_capture.py", "carla_adapter.py",
+    "blind_encounter.py", "native_capture.py", "native_operation.py", "carla_adapter.py",
     "saved_encounter.py", "delivery_audit.py", "reviewed_sources.py",
 )
 

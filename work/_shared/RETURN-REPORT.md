@@ -3283,3 +3283,15 @@ C202480 has now completed all six selected primary and six fallback1 exact offli
 C150041 completed installed-manifest independent audit binding: six delivery diagnostic positives and six stale-pixel negatives, plus four measured comparison positives and missing-pixel/changed-packet negatives, all pass against current selected saved attempts. Its proof index binds current pinned runtime, returned constructions, compatibility and physical receipts. Scoped static passes, exact strict exits 1 solely on truthful partial status. The owner reports 128 hashed result tests and a clean 608-file assignment hygiene scan. Reviewed Native roadway/activity/Chapter sources, source-backed judgment sweep and original pixels remain required before ready; no original evidence was fabricated.
 
 C202480 completed six current saved-only proofs, 82 tests, pinned execution-manifest, compatibility-receipt, semantic and six delivery-case validations. Its first exact strict attempt exposed five missing mandatory root capture-channel names. After adding source-bound aliases, the second strict attempt exposed a construction-hash rebinding consequence because the root construction is selected case 1. The owner restored `result.status=partial` after each failed attempt and is synchronizing the proposal, inline copies and affected construction/physical hashes before rerunning proofs. The queue remains unchanged.
+
+## 2026-11-24 continuation: parallel nearest-ready owners
+
+- Current batch status at this checkpoint: {'ready': 26, 'partial': 216}. The full strict gate remains pending until all assigned results are ready.
+- C202480 owner is rerunning offline and compatibility proofs after adding source-derived aliases for five mandatory capture channels in the selected root construction and saved measurement streams. The result remains partial pending exact strict gate.
+- New owners are continuing C109705 NRS-484B-400-2b and C111248 LVMC-11-30-140-B in separate assignment directories. Their status remains partial until each exact strict assignment gate succeeds.
+- Lead will independently rerun any owner-reported strict success and integrate only then. The queue remains unchanged at this checkpoint.
+
+- C111248 owner found a CPU-solvable Native lifecycle gap: owned actor handles were not retained and spawned IDs were not matched to reviewed source. The owner is adding source-gated identity and cleanup tests before refreshing exact bindings. No readiness claim has been made.
+
+- C111248 owner: 27 focused CPU tests pass for exact actor-ID mismatch, reverse cleanup, failed capture/restore, clock readback and owned camera teardown. Six rebuilt offline constructions and scoped static check pass. Canonical delivery, semantic proposals, compatibility and saved processing remain in progress; strict exits 1 on partial.
+- C109705 NRS-484B-400-2b owner: 49 focused tests and four refreshed exact offline bundles pass. Native sealing now hashes original map bytes, trace and four-camera index after reviewed highway/map checks. Canonical manifest and audit proofs remain in progress; result is partial.

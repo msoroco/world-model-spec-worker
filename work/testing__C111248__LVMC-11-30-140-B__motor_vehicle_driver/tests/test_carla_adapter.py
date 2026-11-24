@@ -32,12 +32,16 @@ class Sensor:
     def __init__(self):
         self.callback = None
         self.stopped = False
+        self.destroyed = False
 
     def listen(self, callback):
         self.callback = callback
 
     def stop(self):
         self.stopped = True
+
+    def destroy(self):
+        self.destroyed = True
 
 
 class World:
@@ -116,6 +120,16 @@ class CarlaAdapterTests(unittest.TestCase):
             adapter.apply_control({'throttle': 1.2, 'brake': 0.0})
         adapter.close()
         self.assertEqual(self.driver.controls[-1].brake, 1.0)
+
+    def test_owned_original_cameras_destroyed_once(self):
+        adapter = CarlaAdapter(self.world, self.driver, self.person, self.sensors,
+                               self.context, self.control, destroy_sensors=True)
+        adapter.close()
+        controls = len(self.driver.controls)
+        adapter.close()
+        self.assertEqual(len(self.driver.controls), controls)
+        self.assertTrue(all(sensor.stopped and sensor.destroyed
+                            for sensor in self.sensors.values()))
 
 
 if __name__ == '__main__':

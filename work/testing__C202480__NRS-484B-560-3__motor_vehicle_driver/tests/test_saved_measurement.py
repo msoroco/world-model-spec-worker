@@ -113,7 +113,9 @@ class SavedMeasurementTests(unittest.TestCase):
     def test_closed_source_bound_stop_measurement(self):
         report = finalize_attempt(self.attempt, self.attempt / "analysis-report.json")
         result = json.loads((self.attempt / "result.json").read_text())
-        self.assertEqual(len(result["recording_evidence"]), 12)
+        planned = result["recording_description"]
+        self.assertEqual(len(result["recording_evidence"]),
+                         len(planned["channels"]) + len(planned["context_inputs"]))
         self.assertEqual(result["realized_observables"], {})
         self.assertEqual(result["target_checks"][0]["measured"], 900)
         for item in result["recording_evidence"]:

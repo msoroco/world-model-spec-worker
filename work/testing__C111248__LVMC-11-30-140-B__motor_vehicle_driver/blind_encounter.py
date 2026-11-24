@@ -164,8 +164,12 @@ def construct_native(adapter, plan: Mapping) -> dict:
             raise ValueError('Native cue attachment readback failed')
         if readback['person'].get('actor_id') == readback['vehicle'].get('actor_id'):
             raise ValueError('Native participant identity collision')
+        if (readback['vehicle'].get('actor_id') != plan['driver_actor_id'] or
+                readback['person'].get('actor_id') != plan['pedestrian_actor_id']):
+            raise ValueError('Native participant identity differs from reviewed map source')
         return {'map_id':map_id,'actors':readback,'controller':plan['controller'],
                 'precaution_policy':plan['precaution_policy'],
+                'owned_handles': tuple(owned),
                 'source_note':'Actor readback does not prove blindness; independent attestation remains required.'}
     except Exception:
         for actor in reversed(owned):

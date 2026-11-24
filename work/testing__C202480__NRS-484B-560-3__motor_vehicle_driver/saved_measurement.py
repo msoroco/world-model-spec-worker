@@ -94,6 +94,12 @@ def _recording_values(row: dict, packet: dict) -> dict:
         "crossing_sign_or_signal_views": views,
         "road_edge_and_subject_views": views,
         "queue_and_marking_views": views,
+        "stopping_required": packet["stopping_required_context"],
+        "highway_boundary": {"right_y_m": packet["highway_right_y_m"],
+                             "left_y_m": packet["highway_left_y_m"]},
+        "rightmost_feasible_position": packet["slots"][packet["rightmost_feasible_slot"]],
+        "subject_lateral_position": y,
+        "traffic_queue_arrangement": {"ego": ego, "companion": row["companion"]},
     }
 
 
@@ -120,8 +126,8 @@ def _write_recording_evidence(attempt: Path, result: dict) -> None:
     contexts = result["recording_description"]["context_inputs"]
     channel_names = {channel["name"] for channel in channels}
     context_values = _recording_context(packet, sha(attempt / "site/packet.json"))
-    if channel_names != set(_recording_values(trace[0], packet)) or set(context_values) != {
-            context["name"] for context in contexts}:
+    context_names = {context["name"] for context in contexts}
+    if not channel_names <= set(_recording_values(trace[0], packet)) or not context_names <= set(context_values):
         raise ValueError("recording implementation differs from exact plan")
     evidence_dir = attempt / "recording_evidence"
     evidence_dir.mkdir(exist_ok=False)
@@ -133,7 +139,8 @@ def _write_recording_evidence(attempt: Path, result: dict) -> None:
                                              "value": values[name]}, allow_nan=False) + "\n")
     for name, rows in streams.items():
         (evidence_dir / (name + ".jsonl")).write_text("".join(rows), encoding="utf-8")
-    for name, value in context_values.items():
+    for name in context_names:
+        value = context_values[name]
         (evidence_dir / (name + ".json")).write_text(
             json.dumps({name: value}, allow_nan=False) + "\n", encoding="utf-8")
 

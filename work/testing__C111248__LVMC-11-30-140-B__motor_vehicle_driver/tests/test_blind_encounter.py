@@ -75,8 +75,19 @@ class TestNativeConstruction(unittest.TestCase):
             def destroy_actor(self,actor): self.deleted.append(actor)
         good=Adapter(); receipt=m.construct_native(good,self.plan)
         self.assertEqual(receipt['actors']['cue']['attached_to'],5)
+        self.assertEqual(receipt['owned_handles'],(4,5,6))
         self.assertEqual([c[0] for c in good.calls],['waypoint','waypoint','vehicle','person','cue'])
         bad=Adapter(True)
         with self.assertRaisesRegex(ValueError,'cue attachment'):
             m.construct_native(bad,self.plan)
         self.assertEqual(bad.deleted,[6,5,4])
+        class WrongPerson(Adapter):
+            def spawn_pedestrian(self, pose): return 8
+            def actor_readback(self, actor):
+                row = super().actor_readback(actor)
+                if actor == 6: row['attached_to'] = 8
+                return row
+        wrong=WrongPerson()
+        with self.assertRaisesRegex(ValueError,'reviewed map source'):
+            m.construct_native(wrong,self.plan)
+        self.assertEqual(wrong.deleted,[6,8,4])
