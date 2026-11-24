@@ -6,14 +6,11 @@ camera pixels for legal sufficiency or assert physical/legal acceptance.
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import math
 import subprocess
 from pathlib import Path, PurePosixPath
-
-from lane_change_measurements import measure_exact_case
-from late_lane_change_measurements import measure_exact_case as measure_late_case
-
 
 HERE = Path(__file__).resolve().parent
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -43,6 +40,24 @@ def source_path(attempt, name):
     if path.is_symlink() or not path.is_file() or attempt not in path.resolve().parents:
         raise ValueError("Missing contained sealed source: " + str(name))
     return path
+
+
+def selected_measurements(attempt, entry, case_id, sealed_sources, expected_frames=900):
+    """Load the exact analyzer shipped in this sealed construction."""
+    analyzer_name = entry["measurement_procedure"]["entrypoint"]
+    analyzer = source_path(attempt, analyzer_name)
+    if analyzer_name not in sealed_sources:
+        raise ValueError("Selected analyzer is not sealed original implementation")
+    selected_construction = read(attempt / "construction.json")
+    embedded = [file["content"] for file in selected_construction["files"] if file["path"] == analyzer_name]
+    if len(embedded) != 1 or hashlib.sha256(embedded[0].encode()).hexdigest() != sha(analyzer):
+        raise ValueError("Selected analyzer differs from sealed construction")
+    module_spec = importlib.util.spec_from_file_location("sealed_c144550_measurements", analyzer)
+    if module_spec is None or module_spec.loader is None:
+        raise ValueError("Selected analyzer cannot be loaded")
+    module = importlib.util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(module)
+    return module.measure_exact_case(attempt, case_id, expected_frames)
 
 
 def audit(attempt, case_id, owner_receipt):
@@ -110,8 +125,7 @@ def audit(attempt, case_id, owner_receipt):
     if (config.get("selected_case_id") != case_id or config.get("law_id") != "NRS-484B-223-1b"
             or config.get("cell_id") != "C144550" or config.get("rate_hz") * config.get("duration_s") != 900):
         raise ValueError("Native exact configuration differs")
-    measure = measure_late_case if case_id.endswith("__left_signal_late_clear_gap") else measure_exact_case
-    measurements = measure(attempt, case_id, 900)
+    measurements = selected_measurements(attempt, entry, case_id, sources)
     if not measurements["observed_signal_pattern_matches_plan"]:
         raise ValueError("Native signal pattern differs from selected construction")
     mapping = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines() if line.strip()]
