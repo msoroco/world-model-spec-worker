@@ -1,4 +1,5 @@
 import io
+import hashlib
 import json
 import sys
 import tempfile
@@ -149,6 +150,21 @@ class NativeCaptureTests(unittest.TestCase):
                                      "--allow-diagnostic"])
             with self.assertRaisesRegex(ValueError, "diagnostic capture"):
                 saved_delivery.audit(output, case_id, require_delivery=True)
+            frame_map_path = output / "camera-frame-map.jsonl"
+            capture_path = output / "capture.json"
+            original_map = frame_map_path.read_bytes()
+            original_capture = capture_path.read_bytes()
+            frame_rows = [json.loads(line) for line in original_map.splitlines()]
+            frame_rows[5]["cameras"]["rear"]["sensor_id"] = "replacement-rear"
+            altered_map = "".join(json.dumps(row) + "\n" for row in frame_rows).encode()
+            frame_map_path.write_bytes(altered_map)
+            capture_meta = json.loads(original_capture)
+            capture_meta["source_sha256"]["camera_frame_map"] = hashlib.sha256(altered_map).hexdigest()
+            capture_path.write_text(json.dumps(capture_meta))
+            with self.assertRaisesRegex(ValueError, "camera sensor identity changed"):
+                saved_delivery.audit(output, case_id)
+            frame_map_path.write_bytes(original_map)
+            capture_path.write_bytes(original_capture)
             image = output / "camera-png" / "0000-front.png"
             image.write_bytes(b"broken")
             with self.assertRaisesRegex(ValueError, "image hash mismatch"):
@@ -180,6 +196,23 @@ class NativeCaptureTests(unittest.TestCase):
                     native_capture.capture(StaleAdapter(), Actor(), carla,
                         SITE,
                         case_id, "person-test", Path(temporary))
+
+    def test_capture_rejects_camera_sensor_switch(self):
+        class SwitchedAdapter(Adapter):
+            def image(self, camera, frame):
+                packet = super().image(camera, frame)
+                if camera == "rear" and frame >= 45:
+                    packet["sensor_id"] = "replacement-rear"
+                return packet
+
+        case_id = next(iter(native_capture.CASE_PROFILES))
+        carla = types.SimpleNamespace(VehicleControl=lambda **kwargs: kwargs)
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch.object(native_capture, "sample_from_native", side_effect=context):
+                with self.assertRaisesRegex(ValueError, "sensor identity changed"):
+                    native_capture.capture(SwitchedAdapter(), Actor(), carla,
+                        SITE, case_id, "person-test", Path(temporary))
+            self.assertFalse((Path(temporary) / "capture.json").exists())
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ from zipfile import ZipFile
 
 from PIL import Image
 
-from route_controller import apply_carla_control, steering_command, validate_route
+from route_controller import apply_carla_control, steering_command, validate_roadway_route, validate_route
 
 CAMERAS = ('overview', 'approach', 'property', 'destination')
 
@@ -70,7 +70,8 @@ def capture(
     _require(purpose.get('source') and purpose.get('value') in ('avoid_red', 'other', 'unknown'), 'separate purpose source required')
     _require(actor_source.get('source') and actor_source.get('class') == 'vehicle', 'original vehicle class source required')
     _require(destination_street_id == map_packet.get('intersecting_street_id'), 'destination street source join required')
-    route = validate_route(map_packet, property_id)
+    route = (validate_roadway_route(map_packet) if case_id.endswith('__ordinary_crossing')
+             else validate_route(map_packet, property_id))
     _require(map_packet.get('coordinate_frame'), 'map coordinate frame required')
     _require(output.suffix == '.json' and output.parent.is_dir(), 'existing text output directory required')
     _require((camera_observer is None) == (media_directory is None), 'camera observer and media directory must be supplied together')

@@ -23,10 +23,11 @@ class MapBindingTests(unittest.TestCase):
                         'coordinate_frame': 'native-map', 'intersecting_street_id': 'B',
                         'properties': [{'id': 'lot', 'status': 'private', 'authority': 'parcel register',
                                         'polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]]}]}
-        self.save()
         self.args = {'property_id': 'lot', 'intersecting_street_id': 'B',
                      'connector_routes': {'lot': [[-3, 5], [5, 5], [13, 5]]},
                      'review': {'reviewer': 'source reviewer', 'source': 'parcel register', 'decision': 'reviewed'}}
+        self.parcels['connector_routes'] = self.args['connector_routes']
+        self.save()
 
     def save(self):
         self.authority.write_text(json.dumps(self.parcels) + '\n')
@@ -43,12 +44,39 @@ class MapBindingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'map seal differs'):
             module.bind(self.xodr, self.authority, **self.args)
 
+    def test_unsealed_route_override_rejected(self):
+        args = dict(self.args)
+        args['connector_routes'] = {'lot': [[-4, 5], [5, 5], [14, 5]]}
+        with self.assertRaisesRegex(ValueError, 'connector route differs'):
+            module.bind(self.xodr, self.authority, **args)
+        args = dict(self.args)
+        args['roadway_route'] = [[-3, -3], [5, -3], [13, -3]]
+        with self.assertRaisesRegex(ValueError, 'ordinary roadway route differs'):
+            module.bind(self.xodr, self.authority, **args)
+
     def test_connector_crosses_property_between_sampled_points(self):
         args = dict(self.args)
         args['connector_routes'] = {'lot': [[-3, 5], [13, 5], [14, 5]]}
+        self.parcels['connector_routes'] = args['connector_routes']
+        self.save()
         self.assertEqual(module.bind(self.xodr, self.authority, **args)['connector_routes']['lot'], args['connector_routes']['lot'])
         args['connector_routes'] = {'lot': [[-3, -3], [13, -3], [14, -3]]}
+        self.parcels['connector_routes'] = args['connector_routes']
+        self.save()
         with self.assertRaisesRegex(ValueError, 'does not traverse selected property'):
+            module.bind(self.xodr, self.authority, **args)
+
+    def test_source_bound_ordinary_roadway_avoids_every_parcel(self):
+        args = dict(self.args)
+        args['roadway_route'] = [[-3, -3], [5, -3], [13, -3]]
+        self.parcels['roadway_route'] = args['roadway_route']
+        self.save()
+        packet = module.bind(self.xodr, self.authority, **args)
+        self.assertEqual(packet['roadway_route'], args['roadway_route'])
+        args['roadway_route'] = [[-3, 5], [13, 5], [14, 5]]
+        self.parcels['roadway_route'] = args['roadway_route']
+        self.save()
+        with self.assertRaisesRegex(ValueError, 'roadway route traverses'):
             module.bind(self.xodr, self.authority, **args)
 
     def test_degenerate_property_rejected(self):
@@ -66,7 +94,7 @@ class MapBindingTests(unittest.TestCase):
     def test_missing_route_or_destination_rejected(self):
         args = dict(self.args)
         args['connector_routes'] = {}
-        with self.assertRaisesRegex(ValueError, 'connector route required'):
+        with self.assertRaisesRegex(ValueError, 'connector route differs'):
             module.bind(self.xodr, self.authority, **args)
         args = dict(self.args)
         args['intersecting_street_id'] = 'other'

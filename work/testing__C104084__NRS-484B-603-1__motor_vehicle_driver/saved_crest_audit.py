@@ -13,6 +13,7 @@ from pathlib import Path
 
 from crest_speed import measure
 from crest_crossing import assess
+from saved_crest_context import audit_context
 
 
 ASSIGNMENT = 'testing__C104084__NRS-484B-603-1__motor_vehicle_driver'
@@ -64,6 +65,8 @@ def audit(attempt, manifest: dict) -> dict:
         raise ValueError('planned capture duration or rate differs')
     waypoints, grade_sha = _json_source(root, manifest.get('grade_source'))
     frames, motion_sha = _json_source(root, manifest.get('motion_source'))
+    context, context_sha = _json_source(root, manifest.get('context_source'))
+    other_route, other_route_sha = _json_source(root, manifest.get('other_route_source'))
     frame_map_path, map_sha = _source(root, manifest.get('frame_map_source'))
     frame_map = [json.loads(line) for line in frame_map_path.read_text(encoding='utf-8').splitlines()]
     if len(frame_map) != FRAME_COUNT or len(frames) != FRAME_COUNT:
@@ -85,13 +88,20 @@ def audit(attempt, manifest: dict) -> dict:
     media_sha = {camera: _source(root, media[camera])[1] for camera in CAMERAS}
     measured = measure(waypoints, frames, approach_start_m=manifest.get('approach_start_m'))
     crossing = assess(waypoints, frames, approach_start_m=manifest.get('approach_start_m'))
+    context_proof = audit_context(context, other_route, frames,
+                                  grade_source_sha256=grade_sha,
+                                  approach_start_m=manifest.get('approach_start_m'),
+                                  crest_station_m=measured['crest_station_m'])
     if measured['last_precrest_speed_mps'] is None:
         raise ValueError('precrest speed measurement required')
     return {
         'format': 'worker-crest-saved-source-audit', 'case_id': case_id,
-        'source_sha256': {'grade': grade_sha, 'motion': motion_sha, 'frame_map': map_sha,
+        'source_sha256': {'grade': grade_sha, 'motion': motion_sha,
+                          'context': context_sha, 'other_route': other_route_sha,
+                          'frame_map': map_sha,
                           'cameras': media_sha}, 'frame_count': FRAME_COUNT,
         'physical_measurements': measured, 'crest_crossing': crossing,
+        'source_context': context_proof,
         'checks': {'native_source': True, 'all_participants': True,
                    'time_join': True, 'full_video_decode': False,
                    'actual_pixels': False, 'physical_completion': False},

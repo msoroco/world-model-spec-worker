@@ -68,6 +68,23 @@ class SpeedMeasurementTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "bicycle classification"):
             measure(self.root, self.inventory, CASE)
 
+    def test_original_position_and_velocity_join(self):
+        self.docs["context"]["source_kind"] = "original_local_native_capture"
+        self.save("context")
+        for index, sample in enumerate(self.docs["bicycle_motion"]["samples"]):
+            sample["x_m"] = -30.0 + index * .15
+            sample["y_m"] = -.75
+        self.save("bicycle_motion")
+        self.assertEqual(measure(self.root, self.inventory, CASE)["summary"]["sample_count"], 3)
+        self.docs["bicycle_motion"]["samples"][1]["x_m"] = -28.0
+        self.save("bicycle_motion")
+        with self.assertRaisesRegex(ValueError, "velocity disagrees with position"):
+            measure(self.root, self.inventory, CASE)
+        del self.docs["bicycle_motion"]["samples"][1]["x_m"]
+        self.save("bicycle_motion")
+        with self.assertRaisesRegex(ValueError, "missing finite original bicycle position"):
+            measure(self.root, self.inventory, CASE)
+
     def test_outside_path_rejected(self):
         self.inventory["sources"]["context"]["path"] = "../context.json"
         with self.assertRaisesRegex(ValueError, "source path"):

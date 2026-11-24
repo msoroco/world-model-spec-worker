@@ -27,6 +27,9 @@ def attempts(root):
     for attempt, manifest in ((left, a), (right, b)):
         manifest['fixed_sources'] = {key: write(attempt, key+'.txt', 'same-'+key)
                                      for key in CONTEXT}
+        manifest['fixed_sources']['other_route_source_sha256'] = manifest['other_route_source']
+        manifest['fixed_sources']['highway_context_source_sha256'] = manifest['context_source']
+        manifest['fixed_sources']['prescribed_limit_source_sha256'] = manifest['context_source']
     return left, a, right, b
 
 
@@ -59,6 +62,16 @@ class SavedCrestComparisonTests(unittest.TestCase):
             b['capture_id'] = 'original-attempt-b'
             del b['fixed_sources']['camera_contract_sha256']
             with self.assertRaisesRegex(ValueError, 'context'):
+                compare_saved(left, a, right, b,
+                              expected_profiles=('early_decrease', 'late_decrease'))
+
+    def test_rejects_decoy_fixed_source_not_used_by_saved_audit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            left, a, right, b = attempts(Path(tmp))
+            for attempt, manifest in ((left, a), (right, b)):
+                manifest['fixed_sources']['prescribed_limit_source_sha256'] = write(
+                    attempt, 'decoy-limit.txt', 'same-but-not-the-source-used-by-audit')
+            with self.assertRaisesRegex(ValueError, 'audited original context'):
                 compare_saved(left, a, right, b,
                               expected_profiles=('early_decrease', 'late_decrease'))
 

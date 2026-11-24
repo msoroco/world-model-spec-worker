@@ -104,6 +104,36 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
         raise ValueError("original camera readback required for delivery")
     if site_binding is None and not allow_diagnostic:
         raise ValueError('original Native site source required for delivery')
+    route_readback_hash = motion.get('route_frame_readback_sha256')
+    if route_readback_hash is None and not allow_diagnostic:
+        raise ValueError('original route readback required for delivery')
+    if route_readback_hash is not None:
+        route_path = attempt / 'route-frame-readback.json'
+        route_raw = route_path.read_bytes()
+        if hashlib.sha256(route_raw).hexdigest() != route_readback_hash:
+            raise ValueError('original route readback hash differs')
+        route = json.loads(route_raw)
+        route_frames = route.get('frames')
+        if (route.get('case_id') != case_id or
+                route.get('native_run_id') != speed['native_run_id'] or
+                not isinstance(route_frames, list) or len(route_frames) != EXPECTED_FRAMES or
+                [row.get('frame') for row in route_frames] != [row['frame'] for row in frames]):
+            raise ValueError('original route and speed frame join differs')
+        first_lane = (route_frames[0].get('road_id'), route_frames[0].get('lane_id'))
+        prior_station = None
+        for row in route_frames:
+            station = row.get('route_s_m')
+            offset = row.get('centerline_offset_m')
+            if (row.get('source') != 'original_native_route_readback' or
+                    (row.get('road_id'), row.get('lane_id')) != first_lane or
+                    type(station) not in (int, float) or not math.isfinite(station) or
+                    type(offset) not in (int, float) or not math.isfinite(offset) or
+                    not 0 <= offset <= 2.0 or
+                    (prior_station is not None and station < prior_station)):
+                raise ValueError('original route readback left reviewed lane or centerline')
+            prior_station = station
+        if route_frames[-1]['route_s_m'] - route_frames[0]['route_s_m'] < 100:
+            raise ValueError('original route station progress insufficient')
     if camera_readback_hash is not None:
         readback_path = attempt / "camera-frame-readback.json"
         raw = readback_path.read_bytes()
@@ -124,6 +154,7 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
             "native_run_id": speed["native_run_id"], "frame_count": EXPECTED_FRAMES,
             "motion_sha256": motion_hash, "frame_map_sha256": map_hash,
             "native_site_sha256": site_hash,
+            "route_readback_sha256": route_readback_hash,
             "camera_sha256": camera_hashes,
             "diagnostic_fixture": index["diagnostic_fixture"],
             "source_integrity_passed": True, "full_video_decode": False,

@@ -178,6 +178,32 @@ class CaptureTests(unittest.TestCase):
                                  allow_diagnostic=True)
         self.assertEqual(saved['native_run_id'], 'run-1')
         self.assertTrue(saved['media_audit']['full_video_decode'])
+        route_path = self.attempt / 'route-frame-readback.json'
+        self.assertTrue(route_path.is_file())
+        self.assertEqual(len(json.loads(route_path.read_text())['frames']), 900)
+        original_route = route_path.read_bytes()
+        route_path.write_bytes(original_route + b'changed')
+        with self.assertRaisesRegex(ValueError, 'original route readback hash differs'):
+            audit_decoded_media(self.attempt, CASE, allow_diagnostic=True)
+        route_path.write_bytes(original_route)
+        route = json.loads(original_route)
+        route['frames'][400]['centerline_offset_m'] = 3.0
+        route_path.write_text(json.dumps(route) + '\n')
+        motion_path = self.attempt / 'native-motion-receipt.json'
+        original_motion = motion_path.read_bytes()
+        motion = json.loads(original_motion)
+        motion['route_frame_readback_sha256'] = hashlib.sha256(route_path.read_bytes()).hexdigest()
+        motion_path.write_text(json.dumps(motion) + '\n')
+        index_path = self.attempt / 'capture-index.json'
+        original_index = index_path.read_bytes()
+        index = json.loads(original_index)
+        index['native_motion']['sha256'] = hashlib.sha256(motion_path.read_bytes()).hexdigest()
+        index_path.write_text(json.dumps(index) + '\n')
+        with self.assertRaisesRegex(ValueError, 'left reviewed lane or centerline'):
+            audit_decoded_media(self.attempt, CASE, allow_diagnostic=True)
+        route_path.write_bytes(original_route)
+        motion_path.write_bytes(original_motion)
+        index_path.write_bytes(original_index)
         self.assertTrue(self.world.actor.destroyed)
         self.assertTrue(all(sensor.destroyed and sensor.stopped
                             for sensor in self.world.sensors))

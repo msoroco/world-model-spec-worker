@@ -155,6 +155,24 @@ class NativeSiteTests(unittest.TestCase):
             construct(self.world, self.path, CASE, transform)
         self.assertEqual(self.world.spawned, [])
 
+    def test_actual_actor_route_readback_rejects_offset_lane_and_reverse(self):
+        self.save()
+        site = construct(self.world, self.path, CASE, transform)
+        def actor(x, y=0):
+            return SimpleNamespace(get_transform=lambda: SimpleNamespace(
+                location=SimpleNamespace(x=x, y=y, z=0)))
+        self.assertAlmostEqual(site.observe_route(actor(101.5))['route_s_m'], 101.5)
+        self.assertAlmostEqual(site.observe_route(actor(110, 1.5))['centerline_offset_m'], 1.5)
+        with self.assertRaisesRegex(ValueError, 'centerline'):
+            site.observe_route(actor(120, 3))
+        self.world.map.wrong_lane_at = 120
+        with self.assertRaisesRegex(ValueError, 'reviewed route lane'):
+            site.observe_route(actor(120))
+        self.world.map.wrong_lane_at = None
+        with self.assertRaisesRegex(ValueError, 'reversed'):
+            site.observe_route(actor(100))
+        site.close()
+
 
 if __name__ == '__main__':
     unittest.main()

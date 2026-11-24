@@ -53,7 +53,7 @@ def _crosses_interior(route: list[list[float]], polygon: list[list[float]]) -> b
 
 def bind(opendrive: Path, parcel_authority: Path, *, property_id: str,
          intersecting_street_id: str, connector_routes: dict,
-         review: dict) -> dict:
+         review: dict, roadway_route: list | None = None) -> dict:
     """Return a source-sealed packet for construction and saved observation."""
     _require(opendrive.is_file() and parcel_authority.is_file(), 'original map and parcel authority files required')
     _require(opendrive.suffix.lower() == '.xodr' and '<OpenDRIVE' in opendrive.read_text(), 'original OpenDRIVE source required')
@@ -63,6 +63,11 @@ def bind(opendrive: Path, parcel_authority: Path, *, property_id: str,
     _require(source.get('coordinate_frame') and source.get('map_name'), 'source map identity and coordinates required')
     _require(review.get('reviewer') and review.get('source') and review.get('decision') == 'reviewed', 'explicit original authority review required')
     _require(source.get('intersecting_street_id') == intersecting_street_id, 'destination street authority differs')
+    _require(source.get('connector_routes') == connector_routes,
+             'connector route differs from sealed original authority')
+    if roadway_route is not None:
+        _require(source.get('roadway_route') == roadway_route,
+                 'ordinary roadway route differs from sealed original authority')
     properties = source.get('properties', [])
     _require(isinstance(properties, list) and properties, 'parcel inventory required')
     ids = set()
@@ -80,6 +85,11 @@ def bind(opendrive: Path, parcel_authority: Path, *, property_id: str,
     _require(len(route) >= 3 and all(len(point) == 2 and all(math.isfinite(float(v)) for v in point) for point in route), 'finite connector waypoints required')
     selected = next(item for item in properties if item['id'] == property_id)
     _require(_crosses_interior(route, selected['polygon_xy_m']), 'connector does not traverse selected property')
+    if roadway_route is not None:
+        _require(len(roadway_route) >= 3 and all(len(point) == 2 and all(math.isfinite(float(v)) for v in point) for point in roadway_route),
+                 'finite source roadway waypoints required')
+        _require(all(not _crosses_interior(roadway_route, item['polygon_xy_m']) for item in properties),
+                 'ordinary roadway route traverses classified property')
     return {
         'source': {'kind': 'original_native_map_and_property_authority',
                    'path': str(parcel_authority.resolve()), 'sha256': _sha(parcel_authority)},
@@ -90,4 +100,5 @@ def bind(opendrive: Path, parcel_authority: Path, *, property_id: str,
         'intersecting_street_id': intersecting_street_id,
         'properties': properties,
         'connector_routes': connector_routes,
+        'roadway_route': roadway_route,
     }

@@ -170,6 +170,7 @@ def audit_saved_capture(capture_dir, case_key, expected_map_sha256):
     require(packet.get("site_source_sha256") and len(packet["site_source_sha256"]) == 64, "saved site source missing")
     cameras = packet.get("cameras")
     require(isinstance(cameras, dict) and set(cameras) == {"front", "rear", "left", "right"}, "four-camera set missing")
+    camera_indices = {}
     for name, camera in cameras.items():
         require(camera.get("source_sensor") and camera.get("fps") == 20 and camera.get("frames") == 900, f"{name} camera receipt invalid")
         path = capture_dir / camera.get("path", "")
@@ -177,6 +178,7 @@ def audit_saved_capture(capture_dir, case_key, expected_map_sha256):
         require(camera.get("sha256") == digest(path), f"{name} camera seal mismatch")
         if camera.get("source_format") == "original_png_index":
             index = json.loads(path.read_text())
+            camera_indices[name] = index
             require(index.get("camera") == name and index.get("fps") == 20 and len(index.get("frames", [])) == 900,
                     f"{name} original image index invalid")
             for tick, entry in enumerate(index["frames"]):
@@ -201,6 +203,11 @@ def audit_saved_capture(capture_dir, case_key, expected_map_sha256):
             for name in cameras:
                 require(entry["sources"][name].get("native_frame") == first + tick,
                         name + " original camera frame mismatch")
+                require(entry["sources"][name].get("sensor") == cameras[name]["source_sensor"],
+                        name + " original camera sensor identity mismatch")
+                require(entry["sources"][name].get("sha256") ==
+                        camera_indices[name]["frames"][tick]["sha256"],
+                        name + " original camera image hash join mismatch")
     return {"case_id": packet["case_id"], "capture_packet_sha256": digest(packet_path),
             "source_type": packet["source_type"], "camera_names": sorted(cameras),
             "physical_visibility_status": "unreviewed"}

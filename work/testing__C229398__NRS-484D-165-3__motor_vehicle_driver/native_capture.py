@@ -75,6 +75,7 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
     built = construct(world, site, case_key, site["map_sha256"])
     vehicle = built["actor"]
     rows, camera_map = [], []
+    camera_sensors = None
     first_time = None
     first_frame = None
     try:
@@ -101,6 +102,12 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
             require(lamp_bits == built["requested_lamp_mask"], "Native lamp readback changed")
             observed = camera_reader(native_frame)
             require(isinstance(observed, dict) and set(observed) == set(NAMES), "four camera images missing")
+            sensors = {name: observed[name].get("source_sensor") for name in NAMES}
+            require(all(isinstance(value, str) and value for value in sensors.values()) and
+                    len(set(sensors.values())) == len(NAMES), "four distinct camera sensors required")
+            if camera_sensors is None:
+                camera_sensors = sensors
+            require(sensors == camera_sensors, "original camera sensor identity changed")
             source_frames = {}
             for name in NAMES:
                 image = observed[name]

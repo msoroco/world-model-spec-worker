@@ -69,12 +69,27 @@ def measure(root: Path, inventory: dict, expected_case_id: str) -> dict:
         if any(key not in row for key in REQUIRED_CONDITIONS):
             raise ValueError("missing contemporaneous condition")
     output = []
+    previous_position = None
+    previous_time = None
     for frame, t, sample in zip(frame_ids, times, samples):
         if sample.get("frame") != frame or sample.get("time_s") != t:
             raise ValueError("motion/frame time join mismatch")
         velocity = sample.get("velocity_mps")
         if not isinstance(velocity, list) or len(velocity) != 3 or any(not isinstance(x, (int, float)) or not math.isfinite(x) for x in velocity):
             raise ValueError("missing finite bicycle velocity")
+        if context.get("source_kind") == "original_local_native_capture":
+            position = (sample.get("x_m"), sample.get("y_m"))
+            if any(type(value) not in (int, float) or not math.isfinite(value)
+                   for value in position):
+                raise ValueError("missing finite original bicycle position")
+            if previous_position is not None:
+                dt = t - previous_time
+                observed = ((position[0] - previous_position[0]) / dt,
+                            (position[1] - previous_position[1]) / dt)
+                tolerance = max(1.0, .35 * math.hypot(velocity[0], velocity[1]))
+                if math.hypot(observed[0] - velocity[0], observed[1] - velocity[1]) > tolerance:
+                    raise ValueError("original bicycle velocity disagrees with position history")
+            previous_position, previous_time = position, t
         output.append({"frame": frame, "time_s": t, "speed_mps": math.sqrt(sum(x * x for x in velocity))})
     return {
         "format": "c10307-bicycle-speed-measurement",

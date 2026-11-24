@@ -51,6 +51,7 @@ def finalize(attempt, manifest, *, expected_case):
             'source_sha256': proof['source_sha256'],
             'frame_count': proof['frame_count'],
             'crest_crossing': proof['crest_crossing'],
+            'source_context': proof['source_context'],
             'speed_profile_witness': witness,
             'camera_decodes': proof['camera_decodes'],
             'checks': proof['checks'],

@@ -101,7 +101,7 @@ def audit_media_time(path, expected_frames):
     counts = {}
     for name, dimensions in CAMERA_SIZE.items():
         video = path / name
-        probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+        probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v",
                                 "-count_frames", "-show_entries",
                                 "stream=width,height,codec_name,avg_frame_rate,nb_read_frames",
                                 "-of", "json", str(video)],

@@ -99,7 +99,11 @@ def analyze(map_packet: dict[str, Any], trace: dict[str, Any], case: dict[str, A
     traversed = _traversed_property_ids(samples, properties)
     known = {p['id']: p for p in properties}
     approach_history = trace.get('approach_signal_history', [trace['approach_signal']])
-    red_throughout = all(row['state'] == 'red_alone' and row['facing_ego'] is True for row in approach_history)
+    # The statutory approach condition belongs to the movement into the
+    # intersecting street. Post-entry braking frames are retained for the
+    # 20 Hz episode but cannot change the phase observed during that movement.
+    movement_history = [row for row in approach_history if row['frame'] <= trace['destination_entry_frame']]
+    red_throughout = bool(movement_history) and all(row['state'] == 'red_alone' and row['facing_ego'] is True for row in movement_history)
     bypass = bool(traversed) and red_throughout and trace['approach_signal']['facing_ego'] is True and trace['destination_signal']['state'] != 'red_alone' and trace['destination_signal']['state'] != 'red_combined' and trace['destination_signal']['state'] != 'unknown' and trace['destination_signal']['facing_ego'] is False and trace['purpose']['value'] == 'avoid_red'
     return {
         'case_id': case['case_id'],

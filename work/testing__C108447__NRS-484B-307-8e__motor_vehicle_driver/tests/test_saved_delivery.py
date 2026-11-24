@@ -10,7 +10,7 @@ from zipfile import ZipFile
 from PIL import Image
 
 BASE = Path(__file__).resolve().parents[1]
-for name in ('property_route', 'saved_delivery'):
+for name in ('property_route', 'case_observation', 'saved_delivery'):
     spec = importlib.util.spec_from_file_location(name, BASE / (name + '.py'))
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
@@ -23,16 +23,19 @@ class SavedDeliveryTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        self.case = 'exact-case'
+        self.case = 'testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass'
         original = self.root / 'original-map.json'
         xodr = self.root / 'original.xodr'
         xodr.write_text('<OpenDRIVE><header name="source"/></OpenDRIVE>\n')
-        original.write_text(json.dumps({'opendrive_sha256': audit.sha(xodr.read_bytes())}) + '\n')
+        connector = {'lot': [[-3, 5], [5, 5], [13, 5]]}
+        original.write_text(json.dumps({'opendrive_sha256': audit.sha(xodr.read_bytes()),
+                                        'connector_routes': connector}) + '\n')
         map_packet = {
             'source': {'kind': 'original_native_map_and_property_authority', 'path': str(original), 'sha256': audit.sha(original.read_bytes())},
             'native_map': {'path': str(xodr), 'sha256': audit.sha(xodr.read_bytes()), 'map_name': 'source'},
             'authority_review': {'decision': 'reviewed', 'reviewer': 'fixture reviewer', 'source': 'fixture register'},
             'coordinate_frame': 'native-map', 'intersecting_street_id': 'street-B',
+            'connector_routes': connector,
             'properties': [{'id': 'lot', 'status': 'private', 'authority': 'original parcel authority',
                             'polygon_xy_m': [[0, 0], [10, 0], [10, 10], [0, 10]]}],
         }
@@ -82,6 +85,7 @@ class SavedDeliveryTests(unittest.TestCase):
         result = audit.audit(self.root, self.bundle, expected_frames=20)
         self.assertEqual(result['decoded_original_images'], {c: 20 for c in audit.CAMERAS})
         self.assertTrue(result['observations']['all_observation_conditions_present'])
+        self.assertEqual(result['case_observation_audit']['planned_case'], 'private_bypass')
         self.assertFalse(result['physical_acceptance_claimed'])
 
     def test_diagnostic_rejected(self):
@@ -99,9 +103,36 @@ class SavedDeliveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'trace source hash'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
+    def test_sealed_wrong_case_observation_rejected(self):
+        trace = json.loads((self.root / 'trace.json').read_text())
+        for row in trace['approach_signal_history']:
+            row['state'] = 'green'
+        trace['approach_signal']['state'] = 'green'
+        self.bundle['trace'] = self.write('trace.json', json.dumps(trace) + '\n')
+        with self.assertRaisesRegex(ValueError, 'steady red alone approach'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+
     def test_original_map_tamper_rejected(self):
         (self.root / 'original.xodr').write_text('<OpenDRIVE/>\n')
         with self.assertRaisesRegex(ValueError, 'original OpenDRIVE source hash'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+
+    def test_sealed_route_override_rejected(self):
+        packet = json.loads((self.root / 'map.json').read_text())
+        packet['connector_routes']['lot'][1][1] = 6
+        self.bundle['map'] = self.write('map.json', json.dumps(packet) + '\n')
+        with self.assertRaisesRegex(ValueError, 'saved connector route differs'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+
+    def test_missing_connector_route_rejected_even_when_both_packets_omit_it(self):
+        packet = json.loads((self.root / 'map.json').read_text())
+        authority = json.loads((self.root / 'original-map.json').read_text())
+        del packet['connector_routes']
+        del authority['connector_routes']
+        (self.root / 'original-map.json').write_text(json.dumps(authority) + '\n')
+        packet['source']['sha256'] = audit.sha((self.root / 'original-map.json').read_bytes())
+        self.bundle['map'] = self.write('map.json', json.dumps(packet) + '\n')
+        with self.assertRaisesRegex(ValueError, 'saved connector route differs'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
     def test_frame_gap_rejected(self):

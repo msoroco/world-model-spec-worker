@@ -275,5 +275,24 @@
       "strict_rate_boundary"
     ],
     "remaining_requirements_note": "Imported strict-rate physical comparison passed (74.95 < 79.73 < 80.70 mph). Exact 80 mph legal equality, synthetic public-way status, and full law coverage remain unresolved."
+  },
+  "native_route_readback": {
+    "construction": "native_site.py:NativeSite.observe_route",
+    "capture": "native_motion.py:capture_speed via native_capture.py",
+    "independent_saved_audit": "delivery_audit.py:audit_integrity",
+    "per_frame_sources": [
+      "loaded Native map waypoint road/lane",
+      "actual actor transform",
+      "reviewed source route polyline projection",
+      "original frame ID"
+    ],
+    "rejects": [
+      "wrong lane",
+      "centerline offset over 2 m",
+      "reversed route station",
+      "under 100 m route progress",
+      "changed or rehashed inconsistent source"
+    ],
+    "limitations": "Two-metre corridor and 100 m progress are engineering source-integrity gates, not statutory thresholds; real public-way/access-aisle status and physical speed remain unverified."
   }
 }

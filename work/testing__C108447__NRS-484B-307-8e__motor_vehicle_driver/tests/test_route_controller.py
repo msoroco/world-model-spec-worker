@@ -29,6 +29,16 @@ class RouteControllerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'does not traverse'):
             controller.validate_route(packet([[-3, -2], [5, -2], [13, -2]]), 'lot')
 
+    def test_bidirectional_ordinary_roadway_route_and_crossing_rejection(self):
+        points = [[-3, -2], [5, -2], [13, -2]]
+        p = packet([[-3, 5], [5, 5], [13, 5]])
+        for route in (points, list(reversed(points))):
+            p['roadway_route'] = route
+            self.assertEqual(controller.validate_roadway_route(p), [tuple(v) for v in route])
+        p['roadway_route'] = [[-3, 5], [13, 5], [14, 5]]
+        with self.assertRaisesRegex(ValueError, 'traverses classified property'):
+            controller.validate_roadway_route(p)
+
     def test_missing_authority_rejects(self):
         p = packet([[-3, 5], [5, 5], [13, 5]])
         del p['properties'][0]['authority']

@@ -42,7 +42,7 @@ def _position(actor) -> tuple[float, float, float]:
 def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                   native_run_id: str, uncertainty_mps: float, *,
                   diagnostic_fixture: bool = False,
-                  camera_frame_reader=None) -> dict:
+                  camera_frame_reader=None, route_reader=None) -> dict:
     """Tick at 20 Hz, retain original speeds, and stop the actor on every exit.
 
     ``uncertainty_mps`` is supplied by the reviewed acquisition plan. It is not
@@ -61,6 +61,8 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                 "native-motion-receipt.json"]
     if camera_frame_reader is not None:
         reserved.append("camera-frame-readback.json")
+    if route_reader is not None:
+        reserved.append("route-frame-readback.json")
     if any((attempt / name).exists() for name in reserved):
         raise ValueError("original Native attempt artifact already exists")
     settings = world.get_settings()
@@ -69,6 +71,7 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
     target = TARGETS[suffix] / MPH_PER_MPS
     rows = []
     camera_rows = []
+    route_rows = []
     first_elapsed = None
     first_position = None
     previous_frame = None
@@ -96,6 +99,20 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
             rows.append({"frame": frame, "time_s": index / HZ,
                          "speed_mps": _speed(actor),
                          "speed_uncertainty_mps": float(uncertainty_mps)})
+            if route_reader is not None:
+                route = route_reader(actor)
+                if (not isinstance(route, dict) or
+                        route.get('source') != 'original_native_route_readback' or
+                        type(route.get('road_id')) is not int or
+                        type(route.get('lane_id')) is not int or
+                        type(route.get('route_s_m')) not in (int, float) or
+                        type(route.get('centerline_offset_m')) not in (int, float) or
+                        not math.isfinite(route['route_s_m']) or
+                        not math.isfinite(route['centerline_offset_m']) or
+                        route['centerline_offset_m'] < 0 or
+                        route['centerline_offset_m'] > 2.0):
+                    raise ValueError('original Native route readback invalid')
+                route_rows.append({'frame': frame, **route})
             if camera_frame_reader is not None:
                 camera_frames = camera_frame_reader(frame)
                 if (not isinstance(camera_frames, dict) or
@@ -118,6 +135,14 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
             camera_path = attempt / "camera-frame-readback.json"
             camera_path.write_bytes(camera_bytes)
             camera_hash = hashlib.sha256(camera_bytes).hexdigest()
+        route_hash = None
+        if route_reader is not None:
+            route_bytes = (json.dumps({'case_id': case_id,
+                                       'native_run_id': native_run_id,
+                                       'frames': route_rows},
+                                      sort_keys=True, separators=(',', ':')) + '\n').encode()
+            (attempt / 'route-frame-readback.json').write_bytes(route_bytes)
+            route_hash = hashlib.sha256(route_bytes).hexdigest()
         receipt = {"format": "c10301-native-motion-v1", "case_id": case_id,
                    "native_run_id": native_run_id, "sample_count": FRAMES,
                    "travel_m": travel_m, "speed_source_sha256": descriptor["sha256"],
@@ -125,6 +150,8 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                    "physical_acceptance_claimed": False}
         if camera_hash is not None:
             receipt["camera_frame_readback_sha256"] = camera_hash
+        if route_hash is not None:
+            receipt['route_frame_readback_sha256'] = route_hash
         (attempt / "native-motion-receipt.json").write_text(
             json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return receipt

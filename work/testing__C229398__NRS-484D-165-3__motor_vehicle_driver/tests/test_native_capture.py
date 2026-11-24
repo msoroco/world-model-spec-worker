@@ -126,6 +126,51 @@ class CaptureTest(unittest.TestCase):
             self.assertTrue(vehicle.destroyed)
             self.assertFalse((out / "capture-packet.json").exists())
 
+    def test_rejects_camera_sensor_switch_during_capture(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            source = source_packet(root)
+            out = root / "attempt"
+            out.mkdir()
+            vehicle = Vehicle()
+            def switched(frame):
+                value = images(frame)
+                if frame >= 110:
+                    value["rear"]["source_sensor"] = "replacement-rear"
+                return value
+            with patch.object(native, "construct", return_value={"actor": vehicle, "requested_lamp_mask": 3}):
+                with self.assertRaisesRegex(ValueError, "sensor identity changed"):
+                    native.capture(World(), source, "dark_lamps_on", out, switched)
+            self.assertTrue(vehicle.destroyed)
+            self.assertFalse((out / "capture-packet.json").exists())
+
+    def test_saved_audit_rejects_resealed_sensor_or_hash_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            source = source_packet(root)
+            out = root / "attempt"
+            out.mkdir()
+            with patch.object(native, "construct", return_value={"actor": Vehicle(), "requested_lamp_mask": 3}):
+                native.capture(World(), source, "dark_lamps_on", out, images)
+            from parked_lamps import audit_saved_capture
+            mapping_path = out / "original_frame_map.json"
+            packet_path = out / "capture-packet.json"
+            mapping = json.loads(mapping_path.read_text())
+            packet = json.loads(packet_path.read_text())
+            mapping["frames"][5]["sources"]["rear"]["sensor"] = "replacement-rear"
+            mapping_path.write_text(json.dumps(mapping))
+            packet["original_frame_map_sha256"] = hashlib.sha256(mapping_path.read_bytes()).hexdigest()
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "rear original camera sensor identity mismatch"):
+                audit_saved_capture(out, "dark_lamps_on", "a" * 64)
+            mapping["frames"][5]["sources"]["rear"]["sensor"] = "native-rear"
+            mapping["frames"][5]["sources"]["rear"]["sha256"] = "0" * 64
+            mapping_path.write_text(json.dumps(mapping))
+            packet["original_frame_map_sha256"] = hashlib.sha256(mapping_path.read_bytes()).hexdigest()
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "rear original camera image hash join mismatch"):
+                audit_saved_capture(out, "dark_lamps_on", "a" * 64)
+
 
 if __name__ == "__main__":
     unittest.main()

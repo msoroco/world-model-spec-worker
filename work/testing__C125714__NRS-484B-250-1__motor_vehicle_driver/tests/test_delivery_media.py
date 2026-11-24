@@ -88,6 +88,20 @@ class NativeMediaAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "FFV1 or 20 Hz contract differs"):
                 audit_media_time(tmp, 9)
 
+    def test_second_camera_video_stream_rejected(self):
+        with TemporaryDirectory() as tmp:
+            native_video_fixture(tmp)
+            video = Path(tmp) / "overview.mkv"
+            extra = Path(tmp) / "overview-extra.mkv"
+            command = ["ffmpeg", "-nostdin", "-v", "error", "-f", "lavfi", "-i",
+                       "color=c=black:s=1920x1080:r=20", "-frames:v", "9",
+                       "-filter_complex", "[0:v]split=2[a][b]", "-map", "[a]", "-map", "[b]",
+                       "-c:v", "ffv1", "-y", str(extra)]
+            subprocess.run(command, check=True, capture_output=True, timeout=60)
+            extra.replace(video)
+            with self.assertRaisesRegex(ValueError, "camera stream count differs"):
+                audit_media_time(tmp, 9)
+
     def test_skipped_native_frame_and_time_step_rejected(self):
         with TemporaryDirectory() as tmp:
             native_video_fixture(tmp)

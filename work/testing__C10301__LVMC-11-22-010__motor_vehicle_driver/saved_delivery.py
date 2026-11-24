@@ -48,11 +48,19 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
         raise ValueError("operation history differs from original sources")
     if meta.get("first_native_frame") != ego[0]["native_frame"] or meta.get("last_native_frame") != ego[-1]["native_frame"]:
         raise ValueError("native frame range mismatch")
+    camera_sensors = None
     for index, (row, original) in enumerate(zip(frame_map, ego)):
         if row.get("native_frame") != original["native_frame"] or abs(row.get("native_time_s", -1) - original["native_time_s"]) > .001:
             raise ValueError("camera frame map is not joined to original state")
         if set(row.get("cameras", {})) != set(CAMERAS):
             raise ValueError("four original camera frames required")
+        sensors = {name: row["cameras"][name].get("sensor_id") for name in CAMERAS}
+        if any(not isinstance(value, str) or not value for value in sensors.values()) or len(set(sensors.values())) != len(CAMERAS):
+            raise ValueError("four distinct original camera sensors required")
+        if camera_sensors is None:
+            camera_sensors = sensors
+        if sensors != camera_sensors:
+            raise ValueError("original camera sensor identity changed")
         for camera in CAMERAS:
             image_path = directory / "camera-png" / f"{index:04d}-{camera}.png"
             packet = row["cameras"][camera]

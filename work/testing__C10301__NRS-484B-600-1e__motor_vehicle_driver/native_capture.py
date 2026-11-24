@@ -39,7 +39,8 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
         motion = capture_speed(world, site.actor, control_factory, attempt,
                                case_id, native_run_id, uncertainty_mps,
                                diagnostic_fixture=diagnostic_fixture,
-                               camera_frame_reader=media.read)
+                               camera_frame_reader=media.read,
+                               route_reader=site.observe_route)
         frames, paths = media.finish()
         index = finalize_capture(attempt, case_id, frames, paths,
                                  site_source=site_source)

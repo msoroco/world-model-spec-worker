@@ -1,5 +1,9 @@
 # Full-test CPU preparation return
 
+## Current checkpoint index
+
+As of 2026-11-23 21:58 PT: 9 ready, 233 partial; latest details are in the final dated section. Earlier sections are historical checkpoints and may describe older counts.
+
 2026-11-22 checkpoint: 5 of 242 assignments have ready results; 237 remain partial. `testing__C135705__NRS-484B-440-1__motor_vehicle_driver` passed its exact strict assignment gate after native construction, four-camera capture, saved analysis, source-bound positive/negative compatibility, semantic stages and independent delivery/comparison audits were CPU tested. Its detailed proof and resume commands are in `work/testing__C135705__NRS-484B-440-1__motor_vehicle_driver/HANDOFF.md` and `result.json`.
 
 The batch strict command is `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready`. It cannot pass while partial packages remain. Continue the next partial assignment in batch order, starting with `testing__C109755__NRS-484B-217-2__motor_vehicle_driver`; finish CPU construction and proofs, then mark ready only after its exact strict gate passes. The independent timer commits and pushes checkpoints; do not run Git. Preserve frozen inputs, runtime and batch.
@@ -2132,3 +2136,43 @@ The current whole-batch `.venv-cpu/bin/python worker_check.py --complete` run ex
 ## 2026-11-23 21:45 PT production comparison repair
 
 C10307 LVMC 11-40-130 now recomputes production comparisons from original 900-frame source-hashed saved acquisitions, binding Native result hashes to independent delivery audits. Its new positive and diagnostic/stale-source negative tests contribute to 64 passing CPU tests. Pinned preflight and scoped static pass. The lead verified all successful receipt hashes across its 89 test records and clean package files, then reran the exact scoped strict gate; it exits 1 because the package remains partial. The owner slot rotated to C104084 NRS 484B.213(2)(a) in partition 07. Genuine source review and physical delivery acceptance remain unresolved. No ready promotion or Git command.
+
+## 2026-11-23 21:48 PT three owner checkpoints
+
+C10301 NRS 484B.600(1)(e) now has a synchronized four-camera FFV1 Native capture, sealed site provenance, a 900-tick full-decode saved audit and fixed-site comparison checks. Its 25 tests, pinned preflight and scoped static pass. C104081 NRS 484B.297(6) now has observed pedestrian/obstacle/traffic/camera readback, a 900-frame source packet and five rebuilt exact offline bundles; it corrected all camera names to the delivery-auditor contract. Its 76 tests, preflight, five offline checks and scoped static pass. C104084 NRS 484B.213(2)(a) now has a source-bound saved Native finalizer and same-frame body/view requirement with 33 tests and scoped static passing. The lead independently verified all successful result receipt hashes and package hygiene and reran exact scoped strict checks for all three; each exits 1 on truthful partial status. Owners rotated to C104084 NRS 484B.603(1), advanced C125714 NRS 484B.250(1), and C108447 NRS 484B.307(8)(e) in distinct partitions. No package was promoted and no Git command was run.
+
+## 2026-11-23 21:58 PT owner and lead checkpoint
+
+Current batch status is 9 ready and 233 partial of 242 assigned packages. The pinned CPU preflight passed this turn. Whole-batch static `worker_check.py --complete` exits 0 (`.runtime-work/nov23-current-wave/full-static-latest.log`). The strict batch gate remains unpassed because partial packages remain; no ready status was inferred from offline or unit proofs. The complete work-file scan found 13,217 UTF-8 files, zero oversize files, zero trailing whitespace, zero conflict markers, zero blank EOF files and zero temporary directories under `work/`. No Git command was run.
+
+Lead-owned C109705 added a source-hashed diagnostic Core projection from the original 900-frame Native approach and four-camera map, plus a reproducible pinned `verify_join` proof. All 35 focused tests and the Core frame join pass; scoped static exits 0 and scoped strict exits 1 on truthful partial. The diagnostic preserves synthetic speed provenance and unresolved physical/legal review. Its `HANDOFF.md` names the next graph capture, Core manifest, case-specific compatibility, semantic and independent delivery audit work.
+
+Partition 08 C104084 (NRS 484B.603(1)) now binds highway, prescribed limit, opposing route and participants into its saved audit, and rejects comparison decoys. Lead verified its 39-test log hash and 28-file hygiene and reran exact scoped strict (exit 1, partial). Its owner rotated to partition 05 C110969 (NRS 484B.450(1)(c)). Partition 01 C125714 (NRS 484B.250(1)) added full-video-stream media auditing, reran 83 tests and seven primary/fallback diagnostic constructions and proofs. Lead verified all 133 receipt hashes, 441-file hygiene and exact scoped strict (exit 1, partial); its owner rotated to partition 07 C229398 (NRS 484D.165(3)). Partition 02 C108447 (NRS 484B.307(8)(e)) added source-bound route and six-case observation checks, then five-pair independent comparison checks. Lead verified its earlier nine receipt hashes and 28-file hygiene and exact scoped strict (exit 1, partial); its owner is continuing and reports 58 passing focused tests after the latest change. Each package keeps `result.json` partial until its own strict CPU proof passes.
+
+Active independent owners: C110969 in partition 05, C229398 in partition 07 and C108447 in partition 02. All owners write only their assignment directories; temporary outputs remain under `.runtime-work/`. Next lead action is to review their new proof hashes and exact scoped strict results, rotate completed owners to different partial partitions, and continue C109705 Core capture/delivery work. The timer alone publishes checkpoints.
+
+## 2026-11-23 22:02 PT additional owner rotation
+
+Lead independently verified C110969 (NRS 484B.450(1)(c)) in partition 05: four receipt hashes match, 20 files clean, and its exact scoped strict gate exits 1 because the package truthfully remains partial. The new source-sealed saved finalizer requires the exact case/run, 900 original frames and full decode of 3,600 original camera images; 22 focused tests and the full-length diagnostic proof pass. Its owner rotated to C10301 (NRS 484B.600(1)(e)) in partition 04.
+
+Lead independently verified C229398 (NRS 484D.165(3)) in partition 07: all ten receipt hashes match, 31 files clean, and its exact scoped strict gate exits 1 on truthful partial. Its capture and saved audit now enforce stable camera sensor IDs and matching original-image SHA across the six exact bundles. Twenty-one tests and six pinned offline proofs pass. Its owner rotated to C10301 (LVMC 11.22.010) in partition 03. C108447 remains active in partition 02 with 58 focused tests after a five-pair independent comparison audit; its exact bundles and semantic proposals remain in progress. Batch status stays 9 ready and 233 partial. Notice check reports version 0 with no paused assignments. The whole-batch static check passed earlier at 21:58 PT; run it again after the new owner writes settle.
+
+## 2026-11-23 22:04 PT C108447 exact bundle progress
+
+The partition 02 C108447 owner advanced from its earlier checkpoint to six runtime-recognized diagnostic inline constructions under its `constructions/`, with 6/6 pinned `runtime.py offline` materializations and a draft manifest/receipt sealing their sources and logs. Sixty focused CPU tests pass. The owner is continuing diagnostic recipes and semantic proposals. This remains partial: reviewed physical parcel/map authority, case-specific compatibility, saved processing and final delivery acceptance are still CPU preparation tasks. No ready promotion occurred.
+
+## 2026-11-23 22:05 PT static repair and owner progress
+
+A whole-batch static rerun found the C108447 draft receipt basename `offline-draft-receipts.json`, which matched the validator's reserved generated-diagnostic path prefix. The owner renamed it to `draft-offline-receipts.json` and updated its test reference; scoped static passes again, and the owner is rerunning batch static. No scratch directory was written under `work/`. This was a returned-file routing repair, not a runtime or frozen-input change.
+
+Partition 03 C10301 (LVMC 11.22.010) added stable four-camera sensor identity across its 900-frame Native capture and a saved-audit rejection of resealed sensor changes. Lead verified 23 receipt hashes and clean 53 files; exact scoped strict exits 1 on truthful partial. Its owner is continuing source-shaped compatibility and saved processing.
+
+Partition 04 C10301 (NRS 484B.600(1)(e)) added source-sealed per-frame lane and reviewed-route station readback with saved negatives for absent/rebound/off-route/reversed progress. Lead verified 22 receipt hashes and clean 41 files; exact scoped strict exits 1 on truthful partial. That owner rotated to partition 05 C10307 (LVMC 11.40.130) for the next independent package. Current count remains 9 ready and 233 partial; no ready promotion occurred.
+
+## 2026-11-23 22:05 PT static repair verified
+
+After renaming C108447's returned draft receipt, its owner reports both scoped static and the complete-batch static `worker_check.py --complete` exit 0. The owner continues binding all six diagnostic recipes to the draft manifest and refreshing offline proof hashes. The strict delivery gate remains unpassed because 233 packages are partial. No generated scratch was placed under `work/`.
+
+## 2026-11-23 22:05 PT returned-file hygiene
+
+The final lead scan at this checkpoint covered 13,270 files under `work/`: no blank EOF, trailing whitespace, conflict markers, oversize files or temporary directories. The return report is about 520 KiB, below the 2 MiB per-file limit. The independent timer owns publication; no Git command was run by the lead or owners.

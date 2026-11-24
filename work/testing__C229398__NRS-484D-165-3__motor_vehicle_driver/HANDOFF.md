@@ -54,3 +54,9 @@ case-specific process-saved/compatibility and semantic proposals, independent
 delivery acceptance, and risk-justified fallback receipts. These have not been
 claimed complete. Actual CARLA pixels and photometric findings remain for the
 later authorized Native run and independent review.
+
+## 2026-11-23 original camera identity join
+
+`native_capture.capture` now requires four distinct camera sensor IDs and stable per-view IDs across all 900 Native frames. `parked_lamps.audit_saved_capture` joins each sealed frame-map sensor ID and image hash to the corresponding camera index, even if the frame-map hash was independently resealed. Two negative tests exercise a mid-capture sensor switch and resealed sensor/hash mismatches. The six inline constructions and manifest hashes were refreshed; all six exact offline proofs pass in `proof-*.log`. Pinned CPU preflight passes, the 21-test assignment suite passes (`cpu-tests.log`), and scoped static check passes (`cpu-static-check.log`). The scoped strict check exits 1 at partial/missing packages (`cpu-strict-check.log`).
+
+This remains a source-integrity software proof. Next CPU work is Native result/capture-seal closure, exact case compatibility and saved-processing receipts, selected-requirement contracts, semantic proposals, risk-justified fallback and independent delivery acceptance. Actual photometric observations and original CARLA pixels remain unverified. Scratch stayed under `.runtime-work/`; no Git command was run.

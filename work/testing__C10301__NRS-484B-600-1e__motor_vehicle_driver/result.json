@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "f284bffb1992eb71aa3dc8fd755986eb28718589d69f1470e660ce06c4f6cc1a",
-  "readiness_kind": "delivery_preparation_partial",
-  "reason": "Twenty-five focused CPU tests and pinned preflight pass. Native site sets the four-camera profile; native_media/native_capture join 900 source-bound synchronous ticks, original sensor readbacks, lossless FFV1 streams, finalization, independent full decode and saved-only processing. The site packet is hash-bound into the saved audit; comparison checks three fixed original sites as well as authored setup and speed ordering. Changed site bytes, a rehashed changed route, and a dropped camera frame reject. The integration uses synthetic diagnostic map/pixels. Reviewed real C10301 route/access-aisle source, accepted-original source review, canonical per-case bundles, semantic stage proposals and pinned positive/negative compatibility receipts remain CPU work. Physical speed, pixels, legal equality and applicability remain unverified.",
+  "readiness_kind": "native_route_readback_partial",
+  "reason": "Twenty-six focused CPU tests and pinned preflight pass. Native capture now reads the loaded-map road/lane and projected reviewed-route station every frame, seals 900 route samples in the motion receipt, and the independent saved audit rejects hash tampering, wrong lane, centerline departure, reversal and insufficient route progress even after resealing. Integrated synthetic diagnostic still fully decodes four camera streams and runs saved processing. Reviewed real C10301 route/access-aisle authority, accepted-original source review, canonical per-case bundles, semantic stage proposals and pinned positive/negative compatibility receipts remain CPU work. Physical speed, pixels, legal equality and applicability remain unverified.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -115,6 +115,30 @@
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-native-media-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/p04-c10301 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-route-readback-tests.log",
+      "sha256": "876a3fa89db302e578328af4261a2dcb384bbe17a48bb74d02abf364f618405c"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/p04-c10301 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-route-readback-preflight.log",
+      "sha256": "8dac5c0e3d7db5c76d50a428bd94bb85bf8c58227ff0a178807e33e7c5934fc1"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-route-readback-static.log",
+      "sha256": "689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-route-readback-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ]

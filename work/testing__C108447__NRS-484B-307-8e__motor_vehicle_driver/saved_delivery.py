@@ -14,6 +14,7 @@ from zipfile import ZipFile
 
 from PIL import Image
 
+from case_observation import audit_case
 from property_route import analyze_files
 
 CAMERAS = ('overview', 'approach', 'property', 'destination')
@@ -55,8 +56,16 @@ def audit(attempt: Path, bundle: dict, *, expected_frames: int = 900) -> dict:
     authority_path = source_file(attempt, authority, 'original parcel authority')
     authority_data = json.loads(authority_path.read_text())
     require(authority_data.get('opendrive_sha256') == sha(native_path.read_bytes()), 'parcel authority original map seal differs')
+    require(isinstance(authority_data.get('connector_routes'), dict) and authority_data['connector_routes']
+            and authority_data['connector_routes'] == map_packet.get('connector_routes'),
+            'saved connector route differs from sealed authority')
+    require(authority_data.get('roadway_route') == map_packet.get('roadway_route'),
+            'saved roadway route differs from sealed authority')
     require(map_packet.get('authority_review', {}).get('decision') == 'reviewed', 'original parcel authority review required')
     require(case.get('case_id') == trace.get('case_id') == bundle['case_id'], 'case identity differs')
+    if bundle['case_id'].endswith('__ordinary_crossing'):
+        require(isinstance(map_packet.get('roadway_route'), list) and map_packet['roadway_route'],
+                'source-bound ordinary roadway route required')
     frames = [json.loads(line) for line in frame_path.read_text().splitlines() if line.strip()]
     body = trace.get('ego', [])
     require(len(body) == len(frames) == expected_frames, 'exact original frame count required')
@@ -91,7 +100,9 @@ def audit(attempt: Path, bundle: dict, *, expected_frames: int = 900) -> dict:
                     image.load()
         decoded[camera] = len(members)
     observation = analyze_files(map_path, trace_path, case_path)
+    case_audit = audit_case(observation, trace, case)
     return {'format': 'saved-property-delivery-audit-v1', 'case_id': bundle['case_id'],
             'frame_count': expected_frames, 'decoded_original_images': decoded,
-            'observations': observation, 'physical_acceptance_claimed': False,
+            'observations': observation, 'case_observation_audit': case_audit,
+            'physical_acceptance_claimed': False,
             'legal_judgment': None}

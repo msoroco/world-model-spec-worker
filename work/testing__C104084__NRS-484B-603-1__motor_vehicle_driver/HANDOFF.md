@@ -40,3 +40,11 @@ The 2026-11-23 saved finalizer checkpoint adds `saved_crest_finalizer.py`. It co
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 source-context checkpoint
+
+`saved_crest_context.py:audit_context` now requires a SHA-bound original road and prescribed-limit setup, distinct ego and other vehicle IDs, five opposing-route waypoints, and frame-by-frame other-vehicle actor/source joins. `saved_crest_audit.py` binds the context and route source hashes into the finalizer, and `saved_crest_finalizer.py` returns the unresolved lawful-entry and due-care context without a legal verdict. The comparison path now verifies that its declared fixed route, highway and limit files are the exact sources consumed by the saved audit; a decoy fixed file fails. `case-plan.json.saved_context_audit` records the source contract and limits.
+
+The pinned CPU preflight passed. The focused test suite passed 39 tests in `cpu-tests.log`, including missing-limit, wrong-lane, wrong-actor and decoy-source negatives. This remains partial: no Native capture runner, canonical bundles, stage proposals, exact compatibility receipts, saved-only runtime process proof or complete delivery audit yet. Those are CPU work; physical motion, visibility and legal necessity remain unconfirmed.
+
+The audit also joins the first original precrest approach frame to the retained prescribed limit and rejects a speed at the limit. This tests the assigned below-limit factual condition; it does not assign a legal slowing threshold.

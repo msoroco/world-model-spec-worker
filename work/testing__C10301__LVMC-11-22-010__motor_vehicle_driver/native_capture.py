@@ -44,6 +44,7 @@ def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
     if not person_id or not output.exists() or not output.is_dir():
         raise ValueError("operator identity and output directory required")
     ego_rows, context_rows, image_rows = [], [], []
+    camera_sensors = None
     image_dir = output / "camera-png"
     image_dir.mkdir(exist_ok=False)
     for index in range(frames):
@@ -68,6 +69,13 @@ def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
             (image_dir / f"{index:04d}-{camera}.png").write_bytes(data)
             cameras[camera] = {"sha256": _sha(data), "sensor_id": packet["sensor_id"],
                                "native_frame": ego["native_frame"]}
+        sensors = {name: cameras[name]["sensor_id"] for name in CAMERAS}
+        if len(set(sensors.values())) != len(CAMERAS):
+            raise ValueError("four distinct Native camera sensors required")
+        if camera_sensors is None:
+            camera_sensors = sensors
+        if sensors != camera_sensors:
+            raise ValueError("Native camera sensor identity changed")
         ego_rows.append(ego)
         context_rows.append(context)
         image_rows.append({"native_frame": ego["native_frame"],

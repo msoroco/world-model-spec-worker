@@ -35,6 +35,14 @@ def compare_saved(left_attempt, left_manifest, right_attempt, right_manifest,
                   'duration_s': manifest['duration_s'],
                   'initial_speed_mps': motion[0]['ego_speed_mps']}
         packet.update({key: _source(Path(root), fixed[key])[1] for key in CONTEXT})
+        expected_bound = {
+            'other_route_source_sha256': proof['source_sha256']['other_route'],
+            'highway_context_source_sha256': proof['source_sha256']['context'],
+            'prescribed_limit_source_sha256': proof['source_sha256']['context'],
+        }
+        for key, expected_sha in expected_bound.items():
+            if packet[key] != expected_sha:
+                raise ValueError('fixed comparison source differs from audited original context')
         packets.append(packet)
     result = compare(*packets, expected_profiles=expected_profiles)
     result['saved_source_sha256'] = [left_audit['source_sha256'], right_audit['source_sha256']]

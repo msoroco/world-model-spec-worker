@@ -28,6 +28,25 @@ def validate_route(packet: dict[str, Any], property_id: str) -> list[tuple[float
     return [(float(x), float(y)) for x, y in route]
 
 
+def validate_roadway_route(packet: dict[str, Any]) -> list[tuple[float, float]]:
+    """Bind the ordinary roadway comparator without crossing any listed parcel."""
+    source = packet.get('source', {})
+    if source.get('kind') != 'original_native_map_and_property_authority' or not source.get('sha256'):
+        raise ValueError('original map/property authority source required')
+    route = packet.get('roadway_route')
+    if not isinstance(route, list) or len(route) < 3 or not all(
+            isinstance(v, list) and len(v) == 2 and all(math.isfinite(float(q)) for q in v)
+            for v in route):
+        raise ValueError('source-bound ordinary roadway route required')
+    if math.dist(route[0], route[-1]) < 1:
+        raise ValueError('roadway route endpoints collapse')
+    from property_route import _traversed_property_ids
+    samples = [{'x': x, 'y': y} for x, y in route]
+    if _traversed_property_ids(samples, packet.get('properties', [])):
+        raise ValueError('ordinary roadway route traverses classified property')
+    return [(float(x), float(y)) for x, y in route]
+
+
 def steering_command(position_xy: tuple[float, float], yaw_rad: float, target_xy: tuple[float, float], speed_mps: float, target_speed_mps: float = 5.0) -> dict[str, float]:
     """Return bounded low-speed steering/throttle/brake commands; not proof of motion."""
     if any(not math.isfinite(x) for x in (*position_xy, yaw_rad, *target_xy, speed_mps, target_speed_mps)):

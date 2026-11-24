@@ -17,7 +17,7 @@ CASE = "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference"
 class AnalysisTests(unittest.TestCase):
     def _attempt(self, base):
         rows = [{"frame_id": 1000 + i, "time_s": round(i / 20, 2),
-                 "velocity_mps": [3.0, 0.0, 0.0], "x_m": -30 + min(60, 3 * i / 20),
+                 "velocity_mps": [3.0, 0.0, 0.0], "x_m": -30 + 3 * i / 20,
                  "y_m": -.75} for i in range(900)]
         context = {"case_id": CASE, "source_kind": "original_local_native_capture",
                    "jurisdiction": {"city_of_las_vegas": True, "source": "fixture map packet"},

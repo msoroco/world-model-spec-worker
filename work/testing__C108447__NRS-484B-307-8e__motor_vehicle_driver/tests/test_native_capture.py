@@ -88,6 +88,24 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertFalse(receipt['physical_acceptance_claimed'])
         self.assertEqual(ego.controls[-1]['brake'], 1.0)
 
+    def test_ordinary_crossing_uses_source_bound_roadway_route(self):
+        p = packet()
+        p['roadway_route'] = [[-3, -2], [5, -2], [13, -2]]
+        receipt, trace, _ = self.run_capture([[-3, -2], [5, -2], [13, -2]],
+            case_id='testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing',
+            map_packet=p)
+        self.assertEqual(receipt['destination_entry_frame'], 3)
+        observed = sys.modules['property_route'].analyze(p, trace, {'case_id': trace['case_id']})
+        self.assertEqual(observed['traversed_property_ids'], [])
+
+    def test_ordinary_crossing_rejects_property_connector_as_roadway(self):
+        p = packet()
+        p['roadway_route'] = [[-3, 5], [5, 5], [13, 5]]
+        with self.assertRaisesRegex(ValueError, 'ordinary roadway route traverses'):
+            self.run_capture([[-3, 5], [5, 5], [13, 5]],
+                case_id='testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing',
+                map_packet=p)
+
     def test_no_destination_entry_rejects_and_brakes(self):
         ego = FakeEgo([[-3, 5]] * 20)
         world = FakeWorld(ego, list(range(1, 21)))

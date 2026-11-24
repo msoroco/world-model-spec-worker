@@ -19,10 +19,45 @@ SENSOR_ID = 'sensor.camera.rgb'
 
 
 class NativeSite:
-    def __init__(self, actor, cameras, packet_sha256):
+    def __init__(self, actor, cameras, packet_sha256, native_map, route, road_lane):
         self.actor = actor
         self.cameras = cameras
         self.packet_sha256 = packet_sha256
+        self.native_map = native_map
+        self.route = route
+        self.road_lane = road_lane
+        self.previous_route_s_m = None
+
+    def observe_route(self, actor):
+        """Read the loaded-map lane and nearest reviewed route station."""
+        position = actor.get_transform().location
+        if any(not _finite(v) for v in (position.x, position.y, position.z)):
+            raise ValueError('nonfinite original Native route position')
+        waypoint = self.native_map.get_waypoint(position)
+        if waypoint is None or (waypoint.road_id, waypoint.lane_id) != self.road_lane:
+            raise ValueError('original Native ego left reviewed route lane')
+        projected = []
+        for first, second in zip(self.route, self.route[1:]):
+            dx, dy = second['x_m'] - first['x_m'], second['y_m'] - first['y_m']
+            length_sq = dx * dx + dy * dy
+            if length_sq <= 0:
+                continue
+            fraction = max(0.0, min(1.0, ((position.x - first['x_m']) * dx +
+                                            (position.y - first['y_m']) * dy) / length_sq))
+            px, py = first['x_m'] + fraction * dx, first['y_m'] + fraction * dy
+            projected.append((math.hypot(position.x - px, position.y - py),
+                              first['s_m'] + fraction * (second['s_m'] - first['s_m'])))
+        if not projected:
+            raise ValueError('original reviewed route has no usable segment')
+        offset, station = min(projected)
+        if offset > 2.0:
+            raise ValueError('original Native ego left reviewed route centerline')
+        if self.previous_route_s_m is not None and station < self.previous_route_s_m:
+            raise ValueError('original Native ego reversed on reviewed route')
+        self.previous_route_s_m = station
+        return {'road_id': waypoint.road_id, 'lane_id': waypoint.lane_id,
+                'route_s_m': station, 'centerline_offset_m': offset,
+                'source': 'original_native_route_readback'}
 
     def close(self):
         for spawned in reversed([self.actor, *self.cameras.values()]):
@@ -117,7 +152,8 @@ def construct(world, packet_path, case_id, transform_factory):
                 raise ValueError('Native camera spawn failed')
             spawned.append(sensor)
             cameras[camera] = sensor
-        return NativeSite(actor, cameras, hashlib.sha256(raw).hexdigest())
+        return NativeSite(actor, cameras, hashlib.sha256(raw).hexdigest(),
+                          original_map, route, road_lane)
     except Exception:
         for item in reversed(spawned):
             item.destroy()
