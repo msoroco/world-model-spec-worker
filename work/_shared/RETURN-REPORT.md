@@ -2,7 +2,7 @@
 
 ## Current checkpoint index
 
-Latest lead verification on 2026-11-24: C229023, C10307 and C129731 passed their current-runtime exact scoped strict delivery-ready gates. The lead independently reran C129731 and confirmed exit 0. Their 14 exact cases and 10 declared comparisons are listed in the shared partial GPU queue. Owners continue C125751, C109705 and C147332 as truthful partial packages. Detailed proof and resume notes are in the dated sections below.
+Latest lead verification on 2026-11-24: C229023, C10307 and C129731 passed their current-runtime exact scoped strict delivery-ready gates. The lead independently reran C129731 and confirmed exit 0. Their 14 exact cases and 10 declared comparisons are listed in the shared partial GPU queue. Owners continue C125751, C109705 and C147332 12(b) as truthful partial packages. C147332 12(a) has a documented pinned semantic rule conflict and stays partial. Detailed proof and resume notes are in the dated sections below.
 
 At this checkpoint, 12 of 242 assignments have confirmed ready results and 230 remain partial. Earlier sections are historical checkpoints and may describe older counts.
 
@@ -3041,3 +3041,23 @@ C125751 is refreshing source-bound saved processing, independent delivery and co
 `work/_shared/gpu-queue.json` now contains 14 exact cases and 10 comparison entries for newly current-runtime ready C229023, C10307 and C129731. It is a partial delivery queue while 230 assignments remain partial. Its C129731 comparison entry runs all three source-bound distance probes against distinct original attempts. A batch-wide integration proof is still pending, so the complete batch strict gate cannot pass. No Git command was run by the lead.
 
 Current owners: C125751 is refreshing five plan-bound compatibility and saved/comparison proofs; C109705 has eight refreshed current-runtime offline/compatibility receipts and is continuing production/source work; C147332 is reviewing the pinned semantic pair requirement without relabeling nonviolations. Each remains partial until its exact strict gate passes.
+
+## 2026-11-24 C147332 semantic review checkpoint
+
+C147332 remains partial after a passing 56-test suite and scoped static check. Its direct pinned semantic proof exits 1 at `validation.py:220`, which requires a compliant/violating attempt pair for the exact NRS 484B.307(12)(a) bus lane permission clause. The owner has a source-bound full-stage worker trial and a repair proposal, and is independently rechecking the exact law and contract for a truthful pair. No dark-lane or stationary case has been relabeled as a statutory violation. This is an actionable worker review checkpoint, not a ready claim.
+
+The lead scanned all 22,386 current `work/` files: zero files exceeded the size cap, were non-UTF-8, had trailing whitespace, blank lines at EOF, conflict markers, or pycache. Seventy-five historical text files omit a final newline; this does not create a blank EOF or a whitespace-diff failure. The partial shared queue exactly covers all 14 selected cases and all 10 declared comparisons of the three newly current-runtime ready assignments with sequential unique order.
+
+Lead startup rerun on 2026-11-24: `runtime.py verify --runtime runtime`, `runtime.py preflight`, and `worker_check.py --updates` each exited 0. Pinned Lean 4.28.0 and the CPU environment are available; updates version 0 reports no pauses. The full batch strict gate remains deferred because 230 assignment results are partial; it has no possibility of passing until they are completed.
+
+C147332 12(a) follow-up: independent frozen law and accepted-witness review confirms the green-arrow clause grants permission only. The pinned semantic coverage rule at `validation.py:220` requires a compliant/violating pair for this permission-only clause; neither standing under green nor entering an unlit adjacent lane is a 12(a) violation. The worker retained a source-bound permission-specific trial and narrow repair proposal under its `proposals/` folder, kept `result.json` partial, and recorded exact strict exit 1. No runtime or law text was changed. The owner has moved to the related C147332 12(b) red-X prohibition package, which has a lawful violation branch, while this 12(a) package awaits an authorized validator correction. The lead will not count it ready.
+
+The shared queue now sets `SCENARIO_PIPELINE_OUTPUT_ROOT` and `TMPDIR` under `.runtime-work/` for assignment-owned source and comparison audit commands that may import runtime modules. Its 14 case rows and 10 comparison rows remain exact and sequential.
+
+Queue follow-up: all 122 generated command strings pass `bash -n -c` syntax checks. C10307 comparison commands now consume local `$LEFT_ATTEMPT`, `$RIGHT_ATTEMPT`, `$LEFT_DELIVERY_AUDIT` and `$RIGHT_DELIVERY_AUDIT` paths instead of fixed external example locations; no physical comparison has been claimed.
+
+C109705 owner continuation: a CPU-tested lazy CARLA adapter now checks surveyed spawn/route/four-view configuration, original frame/time and full-body readback, plan-specific controller speed, and world restoration. Current-manifest saved-only replays passed near and farther cases; remaining two replays and source acquisition are in progress. It remains partial. C125751 owner reports all five current plan-bound v8 compatibility passes and five negative survey-mismatch delivery checks; current saved-only and comparisons are running, with status partial.
+
+C147332 12(b) owner checkpoint: the four exact red-X cases now route saved FFV1/frame-map profile verification into each assignment-local queue audit command. The 34-test suite, queue proof, runtime verify/preflight and scoped static pass; exact scoped strict exits 1 on truthful partial (`cpu-queue-profile-strict.log`). Original official red-X source and Native asset, nondiagnostic captured proof and pixel review remain CPU/source work; the owner retains the assignment.
+
+C109705 further progress: four current-manifest saved-only positives and one missing-context negative pass; a standalone source launcher and embedded lazy CARLA adapter pass the 54-test suite, all eight refreshed primary/fallback offline constructions pass, and eight refreshed compatibility jobs are running. It remains partial. C125751 has passed five v8 compatibility, five recorded-only saved, five positive/negative independent delivery, and two comparison audits; manifest/semantic/delivery validators pass. Its exact scoped strict candidate is running, so it is not counted ready until the owner and lead confirm exit 0.

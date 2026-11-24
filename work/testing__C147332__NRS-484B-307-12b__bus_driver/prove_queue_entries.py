@@ -31,6 +31,11 @@ def validate(packet: dict) -> None:
                 "--physical-receipt" not in row["additional_source_audit_command"] or
                 "--candidate fallback1" not in row["candidate_commands"]["fallback1"]):
             raise ValueError("delivery audit or fallback command incomplete")
+        audit_command = row["additional_source_audit_command"]
+        profile = "/original_media_profile.py --attempt \"$ATTEMPT\" --output \"${AUDIT}.media-profile.json\""
+        independent = "/independent/delivery_audit.py --case-id " + case
+        if profile not in audit_command or independent not in audit_command or audit_command.index(profile) > audit_command.index(independent) or " && " not in audit_command:
+            raise ValueError("original camera profile must precede independent delivery audit")
     for row in comparisons:
         if (row["comparison_id"] not in row["command"] or
                 "--baseline-attempt" not in row["command"] or
@@ -59,6 +64,15 @@ def main() -> None:
             raise
     else:
         raise AssertionError("missing exact comparison was accepted")
+    missing_profile = copy.deepcopy(packet)
+    missing_profile["cases"][0]["additional_source_audit_command"] = missing_profile["cases"][0]["additional_source_audit_command"].split(" && ", 1)[1]
+    try:
+        validate(missing_profile)
+    except ValueError as error:
+        if "original camera profile must precede" not in str(error):
+            raise
+    else:
+        raise AssertionError("missing original camera profile was accepted")
     print("four exact cases and two comparison commands pass; missing rows rejected")
 
 

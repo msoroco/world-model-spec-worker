@@ -33,29 +33,29 @@ def main():
         kind = entry["case_id"].rsplit("__", 1)[1]
         for candidate in ("primary", "fallback1"):
             target = entry if candidate == "primary" else entry["candidates"][0]
-            output = ROOT / ".runtime-work/c147332-pixel-v1-offline" / kind / candidate
+            output = ROOT / ".runtime-work/c147332-custody-v2-offline" / kind / candidate
             cmd = [sys.executable, str(ROOT / "runtime.py"), "offline", "--manifest",
                    str(MANIFEST_PATH), "--case", entry["case_id"], "--candidate",
                    candidate, "--output", str(output)]
-            log = PKG / f"pixel-v1-{kind}-{candidate}-offline.log"
+            log = PKG / f"custody-v2-{kind}-{candidate}-offline.log"
             run(cmd, log)
             target["offline"] = {"command": " ".join(cmd), "exit_code": 0,
                                  "construction_sha256": target["construction_sha256"],
                                  "log": log.name, "log_sha256": sha(log)}
             save()
 
-            output = ROOT / ".runtime-work/c147332-pixel-v1-compat" / kind / candidate
+            output = ROOT / ".runtime-work/c147332-custody-v2-compat" / kind / candidate
             cmd = [sys.executable, str(ROOT / "runtime.py"), "compatibility", "--manifest",
                    str(MANIFEST_PATH), "--case", entry["case_id"], "--candidate",
                    candidate, "--output", str(output), "--library", str(ROOT / "runtime/library"),
                    "--validator", str(VALIDATOR)]
-            log = PKG / f"pixel-v1-{kind}-{candidate}-compat-command.log"
+            log = PKG / f"custody-v2-{kind}-{candidate}-compat-command.log"
             run(cmd, log)
-            receipt = PKG / f"pixel-v1-{kind}-{candidate}-compat-receipt.json"
+            receipt = PKG / f"custody-v2-{kind}-{candidate}-compat-receipt.json"
             receipt.write_bytes((output / "compatibility.json").read_bytes())
-            analysis = PKG / f"pixel-v1-{kind}-{candidate}-compat-analysis.log"
+            analysis = PKG / f"custody-v2-{kind}-{candidate}-compat-analysis.log"
             analysis.write_bytes((output / "compatibility-analysis.log").read_bytes())
-            negative = PKG / f"pixel-v1-{kind}-{candidate}-compat-negative.log"
+            negative = PKG / f"custody-v2-{kind}-{candidate}-compat-negative.log"
             negative.write_bytes((output / "negative-analysis.log").read_bytes())
             target["compatibility"] = {"receipt": receipt.name, "sha256": sha(receipt),
                                        "log": analysis.name, "negative_log": negative.name}

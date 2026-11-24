@@ -12,6 +12,10 @@ def _sha(path):
 
 def validate(packet_path, *, source_root):
     packet_path, root = Path(packet_path), Path(source_root)
+    root_resolved = root.resolve()
+    if (packet_path.is_symlink() or not packet_path.is_file() or
+            not packet_path.resolve().is_relative_to(root_resolved)):
+        raise ValueError("reviewed packet escapes retained source root")
     packet = json.loads(packet_path.read_text())
     if packet.get("review_status") != "reviewed":
         raise ValueError("highway and official-device review not completed")
@@ -23,6 +27,8 @@ def validate(packet_path, *, source_root):
         if not isinstance(rel, str) or not rel or Path(rel).is_absolute() or ".." in Path(rel).parts:
             raise ValueError(key + " source path is not retained locally")
         source = root / rel
+        if source.is_symlink() or not source.resolve().is_relative_to(root_resolved):
+            raise ValueError(key + " original source escapes retained root")
         if not source.is_file() or _sha(source) != item.get("source_sha256"):
             raise ValueError(key + " original source missing or changed")
         if not item.get("reviewer") or not item.get("source_citation"):

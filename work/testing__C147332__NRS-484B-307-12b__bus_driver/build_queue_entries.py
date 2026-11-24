@@ -40,6 +40,9 @@ def build() -> dict:
                                        ' --attempt "$ATTEMPT" --output "$SAVED_OUTPUT" --library "$LIBRARY"'
                                        ' --validator "$VALIDATOR" --owner-release-receipt "$OWNER_RELEASE_RECEIPT"'),
             "additional_source_audit_command": ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/' +
+                                                ASSIGNMENT + '/original_media_profile.py --attempt "$ATTEMPT"'
+                                                ' --output "${AUDIT}.media-profile.json" && '
+                                                'PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/' +
                                                 ASSIGNMENT + '/independent/delivery_audit.py --case-id ' + case +
                                                 ' --attempt "$ATTEMPT" --physical-receipt "$PHYSICAL_RECEIPT"'
                                                 ' --pixel-review "$PIXEL_REVIEW" --decode-receipt "$DECODE_RECEIPT"'

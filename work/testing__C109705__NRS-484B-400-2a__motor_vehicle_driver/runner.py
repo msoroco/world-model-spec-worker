@@ -1,6 +1,7 @@
 """Offline exact-case preflight for the 400(2)(a) approach package."""
 import argparse
 import json
+import os
 from pathlib import Path
 
 PREFIX = "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__"
@@ -40,19 +41,49 @@ def run_capture(adapter, config, map_packet, output):
     from native_capture import capture
     return capture(adapter, selected, Path(map_packet), Path(output))
 
+
+def run_native_source(config, map_packet, output, host, port, *, carla_module=None):
+    """Acquire an original, source-bound Native attempt with a dedicated server.
+
+    The output is a new original-source directory. Runtime capture materializes
+    an existing bundle and needs a separate Core publication step before its
+    native closure seal can be issued.
+    """
+    check(config)
+    if Path(output).exists():
+        raise ValueError('Native source output already exists')
+    if carla_module is None:
+        import carla as carla_module
+    from carla_adapter import NativeCarlaAdapter
+    client = carla_module.Client(host, int(port))
+    client.set_timeout(30.0)
+    world = client.get_world()
+    packet = json.loads(Path(map_packet).read_text())
+    adapter = NativeCarlaAdapter(world, carla_module, packet, config)
+    return run_capture(adapter, config, map_packet, output)
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--check",action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--host")
     parser.add_argument("--port")
+    parser.add_argument("--map-packet")
+    parser.add_argument("--native-source-output")
     args=parser.parse_args()
     config=json.loads(Path("config.json").read_text())
     result=check(config)
     if args.check:
         print(json.dumps(result))
+    elif args.native_source_output:
+        packet = args.map_packet or os.environ.get('CARLA_MAP_PACKET')
+        if not packet:
+            raise ValueError('source-hashed CARLA_MAP_PACKET required')
+        print(json.dumps(run_native_source(config, packet, args.native_source_output,
+                                           args.host or '127.0.0.1', args.port or 2000)))
     else:
-        raise RuntimeError("Native capture and source packet binding unfinished for " + result["case_id"])
+        raise RuntimeError('Native Core publication and closure seal unfinished for '
+                           + result['case_id'])
 
 if __name__=="__main__":
     main()

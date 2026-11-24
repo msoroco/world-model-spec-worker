@@ -228,6 +228,18 @@ class RedXLaneMeasurement(unittest.TestCase):
             packet_path = root / "packet.json"
             packet_path.write_text(json.dumps(packet))
             self.assertEqual(validate(packet_path, source_root=root)["governed_lane_id"], "red_lane")
+            linked_packet = root / "linked-packet.json"
+            linked_packet.symlink_to(packet_path)
+            with self.assertRaisesRegex(ValueError, "reviewed packet escapes"):
+                validate(linked_packet, source_root=root)
+            linked_device = root / "linked-device.txt"
+            linked_device.symlink_to(root / "device.txt")
+            packet["official_device"]["source_path"] = linked_device.name
+            packet_path.write_text(json.dumps(packet))
+            with self.assertRaisesRegex(ValueError, "original source escapes"):
+                validate(packet_path, source_root=root)
+            packet["official_device"]["source_path"] = "device.txt"
+            packet_path.write_text(json.dumps(packet))
             state = packet["official_device"].pop("native_display_state")
             packet_path.write_text(json.dumps(packet))
             with self.assertRaisesRegex(ValueError, "display attribute"):
