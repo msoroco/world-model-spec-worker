@@ -6,10 +6,10 @@
   "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a",
+      "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__baseline",
       "target_law_id": "LVMC-11-22-020",
-      "target_type": "compliant_attempt",
-      "rationale": "Selected probe_a source-bound curbside diagnostic; physical and legal status await original evidence.",
+      "target_type": "baseline",
+      "rationale": "Shared authored curbside scene and recording contract for diagnostic comparison only.",
       "variable_assignments": {
         "control_style": {
           "kind": "controller",
@@ -107,10 +107,120 @@
       }
     },
     {
+      "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a",
+      "target_law_id": "LVMC-11-22-020",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound curbside manner probe; actual motion, municipal highway scope and carelessness remain open.",
+      "variable_assignments": {
+        "control_style": {
+          "kind": "controller",
+          "value": "controlled"
+        },
+        "road_and_pedestrian": {
+          "kind": "world_setup",
+          "value": "source-observed driving lane with adjacent sidewalk walker"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Whether actual municipal highway scope and driving carelessness are satisfied requires original evidence review."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "kin.yaw_rate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "rel.contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.",
+          "Pedestrian pixel visibility and municipal highway status remain unknown until original review.",
+          "Control requests do not establish observed motion or legal carelessness."
+        ]
+      },
+      "paired_probe_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__manner_comparison",
+      "deliberate_differences": [
+        "control_style"
+      ],
+      "probe": {
+        "primary_variable": "control_style",
+        "comparison_or_standard": "Compare observed manner cues without deciding the qualitative standard",
+        "target_value_or_branch": "controlled"
+      }
+    },
+    {
       "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b",
       "target_law_id": "LVMC-11-22-020",
-      "target_type": "violating_attempt",
-      "rationale": "Selected probe_b source-bound curbside diagnostic; physical and legal status await original evidence.",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound curbside manner probe; actual motion, municipal highway scope and carelessness remain open.",
       "variable_assignments": {
         "control_style": {
           "kind": "controller",
@@ -205,6 +315,15 @@
           "Pedestrian pixel visibility and municipal highway status remain unknown until original review.",
           "Control requests do not establish observed motion or legal carelessness."
         ]
+      },
+      "paired_probe_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__manner_comparison",
+      "deliberate_differences": [
+        "control_style"
+      ],
+      "probe": {
+        "primary_variable": "control_style",
+        "comparison_or_standard": "Compare observed manner cues without deciding the qualitative standard",
+        "target_value_or_branch": "erratic"
       }
     }
   ]

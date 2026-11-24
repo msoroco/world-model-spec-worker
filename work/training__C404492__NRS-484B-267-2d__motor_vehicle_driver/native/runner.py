@@ -94,7 +94,8 @@ def transform(carla,xyz,rotation):
 
 def execute(output,survey,host,port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap,seal_capture
     from worker_exchange.world_restore import snapshot,restore
     cfg=config();survey_check(survey)
     output=Path(output).resolve()
@@ -111,7 +112,7 @@ def execute(output,survey,host,port):
     emergency_waypoint=native_map.get_waypoint(carla.Location(x=emergency_xyz[0],y=emergency_xyz[1],z=emergency_xyz[2]),
         project_to_road=False,lane_type=carla.LaneType.Driving)
     native_lanes=validate_native_lane_pair(ego_waypoint,emergency_waypoint,survey['travel_heading_deg'])
-    actors=[];encoders={};queues={}
+    actors=[];encoders={};queues={};capture_writer=None;restored=None;encoder_codes={}
     try:
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=1/RATE
         world.apply_settings(settings)
@@ -121,6 +122,8 @@ def execute(output,survey,host,port):
         emergency=world.try_spawn_actor(lib.find(survey['emergency_blueprint']),transform(carla,survey['emergency_spawn_xyz_m'],[0,heading,0]))
         if ego is None or emergency is None:raise RuntimeError('Reviewed vehicle blueprint spawn failed')
         actors.extend((ego,emergency));output.mkdir(parents=True,exist_ok=True)
+        capture_writer=PipelineCapture(client,ego,output,cfg['case_id'],
+                                       required_observations=cfg['required_atoms'])
         special=carla.VehicleLightState.Special1
         for c in cfg['cameras']:
             bp=lib.find('sensor.camera.rgb');bp.set_attribute('image_size_x',str(c['width']))
@@ -151,6 +154,7 @@ def execute(output,survey,host,port):
                 if snap.frame!=native:raise RuntimeError('Original Native frame mismatch')
                 if first is None:first=snap.timestamp.elapsed_seconds
                 t=snap.timestamp.elapsed_seconds-first
+                capture_writer.capture(native,t,extra={'emergency_actor_id':emergency.id})
                 mapped={}
                 for name,q in queues.items():
                     image=q.get(timeout=30)
@@ -177,15 +181,18 @@ def execute(output,survey,host,port):
                     'velocity_mps':[ego_velocity.x,ego_velocity.y,ego_velocity.z]})+'\n')
         for name,process in encoders.items():
             process.stdin.close();stderr=process.stderr.read()
-            if process.wait(timeout=180):raise RuntimeError('Camera encode failed: '+name+' '+stderr.decode()[-300:])
+            encoder_codes[name]=process.wait(timeout=180)
+            if encoder_codes[name]:raise RuntimeError('Camera encode failed: '+name+' '+stderr.decode()[-300:])
+        capture_writer.close(confirmed=True)
         (output/'emergency_context.template.json').write_text(json.dumps({'assignment_id':AID,
             'case_id':cfg['case_id'],
             'review_kind':'original_source_review','ego_actor_id':ego.id,
             'emergency_actor_id':emergency.id,'qualification_review_required':True,
             'native_lane_pair':native_lanes,
             'camera_sha256':{}},indent=2)+'\n')
-        return {'case_id':cfg['case_id'],'original_frames':COUNT,'physical_acceptance_claimed':False}
     finally:
+        if capture_writer is not None and not capture_writer.closed:
+            capture_writer.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:process.kill();process.wait()
         for actor in reversed(actors):
@@ -193,7 +200,14 @@ def execute(output,survey,host,port):
                 if hasattr(actor,'stop'):actor.stop()
                 actor.destroy()
             except Exception:pass
-        restore(client,saved)
+        restored=restore(client,saved)
+    (output/'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind':'native','diagnostic_fixture':False,
+        'native_executed':True},indent=2)+'\n')
+    seal_capture(output,frames=COUNT,restoration=restored,errors=[],
+                 encoder_exit_codes=encoder_codes,context={'native_lane_pair':native_lanes})
+    return {'case_id':cfg['case_id'],'original_frames':COUNT,
+            'capture_sealed':True,'physical_acceptance_claimed':False}
 
 
 if __name__=='__main__':

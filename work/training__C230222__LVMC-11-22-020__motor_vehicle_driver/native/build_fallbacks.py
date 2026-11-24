@@ -37,6 +37,12 @@ def main():
                        'metric': 'original Native curbside yaw-rate excursion',
                        'failure_condition': 'Primary measured yaw-rate excursion is indistinguishable from probe_a in source-joined samples, or the route leaves the observed curbside lane.'}
         config_file['content'] = json.dumps(config, indent=2) + '\n'
+        runner_file = next(item for item in fallback['files'] if item['path'] == 'runner.py')
+        old = "config.get('candidate_id') != 'primary'"
+        if runner_file['content'].count(old) != 1:
+            raise ValueError('Cannot bind the selected fallback runner identity')
+        runner_file['content'] = runner_file['content'].replace(
+            old, "config.get('candidate_id') != 'fallback1'")
         fallback['measurement_plan'] += ' Fallback1 changes controller requests only after the stated source trigger; neither request establishes a legal verdict.'
         path = ROOT / 'draft-native' / label / 'fallback1/construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
