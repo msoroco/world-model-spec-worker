@@ -1,0 +1,117 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235",
+  "cases": [
+    {
+      "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "draft-candidates/witness_1/primary/construction.json",
+      "construction_sha256": "19fe33f6d9ef05553b645f25c7bd757dacaad4e57ab7a8c197306b50087f10e1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed route error or original sign/body pixel coverage may fail in Native capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/witness_1/fallback1/construction.json",
+          "construction_sha256": "ab35e95a59b800d8a6fecff7b1212b1850b9a4709c8226bd300d5e9cdf1b844e",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "maximum_approach_route_error_m",
+            "failure_condition": "Source-measured error >0.35 m"
+          },
+          "changed_knobs": [
+            "target_speed_mps 5.0 to 3.5"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/witness_1/fallback3/construction.json",
+          "construction_sha256": "6d22f0861a6cbacbdc2e8ec6fc865c22cdff23b8ffc1ef630514a51d8e0d408c",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "sign_and_body_visible_fraction",
+            "failure_condition": "Source-reviewed visibility <0.95"
+          },
+          "changed_knobs": [
+            "sign camera [-12,9,5] to [-12,11,6]"
+          ]
+        }
+      ],
+      "measurement_contract": "current-v2-witness_1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "signed-u-turn-original-frame-measurement-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-403-2__motor_vehicle_driver/v2-witness_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/witness_1/proof.json",
+        "sha256": "631e04c91482af67d7ff6719d6e111d66b411c55feb89be4cc530d99d7fa98d0"
+      }
+    },
+    {
+      "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "draft-candidates/witness_2/primary/construction.json",
+      "construction_sha256": "f919197571fb305e38ea2ed0b39aaaaf85d5efe19c5964bb51b940df2d4a39aa",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed route error or original sign/body pixel coverage may fail in Native capture"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/witness_2/fallback1/construction.json",
+          "construction_sha256": "c2df77a8e8ff62bc8a464d3d771377616d5f97b62fa0ab025b807f651ebceb4f",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "maximum_approach_route_error_m",
+            "failure_condition": "Source-measured error >0.35 m"
+          },
+          "changed_knobs": [
+            "target_speed_mps 5.0 to 3.5"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/witness_2/fallback3/construction.json",
+          "construction_sha256": "1589d9e3e45affe95d3e66e0b78e71f9758c38f47dbae87d8ca7a9dabc24dbdd",
+          "trigger": {
+            "source": "source-hashed original Native samples, frame map, sign review and approach video",
+            "evaluator": "engineering.py:evaluate_fallbacks",
+            "metric": "sign_and_body_visible_fraction",
+            "failure_condition": "Source-reviewed visibility <0.95"
+          },
+          "changed_knobs": [
+            "sign camera [-12,9,5] to [-12,11,6]"
+          ]
+        }
+      ],
+      "measurement_contract": "current-v2-witness_2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "signed-u-turn-original-frame-measurement-v1"
+      },
+      "fixture_recipe": "work/training__C104538__NRS-484B-403-2__motor_vehicle_driver/v2-witness_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/witness_2/proof.json",
+        "sha256": "052ec6aa40ba232d039f9cca029409ca0af1b6a167da8ad92e2f9ef66b545379"
+      }
+    }
+  ]
+}

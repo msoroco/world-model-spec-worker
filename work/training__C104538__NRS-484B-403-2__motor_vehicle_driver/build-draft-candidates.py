@@ -77,7 +77,7 @@ def build():
                  'candidates': []}
         for candidate in NAMES:
             config = {'case_id': case_id, 'selected_case_id': case_id,
-                'supported_case_ids': [case_id], 'case_suffix': suffix,
+                'supported_case_ids': [ASSIGNMENT + '__witness_1', ASSIGNMENT + '__witness_2'] if suffix == 'witness_1' else [case_id], 'case_suffix': suffix,
                 'candidate_id': candidate, 'cell_id': 'C104538',
                 'law_id': 'NRS-484B-403-2', 'actor': 'motor_vehicle_driver',
                 'rate_hz': 20, 'duration_s': 30,
@@ -89,7 +89,7 @@ def build():
                     'pose_strategy': 'candidate-specific Native mount in cameras.py',
                     'fov_deg': fov} for name, w, h, fov in
                     (('overview',1920,1080,75), ('approach',1280,720,92),
-                     ('sign_reference',1280,720,90), ('driver_reference',1280,720,105))],
+                     ('reference_corner',1280,720,90), ('driver_reference',1280,720,105))],
                 'status': 'unselected_native_capture_draft'}
             files = [{'path': name, 'content': value} for name, value in shared.items()]
             files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})

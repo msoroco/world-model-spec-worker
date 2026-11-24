@@ -53,7 +53,7 @@ def _original_joins(root):
     manifest=json.loads((root/'capture/manifest.json').read_text())
     if not manifest.get('extraction_confirmed') or manifest.get('frames')!=600:
         raise ValueError('Original capture extraction incomplete')
-    videos=[f'{name}.mkv' for name in ('overview','approach','sign_reference','driver_reference')]
+    videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     counts={name:_video_frames(root/name) for name in videos}
     if any(count!=600 for count in counts.values()):
         raise ValueError('Original camera frame count differs')

@@ -1,6 +1,7 @@
 """Preserve source-only 600-frame diagnostic inputs as current v2 recipes."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -45,6 +46,22 @@ def build(case):
             review = json.loads((source / name).read_text())
             review['video_sha256'] = sha(approach)
             target.write_text(json.dumps(review) + '\n')
+        elif name == 'trace.jsonl':
+            # The current renderer independently derives speed from original
+            # velocity. This fixture source is synthetic, so give every saved
+            # row a velocity vector consistent with its declared speed/heading.
+            rows = []
+            for line in (source / name).read_text().splitlines():
+                row = json.loads(line)
+                speed = float(row['speed_mps'])
+                heading = math.radians(float(row['heading_deg']))
+                row['velocity_mps'] = [speed * math.cos(heading), speed * math.sin(heading), 0.0]
+                rows.append(json.dumps(row, separators=(',', ':')))
+            target.write_text('\n'.join(rows) + '\n')
+        elif name == 'capture/manifest.json':
+            manifest = json.loads((source / name).read_text())
+            manifest['sources']['trace.jsonl'] = sha(destination / 'trace.jsonl')
+            target.write_text(json.dumps(manifest, separators=(',', ':')) + '\n')
         else:
             shutil.copyfile(source / name, target)
         if target.stat().st_size > 2 * 1024 * 1024:

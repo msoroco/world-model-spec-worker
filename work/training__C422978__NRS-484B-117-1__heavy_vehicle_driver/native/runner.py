@@ -94,8 +94,9 @@ def body_xy(actor):
 
 
 def camera_pose(carla, name):
-    xyz = {'overview': (55, -20, 35), 'front': (30, -12, 11),
-           'sidewalk': (55, -14, 12), 'rear': (110, -12, 14)}[name]
+    xyz = {'overview': (55, -20, 35), 'approach': (30, -12, 11),
+           'reference_corner': (55, -14, 12),
+           'driver_reference': (110, -12, 14)}[name]
     x, y, z = xyz
     target = (60, 5, 1)
     yaw = math.degrees(math.atan2(target[1]-y, target[0]-x))
@@ -124,12 +125,18 @@ def execute(bundle, output, case, candidate, host, port):
     """Record an original attempt into a fresh directory; never mark it accepted."""
     check(bundle, case, candidate)
     output = Path(output).resolve()
+    bundle = Path(bundle).resolve()
     if output.exists():
-        raise ValueError('Native output must be a fresh directory')
-    output.mkdir(parents=True)
+        if output != bundle or not (output/'candidate-selection.json').is_file():
+            raise ValueError('Native output must be a fresh materialized attempt')
+        if any((output/name).exists() for name in ('capture', 'native-observed.jsonl',
+                                                   'native-capture-report.json')):
+            raise ValueError('Materialized attempt already contains Native output')
+    else:
+        output.mkdir(parents=True)
     repo = ROOT
-    sys.path.insert(0, str(repo/'runtime/pipeline/scenario_pipeline'))
-    sys.path.insert(0, str(repo/'runtime/pipeline/python'))
+    sys.path.insert(0, str(repo/'runtime/scenario_pipeline'))
+    sys.path.insert(0, str(repo/'runtime/python'))
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
@@ -145,9 +152,9 @@ def execute(bundle, output, case, candidate, host, port):
         raise RuntimeError('Exclusive idle asynchronous CARLA world required')
     owned, encoders, logs, queues = [], {}, {}, {}
     capture, changed, frames, restored, error = None, False, 0, None, None
-    cameras = [('overview', 1920, 1080, 80), ('front', 1280, 720, 80),
-               ('sidewalk', 1280, 720, config['policy']['camera_fov_deg']),
-               ('rear', 1280, 720, 85)]
+    cameras = [('overview', 1920, 1080, 80), ('approach', 1280, 720, 80),
+               ('reference_corner', 1280, 720, config['policy']['camera_fov_deg']),
+               ('driver_reference', 1280, 720, 85)]
     try:
         road = (CASE/'native'/'road.xodr') if Path(bundle).resolve() == (CASE/'native'/'drafts'/case/candidate).resolve() else Path(bundle)/'road.xodr'
         world = client.generate_opendrive_world(road.read_text(),
@@ -214,7 +221,7 @@ def execute(bundle, output, case, candidate, host, port):
         with (output/'native-observed.jsonl').open('x') as observed, \
              (output/'video_frames.jsonl').open('x') as mapping_file:
             for index in range(600):
-                target = requests[min(479, index+15)]['requested_center_xy_m']
+                target = requests[min(len(requests)-1, index+15)]['requested_center_xy_m']
                 command, command_record = control(carla, ego, (target[0], -target[1]),
                                                    wheelbase, max_steer)
                 ego.apply_control(command)
@@ -289,18 +296,22 @@ def execute(bundle, output, case, candidate, host, port):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bundle', type=Path, required=True)
-    parser.add_argument('--case', choices=CASES, required=True)
-    parser.add_argument('--candidate', choices=CANDIDATES, required=True)
+    parser.add_argument('--bundle', type=Path)
+    parser.add_argument('--case', choices=CASES)
+    parser.add_argument('--candidate', choices=CANDIDATES)
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
+    bundle = args.bundle or Path(__file__).resolve().parent
+    packaged = json.loads((bundle/'config.json').read_text())
+    case = args.case or packaged['case_suffix']
+    candidate = args.candidate or packaged['candidate_id']
     if args.check:
-        print(json.dumps(check(args.bundle, args.case, args.candidate)))
+        print(json.dumps(check(bundle, case, candidate)))
     else:
         if not args.output_dir or not args.host or not args.port:
             parser.error('Native capture requires --output-dir, --host and --port')
-        execute(args.bundle, args.output_dir, args.case, args.candidate,
+        execute(bundle, args.output_dir, case, candidate,
                 args.host, args.port)

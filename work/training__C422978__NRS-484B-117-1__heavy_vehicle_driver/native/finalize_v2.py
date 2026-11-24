@@ -68,16 +68,27 @@ def finalize(attempt, output):
         path = channels/(name+'.jsonl')
         with path.open('x') as stream:
             for row, map_row in zip(observed, mapping):
-                value = ({'center_native_xy_m': row['center_native_xy_m'],
-                          'body_native_xy_m': row['body_native_xy_m'],
-                          'speed_mps': row['speed_mps']}
-                         if name == 'subject_pose_body_speed' else
-                         {'native_frame': row['native_frame'],
-                          'lane_id': row['native_lane_id'],
-                          'moving_sidewalk_overlap':
-                          row['speed_mps'] > 0.1 and
-                          max(p[1] for p in row['body_native_xy_m']) > 3.5 and
-                          min(p[1] for p in row['body_native_xy_m']) < 7.5})
+                authored_overlap = (row['speed_mps'] > 0.1 and
+                                    max(p[1] for p in row['body_native_xy_m']) > 3.5 and
+                                    min(p[1] for p in row['body_native_xy_m']) < 7.5)
+                if name == 'subject_pose_body_speed':
+                    value = {'center_native_xy_m': row['center_native_xy_m'],
+                             'body_native_xy_m': row['body_native_xy_m'],
+                             'speed_mps': row['speed_mps']}
+                elif name == 'ego_pose':
+                    value = {'center_native_xy_m': row['center_native_xy_m'],
+                             'body_native_xy_m': row['body_native_xy_m']}
+                elif name == 'ego_speed':
+                    value = row['speed_mps']
+                elif name == 'drive_within_sidewalk_area':
+                    value = authored_overlap
+                elif name == 'sidewalk_occupancy':
+                    value = {'native_frame': row['native_frame'],
+                             'lane_id': row['native_lane_id'],
+                             'authored_road_overlap': authored_overlap,
+                             'city_authority_verified': False}
+                else:
+                    raise ValueError('Unsupported recording channel: ' + name)
                 stream.write(json.dumps({'time_s': map_row['time_s'],
                                          'value': value})+'\n')
         evidence.append({'name': name, 'unit': channel['unit'],

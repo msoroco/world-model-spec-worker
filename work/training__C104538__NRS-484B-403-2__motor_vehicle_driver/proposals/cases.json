@@ -1,13 +1,113 @@
 {
   "cell_id": "C104538",
   "actor": "motor_vehicle_driver",
-  "status": "draft_not_selected",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected shared context reference; no recording or legal result.",
+      "variable_assignments": {
+        "requested_turn_path": {
+          "kind": "controller",
+          "value": "through"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original sign pixels, Native landmark readback and reviewed official designation",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original sign pixels and lane/region applicability review",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native landmark coordinate and original sign pixel location",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "drv.u_turn",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native body and heading trace across governed region",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native forward vector at every joined frame",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native full body relative to reviewed governed region",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, full body, lane ID and controller request",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Every original camera frame joined to Native frame and time",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native map and original video frame",
+            "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_hill_crest",
+            "unit": "structured",
+            "method": "Native road/lane/landmark readback and original pixel review"
+          }
+        ],
+        "limitations": [
+          "Official sign meaning, original pixel visibility and physical movement require review",
+          "Requested route is not observed behavior or a legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
     {
       "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-403-2",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "delivery",
+      "target_type": "compliant_attempt",
       "physical_target": "driver continues without U-turn at the signed location",
       "comparison_variable": "signed_u_turn",
       "source_branch": "Duty to obey an applicable official U-turn prohibition.",
@@ -42,7 +142,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original sign pixels, Native landmark readback and reviewed official designation",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -51,7 +151,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original sign pixels and lane/region applicability review",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -60,7 +160,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Native landmark coordinate and original sign pixel location",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -69,7 +169,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Joined original Native body and heading trace across governed region",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -78,7 +178,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native forward vector at every joined frame",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -87,7 +187,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native full body relative to reviewed governed region",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -96,7 +196,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native pose, full body, lane ID and controller request",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -105,7 +205,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Every original camera frame joined to Native frame and time",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           }
@@ -123,19 +223,28 @@
         ]
       },
       "variable_assignments": {
-        "signed_u_turn": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "boolean"
+        "requested_turn_path": {
+          "kind": "controller",
+          "value": "through"
         }
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "rationale": "Controlled source measurement of signed U-turn behavior; legal applicability requires original review",
+      "paired_probe_id": "signed_u_turn_path",
+      "deliberate_differences": [
+        "requested_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "requested_turn_path",
+        "comparison_or_standard": "controlled request under the same proposed device; actual movement and legal applicability unverified",
+        "target_value_or_branch": "through"
+      }
     },
     {
       "case_id": "training__C104538__NRS-484B-403-2__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-403-2",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "delivery",
+      "target_type": "violating_attempt",
       "physical_target": "driver initiates a U-turn within the sign-governed location",
       "comparison_variable": "signed_u_turn",
       "source_branch": "Duty to obey an applicable official U-turn prohibition.",
@@ -170,7 +279,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original sign pixels, Native landmark readback and reviewed official designation",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -179,7 +288,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original sign pixels and lane/region applicability review",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -188,7 +297,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Native landmark coordinate and original sign pixel location",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -197,7 +306,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Joined original Native body and heading trace across governed region",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -206,7 +315,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native forward vector at every joined frame",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -215,7 +324,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native full body relative to reviewed governed region",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -224,7 +333,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native pose, full body, lane ID and controller request",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           },
@@ -233,7 +342,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Every original camera frame joined to Native frame and time",
-            "time_window": "entire 24 s / 480 frame attempt",
+            "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native map and original video frame",
             "uncertainty": "50 ms samples, finite body/map precision, original pixel review pending"
           }
@@ -251,13 +360,23 @@
         ]
       },
       "variable_assignments": {
-        "signed_u_turn": {
-          "kind": "subject_behavior",
-          "value": null,
-          "unit": "boolean"
+        "requested_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
         }
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "rationale": "Controlled source measurement of signed U-turn behavior; legal applicability requires original review",
+      "paired_probe_id": "signed_u_turn_path",
+      "deliberate_differences": [
+        "requested_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "requested_turn_path",
+        "comparison_or_standard": "controlled request under the same proposed device; actual movement and legal applicability unverified",
+        "target_value_or_branch": "u_turn"
+      }
     }
-  ]
+  ],
+  "sweep_specs": []
 }

@@ -1,0 +1,53 @@
+{
+  "format": "c422978-heavy-risk-selection-v1",
+  "status": "cpu_selected_candidates_pending_current_proofs",
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_suffix": "reference",
+      "primary": "native/drafts/reference/primary/config.json",
+      "physical_risk": "The requested road-travel path has zero sidewalk overlap in all retained Native-coordinate drafts. Original pixels still need independent visibility review, but no distinct same-camera fallback construction mitigates a demonstrated reference motion risk.",
+      "candidate_risk_status": "none",
+      "selected_fallbacks": [],
+      "excluded_drafts": [
+        "fallback1",
+        "fallback2",
+        "fallback3"
+      ],
+      "exclusion_reason": "The motion drafts retain zero requested sidewalk overlap; the third draft changes camera field of view, which is fixed in a fallback."
+    },
+    {
+      "case_suffix": "contrast",
+      "primary": "native/drafts/contrast/primary/config.json",
+      "physical_risk": "The heavy body may enter the sidewalk too late or fail to remain fully inside it under Native steering and collision response.",
+      "candidate_risk_status": "physical",
+      "selected_fallbacks": [
+        {
+          "candidate_id": "fallback1",
+          "config": "native/drafts/contrast/fallback1/config.json",
+          "trigger_source": "original Native body corners joined to sidewalk geometry",
+          "metric": "first moving full-body sidewalk overlap frame",
+          "failure_condition": "first overlap later than frame 75",
+          "engineering_change": "Advance the steering onset while retaining the same measured sidewalk-use contrast."
+        },
+        {
+          "candidate_id": "fallback2",
+          "config": "native/drafts/contrast/fallback2/config.json",
+          "trigger_source": "original Native body corners joined to sidewalk geometry",
+          "metric": "full-body sidewalk occupancy frame count",
+          "failure_condition": "fewer than 450 full-body frames",
+          "engineering_change": "Adjust lateral transition duration to preserve full-body occupancy without changing the case's statutory question."
+        }
+      ],
+      "excluded_drafts": [
+        "fallback3"
+      ],
+      "exclusion_reason": "The primary contrast risk is realized body occupancy; camera-only adjustment does not address it."
+    }
+  ],
+  "limitations": [
+    "No selected fallback has a current-runtime public receipt yet.",
+    "These triggers do not choose a candidate by desired legal outcome.",
+    "Original CARLA motion and source authority remain unverified."
+  ]
+}

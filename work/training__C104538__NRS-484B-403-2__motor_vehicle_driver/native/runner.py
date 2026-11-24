@@ -351,7 +351,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         if error is None and frames == 600:
             try:
                 sources = {name: output / (name + '.mkv') for name in
-                    ('overview','approach','sign_reference','driver_reference')}
+                    ('overview','approach','reference_corner','driver_reference')}
                 composed = compose_four_views(sources, output / 'video_frames.jsonl',
                                               output / 'raw.mkv')
                 _write_json_new(output / 'four-view-receipt.json', composed)
