@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import importlib.util
+import argparse
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -54,35 +55,42 @@ def enrich_current_graph_sources(source):
     meta_path.write_text(json.dumps(meta)+'\n')
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--suffix',default='v5')
+    parser.add_argument('--validator',type=Path,default=ROOT/'.runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck')
+    args=parser.parse_args()
+    source=SCRATCH/('saved-source-'+args.suffix+'-witness_1')
+    attempt=SCRATCH/('saved-attempt-'+args.suffix+'-witness_1')
+    output=SCRATCH/('processed-'+args.suffix+'-witness_1')
     sys.path.insert(0,str(HERE))
     spec=importlib.util.spec_from_file_location('saved_fixture',HERE/'saved-fixture-proof.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-    module.make_base(SOURCE,'witness_1',600,full_resolution=True)
-    enrich_current_graph_sources(SOURCE)
+    module.make_base(source,'witness_1',600,full_resolution=True)
+    enrich_current_graph_sources(source)
     for old,new in (('intersection','reference_corner'),('parking','driver_reference')):
-        (SOURCE/(old+'.mkv')).rename(SOURCE/(new+'.mkv'))
+        (source/(old+'.mkv')).rename(source/(new+'.mkv'))
     selected=json.loads((HERE/'draft-current-primaries/witness_1/construction.json').read_text())
     cfg=json.loads(next(f['content'] for f in selected['files'] if f['path']=='config.json'))
-    (SOURCE/'config.json').write_text(json.dumps(cfg,indent=2)+'\n')
-    shutil.copytree(SCRATCH/'offline-v2-witness_1',ATTEMPT)
-    for p in SOURCE.rglob('*'):
+    (source/'config.json').write_text(json.dumps(cfg,indent=2)+'\n')
+    shutil.copytree(SCRATCH/'offline-v2-witness_1',attempt)
+    for p in source.rglob('*'):
         if p.is_file():
-            q=ATTEMPT/p.relative_to(SOURCE);q.parent.mkdir(parents=True,exist_ok=True)
+            q=attempt/p.relative_to(source);q.parent.mkdir(parents=True,exist_ok=True)
             shutil.copy2(p,q)
-    selection=json.loads((ATTEMPT/'candidate-selection.json').read_text())
+    selection=json.loads((attempt/'candidate-selection.json').read_text())
     selection['manifest_sha256']=sha(MANIFEST)
     selection['construction_sha256']=sha(HERE/'draft-current-primaries/witness_1/construction.json')
-    (ATTEMPT/'candidate-selection.json').write_text(json.dumps(selection,indent=2)+'\n')
+    (attempt/'candidate-selection.json').write_text(json.dumps(selection,indent=2)+'\n')
     env=dict(os.environ)
     cmd=[sys.executable,str(ROOT/'runtime.py'),'process-saved','--manifest',str(MANIFEST),
-         '--case',CASE,'--attempt',str(ATTEMPT),'--output',str(OUTPUT),
+         '--case',CASE,'--attempt',str(attempt),'--output',str(output),
          '--library',str(ROOT/'runtime/pipeline/library'),
-         '--validator',str(ROOT/'.runtime-work/decoder-refresh-20261105/.lake/build/bin/adapterCheck')]
+         '--validator',str(args.validator)]
     proc=subprocess.run(cmd,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env)
-    versions=sorted(OUTPUT.glob('v*'))
+    versions=sorted(output.glob('v*'))
     feedback=versions[-1]/'feedback.json' if versions else None
     return {'command':cmd,'exit_code':proc.returncode,'stdout_tail':proc.stdout[-2000:],
             'feedback':json.loads(feedback.read_text()) if feedback and feedback.exists() else None,
-            'original_sources_preserved':all(sha(p)==sha(ATTEMPT/p.relative_to(SOURCE)) for p in SOURCE.rglob('*') if p.is_file()),
+            'original_sources_preserved':all(sha(p)==sha(attempt/p.relative_to(source)) for p in source.rglob('*') if p.is_file()),
             'synthetic_diagnostic':True,'native_executed':False}
 if __name__=='__main__':print(json.dumps(main(),indent=2))

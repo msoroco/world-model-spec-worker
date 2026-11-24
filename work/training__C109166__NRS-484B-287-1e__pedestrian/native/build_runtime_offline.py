@@ -18,6 +18,7 @@ CHECK = '''"""Exact copied diagonal source integrity; no physical claim."""
 import json
 from pathlib import Path
 from diagonal import measure, sha, synthetic_rows
+from native_request import validate_pair, camera_plan
 
 HERE = Path.cwd()
 
@@ -41,6 +42,9 @@ def check():
         raise ValueError('First-entry device state differs')
     if result['physical_crossing_observed'] or result['legal_verdict_claimed']:
         raise ValueError('Synthetic request claimed physical/legal status')
+    pair = validate_pair()
+    if pair['changed_device_frame_count'] != 60 or len(camera_plan()) != 4:
+        raise ValueError('Native request/camera contract changed')
     return result
 
 if __name__ == '__main__':
@@ -56,6 +60,7 @@ class ExactDiagonalRequest(unittest.TestCase):
         self.assertEqual(row['frames'], 600)
         self.assertFalse(row['physical_crossing_observed'])
         self.assertFalse(row['legal_verdict_claimed'])
+        self.assertIn(row['first_entry_device_state'], ('diagonal_walk', 'diagonal_dont_walk'))
 '''
 
 
@@ -83,6 +88,8 @@ def build():
             ('diagonal-source.jsonl', source.read_text()),
             ('diagonal-context.json', context.read_text()),
             ('diagonal.py', (HERE / 'diagonal.py').read_text()),
+            ('native_request.py', (HERE / 'native_request.py').read_text()),
+            ('native-acquisition-contract.json', (HERE / 'native-acquisition-contract.json').read_text()),
             ('check.py', CHECK), ('tests/test_exact.py', TEST),
             ('config.json', json.dumps(config, indent=2) + '\n'))]
         construction = {'case_id': config['case_id'], 'cell_id': 'C109166',

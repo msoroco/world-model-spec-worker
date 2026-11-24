@@ -46,7 +46,10 @@ def main():
         sources = {f['path']: f['content'] for f in bundle['files']}
         if (sources['diagonal-source.jsonl'] != (folder / (case + '.jsonl')).read_text() or
                 sources['diagonal-context.json'] != (folder / 'context.json').read_text() or
-                sources['case-plan.json'] != (HERE / 'case-plan.json').read_text()):
+                sources['case-plan.json'] != (HERE / 'case-plan.json').read_text() or
+                sources['native_request.py'] != (HERE / 'native/native_request.py').read_text() or
+                sources['native-acquisition-contract.json'] !=
+                (HERE / 'native/native-acquisition-contract.json').read_text()):
             raise AssertionError('Runtime package differs from reviewed source')
         package_checks.append({'case_suffix': case, 'construction_sha256': sha(construction),
                                'source_sha256': sha(folder / (case + '.jsonl'))})

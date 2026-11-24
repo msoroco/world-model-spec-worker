@@ -14,7 +14,8 @@ from source_review import write_bound_rows
 
 
 RAW = ('road-boundary.json', 'native-pedestrian-frames.jsonl',
-       'video_frames.jsonl')
+       'video_frames.jsonl', 'governing-device-authority.json',
+       'highway-authority.json')
 REVIEWED = ('native-signal-frames.jsonl',
             'native-pedestrian-device-frames.jsonl')
 

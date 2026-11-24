@@ -138,6 +138,18 @@ def prove():
             assert 'Reviewed Native source changed' in str(error)
         else:
             raise AssertionError('Tampered original signal rows accepted')
+        for name in ('governing-device-authority.json',
+                     'highway-authority.json'):
+            tampered = temp / ('tampered-' + name)
+            sample(tampered, True)
+            with (tampered / name).open('a') as out:
+                out.write(' ')
+            try:
+                analyze(tampered)
+            except ValueError as error:
+                assert 'Reviewed Native source changed' in str(error)
+            else:
+                raise AssertionError('Tampered authority source accepted: ' + name)
         mislabeled = temp / 'mislabeled'
         sample(mislabeled, True)
         (mislabeled / 'acquisition-provenance.json').unlink()
@@ -154,6 +166,7 @@ def prove():
             'original_sources_preserved': True,
             'saved_finalizer_and_recording_evidence_passed': True,
             'tampered_signal_source_rejected': True,
+            'tampered_authority_sources_rejected': 2,
             'synthetic_as_native_rejected': True,
             'analyzer_sha256': digest(HERE / 'saved_source_analysis.py'),
             'synthetic_cpu_fixture': True,
