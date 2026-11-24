@@ -40,7 +40,7 @@ def refresh(reference, label):
                 "{'value': measured['requested_lane_id'], 'unit': 'lane_id', "
                 "'method': 'saved source-shaped map lane readback', "
                 "'time_window': 'full 30 s synthetic diagnostic', "
-                "'statistic': 'constant', 'reference': lane_context.name}, "
+                "'statistic': 'last', 'reference': lane_context.name}, "
                 "'authored_lane_id':",
             )
             assert "lane_context.write_text" in source
@@ -53,12 +53,12 @@ def refresh(reference, label):
 
 
 for number, case in enumerate(manifest["cases"], 1):
-    target, sha = refresh(case["construction"], f"witness{number}-primary")
+    target, sha = refresh(f"v2-native-draft/witness_{number}-construction.json", f"witness{number}-primary")
     case["construction"] = target
     case["construction_sha256"] = sha
     case["offline"]["construction_sha256"] = sha
     candidate = case["candidates"][0]
-    target, sha = refresh(candidate["construction"], f"witness{number}-fallback1")
+    target, sha = refresh(f"v2-fallback-draft/witness_{number}-fallback1-construction.json", f"witness{number}-fallback1")
     candidate["construction"] = target
     candidate["construction_sha256"] = sha
     candidate["offline"]["construction_sha256"] = sha

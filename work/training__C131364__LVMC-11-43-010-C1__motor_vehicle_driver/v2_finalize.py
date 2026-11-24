@@ -67,6 +67,8 @@ def finalize(attempt, output):
     with stream.open('w') as file:
         for point in rows(required(root, 'roundabout-track.jsonl')):
             file.write(json.dumps({'time_s': point['time_s'], 'value': point}) + '\n')
+    lane_context = root / 'requested-circulating-lane.json'
+    lane_context.write_text(json.dumps({'requested_circulating_lane': measured['requested_lane_id'], 'source': 'roundabout-track.jsonl', 'provenance_kind': 'synthetic_cpu_source_shaped'}) + '\n')
     result = {'case_id': config['case_id'], 'measured_values': {'lane_passage': measured},
         'target_checks': [{'target': 'authored_lane_route', 'requested': True,
             'measured': True, 'method': 'saved source route samples',
@@ -80,8 +82,8 @@ def finalize(attempt, output):
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config['recording_description'],
         'recording_evidence': [{'name': 'roundabout_route', 'unit': 'structured',
-            'reference': stream.name}],
-        'realized_observables': {'authored_lane_id': {'value': measured['requested_lane_id'],
+            'reference': stream.name}, {'name': 'requested_circulating_lane', 'unit': 'lane_id', 'reference': lane_context.name}],
+        'realized_observables': {'requested_circulating_lane': {'value': measured['requested_lane_id'], 'unit': 'lane_id', 'method': 'saved source-shaped map lane readback', 'time_window': 'full 30 s synthetic diagnostic', 'statistic': 'last', 'reference': lane_context.name}, 'authored_lane_id': {'value': measured['requested_lane_id'],
             'unit': 'OpenDRIVE lane id', 'method': 'saved source route samples',
             'time_window': '30 s diagnostic', 'statistic': 'constant',
             'reference': 'roundabout-track.jsonl'}},

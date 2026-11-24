@@ -32,7 +32,7 @@ def build():
                'limitations':['CPU source tests do not prove CARLA realization or accepted recording']}
     manifest={'format':'worker-unselected-draft-construction-manifest-v1',
               'assignment_id':FOLDER.name,'status':'draft_not_selected',
-              'runtime_manifest_sha256':sha(ROOT/'runtime/pipeline/SOURCE-MANIFEST.json'),
+              'runtime_manifest_sha256':sha(ROOT/'runtime/SOURCE-MANIFEST.json'),
               'cases':[]}
     dispositions=json.loads((FOLDER/'case-plan.json').read_text())['requirement_dispositions']
     selected=(0,1,2,3)

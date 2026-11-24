@@ -1,9 +1,9 @@
 {
   "assignment_id": "training__C188094__LVMC-11-30-070-B__pedestrian",
   "input_sha256": "2ba936d1528ef24e0a5b06e2d0f2d9848cd107f29e557b4b4a29d42233d0ca34",
-  "status": "partial",
-  "reason": "Three same-map exact primary and fallback1 candidates pass current-v2 offline, public positive/source-negative compatibility, recorded-only saved processing, and independent CPU audits. Canonical physical preparation, semantic stage proposals, delivery acceptance/comparison audits and strict ready gate are still CPU work. Original Native intersection, district authority, body and pixels remain unverified.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "CPU-prepared exact delivery package; original Native motion, business-district authority, full pedestrian body path, pixels and legal review remain local verification checks.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 3,
   "candidate_count": 2,
   "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
@@ -12,22 +12,60 @@
   "unresolved_branch_count": 1,
   "applied_update": 16,
   "cpu_checkpoint": {
-    "receipt": "common-fallback1-cpu-checkpoint.json",
+    "receipt": "final-proposal-cpu-checkpoint.json",
+    "receipt_sha256": "82ce8d9275d29621d483ed7358aab8a621bea0b72f0f09c042181c94b36abfc6",
     "primary_case_count": 3,
     "fallback_common_intersection_case_count": 3,
-    "common_map_comparison_audit_passed": true,
-    "fallback_policy_audit_passed": true,
+    "current_semantic_proposal_bound": true,
     "original_native_observed": false,
-    "diagnostic_only": true,
-    "receipt_sha256": "24e21f1133379dbba87303e81080ec0d299864959e7254df60e241e4df2feec7"
+    "diagnostic_only": true
   },
   "canonical_package_progress": {
     "manifest": "execution-manifest.json",
     "root_runner_config_construction": true,
     "camera_plan_and_source_mapping": true,
-    "semantic_stage_chain": false,
-    "physical_fixture_proof": false,
-    "delivery_audit": false,
-    "strict_gate_passed": false
-  }
+    "semantic_stage_chain": true,
+    "physical_fixture_proof": true,
+    "delivery_audit": true,
+    "strict_gate_passed": false,
+    "comparison_audit": true,
+    "execution_manifest_sha256": "98625c4ba26190b8e8679b88a6b2c60f9a2608ddd5ab3fe3d6a7ac381f03e609",
+    "guarded_scoped_strict_passed": true,
+    "guarded_scoped_strict_log": "guarded-scoped-strict.log",
+    "guarded_scoped_strict_log_sha256": "368e8e10436390c78ad07bf308d3d6a7d8d88a7db40c2e75f1b7ae4ea73463bb"
+  },
+  "tests": [
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c188094-current-v2\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "current-v2-preflight.log",
+      "sha256": "31070ce1ffc93e42756d33d40912a450f12865d6dbb9655c4e67be79c99b0940"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c188094-current-v2\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/work/training__C188094__LVMC-11-30-070-B__pedestrian\" .venv-cpu/bin/python -m unittest discover -s work/training__C188094__LVMC-11-30-070-B__pedestrian/tests -p test_native.py",
+      "exit_code": 0,
+      "log": "root-native-tests.log",
+      "sha256": "24cefc2bc38a1c71e18591075993695fc72546b32ff6b5baab3d98032ce96fb5"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C188094__LVMC-11-30-070-B__pedestrian/audit-v2-common-fallback1.py --attempt1 .runtime-work/c188094-final-compat-fallback1-probe1 --saved1 .runtime-work/c188094-final-saved-fallback1-probe1/v0001 --attempt2 .runtime-work/c188094-final-compat-fallback1-probe2 --saved2 .runtime-work/c188094-final-saved-fallback1-probe2/v0001 --attempt3 .runtime-work/c188094-final-compat-fallback1-probe3 --saved3 .runtime-work/c188094-final-saved-fallback1-probe3/v0001",
+      "exit_code": 0,
+      "log": "final-fallback-audit.log",
+      "sha256": "3e0824bd0df3270e08e292d4965c1bcbb11e8fcf1c5531803d48177694b2fb6d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C188094__LVMC-11-30-070-B__pedestrian/audit-selected-comparisons.py --attempt1 .runtime-work/c188094-final-compat-primary-probe1 --saved1 .runtime-work/c188094-final-saved-primary-probe1/v0001 --attempt2 .runtime-work/c188094-final-compat-primary-probe2 --saved2 .runtime-work/c188094-final-saved-primary-probe2/v0001 --attempt3 .runtime-work/c188094-final-compat-primary-probe3 --saved3 .runtime-work/c188094-final-saved-primary-probe3/v0001",
+      "exit_code": 0,
+      "log": "selected-comparison-positive.log",
+      "sha256": "1c86ad51c4b2650f3c3e2e45d02425b755acadc113b59d1a66e7f0c27631f0c0"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C188094__LVMC-11-30-070-B__pedestrian --case training__C188094__LVMC-11-30-070-B__pedestrian__probe_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original Native map and authored intersection/junction/sidewalk readback",
+    "Independent business-district authority from original map or trusted source context",
+    "Original pedestrian body-footprint crossing and route completion",
+    "Actual source-camera pixels and complete video decode",
+    "Independent legal review; no diagnostic fixture is accepted evidence"
+  ]
 }

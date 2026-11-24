@@ -156,7 +156,9 @@ def rebuild_channels(attempt: Path, native: list[dict], mapping: list[dict],
     if destination.exists():raise ValueError('Retain prior derived channels; use a fresh attempt')
     destination.mkdir()
     names={item['name'] for item in config['recording_description']['channels']}
-    expected={'dev.traffic_signal','st.stop_line','st.crosswalk','drv.stopped',
+    expected={'dev.traffic_signal','dev.governs','dev.regulatory_sign','drv.turning',
+              'drv.entering_intersection','ru.pedestrian','drv.in_intersection',
+              'drv.arrival_order','st.stop_line','st.crosswalk','drv.stopped',
               'kin.velocity','drv.extreme_lane','st.one_way_roadway',
               'drv.yields_to','native_body_pose_control','camera_frame_join'}
     if names!=expected:raise ValueError('Declared saved observation channels differ')
@@ -169,6 +171,35 @@ def rebuild_channels(attempt: Path, native: list[dict], mapping: list[dict],
             if name=='dev.traffic_signal':
                 value={'observed_state':sample['signal_state_observed'],
                        'native_actor_id':geometry['signal_actor_id']}
+            elif name=='dev.governs':value={
+                'native_actor_id':geometry['signal_actor_id'],
+                'approach_lane':geometry['lanes']['approach_right'],
+                'physical_direction_reviewed':False}
+            elif name=='dev.regulatory_sign':value={
+                'turn_prohibition_present':sample['turn_prohibition_present'],
+                'survey':geometry['turn_prohibition_survey'],
+                'original_pixels_reviewed':False}
+            elif name=='drv.turning':value={
+                'turn_entry_observed':sample['ego_turn_entered'],
+                'yaw_deg':sample['native_yaw_deg']}
+            elif name=='drv.entering_intersection':value={
+                'body_front_y_m':max(v[1] for v in sample['native_body_xy_m']),
+                'near_boundary_y_m':-7.0}
+            elif name=='ru.pedestrian':value={
+                'center_xy_m':sample['walker_center_xy_m'],
+                'conflict_occupied':sample['walker_conflict_occupied'],
+                'lawful_presence_verified':False}
+            elif name=='drv.in_intersection':value={
+                'cross_traffic_actor_id':sample['cross_traffic_actor_id'],
+                'center_xy_m':sample['cross_traffic_center_xy_m'],
+                'conflict_occupied':sample['cross_traffic_conflict_occupied'],
+                'lawful_presence_verified':False}
+            elif name=='drv.arrival_order':value={
+                'native_frame':sample['native_frame'],
+                'signal_state':sample['signal_state_observed'],
+                'walker_conflict_occupied':sample['walker_conflict_occupied'],
+                'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied'],
+                'ego_turn_entered':sample['ego_turn_entered']}
             elif name=='st.stop_line':value=geometry['stop_line_y_m']
             elif name=='st.crosswalk':value=geometry['nearest_crosswalk_y_m']
             elif name=='drv.stopped':value=sample['speed_mps']<.05

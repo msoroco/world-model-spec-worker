@@ -18,7 +18,7 @@ def receipt(path):
 
 
 def main():
-    draft = json.loads((ROOT / "v2-fallback-draft-manifest.json").read_text())
+    draft = json.loads((ROOT / "selected-v2-refresh-manifest.json").read_text())
     plan = json.loads((ROOT / "case-plan.json").read_text())
     selected = []
     for index, entry in enumerate(draft["cases"], 1):

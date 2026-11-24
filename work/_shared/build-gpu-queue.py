@@ -1,6 +1,8 @@
 """Build deterministic, nondispatchable intent rows for every planned full-train case."""
 import argparse
 import json
+import os
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,12 +24,15 @@ def build(root=ROOT):
             raise ValueError("Duplicate planned case: " + aid)
         manifest_path = root / "work" / aid / "execution-manifest.json"
         selected_ids = set()
+        selected_candidates = {}
         if manifest_path.is_file():
             selected = json.loads(manifest_path.read_text())
             selected_ids = {case["case_id"] for case in selected["cases"]}
+            selected_candidates = {case["case_id"]: [candidate["id"] for candidate in case.get("candidates", [])]
+                                   for case in selected["cases"]}
             if len(selected_ids) != len(selected["cases"]) or not selected_ids <= set(case_ids):
                 raise ValueError("Selected cases differ from current plan: " + aid)
-        if result.get("cases_selected", 0) != len(selected_ids):
+        if status == "ready" and result.get("cases_selected", result.get("selected_case_count", 0)) != len(selected_ids):
             raise ValueError("Result selected count differs from manifest: " + aid)
         manifest = "work/" + aid + "/execution-manifest.json"
         for case_id in sorted(case_ids):
@@ -72,7 +77,7 @@ def build(root=ROOT):
                 "candidate_commands": {
                     candidate: "python3.11 work/_shared/prepare-delivery-candidate.py "
                         + case_id + " " + candidate
-                    for candidate in ("fallback1", "fallback2", "fallback3")
+                    for candidate in selected_candidates.get(case_id, ())
                 },
             }
             rows.append(row)
@@ -87,9 +92,11 @@ def build(root=ROOT):
                     + item["comparison_id"],
             })
     return {
-        "format": "worker-ordered-gpu-queue-v1",
+        "format": "worker-ordered-gpu-queue",
         "batch_id": batch["batch_id"],
-        "status": "partial" if any(row["status"] == "partial" for row in rows) else "blocked",
+        "status": ("ready" if all(row["status"] == "ready" for row in rows)
+                   else "partial" if any(row["status"] == "partial" for row in rows)
+                   else "blocked"),
         "cases": rows,
         "comparison_audit_commands": comparisons,
         "reason": "All current planned exact case IDs are ordered; incomplete work is nondispatchable."
@@ -105,7 +112,13 @@ if __name__ == "__main__":
         if json.loads(QUEUE.read_text()) != data:
             raise ValueError("Ordered queue differs from current case plans")
     else:
-        QUEUE.write_text(json.dumps(data, separators=(",", ":")) + "\n")
+        scratch = ROOT / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=scratch,
+                                         prefix="gpu-queue-", delete=False) as handle:
+            handle.write(json.dumps(data, separators=(",", ":")) + "\n")
+            temporary = handle.name
+        os.replace(temporary, QUEUE)
     print(json.dumps({"passed": True, "cases": len(data["cases"]),
                       "comparisons": len(data["comparison_audit_commands"]),
                       "dispatchable": sum(row["dispatchable"] for row in data["cases"])}))

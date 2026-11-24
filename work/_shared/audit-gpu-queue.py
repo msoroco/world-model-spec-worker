@@ -21,7 +21,7 @@ def expected_identities():
         selected_path = ROOT / "work" / aid / "execution-manifest.json"
         selected = json.loads(selected_path.read_text()) if selected_path.is_file() else {"cases": []}
         selected_ids = {item["case_id"] for item in selected["cases"]}
-        if len(selected_ids) != len(selected["cases"]) or result.get("cases_selected", 0) != len(selected_ids):
+        if len(selected_ids) != len(selected["cases"]) or (status == "ready" and result.get("cases_selected", result.get("selected_case_count", 0)) != len(selected_ids)):
             raise ValueError("Result and selected manifest differ")
         for case in plan["cases"]:
             expected_cases[(aid, case["case_id"])] = (status, case["case_id"] in selected_ids)
@@ -33,6 +33,8 @@ def expected_identities():
 
 
 def check(queue, expected_cases, expected_comparisons):
+    if queue.get("format") != "worker-ordered-gpu-queue":
+        raise ValueError("Queue format differs from the delivery contract")
     rows = queue["cases"]
     comparisons = queue["comparison_audit_commands"]
     if ([row["order"] for row in rows] != list(range(1, len(rows) + 1))
@@ -50,7 +52,11 @@ def check(queue, expected_cases, expected_comparisons):
                     "execute_command", "accept_command"):
             if case not in row[key]:
                 raise ValueError("Case identity absent from queue command")
-        if set(row["candidate_commands"]) != {"fallback1", "fallback2", "fallback3"}:
+        selected_path = ROOT / "work" / row["assignment_id"] / "execution-manifest.json"
+        selected = json.loads(selected_path.read_text()) if selected_path.is_file() else {"cases": []}
+        selected_case = next((item for item in selected["cases"] if item["case_id"] == case), None)
+        expected_candidates = {item["id"] for item in selected_case.get("candidates", [])} if selected_case else set()
+        if set(row["candidate_commands"]) != expected_candidates:
             raise ValueError("Fallback preparation missing")
         for candidate, command in row["candidate_commands"].items():
             if case not in command or candidate not in command:

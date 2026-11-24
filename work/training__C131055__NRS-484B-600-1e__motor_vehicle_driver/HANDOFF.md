@@ -1,44 +1,40 @@
-# Current checkpoint: final Native capture contract reproof in progress
+# Current CPU delivery handoff
 
-The previously documented `boundary-v2-*` CPU receipts below are superseded by the revised 1920×1080 overview, canonical camera names and Native source description. Six `boundary-final-*` offline commands passed; public compatibility and saved processing are being reproved. Status remains partial.
+Status: **ready for CPU delivery preparation**. The assignment-scoped strict ready gate passed and was independently rerun by the lead. The revised Native runner uses synchronized overview 1920×1080 and three detail 1280×720 cameras. No original Native recording, measured original speed, pixel review, or physical legal acceptance is claimed.
 
-# training__C131055__NRS-484B-600-1e__motor_vehicle_driver handoff
+## Final source-hashed CPU proofs
 
-Status: **partial**. Three exact selected below, at and above 80 mph CPU diagnostic cases and their three shared fallbacks pass current v2 offline, public compatibility, missing-source negative, recorded-only saved processing and independent diagnostic delivery checks. No original Native recording or physical acceptance is claimed.
+Execution manifest SHA-256: `4d434b1335525f16cf108b49eeb835d8548da079d9f30019d14f7b742172bb4a`. All six selected primary/fallback candidates passed current v2 offline, public compatibility, missing-source negative, recorded-only saved processing and diagnostic delivery audit. Non-diagnostic delivery checks reject each synthetic source.
 
-## Exact boundary and source meaning
-
-NRS 484B.600(1)(e) uses a strict greater-than-80-mph boundary. The revised `native/measure.py` compares Decimal squared original velocity magnitude with 35.7632² m²/s² before any mph display rounding. `native/finalize_v2.py` requires zero above samples and at least one exact equality sample for controlled_3. The synthetic exact-at source has 600 equality samples and zero above. Native requested speed is not measured speed. The accepted at membership mentions only 35.5397 m/s requested (~79.50004 mph), has no original velocity receipt and is **not reused**. `boundary-disposition.json` and the canonical semantic validator record this distinction.
-
-## Retained current v2 CPU proof
-
-`execution-manifest.json` SHA-256 `106e9a93fdbe7fe035edc79f953edd23fffa9f3e63fb2c6b11a9d97f8cc3f7d3` binds three selected source-hashed constructions and the same `fallback1` throttle gain change (0.35 to 0.55) for each. All six fresh `boundary-v2-*` receipts below supersede the older selected/fallback receipts, whose embedded meter was rounded.
-
-| Case | Candidate | Compatibility SHA-256 | Recorded-only saved SHA-256 | Delivery diagnostic SHA-256 |
+| Case | Candidate | Compatibility SHA-256 | Saved SHA-256 | Diagnostic delivery SHA-256 |
 | --- | --- | --- | --- | --- |
-| controlled_1 | primary | `e7d2b04366b68ef1d401e40de8ac62af20b5b39edf4762f93fe88b77bf00e16d` | `0df4d99a113880225402f5c36c40886e2f3d7be079854ae3aeecd3d92f159c6c` | `1fffdd1dd45a1c3b66d60b7c87e4c424894c77b3d9859071ab7084f5cba38042` |
-| controlled_1 | fallback | `9e477e0fac8ef4210340745b5d6208d7afa5544b69ba0662eda1638ca626fe8a` | `e43cf742b952e2255a8c9c04c3e0246c176244dd2ea590a28940b73c1832bd39` | `012ab4e2ef881574ea70072c6c9244ec3086838e9de6387f7c6292ca4391d478` |
-| controlled_2 | primary | `8cfb4865aebeed5e82d2363d5ff401197f3191434e2cec194d0046fc04b632b8` | `20d8bd885690f892a02663d6bda6c9efe66e92e35335e33e1ad2facdd1a0c903` | `6c599accf3599e4e16efb1ad95d731c4731928a0c548e8e187e78a20a96b2228` |
-| controlled_2 | fallback | `9308b2170d394c14a44de0a3ea748f7632bfc00290a9e1310961833f3ba0b9eb` | `548922fb33b8fc64a695c9a55f8d26ffe2f652041b4c058f547357917c2c33cf` | `693e6ffab7fc8be4b31ed2b3905a3ce1d54a27a54e265a2375c9c7a973ff8359` |
-| controlled_3 | primary | `340a433845e08c695ec8cd18e5e6a6e4250bf2dc7861a316b3a6d5142111f363` | `5c0295d95371935c7d6953f6267fcb66a29af5ebd0853bc2d4748eb359acd5cc` | `05fa68447b2d2786649c58531c89a385d83ba57cfcfc346e6e428885f2dc0d7c` |
-| controlled_3 | fallback | `e752e09f4a60e21acac43167a3d6a85c7d8960fb4a6dee5db0d535cce0eeecf0` | `1ffce2c22f5ca759fe533c2bb34a2dbf2b87d5bb0a2a1279360ccf4f19f9bdae` | `76894709abd19e464449aca3eacc3af4d9e8bbc6b58ea30a322878b8fbf956fd` |
+| controlled_1 | primary | `1fd21b5024133cdeb7c41325a86f249fb6ac54e77449a1fe5172a0a2bf4a6c19` | `a1d1c97f7baac6652688e03eefbd381924c16b8a3c6732c60b3c1304d854c223` | `82b9b479b1463560d9012dd760567e39708766e596a48fd84d9c4165f3ae0bbb` |
+| controlled_1 | fallback | `e072eec4dc182b6f30ac775f5cc85ed4623b8ec5745bb6fba401441e970c224b` | `99e56289090154689d17855a0935041bb56b98f74919c1390906b03e64ed506f` | `97a79802195b18b1448a02fcae028b2d46e050bfb35ea748dc569fd0ef923883` |
+| controlled_2 | primary | `13ad0157df04553ad852b38b43f968c7ca6b3aea770cb3395c9ea1d5902805c2` | `54660f2f42a7fc10dab6111638b2ed4a06748789f58b96d67f14d57658e094d0` | `24a09cdcd96ad077292335e96c94441c4e943162ecb360a6e5d08a56463820ec` |
+| controlled_2 | fallback | `98dfeb3e31dce829850523eb11c82702bc02ddecfc2479e2e42a83d0f6e6f76c` | `573bcb6424887c92d03a93b14f114c39c6655e012aabca87d06100f6cd6372df` | `dd45bf3a5d38f9b5b54700c38b5d89c14143536df2c3195929f39353d3f2d864` |
+| controlled_3 | primary | `b8b1e5fff03a1b41db6fc83472d65a8c4fdb2cfc4d5fb981d296312245110154` | `5c262f4178f0db4c0b46b7d4a8820993d6bed5c478e66bb55e5c0001df6c4b1d` | `5b194a7722bcef502cede13935c0b15a6be7b98500819696b519d9ef8a38949c` |
+| controlled_3 | fallback | `d3bda34b61e73c9c6c012fcd0807c7b416ca22891bf3152517173b65d0f322be` | `13ff368620c9d99ae7dacec5691113c09589c5572ae8bd4adf80ae2475715d57` | `6d5cd36637bd568048c6f953c00616cc0dbf6752c4ed4a80789dfa99163b779f` |
 
-Exact command pattern from repository root, with `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/owner199" TMPDIR="$PWD/.runtime-work"` exported first:
+Each row has retained `boundary-final-I-KIND-offline.log`, `boundary-final-I-KIND-negative-analysis.log`, `boundary-final-I-KIND-delivery-negative.log`, and the three receipts under this work directory. Positive compatibility attempt and saved output remain under `.runtime-work/owner199/boundary-final-I-KIND-compat` and `boundary-final-I-KIND-saved/v0001/processing.json`.
+
+## Replay from repository root
+
+Set `PYTHONDONTWRITEBYTECODE=1`, `SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/owner199"`, and `TMPDIR="$PWD/.runtime-work"`. Substitute `I=1,2,3`, `KIND=primary,fallback`, and `CANDIDATE=primary,fallback1`:
 
 ```sh
-.venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_I --candidate CANDIDATE --output .runtime-work/owner199/boundary-v2-I-KIND-offline --python "$PWD/.venv-cpu/bin/python"
-.venv-cpu/bin/python runtime.py compatibility --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_I --candidate CANDIDATE --output .runtime-work/owner199/boundary-v2-I-KIND-compat --library runtime/library --validator .runtime-work/owner199/decoder-current/.lake/build/bin/adapterCheck
-.venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_I --attempt .runtime-work/owner199/boundary-v2-I-KIND-compat --output .runtime-work/owner199/boundary-v2-I-KIND-saved --library runtime/library --validator .runtime-work/owner199/decoder-current/.lake/build/bin/adapterCheck
+.venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_I --candidate CANDIDATE --output .runtime-work/owner199/boundary-final-I-KIND-offline --python "$PWD/.venv-cpu/bin/python"
+.venv-cpu/bin/python runtime.py compatibility --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_I --candidate CANDIDATE --output .runtime-work/owner199/boundary-final-I-KIND-compat --library runtime/library --validator .runtime-work/owner199/decoder-current/.lake/build/bin/adapterCheck
+.venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_I --attempt .runtime-work/owner199/boundary-final-I-KIND-compat --output .runtime-work/owner199/boundary-final-I-KIND-saved --library runtime/library --validator .runtime-work/owner199/decoder-current/.lake/build/bin/adapterCheck
 ```
 
-Substitute `I=1,2,3`, `KIND=primary,fallback`, and `CANDIDATE=primary,fallback1` respectively. Process-saved infers the candidate from the attempt and has no `--candidate` argument. Exact offline logs are `boundary-v2-I-KIND-offline.log`; positive compatibility receipts, expected missing `roundabout-speed-history.jsonl` negative logs, and saved receipts are retained alongside this handoff. All saved receipts report `passed: true`, `recorded_only: true`, `physical_acceptance_claimed: false`.
+`process-saved` infers candidate from the compatibility attempt. Each saved receipt says `passed=true`, `recorded_only=true`, `physical_acceptance_claimed=false`.
 
-## Independent checks
+## Independent CPU validation
 
-`boundary-v2-selected-comparison-receipt.json` SHA-256 `d57d535c6db41a393a0e414a11f0c65730b0e26a311cdfe653bbecf70dbb9869` checks selected construction and recipe source hashes, 600 frame/time/subject/route joins, fixed conditions and the synthetic below/at/above velocity difference. `fallback-isolation-v3-receipt.json` SHA-256 `2d926cacf518b3717f4b8e5e63459538acba8326024921cf3e85b406f357a8f9` proves only the shared throttle gain changed. `boundary-disposition.json` SHA-256 `d9feee1cf7e57d6beb3c3ec2af66459f6e979234b07e02db9d9ab6cc204df754` records zero accepted-membership reuse.
+Selected comparison `cb0ce1e6c5d9a1f44869b2761b85edc58ec479afc3fc81824316861905bbcc09`; fallback isolation `61b9d201d3b30adcfcad62abe1ccf3501741f24c04e7c936234f82d2cd11f082`; canonical semantic log `413c1a64a8cc9912e68f08e157842274032dc70efb7edf55f1a51f83322f77d7`; canonical delivery log `e57ad15e155b0c5e25a1cbec078fff76d195020fe1081a52e2d97ee5c6790545`; root unit suite (3 tests) `7710749a44d87b2928443280b55e2f8ef9fa7a8c39764c43341285f50c4c8f09`. Direct future physical audit source-shape tests for controlled_2 and controlled_3 passed, including stale camera review rejection: `0fa65e0e129b84e7cdedf5d19f82bbd345dac5a2b36e359e12b83876a69aefb6`, `ce951fb111a182fb3e48879875d75007e0618f83d2f39eefbe0e19f73b408efe`. These fake-source tests are diagnostic only.
 
-Diagnostic `delivery_audit.py` receipts above decode four 600-frame videos and verify source/saved hashes and joins; each `boundary-v2-I-KIND-delivery-negative.log` rejects the same synthetic source without `--diagnostic` with `Original Native roundabout source required`. Canonical `validate_delivery_local.py` exited 0, log SHA-256 `b7ba2bdfef622930512441e98a5336b670eb23fc0fe6ab61529a7bdf8cd3396a`. Canonical `validate_semantic_local.py` exited 0, log SHA-256 `f4c7575561634133fd7dbec46eb763a3e695df8cc513ea5c3b33e8e1bf075e75`. Native meter unit test exited 0, log SHA-256 `800346069b7c77896a63bf9caf4716560e8342f5599a74f58ff8b74006e44266`.
+The three physical preparation receipts bind complete arc/exit, incomplete motion and missing evidence CPU fixtures plus Native ownership lifecycle order. Direct execution-manifest, semantic-delivery, delivery-handoff, package-compatibility and physical-preparation validators passed. Assignment-scoped `worker_check.py --complete` passed.
 
-The future physical audit branch was exercised with source-shaped **fake** Native originals for controlled_2 and exact-at controlled_3. Run `OWNER199_SOURCE_SHAPE_CASE=2` or `3` with `.venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/tests/test_delivery_audit.py`; both direct commands exited 0 and rejected a stale camera pixel-review hash. Logs: `boundary-v2-source-shape-2.log` SHA-256 `0fa65e0e129b84e7cdedf5d19f82bbd345dac5a2b36e359e12b83876a69aefb6`, `boundary-v2-source-shape-3.log` SHA-256 `ce951fb111a182fb3e48879875d75007e0618f83d2f39eefbe0e19f73b408efe`. These are CPU branch tests only, not evidence of reviewed real pixels.
+The strict greater-than-80-mph predicate compares original velocity magnitude squared using Decimal against exactly 35.7632² m²/s² before display rounding. Synthetic exact-at controlled_3 has 600 equality samples and zero above. Accepted at membership provides requested 35.5397 m/s only, no original velocity; zero accepted reuse. The actual Native measurement remains for delivery.
 
-Assignment-scoped `.venv-cpu/bin/python worker_check.py --assignment training__C131055__NRS-484B-600-1e__motor_vehicle_driver --complete` passed; `scoped-check.log` retains its output. Status remains partial. Original Native arc/exit traversal, measured 80 mph boundary, four-camera pixels and independent review, source-hashed equivalence to any accepted recording, and physical completion remain unverified. A strict ready gate must follow genuine completion; no ready claim is made.
+The first GPU command is recorded in `result.json`. Native delivery and independent pixel review remain downstream. The assignment-scoped strict ready gate passed with `static_checks_passed: true`; see `strict-scoped-ready.log`. The lead independently reran the exact gate and it passed.

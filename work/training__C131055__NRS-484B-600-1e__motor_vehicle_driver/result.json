@@ -12,12 +12,12 @@
   "canonical_semantic_validation_log_sha256": "413c1a64a8cc9912e68f08e157842274032dc70efb7edf55f1a51f83322f77d7",
   "delivery_diagnostic_script_sha256": "e381c5940e24b9d7f1dd283ae6f6a130eb912351fbb7d41e6f8a387ce22c0f4e",
   "fallback_isolation_receipt_sha256": "61b9d201d3b30adcfcad62abe1ccf3501741f24c04e7c936234f82d2cd11f082",
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment training__C131055__NRS-484B-600-1e__motor_vehicle_driver --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "f5542a5f03d708a0560073baa8fcd2705d4ca67d0a1dabaad5c1d8aaef422d4c",
-  "local_integration_status": "generic_unit_passed_batch_integration_unproven",
+  "local_integration_status": "canonical_semantic_delivery_and_three_native_unit_tests_passed",
   "local_integration_unit_log_sha256": "a8187393832a0c28f690ef40f38b081158e1f671960cc24767ad7764389e159c",
   "planned_case_count": 3,
-  "readiness_kind": "selected_cpu_diagnostic_checkpoint",
-  "reason": "Three exact selected below/at/above current-v2 CPU diagnostic cases and all three shared fallbacks passed source-negative public compatibility and recorded-only saved processing. Accepted at-membership has request only and zero reuse; original Native measured speed and pixels remain unverified.",
+  "readiness_kind": "delivery_prepared",
   "reuse_count": 0,
   "selected_case_count": 3,
   "selected_comparison_receipt_sha256": "cb0ce1e6c5d9a1f44869b2761b85edc58ec479afc3fc81824316861905bbcc09",
@@ -25,6 +25,38 @@
   "semantic_proposals": "draft_partial",
   "source_hashed_equivalence_count": 0,
   "source_law_review": "Exact NRS 484B.600(1)(e) states an absolute greater-than-80-mph boundary for driving or operating any vehicle. Controller speed requests do not prove measured speed; this draft derives maximum mph from original Native velocity and retains an unconfirmed physical outcome.",
-  "status": "partial",
+  "status": "ready",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/tests -p test_*.py",
+      "exit_code": 0,
+      "log": "root-cpu-tests.log",
+      "sha256": "7710749a44d87b2928443280b55e2f8ef9fa7a8c39764c43341285f50c4c8f09"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/validate_semantic_local.py",
+      "exit_code": 0,
+      "log": "semantic-validation.log",
+      "sha256": "413c1a64a8cc9912e68f08e157842274032dc70efb7edf55f1a51f83322f77d7"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/validate_delivery_local.py",
+      "exit_code": 0,
+      "log": "delivery-contract-validation.log",
+      "sha256": "e57ad15e155b0c5e25a1cbec078fff76d195020fe1081a52e2d97ee5c6790545"
+    },
+    {
+      "command": "OWNER199_SOURCE_SHAPE_CASE=2 .venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/tests/test_delivery_audit.py",
+      "exit_code": 0,
+      "log": "boundary-final-source-shape-2.log",
+      "sha256": "0fa65e0e129b84e7cdedf5d19f82bbd345dac5a2b36e359e12b83876a69aefb6"
+    },
+    {
+      "command": "OWNER199_SOURCE_SHAPE_CASE=3 .venv-cpu/bin/python work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/tests/test_delivery_audit.py",
+      "exit_code": 0,
+      "log": "boundary-final-source-shape-3.log",
+      "sha256": "ce951fb111a182fb3e48879875d75007e0618f83d2f39eefbe0e19f73b408efe"
+    }
+  ],
   "unresolved_branch_count": 0
 }
