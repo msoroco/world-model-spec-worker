@@ -24,9 +24,160 @@
   "topic_inventory": {
     "exact-text": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Be prepared to stop. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "kind": "delivery",
+      "branch": "Preparing to move through a visible vehicle-movement indication.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "emergency_motion_probe.py",
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Small emergency-unit displacement may be missed from driver viewpoint."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Preparing to move through a visible vehicle-movement indication.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "emergency_motion_probe.py",
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_no_brake",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ego response may not be distinguishable in captured control packets."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Preparing to move through a visible vehicle-movement indication.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "emergency_motion_probe.py",
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__movement_occluded",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Constructed occlusion may hide the cue in some cameras."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Preparing to move through a visible vehicle-movement indication.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "emergency_motion_probe.py",
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__officer_direction",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Officer direction may not be visible or source-bound."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Preparing to move through a visible vehicle-movement indication.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "emergency_motion_probe.py",
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__regulatory_official_vehicle",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Regulatory official-vehicle authorization and equipment may be hard to establish."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Preparing to move through a visible vehicle-movement indication.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "emergency_motion_probe.py",
+      "case_id": "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__hand_signal_alternative",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Hand signal visibility from driver viewpoint may be hard to realize; separate subsection (4) alternative."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "movement_visibility",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__movement_occluded"
+      ],
+      "fixed_conditions": [
+        "authorized emergency vehicle",
+        "qualifying flashing lights",
+        "ego approach route",
+        "unit movement",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "driver-view visibility of actual movement cue"
+      ]
+    },
+    {
+      "comparison_id": "driver_response",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_no_brake"
+      ],
+      "fixed_conditions": [
+        "authorized unit and flashing lights",
+        "visible movement cue",
+        "ego approach",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "ego braking control response after cue"
+      ]
+    },
+    {
+      "comparison_id": "officer_direction_exception",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__officer_direction"
+      ],
+      "fixed_conditions": [
+        "authorized unit and flashing lights",
+        "visible movement cue",
+        "ego approach",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "source-bound officer direction"
+      ]
+    },
+    {
+      "comparison_id": "vehicle_and_cue_alternatives",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__visible_movement_brake_response",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__regulatory_official_vehicle",
+        "testing__C405341__NRS-484B-267-2c__motor_vehicle_driver__hand_signal_alternative"
+      ],
+      "fixed_conditions": [
+        "ego approach",
+        "qualifying flashing lights",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "emergency versus regulatory official vehicle; visible movement versus hand-signal cue"
+      ]
+    }
+  ],
+  "observations": [
+    "Authorized emergency or regulatory official vehicle identity and qualifying flashing-light use under DEF-NRS-484A-480-3",
+    "Original-frame actual emergency-unit displacement and driver-view visibility of that movement cue",
+    "Ego approach distance and response controls after visible cue",
+    "Source-bound officer direction if any",
+    "Prepared-to-stop judgment remains unresolved; actual stop not required by this clause; brake lamps alone are not a movement indication"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C405341__NRS-484B-267-2c__motor_vehicle_driver/assignment.json",
@@ -51,17 +202,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CPU probe does not construct CARLA authorized unit, flashing equipment or driver-view cue.",
+    "Qualifying lighting definition and authorization must be source-grounded.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual movement, cue visibility and camera evidence require later CARLA verification."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Source-bound visible emergency-unit movement, qualifying lights and ego preparedness",
+        "source": "inputs/testing__C405341__NRS-484B-267-2c__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_visible_movement_probe",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

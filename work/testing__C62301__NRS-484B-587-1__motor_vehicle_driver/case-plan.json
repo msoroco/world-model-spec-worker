@@ -30,9 +30,132 @@
   "topic_inventory": {
     "exact-text": "When official traffic-control devices are erected giving notice thereof, a person shall not drive a vehicle onto or from any controlled-access highway except at those entrances and exits which are indicated by such devices."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "kind": "delivery",
+      "branch": "Entry onto a controlled-access highway.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "access_probe.py",
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ramp geometry and official sign placement may not align with vehicle route."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Entry onto a controlled-access highway.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "access_probe.py",
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Non-designated boundary crossing may not have a drivable physical route."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Entry onto a controlled-access highway.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "access_probe.py",
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Sign may be erected but occluded from approaching driver view."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Entry onto a controlled-access highway.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "access_probe.py",
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exit route requires distinct direction and device notice."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Entry onto a controlled-access highway.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "access_probe.py",
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Undesignated exit boundary may be physically inaccessible."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entry_designation",
+      "case_ids": [
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry"
+      ],
+      "fixed_conditions": [
+        "public controlled-access highway",
+        "authority determination",
+        "official erected device inventory",
+        "vehicle and route origin",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "crossing at indicated versus unindicated entrance"
+      ]
+    },
+    {
+      "comparison_id": "entry_notice",
+      "case_ids": [
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible"
+      ],
+      "fixed_conditions": [
+        "controlled-access highway",
+        "same entrance and vehicle route",
+        "official device authority",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "source-bound driver-view visibility of erected notice"
+      ]
+    },
+    {
+      "comparison_id": "exit_designation",
+      "case_ids": [
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+        "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit"
+      ],
+      "fixed_conditions": [
+        "public controlled-access highway",
+        "authority determination",
+        "official erected device inventory",
+        "vehicle and route origin",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "crossing at indicated versus unindicated exit"
+      ]
+    }
+  ],
+  "observations": [
+    "Public-authority determination of controlled-access highway and designated entrances/exits",
+    "Public highway extent and surveyed boundary crossing from original vehicle route",
+    "Official erected device identity, notice content, authority and visibility",
+    "Entry versus exit direction and precise crossing coordinates",
+    "Vehicle driver identity and actual route; map road type alone does not prove legal controlled-access status"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/assignment.json",
@@ -57,17 +180,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CPU probe does not construct CARLA access points, devices or vehicles.",
+    "Authority and official-device provenance need original source confirmation.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual crossing and notice visibility require later CARLA verification."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Source-bound entry at indicated versus unindicated controlled-access highway access point",
+        "source": "inputs/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_access_crossing_probe",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-587-1.json",

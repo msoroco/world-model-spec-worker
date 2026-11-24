@@ -139,6 +139,46 @@ def _inside(box, xy):
     return box[0] <= xy[0] <= box[2] and box[1] <= xy[1] <= box[3]
 
 
+def sample_native_frame(world, actors, site, case_key, map_sha256, frame_index, first_elapsed_s):
+    """Read one post-tick Native snapshot and both actors for ``measure``.
+
+    The caller records the first snapshot elapsed time as ``first_elapsed_s`` and
+    invokes this once after every 20 Hz world tick. This adapter never invents a
+    frame ID, position or speed; ``measure`` checks the resulting full history.
+    """
+    validate_site(site, case_key, map_sha256)
+    require(world.get_map().name == site["map_name"], "Native map identity mismatch")
+    require(type(frame_index) is int and frame_index >= 0 and finite_number(first_elapsed_s),
+            "original frame origin missing")
+    require(isinstance(actors, dict) and set(actors) == {"through", "entering"},
+            "both Native actors required")
+    snapshot = world.get_snapshot()
+    native_frame = getattr(snapshot, "frame", None)
+    timestamp = getattr(snapshot, "timestamp", None)
+    elapsed = getattr(timestamp, "elapsed_seconds", None)
+    require(type(native_frame) is int and finite_number(elapsed), "Native snapshot identity missing")
+    relative_time = elapsed - first_elapsed_s
+    require(abs(relative_time - frame_index / 20) <= 0.002,
+            "Native snapshot 20 Hz cadence mismatch")
+    row = {"frame_index": frame_index, "native_frame": native_frame,
+           "time_s": relative_time, "map_sha256": map_sha256,
+           "intersection_id": site["intersection_id"]}
+    for role in ("through", "entering"):
+        actor = actors[role]
+        require(actor is not None and actor.is_alive and type(actor.id) is int,
+                f"{role} Native actor identity missing")
+        location = actor.get_location()
+        velocity = actor.get_velocity()
+        values = (location.x, location.y, velocity.x, velocity.y, velocity.z)
+        require(all(finite_number(v) for v in values), f"{role} Native pose or velocity missing")
+        row[role] = {"actor_id": actor.id, "alive": True,
+                     "center_xy": [location.x, location.y],
+                     "speed_mps": math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)}
+    require(row["through"]["actor_id"] != row["entering"]["actor_id"],
+            "same Native actor used for both roles")
+    return row
+
+
 def measure(site, case_key, map_sha256, frames):
     """Describe original 20 Hz pair motion and precedence without a legal label."""
     validate_site(site, case_key, map_sha256)

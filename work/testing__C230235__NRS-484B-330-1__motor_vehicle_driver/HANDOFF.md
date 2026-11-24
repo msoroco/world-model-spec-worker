@@ -1,22 +1,9 @@
-# testing__C230235__NRS-484B-330-1__motor_vehicle_driver
+# C230235 NRS 484B.330(1) checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Five exact designated temporary traffic control zone probes are implemented in `flagger_zone.py`: authorized stop signal with continuing and stopping driver responses; undesignated zone; unauthorized flagger; and proceed signal. Construction creates flagger and vehicle, schedules the signal/release and vehicle response, and cleans up on failure. The finalizer requires an original 900-frame 20 fps capture with stable identities, source hashes, signal governance, recipient, visibility and physical vehicle response. It leaves failure or refusal legal judgment unset.
 
-Exact law: NRS 484B.330(1) — It is unlawful for a driver of a vehicle to fail or refuse to comply with any signal of an authorized flagger serving in a traffic control capacity in a clearly marked area of highway construction or maintenance or any other area which has been designated as a temporary traffic control zone.
-Assigned branch(es): Designated temporary traffic control zone.
-Cell: C230235 (road, travel, flagger); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Source boundary: designated-zone evidence and boundaries are independent of the clearly marked construction/maintenance alternative. Flagger authorization, traffic-control role, signal orientation, exact content and intended vehicle must be separately sourced; appearance alone is insufficient. No accepted exact recording exists.
 
-## Next CPU actions
+Focused tests, pinned CPU preflight and scoped static check pass. Exact scoped strict fails on truthful partial status; see `cpu-strict-check.log`. Successful receipt commands and hashes appear in `result.json`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C230235__NRS-484B-330-1__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
-
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Remaining CPU: canonical runner/config/camera capture, source-shaped positive/negative compatibility, semantic proposals, saved-only processing, and independent delivery/comparison audits.

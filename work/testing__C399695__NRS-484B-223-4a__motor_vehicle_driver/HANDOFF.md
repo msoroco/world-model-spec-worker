@@ -1,22 +1,20 @@
-# testing__C399695__NRS-484B-223-4a__motor_vehicle_driver
+# C399695 NRS 484B.223(4)(a) motor vehicle checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Frozen assignment SHA256 `4a9e941fc83d5b446b4f5a640e01051e65c45d4029e34c2ba479d65316db8440`. Frozen evidence has no accepted recording for this assignment.
 
-Exact law: NRS 484B.223(4)(a) — If a highway has been designed to provide a single right lane to be used only for turning, a vehicle must: Be driven in the right turn lane only for the purpose of making a right turn.
-Assigned branch(es): T-intersection right-turn approach.
-Cell: C399695 (t_intersection, right_turn, right_turn_lane); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed and tested
 
-## Next CPU actions
+`right_turn_lane_probe.py` requires source-bound public highway, a single exclusive right-turn lane and a connected distinct right-turn exit at the T junction. It measures original-frame lane occupancy, observed connected right turn and independently sourced purpose recorded before lane entry. It rejects missing source bindings, disconnected route, nonexclusive lane design and late purpose. It keeps purpose sufficiency unresolved rather than inferring it from occupancy duration or turn completion.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now plans four exact cases and two controlled comparisons for right-turn purpose versus other purpose and purpose-route agreement. Each case has a physical risk assessment. These plans do not claim delivery or capture readiness.
 
-## Proven checks and dependency boundary
+## Proofs
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `289a0a4db18b20715a41371005c71229a25653bca08a1d24493c03ff3f59cc55`.
+- `.venv-cpu/bin/python -m unittest discover -s work/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `cab12123cc3deaa414eda1c27a1d4a3ecb3af2cbce89ea1dee740989cce65639`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver`: exit 0, `static.log` SHA256 `34ac2ba7b6b800e062a8ec7c1b4212b33156e3e8074a8c71db8fce655c62fa5e`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-223-4a__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Next CPU work
+
+Construct the actual single exclusive right-turn lane and connected T-junction route in CARLA; implement vehicle controllers and capture original lane-use, purpose and departure packets. Build exact saved finalizers, offline construction and positive/negative compatibility receipts for all cases, semantic proposals, saved-only processing, independent delivery and comparison audits, manifest and queue entries. Recheck full law and contracts. Actual lane occupation, turn and pixel coverage require later CARLA verification.

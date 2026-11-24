@@ -24,9 +24,130 @@
   "topic_inventory": {
     "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle may be driven in the center turn lane only for the purpose of making a left-hand turn onto or from the highway."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "kind": "delivery",
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "center_lane_probe.py",
+      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Shared center lane extent and departure geometry may not allow a stable left turn."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "center_lane_probe.py",
+      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Joining the highway through the shared center lane may conflict with other traffic."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "center_lane_probe.py",
+      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actor may leave the shared center lane before enough occupancy is captured."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "center_lane_probe.py",
+      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route controller may inadvertently produce a left turn."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "center_lane_probe.py",
+      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Map junction may actually be an alley and not a qualifying intersection."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "qualifying_turn_directions",
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway"
+      ],
+      "fixed_conditions": [
+        "single shared center turn lane designed for both directions",
+        "qualifying highway",
+        "motor vehicle driver",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "left turn from versus onto highway"
+      ]
+    },
+    {
+      "comparison_id": "purpose_vs_trajectory",
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose"
+      ],
+      "fixed_conditions": [
+        "same highway and shared center-lane design",
+        "actual center-lane occupancy",
+        "vehicle/driver",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "declared maneuver purpose and observed departure trajectory"
+      ]
+    },
+    {
+      "comparison_id": "intersection_classification",
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection"
+      ],
+      "fixed_conditions": [
+        "shared center lane",
+        "vehicle and planned left turn",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "street intersection versus alley junction classification"
+      ]
+    }
+  ],
+  "observations": [
+    "Source-bound highway and one shared center turn-only lane for both traffic directions",
+    "Original-frame ego lane occupancy, approach and departure road IDs and observed maneuver",
+    "Independently sourced intent/purpose recorded before center-lane entry",
+    "Street intersection versus alley-junction classification",
+    "Purpose sufficiency remains unresolved and is not inferred from lane distance or turn completion"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C382162__NRS-484B-223-3a__motor_vehicle_driver/assignment.json",
@@ -51,17 +172,26 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CPU probe does not construct the shared lane or CARLA route.",
+    "Actual design provenance, declared purpose and intersection classification require source-bound construction.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual motion and video evidence require later CARLA verification."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Shared-center-lane purpose episode at this intersection",
+        "source": "inputs/testing__C382162__NRS-484B-223-3a__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_center_lane_probe",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

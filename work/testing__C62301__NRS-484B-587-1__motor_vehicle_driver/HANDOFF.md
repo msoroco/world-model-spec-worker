@@ -1,22 +1,20 @@
-# testing__C62301__NRS-484B-587-1__motor_vehicle_driver
+# C62301 NRS 484B.587(1) motor vehicle checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Frozen assignment SHA256 `452e7106d1cf8d36f448e781b710f5aaae7a6fc73336ec109a20a1769cddf6d2`. Frozen evidence has no accepted recording for this assignment.
 
-Exact law: NRS 484B.587(1) — When official traffic-control devices are erected giving notice thereof, a person shall not drive a vehicle onto or from any controlled-access highway except at those entrances and exits which are indicated by such devices.
-Assigned branch(es): Entry onto a controlled-access highway..
-Cell: C62301 (controlled_access_road, enter_road, traffic_control_device); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed and tested
 
-## Next CPU actions
+`access_probe.py` requires source-bound public-authority controlled-access determination, highway boundary and official erected device inventory. It computes original-frame route boundary crossings and checks entry/exit direction and crossing location against designated, visible-notice access points. It rejects missing authority, an unerected device, absent route sources and no crossing. A map road type alone is never treated as legal controlled-access status.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C62301__NRS-484B-587-1__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now plans five exact cases and three controlled comparisons for indicated versus unindicated entrances, notice visibility and indicated versus unindicated exits. Each case states a physical risk. These are plans, not delivery or capture claims.
 
-## Proven checks and dependency boundary
+## Proofs
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `422020f6e4e43f6838ac4fa207d9ed0c76a939796d06729580d320577e39bf7b`.
+- `.venv-cpu/bin/python -m unittest discover -s work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `c4b1758da37bc24876a18733574a710b4231e9d94d0936c83bd3976ef2e62eee`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C62301__NRS-484B-587-1__motor_vehicle_driver`: exit 0, `static.log` SHA256 `7316dd21f061a353ca071514f51a6bc8b7b8eed700915d521f4cca16a6319bb8`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C62301__NRS-484B-587-1__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Next CPU work
+
+Source the actual authority access determination and notice designation; construct physical highway entrances/exits, erected official devices, route controllers and capture of original vehicle path and notice visibility. Add exact saved finalizers, offline construction and positive/negative compatibility receipts, semantic proposals, saved-only processing, independent delivery/comparison audits, manifest and queue entries. Recheck full law and contracts. Actual boundary crossing and device visibility require later CARLA verification.

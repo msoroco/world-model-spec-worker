@@ -1,22 +1,20 @@
-# testing__C405341__NRS-484B-267-2c__motor_vehicle_driver
+# C405341 NRS 484B.267(2)(c) motor vehicle checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Frozen assignment SHA256 `6064afd7880b0185db0de8a665f52d6441c3239908b6aa7449d19842b977c432`. Frozen evidence has no accepted recording for this assignment.
 
-Exact law: NRS 484B.267(2)(c); with 484B.267(4) — Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Be prepared to stop. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.
-Assigned branch(es): Preparing to move through a visible vehicle-movement indication..
-Cell: C405341 (paved_road, travel, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Constructed and tested
 
-## Next CPU actions
+`emergency_motion_probe.py` requires sourced emergency/regulatory authorization, qualifying flashing-light and route context. It binds original frames for actual emergency-unit displacement, driver-view cue visibility, ego approach, flashing lights, ego braking response and officer direction. It rejects nonvisible movement, visibility flags without movement, missing source bindings and unqualified vehicle class. It leaves preparedness unresolved and does not require an actual stop under this clause.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2c__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now plans six exact cases and four controlled comparisons for movement visibility, ego response, officer direction and qualifying vehicle/cue alternatives. Each case has a physical risk assessment. These plans do not claim capture or delivery readiness.
 
-## Proven checks and dependency boundary
+## Proofs
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `10de44f5c7aebb8744b58de72158afb142c3c69b0c5116e46e456c5dc407c81d`.
+- `.venv-cpu/bin/python -m unittest discover -s work/testing__C405341__NRS-484B-267-2c__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `eaa477f65f122575cce3c82819dc057edcbf20b8ec22a727a5585aea8626f4fe`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2c__motor_vehicle_driver`: exit 0, `static.log` SHA256 `7c575d4f9820be6300e0b723fbf247a5b4f7820feb27e9393ec6d8f58a225d20`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2c__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Next CPU work
+
+Construct authorized emergency and regulatory official vehicle actors, qualifying flashing equipment, actual visible movement and separate hand-signal cue, officer direction and ego approach/response controllers in CARLA. Bind driver-view visibility and original motion/control packets; implement exact saved finalizers. Add exact offline construction and positive/negative compatibility receipts, semantic proposals, saved-only processing, independent delivery/comparison audits, manifest and queue entries. Read DEF-NRS-484A-480-3 and preserve officer-direction exception. Actual movement and visual cue visibility require later CARLA verification.

@@ -24,9 +24,77 @@
   "topic_inventory": {
     "exact-text": "Persons riding bicycles, electric bicycles or electric scooters upon a roadway shall not ride more than two abreast except on paths or parts of roadways set aside for the exclusive use of bicycles, electric bicycles and electric scooters."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+      "target_law_id": "NRS-484B-777-3",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "abreast.py:construct",
+      "measurement": "abreast.py:measure_original",
+      "physical_risk": "Individual bicycle actors and lateral positions may be unsupported; original rider identities, bicycle classifications, roadway occupancy and exclusive-use designation must be source-backed; no legal abreast threshold inferred."
+    },
+    {
+      "case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__two_roadway_general",
+      "target_law_id": "NRS-484B-777-3",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "abreast.py:construct",
+      "measurement": "abreast.py:measure_original",
+      "physical_risk": "Individual bicycle actors and lateral positions may be unsupported; original rider identities, bicycle classifications, roadway occupancy and exclusive-use designation must be source-backed; no legal abreast threshold inferred."
+    },
+    {
+      "case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_exclusive",
+      "target_law_id": "NRS-484B-777-3",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "abreast.py:construct",
+      "measurement": "abreast.py:measure_original",
+      "physical_risk": "Individual bicycle actors and lateral positions may be unsupported; original rider identities, bicycle classifications, roadway occupancy and exclusive-use designation must be source-backed; no legal abreast threshold inferred."
+    },
+    {
+      "case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_path_exclusive",
+      "target_law_id": "NRS-484B-777-3",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "abreast.py:construct",
+      "measurement": "abreast.py:measure_original",
+      "physical_risk": "Individual bicycle actors and lateral positions may be unsupported; original rider identities, bicycle classifications, roadway occupancy and exclusive-use designation must be source-backed; no legal abreast threshold inferred."
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+        "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__two_roadway_general"
+      ],
+      "deliberate_differences": "three versus two riders",
+      "fixed_conditions": "Same highway, sidewalk absence, bicycle type, rider-route geometry and original measurement method; one condition changed."
+    },
+    {
+      "case_ids": [
+        "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+        "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_exclusive"
+      ],
+      "deliberate_differences": "exclusive-use roadway designation",
+      "fixed_conditions": "Same highway, sidewalk absence, bicycle type, rider-route geometry and original measurement method; one condition changed."
+    },
+    {
+      "case_ids": [
+        "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+        "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_path_exclusive"
+      ],
+      "deliberate_differences": "exclusive-use path rather than roadway",
+      "fixed_conditions": "Same highway, sidewalk absence, bicycle type, rider-route geometry and original measurement method; one condition changed."
+    }
+  ],
+  "observations": [
+    "Original 900-frame rider IDs, bicycle/moped classification, roadway/shoulder/occupied surface geometry, exclusive-use designation, rider positions and speeds are separately source-bound."
+  ],
   "sources": [
     {
       "path": "inputs/testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator/assignment.json",
@@ -51,8 +119,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No accepted exact recording or original capture has been established.",
+    "The .25 m longitudinal formation tolerance is a physical probe constraint, not a legal definition of abreast; no momentary-overtaking exclusion is assumed.",
+    "Canonical offline/compatibility, semantic proposals, saved-only delivery and independent audits remain."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +130,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_probe_implemented",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

@@ -24,9 +24,104 @@
   "topic_inventory": {
     "exact-text": "If a highway has been designed to provide a single right lane to be used only for turning, a vehicle must: Be driven in the right turn lane only for the purpose of making a right turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "kind": "delivery",
+      "branch": "T-intersection right-turn approach",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "right_turn_lane_probe.py",
+      "case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Right-turn controller may leave the designated lane or fail to reach a connected exit."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "T-intersection right-turn approach",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "right_turn_lane_probe.py",
+      "case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Through route at a T junction may be impossible; use a purpose record without inventing a completed through route."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "T-intersection right-turn approach",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "right_turn_lane_probe.py",
+      "case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__left_turn_purpose",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Lane and T-junction geometry may not realize a left turn from this right-only lane."
+      }
+    },
+    {
+      "kind": "delivery",
+      "branch": "T-intersection right-turn approach",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction_probe": "right_turn_lane_probe.py",
+      "case_id": "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_route_mismatch",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Even with right-turn intent, controller may proceed to a different exit."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "right_lane_purpose",
+      "case_ids": [
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__through_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__left_turn_purpose"
+      ],
+      "fixed_conditions": [
+        "public highway",
+        "single exclusive right-turn lane",
+        "T intersection",
+        "vehicle and driver",
+        "lane-use interval",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "independently sourced declared maneuver purpose"
+      ]
+    },
+    {
+      "comparison_id": "purpose_route_agreement",
+      "case_ids": [
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C399695__NRS-484B-223-4a__motor_vehicle_driver__right_turn_route_mismatch"
+      ],
+      "fixed_conditions": [
+        "same public highway and turn-lane design",
+        "right-turn purpose",
+        "vehicle and driver",
+        "camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "observed connected departure route"
+      ]
+    }
+  ],
+  "observations": [
+    "Source-bound public highway and one exclusive right-turn-lane design",
+    "Connected right-turn route at T intersection, with surveyed entry and exit road IDs",
+    "Original-frame lane occupancy and observed maneuver/exit",
+    "Independently sourced right-turn purpose established before lane entry",
+    "Purpose sufficiency remains unresolved; no numeric lane occupancy deadline or mandatory completion substituted"
+  ],
   "sources": [
     {
       "path": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/assignment.json",
@@ -51,17 +146,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CPU probe does not construct CARLA lane, T junction or route.",
+    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
+    "Actual lane occupancy, route geometry and pixel evidence require later CARLA verification."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Exclusive right-turn-lane purpose episode at T intersection",
+        "source": "inputs/testing__C399695__NRS-484B-223-4a__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_right_turn_lane_probe",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

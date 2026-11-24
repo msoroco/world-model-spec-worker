@@ -1,22 +1,9 @@
-# testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver
+# C229628 LVMC 11.16.090(A) checkpoint
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Four exact two-vehicle probes are implemented in `contest_aid.py`: an ego start cue preceding another motorist's candidate contest, no cue control, no underlying candidate contest control, and off-highway control. Construction creates and routes both vehicles, schedules cue and other start, and cleans up on failure. The finalizer requires a source-bound original 900-frame capture at 20 fps with stable identities, cue timing, route/lane and highway context, speeds, accelerations and positions. It leaves contest and aid/abet legal judgments unset.
 
-Exact law: LVMC 11.16.090(A) — No person shall engage in any motor vehicle speed contest or exhibition of power or speed on a highway and no person shall aid or abet in any such motor vehicle speed contest or exhibition upon any highway.
-Assigned branch(es): Aiding or abetting a motor vehicle speed contest..
-Cell: C229628 (road, race, lane_marking); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Physical risk: neither coordination nor high speed proves aid, abet or contest. Source hashes separately bind participants, qualifying vehicles, municipal jurisdiction, highway, lane marking, episode, cue conduct/timing and unresolved legal meanings. No accepted exact recording exists.
 
-## Next CPU actions
+Focused tests, pinned CPU preflight and scoped static check pass. Exact scoped strict fails on truthful partial status; see `cpu-strict-check.log`. Successful receipt commands and hashes appear in `result.json`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C229628__LVMC-11-16-090-A__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
-
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Remaining CPU: canonical runner/config/camera capture, source-shaped positive/negative compatibility, semantic proposals, saved-only processing, and independent delivery/comparison audits.

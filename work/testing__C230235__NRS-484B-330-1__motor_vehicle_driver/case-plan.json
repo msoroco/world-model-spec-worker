@@ -24,9 +24,95 @@
   "topic_inventory": {
     "exact-text": "It is unlawful for a driver of a vehicle to fail or refuse to comply with any signal of an authorized flagger serving in a traffic control capacity in a clearly marked area of highway construction or maintenance or any other area which has been designated as a temporary traffic control zone."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops"
+      ],
+      "deliberate_differences": "driver stops versus continues",
+      "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
+    },
+    {
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues"
+      ],
+      "deliberate_differences": "designated temporary zone absent",
+      "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
+    },
+    {
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues"
+      ],
+      "deliberate_differences": "flagger authorization absent",
+      "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
+    },
+    {
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues"
+      ],
+      "deliberate_differences": "proceed rather than stop signal",
+      "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
+    }
+  ],
+  "observations": [
+    "Original 900-frame driver/vehicle/flagger identities, zone designation and boundaries, signal content/orientation/visibility/recipient, release time, and physical vehicle speed/position are separately source-bound."
+  ],
   "sources": [
     {
       "path": "inputs/testing__C230235__NRS-484B-330-1__motor_vehicle_driver/assignment.json",
@@ -51,8 +137,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No accepted exact recording or original capture has been established.",
+    "The designated-zone alternative is kept separate from clearly marked construction/maintenance; failure or refusal remains uninterpreted.",
+    "Canonical offline/compatibility, semantic proposals, saved-only delivery and independent audits remain."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -61,7 +148,7 @@
     "gaps": []
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_probe_implemented",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

@@ -48,6 +48,46 @@ def frames():
 
 
 class ThroughHighwayTests(unittest.TestCase):
+    def test_native_snapshot_adapter_reads_both_original_actors(self):
+        class Vector:
+            def __init__(self, x, y, z=0):
+                self.x, self.y, self.z = x, y, z
+
+        class Actor:
+            is_alive = True
+
+            def __init__(self, identity, x, y, speed):
+                self.id, self.x, self.y, self.speed = identity, x, y, speed
+
+            def get_location(self):
+                return Vector(self.x, self.y)
+
+            def get_velocity(self):
+                return Vector(self.speed, 0)
+
+        class Snapshot:
+            frame = 517
+            timestamp = type("Timestamp", (), {"elapsed_seconds": 25.0})()
+
+        class World:
+            def get_map(self):
+                return type("Map", (), {"name": "ReviewedTown"})()
+
+            def get_snapshot(self):
+                return Snapshot()
+
+        world = World()
+        actors = {"through": Actor(1, -20, 0, 2), "entering": Actor(2, 0, -20, 3)}
+        row = module.sample_native_frame(world, actors, site(), "cross_yield", SEAL, 0, 25.0)
+        self.assertEqual(row["native_frame"], 517)
+        self.assertEqual(row["through"]["center_xy"], [-20, 0])
+        self.assertEqual(row["entering"]["speed_mps"], 3)
+        with self.assertRaisesRegex(ValueError, "cadence"):
+            module.sample_native_frame(world, actors, site(), "cross_yield", SEAL, 1, 25.0)
+        actors["entering"].id = 1
+        with self.assertRaisesRegex(ValueError, "same Native actor"):
+            module.sample_native_frame(world, actors, site(), "cross_yield", SEAL, 0, 25.0)
+
     def test_four_cases_keep_antecedent_unresolved(self):
         for key in module.CASES:
             report = module.measure(site(module.CASES[key][0]), key, SEAL, frames())

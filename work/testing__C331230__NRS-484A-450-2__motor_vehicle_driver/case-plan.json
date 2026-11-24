@@ -24,9 +24,77 @@
   "topic_inventory": {
     "exact-text": "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "near_crosswalk.py:construct",
+      "measurement": "near_crosswalk.py:measure_original",
+      "physical_risk": "Stop-sign governance and unmarked near-side crosswalk geometry cannot be inferred from a generic intersection label; require independent source-backed orientation, sidewalk connection and original front-extent trajectory."
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_rolling",
+      "target_law_id": "NRS-484A-450-2",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "near_crosswalk.py:construct",
+      "measurement": "near_crosswalk.py:measure_original",
+      "physical_risk": "Stop-sign governance and unmarked near-side crosswalk geometry cannot be inferred from a generic intersection label; require independent source-backed orientation, sidewalk connection and original front-extent trajectory."
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_halt",
+      "target_law_id": "NRS-484A-450-2",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "near_crosswalk.py:construct",
+      "measurement": "near_crosswalk.py:measure_original",
+      "physical_risk": "Stop-sign governance and unmarked near-side crosswalk geometry cannot be inferred from a generic intersection label; require independent source-backed orientation, sidewalk connection and original front-extent trajectory."
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling",
+      "target_law_id": "NRS-484A-450-2",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "near_crosswalk.py:construct",
+      "measurement": "near_crosswalk.py:measure_original",
+      "physical_risk": "Stop-sign governance and unmarked near-side crosswalk geometry cannot be inferred from a generic intersection label; require independent source-backed orientation, sidewalk connection and original front-extent trajectory."
+    }
+  ],
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_rolling"
+      ],
+      "deliberate_differences": "stop before entry versus rolling",
+      "fixed_conditions": "Same driver, vehicle, intersection and near-side crosswalk geometry, sign-governed approach and source-bound original measurement method."
+    },
+    {
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_halt",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling"
+      ],
+      "deliberate_differences": "stop before unmarked crosswalk versus rolling",
+      "fixed_conditions": "Same driver, vehicle, intersection and near-side crosswalk geometry, sign-governed approach and source-bound original measurement method."
+    },
+    {
+      "case_ids": [
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt",
+        "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_halt"
+      ],
+      "deliberate_differences": "marked versus unmarked near-side crosswalk",
+      "fixed_conditions": "Same driver, vehicle, intersection and near-side crosswalk geometry, sign-governed approach and source-bound original measurement method."
+    }
+  ],
+  "observations": [
+    "Original 900-frame driver and vehicle identity, governing stop-sign orientation, intersection and near-side crosswalk boundary from opposing sidewalks, vehicle-front position, speed and subsequent crossing are separately source-bound."
+  ],
   "sources": [
     {
       "path": "inputs/testing__C331230__NRS-484A-450-2__motor_vehicle_driver/assignment.json",
@@ -70,8 +138,9 @@
     "86af699c9eb2f3e9ba71fffc7af50078ef04d8973ffefb079de9063f85c8f0b4"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Two frozen accepted metadata entries name marked halt and rolling cases, but underlying original traces/videos are absent; physical stop/crossing remain unverified.",
+    "No minimum stationary duration is introduced; physical stopped frame is a probe, not legal judgment.",
+    "Canonical offline/compatibility, semantic proposals, saved-only delivery and independent audits remain."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -121,7 +190,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_probe_implemented",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
