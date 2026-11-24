@@ -40,24 +40,28 @@
     {
       "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
       "target_law_id": "LVMC-11-30-060-A",
-      "kind": "planned_only",
+      "kind": "comparison_draft",
       "target_type": "controlled_attempt",
       "physical_target": "outside crosswalk: pedestrian waits for vehicle",
       "comparison_variable": "yield to roadway vehicles",
-      "selection_status": "not_selected",
+      "selection_status": "comparison_cpu_draft",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_capture_cpu_offline_passed_physical_unverified",
+      "construction": "draft-probe-01/construction.json",
+      "construction_sha256": "d1b3f9b557e5d0e24fcf8413b8659ae2a9348fcd9a6da15e85c642be6d17ec46"
     },
     {
       "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02",
       "target_law_id": "LVMC-11-30-060-A",
-      "kind": "planned_only",
+      "kind": "delivery_draft",
       "target_type": "controlled_attempt",
       "physical_target": "same crossing with pedestrian entering conflict before vehicle passes",
       "comparison_variable": "yield to roadway vehicles",
-      "selection_status": "not_selected",
+      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_capture_cpu_offline_passed_physical_unverified",
+      "construction": "draft-probe-02/construction.json",
+      "construction_sha256": "5ba99d56c3528a1b6f9539928991731694291150e29bbab00f489c88789ee6a7"
     }
   ],
   "comparisons": [
@@ -116,7 +120,7 @@
     },
     {
       "term": "drv.hard_deceleration",
-      "note": "a vehicle forced to brake — the evidence the yield failed"
+      "note": "a vehicle forced to brake \u2014 the evidence the yield failed"
     },
     {
       "term": "drv.arrival_order",
@@ -134,13 +138,12 @@
     }
   ],
   "unverified_physical_assumptions": [
-    "Section 11.30.070 exclusion must be checked before activation; fixed cell travel requires a supported crossing phase."
+    "Native generated OpenDRIVE topology, walker crossing and vehicle conflict require CARLA survey and original capture; Section 11.30.070 designated-place prohibition remains unreviewed."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Original Native map/actor/camera capture has not run; actual crossing, precedence and pixels remain unverified.",
+    "Current-runtime positive/negative compatibility and saved processing, Core mapping, semantic proposals and independent audits remain unfinished.",
+    "Selected fallback constructions and exact strict ready gate remain unfinished."
   ],
   "observations": [
     {
@@ -181,7 +184,7 @@
     {
       "name": "drv.hard_deceleration",
       "mandatory": true,
-      "reason": "a vehicle forced to brake — the evidence the yield failed"
+      "reason": "a vehicle forced to brake \u2014 the evidence the yield failed"
     },
     {
       "name": "drv.arrival_order",
@@ -218,7 +221,7 @@
         "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
         "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Two CPU offline Native constructions and source-meter tests passed; probe_02 selected as CPU draft only. CARLA, Section 11.30.070 applicability and saved processing remain unverified."
     }
   ],
   "source_observation_mapping": [
@@ -338,7 +341,7 @@
     }
   ],
   "draft_construction_checkpoint": {
-    "status": "unselected",
+    "status": "one_selected_cpu_draft_one_comparison_draft",
     "manifest": "draft-manifest.json",
     "offline_receipt": "draft-offline-receipt.json",
     "source_meter_proof": "native/source-meter-proof.json",
@@ -348,9 +351,10 @@
       "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02"
     ],
     "limitations": [
-      "CPU draft only; Native CARLA orchestration not implemented",
-      "source-meter fixture is synthetic and no actual source-camera pixels exist",
-      "Section 11.30.070 exclusion unresolved"
+      "Native CARLA capture not executed; original camera pixels and motion unverified",
+      "Section 11.30.070 designated-place applicability unresolved",
+      "Current-runtime saved processing and independent audits unfinished"
     ]
-  }
+  },
+  "source_law_review": "Exact LVMC 11.30.060(A) reviewed: outside marked/unmarked intersection crosswalk crossing, yield to all vehicles upon roadway, and Section 11.30.070 designated-place exclusion are separate. Probe_02 is chosen as a CPU draft; actual crossing and applicability remain unverified."
 }

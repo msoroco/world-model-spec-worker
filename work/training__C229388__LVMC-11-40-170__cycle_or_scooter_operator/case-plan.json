@@ -40,13 +40,16 @@
     {
       "case_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_01",
       "target_law_id": "LVMC-11-40-170",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "park in rack with least measured obstruction",
       "comparison_variable": "allowed position and pedestrian obstruction",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_primary_offline_passed",
+      "construction_path": "native/selected-primary-construction.json",
+      "construction_sha256": "c1b5c00996c4765fa7763d81bd5fa9d3390602ce0035dd26529585dfc7c04238",
+      "selection_reason": "Exact source and witness name sidewalk parking in a supporting rack; no accepted full-train membership exists. Select rack-placement probe for source-bound physical attempt without deciding least obstruction."
     },
     {
       "case_id": "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_02",
@@ -145,10 +148,10 @@
     "Least obstruction is judgmental; a rack alone does not establish its satisfaction. Include roadway against curb as separate supported alternative."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Selected rack primary passes pinned offline, but full manifest compatibility, saved processing, semantic proposal, audit, and comparison CPU proofs remain.",
+    "Probe_02 and any separately required roadway-against-curb or building alternatives need exact construction and controlled comparison.",
+    "Native survey must verify a suitable cycle/scooter blueprint, supporting rack, sidewalk and pedestrian corridor on one map before physical capture.",
+    "No CARLA capture, original source review, accepted recording, or legal least-obstruction verdict is claimed."
   ],
   "observations": [
     {
@@ -236,7 +239,44 @@
         "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_01",
         "training__C229388__LVMC-11-40-170__cycle_or_scooter_operator__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Probe_01 selected with inline Native primary and offline plus synthetic source measurement proof; complete CPU delivery and comparison proofs still open."
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "ru.bicycle / ru.electric_bicycle / ru.electric_scooter",
+      "measurement": "reviewed device_subtype and source",
+      "source_refs": [
+        "parking_context.json:device_subtype_source"
+      ]
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "measurement": "Native device speed <= 0.05 m/s diagnostic rest frame count",
+      "source_refs": [
+        "native_parking_trace.jsonl:device_speed_mps"
+      ]
+    },
+    {
+      "term": "st.sidewalk / st.roadway / st.road_edge",
+      "measurement": "reviewed placement geometry; sidewalk footprint intersection only implemented for selected rack case",
+      "source_refs": [
+        "parking_context.json:sidewalk_geometry_source"
+      ]
+    },
+    {
+      "term": "rel.occupies / st.obstruction",
+      "measurement": "Native device bounding-box footprint polygon and intersections",
+      "source_refs": [
+        "native_parking_trace.jsonl:device_footprint_xy_m"
+      ]
+    },
+    {
+      "term": "ru.pedestrian / rel.surface_gap",
+      "measurement": "reviewed pedestrian corridor, footprint overlap area and minimum surface gap; no legal threshold",
+      "source_refs": [
+        "parking_context.json:pedestrian_corridor_source"
+      ]
     }
   ]
 }

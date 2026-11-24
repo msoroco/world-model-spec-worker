@@ -62,13 +62,15 @@
     {
       "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-620-2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "governed-zone speed above posted value",
       "comparison_variable": "measured speed versus authorized posted value",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "offline_cpu_proven",
+      "construction": "native/selected-primary-construction.json",
+      "construction_sha256": "380bda043e2989e8c4f6dbdcc0895763961fafe4e001e695e8f0eff838edebfc"
     }
   ],
   "comparisons": [
@@ -215,5 +217,35 @@
       ],
       "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
     }
-  ]
+  ],
+  "signed_zone_source_capture_checkpoint": {
+    "measurement_script": "native/measure_zone.py",
+    "measurement_script_sha256": "24a1ce45bba9f0714ddc7ecec90dd732211e831128cc5bff8cba9d3e5eacf970",
+    "test_script": "native/prove_zone.py",
+    "test_script_sha256": "7ff7e365b74456259b02f06970f9d8fa0fae4f83356e12522bbf8ce232929775",
+    "test_log": "native/zone-proof.log",
+    "test_log_sha256": "9bd362e43f1576ca73f20fa0fe87260d8717468878a43973b892ce960621230c",
+    "contract": "native/source-capture-contract.json",
+    "contract_sha256": "f7f68ec6022df739eba9f35120df501f8a4c0c48f4627c5661302e5f43520875",
+    "test_exit_code": 0,
+    "synthetic_only": true,
+    "positive_variants": 4,
+    "negative_rejections": 7
+  },
+  "selected_primary_offline_checkpoint": {
+    "case_id": "training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03",
+    "construction": "native/selected-primary-construction.json",
+    "construction_sha256": "380bda043e2989e8c4f6dbdcc0895763961fafe4e001e695e8f0eff838edebfc",
+    "manifest": "native/selected-offline-manifest.json",
+    "manifest_sha256": "2fc1b86dc22bb6c2e289bf19d6ee06b7a3cc6142f0c0aa328d379c6989698ab2",
+    "builder": "native/build_selected.py",
+    "builder_sha256": "cabe711eb37cd13bd9bb1b051e913a2b13552b319778d9b1bc9be99093e3ab4c",
+    "offline_command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179819__NRS-484B-620-2__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C179819__NRS-484B-620-2__motor_vehicle_driver__probe_03 --output .runtime-work/c179819-selected-primary-offline",
+    "offline_log": "native/selected-primary-offline.log",
+    "offline_log_sha256": "6a4d0ad0f0adf1260ceee9b58b52151e6b50063ff41c18d4be3e5fa2249a7ece",
+    "offline_tests_log": "native/selected-primary-tests.log",
+    "offline_tests_log_sha256": "b2e02d06ac9456d8af91ae8cb9d5176910064f40fd7dd92f692de634b7545b17",
+    "offline_exit_code": 0,
+    "physical_execution_claimed": false
+  }
 }

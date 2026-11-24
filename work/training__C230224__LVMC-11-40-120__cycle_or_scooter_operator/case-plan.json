@@ -40,13 +40,16 @@
     {
       "case_id": "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_01",
       "target_law_id": "LVMC-11-40-120",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "rider uses usable adjacent path",
       "comparison_variable": "rider path choice",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_primary_offline_passed",
+      "construction_path": "native/selected-primary-construction.json",
+      "construction_sha256": "c033299368bc6bd40fe1642eb83e9774884b89230ba71f509c2e9448d4def2e6",
+      "selection_reason": "Exact law and witness explicitly require affirmative use of a usable adjacent path. No accepted full-train membership exists. Select path-use probe for source-bound physical attempt, leaving usability for independent review."
     },
     {
       "case_id": "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_02",
@@ -133,10 +136,10 @@
     "Usability is a judgment/physical condition; presence of path geometry alone is insufficient."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Selected path-use primary passes pinned offline, but full manifest compatibility, saved processing, semantic proposal, audit, and comparison CPU proofs remain.",
+    "Probe_02 roadway-use comparison needs exact Native construction and controlled path-choice audit.",
+    "Local map survey must verify a continuous adjacent path, surface/usability evidence, a rideable cycle/scooter and visible rider.",
+    "No CARLA capture, original source review, accepted recording, or legal usability verdict is claimed."
   ],
   "observations": [
     {
@@ -209,7 +212,49 @@
         "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_01",
         "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Probe_01 selected with inline Native primary, pinned offline and synthetic source-measurement proof; complete CPU delivery and path-choice comparison remain open."
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "st.bicycle_lane_or_path",
+      "measurement": "reviewed path polygon, surface, continuity, adjacency and usability context",
+      "source_refs": [
+        "path_context.json:path_surface_source",
+        "path_context.json:path_continuity_source",
+        "path_context.json:path_adjacency_source",
+        "path_context.json:path_usability_review_source"
+      ]
+    },
+    {
+      "term": "st.roadway",
+      "measurement": "reviewed roadway polygon",
+      "source_refs": [
+        "path_context.json:roadway_boundary_source"
+      ]
+    },
+    {
+      "term": "rel.occupies / kin.position",
+      "measurement": "Native footprint overlap with path and roadway on moving frames",
+      "source_refs": [
+        "native_rider_trace.jsonl:device_footprint_xy_m"
+      ]
+    },
+    {
+      "term": "ru.bicycle / ru.electric_bicycle / ru.electric_scooter",
+      "measurement": "reviewed device subtype and rider/device ID join",
+      "source_refs": [
+        "path_context.json:device_subtype_source",
+        "path_context.json:rider_identity_source",
+        "native_rider_trace.jsonl:rider_actor_id"
+      ]
+    },
+    {
+      "term": "st.obstruction",
+      "measurement": "reviewed obstruction polygon and intersection area with adjacent path",
+      "source_refs": [
+        "path_context.json:path_obstruction_source"
+      ]
     }
   ]
 }
