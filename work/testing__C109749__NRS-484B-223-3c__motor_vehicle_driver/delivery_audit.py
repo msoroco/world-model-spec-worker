@@ -69,6 +69,19 @@ def audit_saved_delivery(attempt_root, receipt):
         sources = row.get("camera_sources")
         if not isinstance(sources, dict) or set(sources) != set(VIEWS) or not all(sources.values()):
             raise ValueError("incomplete four-camera frame mapping")
+        camera_hashes = row.get('camera_sha256')
+        if camera_hashes is not None:
+            if not isinstance(camera_hashes, dict) or set(camera_hashes) != set(VIEWS):
+                raise ValueError('incomplete original camera hashes')
+            for view in VIEWS:
+                relative = sources[view]
+                if not isinstance(relative, str) or Path(relative).is_absolute() or '..' in Path(relative).parts or relative.startswith('./'):
+                    raise ValueError('camera source path escapes attempt')
+                camera_file = (root / relative).resolve()
+                if not camera_file.is_relative_to(root) or not camera_file.is_file():
+                    raise ValueError('missing original camera source')
+                if hashlib.sha256(camera_file.read_bytes()).hexdigest() != camera_hashes[view]:
+                    raise ValueError('camera source hash mismatch')
     measured = _MEASUREMENT.measure_center_lane_distance(trace)
     delivered = receipt.get("delivered_measurement")
     if not isinstance(delivered, dict):

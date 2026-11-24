@@ -35,6 +35,7 @@ def analyze(path: Path, *, case_id: str, sha256: str) -> dict:
     require(isinstance(first, int), "first frame missing")
     visible_frames = []
     governed_frames = []
+    governed_visible_frames = []
     turn_frames = []
     for i, frame in enumerate(frames):
         require(frame.get("frame") == first + i, "noncontiguous original frames")
@@ -53,12 +54,15 @@ def analyze(path: Path, *, case_id: str, sha256: str) -> dict:
             visible_frames.append(frame["frame"])
         if ego.get("approach_id") == device["governed_approach"]:
             governed_frames.append(frame["frame"])
+            if observed.get("visible_to_ego") is True:
+                governed_visible_frames.append(frame["frame"])
         if ego.get("u_turn_in_progress") is True:
             turn_frames.append(frame["frame"])
     require(governed_frames, "no governed approach frames")
     require(visible_frames, "no observed device visibility")
+    require(governed_visible_frames, "no device visibility on governed approach")
     if turn_frames:
-        require(min(visible_frames) < min(turn_frames), "device observation not before turn")
+        require(min(governed_visible_frames) < min(turn_frames), "governed device observation not before turn")
         start, end = frames[0]["ego"], frames[-1]["ego"]
         require(start["road_id"] == end["road_id"], "U-turn road continuity missing")
         require(start["lane_id"] != end["lane_id"], "opposite destination lane missing")
@@ -66,9 +70,9 @@ def analyze(path: Path, *, case_id: str, sha256: str) -> dict:
         require(heading_change >= 135.0, "full observed reversal missing")
     return {"case_id": case_id, "source_sha256": sha256, "frame_count": len(frames),
             "device_id": device["device_id"], "display_source_sha256": device["display_source_sha256"],
-            "prohibits_u_turn": device["prohibits_u_turn"], "first_visible_frame": min(visible_frames),
+            "prohibits_u_turn": device["prohibits_u_turn"], "first_visible_frame": min(governed_visible_frames),
             "first_governed_frame": min(governed_frames), "first_turn_frame": min(turn_frames) if turn_frames else None,
-            "turn_observed": bool(turn_frames), "device_apparent_before_turn": bool(turn_frames and min(visible_frames) < min(turn_frames)),
+            "turn_observed": bool(turn_frames), "device_apparent_before_turn": bool(turn_frames and min(governed_visible_frames) < min(turn_frames)),
             "legal_device_status": "requires_independent_source_review"}
 
 

@@ -1,6 +1,6 @@
 # testing__C111610__NRS-484B-307-7a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial executable construction. Five cases are planned; no recording has been accepted.
 
 Exact law: NRS 484B.307(7)(a) — Where the signal is a flashing yellow turn arrow, displayed alone or in combination with another signal: Vehicular traffic facing the signal is permitted to cautiously enter the intersection only to make the movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time. Such vehicular traffic must yield the right-of-way to pedestrians lawfully within the intersection or an adjacent crosswalk and yield the right-of-way to other traffic lawfully within the intersection.
 Assigned branch(es): Pedestrian yield duty.
@@ -30,3 +30,11 @@ The frozen evidence inventory contains zero accepted recordings. Five exact plan
 `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v` passed 7 tests; retained `cpu-tests.log` has the SHA in `result.json`. The exact strict assignment gate was rerun and reaches the expected `Preparation acceptance failed: partial/missing packages remain`; retained `cpu-strict-check.log` proves this checkpoint is not ready.
 
 Next CPU work: bind a concrete Native map and official arrow signal source to a runner/config/manifest; implement original aspect acquisition, case-specific finalizer, capture and semantic proposals, per-case offline and source-bound positive/negative compatibility, saved-only processing and independent delivery audit; then rerun exact strict gate. Actual CARLA motion, display realization and camera coverage remain later physical checks. Do not mark ready until the strict CPU gate passes.
+
+## 2026-11-24 original aspect acquisition checkpoint
+
+`aspect_capture.py` now records one injected Native display-adapter packet per 20 Hz tick for 900 ticks, binds official head, facing approach, arrow color/direction, Native head readback, source identity, concurrent indication inventory, contiguous frames and timestamps, and requires observed on/off transitions. It seals the original source and receipt under the attempt directory. The adapter callback must read the actual display or controller; CARLA's coarse traffic-light state is not assumed to identify a flashing arrow. `saved_aspect.py` independently rejects missing, tampered or escaped sources, diagnostic input in delivery mode, and an event history that invents an illuminated arrow during an observed off phase. These modules do not assert physical realization or a legal judgment.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v` passed 12 tests. `cpu-tests.log` SHA256 is `6dcd53a0251d5396483675412c1f59f60897ea3f163a321fc1c9d66471bddb2c`. Exact scoped `worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete` passed; `cpu-static-check.log` SHA256 is `815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27`. Exact scoped `--require-delivery-ready` exited 1 with `Preparation acceptance failed: partial/missing packages remain`; `cpu-strict-check.log` SHA256 is `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
+
+`native_arrow.measure_original` and `comparison_audit.audit` now require observed on/off transitions, and the comparison also holds original arrow timing fixed. Remaining CPU integration: connect the adapter to a concrete surveyed head and exact runner; join the sealed source in the case finalizer and comparison audit; complete semantic proposals, exact case bundles and manifest, source-bound compatibility and delivery audits, and canonical local integration proofs. Physical display and intersection realization remain later checks.

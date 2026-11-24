@@ -24,7 +24,7 @@ class ArrowTests(unittest.TestCase):
         users=users or []; aspects=aspects or ['flashing_yellow_turn_arrow']
         rows=[]
         for i,xy in enumerate(([0,-8],[0,0],[-8,0])):
-            rows.append({'frame':i,'official_head_id':'17','facing_approach_id':'north','lit_aspects':aspects,'arrow_movement':'left','ego_movement':movement,'ego_xy':xy,'other_users':users})
+            rows.append({'frame':i,'official_head_id':'17','facing_approach_id':'north','lit_aspects':aspects if i!=1 else [],'arrow_movement':'left','ego_movement':movement,'ego_xy':xy,'other_users':users})
         p=self.root/'events.json'; p.write_text(json.dumps(rows));return {'path':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
     def test_site_and_geometry(self):
         self.assertTrue(scene.verify_site(self.site,self.root))
@@ -84,7 +84,7 @@ class ArrowTests(unittest.TestCase):
         self.assertTrue(world.spawned[0].destroyed)
     def test_comparison_rejects_missing_source_and_wrong_region(self):
         def rec(suffix,user=[]):
-            return {'case_suffix':suffix,'map_sha256':'a','route_source_sha256':'b','crosswalk_source_sha256':'c','signal_source_sha256':'d','duration_frames':3,'camera_profile_sha256':'e','official_head_id':'17','ego_approach_id':'north','concurrent_indications':[],'ego_movement':'left','records':[{'lit_aspects':['flashing_yellow_turn_arrow'],'other_users':user}]*3}
+            return {'case_suffix':suffix,'map_sha256':'a','route_source_sha256':'b','crosswalk_source_sha256':'c','signal_source_sha256':'d','duration_frames':3,'camera_profile_sha256':'e','official_head_id':'17','ego_approach_id':'north','concurrent_indications':[],'ego_movement':'left','records':[{'lit_aspects':['flashing_yellow_turn_arrow'] if i!=1 else [],'other_users':user} for i in range(3)]}
         left=rec('arrow_clear');right=rec('arrow_ped_crosswalk',[{'kind':'pedestrian','region':'adjacent_crosswalk'}])
         self.assertTrue(audit.audit('pedestrian_crosswalk',left,right)['source_history_checked'])
         right['records']=[]

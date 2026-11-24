@@ -22,14 +22,17 @@ def audit(name,left,right):
         rows=record.get('records')
         if not isinstance(rows,list) or len(rows)!=record['duration_frames']:
             raise AuditError('original frame history incomplete')
-        if any('flashing_yellow_turn_arrow' not in row.get('lit_aspects',[]) for row in rows):
-            raise AuditError('arrow exhibition missing')
+        states=['flashing_yellow_turn_arrow' in row.get('lit_aspects',[]) for row in rows]
+        if not any(states) or all(states) or sum(a!=b for a,b in zip(states,states[1:]))<2:
+            raise AuditError('flashing arrow transitions missing')
         if any(record.get(x) is not None for x in ('lawful_presence_verdict','cautious_entry_verdict','right_of_way_verdict')):
             raise AuditError('unsupported legal verdict')
     def present(record):
         return [(u['kind'],u['region']) for row in record['records'] for u in row['other_users'] if u['region']!='outside']
     if present(left):
         raise AuditError('baseline has intersection/crosswalk participant')
+    if [r['lit_aspects'] for r in left['records']] != [r['lit_aspects'] for r in right['records']]:
+        raise AuditError('original arrow timing differs')
     if kind is not None:
         if (kind,region) not in present(right):
             raise AuditError('required participant not observed in requested region')

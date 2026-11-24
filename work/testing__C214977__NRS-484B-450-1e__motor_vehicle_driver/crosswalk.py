@@ -59,8 +59,13 @@ def footprint_relation(corners, polygon):
     # A crossing edge can overlap the crosswalk even when all corners lie outside.
     edges = list(zip(corners, corners[1:] + corners[:1]))
     def orient(a,b,c): return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+    def on_segment(a,b,p):
+        return abs(orient(a,b,p)) <= 1e-9 and min(a[0],b[0])-1e-9 <= p[0] <= max(a[0],b[0])+1e-9 and min(a[1],b[1])-1e-9 <= p[1] <= max(a[1],b[1])+1e-9
     def crosses(a,b,c,d):
-        return orient(a,b,c)*orient(a,b,d) <= 0 and orient(c,d,a)*orient(c,d,b) <= 0
+        o1,o2,o3,o4 = orient(a,b,c),orient(a,b,d),orient(c,d,a),orient(c,d,b)
+        if (o1 > 0 > o2 or o2 > 0 > o1) and (o3 > 0 > o4 or o4 > 0 > o3):
+            return True
+        return any((abs(o) <= 1e-9 and on_segment(x,y,p)) for o,x,y,p in ((o1,a,b,c),(o2,a,b,d),(o3,c,d,a),(o4,c,d,b)))
     edge_cross = any(crosses(a,b,c,d) for a,b in edges for c,d in zip(polygon, polygon[1:] + polygon[:1]))
     contained = count == 4
     overlap = bool(count or edge_cross or all(inside(p, corners) for p in polygon))
@@ -69,6 +74,7 @@ def footprint_relation(corners, polygon):
 def measure(rows, expected):
     require(len(rows) == expected['frame_count'] and len(rows) >= 2, 'frame count mismatch')
     active = []
+    source_key = {'traffic_conflict':'traffic_conflict','law':'law_direction','police_direction':'police_direction','device_direction':'device_direction','none':None}[expected['exception']]
     for i, row in enumerate(rows):
         require(row['frame'] == expected['first_frame'] + i, 'frame gap')
         require(row['case_id'] == expected['case_id'] and row['subject_id'] == expected['subject_id'], 'case or actor mismatch')
@@ -79,7 +85,7 @@ def measure(rows, expected):
         require(row['crosswalk_id'] == expected['crosswalk_id'] and row['marking_status'] == expected['marking_status'], 'crosswalk context mismatch')
         relation = footprint_relation(row['body_corners_xy'], expected['crosswalk_polygon'])
         if row['halt_activity'] == expected['action'] and row['speed_mps'] < 0.1:
-            active.append((i, relation, any(row[k] for k in ('traffic_conflict','law_direction','police_direction','device_direction'))))
+            active.append((i, relation, bool(source_key and row[source_key])))
     return {'case_id': expected['case_id'], 'frame_count': len(rows), 'halt_frames': len(active),
             'halt_overlapping_crosswalk_frames': sum(r['overlap'] for _,r,_ in active),
             'halt_contained_crosswalk_frames': sum(r['contained'] for _,r,_ in active),

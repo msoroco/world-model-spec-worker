@@ -2,18 +2,30 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1d__pedestrian",
   "input_sha256": "08b4c204ffa107222be5348b86f2ade77eeae2a7675089a2aa0a583e6bad036b",
   "status": "partial",
-  "readiness_kind": "construction_and_measurement_cpu_checkpoint",
+  "readiness_kind": "source_bound_native_acquisition_cpu_checkpoint",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1d__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "2d94c9d12b690495d2fd5cb3b5d8411345493e7be6cc0148ce137d29ac1f17b5"
+      "sha256": "0fe89f53ade1825addc986a103c7afc34c0794f965a665b7aedc41e88d9eec46"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete",
+      "exit_code": 0,
+      "log": "static-check.log",
+      "sha256": "919f8b6412581054281596ec1e35fb7358841d0580c5df80c3035ab86d498f20"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1d__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four exact cases and three controlled comparisons planned. Source-gated Native walker route construction, original-frame measurement, and independent comparison audit have five passing CPU tests. Exact runtime offline/compatibility receipts, canonical semantic proposals, saved-only processing and delivery audit, source-bound map/device survey, and complete manifest remain CPU work; strict assignment gate rejects partial status."
+  "reason": "Four cases and three controlled comparisons remain planned. Native original-frame walker/device/four-camera acquisition and saved sealed-source measurement now have nine passing CPU tests. A real source-surveyed map/device packet, exact runtime construction bundles, semantic proposals, per-case offline and compatibility proofs, saved-only processing and independent delivery audit remain CPU work; exact strict gate rejects partial status."
 }

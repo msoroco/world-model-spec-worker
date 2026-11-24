@@ -48,13 +48,19 @@ class TestCrosswalk(unittest.TestCase):
                 'halt_activity':'park','body_corners_xy':[[1,1],[3,1],[3,3],[1,3]],'crosswalk_id':'cw',
                 'marking_status':'marked','traffic_conflict':False,'law_direction':False,
                 'police_direction':False,'device_direction':False}
-    def expected(self,n): return {'frame_count':n,'first_frame':100,'case_id':'on_park','subject_id':'ego','crosswalk_id':'cw','marking_status':'marked','crosswalk_polygon':P,'action':'park'}
+    def expected(self,n): return {'frame_count':n,'first_frame':100,'case_id':'on_park','subject_id':'ego','crosswalk_id':'cw','marking_status':'marked','crosswalk_polygon':P,'action':'park','exception':'none'}
     def test_measure(self):
         rows=[self.row(i) for i in range(3)]
         m=c.measure(rows,self.expected(3)); self.assertEqual(m['halt_contained_crosswalk_frames'],3); self.assertIsNone(m['legal_judgment'])
     def test_measure_exception(self):
         rows=[self.row(i) for i in range(3)]; rows[1]['traffic_conflict']=True
-        self.assertEqual(c.measure(rows,self.expected(3))['halt_with_exception_source_frames'],1)
+        self.assertEqual(c.measure(rows,self.expected(3))['halt_with_exception_source_frames'],0)
+        wanted=self.expected(3); wanted['exception']='traffic_conflict'
+        self.assertEqual(c.measure(rows,wanted)['halt_with_exception_source_frames'],1)
+        rows[1]['traffic_conflict']=False; rows[1]['law_direction']=True
+        self.assertEqual(c.measure(rows,wanted)['halt_with_exception_source_frames'],0)
+    def test_disjoint_collinear_edges(self):
+        self.assertFalse(c.footprint_relation([[8,0],[9,0],[9,1],[8,1]],P)['overlap'])
     def test_measure_rejects_gap(self):
         rows=[self.row(i) for i in range(3)]; rows[1]['time_s']=0.2
         with self.assertRaisesRegex(c.SourceError,'20 Hz'): c.measure(rows,self.expected(3))

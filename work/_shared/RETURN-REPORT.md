@@ -1554,3 +1554,50 @@ Owner slots rotated to C10301 LVMC-11-22-010 in partition 03 and C109171 NRS-484
 ## 2026-11-24 C109171 saved timeline checkpoint
 
 - `testing__C109171__NRS-484B-307-4b__pedestrian`: partition 04 owner added source-sealed original Native site/events, contiguous 20Hz timeline and separate-device WALK-before-entry saved measurement for four exact cases, including path/hash/time/diagnostic negatives. Twenty-eight tests and assignment static check pass; four declared proof-log hashes independently match. Lead exact strict exits 1 on truthful partial. Actual reviewed site, full capture/cameras/bundles, semantic proposals, compatibility and media audit remain. Owner slot rotated to C109749 NRS-484B-223-3c in partition 07.
+
+## 2026-11-24 C10301 LVMC Native context checkpoint
+
+- `testing__C10301__LVMC-11-22-010__motor_vehicle_driver`: partition 03 owner added source-bound same-tick Native body, marking, parking, signal and conflict readbacks, geometric footprint overlap and convexity validation, plus map/frame/time/source-hash checks. Eighteen focused tests and assignment static check pass; both declared proof-log hashes independently match. Lead exact strict exits 1 on truthful partial. Reviewed site and sources, full capture/finalizer, exact bundles, semantic proposals, compatibility and delivery audit remain. Rotated owner slot to C111610 NRS-484B-283-1a in partition 08.
+
+## 2026-11-24 C111329(1d) Native pedestrian checkpoint
+
+- `testing__C111329__NRS-484B-287-1d__pedestrian`: partition 05 owner added SHA-bound measured-site 20Hz original walker/device/four-camera capture with identity, timing, provenance and cleanup guards, plus sealed saved joins and diagnostic rejection. Nine focused tests and assignment static check pass; all three declared proof-log hashes independently match. Lead exact strict exits 1 on truthful partial. Surveyed source packet, runtime bundles, semantic proposals, compatibility, saved finalization and delivery audit remain. Rotated owner slot to C111329 NRS-484B-287-1e pedestrian in partition 06.
+
+## 2026-11-24 C109749(3c) Native lane checkpoint
+
+- `testing__C109749__NRS-484B-223-3c__motor_vehicle_driver`: partition 07 owner added source-bound 20Hz original body/lane/turn/merge and four-camera frame/file-hash capture, sealed trace/map/receipt, and extended independent camera-byte audit. Thirty-four focused tests and assignment static check pass, including frame/time/map/hash/unreviewed-highway negatives; declared proof-log hash independently matches. Lead exact strict exits 1 on truthful partial. Reviewed public-highway and Native map design, runner/sensors, semantic proposals and compatibility/saved receipts remain. Rotated owner slot to C153046 NRS-484B-307-8c in partition 01.
+
+## 2026-11-24 C111610(283-1a) saved pedestrian checkpoint
+
+- `testing__C111610__NRS-484B-283-1a__motor_vehicle_driver`: partition 08 owner added source-sealed 600-frame 20Hz exact site/ego/pedestrian/exception join, separate actor identity, map/directional-half/crosswalk/device checks and measured frames with unresolved legal/physical calls. Fifteen focused tests and assignment static check pass, including tamper/identity/path/time negatives; declared proof-log hash independently matches. Lead exact strict exits 1 on truthful partial. Original Native site/cameras, semantic proposals, manifest, offline/compatibility/saved processing and independent audits remain. Rotated owner slot to C111610 NRS-484B-307-7a in partition 02.
+
+## 2026-11-24 C111329(1e) saved crossing checkpoint
+
+- `testing__C111329__NRS-484B-287-1e__pedestrian`: partition 06 owner added source-sealed exact-case saved-only 20Hz walker/device/four-camera joins, original frame/time and device inventory bindings, instruction-pattern measurement and an independent two-contrast comparison audit. Eight positive/negative tests and assignment static check pass; three declared proof-log hashes independently match. Lead exact strict exits 1 on truthful partial. Surveyed official site/device source, exact bundles/stages/media, offline/compatibility and process-saved work remain. Rotated owner slot to C111329 NRS-484B-287-1c in partition 04.
+
+## 2026-11-24 C153046 saved observation replay checkpoint
+
+- `testing__C153046__NRS-484B-307-8c__motor_vehicle_driver`: partition 01 owner added independent saved observation replay of source-cited conflict zones and full Native frames against controller trace flags, with geometry/source/frame/signal/stop-distance negatives. Thirty-nine focused tests and assignment static check pass; all 36 declared proof-log hashes independently match. Lead exact strict exits 1 on truthful partial. Original capture integration, authoritative site/signal/route/camera bindings, judgment sweep, queue/local integration and physical proof remain. Rotated owner slot to C111329 LVMC-11-40-070 in partition 03.
+
+## 2026-11-24 C111610(307-7a) flashing aspect checkpoint
+
+- `testing__C111610__NRS-484B-307-7a__motor_vehicle_driver`: partition 02 owner added source-sealed 900-frame Native flashing-arrow aspect acquisition, independent saved event/source join and transition-aware measurement/comparison so OFF frames are handled according to the original signal state. Twelve focused tests and assignment static check pass; declared proof-log hash independently matches. Lead exact strict exits 1 on truthful partial. Surveyed signal head/adapter runner, finalizer, bundles/manifest, semantic proposals, per-case offline/compatibility and delivery audits remain. Rotated owner slot to C111748 NRS-484B-403-2 in partition 05.
+
+## 2026-11-24 C111329(1c) Native crossing checkpoint
+
+- `testing__C111329__NRS-484B-287-1c__pedestrian`: partition 04 owner added source-bound 20Hz original walker/device readback capture (900-tick production default) and saved exact-case/hash/frame/identity/bank-crossing and operation-during-crossing validation. Twenty-two focused tests and assignment static check pass; declared proof-log hash independently matches. Lead exact strict exits 1 on truthful partial. Reviewed real site/device, cameras/finalizer, manifests, stage proposals, compatibility and delivery audits remain. Rotated owner slot to C111706 NRS-484B-403-3 in partition 04.
+
+## 2026-11-24 C111329 LVMC and C111748 device checkpoints
+
+- `testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator`: partition 03 owner added lazy 900-tick Native device/bicycle/officer readback capture with fail-closed publication and source-sealed saved instruction/response measurement; all nine cases mapped in measurement contract. Twelve focused tests and assignment static check pass; declared proof-log hash independently matches. Lead exact strict exits 1 on truthful partial. Officer authority/gesture, reviewed site/route, runner/manifest, semantic proposals, camera/media and audits remain.
+- `testing__C111748__NRS-484B-403-2__motor_vehicle_driver`: partition 05 owner added source-bound lazy 20Hz Native 900-frame ego/device/four-camera acquisition with map SHA, identity/display/timing guards and final brake; device check now requires governed-approach visibility. Twenty-two focused tests and assignment static check pass; declared proof-log hash independently matches. Lead exact strict exits 1 on truthful partial. Reviewed site/device, runner/bundles, semantic proposals, compatibility/saved processing, audit and risk fallbacks remain.
+
+## 2026-11-24 C111706 U-turn acquisition checkpoint
+
+- `testing__C111706__NRS-484B-403-3__motor_vehicle_driver`: partition 04 owner added source-sealed original 900-tick synchronous 20Hz ego/other-vehicle U-turn acquisition, frame/time/waypoint/body readbacks, full-brake callback and atomic trace publication. Seventeen focused tests and assignment static check pass; all three declared proof-log hashes independently match. Lead exact strict exits 1 on truthful partial. Assignment handoff lists remaining site, canonical bundle, saved and delivery proofs.
+
+## 2026-11-24 end-of-turn handoff
+
+- Batch status remains 9 ready and 233 partial of 242. The full strict gate ran earlier this turn and exited 1 on partial/missing packages; every completed owner checkpoint was additionally checked with its exact assignment strict command and kept partial. No ready claim was added.
+- Final returned-file hygiene scan: 11,396 files; no size, UTF-8, trailing-whitespace or conflict-marker issues. Largest returned file is 1,846,854 bytes, under the 2 MiB per-file limit. This scan supplies the required whitespace check without running Git. The report is below 2 MiB and needs no archive.
+- Next work: continue the next partial assignments in batch order across partitions with at most three owner subagents alongside the lead; finish source-reviewed Native bindings, exact case bundles, semantic stages, saved-only/compatibility and independent delivery proofs. Promote each package only after its exact strict gate passes, then rerun the full strict gate.

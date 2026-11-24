@@ -98,6 +98,14 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(native.SourceError, 'before turn'):
             native.analyze(p, case_id=CASE, sha256=h)
 
+    def test_native_rejects_visibility_only_off_governed_approach(self):
+        s = packet(True)
+        for i, f in enumerate(s['frames']):
+            f['ego']['approach_id'] = 'B' if i >= 1 else 'A'
+        p, h = self.dump(s)
+        with self.assertRaisesRegex(native.SourceError, 'governed approach'):
+            native.analyze(p, case_id=CASE, sha256=h)
+
     def test_native_rejects_turn_claim_without_reversal(self):
         s = packet(True); s['frames'][-1]['ego']['yaw_deg'] = 0
         p, h = self.dump(s)

@@ -89,7 +89,7 @@ def measure_original(site, root, event_ref):
     verify_site(site,root)
     events=json.loads(original(event_ref,root).read_text())
     require(isinstance(events,list) and len(events)>=3, 'original event history missing')
-    last=-1; measured=[]
+    last=-1; measured=[]; arrow_states=[]
     for row in events:
         frame=row['frame']
         require(isinstance(frame,int) and frame>last, 'frame order invalid')
@@ -97,7 +97,8 @@ def measure_original(site, root, event_ref):
         require(str(row['official_head_id'])==str(site['official_head_id']), 'head identity changed')
         require(row['facing_approach_id']==site['ego_approach_id'], 'facing relation changed')
         aspects=row['lit_aspects']
-        require(isinstance(aspects,list) and 'flashing_yellow_turn_arrow' in aspects, 'arrow exhibition missing')
+        require(isinstance(aspects,list), 'original aspect inventory missing')
+        arrow_states.append('flashing_yellow_turn_arrow' in aspects)
         require(row['arrow_movement']==site['arrow_movement'], 'arrow movement changed')
         require(row['ego_movement'] and row['ego_movement'] in (site['arrow_movement'],row.get('concurrently_permitted_movement')), 'unbound movement')
         users=[]
@@ -106,6 +107,8 @@ def measure_original(site, root, event_ref):
             require(user.get('lawful_presence_source'), 'external lawful-presence source missing')
             region='intersection' if in_polygon(user['xy'],site['intersection_polygon_xy']) else 'adjacent_crosswalk' if in_polygon(user['xy'],site['adjacent_crosswalk_polygon_xy']) else 'outside'
             users.append({'id':user['id'],'kind':user['kind'],'region':region,'lawful_presence_source':user['lawful_presence_source']})
-        measured.append({'frame':frame,'lit_aspects':aspects,'ego_xy':row['ego_xy'],'ego_in_intersection':in_polygon(row['ego_xy'],site['intersection_polygon_xy']),'ego_movement':row['ego_movement'],'other_users':users})
+        measured.append({'frame':frame,'lit_aspects':aspects,'arrow_lit':arrow_states[-1],'ego_xy':row['ego_xy'],'ego_in_intersection':in_polygon(row['ego_xy'],site['intersection_polygon_xy']),'ego_movement':row['ego_movement'],'other_users':users})
+    transitions=sum(a!=b for a,b in zip(arrow_states,arrow_states[1:]))
+    require(any(arrow_states) and not all(arrow_states) and transitions>=2, 'flashing arrow transitions missing')
     require(not measured[0]['ego_in_intersection'] and any(r['ego_in_intersection'] for r in measured), 'no measured intersection entry')
-    return {'frame_count':len(measured),'records':measured,'original_sources':[event_ref]+site['original_sources'],'lawful_presence_verdict':None,'cautious_entry_verdict':None,'right_of_way_verdict':None}
+    return {'frame_count':len(measured),'arrow_transitions':transitions,'records':measured,'original_sources':[event_ref]+site['original_sources'],'lawful_presence_verdict':None,'cautious_entry_verdict':None,'right_of_way_verdict':None}
