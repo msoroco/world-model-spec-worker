@@ -21,9 +21,10 @@ def _module(name, filename):
 
 _AUDIT = _module('center_lane_saved_delivery_audit', 'delivery_audit.py')
 _SITE = _module('center_lane_saved_site', 'center_lane_site.py')
+_CAMERAS = _module('center_lane_saved_cameras', 'saved_camera_audit.py')
 
 
-def finalize_saved(attempt_root, expected_case_id, expected_frames):
+def finalize_saved(attempt_root, expected_case_id, expected_frames, camera_dimensions=None):
     """Reopen the fixed Native receipt and audit its complete saved acquisition."""
     root = Path(attempt_root).resolve()
     if not isinstance(expected_case_id, str) or not expected_case_id:
@@ -45,6 +46,8 @@ def finalize_saved(attempt_root, expected_case_id, expected_frames):
     audited = _AUDIT.audit_saved_delivery(root, receipt)
     if audited['verified_frame_count'] != expected_frames:
         raise ValueError('incomplete original frame count')
+    camera_audit = _CAMERAS.audit_original_pngs(root, receipt['frame_map_source'],
+                                                expected_frames, camera_dimensions)
     measured = audited['measured']
     if expected_case_id.endswith('__no_merge') and measured['merge_observed']:
         raise ValueError('no-merge case contains observed merge')
@@ -61,6 +64,7 @@ def finalize_saved(attempt_root, expected_case_id, expected_frames):
         'original_trace': receipt['original_trace'],
         'frame_map_source': receipt['frame_map_source'],
         'verified_frame_count': expected_frames,
+        'decoded_camera_images': camera_audit['decoded_camera_images'],
         'distance_m': measured['distance_m'],
         'distance_ft': measured['distance_ft'],
         'turn_frame': measured['turn_frame'],

@@ -79,6 +79,8 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
                 row.get("camera_frames") != {camera: origin + i for camera in CAMERAS}):
             raise ValueError("camera and original frame join differs")
     camera_readback_hash = motion.get("camera_frame_readback_sha256")
+    if camera_readback_hash is None and not allow_diagnostic:
+        raise ValueError("original camera readback required for delivery")
     if camera_readback_hash is not None:
         readback_path = attempt / "camera-frame-readback.json"
         raw = readback_path.read_bytes()

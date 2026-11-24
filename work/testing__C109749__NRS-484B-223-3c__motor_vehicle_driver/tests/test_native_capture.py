@@ -5,6 +5,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location('native_capture', ROOT / 'native_capture.py')
@@ -13,6 +16,9 @@ SPEC.loader.exec_module(CAPTURE)
 SPEC = importlib.util.spec_from_file_location('delivery_audit_for_native_test', ROOT / 'delivery_audit.py')
 AUDIT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(AUDIT)
+SPEC = importlib.util.spec_from_file_location('saved_camera_audit_for_native_test', ROOT / 'saved_camera_audit.py')
+CAMERA_AUDIT = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(CAMERA_AUDIT)
 
 
 def source(root, relative, data):
@@ -52,6 +58,75 @@ def readings(root, merge=True):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_full_900_frame_four_camera_saved_decode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            pixel = bytes([1, 2, 3, 255] * 4)
+
+            def original(index):
+                frame = 1000 + index
+                return {
+                    'frame': frame, 'elapsed_seconds': index / 20,
+                    'body_centre_xy_m': [min(index, 20) * 0.3, 0.0],
+                    'lane_id': 'approach' if index == 0 else ('east' if index == 899 else 'center'),
+                    'approach_lane': index == 0,
+                    'left_turn_onto_highway_complete': index == 1,
+                    'merged_into_through_lane': index == 899,
+                    'camera_images': {view: SimpleNamespace(frame=frame, width=2, height=2, raw_data=pixel)
+                                      for view in CAPTURE.VIEWS},
+                }
+
+            wrapped = CAPTURE.sensor_frame_reader(root, original,
+                                                  {view: (2, 2) for view in CAPTURE.VIEWS})
+            receipt = CAPTURE.capture_original(root, 'exact__below_50ft', site(root), wrapped, 900,
+                                               first_frame=1000)
+            result = CAMERA_AUDIT.audit_original_pngs(
+                root, receipt['frame_map_source'], 900,
+                {view: (2, 2) for view in CAPTURE.VIEWS})
+            self.assertEqual(result['decoded_camera_images'], 3600)
+            self.assertEqual(AUDIT.audit_saved_delivery(root, receipt)['verified_frame_count'], 900)
+
+    def test_sensor_reader_writes_original_pngs_for_capture_and_saved_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = readings(root)
+            for old_camera in (root / 'camera').rglob('*.png'):
+                old_camera.unlink()
+            for row in data:
+                row.pop('camera_sources')
+                row['camera_images'] = {
+                    view: SimpleNamespace(frame=row['frame'], width=2, height=2,
+                                          raw_data=bytes([12, 34, 56, 255] * 4))
+                    for view in CAPTURE.VIEWS}
+            wrapped = CAPTURE.sensor_frame_reader(root, data.__getitem__,
+                                                  {view: (2, 2) for view in CAPTURE.VIEWS})
+            receipt = CAPTURE.capture_original(root, 'exact-case', site(root), wrapped, len(data))
+            self.assertEqual(AUDIT.audit_saved_delivery(root, receipt)['verified_frame_count'], 4)
+            for view in CAPTURE.VIEWS:
+                with Image.open(root / 'camera' / view / '000100.png') as image:
+                    image.load()
+                    self.assertEqual(image.size, (2, 2))
+                    self.assertEqual(image.getpixel((0, 0)), (56, 34, 12))
+
+    def test_sensor_reader_rejects_unsynchronized_and_incomplete_bytes(self):
+        for change, error in [
+            (lambda d: setattr(d[0]['camera_images']['overview'], 'frame', 101), 'frame identity'),
+            (lambda d: setattr(d[0]['camera_images']['overview'], 'raw_data', b'short'), 'BGRA')]:
+            with self.subTest(error=error), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                data = readings(root)
+                for row in data:
+                    row.pop('camera_sources')
+                    row['camera_images'] = {
+                        view: SimpleNamespace(frame=row['frame'], width=2, height=2,
+                                              raw_data=bytes([0, 0, 0, 255] * 4))
+                        for view in CAPTURE.VIEWS}
+                change(data)
+                wrapped = CAPTURE.sensor_frame_reader(root, data.__getitem__,
+                                                      {view: (2, 2) for view in CAPTURE.VIEWS})
+                with self.assertRaisesRegex(ValueError, error):
+                    CAPTURE.capture_original(root, 'exact-case', site(root), wrapped, len(data))
+
     def test_original_capture_joins_existing_saved_audit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

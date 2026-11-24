@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import native_capture as subject
+import camera_recorder
+import pixel_audit
 import warning_audit
 from emergency_scene import scene_geometry
 
@@ -115,6 +117,34 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'review missing'):
             self.run_capture()
         self.assertFalse(self.world.actors)
+
+    def test_original_camera_recorder_seals_and_decodes_3600_pixels(self):
+        image = types.SimpleNamespace(width=2, height=2,
+                                      raw_data=bytes([3, 2, 1, 255] * 4))
+        def read(frame):
+            image.frame = frame
+            return {key: image for key in camera_recorder.CAMERAS}
+        recorder = camera_recorder.CameraRecorder(
+            self.folder / 'out', read, case_id=CASE,
+            source_ids={key: 'synthetic-sensor-' + key for key in camera_recorder.CAMERAS},
+            sizes={key: (2, 2) for key in camera_recorder.CAMERAS})
+        self.run_capture(camera_capture=recorder)
+        result = pixel_audit.audit_pixels(self.folder / 'out', case_id=CASE)
+        self.assertEqual(result['decoded_original_pixels'], 3600)
+        self.assertTrue(recorder.closed)
+
+    def test_camera_recorder_rejects_wrong_frame_before_archiving(self):
+        wrong = types.SimpleNamespace(frame=7, width=2, height=2,
+                                      raw_data=bytes([3, 2, 1, 255] * 4))
+        recorder = camera_recorder.CameraRecorder(
+            self.folder / 'out', lambda frame: {key: wrong for key in camera_recorder.CAMERAS},
+            case_id=CASE,
+            source_ids={key: 'synthetic-' + key for key in camera_recorder.CAMERAS},
+            sizes={key: (2, 2) for key in camera_recorder.CAMERAS})
+        with self.assertRaisesRegex(ValueError, 'frame or dimensions mismatch'):
+            self.run_capture(camera_capture=recorder)
+        self.assertTrue(recorder.closed)
+        self.assertFalse((self.folder / 'out' / 'front.zip').exists())
 
 
 if __name__ == '__main__': unittest.main()

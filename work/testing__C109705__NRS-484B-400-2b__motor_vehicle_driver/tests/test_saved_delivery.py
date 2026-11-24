@@ -5,6 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from PIL import Image
 
 from test_departure_geometry import packet
 
@@ -60,6 +61,51 @@ def replace_json(root, manifest, key, change):
 
 
 class SavedDeliveryTests(unittest.TestCase):
+    def test_all_original_png_pixels_decoded_and_tamper_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            template = root / 'template.png'
+            Image.new('RGB', (8, 6), (20, 40, 60)).save(template)
+            payload = template.read_bytes()
+            digest = hashlib.sha256(payload).hexdigest()
+
+            def bind_png(index):
+                for channel in saved.CAMERAS:
+                    for row in index['channels'][channel]:
+                        relative = f'original/{channel}/{row["frame"]:04d}.png'
+                        target = root / relative
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_bytes(payload)
+                        row['source_path'] = relative
+                        row['source_sha256'] = digest
+
+            replace_json(root, manifest, 'camera_index', bind_png)
+            manifest['camera_media_kind'] = 'original_png_frames'
+            audited = saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
+            self.assertTrue(audited['actual_pixels'])
+            self.assertTrue(audited['full_source_decode'])
+            self.assertEqual(audited['pixel_decode']['decoded_frames'],
+                             dict.fromkeys(saved.CAMERAS, 900))
+            self.assertFalse(audited['physical_completion'])
+            with self.assertRaisesRegex(ValueError, 'capture profile dimensions'):
+                saved.pixels.decode(root, json.loads((root / manifest['camera_index']['path']).read_text()),
+                                    list(range(900)), delivery=True)
+
+            index_path = root / manifest['camera_index']['path']
+            index = json.loads(index_path.read_text())
+            (root / index['channels']['left'][451]['source_path']).write_bytes(b'corrupted')
+            with self.assertRaisesRegex(ValueError, 'source hash differs'):
+                saved.audit(root, manifest, case_id=CASE, allow_diagnostic=True)
+
+    def test_original_native_requires_decodable_source_media(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            manifest['acquisition_kind'] = 'original_native'
+            with self.assertRaisesRegex(ValueError, 'full PNG frame decode'):
+                saved.audit(root, manifest, case_id=CASE)
+
     def test_full_source_integrity_and_diagnostic_caveat(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

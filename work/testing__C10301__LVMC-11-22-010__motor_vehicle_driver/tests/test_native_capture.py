@@ -1,4 +1,5 @@
 import io
+import json
 import sys
 import tempfile
 import types
@@ -96,10 +97,23 @@ class NativeCaptureTests(unittest.TestCase):
             with patch.object(native_capture, "sample_from_native", side_effect=context):
                 native_capture.capture(Adapter(), Actor(), carla, SITE,
                     second_case, "person-test", second_output)
-            pair = saved_delivery.audit_comparison({case_id: output,
-                                                      second_case: second_output})
+            steady = output if case_id.endswith("__steady_travel") else second_output
+            variation = second_output if steady == output else output
+            receipt_path = output / "pair-receipt.json"
+            with self.assertRaisesRegex(ValueError, "diagnostic capture"):
+                saved_delivery.main(["--steady", str(steady), "--variation",
+                                     str(variation), "--output", str(receipt_path)])
+            self.assertFalse(receipt_path.exists())
+            self.assertEqual(saved_delivery.main(["--steady", str(steady),
+                "--variation", str(variation), "--output", str(receipt_path),
+                "--allow-diagnostic"]), 0)
+            pair = json.loads(receipt_path.read_text())
             self.assertTrue(pair["diagnostic_fixture"])
             self.assertEqual(pair["legal_judgment"], "unresolved")
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                saved_delivery.main(["--steady", str(steady), "--variation",
+                                     str(variation), "--output", str(receipt_path),
+                                     "--allow-diagnostic"])
             with self.assertRaisesRegex(ValueError, "diagnostic capture"):
                 saved_delivery.audit(output, case_id, require_delivery=True)
             image = output / "camera-png" / "0000-front.png"

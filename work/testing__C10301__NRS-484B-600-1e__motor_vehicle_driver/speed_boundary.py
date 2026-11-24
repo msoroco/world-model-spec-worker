@@ -100,6 +100,10 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
     if comparison is None or len(comparison.get("case_ids", [])) != 3:
         raise ValueError("strict rate comparison needs three exact cases")
     case_ids = comparison["case_ids"]
+    assignment = "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver"
+    if case_ids != [assignment + "__" + suffix
+                    for suffix in ("below", "equal", "above")]:
+        raise ValueError("strict rate comparison case order differs")
     if set(attempts) != set(case_ids) or len({Path(p).resolve() for p in attempts.values()}) != 3:
         raise ValueError("three distinct exact case attempts required")
     setups = []
@@ -109,6 +113,12 @@ def compare(plan_path: Path, attempts: dict[str, Path]) -> dict:
         setup = _read_json(attempt / "authored-setup.json")
         if setup.get("case_id") != case_id or setup.get("law_id") != "NRS-484B-600-1e":
             raise ValueError("authored setup identity differs")
+        for key, expected in {"cell_id": "C10301",
+                              "actor": "motor_vehicle_driver",
+                              "layout": "alley", "control": "access_aisle",
+                              "maneuver": "travel"}.items():
+            if setup.get(key) != expected:
+                raise ValueError("authored setup cell or actor differs")
         target = _number(setup.get("requested_speed_mph"), "requested speed")
         if target < 0:
             raise ValueError("negative requested speed")

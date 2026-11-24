@@ -1,10 +1,12 @@
 import hashlib
+import io
 import json
 import pathlib
 import sys
 import tempfile
 import types
 import unittest
+from PIL import Image
 
 
 BASE = pathlib.Path(__file__).resolve().parents[1]
@@ -74,11 +76,14 @@ class NativeBundleTests(unittest.TestCase):
             "local_transform_source_sha256": "b" * 64,
             "vehicle_length_m": 4.5, "vehicle_width_m": 1.8}))
         self.ego = Ego()
+        png_stream = io.BytesIO()
+        Image.new("RGB", (2, 2), (23, 41, 59)).save(png_stream, format="PNG")
+        png_bytes = png_stream.getvalue()
         self.args = dict(
             map_packet_path=self.map_path, case_id=PREFIX + "stop_14ft",
             attempt_id="diagnostic-attempt", recording_id="diagnostic-recording",
             world_to_local=lambda t: (t.x, t.y, t.heading),
-            read_camera=lambda name, frame: (frame, b"\x89PNG\r\n\x1a\n" + name.encode()),
+            read_camera=lambda name, frame: (frame, png_bytes),
             read_context=lambda frame: {"world_frame": frame,
                                         "participants": [], "directions": {}})
 
@@ -88,6 +93,7 @@ class NativeBundleTests(unittest.TestCase):
         self.assertEqual(self.ego.controls[-1].brake, 1)
         result = audit(receipt["attempt_path"], allow_diagnostic=True)
         self.assertTrue(result["time_join"])
+        self.assertEqual(result["decoded_original_images"], 3600)
         self.assertFalse(result["native_source"])
         self.assertFalse(result["physical_completion"])
 

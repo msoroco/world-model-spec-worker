@@ -103,15 +103,20 @@ def audit_media_time(path, expected_frames):
         video = path / name
         probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
                                 "-count_frames", "-show_entries",
-                                "stream=width,height,nb_read_frames", "-of", "json", str(video)],
+                                "stream=width,height,codec_name,avg_frame_rate,nb_read_frames",
+                                "-of", "json", str(video)],
                                capture_output=True, text=True, timeout=180)
         if probe.returncode:
             raise ValueError("original camera probe failed: " + name)
         streams = json.loads(probe.stdout).get("streams", [])
-        if (len(streams) != 1 or
-                (streams[0].get("width"), streams[0].get("height")) != dimensions or
-                int(streams[0].get("nb_read_frames", -1)) != expected_frames):
+        if len(streams) != 1:
+            raise ValueError("original camera stream count differs: " + name)
+        stream = streams[0]
+        if ((stream.get("width"), stream.get("height")) != dimensions or
+                int(stream.get("nb_read_frames", -1)) != expected_frames):
             raise ValueError("original camera dimensions or frame count differ: " + name)
+        if stream.get("codec_name") != "ffv1" or stream.get("avg_frame_rate") != "20/1":
+            raise ValueError("original camera FFV1 or 20 Hz contract differs: " + name)
         decoded = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(video),
                                   "-f", "null", "-"], capture_output=True, timeout=180)
         if decoded.returncode:

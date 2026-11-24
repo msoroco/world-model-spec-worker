@@ -91,6 +91,7 @@ def measure(trace: dict, *, expected_case_id: str, expected_act: str,
         raise ValueError("parked vehicle heading is invalid")
     heading = heading[0] / heading_length, heading[1] / heading_length
     sides, act_frames, moving_frames, clearances, responses = set(), [], [], [], []
+    passing_history = []
     for frame in frames:
         if set(frame.get("camera_frames", {})) != {"front", "rear", "left", "right"}:
             raise ValueError("four original camera frame identities are required")
@@ -117,6 +118,12 @@ def measure(trace: dict, *, expected_case_id: str, expected_act: str,
             raise ValueError("original moving-vehicle speed is absent")
         if speed > 0.1:
             moving_frames.append(frame["frame_id"])
+        passing_body = frame.get("passing_body_xy")
+        if not isinstance(passing_body, list) or len(passing_body) < 2:
+            raise ValueError("original passing body vertices are required in every frame")
+        passing_history.append({"frame_id": frame["frame_id"],
+                                "center_xy": list(center), "speed_mps": float(speed),
+                                "body_xy": [list(_point(v)) for v in passing_body]})
         if act != "none" and speed > 0.1:
             envelope = frame.get("act_envelope_xy")
             vehicle = frame.get("passing_body_xy")
@@ -146,6 +153,7 @@ def measure(trace: dict, *, expected_case_id: str, expected_act: str,
             "body_gap_by_frame_m": clearances,
             "minimum_body_gap_m": min(row["body_gap_m"] for row in clearances),
             "passing_response": responses,
+            "passing_history": passing_history,
             "fixed_context": context,
             "legal_interference": "unresolved_judgment"}
 
@@ -165,14 +173,23 @@ def audit_pair(left: dict, right: dict, *, deliberate_difference: str) -> dict:
             raise ValueError("act or side changed during clearance comparison")
         if left["minimum_body_gap_m"] == right["minimum_body_gap_m"]:
             raise ValueError("clearance comparison has no measured difference")
+        if left["act_frame_ids"] != right["act_frame_ids"]:
+            raise ValueError("act timing changed during clearance comparison")
+        if [(row["frame_id"], row["speed_mps"]) for row in left["passing_history"]] != [
+                (row["frame_id"], row["speed_mps"]) for row in right["passing_history"]]:
+            raise ValueError("passing speed history changed during clearance comparison")
     elif deliberate_difference == "act_side":
         if left["observed_act"] != right["observed_act"] or (
                 left["act_side"] == right["act_side"]):
             raise ValueError("side comparison changed act or omitted side change")
+        if left["passing_history"] != right["passing_history"]:
+            raise ValueError("passing trajectory changed during side comparison")
     elif deliberate_difference == "observed_act":
         if left["act_side"] != right["act_side"] or (
                 left["observed_act"] == right["observed_act"]):
             raise ValueError("act comparison changed side or omitted act change")
+        if left["passing_history"] != right["passing_history"]:
+            raise ValueError("passing trajectory changed during act comparison")
     else:
         raise ValueError("undeclared comparison variable")
     return {"case_ids": [left["case_id"], right["case_id"]],

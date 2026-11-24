@@ -25,3 +25,11 @@ The focused command `.venv-cpu/bin/python -m unittest discover -s work/testing__
 5. Recheck every exact case and comparison against the statute and contracts, then run the assignment strict gate. Mark ready only when it passes.
 
 The later GPU work is actual vehicle motion, sign and context visibility, 20 Hz camera coverage and physical capture review. These do not excuse the remaining CPU items above.
+
+## 2026-11-23 saved media checkpoint
+
+`saved_media_audit.py` independently checks source-hashed Native rows and frame map, 900 contiguous 20 Hz identities/times, four source-hashed original PNG archives, ordered frame members, per-frame pixel SHA bindings, profile dimensions, and full PNG decode of all 3,600 images. The default profile is 1920x1080 front and 1280x720 for rear/left/right. It returns no physical or legal acceptance. The focused test uses a 2x2 synthetic image override and proves that the default profile rejects that fixture; it also corrupts a source-hashed row pixel binding and proves rejection. This audit is a separate CPU artifact and is not yet bound into the eight exact construction bundles or canonical delivery acceptance.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight` passed (`preflight-nov23.log`). `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C229439__NRS-484B-450-1o__motor_vehicle_driver/tests -v` passed 14 tests (`cpu-tests.log`). Next bind the independent media audit to the exact saved attempts and implement the Native camera writer, then rerun offline and compatibility proofs after updating every construction bundle. The package remains partial.
+
+Assignment-scoped static gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C229439__NRS-484B-450-1o__motor_vehicle_driver --complete` exited 0 (`checkpoint-check.log`). Exact strict gate with `--require-delivery-ready` exited 1 at `Preparation acceptance failed: partial/missing packages remain` (`strict-check.log`); `result.json` stays partial.

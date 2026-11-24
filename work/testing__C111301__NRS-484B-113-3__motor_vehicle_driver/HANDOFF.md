@@ -35,3 +35,11 @@ Actual CARLA motion and camera visibility remain later GPU checks; the listed pa
 `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v` passed 13 tests, including source tamper, missing media, camera frame drift, time gap, diagnostic source, identity mismatch, and path escape rejection. See `cpu-backing-tests.log` and its result.json hash.
 
 Remaining CPU work: connect this saved join to original Native capture and finalizer, validate full media pixels with the runtime auditor, implement independent delivery/comparison audits and canonical bundles/proposals/receipts. The selected C111301 map source and physical vehicle/pedestrian interaction still need local verification.
+
+## 2026-11-24 replayable saved comparison checkpoint
+
+`saved_comparison.py` now runs the exact `pedestrian_yield_response` comparison from two distinct sealed original Native acquisitions. It invokes `saved_backing.process` for each required case, checks that the two original map packets have the same hash (binding map, routes, blueprints and control context), requires the same 900-tick time window, and calls `backing_measurements.compare` to check measured pedestrian exposure and an observed brake or reverse-speed difference. The CLI emits a compact source-hashed comparison receipt only after both attempts pass. It leaves physical completion and legal judgment unresolved.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v` passed 16 tests. These include a positive CLI replay and rejection of changed source context, telemetry tampering and pedestrian-exposure drift. `.venv-cpu/bin/python runtime.py preflight` passed with the pinned CPU environment and Lean toolchain. The logs and current hashes are in `result.json`.
+
+Next CPU work: attach original four-camera capture and full media decode, then implement the exact delivery auditor, canonical case bundles, proposals and source-specific offline/compatibility receipts. The selected C111301 site and realized interaction remain unverified. This package remains partial; synthetic sealed fixtures are software tests only.

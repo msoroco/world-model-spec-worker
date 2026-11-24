@@ -4,7 +4,11 @@ import json
 import sys
 import tempfile
 import unittest
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZipFile, ZIP_STORED
+
+from PIL import Image
 
 MODULE = Path(__file__).resolve().parents[1] / 'parking.py'
 sys.path.insert(0, str(MODULE.parent))
@@ -14,6 +18,9 @@ spec.loader.exec_module(parking)
 fspec = importlib.util.spec_from_file_location('finalizer', MODULE.parent / 'finalizer.py')
 finalizer = importlib.util.module_from_spec(fspec)
 fspec.loader.exec_module(finalizer)
+mspec = importlib.util.spec_from_file_location('saved_media_audit', MODULE.parent / 'saved_media_audit.py')
+saved_media_audit = importlib.util.module_from_spec(mspec)
+mspec.loader.exec_module(saved_media_audit)
 
 
 class FakeAdapter:
@@ -181,6 +188,43 @@ class ParkingTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'hash mismatch'):
             finalizer.finalize(attempt_path, self.root, self.root / 'rejected.json')
         self.assertFalse((self.root / 'rejected.json').exists())
+
+    def test_original_media_full_decode_and_pixel_tamper(self):
+        rows = self.rows(900)
+        frame_map = [{'frame': row['frame'], 'time_s': row['time_s']} for row in rows]
+        def save(name, payload):
+            path = self.root / name
+            path.write_bytes(payload)
+            return {'path': name, 'sha256': hashlib.sha256(payload).hexdigest()}
+        frame_ref = save('frame-map.json', json.dumps(frame_map).encode())
+        image = Image.new('RGB', (2, 2), color=(20, 40, 60))
+        stream = BytesIO(); image.save(stream, format='PNG')
+        png = stream.getvalue()
+        for row in rows:
+            member = f"{row['frame']:08d}.png"
+            row['camera_frames'] = {name: {'member': member, 'sha256': hashlib.sha256(png).hexdigest()}
+                                    for name in saved_media_audit.CAMERAS}
+        actor_ref = save('original-rows.json', json.dumps(rows).encode())
+        cameras = {}
+        for name in saved_media_audit.CAMERAS:
+            path = self.root / (name + '.png.zip')
+            with ZipFile(path, 'w', compression=ZIP_STORED) as archive:
+                for row in rows:
+                    archive.writestr(f"{row['frame']:08d}.png", png)
+            cameras[name] = {**save(path.name, path.read_bytes()), 'frame_count': 900,
+                             'fps': 20, 'dimensions': [2, 2]}
+        attempt = {**self.expected(900), 'source_format': 'native_original', 'fps': 20,
+                   'actor_rows': actor_ref, 'frame_map': frame_ref, 'camera_archives': cameras}
+        dimensions = {name: [2, 2] for name in saved_media_audit.CAMERAS}
+        with self.assertRaisesRegex(ValueError, 'profile dimensions mismatch'):
+            saved_media_audit.audit_media(attempt, self.root)
+        result = saved_media_audit.audit_media(attempt, self.root, dimensions)
+        self.assertEqual(result['decoded_images'], 3600)
+        self.assertFalse(result['physical_acceptance'])
+        rows[80]['camera_frames']['front']['sha256'] = '0' * 64
+        attempt['actor_rows'] = save('original-rows.json', json.dumps(rows).encode())
+        with self.assertRaisesRegex(ValueError, 'pixel binding mismatch'):
+            saved_media_audit.audit_media(attempt, self.root, dimensions)
 
 
 if __name__ == '__main__':

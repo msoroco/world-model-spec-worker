@@ -18,6 +18,63 @@ _SPEC = importlib.util.spec_from_file_location('center_lane_measurement_for_capt
 _MEASUREMENT = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(_MEASUREMENT)
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CAMERA_DIMENSIONS = {'overview': (1920, 1080), 'approach': (1280, 720),
+                     'reference_corner': (1280, 720), 'driver_reference': (1280, 720)}
+
+
+def sensor_frame_reader(attempt_root, original_reader, dimensions=None):
+    """Save synchronized original BGRA sensor readbacks as four lossless PNGs.
+
+    The wrapped reader supplies ``camera_images`` keyed by view. Each image has
+    Native frame, width, height and raw_data attributes. Dimensions may be
+    overridden only for CPU fixtures; local acquisition uses the profile above.
+    The returned reader feeds ``capture_original`` without a CARLA import.
+    """
+    from PIL import Image
+
+    root = Path(attempt_root).resolve()
+    expected = CAMERA_DIMENSIONS if dimensions is None else dimensions
+    if not isinstance(expected, dict) or set(expected) != set(VIEWS):
+        raise ValueError('incomplete four-camera dimensions')
+    if any(not isinstance(expected[view], (list, tuple)) or len(expected[view]) != 2 or
+           any(type(value) is not int or value <= 0 for value in expected[view]) for view in VIEWS):
+        raise ValueError('invalid camera dimensions')
+
+    def read(index):
+        row = original_reader(index)
+        if not isinstance(row, dict):
+            raise ValueError('missing original frame readback')
+        frame = row.get('frame')
+        images = row.get('camera_images')
+        if type(frame) is not int or not isinstance(images, dict) or set(images) != set(VIEWS):
+            raise ValueError('incomplete synchronized camera sensor readback')
+        sources = {}
+        prepared = []
+        for view in VIEWS:
+            image = images[view]
+            width, height = expected[view]
+            if (getattr(image, 'frame', None) != frame or
+                    getattr(image, 'width', None) != width or getattr(image, 'height', None) != height):
+                raise ValueError('camera frame identity or dimensions mismatch: ' + view)
+            raw = getattr(image, 'raw_data', None)
+            if not isinstance(raw, (bytes, bytearray)) or len(raw) != width * height * 4:
+                raise ValueError('incomplete original BGRA camera bytes: ' + view)
+            relative = 'camera/' + view + '/%06d.png' % frame
+            path = root / relative
+            if path.exists():
+                raise ValueError('original camera frame already exists: ' + relative)
+            rgb = Image.frombytes('RGBA', (width, height), bytes(raw), 'raw', 'BGRA').convert('RGB')
+            prepared.append((path, rgb))
+            sources[view] = relative
+        for path, rgb in prepared:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            rgb.save(path, format='PNG')
+        returned = dict(row)
+        returned.pop('camera_images')
+        returned['camera_sources'] = sources
+        return returned
+
+    return read
 
 
 def _write_json(root, relative, value):

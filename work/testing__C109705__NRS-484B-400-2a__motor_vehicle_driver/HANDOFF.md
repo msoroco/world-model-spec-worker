@@ -125,3 +125,7 @@ All four exact construction bundles now embed the current source files; their co
 ## 2026-11-23 saved paired-comparison replay command
 
 `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/saved_delivery.py --near-attempt NEAR --far-attempt FAR --output .runtime-work/c109705-pair-audit.json` reopens both retained exact attempts, checks their source-bound fixed conditions and measured approach difference, and fully decodes all 7,200 original camera PNGs before writing the audit. Diagnostic inputs require `--allow-diagnostic`; default rejection leaves no output. The full 21-test suite passes in `cpu-comparison-command-tests.log`, and the scoped static check passes. The exact scoped strict check exits 1 because this package remains partial: pinned compatibility/process-saved and delivery receipts, tested fallback and reviewed genuine source are still CPU work.
+
+## 2026-11-23 production camera-profile rejection
+
+The full-pixel saved auditor now checks 1920x1080 overview and 1280x720 for all three other original views in production mode. A source-hashed 2x2 diagnostic fixture is accepted only with explicit `--allow-diagnostic`; changing its declaration to production causes the CLI to reject it without writing a receipt. All 21 focused tests pass in `cpu-production-profile-tests.log`; scoped static passes and exact strict still rejects truthful partial status. The test, static and strict logs and hashes are recorded in result.json.

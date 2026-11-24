@@ -103,6 +103,14 @@ class DeliveryMeasureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "no measured difference"):
             measure.audit_pair(a, {**b, "minimum_body_gap_m": a["minimum_body_gap_m"]},
                                deliberate_difference="body_gap_m")
+        altered_speed = copy.deepcopy(b)
+        altered_speed["passing_history"][1]["speed_mps"] = 9.0
+        with self.assertRaisesRegex(ValueError, "speed history changed"):
+            measure.audit_pair(a, altered_speed, deliberate_difference="body_gap_m")
+        altered_timing = copy.deepcopy(b)
+        altered_timing["act_frame_ids"] = [102]
+        with self.assertRaisesRegex(ValueError, "act timing changed"):
+            measure.audit_pair(a, altered_timing, deliberate_difference="body_gap_m")
 
     def test_act_and_side_comparisons(self):
         near = measure.measure(trace(), expected_case_id="case-open",
@@ -117,6 +125,14 @@ class DeliveryMeasureTests(unittest.TestCase):
                          ["deliberate_difference"], "observed_act")
         with self.assertRaises(ValueError):
             measure.audit_pair(near, far, deliberate_difference="observed_act")
+        changed_route = copy.deepcopy(far)
+        changed_route["passing_history"][1]["center_xy"][0] += 1.0
+        with self.assertRaisesRegex(ValueError, "trajectory changed"):
+            measure.audit_pair(near, changed_route, deliberate_difference="act_side")
+        changed_route = copy.deepcopy(board)
+        changed_route["passing_history"][1]["body_xy"][0][0] += 1.0
+        with self.assertRaisesRegex(ValueError, "trajectory changed"):
+            measure.audit_pair(near, changed_route, deliberate_difference="observed_act")
 
     def test_source_pair_audit_remeasures_and_rejects_stale_source(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -131,6 +147,34 @@ class DeliveryMeasureTests(unittest.TestCase):
             paths[1].write_text(json.dumps(trace("case-clear", gap=3.0)), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "hash mismatch"):
                 measure.audit_source_pair(*arguments)
+
+    def test_saved_comparison_command_checks_exact_plan_and_source_hashes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            plan = base / "plan.json"
+            plan.write_text(json.dumps({"comparisons": [{"comparison_id": "door_side",
+                                                          "case_ids": ["case-open", "case-far"]}]}))
+            sources = []
+            for case_id, side in (("case-open", "left"), ("case-far", "right")):
+                path = base / (case_id + ".json")
+                path.write_text(json.dumps(trace(case_id, side=side)))
+                sources.append({"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                                "case_id": case_id, "act": "open", "side": side})
+            spec_path, output = base / "spec.json", base / "comparison.json"
+            spec = {"comparison_id": "door_side", "sources": sources}
+            spec_path.write_text(json.dumps(spec))
+            command = [sys.executable, str(SOURCE.with_name("compare_saved.py")),
+                       "--plan", str(plan), "--spec", str(spec_path), "--output", str(output)]
+            self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
+            self.assertEqual(json.loads(output.read_text())["pair_audits"][0]
+                             ["deliberate_difference"], "act_side")
+            spec["sources"] = list(reversed(sources))
+            spec_path.write_text(json.dumps(spec))
+            self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
+            spec["sources"] = sources
+            spec["sources"][1] = {**sources[1], "sha256": "0" * 64}
+            spec_path.write_text(json.dumps(spec))
+            self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
 
 
 if __name__ == "__main__":

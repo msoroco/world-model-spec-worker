@@ -70,7 +70,18 @@ class SpeedBoundaryTests(unittest.TestCase):
         altered = json.loads(setup_path.read_text())
         altered["control"] = "stop_sign"
         setup_path.write_text(json.dumps(altered))
-        with self.assertRaisesRegex(ValueError, "fixed authored setup"):
+        with self.assertRaisesRegex(ValueError, "cell or actor differs"):
+            compare(ROOT / "case-plan.json", keyed)
+
+    def test_comparison_rejects_consistent_wrong_cell(self):
+        attempts = self.triple()
+        keyed = {ASSIGNMENT + "__" + key: value for key, value in attempts.items()}
+        for attempt in attempts.values():
+            setup_path = attempt / "authored-setup.json"
+            setup = json.loads(setup_path.read_text())
+            setup["cell_id"] = "C00000"
+            setup_path.write_text(json.dumps(setup))
+        with self.assertRaisesRegex(ValueError, "cell or actor differs"):
             compare(ROOT / "case-plan.json", keyed)
 
     def test_rejects_missing_stale_and_noncanonical_source(self):

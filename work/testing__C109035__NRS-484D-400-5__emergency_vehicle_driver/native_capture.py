@@ -119,10 +119,16 @@ def capture(world, carla_api, *, case_id: str, site_packet: Path,
                    "native_last_frame": rows[-1]["native_frame"],
                    "physical_acceptance_claimed": False}
         _source(out, "capture_receipt.json", (json.dumps(receipt, indent=2, sort_keys=True) + '\n').encode())
+        if hasattr(camera_capture, "finish"):
+            camera_capture.finish(receipt)
         return receipt
     finally:
         try:
             device_command(ego, siren=False, lamps=False)
         finally:
-            pedestrian.destroy()
-            ego.destroy()
+            try:
+                if hasattr(camera_capture, "abort"):
+                    camera_capture.abort()
+            finally:
+                pedestrian.destroy()
+                ego.destroy()

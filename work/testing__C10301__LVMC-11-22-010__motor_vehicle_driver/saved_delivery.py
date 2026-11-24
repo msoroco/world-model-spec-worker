@@ -4,6 +4,7 @@ This never claims interior attention, legal compliance, or physical acceptance.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -87,3 +88,30 @@ def audit_comparison(directories: dict, require_delivery: bool = False) -> dict:
     result = audit_pair(measurements, captures)
     result["diagnostic_fixture"] = any(c["diagnostic_fixture"] for c in captures.values())
     return result
+
+
+def main(argv=None) -> int:
+    """Replay both saved original attempts and emit a receipt after success."""
+    from comparison_audit import STEADY, VARIATION
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--steady", type=Path, required=True,
+                        help="saved steady-travel attempt directory")
+    parser.add_argument("--variation", type=Path, required=True,
+                        help="saved steering-variation attempt directory")
+    parser.add_argument("--output", type=Path, required=True,
+                        help="new JSON comparison receipt")
+    parser.add_argument("--allow-diagnostic", action="store_true",
+                        help="permit synthetic CPU fixtures; never for delivery")
+    args = parser.parse_args(argv)
+    if args.output.exists():
+        raise ValueError("comparison receipt already exists")
+    result = audit_comparison({STEADY: args.steady, VARIATION: args.variation},
+                              require_delivery=not args.allow_diagnostic)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n",
+                           encoding="utf-8")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

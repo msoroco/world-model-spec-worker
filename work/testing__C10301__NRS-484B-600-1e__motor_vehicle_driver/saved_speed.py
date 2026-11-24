@@ -75,5 +75,7 @@ if __name__ == "__main__":
     parser.add_argument("--attempt", required=True, type=Path)
     parser.add_argument("--case-id", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--allow-diagnostic", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(process(args.attempt, args.case_id, args.output), indent=2))
+    print(json.dumps(process_delivery(args.attempt, args.case_id, args.output,
+                                      allow_diagnostic=args.allow_diagnostic), indent=2))

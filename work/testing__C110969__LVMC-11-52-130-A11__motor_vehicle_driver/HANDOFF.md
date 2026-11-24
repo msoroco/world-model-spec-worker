@@ -2,6 +2,12 @@
 
 Status: partial executable CPU construction. Seven exact proposed cases and three controlled comparisons are in `case-plan.json`; none is a verified recording.
 
+## 2026-11-24 original pixel decode checkpoint
+
+- `saved_delivery.py` now opens and fully decodes every original PNG referenced by the four 900-frame camera receipts (3,600 images). It rejects duplicate frame paths, malformed PNGs even after a receipt hash is rebound, non-RGB images and wrong overview/detail resolution for `original_native` acquisitions. Diagnostic fixtures may use small RGB images but remain explicitly nonphysical. The audit reports `decoded_original_images: 3600` and `original_pixels_decoded: true`; this is saved-source integrity, not a claim that required bodies or signs are visible.
+- `tests/test_saved_delivery.py` and `tests/test_native_bundle.py` use real decoded PNG fixtures and test positive and negative paths. `cpu-geometry-tests.log` records 34 passing tests. `.venv-cpu/bin/python worker_check.py --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --complete` passes. The exact scoped strict gate remains exit 1 on the truthful partial status.
+- Next CPU work remains case-specific finalization, semantic proposals, exact offline and positive/negative compatibility bundles, process-saved receipts, physical source binding, and the complete execution manifest; parking compatibility still needs review. No GPU or external blocker is claimed for that work.
+
 ## 2026-11-24 saved-source and loaded-map checkpoint
 
 - `saved_delivery.py` independently joins a sealed exact-case measurement packet, 900 contiguous Native world frames, a 20 Hz frame map, and four named camera receipts. It verifies each referenced original PNG hash and rejects escaped paths, changed hashes, missing cameras and frame drift. The fixture path is explicitly diagnostic; the audit keeps full video decode, actual pixels, participant completeness, physical completion and legal necessity unresolved.

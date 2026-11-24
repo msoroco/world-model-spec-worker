@@ -148,6 +148,12 @@ class SavedDeliveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "cannot be decoded"):
             audit(self.attempt_path, allow_diagnostic=True)
 
+    def test_original_acquisition_requires_capture_profile_resolution(self):
+        self.packet["acquisition_kind"] = "original_native"
+        self.save()
+        with self.assertRaisesRegex(ValueError, "resolution mismatch"):
+            audit(self.attempt_path)
+
 
 if __name__ == "__main__":
     unittest.main()

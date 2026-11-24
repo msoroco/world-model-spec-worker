@@ -78,6 +78,16 @@ class NativeMediaAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "original timestamp join differs"):
                 audit_media_time(tmp, 9)
 
+    def test_camera_wrong_encoded_rate_rejected(self):
+        with TemporaryDirectory() as tmp:
+            native_video_fixture(tmp)
+            command = ["ffmpeg", "-nostdin", "-v", "error", "-f", "lavfi", "-i",
+                       "color=c=black:s=1920x1080:r=10", "-frames:v", "9", "-c:v",
+                       "ffv1", "-y", str(Path(tmp) / "overview.mkv")]
+            subprocess.run(command, check=True, capture_output=True, timeout=60)
+            with self.assertRaisesRegex(ValueError, "FFV1 or 20 Hz contract differs"):
+                audit_media_time(tmp, 9)
+
     def test_skipped_native_frame_and_time_step_rejected(self):
         with TemporaryDirectory() as tmp:
             native_video_fixture(tmp)

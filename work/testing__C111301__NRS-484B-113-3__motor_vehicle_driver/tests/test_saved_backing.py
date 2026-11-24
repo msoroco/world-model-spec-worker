@@ -1,5 +1,6 @@
 import hashlib
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -8,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from saved_backing import ASSIGNMENT, process
+from saved_comparison import audit
 
 
 def point(x, y):
@@ -46,6 +48,60 @@ def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
 
 
 class SavedBackingTests(unittest.TestCase):
+    def _paired(self, root):
+        left = root / "yield"
+        right = root / "continue"
+        left.mkdir()
+        right.mkdir()
+        fixture(left)
+        receipt = fixture(right, ASSIGNMENT + "__pedestrian_continue")
+        receipt["source_id"] = "original:attempt-2"
+        frames = json.loads((right / "telemetry.json").read_text(encoding="utf-8"))
+        for row in frames:
+            row["brake"] = 0.0
+            row["vehicle_velocity_xy"] = [-.5, 0]
+        receipt["telemetry"] = write(right, "telemetry.json", frames)
+        write(right, "acquisition.json", receipt)
+        return left, right, receipt
+
+    def test_saved_comparison_replays_both_attempts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            left, right, _ = self._paired(Path(directory))
+            result = audit(left, right)
+            self.assertEqual(result["frame_count"], 900)
+            self.assertEqual(result["comparison_id"], "pedestrian_yield_response")
+            self.assertFalse(result["physical_completion"])
+            output = Path(directory) / "comparison.json"
+            command = [sys.executable, str(ROOT / "saved_comparison.py"),
+                       "--yield-attempt", str(left), "--continue-attempt", str(right),
+                       "--output", str(output)]
+            subprocess.run(command, check=True, capture_output=True, text=True)
+            self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["comparison_id"],
+                             "pedestrian_yield_response")
+
+    def test_saved_comparison_rejects_changed_context_and_tamper(self):
+        with tempfile.TemporaryDirectory() as directory:
+            left, right, receipt = self._paired(Path(directory))
+            packet = json.loads((right / "map.json").read_text(encoding="utf-8"))
+            packet["pedestrian_route"][1]["y_m"] = 4
+            receipt["map_packet"] = write(right, "map.json", packet)
+            write(right, "acquisition.json", receipt)
+            with self.assertRaisesRegex(ValueError, "fixed original map"):
+                audit(left, right)
+            (right / "telemetry.json").write_text("[]\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "hash differs"):
+                audit(left, right)
+
+    def test_saved_comparison_rejects_exposure_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            left, right, receipt = self._paired(Path(directory))
+            frames = json.loads((right / "telemetry.json").read_text(encoding="utf-8"))
+            frames[100]["pedestrian_xy"] = [9, 9]
+            receipt["telemetry"] = write(right, "telemetry.json", frames)
+            write(right, "acquisition.json", receipt)
+            with self.assertRaisesRegex(ValueError, "exposure differs"):
+                audit(left, right)
+
     def test_sealed_original_join(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

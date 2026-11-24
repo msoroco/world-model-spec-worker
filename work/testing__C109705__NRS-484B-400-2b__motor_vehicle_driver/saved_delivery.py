@@ -1,7 +1,7 @@
 """Independent saved-source integrity check for the four exact departure cases.
 
-This checks original trace/map/camera bindings. It does not decode pixels,
-claim observed physical success, or make a legal judgment.
+This checks original trace/map/camera bindings and decodes source PNG frames
+when bound. It does not claim physical visibility or make a legal judgment.
 """
 from __future__ import annotations
 
@@ -15,6 +15,9 @@ HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('departure_saved_geometry', HERE / 'departure_geometry.py')
 geometry = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(geometry)
+pixel_spec = importlib.util.spec_from_file_location('departure_saved_pixels', HERE / 'saved_pixels.py')
+pixels = importlib.util.module_from_spec(pixel_spec)
+pixel_spec.loader.exec_module(pixels)
 ASSIGNMENT = 'testing__C109705__NRS-484B-400-2b__motor_vehicle_driver'
 SUFFIXES = ('near_centerline', 'farther_from_centerline',
             'imaginary_near_centerline', 'imaginary_farther_from_centerline')
@@ -91,14 +94,22 @@ def audit(attempt_dir, manifest, *, case_id, allow_diagnostic=False):
             if (path, sha) not in source_files:
                 _read_source(root, {'path': path, 'sha256': sha}, 'original camera')
                 source_files.add((path, sha))
+    decoded = None
+    if manifest.get('camera_media_kind') == 'original_png_frames':
+        decoded = pixels.decode(root, index, frames,
+                                delivery=manifest.get('acquisition_kind') == 'original_native')
+    elif manifest.get('acquisition_kind') == 'original_native':
+        raise ValueError('original Native delivery requires full PNG frame decode')
     return {'case_id': case_id, 'source_integrity': 'passed',
             'original_frames': 900, 'rate_hz': 20, 'duration_s': 45,
             'original_camera_channels': list(CAMERAS), 'source_file_count': len(source_files),
             'departure_measurement': measurement, 'full_video_decode': False,
-            'actual_pixels': False, 'physical_completion': False,
+            'full_source_decode': bool(decoded), 'pixel_decode': decoded,
+            'actual_pixels': bool(decoded), 'physical_completion': False,
             'statutory_position_judgment': None,
-            'limitations': ['This audit verifies source bytes and indexed frames, not decoded pixels.',
-                            'Native motion and camera visibility require local physical review.']}
+            'limitations': (['Original PNG pixels decoded; participant visibility remains unverified.']
+                            if decoded else ['This diagnostic verifies indexed source bytes, not decoded pixels.'])
+                           + ['Native motion and camera visibility require local physical review.']}
 
 
 def main():

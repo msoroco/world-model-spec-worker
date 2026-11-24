@@ -215,6 +215,22 @@ class NativeMotionTests(unittest.TestCase):
                         ["source_integrity_passed"])
         with self.assertRaisesRegex(ValueError, "already exists"):
             finalize_capture(self.attempt, CASE, frames, media)
+        descriptor_path = self.attempt / "speed-source.json"
+        descriptor = json.loads(descriptor_path.read_text())
+        descriptor["diagnostic_fixture"] = False
+        descriptor_path.write_text(json.dumps(descriptor))
+        motion_path = self.attempt / "native-motion-receipt.json"
+        motion = json.loads(motion_path.read_text())
+        motion["diagnostic_fixture"] = False
+        motion_path.write_text(json.dumps(motion))
+        index_path = self.attempt / "capture-index.json"
+        index = json.loads(index_path.read_text())
+        index["diagnostic_fixture"] = False
+        index["native_motion"]["sha256"] = hashlib.sha256(
+            motion_path.read_bytes()).hexdigest()
+        index_path.write_text(json.dumps(index))
+        with self.assertRaisesRegex(ValueError, "camera readback required"):
+            audit_integrity(self.attempt, CASE)
 
     def test_native_camera_readback_seals_and_audit_reopens(self):
         actor = FakeActor()
@@ -269,6 +285,24 @@ class NativeMotionTests(unittest.TestCase):
                                     allow_diagnostic=True)
         self.assertTrue(delivery["media_audit"]["full_video_decode"])
         self.assertFalse(delivery["physical_acceptance_claimed"])
+        cli = Path(__file__).resolve().parents[1] / "saved_speed.py"
+        rejected_cli_path = Path(self.tmp.name) / "cli-default.json"
+        rejected_cli = subprocess.run(
+            [sys.executable, str(cli), "--attempt", str(self.attempt),
+             "--case-id", CASE, "--output", str(rejected_cli_path)],
+            capture_output=True, text=True, timeout=120)
+        self.assertNotEqual(rejected_cli.returncode, 0)
+        self.assertIn("diagnostic fixture", rejected_cli.stderr)
+        self.assertFalse(rejected_cli_path.exists())
+        cli_path = Path(self.tmp.name) / "cli-diagnostic.json"
+        accepted_cli = subprocess.run(
+            [sys.executable, str(cli), "--attempt", str(self.attempt),
+             "--case-id", CASE, "--output", str(cli_path),
+             "--allow-diagnostic"], capture_output=True, text=True,
+            timeout=120)
+        self.assertEqual(accepted_cli.returncode, 0, accepted_cli.stderr)
+        self.assertTrue(json.loads(cli_path.read_text())["media_audit"]
+                        ["full_video_decode"])
         with self.assertRaisesRegex(ValueError, "already exists"):
             process_delivery(self.attempt, CASE, delivery_path,
                              allow_diagnostic=True)
