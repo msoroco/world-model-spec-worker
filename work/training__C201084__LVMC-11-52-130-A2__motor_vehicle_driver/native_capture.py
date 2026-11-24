@@ -15,8 +15,8 @@ from native_controller import apply
 
 
 CAMERA_SPECS = (
-    ('overview', 640, 360, (-8, 0, 12), 0, -55),
-    ('approach', 640, 360, (3, 0, 2), 0, -8),
+    ('overview', 1920, 1080, (-8, 0, 12), 0, -55),
+    ('approach', 1280, 720, (3, 0, 2), 0, -8),
     ('reference_corner', 1280, 720, (0, 3, 2), 90, -8),
     ('driver_reference', 1280, 720, (1, 0, 1.6), 0, -4),
 )

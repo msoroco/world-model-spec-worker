@@ -45,6 +45,8 @@ def main():
                 "command": f".venv-cpu/bin/python runtime.py offline --manifest work/{ID}/execution-manifest.json --case {entry['case_id']} --candidate {candidate} --output .runtime-work/c110763-refresh/offline-{key}-v2",
                 "construction_sha256": ref["construction_sha256"],
                 "exit_code": 0, "log": offline["log"], "log_sha256": offline["log_sha256"]}
+            if candidate == "primary":
+                entry["negative"] = {"log": paths["negative.log"].name}
             ref["compatibility"] = {
                 "receipt": paths["compatibility.json"].name,
                 "sha256": sha(paths["compatibility.json"]),

@@ -9,7 +9,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-MANIFEST = HERE / 'current-combined-delivery-draft.json'
+MANIFEST = HERE / 'execution-manifest.json'
 GROUPS = ('reference', 'contrast', 'conflict', 'clear', 'near_lead',
           'absent_lead', 'device_direction', 'officer_direction')
 KINDS = ('complete_motion', 'incomplete_motion', 'missing_evidence')

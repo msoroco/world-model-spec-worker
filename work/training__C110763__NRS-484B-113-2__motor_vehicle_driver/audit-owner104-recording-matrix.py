@@ -21,6 +21,9 @@ def audit():
     proof = read(source)
     manifest_path = HERE / "execution-manifest.json"
     manifest = read(manifest_path)
+    runtime_sha = sha(ROOT / "runtime/SOURCE-MANIFEST.json")
+    if manifest["runtime_manifest_sha256"] != runtime_sha:
+        raise ValueError("Final selected manifest does not bind current runtime")
     if len(proof["paths"]) != 8:
         raise ValueError("Selected eight-path matrix source changed")
     outputs = {}
@@ -46,6 +49,15 @@ def audit():
                     or receipt["negative_error_contains"] not in
                     (attempt / "negative-analysis.log").read_text()):
                 raise ValueError("Public source-negative construction binding differs: " + key)
+            selected = ref["compatibility"]
+            if (receipt["runtime_manifest_sha256"] != runtime_sha
+                    or sha(HERE / selected["receipt"]) != selected["sha256"]
+                    or sha(HERE / selected["receipt"]) != item["receipt_sha256"]
+                    or sha(HERE / selected["log"]) != item["analysis_sha256"]
+                    or sha(HERE / selected["negative_log"]) != item["negative_sha256"]
+                    or ref["offline"]["log_sha256"] != item["offline"]["log_sha256"]
+                    or ref["saved_cpu_proof"]["log_sha256"] != item["saved_proof"]["log_sha256"]):
+                raise ValueError("Final-manifest receipt binding differs: " + key)
             if (processing.get("passed") is not True or processing.get("recorded_only") is not True
                     or processing.get("originals_preserved") is not True
                     or processing.get("timestamp_joins", {}).get("frames") != 600
@@ -70,7 +82,9 @@ def audit():
         if outputs["a-" + candidate] != 0 or outputs["b-" + candidate] <= 3:
             raise ValueError("Controlled full-body overlap contrast absent: " + candidate)
     return {"format": "c110763-owner104-recording-matrix-audit-v1", "passed": True,
-            "proof_sha256": sha(source), "construction_paths": 8,
+            "proof_sha256": sha(source), "prebind_manifest_sha256": proof["manifest_sha256"],
+            "final_manifest_sha256": sha(manifest_path), "runtime_manifest_sha256": runtime_sha,
+            "construction_paths": 8,
             "fixed_conditions_checked": True, "source_negative_paths": 8,
             "recorded_only_saved_paths": 8, "overlap_m2": outputs,
             "original_native_or_legal_claimed": False}

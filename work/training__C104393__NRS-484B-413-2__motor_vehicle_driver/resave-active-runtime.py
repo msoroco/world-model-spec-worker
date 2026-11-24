@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PKG = Path(__file__).resolve().parent
-SCRATCH = ROOT / ".runtime-work" / "owner129-current" / "resaved-final"
+SCRATCH = ROOT / ".runtime-work" / "owner129-current" / "resaved-final2"
 VALIDATOR = ROOT / ".runtime-work/owner199/decoder-current/.lake/build/bin/adapterCheck"
 DISTANCES = (90, 100, 110, 290, 300, 310)
 CANDIDATES = ("primary", "fallback1", "fallback2")

@@ -1,5 +1,19 @@
 # training__C229398__LVMC-11-52-060__motor_vehicle_driver
 
+## Current CPU delivery-prepared checkpoint (2026-11-24)
+
+Status: ready for exact CPU preparation gate; original Native capture and physical/legal acceptance remain pending. Historical sections below describe earlier partial checkpoints and older manifest hashes.
+
+Active runtime SOURCE-MANIFEST SHA-256: `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. Rebuilt pinned decoder: `.runtime-work/c229398-pinned-decoder/.lake/build/bin/adapterCheck`. Exact selected execution manifest SHA-256: `9073b82fa471120e5d2e987e21f63e66c9cafd2919dae588dfdc14f5e80a9c5a`.
+
+All 12 exact selected primary/fallback chains passed current-runtime offline, positive/negative public compatibility and recorded-only process-saved. Proofs and small receipts are in `delivery-current/`; source attempts remain under `.runtime-work/c229398-delivery-current/`. The exact-manifest primary proof hashes are `b67f36d785b09ab43a61ad71f454e6141cebfe00778ea58a53dbafb5ac68f721` (14 ft), `d3d4371cfec86875b19ff227948e8c3ff0ff59d3814ad2513faf865a206d88eb` (15 ft), and `efa1cd7c39e30e15779a413138b721b87c218bf8857ac3c7d8a2271eb2fa5c54` (16 ft). `current-runtime/audit.py` verifies all 12 receipt hashes and original saved-source hashes against the retained attempts, all four fixed-condition comparisons and monotonic measured projection; `delivery-current/source-comparison-audit.json` passed, SHA-256 `aa4809ae734bb90fea0c5104ebc6305b6b9351d5a959230a4ac2a37988e60d6c`. The 5 top-level CPU tests passed; `selected-current/top-level-tests.log` SHA-256 `d03ce458f2a6cd2b4f27522f3aacad03ce1872c028853507c3ad02ca621bdcad`.
+
+The CPU finalizer now saves and validates `ego_pose`, `ego_speed` and `maximum_projection_perpendicular_to_curb` from the retained 600-frame synthetic trace, with numeric unit views. Missing reviewed-curb source is rejected by the public compatibility negative path. The virtual ready-only preparation validator passed without mutating durable result status. The exact scoped strict command `.venv-cpu/bin/python worker_check.py --assignment training__C229398__LVMC-11-52-060__motor_vehicle_driver --complete --require-delivery-ready` then passed with exit 0 and `static_checks_passed: true`; `selected-current/scoped-strict.log` SHA-256 `d6923148ae12cfe5b381e377e1c56b88d07d6de95b74d75a59d2a52e6b365cc3`. The returned `result.json` SHA-256 is `8b144e378fb42558aa8afde971599d1a4906c391291c1238631f0808c4b351b5`.
+
+First physical dispatch command is in `result.json`. On the GPU host, execute original Native CARLA capture and review the vehicle, load, trailer, curb, actual four-camera pixels, timing, physical completion, statutory responsibility and local delivery acceptance. Current CPU fixtures establish no original Native observation, physical acceptance, legal verdict or accepted recording. No batch-level strict readiness is claimed.
+
+## Historical checkpoints
+
 Status: partial. No delivery recording is selected or claimed.
 
 ## Source review
