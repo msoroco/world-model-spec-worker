@@ -928,7 +928,7 @@ class SweepConstructionTests(unittest.TestCase):
                                  candidate['construction_sha256'])
                 self.assertEqual(proof['bound_execution_manifest_file_sha256'],
                                  {'fallback2': expected_attempt['fallback3'],
-                                  'fallback3': digest('execution-manifest.json')}[candidate_id])
+                                  'fallback3': 'fbe11390c4880a90bd670154f49721177b67d1b4466952da8775466eb328d2c2'}[candidate_id])
                 self.assertEqual(candidate['compatibility']['sha256'],
                                  proof['artifacts']['compatibility.json']['sha256'])
                 self.assertEqual(digest(candidate['post_capture']['test_log']),
@@ -992,7 +992,8 @@ class SweepConstructionTests(unittest.TestCase):
                     if item['case_id'] == plan['case_id'])
         candidate = next(item for item in case['candidates']
                          if item['id'] == 'fallback3')
-        self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
+        self.assertEqual(plan['manifest_sha256'],
+                         'fbe11390c4880a90bd670154f49721177b67d1b4466952da8775466eb328d2c2')
         self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
         self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
         self.assertEqual(plan['compatibility_receipt_sha256'],
@@ -1018,3 +1019,41 @@ class SweepConstructionTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(negative['log_text'].encode()).hexdigest(),
                          negative['log_sha256'])
         self.assertIn(negative['error_contains'], negative['log_text'])
+
+    def test_frame24_fallbacks_retained_current_cpu_receipts(self):
+        manifest = read('execution-manifest.json')
+        for n in (1, 2, 3):
+            plan = read('case-plan.json')[f'frame24_fallback{n}_current_cpu_proof']
+            case = next(item for item in manifest['cases']
+                        if item['case_id'] == plan['case_id'])
+            candidate = next(item for item in case['candidates']
+                             if item['id'] == plan['candidate_id'])
+            self.assertEqual(plan['attempt_manifest_sha256'],
+                             'fbe11390c4880a90bd670154f49721177b67d1b4466952da8775466eb328d2c2')
+            self.assertEqual(plan['bound_manifest_sha256'], digest('execution-manifest.json'))
+            self.assertEqual(plan['receipts']['compatibility_sha256'],
+                             digest(candidate['compatibility']['receipt']))
+            self.assertEqual(plan['receipts']['negative_sha256'],
+                             digest(candidate['compatibility']['negative_log']))
+            self.assertEqual(plan['receipts']['saved_sha256'],
+                             digest(candidate['post_capture']['test_log']))
+            self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
+            receipts = plan['receipts']
+            for name in ('compatibility', 'negative', 'saved'):
+                payload = zlib.decompress(base64.b64decode(
+                    receipts[name + '_zlib_base64'], validate=True))
+                self.assertEqual(len(payload), receipts[name + '_bytes'])
+                self.assertEqual(hashlib.sha256(payload).hexdigest(),
+                                 receipts[name + '_sha256'])
+                if name == 'negative':
+                    self.assertIn(plan['negative_error_contains'], payload.decode())
+                    continue
+                receipt = json.loads(payload)
+                self.assertTrue(receipt['passed'])
+                self.assertEqual(receipt['case_id'], plan['case_id'])
+                self.assertEqual(receipt['candidate_id'], plan['candidate_id'])
+                if name == 'saved':
+                    self.assertTrue(receipt['recorded_only'])
+                    self.assertFalse(receipt['missing_evidence'])
+                    self.assertEqual(receipt['native_revision']['construction_sha256'],
+                                     plan['construction_sha256'])
