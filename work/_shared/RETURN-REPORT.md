@@ -2292,3 +2292,53 @@ Partition 03 C111125 NRS 484B.307(9)(b) gained six exact source-bound diagnostic
 Partition 07 C111125 NRS 484B.307(2)(b) added an executable saved-only delivery audit protocol. It joins exact case, sealed Native receipt, source-hashed site and crossing measurements, 241 original frames and 964 decoded images, and rejects mismatched case or rehashed motion without clearance. Twenty-five tests and preflight pass. Lead verified nine result log hashes and 22 returned files; exact scoped strict exits 1 on truthful partial. The owner continues exact bundle and proof construction.
 
 No status was promoted; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 22:51 PT crossing processor and full static rerun
+
+Partition 05 C111329 NRS 484B.287(1)(d) added a saved-only processor joining SHA-bound site, Native acquisition, camera manifest, route and authorization measurement across four exact cases. Its positive diagnostic test decodes original pixels; negatives reject changed pixels, a rehashed wrong-case packet, foreign case and duplicate output. Sixteen tests, pinned preflight and scoped static pass. Lead verified seven result log hashes and 20 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C104081 NRS 484B.297(6) in partition 06. Reviewed site/device, canonical bundles, compatibility and independent delivery acceptance remain CPU work.
+
+The complete-batch static check rerun passed (`.runtime-work/nov23-current-wave/full-static-2250.log`). No status was promoted; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 22:53 PT exact bundle and saved-processing proofs
+
+Partition 07 C111125 NRS 484B.307(2)(b) now has five exact diagnostic inline bundles with SHA-bound constructions, four-camera dimensions, Native/measurement/audit code and materialized runner checks. All five pinned offline runs, 26 assignment tests, preflight and scoped static pass. The first pinned compatibility run reached a precise missing `measurement_contract` CPU gap; the owner is building that contract and analysis fixture. Lead verified 16 result log hashes and 38 returned files; exact scoped strict exits 1 on truthful partial.
+
+Partition 08 C227749 LVMC 11.30.050 passed exact `runtime.py process-saved` on all five current synthetic compatibility attempts, including timestamp joins and final video decode. Its independent diagnostic saved-delivery gate rechecked 310 original source hashes, construction/result hashes and five-frame joins across five receipts. Thirty-eight tests and scoped static pass. Lead verified 25 result log hashes and 132 returned files; exact scoped strict exits 1 on truthful partial. The owner continues canonical delivery construction; physical crosswalk, curb and jurisdiction still require original Native proof.
+
+No status was promoted; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 22:55 PT comparison and Native lifecycle checkpoints
+
+Partition 08 C227749 LVMC 11.30.050 added an independent saved comparison audit for all three planned pairs against exact scene/config bytes and five diagnostic receipts. It verifies fixed authored curb/map, pedestrian actor, 20 Hz/20-second camera capture and the intended route or crosswalk difference; tests reject changed capture and unisolated differences. Forty-one tests and scoped static pass. Lead verified 27 result log hashes and 136 returned files; exact scoped strict exits 1 on truthful partial. The owner moved to C111610 NRS 484B.283(1)(a) in partition 08. Physical/jurisdiction and canonical delivery remain CPU work.
+
+Partition 06 C104081 NRS 484B.297(6) added a Native attempt lifecycle wrapper that binds surveyed construction, synchronized four-camera capture and saved-media audit, destroys actors in reverse order, aborts encoder failures and verifies world restoration before sealing the receipt. Eighty-two tests, preflight, five exact offline bundles and scoped static pass. Lead verified nine result log hashes and 41 returned files; exact scoped strict exits 1 on truthful partial. The owner moved to C158208 NRS 484B.257(1) in partition 01. Canonical proposals/manifest, compatibility and saved-only processing remain CPU work.
+
+The last all-work scan covered 13,607 files with no size, UTF-8, whitespace, blank-EOF, conflict-marker or temporary-directory issue. No ready promotion; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 22:58 PT measurement and media-source progress
+
+Partition 07 C111125 NRS 484B.307(2)(b) added source-hashed measurement contracts and generated diagnostic recipes for five exact cases, plus analysis and a draft diagnostic proposal index. Positive and missing-head negative checks pass; 27 tests, preflight and scoped static pass. Pinned compatibility now gets through selected analysis and video preparation, then reaches missing canonical `result.json` finalization. Lead verified 25 result log hashes and 65 returned files; exact scoped strict exits 1 on truthful partial. That finalizer remains CPU work. Its owner moved to C111329 LVMC 11.40.070 in partition 03.
+
+Partition 08 C111610 NRS 484B.283(1)(a) added an independent saved-media auditor and a retained synthetic 600-tick diagnostic attempt. The auditor rehashes six original JSON sources, joins Native frame/time and camera manifests, and decodes/hashes 2,400 PNGs. Twenty-nine tests, preflight and scoped static pass. Lead verified six result log hashes and 29 returned files; exact scoped strict exits 1 on truthful partial. The owner moved to C111125 NRS 484B.307(8)(d) in partition 02. Inline bundles, offline/compatibility and semantic/delivery remain CPU work.
+
+The most recent all-work scan covered 13,612 files and found no size, UTF-8, whitespace, blank-EOF, conflict-marker or temporary-directory issue. Batch remains 9 ready, 233 partial. No Git command was run.
+
+## 2026-11-23 23:02 PT yield-sign Native ownership and static proof
+
+Partition 01 C158208 NRS 484B.257(1) added a CARLA-lazy Native attempt owner. It verifies reviewed site/context against loaded OpenDRIVE, records original tick/body/raycast and four-camera streams, derives response-controller conflict/viewpoint inputs from sealed observations, binds capture identity, audits saved camera decode, and requires reverse actor cleanup with world-restore readback before releasing a receipt. Forty-four tests, preflight, two exact offline bundles, pinned physical-preparation validation and scoped static pass. Lead verified 11 result log hashes and 57 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111706 NRS 484B.403(3) in partition 04. Source-bound compatibility and saved delivery still require CPU construction.
+
+The complete-batch static check passed again (`.runtime-work/nov23-current-wave/full-static-2300.log`). Batch remains 9 ready and 233 partial; the full strict delivery gate remains open. No Git command was run.
+
+## 2026-11-23 23:04 PT saved-media integrity for two cycle packages
+
+Partition 02 C111125 NRS 484B.307(8)(d) now requires the independent four-camera archive/hash/frame/pixel audit even for diagnostic saved attempts; it rejects omitted or tampered camera media that the earlier diagnostic path swallowed. Twenty-two tests, preflight, five rebuilt exact offline bundles and scoped static pass. Lead verified nine result log hashes and 29 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111748 NRS 484B.403(2) in partition 05. Compatibility, canonical semantic/delivery and original Native authority remain CPU work.
+
+Partition 03 C111329 LVMC 11.40.070 integrated optional four-camera PNG capture with the original 900-tick bicycle instruction trace, including frame/pixel/archive hashes. Its independent saved audit decodes all 3,600 images and verifies 20 Hz joins; tests reject tampered archives, rehashed 100 ms gaps and wrong camera-frame cleanup. Eighteen tests, preflight and scoped static pass. Lead verified five result log hashes and 25 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111125 NRS 484B.307(2)(a) in partition 06. Runner/manifest, proposals, compatibility and delivery remain CPU work.
+
+No status was promoted; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 23:06 PT complete saved camera decode
+
+Partition 05 C111748 NRS 484B.403(2) added a saved-only complete audit and CLI `--full-decode` path that composes sealed 900-frame Native source integrity with mandatory lossless decode of all four camera streams. Its diagnostic fixture exercises the full path and rejects stale media while leaving physical and legal device status unresolved. Forty-two tests, preflight and scoped static pass. Lead verified four result log hashes and 25 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111125 NRS 484B.307(2)(b) in partition 07 to close the precise missing canonical-result compatibility gap left by an earlier owner. Exact bundles/manifest, proposals, compatibility and authoritative device source remain CPU work for C111748.
+
+No ready promotion; batch remains 9 ready and 233 partial. No Git command was run.

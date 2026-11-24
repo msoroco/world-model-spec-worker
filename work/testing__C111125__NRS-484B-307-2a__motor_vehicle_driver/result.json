@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111125__NRS-484B-307-2a__motor_vehicle_driver",
   "input_sha256": "d0b28463b250a5ea0a6980c21da20a27580aa54714fc8dfac70b67fee6fd0e9f",
   "status": "partial",
-  "readiness_kind": "controlled_cases_saved_media_audit_draft",
+  "readiness_kind": "source_gated_original_event_acquisition_in_progress",
   "applied_update": 0,
   "tests": [
     {
@@ -22,10 +22,34 @@
       "exit_code": 1,
       "log": "cpu-strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-acquisition-tests.log",
+      "sha256": "2b6e5f208565224b63a526d676c5f4873900d105dca5cea2513c9bee9f879878"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-acquisition-preflight.log",
+      "sha256": "6b37e7682bc56e77ffbc34968f3aaa9936a667915df90cc908458501333b5df6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-acquisition-static.log",
+      "sha256": "48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-acquisition-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four source-bound straight-green cases and three comparisons have 16 passing CPU tests. A saved-only audit now hashes and full-decodes four synchronized original camera streams, joins the frame map to exhibition events, and binds source-hashed camera and other-device/participant context. Delivery remains partial: no exact execution bundles or manifest, selected-requirement finalizer/diagnostic recipes, semantic proposals, complete offline and positive/negative compatibility receipts, or canonical saved processor; strict scoped gate rejects partial status."
+  "reason": "Four exact source-bound straight-green cases and three comparisons now have a 900-tick, 20 Hz original event acquisition path that joins site/official head/approach/ego/other-user readback to saved case measurements. 19 CPU tests, pinned preflight and scoped static pass. CPU package remains incomplete: exact runner/config/construction/manifest, source-bound camera acquisition, selected-requirement finalizer and diagnostic recipes, canonical semantic proposals, offline and positive/negative compatibility, and canonical saved processor. Strict scoped gate rejects truthful partial status."
 }

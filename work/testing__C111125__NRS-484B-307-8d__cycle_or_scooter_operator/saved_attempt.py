@@ -105,9 +105,7 @@ def process_saved(attempt_root: Path, authority_root: Path, site: dict,
     try:
         media_audit = _load_media_module().audit_saved_media(attempt_root, case_id)
     except (ValueError, OSError, KeyError, BadZipFile) as exc:
-        if receipt.get("diagnostic_fixture") is not True:
-            raise SavedAttemptError("original four-camera media rejected: " + str(exc)) from exc
-        media_audit = None
+        raise SavedAttemptError("original four-camera media rejected: " + str(exc)) from exc
     return {
         "format": "c111125-saved-measurement-v1",
         "assignment_id": ASSIGNMENT_ID,

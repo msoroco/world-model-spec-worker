@@ -123,6 +123,8 @@ def build():
                   "required_atoms": [], "source_packets": [], "cameras": ["front", "rear", "left", "right"]}
         files = {"runner.py": RUNNER, "yield_control.py": (HERE / "yield_control.py").read_text(),
                  "source_tick_capture.py": (HERE / "source_tick_capture.py").read_text(),
+                 "native_attempt.py": (HERE / "native_attempt.py").read_text(),
+                 "camera_sources.py": (HERE / "camera_sources.py").read_text(),
                  "physical_completion.py": (HERE / "physical_completion.py").read_text(),
                  "scene.json": json.dumps(scene, indent=2) + "\n",
                  "config.json": json.dumps(config, indent=2) + "\n",

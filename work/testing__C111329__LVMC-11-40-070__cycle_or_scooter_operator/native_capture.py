@@ -11,10 +11,12 @@ import math
 from pathlib import Path
 
 from saved_instruction import FORMAT, FRAME_COUNT, measure
+from native_cameras import FourCameraCapture
 
 
 def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
-            device_reader, officer_reader, output: Path) -> dict:
+            device_reader, officer_reader, output: Path,
+            camera_readers=None, camera_dimensions=None) -> dict:
     if output.exists():
         raise ValueError("original instruction output already exists")
     if not callable(device_reader) or not callable(officer_reader):
@@ -22,6 +24,9 @@ def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
     if bike.type_id != site["bike_blueprint_id"] or str(device.id) != site["device_id"]:
         raise ValueError("original bicycle or device readback mismatch")
     rows = []
+    cameras = (FourCameraCapture(output.parent, camera_readers, camera_dimensions)
+               if camera_readers is not None else None)
+    published = False
     try:
         for _ in range(FRAME_COUNT):
             tick_frame = world.tick()
@@ -41,7 +46,7 @@ def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
             officer = officer_reader(snapshot, bike)
             if not isinstance(officer, dict):
                 raise ValueError("original officer reader returned no source packet")
-            rows.append({
+            row = {
                 "frame": snapshot.frame,
                 "time_s": snapshot.timestamp.elapsed_seconds,
                 "bike_id": str(bike.id),
@@ -54,7 +59,14 @@ def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
                 "officer_authority_source": officer.get("authority_source"),
                 "officer_recipient_id": officer.get("recipient_id"),
                 "officer_command": officer.get("command"),
-            })
+            }
+            if cameras is not None:
+                cameras.sample(row)
+            rows.append(row)
+    except Exception:
+        if cameras is not None:
+            cameras.abort()
+        raise
     finally:
         # A failed acquisition must not leave a commanded bicycle moving.
         if hasattr(bike, "set_target_velocity"):
@@ -62,7 +74,9 @@ def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
             bike.set_target_velocity(velocity_type(x=0.0, y=0.0, z=0.0))
     packet = {"format": FORMAT, "source_kind": "original_native",
               "case_id": case["case_id"], "site_sha256": site_sha256,
-              "samples": rows}
+              "samples": rows, "camera_capture_complete": cameras is not None}
+    if cameras is not None:
+        packet['camera_sources'] = cameras.finish()
     raw = (json.dumps(packet, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
     output.parent.mkdir(parents=True, exist_ok=True)
     pending = output.with_name(output.name + ".pending")
@@ -73,6 +87,9 @@ def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
         source_hash = hashlib.sha256(raw).hexdigest()
         value = measure(pending, source_hash, case, site, site_sha256)
         pending.replace(output)
+        published = True
         return value
     finally:
         pending.unlink(missing_ok=True)
+        if cameras is not None and not published:
+            cameras.abort()

@@ -93,6 +93,33 @@ class SavedDeliveryGateTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'map readback missing'):
             self.check()
 
+    def test_native_map_identity_supports_source_review_only(self):
+        result_path = self.version / 'analysis' / 'result.json'
+        write(result_path, {'case_id': 'case', 'provenance_kind': 'native'})
+        self.receipt['result_sha256'] = GATE.sha(result_path)
+        self.receipt['timestamp_joins']['frames'] = 400
+        self.receipt['final_video_checks']['frames'] = 400
+        self.attempt.mkdir(parents=True, exist_ok=True)
+        (self.attempt / 'candidate-crossing.xodr').write_text('<OpenDRIVE/>\n')
+        map_sha = GATE.sha(self.attempt / 'candidate-crossing.xodr')
+        write(self.attempt / 'scene.json', {'map_source_sha256': map_sha,
+                                          'crosswalk_boundaries_xy_m': [[[0, 0], [1, 0], [1, 1], [0, 1]]]})
+        packet = self.attempt / 'native-crosswalk-readback.json'
+        write(packet, {'case_id': 'case', 'loaded_map_sha256': map_sha,
+                       'native_crosswalk_vertices': 4,
+                       'authored_polygon_readbacks': [{'vertices': 4,
+                                                       'maximum_vertex_readback_gap_m': 0.2}]})
+        self.receipt['original_source_hashes']['native-crosswalk-readback.json'] = GATE.sha(packet)
+        self.save()
+        checked = self.check()
+        self.assertEqual(checked['status'], 'native_sources_ready_for_physical_review')
+        self.assertFalse(checked['physical_acceptance'])
+        write(packet, {'case_id': 'case', 'loaded_map_sha256': '0' * 64})
+        self.receipt['original_source_hashes']['native-crosswalk-readback.json'] = GATE.sha(packet)
+        self.save()
+        with self.assertRaisesRegex(ValueError, 'source/case mismatch'):
+            self.check()
+
 
 if __name__ == '__main__':
     unittest.main()

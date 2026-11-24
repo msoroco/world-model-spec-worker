@@ -58,3 +58,16 @@ Added `run_exact.py` to connect the source-sealed site, two-actor construction, 
 `tests/test_run_exact.py` SHA256 `7369d2480e55e8c0ec5cf9b51b41c0d02e0893b49470ed9bb06c0fa10fd6738d` verifies exact capture wiring, 900/20 Hz arguments and lifecycle restoration on success, readback failure, second actor spawn failure, duplicate camera actors and a sensor-stop failure. Pinned focused suite: 39 tests, exit 0, `cpu-tests.log` SHA256 `d6c51d9565d05ac6ccc7c01dd04d4ce6b63ddc3a0a4f06505ac73561feb41872`. Pinned preflight exit 0, `cpu-preflight.log` SHA256 `3dee32683f1b58593822384cf7d8c4ade23a9ffd4a5ed12bdc57a0ef8c5a766d`; scoped static exit 0, `assignment-check.log` SHA256 `01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb`. Exact strict exits 1 on truthful partial, `assignment-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
 
 Next CPU work: obtain/review fixed-cell map, district and legal-intersection boundary sources plus per-case route and sensor transforms; author exact delivery bundles, semantic proposals, source-specific compatibility recipes with positive/negative proofs, saved-only processing and independent delivery acceptance. The divided-highway alternative and legal district/intersection classifications remain for independent source review. Actual motion and camera coverage are later physical checks.
+
+## 2026-11-23 saved-only exact U-turn delivery audit checkpoint
+
+`saved_delivery.py` now joins the exact source-sealed site, original Native U-turn packet, measured full-body intersection location and complete four-camera PNG audit. Original mode requires 900 contiguous 20 Hz frames, source-bound map/route/district/boundary identity and original site provenance. The `approach_before_intersection` case must have no sampled whole-body-inside frames; both intersection cases must have at least one. `saved_cameras.py` now rejects an original-mode PNG path outside its expected attempt-local camera/frame location. The receipt retains decoded-source counts and measurements while leaving actual pixel content, continuous swept footprint, statutory district classification and physical completion unresolved.
+
+Four new saved-delivery tests and one original-camera-path negative test bring the suite to 44 passing tests. Pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful partial. Exact bundles/manifest, reviewed map/district/intersection source, canonical proposals, positive/negative compatibility and saved-only process/owner-release receipts remain actionable CPU work. No CARLA capture or legal acceptance is claimed.
+
+Current SHA-256 bound logs:
+
+- `cpu-tests.log`: `f05fa3c3832706fcf181eccc17d25c9cf39ac180a4301d9d9d962839ae27911f` (exit 0)
+- `cpu-preflight.log`: `648c524feb704da659d14a8f044f7a40ac4c4a8f16e36457b9bfc7b768de0c53` (exit 0)
+- `assignment-check.log`: `01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb` (exit 0)
+- `assignment-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)

@@ -26,9 +26,11 @@ def _sha(path):
 
 def audit(native_path: Path, native_sha256: str, manifest_path: Path,
           manifest_sha256: str, *, expected_case: str, expected_views=None,
-          expected_count=900):
+          expected_count=900, strict_paths=None):
     """Hash and fully decode every retained original, with exact frame joins."""
     sizes = VIEWS if expected_views is None else expected_views
+    if strict_paths is None:
+        strict_paths = expected_count == 900
     _need(_sha(native_path) == native_sha256, "Native source hash mismatch")
     _need(_sha(manifest_path) == manifest_sha256, "camera manifest hash mismatch")
     native = json.loads(native_path.read_text(encoding="utf-8"))
@@ -52,6 +54,9 @@ def audit(native_path: Path, native_sha256: str, manifest_path: Path,
             _need(row.get("frame") == frame and abs(row.get("time_s", -1) - time_s) <= .001,
                   f"{view} original frame/time join mismatch")
             path = Path(row["path"])
+            if strict_paths and (path != manifest_path.parent / view / f"{frame:08d}.png" or
+                                 not path.resolve().is_relative_to(manifest_path.parent.resolve())):
+                raise SavedCameraError(f"{view} original path differs from attempt frame")
             _need(path.is_file() and path.suffix.lower() == ".png",
                   f"{view} original PNG missing")
             _need(_sha(path) == row.get("sha256"), f"{view} original hash mismatch")

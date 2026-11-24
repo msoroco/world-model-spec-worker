@@ -1,11 +1,15 @@
 import hashlib
 import importlib.util
+import io
 import json
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from zipfile import ZIP_STORED, ZipFile
+
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,6 +56,21 @@ class SavedAttemptTests(unittest.TestCase):
                            "ego_speed_mps": 0.0 if station == 0 else 1.0,
                            "ego_station_m": station,
                            "directed_participant_conflict": False})
+        stream = io.BytesIO()
+        Image.new('RGB', (4, 3), color=(10, 20, 30)).save(stream, format='PNG')
+        pixels = stream.getvalue()
+        camera_sources = {}
+        for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
+            path = self.attempt / ('camera-' + name + '.zip')
+            with ZipFile(path, 'w', compression=ZIP_STORED) as archive:
+                for row in frames:
+                    member = f'{row["frame"]:08d}.png'
+                    archive.writestr(member, pixels)
+                    row.setdefault('camera_frames', {})[name] = {
+                        'member': member, 'sha256': hashlib.sha256(pixels).hexdigest()}
+            camera_sources[name] = {'path': path.name,
+                                    'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                                    'frame_count': len(frames)}
         native = self.ref(self.attempt, "native.json", {"frames": frames, "blueprint_class": "bicycle"})
         device = self.ref(self.attempt, "device.json", {"frames": [
             {"frame": f["frame"], "subject_signal": f["subject_signal"], "cross_signal": f["cross_signal"]} for f in frames]})
@@ -72,7 +91,8 @@ class SavedAttemptTests(unittest.TestCase):
                    "diagnostic_fixture": True, "native_exit_code": 0,
                    "actor_id": 23, "observed_blueprint_id": "vehicle.bicycle.test",
                    "policy_receipt": policy, "packet_ref": packet_ref,
-                   "frame_count": len(frames)}
+                   "frame_count": len(frames), 'camera_sources': camera_sources,
+                   'camera_capture_complete': True}
         self.ref(self.attempt, "attempt.json", receipt)
 
     def test_diagnostic_source_join_and_delivery_rejection(self):

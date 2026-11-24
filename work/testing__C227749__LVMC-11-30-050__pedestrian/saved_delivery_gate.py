@@ -63,6 +63,14 @@ def audit(version, attempt, case_id, construction_sha256):
             packet.get('loaded_map_sha256') != scene.get('map_source_sha256') or
             packet.get('loaded_map_sha256') != sha(attempt / 'candidate-crossing.xodr')):
             raise ValueError('Native crosswalk source/case mismatch')
+        polygons = packet.get('authored_polygon_readbacks')
+        if (type(packet.get('native_crosswalk_vertices')) is not int or
+            packet['native_crosswalk_vertices'] < 4 or
+            not isinstance(polygons, list) or len(polygons) != len(scene.get('crosswalk_boundaries_xy_m', [])) or
+            not all(type(item.get('vertices')) is int and item['vertices'] >= 4 and
+                    type(item.get('maximum_vertex_readback_gap_m')) in (int, float) and
+                    0 <= item['maximum_vertex_readback_gap_m'] <= 1 for item in polygons)):
+            raise ValueError('Native crosswalk geometry readback incomplete')
         status = 'native_sources_ready_for_physical_review'
     else:
         raise ValueError('saved provenance unsupported')

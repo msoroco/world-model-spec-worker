@@ -1,0 +1,88 @@
+"""Own one surveyed Native bypass attempt and restore its original world.
+
+The caller supplies the live CARLA world, actor adapter, source reader and
+camera recorder. This boundary never substitutes fixture data for acquisition.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+from delivery_audit import audit_saved
+from native_construction import construct_native
+from native_source_packet import capture_constructed_sources
+
+
+def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Path,
+                       survey_sha256: str, adapter, source_reader_factory,
+                       camera_recorder, output: Path, *, restore_api,
+                       camera_profile_sha256: str, traffic_plan_sha256: str,
+                       pedestrian_blueprint: str) -> dict:
+    """Capture, audit, destroy owned actors and verify original world restore.
+
+    ``restore_api`` is the pinned runtime worker_exchange.world_restore module.
+    The acquisition packet is never called physically accepted here. All
+    restoration failures propagate; a success receipt requires readback.
+    """
+    if camera_recorder is None:
+        raise ValueError("four-camera original recorder required")
+    output = Path(output)
+    if output.exists() and any(output.iterdir()):
+        raise ValueError("Native attempt output must be empty")
+    saved = restore_api.snapshot(client)
+    constructed = None
+    primary_error = None
+    cleanup_errors = []
+    receipt = None
+    try:
+        world = client.get_world()
+        constructed = construct_native(plan, case_id, Path(survey_path),
+                                       survey_sha256, adapter)
+        owned = constructed["owned_handles"]
+        walker = owned[-1]
+        source_reader = source_reader_factory(world, walker, constructed,
+                                              camera_recorder)
+        if not callable(source_reader):
+            raise ValueError("synchronized original source reader required")
+        capture_constructed_sources(
+            world, walker, carla, constructed, Path(survey_path), case_id,
+            source_reader, output, camera_profile_sha256=camera_profile_sha256,
+            traffic_plan_sha256=traffic_plan_sha256,
+            pedestrian_blueprint=pedestrian_blueprint,
+            camera_recorder=camera_recorder,
+        )
+        audit = audit_saved(output, case_id, decode_media=True)
+        if not audit["checks"]["full_video_decode"]:
+            raise ValueError("full saved camera decode required")
+        receipt = {"format": "worker-pedestrian-native-attempt-lifecycle",
+                   "case_id": case_id, "source_packet_sha256":
+                   hashlib.sha256((output / "source-packet.json").read_bytes()).hexdigest(),
+                   "saved_audit": audit, "physical_acceptance": "not_assessed"}
+    except BaseException as exc:
+        primary_error = exc
+    finally:
+        if primary_error is not None:
+            try:
+                camera_recorder.abort()
+            except BaseException as exc:
+                cleanup_errors.append(f"camera encoder abort: {exc}")
+        if constructed is not None:
+            for handle in reversed(constructed["owned_handles"]):
+                try:
+                    adapter.destroy(handle)
+                except BaseException as exc:
+                    cleanup_errors.append(f"actor destruction: {exc}")
+        try:
+            restored = restore_api.restore(client, saved)
+            if restored.get("restored") is not True:
+                cleanup_errors.append("world restore lacked positive readback")
+        except BaseException as exc:
+            cleanup_errors.append(f"world restore: {exc}")
+    if cleanup_errors:
+        raise RuntimeError("Native cleanup failed: " + "; ".join(cleanup_errors)) from primary_error
+    if primary_error is not None:
+        raise primary_error
+    receipt["world_restore"] = restored
+    (output / "lifecycle-receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    return receipt

@@ -112,3 +112,21 @@ Current log SHA-256 receipts:
 - `cpu-offline-blocked_opposite.log`: `2d17e71b3d519fe93c1ecad71aa58bcb22f933c2d2771cc3df04ca0087450037` (exit 0)
 - `cpu-offline-blocked_late_return.log`: `470ffab8db4e7d173c36590da9d1a3b5347678749542a411cc909319e5b31951` (exit 0)
 - `cpu-offline-missing_sidewalk.log`: `6a817375bd8ab9aafc1c1b3ef0ed8a27a6f05fa5651ec87b4c81c50b8e96b05b` (exit 0)
+
+## 2026-11-23 Native attempt lifecycle and restore checkpoint
+
+`native_attempt.py` connects the exact surveyed construction, measured pedestrian route, synchronized source reader, four-camera recorder, saved-source auditor and pinned `world_restore` API. It snapshots the original world before mutation, destroys owned actors in reverse order, aborts incomplete encoders, and requires restored-world readback before writing `lifecycle-receipt.json` bound to the saved source packet SHA. Any capture, audit, cleanup or restore error prevents a success receipt. This CPU-tested wrapper does not provide a surveyed site or actual CARLA acquisition. The selected reader factory and camera actor ownership still require a concrete local binding.
+
+The new lifecycle tests cover successful receipt, capture failure with encoder abort, restore failure and missing-recorder rejection. The focused suite passes 82 tests. Pinned preflight, all five regenerated exact diagnostic offline bundles and scoped static check pass. The exact scoped strict gate exits 1 on truthful `partial`. Canonical semantic proposals, delivery manifest, positive/negative compatibility and saved-only processing remain actionable CPU work; physical site geometry, pixels, visibility and legal judgments remain unverified.
+
+Current SHA-256 bound CPU logs:
+
+- `cpu-preflight.log`: `64d7206220f50528c1cecc0f0064c84862e074da2088c58421ad64e9083d5738` (exit 0)
+- `cpu-tests.log`: `718e0fbcbc31cb5239ca8a8437baafe6758877e712db7de7b00a73a946e37044` (exit 0)
+- `cpu-static-check.log`: `f7ae058c828bf483f5ae261c3eeab547c77f7393c695b92673bf338ea14b63a4` (exit 0)
+- `cpu-strict-gate.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-clear_intervening.log`: `33d5c95b1911ec5636890a2537efab1a6bad967979c14f302c2239b807b34b79` (exit 0)
+- `cpu-offline-blocked_intervening.log`: `8986a55b8d2d9611b5b556f9af6fbfd7a2055f150d5b8524ba7c1c0b74d6b0e2` (exit 0)
+- `cpu-offline-blocked_opposite.log`: `047b6b6d54611510c2ced68a953430ae7e22074f9dda2e16791c4fde3522294c` (exit 0)
+- `cpu-offline-blocked_late_return.log`: `fac507a6672d7d1a28203a9a8941b6a267f2f5e654093cd56cd02c45b3877169` (exit 0)
+- `cpu-offline-missing_sidewalk.log`: `402f15cf8ea81adaad998c60761beeb564bcad0f5569ddb21bd29c228494e9dc` (exit 0)

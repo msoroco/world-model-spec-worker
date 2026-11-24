@@ -136,6 +136,9 @@ class OriginalCaptureTests(unittest.TestCase):
         receipt_path.write_text(json.dumps(receipt) + "\n")
         with self.assertRaisesRegex(ValueError, "four original camera sources missing"):
             media.audit_saved_media(attempt, self.case_id)
+        with self.assertRaisesRegex(saved.SavedAttemptError, "four-camera media rejected"):
+            saved.process_saved(attempt, self.authority, self.site, self.case_id,
+                                allow_diagnostic=True)
 
     def test_reject_rehashed_camera_pixel_change(self):
         attempt = self.make()

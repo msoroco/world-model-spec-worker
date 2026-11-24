@@ -58,10 +58,106 @@
       "exit_code": 1,
       "log": "cpu-delivery-protocol-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/build_diagnostic_bundles.py",
+      "exit_code": 0,
+      "log": "cpu-bundle-build.log",
+      "sha256": "e86e10ef03717f05c57483075ea85a5d15be4e58f5b8c20150415dce952db46c"
+    },
+    {
+      "command": "for suffix in marked_cross unmarked_cross other_device_stop other_device_cross outside_cross; do TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__$suffix --output .runtime-work/c111125-offline-$suffix --python \"$PWD/.venv-cpu/bin/python\"; done",
+      "exit_code": 0,
+      "log": "cpu-bundle-offline.log",
+      "sha256": "75455ee7aab7decb0825e900a28efad76c2d72f3366cfdd11b7106626f804ef7"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --output .runtime-work/c111125-compat-marked --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-bundle-compat-gap.log",
+      "sha256": "5a56a170eea0bedbe6a2eba190489c9db69fca8359b46bd56479d8d32d17502e"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-2b__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-bundle-suite.log",
+      "sha256": "d7f755de8ce7dc62c00bbbbaad430d445ca1a20dc08768380b2c88ebb362f39b"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-bundle-preflight.log",
+      "sha256": "e116e53bf12e1a8fb8b8901cdc8ac2da99006c0522546a3e1affe39a844ecfe7"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2b__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-bundle-static.log",
+      "sha256": "2bb5e878a32673b6ed56fa67c0b3fe2f1495c1c375de7720970a62222e2fd721"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111125-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2b__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-bundle-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-measure-tests.log",
+      "sha256": "a7bf2a8ae1e91bf83b2907fefd3a6e8686f30ae407ea7cb475a47d285c7e4cec"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-measure-preflight.log",
+      "sha256": "bd3e7ebe85b43f6bb5db844616ef9c2c44705925ff6f82fc6ad0831fd75b1712"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2b__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-measure-static.log",
+      "sha256": "2bb5e878a32673b6ed56fa67c0b3fe2f1495c1c375de7720970a62222e2fd721"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-measure-final-marked_cross --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-measure-compat-marked_cross.log",
+      "sha256": "73685dffec2b4285478aaa1db29563b7db6e13d2d5aeab46fad979f1b6ea43c6"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-measure-final-unmarked_cross --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-measure-compat-unmarked_cross.log",
+      "sha256": "2743f0bec51903b905d32c3988e833222fffbba209dcbcdfd71ce1bb38458557"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-measure-final-other_device_stop --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-measure-compat-other_device_stop.log",
+      "sha256": "d215bf86bb63f9601c526110cc595eb1be64d9dd0f9aeb7fac86c6176f914625"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-measure-final-other_device_cross --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-measure-compat-other_device_cross.log",
+      "sha256": "bdc86f22cd97038e733340ca8d795be42fb73dba1754c161b067ef16fdbd54e5"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111125__NRS-484B-307-2b__pedestrian/diagnostic-manifest.json --case testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111125-compat-measure-final-outside_cross --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 1,
+      "log": "cpu-measure-compat-outside_cross.log",
+      "sha256": "07391c2cdc158a598820e878d8bcfe6c1ff9bf26df4d981a1cb8592ec47a03ba"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2b__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-measure-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact cases and three comparisons remain partial. The source-shaped saved delivery protocol joins exact case, sealed Native frames, crossing measurements and four decoded camera sources; 25 CPU tests pass, including CLI and stale-source negatives. Reviewed site binding, exact case construction bundles, offline/compatibility receipts, semantic proposals, execution manifest and canonical delivery audit remain CPU work."
+  "reason": "Five exact source-honest diagnostic constructions pass pinned offline checks, and 26 assignment tests pass. Compatibility reaches the missing measurement_contract field, demonstrating unfinished CPU contract/analysis/fixture work. Genuine reviewed site packets, nondiagnostic cases, positive/negative compatibility, semantic proposals, canonical manifest and delivery audit remain CPU work; no physical or legal acceptance is claimed."
 }

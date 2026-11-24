@@ -57,3 +57,10 @@ Proof SHA-256 (logs under this assignment):
 - `cpu-offline-fails_to_yield.log`: `c3fef82f3e41569807eeced7b3d848263c183b1f0a0dfa0f0723381082959388` (exit 0)
 
 Next CPU work: bind reviewed C111125 original map/device/detector and bicycle-with-rider sources to a production Native owner adapter; author canonical proposals/manifest; run exact source-shaped positive/negative compatibility, pinned process-saved and independent delivery/comparison receipts. Actual two complete cycles, detector-to-signal causality, directed-participant yield, rider visibility and statutory findings remain unverified. Scoped strict fails on truthful `partial` status.
+
+## 2026-11-23 mandatory saved media integrity checkpoint
+
+`saved_attempt.py` now requires the independent four-camera archive/hash/frame/pixel audit for every sealed attempt, including an explicitly diagnostic fixture. Previously a diagnostic audit failure could be ignored. The saved-attempt tests now build all four small PNG archives and prove a changed or omitted diagnostic camera source rejects processing. All five exact constructions were rebuilt to embed the corrected processor and passed pinned `runtime.py offline` at `.runtime-work/c111125-offline-<case>-v2`. The 22 focused tests passed (`cpu-tests.log` SHA256 a64f3d4c8de6d25619d4cfac987e875440304ce34178a2440a3141402e414e9e); pinned preflight passed (`cpu-preflight-bundles.log` SHA256 0fe151c01a1b8f89eee90714279ee7b2e6d06fb4c5489a06b0e0e8ea97e94afa). Offline logs and construction hashes are recorded in `result.json` and `execution-manifest.draft.json`.
+
+This closes a saved diagnostic integrity gap, not original Native provenance. Source-backed map/device/detector and rider, canonical semantic/delivery manifest, compatibility, runtime saved processing and physical review remain incomplete.
+Scoped static `assignment-check.log` exit 0 SHA256 4964b90f8269b5a5dd2d45705120e8c3f01610e9582d6f88892801ab4f035035; exact scoped strict `strict-gate.log` exit 1 on truthful partial SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.

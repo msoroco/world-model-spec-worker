@@ -70,3 +70,12 @@ class SavedCameraTest(unittest.TestCase):
             Path(manifest["views"]["overview"][0]["path"]).write_bytes(b"changed")
             with self.assertRaisesRegex(SavedCameraError, "original hash"):
                 self.invoke(native_path, manifest_path)
+
+    def test_original_path_must_be_attempt_local_camera_frame(self):
+        with tempfile.TemporaryDirectory() as directory:
+            native_path, manifest_path, _ = self.fixture(Path(directory))
+            with self.assertRaisesRegex(SavedCameraError, "original path differs"):
+                audit(native_path, seal(native_path), manifest_path, seal(manifest_path),
+                      expected_case="exact", expected_count=2, strict_paths=True,
+                      expected_views={name: (3, 2) for name in
+                                      ("overview", "approach", "reference_corner", "driver_reference")})

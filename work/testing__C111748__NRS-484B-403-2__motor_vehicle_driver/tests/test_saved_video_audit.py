@@ -85,10 +85,16 @@ class Tests(unittest.TestCase):
         self.assertTrue(receipt["full_video_decode"])
         self.assertEqual(set(receipt["decoded_media"]), set(video.PROFILE))
         self.assertFalse(receipt["actual_pixels"])
+        complete = video._sources.audit_complete(self.root, case_id=CASE, profile=profile)
+        self.assertEqual(complete["format"], "worker-saved-source-and-video-integrity")
+        self.assertTrue(complete["full_video_decode"])
+        self.assertFalse(complete["physical_completion"])
         media["detail_right"]["sha256"] = "0" * 64
         (self.root / "saved-sources.json").write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "media hash"):
             video.audit(self.root, case_id=CASE, profile=profile)
+        with self.assertRaisesRegex(ValueError, "media hash"):
+            video._sources.audit_complete(self.root, case_id=CASE, profile=profile)
 
 
 if __name__ == "__main__":

@@ -100,3 +100,23 @@ Next worker-owned CPU actions: source-review a genuine Native site/map/sign/view
 `saved_finalizer.py` (SHA-256 `2e260a96af77eb6e1af5b3e65a77f8c75c665a524e2eb85ac347087c539cf210`) now joins the independently verified original tick seal, exact capture identity, fully decoded four-camera source archive and the selected nearest-view measurement in one saved-only report. It records hashes for the identity, tick seal, source packet and camera manifest, the measured first view and intersection entry, and the decoded-image count. It refuses an existing output, missing media, altered sealed context and synthetic provenance in original mode. The output explicitly leaves physical acceptance false and legal status unresolved.
 
 The full focused CPU suite passes 40 tests (`cpu-saved-finalizer-tests.log`, SHA-256 `deed176962d1cb1a4c11165c89fca5e9dfc01e2dff265e7eda9a385abae82902`), including positive source joins and missing/stale-source negatives. Pinned preflight exited 0 (`preflight-saved-finalizer.log`, SHA-256 `79f2e0f8623e78e39573f8ae43905f6babe1b4b8c2811b19161b91ea5df770be`). Exact scoped static exited 0 (`static-saved-finalizer.log`, SHA-256 `5d6a52e3ac3676f689ef42a0d023b341b13484b36161a633bb95587b2217a899`), while exact scoped strict exited 1 on truthful partial status (`strict-saved-finalizer.log`, SHA-256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`). The finalizer is not yet embedded in a canonical compatibility/process-saved bundle. Next CPU work is the CARLA-lazy runner, source-bound compatibility and process-saved proof, and delivery acceptance. No Git command was run.
+
+## 2026-11-23 Native owner and source-bound response checkpoint
+
+`native_attempt.py` joins the reviewed C158208 site and loaded OpenDRIVE map to original world ticks, observed ego/through body geometry, a retained raycast probe, four synchronized camera PNG streams and the exact capture identity. The response controller now receives speed, conflict occupancy and distance to the reviewed viewpoint from the same derived observations that are sealed in the tick packet. The owner destroys actors in reverse order and requires pinned world restoration readback before writing `native-owner-release.json`; source failure or restore failure leaves no release receipt. The adapter still needs an actual CARLA implementation and genuine reviewed site packet. Diagnostic tests use explicit synthetic provenance.
+
+Four new lifecycle tests bring the focused suite to 44 passing tests. Both exact diagnostic bundles were regenerated, pinned offline checks passed, and both physical-preparation receipts were rebuilt and validated against current construction hashes. Preflight and scoped static pass. The exact scoped strict gate exits 1 on truthful partial status. Positive/negative compatibility, canonical manifest, process-saved and delivery acceptance remain CPU work; no actual motion, camera quality or statutory conclusion is claimed.
+
+Current SHA-256 bound logs:
+
+- `cpu-tests.log`: `737a0de94d67e19f78abba2681501c4502abac127b3a7e0b1ab0f9dfa2e9e5ba` (exit 0)
+- `branch-plan-build.log`: `4ca92634e917e84ff4821365be8d42fedacd94b6c1573681bf99fd373a9bd536` (exit 0)
+- `cpu-draft-build.log`: `b7f015a78bc7d6331ee51a630df516b4ddd81de327de7b2c8fb0815f54cddbce` (exit 0)
+- `cpu-nearest_view_response.log`: `2eed7e1a3cb64e9f0d346c25b2493c99695c621578e33f98fd07fdfafb941534` (exit 0)
+- `cpu-nearest_view_uninterrupted.log`: `47529c01d229fb870a16cf93dc3c282f10b6ee7b7e5a9e8acb528c67a8c22880` (exit 0)
+- `cpu-physical-build.log`: `dfe68152fca895be0a9cd0f5deb11f4b34e71b6dc80e810710eadde826bf18db` (exit 0)
+- `cpu-physical-validator.log`: `891b8642e52dd9d0d7e483418afb617088ac1cef4561f79c087d91e13adc39be` (exit 0)
+- `cpu-assignment-static.log`: `5d6a52e3ac3676f689ef42a0d023b341b13484b36161a633bb95587b2217a899` (exit 0)
+- `cpu-assignment-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-saved-finalizer-tests.log`: `deed176962d1cb1a4c11165c89fca5e9dfc01e2dff265e7eda9a385abae82902` (exit 0)
+- `cpu-preflight-native.log`: `b61ed2ce22cdfe7c7c30eb02b30d3ea499834ea5979b77d576353607d5cec7e6` (exit 0)

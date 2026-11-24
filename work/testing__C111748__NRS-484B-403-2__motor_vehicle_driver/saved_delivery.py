@@ -1,7 +1,7 @@
 """Independent source-integrity audit of a saved U-turn attempt.
 
-This CPU component does not establish real pixels, lawful device status, or
-physical completion. The local delivery auditor must additionally decode video.
+This CPU component binds saved sources and can require full video decoding.
+It does not establish sign legibility, lawful device status or physical completion.
 """
 from __future__ import annotations
 import argparse
@@ -94,13 +94,35 @@ def audit(attempt: Path, *, case_id: str, diagnostic_allowed: bool = False) -> d
             "legal_device_status": "requires_independent_source_review"}
 
 
+def audit_complete(attempt: Path, *, case_id: str, profile: dict | None = None) -> dict:
+    """Require source integrity and four complete lossless video decodes.
+
+    This saved-only path is separate from physical and pixel review. Importing
+    the decoder here avoids a module import cycle with its source audit call.
+    """
+    spec = importlib.util.spec_from_file_location("device_video_for_saved_delivery",
+                                                   ROOT / "saved_video_audit.py")
+    video = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(video)
+    decoded = video.audit(attempt, case_id=case_id, profile=profile)
+    require(decoded.get("full_video_decode") is True and
+            len(decoded.get("decoded_media", {})) == len(CAMERAS) and
+            all(row.get("frame_count") == 900 for row in decoded["decoded_media"].values()),
+            "complete four-camera decode missing")
+    return {**decoded, "format": "worker-saved-source-and-video-integrity",
+            "actual_pixels": False, "physical_completion": False,
+            "legal_device_status": "requires_independent_source_review"}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--attempt", type=Path, required=True)
     ap.add_argument("--case", required=True)
     ap.add_argument("--output", type=Path, required=True)
+    ap.add_argument("--full-decode", action="store_true")
     args = ap.parse_args()
-    result = audit(args.attempt, case_id=args.case)
+    result = (audit_complete(args.attempt, case_id=args.case) if args.full_decode
+              else audit(args.attempt, case_id=args.case))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
 
