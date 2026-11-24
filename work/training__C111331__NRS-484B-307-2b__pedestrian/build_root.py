@@ -26,6 +26,27 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(item['content'])
     construction['status'] = 'draft'
+    construction['measurement_plan'] = {
+        'entrypoint': 'finalize.py',
+        'output': 'pedestrian_entry_signal',
+        'sources': ['c111331-native-samples.jsonl', 'video_frames.jsonl'],
+        'method': 'Measure first marked-crosswalk entry and exit from retained Native pose, then join original head readback and source camera frame IDs.',
+        'limitation': 'Native readback alone does not establish displayed pixels or legal governance.'}
+    construction['static_checks'] = [
+        {'name': 'exact_case_offline', 'status': 'passed',
+         'evidence': 'root-tests.log and v2-primary/witness_1/proofs/primary-offline.log'},
+        {'name': 'source_join_negative', 'status': 'passed',
+         'evidence': 'v2-primary/witness_1/proofs/negative-analysis.log'}]
+    construction['termination_rules'] = {
+        'frame_budget': 600, 'duration_s': 30,
+        'capture_end': 'After 600 synchronized ticks or earlier explicit Native failure; retain observed evidence and release owned actors.',
+        'cleanup': 'Stop sensors and encoders, restore prior world, then release owner before saved processing.'}
+    construction['mechanisms'] = {
+        'construction_status': 'draft_executable',
+        'world': 'Authored OpenDRIVE marked crosswalk and two distinct signal-head IDs',
+        'controller': 'Native walker control across the crosswalk',
+        'signal': 'Requested Native head states with readback mismatch rejection',
+        'cameras': 'Four synchronized original RGB FFV1 streams'}
     (HERE / 'construction.json').write_text(json.dumps(construction, indent=2) + '\n')
     plan['camera_plan'] = {
         'profile': 'overview1080-capability', 'duration_s': 30,

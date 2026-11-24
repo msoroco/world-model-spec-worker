@@ -4,6 +4,8 @@ import argparse
 import base64
 import hashlib
 import math
+import os
+import shutil
 import tempfile
 import zlib
 from array import array
@@ -35,15 +37,34 @@ def rejected(command, phrase):
     raise AssertionError("Missing original source passed")
 
 
-def run(emit=False):
+POLICIES = {
+    "probe_a": (True, False, True),
+    "probe_b": (False, False, True),
+    "pursuit": (False, True, True),
+    "call_lamps_only": (True, False, False),
+    "ordinary_lamps_only": (False, False, False),
+}
+
+
+def run(emit=False, case="probe_a"):
+    if case not in POLICIES:
+        raise ValueError("Unknown exact branch")
+    call, pursuit, siren = POLICIES[case]
     SCRATCH.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(dir=SCRATCH, prefix="c109028-finalize-") as temp:
         base = Path(temp)
         config = json.loads((HERE / "config.json").read_text())
+        config["case_id"] = HERE.parent.name + "__" + case
+        config["selected_case_id"] = config["case_id"]
+        config["case"]["case_id"] = config["case_id"]
+        config["emergency_call_requested"] = call
+        config["immediate_pursuit_requested"] = pursuit
+        config["siren_requested"] = siren
         write(base / "config.json", config)
         samples = array("h", [0]) * (48000 * 30)
-        for sample in range(100 * 2400, 300 * 2400):
-            samples[sample] = round(5000 * math.sin(2 * math.pi * 800 * sample / 48000))
+        if siren:
+            for sample in range(100 * 2400, 300 * 2400):
+                samples[sample] = round(5000 * math.sin(2 * math.pi * 800 * sample / 48000))
         pcm = samples.tobytes()
         write(base / "microphone-pcm16.json", {
             "format": "c109028-pcm16-zlib-base64-v1",
@@ -54,7 +75,7 @@ def run(emit=False):
         audio_hash = sha(base / "microphone-pcm16.json")
         write(base / "dispatch-source.json", {"source_kind": "synthetic_cpu_fixture"})
         write(base / "vehicle-authorization.json", {
-            "source_kind": "original_authorization_document", "vehicle_actor_id": 101,
+            "source_kind": "original_authorization_document", "vehicle_actor_id": 205,
             "vehicle_blueprint_id": "vehicle.ford.ambulance",
             "authority_name": "synthetic fixture", "document_identifier": "fixture"})
         write(base / "acoustic-report.json", {
@@ -71,7 +92,7 @@ def run(emit=False):
             body = [[center[0] + dx, dy, z] for dx in (-1, 1)
                     for dy in (-1, 1) for z in (0, 1)]
             native.append({"source_kind": "original_native", "native_frame": frame,
-                           "time_s": t, "ego": {"actor_id": 101,
+                           "time_s": t, "ego": {"actor_id": 205,
                            "blueprint_id": "vehicle.ford.ambulance",
                            "center_xy_m": center, "body_vertices_m": body},
                            "other": {"body_vertices_m": body},
@@ -80,17 +101,22 @@ def run(emit=False):
                             "native_frame": frame, "time_s": t})
             trace.append({"frame": frame, "time_s": t, "position_m": center,
                           "position": {"x": center[0], "y": center[1], "z": 0},
-                          "heading_deg": 0, "speed_mps": 2})
+                          "heading_deg": 0, "speed_mps": 2,
+                          "velocity_mps": [2, 0, 0],
+                          "control": {"throttle": .2, "steer": 0,
+                                      "brake": 0, "hand_brake": False,
+                                      "reverse": False, "manual_gear_shift": False,
+                                      "gear": 1}})
             evidence.append({"original_frame": frame})
             audio.append({"source_kind": "independent_microphone_review",
                           "audio_sha256": audio_hash, "native_frame": frame,
                           "time_s": t, "reviewer": "synthetic fixture",
-                          "siren_audible": 100 <= i < 300})
+                          "siren_audible": siren and 100 <= i < 300})
             dispatch.append({"source_kind": "original_dispatch_record",
                              "document_sha256": sha(base / "dispatch-source.json"),
                              "native_frame": frame, "time_s": t,
-                             "emergency_call_documented": True,
-                             "immediate_pursuit_documented": False})
+                             "emergency_call_documented": call,
+                             "immediate_pursuit_documented": pursuit})
         for name, value in (("native_samples.jsonl", native),
                             ("video_frames.jsonl", mapping), ("trace.jsonl", trace),
                             ("capture/evidence.jsonl", evidence),
@@ -98,7 +124,7 @@ def run(emit=False):
                             ("dispatch.jsonl", dispatch)):
             rows(base / name, value)
         if emit:
-            selected = HERE.parent / "selected-fixture" / "probe_a"
+            selected = HERE.parent / "selected-fixture" / case
             selected.mkdir(parents=True, exist_ok=True)
             example = json.loads((HERE.parents[2] / "runtime/fixtures/example.json").read_text())
             preserved = {name: value for name, value in example["files"].items()
@@ -114,13 +140,13 @@ def run(emit=False):
                               if name not in {"capture/evidence.jsonl", "capture/manifest.json"}})
             original = json.loads(example["files"]["capture/evidence.jsonl"].splitlines()[0])
             generated_evidence, graph_frames = [], []
-            graph_paths = [graph["path"].split("capture/")[1]
-                           for graph in example["graphs"]]
+            graph_paths = [f"graphs/base/{i + 1000:08d}.adapter.json"
+                           for i in range(600)]
             for i, (sample, scene) in enumerate(zip(native, trace)):
                 frame, t = sample["native_frame"], sample["time_s"]
                 event = {key: original[key] for key in
                          ("world", "timing", "visibility", "supporting_only")}
-                event.update(original_frame=frame, replay_frame=frame, actor_id=101,
+                event.update(original_frame=frame, replay_frame=frame, actor_id=205,
                              recording_time_s=t,
                              replay_simulation_time_s=13.5175311319 + t,
                              ego={"position_m": scene["position_m"] + [0],
@@ -128,7 +154,12 @@ def run(emit=False):
                                   "speed_provenance": "synthetic_native_sample",
                                   "body_vertices_m": sample["ego"]["body_vertices_m"]},
                              original_observations={
-                                 "rgb_sensors": [], "world_settings": {},
+                                 "rgb_sensors": [{"actor_id": 301,
+                                     "blueprint": "sensor.camera.rgb",
+                                     "parent_actor_id": 205,
+                                     "attributes": {"image_size_x": "1920",
+                                                    "image_size_y": "1080"}}],
+                                 "world_settings": {"no_rendering_mode": False},
                                  "frame": frame, "time_s": t, "devices": [],
                                  "participants": [], "relations": [],
                                  "participant_inventory": "synthetic fixture",
@@ -140,7 +171,7 @@ def run(emit=False):
                                      "nodes": 4, "edges": 7,
                                      "extraction_seconds": 0,
                                      "capture_seconds": 0,
-                                     "adapter_graph": graph_paths[i % len(graph_paths)]})
+                                     "adapter_graph": graph_paths[i]})
                 scene["speed_mph"] = 2 / .44704
             preserved["trace.jsonl"] = "".join(json.dumps(r) + "\n" for r in trace)
             preserved["capture/evidence.jsonl"] = "".join(
@@ -163,13 +194,27 @@ def run(emit=False):
             note_source = str(note.relative_to(HERE.parents[2]))
             sources = [{"path": "source-note.json", "source": note_source,
                         "sha256": sha(note)}]
-            from worker_exchange.fixture_generator import _graph
-            from traffic_spec_adapter.adapter import write_adapter_graph
-            for graph in example["graphs"]:
-                graph_target = selected / "graph-sources" / Path(graph["path"]).name
-                graph_target.parent.mkdir(exist_ok=True)
-                write_adapter_graph(_graph(graph), graph_target)
-                sources.append({"path": graph["path"],
+            graph_dir = HERE.parent / "selected-fixture/probe_a/graph-sources"
+            if case == "probe_a":
+                from worker_exchange.fixture_generator import _graph
+                from traffic_spec_adapter.adapter import write_adapter_graph
+                with tempfile.TemporaryDirectory(dir=SCRATCH, prefix="c109028-graphs-") as stage:
+                    staging = Path(stage) / "graph-sources"
+                    staging.mkdir()
+                    for i, graph_path in enumerate(graph_paths):
+                        source_graph = example["graphs"][i % len(example["graphs"])]
+                        graph_target = staging / Path(graph_path).name
+                        graph = _graph(source_graph)
+                        graph.graph["frame"] = i + 1000
+                        graph.graph["simulation_time_s"] = 13.5175311319 + (i + 1) / 20
+                        graph.graph["observed_evidence"] = generated_evidence[i]["original_observations"]
+                        write_adapter_graph(graph, graph_target)
+                    if graph_dir.exists():
+                        shutil.rmtree(graph_dir)
+                    os.replace(staging, graph_dir)
+            for graph_path in graph_paths:
+                graph_target = graph_dir / Path(graph_path).name
+                sources.append({"path": "capture/native/" + graph_path,
                                 "source": str(graph_target.relative_to(HERE.parents[2])),
                                 "sha256": sha(graph_target)})
             write(selected / "recipe.json", {
@@ -177,7 +222,7 @@ def run(emit=False):
                 "generator": {"source": source, "sha256": sha(path)}})
         measurement = siren_source_measurement(base)
         assert measurement["frames"] == 600
-        assert measurement["observed_siren_frames"] == 200
+        assert measurement["observed_siren_frames"] == (200 if siren else 0)
         assert measurement["legal_siren_use_conclusion"] is None
         missing = base / "audio_observations.jsonl"
         saved = missing.read_bytes()
@@ -191,15 +236,17 @@ def run(emit=False):
         finalize(base, base / "analysis-report.json")
         assert (base / "result.json").is_file()
         receipt = {"format": "c109028-saved-finalizer-cpu-fixture-v1",
-                   "positive": "600 source-joined frames, 200 reviewed audible frames",
+                   "case": case,
+                   "positive": "600 source-joined frames, reviewed audible frames match the selected branch",
                    "negative": negative, "physical_or_legal_success_claimed": False,
                    "original_audio_acquired": False}
-    write(HERE / "finalizer-cpu-proof.json", receipt)
+    write(HERE / f"{case}-finalizer-cpu-proof.json", receipt)
     return receipt
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--emit-spec", action="store_true")
+    parser.add_argument("--case", choices=sorted(POLICIES), default="probe_a")
     args = parser.parse_args()
-    print(json.dumps(run(args.emit_spec), sort_keys=True))
+    print(json.dumps(run(args.emit_spec, args.case), sort_keys=True))

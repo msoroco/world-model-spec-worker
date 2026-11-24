@@ -50,6 +50,58 @@ def measure_right_edge(scope, geometry):
             'as_close_as_possible_verified': False}
 
 
+def measure_edge_rule(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'first_lateral_motion_frame': geometry['first_lateral_motion_frame'],
+            'first_edge_target_frame': geometry['first_edge_target_frame'],
+            'approach_catchup_frame': geometry['approach_catchup_frame'],
+            'stop_heading_deg': geometry['stop_heading_deg'],
+            'authored_road_has_no_intersection': geometry['authored_road_has_no_intersection'],
+            'legal_immediacy_or_closest_feasible_verified': False}
+
+
+def measure_exclusion_scope(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'approach_catchup_frame': geometry['approach_catchup_frame'],
+            'paragraph_1c_exclusion_applies_to_1b': False,
+            'original_category_reviewed': False}
+
+
+def measure_emergency_category(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'category': 'authorized_emergency_vehicle',
+            'original_identity_verified': False,
+            'approach_catchup_frame': geometry['approach_catchup_frame']}
+
+
+def measure_permit_category(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'category': 'permitted_emergency_vehicle',
+            'original_permit_verified': False,
+            'approach_catchup_frame': geometry['approach_catchup_frame']}
+
+
+def measure_incident_category(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'category': 'traffic_incident_management_vehicle',
+            'original_identity_verified': False,
+            'approach_catchup_frame': geometry['approach_catchup_frame']}
+
+
+def measure_tow_category(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'category': 'tow_car',
+            'original_identity_verified': False,
+            'approach_catchup_frame': geometry['approach_catchup_frame']}
+
+
+def measure_coroner_category(scope, geometry):
+    return {'source_kind': scope['source_kind'],
+            'category': 'coroner_vehicle',
+            'original_identity_verified': False,
+            'approach_catchup_frame': geometry['approach_catchup_frame']}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
@@ -117,7 +169,14 @@ def finalize(attempt, output):
                          'reference': 'channels/' + path.name})
     selected_measurements = (
         ('immediate_approach_context', measure_immediate_approach, ('source-scope.json', 'actor-frames.jsonl')),
+        ('edge_rule_context', measure_edge_rule, ('source-scope.json', 'actor-frames.jsonl')),
         ('shoulder_sign_exception', measure_shoulder_sign_exception, ('source-scope.json', 'actor-frames.jsonl')),
+        ('exclusion_scope_context', measure_exclusion_scope, ('source-scope.json', 'actor-frames.jsonl')),
+        ('authorized_emergency_category', measure_emergency_category, ('source-scope.json', 'actor-frames.jsonl')),
+        ('permitted_emergency_category', measure_permit_category, ('source-scope.json', 'actor-frames.jsonl')),
+        ('incident_management_category', measure_incident_category, ('source-scope.json', 'actor-frames.jsonl')),
+        ('tow_car_category', measure_tow_category, ('source-scope.json', 'actor-frames.jsonl')),
+        ('coroner_category', measure_coroner_category, ('source-scope.json', 'actor-frames.jsonl')),
         ('transit_bus_exception', measure_transit_bus_exception, ('source-scope.json', 'actor-frames.jsonl')),
         ('right_edge_position', measure_right_edge, ('source-scope.json', 'actor-frames.jsonl')),
     )

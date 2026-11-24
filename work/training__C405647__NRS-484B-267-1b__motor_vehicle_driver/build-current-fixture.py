@@ -79,14 +79,16 @@ def build(suffix):
     assert len(actors) == len(trace) == len(evidence) == 600
     write_rows(source / 'trace.jsonl', trace)
     write_rows(source / 'video_frames.jsonl', mapping)
-    write_rows(source / 'synchronized_motion_records.jsonl', participants)
+    # Original participant telemetry is reserved for live acquisition; the
+    # synthetic actor stream remains diagnostic context in actor-frames.jsonl.
+    (source / 'synchronized_motion_records.jsonl').unlink(missing_ok=True)
     write_rows(source / 'capture/evidence.jsonl', evidence)
     write_rows(source / 'capture/native/frames.jsonl', frames)
     (source / 'road.xodr').write_bytes((HERE / 'native/drafts/road.xodr').read_bytes())
     (source / 'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
     (source / 'capture/manifest.json').write_text(json.dumps({
         'extraction_confirmed': True, 'frames': 600,
-        'acquisition': 'synthetic_diagnostic', 'observation_contract_version': 2,
+        'acquisition': 'synthetic_diagnostic', 'observation_contract_version': 1,
         'required_observations': ['rel.same_direction', 'rel.surface_gap',
                                   'kin.position', 'rel.occupies'],
         'sources': {'road.xodr': sha(source / 'road.xodr'),

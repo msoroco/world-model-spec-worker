@@ -1,12 +1,35 @@
 {
   "cell_id": "C405647",
   "actor": "motor_vehicle_driver",
-  "status": "unselected_cpu_draft",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__reference",
-      "target_law_id": "NRS-484B-267-1b",
-      "target_type": "attempt",
+      "case_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "No qualifying emergency approach is asserted; neutral context is unselected.",
+      "variable_assignments": {
+        "commanded_right_edge_response": {
+          "kind": "controller",
+          "value": "hold_lane",
+          "unit": "categorical"
+        },
+        "observed_edge_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "qualified_emergency_approach": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach of an authorized emergency vehicle or official regulatory vehicle using qualifying flashing lights",
+        "as close as possible to the right-hand edge or curb and clear of any intersection",
+        "paved shoulder where lawfully placed signage permits listed vehicle categories"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -32,6 +55,205 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original Native actor and four-camera frame join",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "right_edge_clear_intersection_position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Special1 is not a qualifying flashing lamp observation",
+          "CPU tracks are requests and not Native observations"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-267-1b",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare saved requested right-edge movement with all activation and exception judgments unresolved until original review.",
+      "variable_assignments": {
+        "commanded_right_edge_response": {
+          "kind": "controller",
+          "value": "approach_edge",
+          "unit": "categorical"
+        },
+        "observed_edge_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "qualified_emergency_approach": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach of an authorized emergency vehicle or official regulatory vehicle using qualifying flashing lights",
+        "as close as possible to the right-hand edge or curb and clear of any intersection",
+        "paved shoulder where lawfully placed signage permits listed vehicle categories"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__edge_pair",
+      "deliberate_differences": [
+        "commanded_right_edge_response"
+      ],
+      "probe": {
+        "primary_variable": "commanded_right_edge_response",
+        "comparison_or_standard": "observed body position at right edge before approach catch-up",
+        "target_value_or_branch": "reference"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_pose_body_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor and four-camera frame join",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "approach_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor and four-camera frame join",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor and four-camera frame join",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "right_edge_clear_intersection_position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
             "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native imported OpenDRIVE and original camera frame",
             "uncertainty": "50 ms frame bracket; legal source qualification separate"
@@ -47,7 +269,39 @@
     {
       "case_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__contrast",
       "target_law_id": "NRS-484B-267-1b",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare saved requested right-edge movement with all activation and exception judgments unresolved until original review.",
+      "variable_assignments": {
+        "commanded_right_edge_response": {
+          "kind": "controller",
+          "value": "hold_lane",
+          "unit": "categorical"
+        },
+        "observed_edge_position": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "qualified_emergency_approach": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach of an authorized emergency vehicle or official regulatory vehicle using qualifying flashing lights",
+        "as close as possible to the right-hand edge or curb and clear of any intersection",
+        "paved shoulder where lawfully placed signage permits listed vehicle categories"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__edge_pair",
+      "deliberate_differences": [
+        "commanded_right_edge_response"
+      ],
+      "probe": {
+        "primary_variable": "commanded_right_edge_response",
+        "comparison_or_standard": "observed body position at right edge before approach catch-up",
+        "target_value_or_branch": "contrast"
+      },
       "recording_description": {
         "channels": [
           {
@@ -76,6 +330,69 @@
             "time_window": "entire 30 s / 600 frame attempt",
             "reference_frame": "Native imported OpenDRIVE and original camera frame",
             "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "right_edge_clear_intersection_position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.same_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved 600-frame Native actor, map and camera joins",
+            "time_window": "entire 30 s / 600 frame attempt",
+            "reference_frame": "Native imported OpenDRIVE and original camera frame",
+            "uncertainty": "50 ms frame bracket; legal source qualification separate"
           }
         ],
         "context_inputs": [],
@@ -84,6 +401,33 @@
           "CPU tracks are requests and not Native observations"
         ]
       }
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C405647__NRS-484B-267-1b__motor_vehicle_driver__raw_edge_geometry",
+      "target_law_id": "NRS-484B-267-1b",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "immediate approach of an authorized emergency vehicle or official regulatory vehicle using qualifying flashing lights",
+          "note": "Authority, lamps, approach timing and any officer direction require original source and pixel review."
+        },
+        {
+          "phrase": "as close as possible to the right-hand edge or curb and clear of any intersection",
+          "note": "Record full body, edge, road geometry, feasible space and intersection geometry; synthetic edge position does not establish legal closeness."
+        },
+        {
+          "phrase": "paved shoulder where lawfully placed signage permits listed vehicle categories",
+          "note": "Review original signage, shoulder surface and category evidence before applying the shoulder restriction."
+        }
+      ],
+      "rationale": "Two raw saved edge-response constructions prepared; original activation, exception and legal closest-feasible review remains.",
+      "missing_inputs": [
+        "Original Native authority, lamps, officer and shoulder context",
+        "Independent legal judgment of immediacy and closest feasible edge"
+      ]
     }
   ]
 }

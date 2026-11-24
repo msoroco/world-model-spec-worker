@@ -76,6 +76,7 @@ def execute(config, output, host, port):
             for actor in original.get_actors()):
         raise RuntimeError("Exclusive idle asynchronous CARLA world required")
     owned, encoders, logs, queues = [], {}, {}, {}
+    encoder_exit_codes = {}
     capture = None
     changed = False
     count = 0
@@ -204,7 +205,8 @@ def execute(config, output, host, port):
         for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180):
+                encoder_exit_codes[name] = encoder.wait(timeout=180)
+                if encoder_exit_codes[name]:
                     raise RuntimeError("Lossless camera encoder failed: " + name)
             except BaseException as exc:
                 error = error or {"encoder_error": str(exc)}
@@ -230,7 +232,17 @@ def execute(config, output, host, port):
             "authorized_emergency_vehicle_verified": False,
             "500_foot_audibility_verified": False})
     if error:
+        _write_new(output / "native-run-status.json", {
+            "errors": [error], "frames": count,
+            "restoration": restored, "encoder_exit_codes": encoder_exit_codes})
         raise RuntimeError("Native capture failed; see native-capture-report.json")
+    from worker_exchange.native_output import seal_capture
+    seal_capture(output, frames=count, restoration=restored, errors=[],
+                 encoder_exit_codes=encoder_exit_codes,
+                 context={"case_id": config["case_id"],
+                          "independent_microphone": "pending post-capture source acquisition",
+                          "dispatch_authorization": "pending original document review",
+                          "physical_or_legal_acceptance": False})
     return {"case_id": config["case_id"], "frames": count,
             "original_camera_capture": True,
             "siren_audio_and_dispatch_pending": True,

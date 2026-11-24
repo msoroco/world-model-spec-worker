@@ -67,5 +67,40 @@
       "CPU diagnostic has no original pixels or legal verdict"
     ]
   },
-  "status": "draft"
+  "status": "draft",
+  "measurement_plan": {
+    "entrypoint": "finalize.py",
+    "output": "pedestrian_entry_signal",
+    "sources": [
+      "c111331-native-samples.jsonl",
+      "video_frames.jsonl"
+    ],
+    "method": "Measure first marked-crosswalk entry and exit from retained Native pose, then join original head readback and source camera frame IDs.",
+    "limitation": "Native readback alone does not establish displayed pixels or legal governance."
+  },
+  "static_checks": [
+    {
+      "name": "exact_case_offline",
+      "status": "passed",
+      "evidence": "root-tests.log and v2-primary/witness_1/proofs/primary-offline.log"
+    },
+    {
+      "name": "source_join_negative",
+      "status": "passed",
+      "evidence": "v2-primary/witness_1/proofs/negative-analysis.log"
+    }
+  ],
+  "termination_rules": {
+    "frame_budget": 600,
+    "duration_s": 30,
+    "capture_end": "After 600 synchronized ticks or earlier explicit Native failure; retain observed evidence and release owned actors.",
+    "cleanup": "Stop sensors and encoders, restore prior world, then release owner before saved processing."
+  },
+  "mechanisms": {
+    "construction_status": "draft_executable",
+    "world": "Authored OpenDRIVE marked crosswalk and two distinct signal-head IDs",
+    "controller": "Native walker control across the crosswalk",
+    "signal": "Requested Native head states with readback mismatch rejection",
+    "cameras": "Four synchronized original RGB FFV1 streams"
+  }
 }

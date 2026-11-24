@@ -1,12 +1,12 @@
 {
   "assignment_id": "training__C111331__NRS-484B-307-2b__pedestrian",
   "input_sha256": "10de43d01e00cacd133499e49324b1f91dbe43f1ce51fbaaf42a94acc9855516",
-  "status": "partial",
-  "reason": "Four selected primary cases and one measured spawn-clearance fallback per case pass pinned offline, public positive/missing-source negative compatibility, and recorded-only process-saved CPU proofs. Four synthetic physical outcome/lifecycle fixture receipts pass. Semantic stage proposals, independent delivery acceptance positive/negative, canonical root artifacts and exact strict gate remain incomplete; original Native pixels, physical realization and legal outcome remain unverified.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "CPU delivery preparation passed exact scoped strict gate; original Native capture and independent physical, pixel, and legal review remain pending local execution.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 4,
   "comparison_count": 2,
-  "candidate_count": 4,
+  "candidate_count": 8,
   "source_law_review": "NRS 484B.307(2)(b) is a conditional crossing permission; NRS 484B.283 pedestrian-signal directions can supersede it. No violation inferred from permission.",
   "accepted_membership_count": 0,
   "reuse_count": 0,
@@ -53,7 +53,7 @@
   },
   "current_v2_four_case_cpu_preparation": {
     "selected_manifest": "execution-manifest.json",
-    "selected_manifest_sha256": "ed9e579d8eb8190754b203dae59cf34e1977ede1d5f95580bbc521846fb1bec2",
+    "selected_manifest_sha256": "af445c50ced4705da67334aa4eef2eb919952a8b9f917092f6550d0cd8fa384b",
     "case_count": 4,
     "compatibility_case_count": 4,
     "recorded_only_processing_case_count": 4,
@@ -70,6 +70,31 @@
     "physical_fixture_index_sha256": "7f4b62373745b2cf69dc699b06aafbb0135ae23a757b47af569b2d5e2a4bd677",
     "fallback_case_count": 4,
     "fallback_compatibility_count": 4,
-    "fallback_recorded_only_processing_count": 4
-  }
+    "fallback_recorded_only_processing_count": 4,
+    "semantic_index_sha256": "93d9cfe1fb998cd31ef606c2ab6d6bf3867ee8a1376f342d9c9c054ec0f947c0",
+    "delivery_audit_case_count": 4,
+    "strict_scoped_exit_code": 0,
+    "original_native_observed": false
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C111331__NRS-484B-307-2b__pedestrian --case training__C111331__NRS-484B-307-2b__pedestrian__witness_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -p test*.py (cwd assignment)",
+      "exit_code": 0,
+      "log": "root-tests.log",
+      "sha256": "75ff54e727b57e4bd7b88956ed0c92c4b9a416e6f0976707e8fb54aa385ac0bd"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111331__NRS-484B-307-2b__pedestrian/prove-v2-four.py",
+      "exit_code": 0,
+      "log": "v2-four-audit.log",
+      "sha256": "743758349dd8c2b0cbeb0dd5bcbd9af1569c142837a9fed61ab75b07a280d878"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111331__NRS-484B-307-2b__pedestrian/prove_physical_audit.py",
+      "exit_code": 0,
+      "log": "physical-audit-negative.log",
+      "sha256": "82d9e18b0754121960998e7bdb846d269eea7ab53c05a27946a952342c1a3517"
+    }
+  ]
 }
