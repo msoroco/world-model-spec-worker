@@ -520,11 +520,47 @@
       "exit_code": 0,
       "log": "turn-contrast-left-offline.log",
       "sha256": "da3f5868b0e9c59526cf55e6b8ef66607d118a45566cff5d57a54a882c9a416c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-straight-case.log",
+      "sha256": "9bc7e04bbac0ab344edfd5dfcd38fdc2fb02f2a6f2b0fd5c6bdd3e93264b4f07"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/straight-execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_straight --output .runtime-work/turn-straight/offline-v3",
+      "exit_code": 0,
+      "log": "stop_opposite_straight-primary-offline.log",
+      "sha256": "a043f3615e984702054dfaf16a8c7e3bc8c5eb097cf4882b3975a291ab67d6d1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c125745-straight-package/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_straight --output .runtime-work/c125745-straight-package/compat-replay --library runtime/library --validator .runtime-work/c125745-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "straight-compat-replay.log",
+      "sha256": "de8662f1edc6f1f29104ebd54d39271fe8a2d901f3a4e5721132ac575b8f8398"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest .runtime-work/turn-straight/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_straight --attempt .runtime-work/turn-straight/compat-v6 --output .runtime-work/turn-straight/saved-v2 --library runtime/library --validator .runtime-work/c125745-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "stop_opposite_straight-primary-saved.json",
+      "sha256": "a3a185453912594efb6dc36a6935d012d174981456664a03e68e4a717058ee95"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ../../.venv-cpu/bin/python audit_turn_delivery.py",
+      "exit_code": 0,
+      "log": "turn-delivery-comparison.json",
+      "sha256": "26f05e5783d61f71324561c8990494e8ff1554649eb3ff4dddf74b1e74bab920"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "assignment-check-straight-case.log",
+      "sha256": "a6449c2b26968fe3bcfa2fdcbf6d3458775b75a498b3d8caa55ed627d7765136"
     }
   ],
   "remaining_gpu_checks": [
     "Actual official sign status/governance, statutory crossing, entry timing, complete vehicle motion and camera visibility."
   ],
-  "reason": "80 package CPU tests pass. Manifest-hashed staged device-presence and opposite-direction left/straight construction pairs have fixed-condition and negative tests; neither is a selected exact case with current-runtime compatibility or saved-only proofs. Official-device status and observed turn/legal judgment remain unresolved.",
+  "reason": "86 package CPU tests pass. The exact opposite-straight construction passes current-runtime offline, positive/negative diagnostic compatibility, recorded-only processing and an independent left/straight source-bound comparison audit. It remains outside the canonical manifest while older C125745 physical receipts bind that manifest hash; integrating it requires regenerating those proofs and comparison declarations. The official-device presence/absence contrast remains staged. Actual Native motion, official status and legal judgments remain unverified.",
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --run $RUN --assignment testing__C125745__NRS-484B-250-2__motor_vehicle_driver --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
