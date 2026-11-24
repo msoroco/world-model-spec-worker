@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from delivery_audit import selected_statutory_context
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -29,8 +30,32 @@ def main():
     manifest_path = HERE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     script = HERE / 'delivery_audit.py'
+    context_sources = ('ego_driver_source', 'ego_vehicle_source',
+                       'emergency_authorization_source', 'qualifying_flash_equipment_source',
+                       'flashing_light_visual_source', 'lane_boundary_source',
+                       'officer_direction_review_source')
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
+        context = {'case_id': entry['case_id'], 'review_kind': 'original_source_review',
+                   'reviewer': 'independent local reviewer',
+                   'emergency_vehicle_authorized': True,
+                   'qualifying_flash_equipment_reviewed': True,
+                   'officer_directed_otherwise': False,
+                   **{key: 'original-source:' + key for key in context_sources}}
+        selected_statutory_context(context, entry['case_id'])
+        for key, value in (('officer_directed_otherwise', True),
+                           ('officer_directed_otherwise', 'unknown'),
+                           ('emergency_vehicle_authorized', False),
+                           ('qualifying_flash_equipment_reviewed', False),
+                           ('officer_direction_review_source', ''),
+                           ('officer_direction_review_source', 'synthetic-fixture:officer')):
+            changed = {**context, key: value}
+            try:
+                selected_statutory_context(changed, entry['case_id'])
+            except ValueError:
+                pass
+            else:
+                raise AssertionError('Statutory context defect accepted: ' + key)
         attempt = ROOT / '.runtime-work' / CASES[suffix]
         processing = HERE / 'current-saved' / (suffix + '-primary-receipt.json')
         folder = HERE / 'delivery-proofs' / suffix

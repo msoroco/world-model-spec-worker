@@ -63,6 +63,13 @@ def main():
         turned=measure(rotated)
         assert sum(r['longitudinal_overlap_length_m']>0 for r in turned['per_frame_geometry'])==299
         assert turned['relative_order_crossings']==0
+        directed=root/'officer_directed';fixture(directed,True)
+        direction=json.loads((directed/'emergency_context.json').read_text())
+        direction['officer_directed_otherwise']=True
+        (directed/'emergency_context.json').write_text(json.dumps(direction)+'\n')
+        directed_measure=measure(directed)
+        assert directed_measure['officer_directed_otherwise'] is True
+        assert directed_measure['legal_result'] is None
         c=json.loads((a/'emergency_context.json').read_text());c['emergency_vehicle_authorized']=False
         (a/'emergency_context.json').write_text(json.dumps(c)+'\n');reject(a)
         lines=(b/'vehicle_poses.jsonl').read_text().splitlines();r=json.loads(lines[200]);r['emergency']['flashing_light_phase_on']=None;lines[200]=json.dumps(r)
@@ -77,10 +84,18 @@ def main():
         lines[42]=json.dumps(frame);(a/'video_frames.jsonl').write_text('\n'.join(lines)+'\n');reject(a)
         lines=(b/'vehicle_poses.jsonl').read_text().splitlines();pose=json.loads(lines[42]);pose['ego']['heading_rad']=math.pi
         lines[42]=json.dumps(pose);(b/'vehicle_poses.jsonl').write_text('\n'.join(lines)+'\n');reject(b)
+        preparing=root/'visible_preparation';fixture(preparing,True)
+        lines=(preparing/'vehicle_poses.jsonl').read_text().splitlines()
+        for index,line in enumerate(lines):
+            pose=json.loads(line);pose['emergency']['speed_mps']=0;lines[index]=json.dumps(pose)
+        (preparing/'vehicle_poses.jsonl').write_text('\n'.join(lines)+'\n')
+        reject(preparing)
         print(json.dumps({'follow_overlap_frames':0,
             'beside_overlap_frames':sum(r['longitudinal_overlap_length_m']>0 for r in beside['per_frame_geometry']),
             'overtake_crossings':0,'rotated_road_passed':True,
-            'negative_source_checks':6,'legal_result':None},sort_keys=True))
+            'officer_directed_measurement_retained':True,
+            'visible_preparation_requires_separate_branch':True,
+            'negative_source_checks':7,'legal_result':None},sort_keys=True))
 
 
 if __name__=='__main__':main()

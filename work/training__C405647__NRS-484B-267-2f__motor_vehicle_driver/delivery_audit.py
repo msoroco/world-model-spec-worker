@@ -11,6 +11,8 @@ from measure_approach import measure
 from measure_official import measure as measure_official
 from measure_stopped import measure as measure_stopped
 from measure_visible_movement import measure as measure_visible_movement
+from measure_hand_signal_approach import measure as measure_hand_signal_approach
+from measure_officer_approach import measure as measure_officer_approach
 
 
 def sha(path):
@@ -26,14 +28,18 @@ def check(case_id, diagnostic):
         raise ValueError('Original Native source required for delivery acceptance')
     entry = entries[0]
     suffix = case_id.rsplit('__', 1)[-1]
-    fixture = (HERE / 'draft-visible/source' if suffix == 'visible_movement'
-               else HERE / 'current-fixture' / suffix)
+    fixture = ({'visible_movement': HERE / 'draft-visible/source',
+                'visible_hand_signal': HERE / 'draft-hand-signal/source',
+                'officer_direction': HERE / 'draft-officer/source'}
+               .get(suffix, HERE / 'current-fixture' / suffix))
     provenance = json.loads((fixture / 'acquisition-provenance.json').read_text())
     if provenance.get('provenance_kind') != 'synthetic_local_diagnostic' or not provenance.get('diagnostic_fixture'):
         raise ValueError('Diagnostic source provenance differs')
     measurement = ({'official_approach': measure_official,
                     'stopped_referral': measure_stopped,
-                    'visible_movement': measure_visible_movement}.get(suffix, measure))(fixture)
+                    'visible_movement': measure_visible_movement,
+                    'visible_hand_signal': measure_hand_signal_approach,
+                    'officer_direction': measure_officer_approach}.get(suffix, measure))(fixture)
     if measurement['assignment_id'] != HERE.name or measurement['samples'] != 600:
         raise ValueError('Source-bound 600-frame measurement missing')
     compatibility_path = HERE / 'current-public' / (suffix + '-primary-compatibility.json')

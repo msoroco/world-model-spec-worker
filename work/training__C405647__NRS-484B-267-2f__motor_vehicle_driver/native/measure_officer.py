@@ -67,6 +67,9 @@ def measure(root):
         if type(officer.get('direction_active')) is not bool:
             raise ValueError('Original officer direction state missing')
         if officer['direction_active']:
+            bones = officer.get('pose_bones_requested')
+            if not isinstance(bones, list) or 'crl_hand__R' not in bones:
+                raise ValueError('Officer direction pose request missing')
             observed.append(index)
         previous_native, previous_time = native, time
     if not observed or min(observed) > 120 or max(observed) < 180:

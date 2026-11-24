@@ -23,6 +23,26 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def selected_statutory_context(context, case):
+    """Require reviewed facts for the selected moving, undirected branch."""
+    if (context.get('case_id') != case or
+            context.get('review_kind') != 'original_source_review' or
+            not context.get('reviewer')):
+        raise ValueError('Original statutory context review required')
+    if (context.get('emergency_vehicle_authorized') is not True or
+            context.get('qualifying_flash_equipment_reviewed') is not True):
+        raise ValueError('Emergency authority or flashing equipment unproved')
+    if context.get('officer_directed_otherwise') is not False:
+        raise ValueError('Selected undirected branch requires reviewed officer exception absence')
+    for key in ('ego_driver_source', 'ego_vehicle_source',
+                'emergency_authorization_source', 'qualifying_flash_equipment_source',
+                'flashing_light_visual_source', 'lane_boundary_source',
+                'officer_direction_review_source'):
+        value = context.get(key)
+        if not isinstance(value, str) or not value or value.startswith('synthetic-fixture:'):
+            raise ValueError('Original statutory source missing: ' + key)
+
+
 def audit(case, candidate, attempt, processing, diagnostic=False):
     manifest = read(HERE / 'execution-manifest.json')
     entry = next((item for item in manifest['cases'] if item['case_id'] == case), None)
@@ -88,6 +108,7 @@ def audit(case, candidate, attempt, processing, diagnostic=False):
     if (common['source_kind'] != 'original_native' or
             selection.get('manifest_sha256') != sha(HERE / 'execution-manifest.json')):
         raise ValueError('Original Native source required')
+    selected_statutory_context(context, case)
     review_path = attempt / 'independent-physical-review.json'
     if not review_path.is_file():
         raise ValueError('Independent physical and pixel review required')

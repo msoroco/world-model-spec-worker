@@ -65,7 +65,8 @@ def main():
                                          'sha256': sha(physical)}
         entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',
                                    'host_env_var': 'CARLA_HOST',
-                                   'port_env_var': 'CARLA_PORT'}
+                                   'port_env_var': 'CARLA_PORT',
+                                   'survey_env_var': 'SCENARIO_NATIVE_SURVEY'}
         for candidate in ['primary', *entry['candidates']]:
             candidate_id = candidate if candidate == 'primary' else candidate['id']
             selected = entry if candidate_id == 'primary' else candidate

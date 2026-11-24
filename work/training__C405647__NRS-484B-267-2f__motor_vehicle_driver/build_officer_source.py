@@ -24,6 +24,9 @@ def main():
         track.append({'video_frame': index, 'native_frame': frame['native_frame'],
                       'actor_id': 109, 'x_m': -30, 'y_m': -4,
                       'direction_active': 100 <= index <= 200,
+                      'pose_bones_requested': ['crl_shoulder__R', 'crl_arm__R',
+                                               'crl_foreArm__R', 'crl_hand__R']
+                      if 100 <= index <= 200 else [],
                       'source_kind': 'synthetic_native_sample'})
     (target / 'officer_track.jsonl').write_text(''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in track))
     review = {'case_id': CASE, 'review_kind': 'synthetic_diagnostic',

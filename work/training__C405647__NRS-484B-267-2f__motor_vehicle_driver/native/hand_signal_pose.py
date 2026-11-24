@@ -40,3 +40,25 @@ def apply_hand_signal(carla, walker, side='R'):
         raise ValueError('Native hand-signal bones absent in readback')
     return {'requested_bones': sorted(requested), 'readback_bones': sorted(requested),
             'visual_visibility_verified': False}
+
+
+def spawn_source_driver_proxy(carla, world, source_vehicle, blueprint_id,
+                              offset_m=(0.0, -1.5, 0.0)):
+    """Create a visible walker proxy beside the source vehicle for Native review.
+
+    The proxy is an acquisition aid. Original camera review must establish that
+    viewers understand it as the source driver and can see its hand signal.
+    """
+    if not blueprint_id.startswith('walker.pedestrian.'):
+        raise ValueError('Source driver proxy must use a walker skeleton')
+    vehicle_pose = source_vehicle.get_transform()
+    location = vehicle_pose.location
+    spawn = carla.Transform(
+        carla.Location(x=location.x + offset_m[0],
+                       y=location.y + offset_m[1],
+                       z=location.z + offset_m[2]),
+        carla.Rotation(yaw=vehicle_pose.rotation.yaw))
+    walker = world.try_spawn_actor(world.get_blueprint_library().find(blueprint_id), spawn)
+    if walker is None:
+        raise RuntimeError('Reviewed source driver proxy spawn failed')
+    return walker

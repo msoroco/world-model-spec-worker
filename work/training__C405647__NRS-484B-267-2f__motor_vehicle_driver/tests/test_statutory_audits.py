@@ -19,6 +19,28 @@ def load(path, name):
 
 
 class StatutorySourceAudits(unittest.TestCase):
+    def test_driver_hand_signal_and_absent_signal_negative(self):
+        module = load('native/measure_hand_signal.py', 'hand_signal')
+        source = HERE / 'draft-hand-signal/source'
+        measured = module.measure(source)
+        self.assertEqual((measured['signal_start_frame'], measured['signal_end_frame']), (80, 99))
+        self.assertFalse(measured['visual_visibility_verified'])
+        with tempfile.TemporaryDirectory(dir=TMP) as scratch:
+            target = Path(scratch)
+            for name in ('video_frames.jsonl', 'vehicle_poses.jsonl',
+                         'driver_hand_track.jsonl', 'hand_signal_review.json'):
+                shutil.copyfile(source / name, target / name)
+            track = [json.loads(line) for line in (target / 'driver_hand_track.jsonl').read_text().splitlines()]
+            for row in track:
+                row['signal_active'] = False
+                row['pose_bones_requested'] = []
+            (target / 'driver_hand_track.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in track))
+            review = json.loads((target / 'hand_signal_review.json').read_text())
+            review['source_sha256']['driver_hand_track.jsonl'] = hashlib.sha256((target / 'driver_hand_track.jsonl').read_bytes()).hexdigest()
+            (target / 'hand_signal_review.json').write_text(json.dumps(review) + '\n')
+            with self.assertRaisesRegex(ValueError, 'signal interval absent'):
+                module.measure(target)
+
     def test_vehicle_movement_indicator_and_no_motion_negative(self):
         module = load('audit_visible_preparation.py', 'visible_preparation')
         source = HERE / 'current-fixture/controlled_1'
@@ -58,6 +80,24 @@ class StatutorySourceAudits(unittest.TestCase):
             review['source_sha256']['officer_track.jsonl'] = hashlib.sha256((target / 'officer_track.jsonl').read_bytes()).hexdigest()
             (target / 'officer_direction.json').write_text(json.dumps(review) + '\n')
             with self.assertRaisesRegex(ValueError, 'direction interval'):
+                module.measure(target)
+
+    def test_officer_direction_pose_request_missing_negative(self):
+        module = load('native/measure_officer.py', 'officer_pose')
+        source = HERE / 'draft-officer/source'
+        self.assertEqual(module.measure(source)['direction_start_frame'], 100)
+        with tempfile.TemporaryDirectory(dir=TMP) as scratch:
+            target = Path(scratch)
+            for name in ('video_frames.jsonl', 'vehicle_poses.jsonl',
+                         'officer_track.jsonl', 'officer_direction.json'):
+                shutil.copyfile(source / name, target / name)
+            track = [json.loads(line) for line in (target / 'officer_track.jsonl').read_text().splitlines()]
+            track[120]['pose_bones_requested'] = []
+            (target / 'officer_track.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in track))
+            review = json.loads((target / 'officer_direction.json').read_text())
+            review['source_sha256']['officer_track.jsonl'] = hashlib.sha256((target / 'officer_track.jsonl').read_bytes()).hexdigest()
+            (target / 'officer_direction.json').write_text(json.dumps(review) + '\n')
+            with self.assertRaisesRegex(ValueError, 'pose request missing'):
                 module.measure(target)
 
 

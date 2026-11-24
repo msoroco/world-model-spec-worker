@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
+from topology import road as connected_road
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
@@ -137,9 +138,9 @@ def check(path=Path(__file__).resolve().parent / 'road.xodr'):
     junctions = root.findall('junction')
     signals = root.findall('.//signals/signal')
     marks = [x for x in root.findall('.//objects/object') if x.get('type') == 'crosswalk']
-    if len(roads) != 7 or len(junctions) != 2 or len(signals) != 2 or len(marks) != %d:
+    if len(roads) != 11 or len(junctions) != 2 or len(signals) != 2 or len(marks) != %d:
         raise ValueError('287(c) authored geometry or device targets differ')
-    if any(len(j.findall('connection')) != 2 for j in junctions):
+    if any(len(j.findall('connection')) != 4 for j in junctions):
         raise ValueError('Adjacent junction lane connections differ')
     if {x.get('id') for x in signals} != {'28701', '28702'}:
         raise ValueError('Adjacent device identity differs')
@@ -147,7 +148,7 @@ def check(path=Path(__file__).resolve().parent / 'road.xodr'):
             'curb_edge_x_m': -3.5, 'vehicle_lane_center_x_m': -1.75,
             'vehicle_conflict_y_m': 0, 'adjacent_intersection_targets': 2,
             'device_targets': 2, 'marked_crosswalk_targets': %d,
-            'authored_junction_connection_count': 4,
+            'authored_junction_connection_count': 8,
             'native_map_loaded': False, 'official_device_operation_verified': False,
             'legal_road_and_safety_place_status_verified': False}
 ''' % (int(marked), int(marked))
@@ -182,7 +183,8 @@ def build():
         runner = runner.replace("'vehicle_brake_command_onset_s': policy.brake_command_onset_s}",
             "'vehicle_brake_command_onset_s': policy.brake_command_onset_s,\n                    'adjacent_device_readback': sample_device_targets(device_targets),\n                    'official_device_operation_verified': False}")
         files['runner.py']['content'] = runner
-        files['road.xodr']['content'] = road(marked)
+        files['road.xodr']['content'] = connected_road(
+            next(x['content'] for x in SOURCE['files'] if x['path'] == 'road.xodr'), marked)
         files['geometry.py']['content'] = geometry_source(marked)
         files['signal_control.py'] = {'path': 'signal_control.py', 'content': SIGNALS}
         tests = '''import unittest

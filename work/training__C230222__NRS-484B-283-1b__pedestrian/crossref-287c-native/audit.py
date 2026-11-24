@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
+from topology import inspect as inspect_connected_topology
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
@@ -55,9 +56,10 @@ def main():
                 context['authored_marked_crossing_target'] == (label == 'marked'),
                 'Synthetic source context does not match authored road')
         road = ET.fromstring(files['road.xodr'])
-        main = road.find('road')
-        require(len(road.findall('road')) == 7 and len(road.findall('junction')) == 2,
-                'Two adjacent intersection targets required')
+        inspect_connected_topology(files['road.xodr'])
+        main = next(x for x in road.findall('road') if x.get('id') == '9')
+        require(len(road.findall('road')) == 11 and len(road.findall('junction')) == 2,
+                'Two connected adjacent intersections required')
         road_by_id = {x.get('id'): x for x in road.findall('road')}
         for number in (1, 2):
             west, connector, east = (str(3 * number - 1), str(3 * number),
@@ -65,7 +67,7 @@ def main():
             junction = next(x for x in road.findall('junction') if x.get('id') == str(number))
             connections = junction.findall('connection')
             require({(x.get('incomingRoad'), x.get('connectingRoad'), x.get('contactPoint'))
-                     for x in connections} == {(west, connector, 'start'),
+                     for x in connections} >= {(west, connector, 'start'),
                                                 (east, connector, 'end')} and
                     {tuple(sorted(link.attrib.items())) for x in connections
                      for link in x.findall('laneLink')} ==
@@ -76,17 +78,17 @@ def main():
                     road_by_id[west].find('link/successor').get('elementId') == str(number) and
                     road_by_id[east].find('link/predecessor').get('elementId') == str(number),
                     'Adjacent crossroad approach topology differs')
-        require(main.get('length') == '80' and
-                main.find('planView/geometry').get('y') == '-40',
+        require(main.get('length') == '53' and
+                main.find('planView/geometry').get('y') == '-26.5',
                 'Midblock curb crossing road differs')
-        signals = main.findall('signals/signal')
+        signals = road.findall('.//signals/signal')
         require({x.get('id') for x in signals} == {'28701', '28702'} and
-                {x.get('s') for x in signals} == {'10', '70'} and
+                {x.get('s') for x in signals} == {'6.0', '52.5'} and
                 all(x.get('dynamic') == 'yes' for x in signals),
                 'Operating-device targets absent')
         marks = main.findall('objects/object')
         require(len(marks) == (1 if label == 'marked' else 0) and
-                all(x.get('type') == 'crosswalk' and x.get('s') == '40' for x in marks),
+                all(x.get('type') == 'crosswalk' and x.get('s') == '26.5' for x in marks),
                 'Only the midblock marked-crossing variable may change')
         require('resolve_device_targets(world.get_actors())' in files['runner.py'] and
                 'sample_device_targets(device_targets)' in files['runner.py'] and
@@ -98,7 +100,7 @@ def main():
                 'Both adjacent-intersection Native devices required' in signal_source,
                 'Device source cannot prove operation from authored IDs alone')
         road_without_objects = ET.fromstring(files['road.xodr'])
-        road_without_objects.find('road/objects').clear()
+        next(x for x in road_without_objects.findall('road') if x.get('id') == '9').find('objects').clear()
         comparable = ET.tostring(road_without_objects)
         if base_road is None:
             base_road = comparable

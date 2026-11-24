@@ -90,8 +90,10 @@ def fixture(suffix, kind, output):
                       negative_premature_saved_processing_rejected=True,
                       recorded_only_receipt_sha256=sha(receipt_path))
     else:
-        folder = (HERE / 'draft-visible/source' if suffix == 'visible_movement'
-                  else HERE / 'current-fixture' / suffix)
+        folder = ({'visible_movement': HERE / 'draft-visible/source',
+                   'visible_hand_signal': HERE / 'draft-hand-signal/source',
+                   'officer_direction': HERE / 'draft-officer/source'}
+                  .get(suffix, HERE / 'current-fixture' / suffix))
         path = folder / 'vehicle_poses.jsonl'
         poses = [json.loads(line) for line in path.read_text().splitlines()]
         frames = [json.loads(line) for line in
@@ -101,7 +103,7 @@ def fixture(suffix, kind, output):
                 row['emergency']['speed_mps'] = 0.0
         elif kind == 'missing_evidence':
             poses.pop()
-        requested = 3 if suffix == 'controlled_2' else 0
+        requested = 3 if suffix in ('controlled_2', 'officer_direction') else 0
         status, measured = evaluate(poses, frames, requested,
                                     stopped_referral=suffix == 'stopped_referral')
         expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
@@ -168,7 +170,7 @@ if __name__ == '__main__':
         raise SystemExit('Set TMPDIR under .runtime-work')
     parser = argparse.ArgumentParser()
     parser.add_argument('--build', action='store_true')
-    parser.add_argument('--case', choices=('controlled_1', 'controlled_2', 'official_approach', 'stopped_referral', 'visible_movement'))
+    parser.add_argument('--case', choices=('controlled_1', 'controlled_2', 'official_approach', 'stopped_referral', 'visible_movement', 'visible_hand_signal', 'officer_direction'))
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
