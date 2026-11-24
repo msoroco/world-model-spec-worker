@@ -50,6 +50,11 @@ class ReviewedPacketPreflightTest(unittest.TestCase):
             sources["device_inventory_source"].write_text("changed")
             with self.assertRaisesRegex(ValueError, "device_inventory_source original bytes"):
                 preflight(scene, map_path, Path(directory) / "tampered")
+            self.assertFalse((Path(directory) / "tampered").exists())
+            sources["device_inventory_source"].write_text(
+                "synthetic packet protocol fixture: device_inventory_source")
+            retried = preflight(scene, map_path, Path(directory) / "tampered")
+            self.assertTrue(retried["passed"])
 
     def test_rejects_diagnostic_and_wrong_map(self):
         with TemporaryDirectory() as directory:

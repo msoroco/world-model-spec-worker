@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from parking_site_acquisition import acquire
 from parking_scene import build
-from parking_sweep_feasibility import reviewed_candidate_angles
+from parking_sweep_feasibility import reviewed_candidate_angles, reviewed_placement_grid
 
 
 XODR = '<OpenDRIVE><road name="straight" id="1" length="80" junction="-1" /></OpenDRIVE>'
@@ -51,6 +51,36 @@ def survey(root):
 
 
 class ParkingSiteAcquisitionTests(unittest.TestCase):
+    def test_reviewed_placement_grid_maps_full_body_feasibility(self):
+        with TemporaryDirectory() as tmp:
+            path, item = survey(tmp)
+            item["context"]["roadway_polygon_xy_m"] = [[-25, 0], [25, 0],
+                                                          [25, 4], [-25, 4]]
+            path.write_text(json.dumps(item))
+            packet = acquire(NativeMap(), path, tmp, Path(tmp) / "attempt")
+            grid = reviewed_placement_grid(packet, packet.parent,
+                                           edge_offsets_m=(1.0, 2.0, 3.0))
+            self.assertEqual(grid["source_packet_sha256"],
+                             hashlib.sha256(packet.read_bytes()).hexdigest())
+            self.assertEqual([row["edge_offset_m"] for row in grid["offsets"]],
+                             [1.0, 2.0, 3.0])
+            self.assertNotEqual(grid["offsets"][0]["feasible_angles_deg"],
+                                grid["offsets"][1]["feasible_angles_deg"])
+            self.assertFalse(grid["motion_verified"])
+            self.assertEqual(grid["legal_judgment"], "unresolved")
+
+    def test_reviewed_placement_grid_rejects_invalid_offsets_and_stale_source(self):
+        with TemporaryDirectory() as tmp:
+            path, _ = survey(tmp)
+            packet = acquire(NativeMap(), path, tmp, Path(tmp) / "attempt")
+            with self.assertRaisesRegex(ValueError, "positive distinct increasing"):
+                reviewed_placement_grid(packet, packet.parent, edge_offsets_m=(2.0, 1.0))
+            with self.assertRaisesRegex(ValueError, "positive distinct increasing"):
+                reviewed_placement_grid(packet, packet.parent, edge_offsets_m=(1.0, 1.0))
+            (packet.parent / "reviewed_sources/activity.txt").write_text("changed\n")
+            with self.assertRaisesRegex(ValueError, "source hash changed"):
+                reviewed_placement_grid(packet, packet.parent)
+
     def test_reviewed_polygon_sweep_binds_packet_and_full_footprint(self):
         with TemporaryDirectory() as tmp:
             path, _ = survey(tmp)

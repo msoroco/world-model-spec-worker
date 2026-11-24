@@ -6,6 +6,7 @@ never starts a server; CARLA is imported only by run_native().
 from __future__ import annotations
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 
@@ -32,6 +33,22 @@ def reviewed_packet(reference, name):
     packet = bound_json(reference['path'], reference['sha256'])
     if packet.get('source_kind') != 'reviewed_original' or not packet.get('reviewed_by'):
         raise ValueError('Native ' + name + ' source review missing')
+    return packet
+
+
+def pedestrian_source(scene, case_id):
+    """Read the reviewed near-rack actor pose used by this exact case."""
+    packet = reviewed_packet(scene.get('pedestrian_spawn_source'), 'pedestrian spawn')
+    if (packet.get('case_id') != case_id or
+            packet.get('blueprint_id') != scene.get('pedestrian_blueprint_id') or
+            packet.get('rack_blueprint_id') != scene.get('rack_blueprint_id')):
+        raise ValueError('Native pedestrian reviewed packet differs from scene')
+    pose = packet.get('spawn_pose')
+    if (not isinstance(pose, dict) or set(pose) != {'x', 'y', 'z', 'yaw'} or
+            any(type(pose[k]) not in (int, float) or not math.isfinite(pose[k]) for k in pose)):
+        raise ValueError('Native pedestrian reviewed spawn pose missing')
+    if ((pose['x']) ** 2 + (pose['y'] - 2.3) ** 2) ** .5 > 5.0:
+        raise ValueError('Native pedestrian reviewed pose is not near rack')
     return packet
 
 
@@ -66,7 +83,46 @@ def source_configuration(env, case_id):
             rack.get('blueprint_id') != scene.get('rack_blueprint_id') or
             rack.get('rack_type') != 'bicycle_rack'):
         raise ValueError('Native bicycle/rack reviewed packets differ from scene')
+    if case_id.endswith('__pedestrian_near_rack'):
+        pedestrian_source(scene, case_id)
     return scene, inventory
+
+
+def snapshot_sources(output, env, scene, case_id):
+    """Keep the exact dispatch sources beside the original recording."""
+    output = Path(output).resolve()
+    destination = output / 'source-provenance'
+    if destination.exists() or (output / 'source-provenance.json').exists():
+        raise ValueError('refusing to overwrite Native source provenance')
+    references = {
+        'scene': {'path': env['C10307_SCENE_SOURCE'], 'sha256': env['C10307_SCENE_SHA256']},
+        'asset_inventory': {'path': env['C10307_ASSET_INVENTORY'], 'sha256': env['C10307_ASSET_SHA256']},
+        'road': scene['road_source'],
+        'municipal': scene['jurisdiction']['source'],
+        'bicycle': scene['bicycle_classification_source'],
+        'rack': scene['rack_geometry_source'],
+    }
+    if case_id.endswith('__pedestrian_near_rack'):
+        pedestrian_source(scene, case_id)
+        references['pedestrian'] = scene['pedestrian_spawn_source']
+    captured = {}
+    payloads = {}
+    for name, reference in references.items():
+        source = Path(reference['path'])
+        raw = source.read_bytes()
+        digest = hashlib.sha256(raw).hexdigest()
+        if digest != reference['sha256']:
+            raise ValueError('Native source changed before provenance snapshot: ' + name)
+        filename = name + ('.xodr' if name == 'road' else '.json')
+        payloads[filename] = raw
+        captured[name] = {'path': 'source-provenance/' + filename, 'sha256': digest}
+    destination.mkdir(parents=True)
+    for filename, raw in payloads.items():
+        (destination / filename).write_bytes(raw)
+    manifest = {'format': 'c10307-native-source-provenance-v1', 'case_id': case_id,
+                'world_map': scene['world_map'], 'sources': captured}
+    (output / 'source-provenance.json').write_text(json.dumps(manifest, sort_keys=True) + '\n')
+    return manifest
 
 
 def configure_world(world, config):
@@ -119,14 +175,17 @@ def spawn_case_pedestrian(world, carla, scene, inventory, config):
     expected = config["case"]["world_setup"]["pedestrian_condition"] == "pedestrian near rack"
     if not expected:
         return None
+    source = pedestrian_source(scene, config['selected_case_id'])
     blueprint_id = scene.get("pedestrian_blueprint_id")
     if not blueprint_id or blueprint_id not in inventory.get("blueprint_ids", []):
         raise ValueError("source-gated near-rack pedestrian asset missing")
     blueprint = world.get_blueprint_library().find(blueprint_id)
     if blueprint is None or blueprint.id != blueprint_id:
         raise ValueError("Native near-rack pedestrian blueprint unavailable")
+    pose = source['spawn_pose']
     actor = world.spawn_actor(blueprint, carla.Transform(
-        carla.Location(x=0.0, y=3.6, z=0.2), carla.Rotation(yaw=180.0)))
+        carla.Location(x=pose['x'], y=pose['y'], z=pose['z']),
+        carla.Rotation(yaw=pose['yaw'])))
     if actor is None or actor.type_id != blueprint_id:
         if actor is not None:
             actor.destroy()
@@ -153,6 +212,7 @@ def run_native(output, host, port, config, env=None):
         world = client.get_world()
         if world.get_map().name != scene["world_map"] or sha_text(world.get_map().to_opendrive()) != scene["map_sha256"]:
             raise ValueError("Live Native map differs from SHA-bound scene")
+        snapshot_sources(output, env, scene, case_id)
         configure_world(world, config)
         bicycle, rack, owned = spawn_bicycle_and_rack(world, carla, scene, inventory)
         pedestrian = spawn_case_pedestrian(world, carla, scene, inventory, config)

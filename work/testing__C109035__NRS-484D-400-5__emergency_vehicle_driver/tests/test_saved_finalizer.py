@@ -107,6 +107,21 @@ class SavedFinalizerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "hash mismatch"):
             saved_finalizer.finalize(self.folder, case_id=CASE)
 
+    def test_source_through_symlinked_parent_rejected(self):
+        (self.folder / "alias").symlink_to(self.folder, target_is_directory=True)
+        self.receipt["sources"]["device_trace"]["path"] = "alias/device_trace.jsonl"
+        self.save_receipt()
+        with self.assertRaisesRegex(ValueError, "symlinked"):
+            saved_finalizer.finalize(self.folder, case_id=CASE)
+
+    def test_absolute_and_parent_traversal_rejected(self):
+        for path in (str(self.folder / "device_trace.jsonl"),
+                     "../device_trace.jsonl", "alias/../device_trace.jsonl"):
+            self.receipt["sources"]["device_trace"]["path"] = path
+            self.save_receipt()
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, "path invalid"):
+                saved_finalizer.finalize(self.folder, case_id=CASE)
+
 
 if __name__ == "__main__":
     unittest.main()

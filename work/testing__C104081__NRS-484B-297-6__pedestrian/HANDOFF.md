@@ -130,3 +130,19 @@ Current SHA-256 bound CPU logs:
 - `cpu-offline-blocked_opposite.log`: `047b6b6d54611510c2ced68a953430ae7e22074f9dda2e16791c4fde3522294c` (exit 0)
 - `cpu-offline-blocked_late_return.log`: `fac507a6672d7d1a28203a9a8941b6a267f2f5e654093cd56cd02c45b3877169` (exit 0)
 - `cpu-offline-missing_sidewalk.log`: `402f15cf8ea81adaad998c60761beeb564bcad0f5569ddb21bd29c228494e9dc` (exit 0)
+
+## 2026-11-23 canonical saved result checkpoint
+
+Added `saved_finalizer.py` to join the independently audited saved packet with recomputed exact-case measurements and write the canonical Native `result.json` through `native_output.write_result`. Five measured case targets retain source packet hashes and explicitly leave physical cause, completion and legal judgment unresolved. The finalizer refuses a missing saved source, mismatched audit packet and overwrite of an existing result. The focused suite passes 101 tests; pinned preflight and scoped static pass. Five earlier exact offline constructions remain passing. The exact scoped strict exits 1 on truthful `partial`. Original-source compatibility, canonical manifest/proposals, saved-only processing and delivery/comparison receipts still need construction and proof.
+
+Current CPU log SHA-256 receipts:
+
+- `cpu-preflight.log`: `5a7894682dd2cb48e329b60ef421a0d263d4ce16ddd8bc5c1b20345450909c73` (exit 0)
+- `cpu-tests.log`: `49282872fc547e6e9125f96db63f26f7c3975bc4587049717db132bfc98ee85c` (exit 0)
+- `cpu-static-check.log`: `f7ae058c828bf483f5ae261c3eeab547c77f7393c695b92673bf338ea14b63a4` (exit 0)
+- `cpu-strict-gate.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+- `cpu-offline-clear_intervening.log`: `33d5c95b1911ec5636890a2537efab1a6bad967979c14f302c2239b807b34b79` (exit 0)
+- `cpu-offline-blocked_intervening.log`: `8986a55b8d2d9611b5b556f9af6fbfd7a2055f150d5b8524ba7c1c0b74d6b0e2` (exit 0)
+- `cpu-offline-blocked_opposite.log`: `047b6b6d54611510c2ced68a953430ae7e22074f9dda2e16791c4fde3522294c` (exit 0)
+- `cpu-offline-blocked_late_return.log`: `fac507a6672d7d1a28203a9a8941b6a267f2f5e654093cd56cd02c45b3877169` (exit 0)
+- `cpu-offline-missing_sidewalk.log`: `402f15cf8ea81adaad998c60761beeb564bcad0f5569ddb21bd29c228494e9dc` (exit 0)

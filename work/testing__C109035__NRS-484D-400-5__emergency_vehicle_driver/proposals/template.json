@@ -1,0 +1,62 @@
+{
+  "template_id": "NRS-484D-400-5@emergency_vehicle_driver",
+  "law_id": "NRS-484D-400-5",
+  "actor": "emergency_vehicle_driver",
+  "status": "draft",
+  "quote": "An authorized emergency vehicle may be equipped with a siren, whistle or bell, capable of emitting sound audible under normal conditions from a distance of not less than 500 feet, but the siren must not be used except when the vehicle is operated in response to an emergency call or in the immediate pursuit of an actual or suspected violator of the law, in which event the driver of the vehicle may sound the siren to warn pedestrians and other drivers of his or her approach. A driver of an emergency vehicle may operate the vehicle’s warning lamps without sounding the siren.",
+  "structure": {
+    "activation": {
+      "condition": "Authorized emergency vehicle and driver; device and event facts are source-reviewed."
+    },
+    "obligation": {
+      "type": "conditional_siren_restriction",
+      "description": "Siren must not be used except during emergency-call response or immediate pursuit of an actual or suspected violator; qualifying use may warn pedestrians and other drivers."
+    },
+    "exceptions": [
+      "Response to an emergency call",
+      "Immediate pursuit of an actual violator",
+      "Immediate pursuit of a suspected violator"
+    ],
+    "permissions": [
+      "The vehicle may be equipped with a qualifying audible device",
+      "Warning lamps may operate without sounding the siren"
+    ],
+    "timing": {
+      "description": "Join each original siren-on frame to an independently documented event interval."
+    },
+    "judgment_calls_needed": [
+      "Vehicle authorization",
+      "Immediate pursuit",
+      "Warning purpose",
+      "Normal-condition 500-foot audibility"
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "documented_event_context",
+      "kind": "source_context",
+      "range_or_domain": [
+        "emergency_call",
+        "immediate_pursuit_actual",
+        "immediate_pursuit_suspected",
+        "none"
+      ]
+    },
+    {
+      "name": "requested_siren",
+      "kind": "controller",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    },
+    {
+      "name": "requested_warning_lamps",
+      "kind": "controller",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    }
+  ]
+}

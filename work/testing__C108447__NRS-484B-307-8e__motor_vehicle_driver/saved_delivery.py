@@ -31,8 +31,14 @@ def sha(data: bytes) -> str:
 
 def source_file(root: Path, ref: dict, label: str) -> Path:
     require(isinstance(ref, dict) and isinstance(ref.get('path'), str) and isinstance(ref.get('sha256'), str), f'{label} source seal required')
-    path = (root / ref['path']).resolve()
-    require(path.is_relative_to(root.resolve()) and path.is_file(), f'{label} source must be inside original attempt')
+    root = Path(root).resolve()
+    declared = Path(ref['path'])
+    require('..' not in declared.parts, f'{label} source path traversal forbidden')
+    path = root / declared
+    resolved = path.resolve()
+    require(resolved.is_relative_to(root) and path.is_file(), f'{label} source must be inside original attempt')
+    require(not path.is_symlink() and not any(parent.is_symlink() for parent in path.parents if parent != root and parent.is_relative_to(root)),
+            f'{label} source symlink alias forbidden')
     require(sha(path.read_bytes()) == ref['sha256'], f'{label} source hash differs')
     return path
 

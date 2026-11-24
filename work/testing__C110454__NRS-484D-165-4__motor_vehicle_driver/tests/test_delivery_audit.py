@@ -1,13 +1,17 @@
 import hashlib
+import io
 import json
 import shutil
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
+from PIL import Image
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from delivery_audit import ASSIGNMENT, EXPECTED_FRAMES, VIEWS, audit
+from delivery_audit import ASSIGNMENT, EXPECTED_FRAMES, VIEWS, audit, decode_original_cameras
 from comparison_audit import audit_saved
 
 
@@ -146,6 +150,29 @@ class DeliveryAuditTests(unittest.TestCase):
         weather.unlink()
         with self.assertRaisesRegex(ValueError, "missing or escapes"):
             audit_saved(attempts, manifests, packets, allow_diagnostic=True)
+
+    def test_original_png_archives_join_native_frame_map(self):
+        rows = [{"frame": frame, **{view + "_source_frame": frame for view in VIEWS}}
+                for frame in (100, 101)]
+        paths = {}
+        for view in VIEWS:
+            path = self.root / (view + ".zip")
+            with zipfile.ZipFile(path, "w") as archive:
+                for frame in (100, 101):
+                    stream = io.BytesIO()
+                    Image.new("RGB", (8, 6), "red").save(stream, format="PNG")
+                    archive.writestr(f"{frame}.png", stream.getvalue())
+            paths[view] = path
+        sizes = {view: (8, 6) for view in VIEWS}
+        self.assertEqual(decode_original_cameras(paths, rows, dimensions=sizes),
+                         {view: 2 for view in VIEWS})
+        rows[1]["overview_source_frame"] = 100
+        with self.assertRaisesRegex(ValueError, "frame map differs"):
+            decode_original_cameras(paths, rows, dimensions=sizes)
+        rows[1]["overview_source_frame"] = 101
+        sizes["overview"] = (9, 6)
+        with self.assertRaisesRegex(ValueError, "PNG profile differs"):
+            decode_original_cameras(paths, rows, dimensions=sizes)
 
 
 if __name__ == "__main__":

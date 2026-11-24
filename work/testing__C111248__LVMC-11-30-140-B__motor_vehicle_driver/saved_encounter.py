@@ -46,6 +46,9 @@ def read_bound_source(root: Path, entry: dict, *, kind: str):
 
 def process(manifest_path: Path, output_path: Path) -> dict:
     manifest_path = manifest_path.resolve()
+    output_path = Path(output_path)
+    if output_path.exists() or output_path.is_symlink():
+        raise ValueError("preserve prior saved encounter output; choose a fresh path")
     spec = json.loads(manifest_path.read_text(encoding="utf-8"))
     if spec.get("assignment_id") != ASSIGNMENT_ID:
         raise ValueError("assignment identity mismatch")
@@ -80,7 +83,8 @@ def process(manifest_path: Path, output_path: Path) -> dict:
         measurement["original_media_audit"] = delivery_audit.audit(manifest_path)
     measurement["physical_acceptance_claimed"] = False
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(measurement, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    with output_path.open("x", encoding="utf-8") as stream:
+        stream.write(json.dumps(measurement, indent=2, sort_keys=True) + "\n")
     return measurement
 
 

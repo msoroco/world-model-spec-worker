@@ -26,7 +26,12 @@ class ComparisonAuditTests(unittest.TestCase):
 
     def _report(self, name, minimum):
         trace = self.root / f'{name}-trace.json'
-        trace.write_text(json.dumps({'original': name}) + '\n')
+        trace.write_text(json.dumps({'case_id': name, 'samples': [
+            {'phase': 'approach', 'road_id': 1, 'position_xy_m': [-10, 0], 'heading_rad': 0, 'speed_mps': 3},
+            {'phase': 'approach', 'road_id': 1, 'position_xy_m': [-9, 0], 'heading_rad': 0, 'speed_mps': 3},
+            {'phase': 'intersection_entry', 'road_id': 1, 'position_xy_m': [-8, 0]},
+            {'phase': 'departure', 'road_id': 4, 'position_xy_m': [0, minimum]},
+        ]}) + '\n')
         report = {
             'case_id': name, 'centerline_kind': 'mapped',
             'statutory_position_judgment': None,
@@ -47,7 +52,20 @@ class ComparisonAuditTests(unittest.TestCase):
         return module.audit(self.near, self.far, expected_near='near', expected_far='far', expected_centerline_kind='mapped')
 
     def test_source_bound_order_and_no_judgment(self):
-        self.assertIsNone(self._audit()['statutory_judgment'])
+        receipt = self._audit()
+        self.assertIsNone(receipt['statutory_judgment'])
+        self.assertEqual(receipt['fixed_approach_samples'], 2)
+
+    def test_changed_original_approach_rejected(self):
+        report = json.loads(self.far.read_text())
+        trace_path = Path(report['sources'][1]['path'])
+        trace = json.loads(trace_path.read_text())
+        trace['samples'][1]['position_xy_m'][1] = 1.0
+        trace_path.write_text(json.dumps(trace) + '\n')
+        report['sources'][1]['sha256'] = hashlib.sha256(trace_path.read_bytes()).hexdigest()
+        self.far.write_text(json.dumps(report) + '\n')
+        with self.assertRaisesRegex(ValueError, 'approach trajectory changed'):
+            self._audit()
 
     def test_bad_hash_and_context_rejected(self):
         self.map.write_text('{}\n')

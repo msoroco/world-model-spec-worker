@@ -36,7 +36,7 @@ class DeliveryAuditTests(unittest.TestCase):
                          'human_powered_bicycle_classification','municipal_jurisdiction',
                          'physical_route_completion','full_episode_coverage')}}
             rp=root/'review.json';rp.write_text(json.dumps(review))
-            with patch('delivery_audit.audit_saved',return_value=saved):
+            with patch('delivery_audit.audit_saved',return_value=saved), patch('delivery_audit.audit_source_provenance',return_value={'manifest_sha256':'fixture'}):
                 receipt=audit_delivery(root,CASE,rp)
                 self.assertEqual(receipt['frame_count'],1)
                 review['checks']['rack_visible']=False

@@ -1,0 +1,60 @@
+{
+  "template_id": "NRS-484B-600-1e@motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1e",
+  "actor": "motor_vehicle_driver",
+  "quote": "It is unlawful for any person to drive or operate a vehicle of any kind or character at: In any event, a rate of speed greater than 80 miles per hour.",
+  "structure": {
+    "law_id": "NRS-484B-600-1e",
+    "activation": {
+      "condition": "A person drives or operates a vehicle of any kind or character.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not exceed 80 miles per hour in any event.",
+      "type": "strict_speed_upper_boundary",
+      "numeric_conditions": [
+        {
+          "name": "speed_upper_boundary",
+          "value": 80,
+          "unit": "mph",
+          "operator": "greater_than"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Observe the full original 900-frame, 20-Hz speed history; preserve uncertainty and between-sample limitation.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "drive or operate a vehicle of any kind or character",
+        "note": "Original actor/control readback and vehicle classification are required; the label alone does not establish statutory applicability."
+      },
+      {
+        "phrase": "In any event",
+        "note": "Original road/location and applicability review are required; this phrase supplies no exception from the speed restriction."
+      },
+      {
+        "phrase": "a rate of speed greater than 80 miles per hour",
+        "note": "Use all original 20 Hz velocity samples and acquisition uncertainty; between-sample peaks and exact equality remain unresolved."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_speed_mph",
+      "kind": "world_setup",
+      "range_or_domain": [
+        75,
+        80,
+        85
+      ]
+    },
+    {
+      "name": "original_speed_mps",
+      "kind": "measured_value",
+      "range_or_domain": "all 900 original frames, source uncertainty preserved"
+    }
+  ]
+}

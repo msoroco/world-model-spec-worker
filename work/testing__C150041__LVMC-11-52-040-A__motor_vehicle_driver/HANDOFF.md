@@ -322,3 +322,20 @@ The 52-test assignment suite passes in `cpu-reviewed-sweep-tests.log` (SHA-256 `
 Resume by acquiring a genuine reviewed Native one-way site with separate stand and park activity sources, confirming Chapter exceptions and markings, then running this packet-bound sweep on its reviewed polygon. Rebind the six case scenes and complete the source-backed judgment sweep, canonical manifest, local integration, original delivery and comparison proofs. No legal or physical acceptance is claimed. No frozen input, runtime or batch file was edited, and no Git command was run.
 
 Exact scoped static `.venv-cpu/bin/python worker_check.py --assignment testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver --complete` exits 0 (`cpu-reviewed-sweep-static.log`). Exact scoped strict with `--require-delivery-ready` exits 1 at `Preparation acceptance failed: partial/missing packages remain` (`cpu-reviewed-sweep-strict.log`), consistent with the truthful partial result. All 68 declared test-log hashes match; 475 returned assignment files are UTF-8, below 2 MiB, and have no trailing whitespace or conflict markers. The genuine reviewed site, legal sweep, scene rebinding and delivery/integration work remain open.
+
+## 2026-11-23 reviewed-site placement grid checkpoint
+
+`parking_sweep_feasibility.reviewed_placement_grid` now scans distinct increasing edge offsets and full-body orientations against the retained reviewed roadway polygon. It joins the same sealed packet at every offset and rejects changed source bytes. The result maps engineering pose feasibility only; reachability, Chapter exceptions, activity authority and legal judgment remain unresolved. Two source-shaped tests cover changing feasible sets, duplicate/reversed offset rejection and stale-source rejection. Two pre-existing runner tests were adapted to place all temporary directories under `.runtime-work` while preserving their invalid-path checks. The 54-test assignment suite, pinned preflight and scoped static pass; exact scoped strict exits 1 on truthful `partial`. A genuine reviewed site, case scene rebinding, completed judgment sweep and canonical delivery/integration remain.
+
+Current grid CPU log SHA-256 receipts:
+
+- `cpu-grid-tests.log`: `c75e411b70c08c669a1d46e6403da3f4c85cac53c1c3e9e67d2d6a9d40cedbe5` (exit 0)
+- `cpu-grid-preflight.log`: `5eed3442070425b3d2be042e55b1d41afed3b688c4a7a516a4c0f139d2abad0f` (exit 0)
+- `cpu-grid-static.log`: `24deaa88e6f7bccc6b8b4271033318cc85c5c8f674392fdad9d84aca3739d77d` (exit 0)
+- `cpu-grid-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-23 separate reviewed stand/park site binding
+
+`bind_reviewed_site.py` now accepts separate retained park and stand packets from `parking_site_acquisition.acquire`, verifies each original source and survey SHA256, requires one identical Native map, roadway/edge polygon, lawful direction and Chapter source, and constructs all six exact `parking_scene.build` requests. It verifies the park orientation/heading comparisons keep the reviewed body center and source hashes fixed, that corresponding standing and parking poses share the same target geometry, and that the 0- and 30-degree engineering full-body poses fit the retained polygon. It leaves motion and legal judgment unresolved. A fake Native map in the tests exercises this CPU binding protocol only; it is not a reviewed site.
+
+The 58-test assignment suite passes (`cpu-binding-tests.log`), including changed roadway, Native map, retained activity source and stand survey negatives. Pinned preflight passes (`cpu-binding-preflight.log`), scoped static passes (`cpu-binding-static.log`), and exact scoped strict exits 1 on truthful partial (`cpu-binding-strict.log`). All 76 `result.json` log hashes match. Resume with genuine reviewed Native site and separate activity/Chapter sources, run the binder on those packets, expand the source-backed judgment sweep, rebind canonical constructions, and rerun exact offline, compatibility, saved-only and independent local delivery/integration proofs. No physical or legal acceptance is claimed.

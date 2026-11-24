@@ -106,3 +106,29 @@ The 26-test focused suite and pinned preflight pass in `cpu-route-readback-tests
 `owned_capture.py:capture_owned` wraps the existing exact C10301 Native site, speed, camera and finalization path. It snapshots the supplied operator-owned client, applies synchronous 20 Hz settings, rejects a failed settings readback before actor spawn, and calls the pinned `world_restore.restore` with map/OpenDRIVE, settings and weather readback after both successful capture and a missing-camera failure. It never allocates a server or treats the diagnostic map as a reviewed C10301 route. The success test executes all 900 ticks and four FFV1 writers; failures prove actor/sensor cleanup and world restoration.
 
 Pinned preflight, 29 focused CPU tests and scoped static check pass in `cpu-owned-capture-*.log`; the exact scoped strict gate exits 1 on truthful partial status. Commands and SHA256 receipts are in `result.json`. Remaining CPU work is original accepted-evidence and route/access-aisle authority review, exact canonical bundles, remaining semantic proposals and positive/negative compatibility plus saved-process proofs. Actual physical speed, road applicability and camera scene content remain unresolved.
+
+## 2026-11-23 exact-law semantic stages checkpoint
+
+Added `proposals/semantic-index.json` and all five canonical stage families: relevance batch/relevance, template, bindings, existing exact cases and three judgment-observable proposals. Every index digest binds the proposal bytes, and the input assignment quote and SHA bind the 80 mph strict upper boundary. The proposals keep actor, territorial applicability, sampled equality and between-sample speed unresolved. The focused suite now passes 31 tests, including exact-source/hash and three-case boundary assertions. Pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful `partial`; original accepted-source review, actual C10301 route/access-aisle authority, canonical case bundles, positive/negative compatibility and saved processing remain.
+
+Current semantic CPU log SHA-256 receipts:
+
+- `cpu-semantic-tests.log`: `6511a949e6d3cd09d6f7b5b42be8286afb0b604c3714ea3f04b27a61ea50db5a` (exit 0)
+- `cpu-semantic-preflight.log`: `fd09414ca75cf10707b0cdc0fd2c663162f55b3257ea4f39eabbff891e762776` (exit 0)
+- `cpu-semantic-static.log`: `689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5` (exit 0)
+- `cpu-semantic-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-23 three exact source-gated offline bundles
+
+`build_offline_draft.py` now packages the existing Native site, 900-tick motion, four-camera media, finalizer and independent audit modules into the exact below/equal/above speed constructions. The runner checks the source plan SHA, exact case and requested 75/80/85 mph values, original clock and camera profile. It refuses a Native run without a reviewed C10301 route, access-aisle authority and site packet. Each bundle includes a CPU test for source binding and that refusal. These are diagnostic-only constructions and do not replace source review of the three frozen accepted originals.
+
+All three exact offline materializations, 32 focused tests, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. Canonical production bundles, positive/negative compatibility, saved delivery and source review remain.
+
+- `cpu-bundles-build.log` SHA256 `63e8bfb6d5fdd1a59d7ec4dcc5c033184bd023013990de8fd7cb0ac7138c65ea`; exit 0.
+- `cpu-bundles-tests.log` SHA256 `1e38be082b10dbc2a57cf851c194d18b5122a4c55d56e4025ae018f1f2634089`; exit 0.
+- `cpu-bundles-preflight.log` SHA256 `0ac552aa9ce1fb76103df88aa199d25778b3bc470fec7dbe9b688e72039d0bb6`; exit 0.
+- `cpu-bundles-static.log` SHA256 `689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5`; exit 0.
+- `cpu-bundles-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.
+- `cpu-bundles-offline-below.log` SHA256 `c22474dacce594da6f90c80819093ffcc3e3a0e80e3d5122742aa025c0994dfd`; exit 0.
+- `cpu-bundles-offline-equal.log` SHA256 `d03d79234caa356477ff206a3c61d4bff94ef02caaad1c7814eedce56b538aed`; exit 0.
+- `cpu-bundles-offline-above.log` SHA256 `08214817da8a5b19ea71b0613d824a7a02c2b7c79b5b72c0c36de6fb3effa0c7`; exit 0.

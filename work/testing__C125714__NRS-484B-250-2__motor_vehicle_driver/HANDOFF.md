@@ -60,3 +60,15 @@ Pinned `.venv-cpu/bin/python runtime.py preflight` passed. `PYTHONDONTWRITEBYTEC
 Judgment probe planning: `judgment-probe-plan.json` records source-hashed below/inside/above targets for 1 exact law/actor ranges. These are unmeasured construction targets. 0 ranges have a domain endpoint that makes an outside probe impossible; review each endpoint_limit and preserve the explicit limitation.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
+
+## 2026-11-23 controlled-yield original cadence checkpoint
+
+`branch_alternatives.observe_brake` now requires contiguous original CARLA frames, finite nonnegative 20 Hz times and an optional exact frame count. `saved_finalizer.py` supplies the independently measured original frame count, closing a route where a jointly resealed controller and frame map could omit a tick or shift cadence while retaining their mutual join. New tests reject missing frames, a skipped CARLA frame and a timestamp gap; 34 focused tests pass. Pinned preflight and scoped static pass. A fresh exact `yield_wait_for_other_clear` compatibility positive/negative run passes. Exact scoped strict exits 1 on truthful `partial`; original site and accepted evidence review, complete saved-only delivery, physical acceptance and exception coverage remain.
+
+Current CPU log SHA-256 receipts:
+
+- `cpu-tests.log`: `d32ff4bcabfa2dccb631c12b3d4d60b63b220d94b6383e6038f0dc11a8394a7e`
+- `cpu-preflight.log`: `17295cd3c34625a5674d1470596274b10c88588bb39b5c027603b13fa0217104`
+- `cpu-cadence-compat.log`: `d04e0fa49d22455c31f9122173f46c8b9412228145d32aabbd16e178da16e547`
+- `static-check.log`: `cc5926eaa4badf150cb317b2f4af80f7a581d99334be67c65f61d736bbe79873`
+- `strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`

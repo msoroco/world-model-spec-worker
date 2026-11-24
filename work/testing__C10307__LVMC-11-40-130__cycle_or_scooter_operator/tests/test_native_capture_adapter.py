@@ -11,7 +11,8 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, FrameJoin, FourCameraCapture
-from native_run import configure_world, source_configuration, spawn_case_pedestrian
+from native_run import configure_world, source_configuration, snapshot_sources, spawn_case_pedestrian
+from delivery_audit import audit_source_provenance
 
 CASE = "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator__reference"
 
@@ -70,6 +71,16 @@ class NativeAdapterTests(unittest.TestCase):
             selected, inventory = source_configuration(env, CASE)
             self.assertEqual(selected, scene)
             self.assertEqual(inventory, assets)
+            attempt = root / 'attempt'
+            attempt.mkdir()
+            snapshot_sources(attempt, env, selected, CASE)
+            receipt = audit_source_provenance(attempt, CASE)
+            self.assertEqual(receipt['source_sha256']['road'], digest(road))
+            (attempt / 'source-provenance' / 'rack.json').write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                audit_source_provenance(attempt, CASE)
+            with self.assertRaisesRegex(ValueError, 'overwrite'):
+                snapshot_sources(attempt, env, selected, CASE)
             packets['municipal']['city_of_las_vegas'] = False
             (root / 'municipal.json').write_text(json.dumps(packets['municipal']))
             with self.assertRaisesRegex(ValueError, 'hash mismatch'):

@@ -118,3 +118,22 @@ Aligned the original Native capture, camera recorder, pixel decoder/audit, saved
 - `cpu-profile-alignment-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
 - `cpu-profile-alignment-static.log` SHA256 `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d`.
 - `cpu-profile-alignment-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
+
+## 2026-11-23 original-source path confinement checkpoint
+
+The saved finalizer now checks every component of a source reference before opening it. It rejects absolute paths, parent traversal, backslash variants and symlinked parent directories, so a rehashed reference cannot redirect source reads outside the capture folder. Two focused negative tests cover a symlinked parent and traversal variants. This closes a saved-source acceptance gap without establishing physical authenticity.
+
+Forty-two focused tests, pinned preflight, rebuilt seven-case diagnostic bundle, primary-case offline and scoped static passed. Exact scoped strict remains exit 1 on partial status. New SHA-bound logs are recorded in result.json. Canonical proposals/manifest, reviewed site and instrument, saved delivery, compatibility and independent audit receipts remain.
+
+## 2026-11-23 source-bound semantic stage checkpoint
+
+Added `build_semantic_proposals.py` and six draft stage files under `proposals/`. The builder checks the exact frozen NRS 484D.400(5) text, assignment identity, all seven case constructions and the requested event/siren/lamp values. It verifies that each of three controlled comparisons varies only its declared controls. A SHA-bound semantic index records the frozen law, assignment, case plan and stage bytes. All proposals retain unresolved vehicle authorization, event, warning-purpose and 500-foot audibility judgments; requested controls are not actual device states.
+
+The 46-test focused suite (including four new semantic negatives), pinned preflight, primary exact-case diagnostic offline and scoped static check pass. Exact scoped strict remains exit 1 because the package remains partial. Canonical production manifest, all per-case positive/negative compatibility and saved-only/delivery proofs, a reviewed site and original device/dispatch/equipment sources remain.
+
+- `cpu-semantic-build.log` SHA256 `6d1f148dba8fe4384323e7b8819516852158e9ec546be1a08efd736690363685`; exit 0.
+- `cpu-semantic-tests.log` SHA256 `3afffa47e5582bf34323a94dc95d663ed92b513f0578b84bbbb7c4bcf5e47fa1`; exit 0.
+- `cpu-semantic-preflight.log` SHA256 `0472ddc4122aa103c0fde7f30257d511d32918ebc5ad6d006583ce46a098be62`; exit 0.
+- `cpu-semantic-offline.log` SHA256 `edaec005a6f174c6b87ced3e0d4ce12fecaa1f2fddf3ae892559f7278ebbf3ca`; exit 0.
+- `cpu-semantic-static.log` SHA256 `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d`; exit 0.
+- `cpu-semantic-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; exit 1.

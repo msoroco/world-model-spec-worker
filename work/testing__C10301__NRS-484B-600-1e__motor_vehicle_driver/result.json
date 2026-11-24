@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "f284bffb1992eb71aa3dc8fd755986eb28718589d69f1470e660ce06c4f6cc1a",
-  "readiness_kind": "native_route_readback_partial",
-  "reason": "Twenty-nine focused CPU tests and pinned preflight pass. `owned_capture.py` now snapshots the operator-owned Native world, applies and reads back synchronous 20 Hz settings, runs the integrated 900-frame source-bound speed and four-camera capture, and restores map/settings/weather after success, missing-camera failure or settings refusal. Synthetic diagnostics establish lifecycle cleanup only. Reviewed real C10301 route/access-aisle authority and accepted-original sources, exact canonical case bundles, remaining semantic stage proposals and pinned positive/negative compatibility receipts remain CPU work. Physical speed, pixels, legal equality and applicability remain unverified.",
+  "readiness_kind": "partial_native_capture_semantic_and_offline_bundles",
+  "reason": "Built three source-gated exact speed diagnostic bundles with case-plan SHA, 75/80/85 mph requests, 900-frame four-camera contract and existing Native capture/finalizer modules. All three exact offline materializations, 32 focused tests, pinned preflight and scoped static pass. Strict exits 1 on truthful partial. Accepted original-source sufficiency and C10301 public-way/access-aisle review, canonical production bundles, positive/negative compatibility and saved delivery receipts remain; no physical speed or video acceptance claimed.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -164,6 +164,78 @@
       "exit_code": 1,
       "log": "cpu-owned-capture-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-semantic-tests.log",
+      "sha256": "6511a949e6d3cd09d6f7b5b42be8286afb0b604c3714ea3f04b27a61ea50db5a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-semantic-preflight.log",
+      "sha256": "fd09414ca75cf10707b0cdc0fd2c663162f55b3257ea4f39eabbff891e762776"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-semantic-static.log",
+      "sha256": "689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-semantic-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-bundles-build.log",
+      "sha256": "63e8bfb6d5fdd1a59d7ec4dcc5c033184bd023013990de8fd7cb0ac7138c65ea"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-bundles-tests.log",
+      "sha256": "1e38be082b10dbc2a57cf851c194d18b5122a4c55d56e4025ae018f1f2634089"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-bundles-preflight.log",
+      "sha256": "0ac552aa9ce1fb76103df88aa199d25778b3bc470fec7dbe9b688e72039d0bb6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-bundles-static.log",
+      "sha256": "689b0c16c8ce2415edcdf21fb4575e2fc55702f635f5cb7745833e9602528bd5"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-bundles-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --output .runtime-work/c10301-bundles-output/offline-below-v2 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-bundles-offline-below.log",
+      "sha256": "c22474dacce594da6f90c80819093ffcc3e3a0e80e3d5122742aa025c0994dfd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --output .runtime-work/c10301-bundles-output/offline-equal-v2 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-bundles-offline-equal.log",
+      "sha256": "d03d79234caa356477ff206a3c61d4bff94ef02caaad1c7814eedce56b538aed"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --output .runtime-work/c10301-bundles-output/offline-above-v2 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-bundles-offline-above.log",
+      "sha256": "08214817da8a5b19ea71b0613d824a7a02c2b7c79b5b72c0c36de6fb3effa0c7"
     }
   ]
 }

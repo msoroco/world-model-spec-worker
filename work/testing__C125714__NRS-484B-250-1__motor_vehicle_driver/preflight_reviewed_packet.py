@@ -9,6 +9,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
+import tempfile
 
 from native_capture import REVIEW_SOURCES, reviewed_context
 from runner import check_scene, resolve_reviewed_source
@@ -43,19 +45,27 @@ def preflight(scene_path, map_path, output):
         def get_map(self):
             return Map()
 
-    output.mkdir(parents=True)
-    reviewed_context({**scene, "reviewed_context_source": str(packet_path)},
-                     output, World())
-    receipt = {"format": "worker-reviewed-packet-cpu-preflight",
-               "case_id": scene["case_id"], "passed": True,
-               "source_packet_sha256": sha(packet_path),
-               "map_sha256": sha(map_path),
-               "retained_source_hashes": {key: sha(output / name)
-                                          for key, name in REVIEW_SOURCES.items()},
-               "native_started": False, "physical_acceptance_claimed": False,
-               "legal_acceptance_claimed": False}
-    (output / "preflight.json").write_text(json.dumps(receipt, indent=2) + "\n")
-    return receipt
+    output.parent.mkdir(parents=True, exist_ok=True)
+    staged = Path(tempfile.mkdtemp(prefix="reviewed-preflight-", dir=output.parent))
+    try:
+        reviewed_context({**scene, "reviewed_context_source": str(packet_path)},
+                         staged, World())
+        receipt = {"format": "worker-reviewed-packet-cpu-preflight",
+                   "case_id": scene["case_id"], "passed": True,
+                   "source_packet_sha256": sha(packet_path),
+                   "map_sha256": sha(map_path),
+                   "retained_source_hashes": {key: sha(staged / name)
+                                              for key, name in REVIEW_SOURCES.items()},
+                   "native_started": False, "physical_acceptance_claimed": False,
+                   "legal_acceptance_claimed": False}
+        (staged / "preflight.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        if output.exists():
+            raise ValueError("use a fresh CPU preflight output directory")
+        staged.rename(output)
+        return receipt
+    finally:
+        if staged.exists():
+            shutil.rmtree(staged)
 
 
 def main():

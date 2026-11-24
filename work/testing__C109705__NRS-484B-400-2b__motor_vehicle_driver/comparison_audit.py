@@ -21,6 +21,31 @@ def _verified_source(source):
         raise ValueError('comparison source missing or hash differs')
 
 
+def _original_approach(report):
+    trace = _load(report['sources'][1]['path'])
+    if trace.get('case_id') != report['case_id']:
+        raise ValueError('comparison original trace case differs')
+    samples = trace.get('samples')
+    if not isinstance(samples, list):
+        raise ValueError('comparison original approach samples missing')
+    approach = []
+    for sample in samples:
+        if sample.get('phase') == 'intersection_entry':
+            break
+        if sample.get('phase') != 'approach' or sample.get('road_id') != report['approach_road_id']:
+            raise ValueError('comparison original approach phase or road differs')
+        xy = sample.get('position_xy_m')
+        heading, speed = sample.get('heading_rad'), sample.get('speed_mps')
+        if (not isinstance(xy, list) or len(xy) != 2 or
+                any(type(x) not in (int, float) or not math.isfinite(x) for x in xy) or
+                any(type(x) not in (int, float) or not math.isfinite(x) for x in (heading, speed)) or speed < 0):
+            raise ValueError('comparison original approach measurement invalid')
+        approach.append((xy, heading, speed))
+    if len(approach) < 2 or len(approach) == len(samples):
+        raise ValueError('comparison original approach or intersection entry missing')
+    return approach
+
+
 def audit(near_report, far_report, *, expected_near, expected_far, expected_centerline_kind):
     """Check measured pair isolation without a legal position threshold."""
     near = _load(near_report)
@@ -49,6 +74,14 @@ def audit(near_report, far_report, *, expected_near, expected_far, expected_cent
         raise ValueError('comparison fixed map source changed')
     if near['sources'][1]['sha256'] == far['sources'][1]['sha256']:
         raise ValueError('comparison trace source reused')
+    near_approach, far_approach = _original_approach(near), _original_approach(far)
+    if len(near_approach) != len(far_approach):
+        raise ValueError('comparison fixed approach duration changed')
+    for first, second in zip(near_approach, far_approach):
+        if (math.dist(first[0], second[0]) > .25 or
+                abs(math.remainder(first[1] - second[1], 2 * math.pi)) > .1 or
+                abs(first[2] - second[2]) > .5):
+            raise ValueError('comparison original approach trajectory changed')
     if near['observed_right_min_m'] >= far['observed_right_min_m']:
         raise ValueError('farther case did not measure farther from centerline')
     return {
@@ -58,8 +91,10 @@ def audit(near_report, far_report, *, expected_near, expected_far, expected_cent
         'far_right_min_m':far['observed_right_min_m'],
         'fixed_map_source_sha256':near['sources'][0]['sha256'],
         'original_trace_sources':[near['sources'][1]['sha256'],far['sources'][1]['sha256']],
+        'fixed_approach_samples': len(near_approach),
+        'fixed_approach_tolerances': {'position_m': .25, 'heading_rad': .1, 'speed_mps': .5},
         'statutory_judgment':None,
-        'limitations':['Fixed map source and measured ordering do not establish identical original approach trajectories or legal compliance.', 'Original full-video visibility requires separate audit.'],
+        'limitations':['Engineering approach tolerances are comparison controls, not statutory position thresholds.', 'Original full-video visibility requires separate audit.'],
     }
 
 

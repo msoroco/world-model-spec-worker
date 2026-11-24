@@ -49,6 +49,14 @@ Remaining CPU construction: implement a real map-source review/binding and Nativ
 
 The pinned CPU preflight and 22 focused tests passed. Canonical case bundles, source-reviewed map/exception context, semantic proposals, exact compatibility receipts, runtime saved processing and complete independent delivery audits remain CPU work. The result stays partial until the exact scoped strict gate passes.
 
+## 2026-11-23 independent saved audit checkpoint
+
+`audit_finalized.py` independently reopens SHA256-sealed original boundary, trace and activity packets for the exact case/run. It joins all 900 consecutive trace, activity and finalized frame IDs, recalculates contact from the original footprint and boundary, compares measured speed and every activity/exception context field to the independent original activity packet, then runs the saved four-camera audit for all 3,600 decoded images. It rejects changed finalized contact, incomplete joins, source-seal mismatches and unsupported physical or legal claims. This is a CPU source-integrity check; the diagnostic source is synthetic and makes no physical or legal finding.
+
+`tests/prove_900.py` now exercises the independent positive audit and a modified finalized-contact negative using a full 900-frame synthetic acquisition (`cpu-900-audit.log`). The 23 focused tests and pinned preflight passed. The nine exact diagnostic constructions were rebuilt to include the audit code and each passed a fresh exact offline check (`cpu-offline-*-audit-v2.log`). Assignment-scoped static passed; exact strict still exits 1 on truthful partial status (`cpu-strict-audit.log`). Current test SHA256 claims are verified in `result.json`.
+
+Next CPU work: reviewed original Native intersection geometry and independent exception source packets; production Native scene and camera adapter; canonical semantic proposals and delivery manifest; each case's positive/negative compatibility and saved-only processing; and independent canonical delivery/comparison receipts. Do not infer an exception from the case name or mark ready until the exact scoped strict command passes.
+
 ## 2026-11-23 nine-case diagnostic bundle checkpoint
 
 `build_offline_draft.py` now emits nine exact inline constructions and `execution-manifest.draft.json`, preserving each planned activity, inside/outside destination, exception context, original 20-Hz/900-frame interval and pinned four-camera dimensions. The bundles embed the current Native acquisition, scene, media, saved finalization and comparison code. Their runner verifies the embedded source-hashed plan and exact case attributes, then refuses an unsourced Native launch. This is diagnostic preparation, not a canonical delivery manifest or original exception evidence.

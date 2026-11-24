@@ -1,4 +1,5 @@
 import hashlib
+import copy
 import importlib.util
 import io
 import json
@@ -122,13 +123,35 @@ class NativeCaptureTests(unittest.TestCase):
                                                  expected_side)])
             checked = audit.audit_saved(output, trace_sha256=receipt["original_trace_sha256"],
                                         case_id=case, act=expected_act, side=expected_side,
-                                        expected_dimensions={view: (2, 2) for view in native.CAMERAS})
+                                        expected_dimensions={view: (2, 2) for view in native.CAMERAS},
+                                        survey_path=survey, survey_sha256=digest)
             self.assertEqual(checked["decoded_camera_frames"], 3600)
+            self.assertTrue(checked["original_site_binding"]["original_site_binding_checked"])
+            for field, value in (("map_sha256", "wrong-map"),
+                                 ("driver_id", "wrong-driver"),
+                                 ("traffic_route_id", "wrong-route")):
+                altered = copy.deepcopy(trace)
+                altered["fixed_context"][field] = value
+                with self.assertRaisesRegex(ValueError, "differs from original"):
+                    audit.audit_site_binding(altered, survey_path=survey,
+                                             survey_sha256=digest, case_id=case,
+                                             act=expected_act, side=expected_side)
+            altered = copy.deepcopy(trace)
+            altered["parked_center_xy"][0] += 1
+            with self.assertRaisesRegex(ValueError, "parked pose differs"):
+                audit.audit_site_binding(altered, survey_path=survey,
+                                         survey_sha256=digest, case_id=case,
+                                         act=expected_act, side=expected_side)
+            with self.assertRaisesRegex(ValueError, "hash mismatch"):
+                audit.audit_site_binding(trace, survey_path=survey,
+                                         survey_sha256="0" * 64, case_id=case,
+                                         act=expected_act, side=expected_side)
             self.assertEqual(checked["act_on_closest_side"], case_key != "open_far_side")
             dimensions = base / "dimensions.json"
             dimensions.write_text(json.dumps({view: [2, 2] for view in native.CAMERAS}))
             command = [sys.executable, str(ROOT / "process_saved.py"), "--attempt", str(output),
                        "--trace-sha256", receipt["original_trace_sha256"],
+                       "--survey", str(survey), "--survey-sha256", digest,
                        "--case-id", case, "--act", expected_act, "--side", expected_side,
                        "--dimensions", str(dimensions), "--output", str(base / "checked.json")]
             subprocess.run(command, check=True, capture_output=True, text=True)

@@ -19,10 +19,18 @@ SOURCES = {"device_trace", "camera_trace", "dispatch_context", "equipment_record
 
 def _read(folder: Path, reference: dict) -> bytes:
     relative = reference.get("path")
-    if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or ".." in Path(relative).parts:
+    if (not isinstance(relative, str) or not relative or
+            Path(relative).is_absolute() or
+            any(part in ("", ".", "..") for part in relative.split("/")) or
+            "\\" in relative):
         raise ValueError("Original source path invalid")
-    target = folder / relative
-    if target.is_symlink() or not target.is_file():
+    base = folder.resolve(strict=True)
+    target = base
+    for part in Path(relative).parts:
+        target = target / part
+        if target.is_symlink():
+            raise ValueError("Original source absent or symlinked")
+    if not target.is_file() or not target.resolve(strict=True).is_relative_to(base):
         raise ValueError("Original source absent or symlinked")
     data = target.read_bytes()
     if hashlib.sha256(data).hexdigest() != reference.get("sha256"):

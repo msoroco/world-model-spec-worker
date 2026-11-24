@@ -75,6 +75,33 @@ class AlternativeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'identity changed'):
             observe_brake(cp,mp,.1)
 
+    def test_original_control_cadence_and_complete_length(self):
+        mapping = [{'video_frame':i,'carla_frame':100+i,'time_s':i*.05}
+                   for i in range(3)]
+        control = [{'frame':row['carla_frame'],'time_s':row['time_s'],
+                    'ego_brake':.2} for row in mapping]
+        mp,cp = self.root/'video_frames.jsonl',self.root/'controller-history.jsonl'
+        def write():
+            mp.write_text(''.join(json.dumps(row)+'\n' for row in mapping))
+            cp.write_text(''.join(json.dumps(row)+'\n' for row in control))
+        write()
+        self.assertTrue(observe_brake(cp,mp,.1,expected_frames=3)
+                        ['ego_brake_observed_before_other_entry'])
+        with self.assertRaisesRegex(ValueError,'complete original control'):
+            observe_brake(cp,mp,.1,expected_frames=200)
+        mapping[2]['carla_frame'] += 1
+        control[2]['frame'] += 1
+        write()
+        with self.assertRaisesRegex(ValueError,'cadence differs'):
+            observe_brake(cp,mp,.1,expected_frames=3)
+        mapping[2]['carla_frame'] -= 1
+        control[2]['frame'] -= 1
+        mapping[2]['time_s'] += .05
+        control[2]['time_s'] += .05
+        write()
+        with self.assertRaisesRegex(ValueError,'cadence differs'):
+            observe_brake(cp,mp,.1,expected_frames=3)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -126,6 +126,23 @@ class NativeCaptureTests(unittest.TestCase):
             self._run(adapter)
         self.assertTrue(adapter.stopped and adapter.destroyed)
 
+    def test_existing_original_capture_is_not_overwritten(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'original-map.xodr'
+            source.write_text('<OpenDRIVE/>\n')
+            selected = survey()
+            selected['source_sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+            output = root / 'output'
+            output.mkdir()
+            original = output / 'original-trace.json'
+            original.write_text('retained original\n')
+            adapter = Adapter()
+            with self.assertRaisesRegex(ValueError, 'overwrite original Native capture'):
+                native.capture(adapter, CASE, selected, source, output)
+            self.assertEqual(original.read_text(), 'retained original\n')
+            self.assertEqual(adapter.controls, [])
+
 
 if __name__ == '__main__':
     unittest.main()

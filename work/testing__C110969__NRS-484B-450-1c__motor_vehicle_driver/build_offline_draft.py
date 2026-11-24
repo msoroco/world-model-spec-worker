@@ -10,7 +10,7 @@ AID = HERE.name
 SOURCES = (
     "intersection_observables.py", "finalize_observables.py",
     "native_acquisition.py", "native_scene.py", "native_media.py",
-    "finalize_delivery.py", "comparison_audit.py",
+    "finalize_delivery.py", "audit_finalized.py", "comparison_audit.py",
 )
 
 RUNNER = '''"""Exact case identity and source-profile preflight."""

@@ -203,3 +203,7 @@ The Core diagnostic projector now requires the entire 900-frame original body an
 ### 2026-11-23 original pixel provenance at the Core bridge
 
 Before publishing any diagnostic Core rows, `core_packet.project` now reopens and decodes all 3,600 original PNGs from the four source-bound camera archives. It records their hashes and decoded-frame count in the projection receipt. A negative test corrupts one archived PNG and re-seals its SHA, then proves no Core packet is published. All 38 assignment tests pass in `cpu-core-original-media-tests.log`; the pinned 900-frame Core `verify_join` passes in `cpu-core-original-media-join.log`. Their commands and SHA256 values are in result.json. This still does not supply a captured scene graph, Core manifest or case-specific delivery receipts; keep status partial.
+
+## 2026-11-23 atomic Core diagnostic publication
+
+`core_packet.project` now stages the full source-derived diagnostic trace, evidence, frame map and receipt, then publishes them together. A new test injects a failure during the second file write, checks that no packet or staging directory remains, and verifies a clean retry. All 39 assignment tests, the pinned 900-frame Core `verify_join`, preflight and scoped static pass. Exact scoped strict exits 1 on truthful partial. Proof logs and SHA256 claims are recorded in `result.json`. Scene graph capture, canonical Core manifest, positive/negative compatibility, saved-only processing and independent delivery remain CPU work.

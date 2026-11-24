@@ -103,6 +103,21 @@ class SavedDeliveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'trace source hash'):
             audit.audit(self.root, self.bundle, expected_frames=20)
 
+    def test_byte_identical_source_alias_and_traversal_rejected(self):
+        trace = self.root / 'trace.json'
+        original = trace.read_bytes()
+        alias = self.root / 'trace-copy.json'
+        alias.write_bytes(original)
+        trace.unlink()
+        trace.symlink_to(alias)
+        with self.assertRaisesRegex(ValueError, 'symlink alias'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+        trace.unlink()
+        trace.write_bytes(original)
+        self.bundle['trace']['path'] = 'nested/../trace.json'
+        with self.assertRaisesRegex(ValueError, 'path traversal'):
+            audit.audit(self.root, self.bundle, expected_frames=20)
+
     def test_sealed_wrong_case_observation_rejected(self):
         trace = json.loads((self.root / 'trace.json').read_text())
         for row in trace['approach_signal_history']:

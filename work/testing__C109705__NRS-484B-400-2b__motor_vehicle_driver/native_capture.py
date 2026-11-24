@@ -64,6 +64,8 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
     if tuple(plan['camera_plan']) != CAMERAS:
         raise ValueError('four exact camera channels required')
     output = Path(output_dir)
+    if output.exists() and any(output.iterdir()):
+        raise ValueError('refusing to overwrite original Native capture')
     output.mkdir(parents=True, exist_ok=True)
     ego = None
     samples = []
@@ -123,9 +125,11 @@ def capture(adapter, case_id, survey, map_source_path, output_dir):
                   'destination_road_id': survey['destination_road_id'], 'maneuver': 'left_turn',
                   'driver_control': True, 'rate_hz': 20, 'samples': samples}
         trace_path = output / 'original-trace.json'
-        trace_path.write_text(json.dumps(packet, indent=2) + '\n', encoding='utf-8')
+        with trace_path.open('x', encoding='utf-8') as stream:
+            stream.write(json.dumps(packet, indent=2) + '\n')
         camera_path = output / 'original-camera-index.json'
-        camera_path.write_text(json.dumps({'case_id': case_id, 'channels': cameras}, indent=2) + '\n', encoding='utf-8')
+        with camera_path.open('x', encoding='utf-8') as stream:
+            stream.write(json.dumps({'case_id': case_id, 'channels': cameras}, indent=2) + '\n')
         return {'case_id': case_id, 'trace_path': str(trace_path),
                 'trace_sha256': hashlib.sha256(trace_path.read_bytes()).hexdigest(),
                 'camera_index_path': str(camera_path),

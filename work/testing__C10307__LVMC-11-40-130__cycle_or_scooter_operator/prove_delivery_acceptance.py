@@ -43,7 +43,8 @@ def main() -> None:
                   "checks": checks}
         review_path = attempt / "review.json"
         review_path.write_text(json.dumps(review))
-        with patch("delivery_audit.audit_saved", return_value=saved):
+        with patch("delivery_audit.audit_saved", return_value=saved), patch(
+                "delivery_audit.audit_source_provenance", return_value={"manifest_sha256": "CPU fixture only"}):
             result = audit_delivery(attempt, args.case, review_path)
         if result["case_id"] != args.case or result["frame_count"] != 1:
             raise ValueError("CPU checker fixture did not bind exact case and frame")

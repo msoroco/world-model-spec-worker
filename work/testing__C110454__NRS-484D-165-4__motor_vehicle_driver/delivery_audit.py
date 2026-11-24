@@ -6,8 +6,12 @@ physical interpretation of emitted light remain separate review steps.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 from pathlib import Path
+import zipfile
+
+from PIL import Image
 
 from lamp_probe import CASE_MODES
 from saved_lamps import process_saved
@@ -16,6 +20,8 @@ from saved_lamps import process_saved
 ASSIGNMENT = "testing__C110454__NRS-484D-165-4__motor_vehicle_driver"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 EXPECTED_FRAMES = 900  # 45 seconds at the pinned 20 Hz acquisition cadence.
+PROFILE = {"overview": (1920, 1080), "approach": (1280, 720),
+           "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _sha(path: Path) -> str:
@@ -33,6 +39,33 @@ def _contained(root: Path, relative: str) -> Path:
     if not target.is_relative_to(root.resolve()) or not target.is_file():
         raise ValueError("media path missing or escapes attempt")
     return target
+
+
+def decode_original_cameras(paths: dict, camera_rows: list, *, dimensions=None) -> dict:
+    """Decode every original frame at the exact Native frame identity."""
+    sizes = PROFILE if dimensions is None else dimensions
+    if set(paths) != set(VIEWS) or set(sizes) != set(VIEWS) or not camera_rows:
+        raise ValueError("four original camera archives and frame rows required")
+    frames = [row.get("frame") for row in camera_rows]
+    if any(type(frame) is not int for frame in frames) or frames != list(range(frames[0], frames[0] + len(frames))):
+        raise ValueError("original camera frame sequence invalid")
+    counts = {}
+    for view in VIEWS:
+        with zipfile.ZipFile(paths[view]) as archive:
+            names = archive.namelist()
+            expected = [f"{frame}.png" for frame in frames]
+            if len(names) != len(set(names)) or set(names) != set(expected):
+                raise ValueError("original camera ZIP frame inventory differs: " + view)
+            for frame, name in zip(frames, expected):
+                row = camera_rows[frame - frames[0]]
+                if row.get(view + "_source_frame") != frame:
+                    raise ValueError("original camera frame map differs: " + view)
+                with Image.open(io.BytesIO(archive.read(name))) as image:
+                    if image.format != "PNG" or image.size != tuple(sizes[view]):
+                        raise ValueError("original camera PNG profile differs: " + view)
+                    image.load()
+        counts[view] = len(frames)
+    return counts
 
 
 def audit(attempt: Path, manifest_path: Path, *, case_id: str,
@@ -76,6 +109,7 @@ def audit(attempt: Path, manifest_path: Path, *, case_id: str,
         raise ValueError("four exact original camera media sources required")
     media_hashes = {}
     media_paths = set()
+    original_paths = {}
     for view in VIEWS:
         item = media[view]
         if not isinstance(item, dict) or item.get("source_frame_count") != EXPECTED_FRAMES:
@@ -88,10 +122,20 @@ def audit(attempt: Path, manifest_path: Path, *, case_id: str,
         if path.stat().st_size == 0 or digest != item.get("sha256"):
             raise ValueError("original camera media hash changed or empty")
         media_hashes[view] = digest
+        original_paths[view] = path
+    decoded = None
+    if not allow_diagnostic:
+        camera_rows = [json.loads(line) for line in
+                       (root / "camera-frame-map.jsonl").read_text().splitlines()]
+        decoded = decode_original_cameras(original_paths, camera_rows)
+        if any(count != EXPECTED_FRAMES for count in decoded.values()):
+            raise ValueError("original camera decode frame count incomplete")
     return {"format": "parked-headlamp-delivery-integrity-v1", "case_id": case_id,
             "native_receipt_sha256": receipt_record["sha256"],
             "source_hashes": measured["source_hashes"], "media_hashes": media_hashes,
             "frame_count": EXPECTED_FRAMES, "saved_source_integrity_passed": True,
             "observation": measured,
-            "full_video_decode_passed": False, "emission_and_aim_reviewed": False,
+            "full_video_decode_passed": decoded is not None,
+            "decoded_frames_per_camera": decoded,
+            "emission_and_aim_reviewed": False,
             "physical_acceptance_claimed": False}

@@ -25,9 +25,8 @@ class RunnerTests(unittest.TestCase):
             script.write_text("# materialized bundle\n")
             self.assertEqual(locate_repo_root(script), repo)
         self.assertEqual(locate_repo_root(ROOT / "parking_runner.py"), repo)
-        with TemporaryDirectory() as tmp:
-            with self.assertRaisesRegex(ValueError, "cannot locate repository runtime"):
-                locate_repo_root(Path(tmp) / "runner.py")
+        with self.assertRaisesRegex(ValueError, "cannot locate repository runtime"):
+            locate_repo_root(Path("/no-such-materialized-runtime/runner.py"))
 
     def test_reviewed_native_map_readback_and_mismatch(self):
         with TemporaryDirectory() as tmp:
@@ -59,7 +58,7 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(json.loads(shown.call_args.args[0])["case_id"],
                              ROOT.name + "__park_parallel_lawful")
             with self.assertRaisesRegex(ValueError, "materialized attempt under"):
-                run_native(packet, tmp, "park_parallel_lawful", tmp)
+                run_native(packet, tmp, "park_parallel_lawful", Path(tmp) / "not-created")
 
 
 if __name__ == "__main__":

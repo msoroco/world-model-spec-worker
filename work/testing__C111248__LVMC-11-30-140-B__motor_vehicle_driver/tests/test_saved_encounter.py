@@ -59,6 +59,13 @@ class SavedEncounterTests(unittest.TestCase):
         self.assertEqual(result["source_bindings"]["original_history"], self.manifest["original_history"]["sha256"])
         self.assertEqual(json.loads((self.root / "measurement.json").read_text())["first_proceed_frame"], 104)
 
+    def test_existing_saved_measurement_is_preserved(self):
+        self.process()
+        original = (self.root / "measurement.json").read_bytes()
+        with self.assertRaisesRegex(ValueError, "preserve prior saved encounter output"):
+            self.process()
+        self.assertEqual((self.root / "measurement.json").read_bytes(), original)
+
     def test_tampered_source_rejected_before_output(self):
         self.write("manifest.json", json.dumps(self.manifest))
         self.write("cue.json", (self.root / "cue.json").read_text() + " ")

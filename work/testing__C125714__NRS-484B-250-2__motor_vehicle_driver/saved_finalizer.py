@@ -65,7 +65,8 @@ def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> d
                 raise ValueError('Missing required source: '+name)
         brake = observe_brake(root/'controller-history.jsonl',
                               root/'video_frames.jsonl',
-                              measured['other_entry']['upper_time_s'])
+                              measured['other_entry']['upper_time_s'],
+                              expected_frames=measured['original_frame_count'])
         result['ego_brake_before_other_entry'] = brake
         result['source_sha256'].update(brake['source_sha256'])
     return result

@@ -162,6 +162,43 @@ def reviewed_candidate_angles(packet_path, source_root, *, segment_index=0,
             "motion_verified": False, "legal_judgment": "unresolved"}
 
 
+def reviewed_placement_grid(packet_path, source_root, *, segment_index=0,
+                            edge_offsets_m=(1.5, 2.5, 3.5), length_m=4.5,
+                            width_m=2.0, spacing_deg=10):
+    """Enumerate full-body pose feasibility across source-bound edge offsets.
+
+    This is a construction search over engineering samples, not a legal sweep
+    or a claim that any sampled pose is reachable by a Native actor.
+    """
+    offsets = list(edge_offsets_m)
+    if (not offsets or any(type(value) not in (int, float) or
+                           not math.isfinite(value) or value <= 0 for value in offsets) or
+            offsets != sorted(set(offsets))):
+        raise ValueError("positive distinct increasing edge offsets required")
+    rows = []
+    source_hash = None
+    for offset in offsets:
+        result = reviewed_candidate_angles(
+            packet_path, source_root, segment_index=segment_index,
+            edge_offset_m=offset, length_m=length_m, width_m=width_m,
+            spacing_deg=spacing_deg,
+        )
+        if source_hash is None:
+            source_hash = result["source_packet_sha256"]
+        elif result["source_packet_sha256"] != source_hash:
+            raise ValueError("reviewed packet changed during placement grid")
+        rows.append({"edge_offset_m": offset,
+                     "feasible_angles_deg": [sample["angle_deg"] for sample in result["samples"]
+                                             if sample["full_footprint_inside_reviewed_roadway"]],
+                     "samples": result["samples"]})
+    return {"format": "parking-reviewed-placement-grid-v1",
+            "source_packet_sha256": source_hash,
+            "segment_index": segment_index,
+            "vehicle_length_m": length_m, "vehicle_width_m": width_m,
+            "spacing_deg": spacing_deg, "offsets": rows,
+            "motion_verified": False, "legal_judgment": "unresolved"}
+
+
 def main():
     parser = argparse.ArgumentParser()
     source = parser.add_mutually_exclusive_group(required=True)

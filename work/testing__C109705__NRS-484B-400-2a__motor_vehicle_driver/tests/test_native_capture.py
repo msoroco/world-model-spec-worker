@@ -6,6 +6,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 from PIL import Image
 
@@ -87,6 +88,31 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_diagnostic_core_packet_publish_is_atomic(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            from core_packet import _save
+            calls = 0
+
+            def fail_second_save(path, rows):
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError('injected second file failure')
+                return _save(path, rows)
+
+            with mock.patch('core_packet._save', side_effect=fail_second_save):
+                with self.assertRaisesRegex(OSError, 'injected second file failure'):
+                    project_core_packet(attempt, root / 'core-packet')
+            self.assertFalse((root / 'core-packet').exists())
+            self.assertFalse(list(root.glob('core-packet.incomplete-*')))
+            receipt = project_core_packet(attempt, root / 'core-packet')
+            self.assertEqual(receipt['frames'], 900)
+
     def test_diagnostic_core_packet_joins_saved_original_frames(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

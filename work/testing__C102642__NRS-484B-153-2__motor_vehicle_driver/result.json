@@ -2,7 +2,7 @@
   "assignment_id": "testing__C102642__NRS-484B-153-2__motor_vehicle_driver",
   "input_sha256": "545d571b598d72cc8a16461803998c2565e7d7768f70dc095646071d94f298aa",
   "status": "partial",
-  "readiness_kind": "five_exact_diagnostic_offline_constructions",
+  "readiness_kind": "five_exact_diagnostic_offline_constructions_with_saved_site_join",
   "applied_update": 0,
   "tests": [
     {
@@ -106,10 +106,76 @@
       "exit_code": 1,
       "log": "cpu-strict-episode-clock.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-site-binding-build.log",
+      "sha256": "150a8753e60bc7626b406e747436a701fa419bcd6d8595ad04ccd07eb6938ace"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-site-binding-tests.log",
+      "sha256": "cbad29478da48ad0164550dbabcd64054bcba091076b5d8b3dee1ee2a436ff5f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/tests -p test_offline_bundle.py -v",
+      "exit_code": 0,
+      "log": "cpu-site-binding-bundle-tests.log",
+      "sha256": "cf08afb9d504e41330e8405382fc12e4ea819aa46a80dbc570839b2b4ef482c4"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-site-binding.log",
+      "sha256": "b93cc66499b74c7c1d7e8d934dd6d7b272734da543645cacd73544ff710c3a43"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver",
+      "exit_code": 0,
+      "log": "cpu-static-site-binding.log",
+      "sha256": "f495045bad815c4cb4863d7062e1398268583d6288251332a3927ded251b6f21"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_overlap --output .runtime-work/c102642-offline-open_near_overlap-site-binding --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-open_near_overlap-site-binding.log",
+      "sha256": "bd66c5e6b46463d18b7d052c5a93c78377e6d40290766d9ad7817961b7342632"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_near_clear --output .runtime-work/c102642-offline-open_near_clear-site-binding --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-open_near_clear-site-binding.log",
+      "sha256": "61e25c0c1b205ea528beff3a52d7683409d9fb8819fb8b375a1ae51037a0cf89"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__open_far_side --output .runtime-work/c102642-offline-open_far_side-site-binding --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-open_far_side-site-binding.log",
+      "sha256": "e222ee979d1c11831a9d8129928e52e8d418e0ee50ee8168fb56567245d2325c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__board_near --output .runtime-work/c102642-offline-board_near-site-binding --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-board_near-site-binding.log",
+      "sha256": "af6313199ff0f109eec53f4682ffdec0e4ecc394c0f5ed97c4bf4cc943156c24"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C102642__NRS-484B-153-2__motor_vehicle_driver/execution-manifest.draft.json --case testing__C102642__NRS-484B-153-2__motor_vehicle_driver__alight_near --output .runtime-work/c102642-offline-alight_near-site-binding --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-alight_near-site-binding.log",
+      "sha256": "391729f5bc84745d25c8e43bfcc64fa2419e55117621a163392d7c718667395a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-site-binding.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact diagnostic offline bundles pass with 23 focused tests. Native capture now converts a finite absolute simulator clock to the episode-relative 20 Hz axis while preserving the original timestamp; cumulative drift is rejected. Concrete CARLA adapter, surveyed physical site, canonical proposals/manifest, pinned positive/negative compatibility and saved-only delivery receipts remain CPU work."
+  "reason": "Five exact diagnostic offline bundles and 23 focused tests pass. Saved-only processing now rejoins the sealed Native trace to the hash-bound original hill-crest survey, loading site, route, driver and parked pose, and rejects missing or changed sources. Concrete CARLA adapter and real survey, canonical semantic proposals/manifest, pinned positive/negative compatibility and runtime saved-delivery receipts remain CPU work; physical and legal judgments remain unverified."
 }

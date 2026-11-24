@@ -2,7 +2,7 @@
   "assignment_id": "testing__C109749__NRS-484B-253__motor_vehicle_driver",
   "input_sha256": "a49180ac337f7bea988eb333e1bc67b6430ac6e8d452d1cccd53d53559601cc3",
   "status": "partial",
-  "readiness_kind": "delivery_reciprocal_three_actor_witness_checkpoint",
+  "readiness_kind": "partial_saved_three_actor_reciprocal_join_checkpoint",
   "applied_update": 0,
   "tests": [
     {
@@ -124,10 +124,40 @@
       "exit_code": 1,
       "log": "strict-reciprocal-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109749__NRS-484B-253__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-saved-tests.log",
+      "sha256": "3c62bd1ff5c019bb79b000bcc183d778203176f7e1c2707b1a1864d303b1298d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-saved-preflight.log",
+      "sha256": "fe29ff627a7d6ebcc36e5196b4e2751a6c3fbec6d70b8fc10a6644b3c30e2b1c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C109749__NRS-484B-253__motor_vehicle_driver/execution-manifest.json --case testing__C109749__NRS-484B-253__motor_vehicle_driver__reciprocal_yield --output .runtime-work/c109749-reciprocal-output/offline-yield",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-saved-offline.log",
+      "sha256": "a62c8ae1d55fba0440629a10b238aa830d1745bbaf8e9515ee6c5aade1301b71"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-reciprocal-saved-static.log",
+      "sha256": "5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-reciprocal-saved-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Eight exact cases remain partial. New reciprocal_witness.py requires a distinct later opposing vehicle in original frame, body, speed and control histories; it measures initial clearance, ego commitment, later entry and observed braking without inferring legal right-of-way. The 75-test CPU suite, pinned preflight, reciprocal_yield offline bundle and scoped static check pass. The three-actor witness still needs integration into actual reciprocal capture/finalization and regenerated exact compatibility receipts; reviewed Native map, physical risk fallbacks and final delivery integration remain CPU work. No physical or legal acceptance is claimed."
+  "reason": "A saved 900-frame three-actor reciprocal source join now verifies a separately sealed later-opponent trace, exact frame/time alignment, actor identity, original control readback and measured yield/no-yield contrast. Pinned preflight, 77 focused tests and reciprocal offline construction pass. Production reciprocal scene/capture and bundled finalizer integration, canonical physical sweeps and remaining delivery/queue integration remain CPU work; original CARLA motion and legal judgments are unverified."
 }

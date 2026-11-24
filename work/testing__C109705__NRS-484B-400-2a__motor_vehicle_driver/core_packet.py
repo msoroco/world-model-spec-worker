@@ -9,6 +9,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
+import shutil
+import tempfile
 from pathlib import Path
 
 from approach import _verified, measure
@@ -31,7 +34,7 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
     attempt, output = Path(attempt), Path(output)
     if type(actor_id) is not int or actor_id <= 0:
         raise ValueError('positive diagnostic actor id required')
-    if output.exists():
+    if output.exists() or output.is_symlink():
         raise ValueError('refusing to overwrite diagnostic Core packet')
     measured = measure(attempt)
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
@@ -84,21 +87,29 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
                          'original_observations': observed, 'world': {'weather': {}}})
         frames.append({'frame': frame, 'simulation_time': time_s,
                        'adapter_graph': f'graphs/base/{index:08d}.adapter.json'})
-    output.mkdir(parents=True)
-    hashes = {'trace.jsonl': _save(output / 'trace.jsonl', trace),
-              'capture/evidence.jsonl': _save(output / 'capture/evidence.jsonl', evidence),
-              'capture/native/frames.jsonl': _save(output / 'capture/native/frames.jsonl', frames)}
-    receipt = {'kind': 'diagnostic_core_join_packet', 'case_id': acquisition['case_id'],
-               'source_sha256': {'road.xodr': road_sha,
-                                 'intersection-context.json': context_sha,
-                                 'approach-history.jsonl': history_sha,
-                                 'video_frames.jsonl': mapping_sha},
-               'acquisition_sha256': hashlib.sha256((attempt / 'acquisition.json').read_bytes()).hexdigest(),
-               'generated_sha256': hashes, 'frames': len(trace),
-               'original_decoded_frames': pixels['decoded_frames'],
-               'original_media_sha256': pixels['media_sha256'],
-               'selected_measurement': measured['nearest_body_edge_range_m'],
-               'physical_completion': False, 'legal_judgment': 'unresolved',
-               'graph_capture_required': True}
-    (output / 'receipt.json').write_text(json.dumps(receipt, indent=2, allow_nan=False) + '\n')
-    return receipt
+    output.parent.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix=output.name + '.incomplete-', dir=output.parent))
+    try:
+        hashes = {'trace.jsonl': _save(stage / 'trace.jsonl', trace),
+                  'capture/evidence.jsonl': _save(stage / 'capture/evidence.jsonl', evidence),
+                  'capture/native/frames.jsonl': _save(stage / 'capture/native/frames.jsonl', frames)}
+        receipt = {'kind': 'diagnostic_core_join_packet', 'case_id': acquisition['case_id'],
+                   'source_sha256': {'road.xodr': road_sha,
+                                     'intersection-context.json': context_sha,
+                                     'approach-history.jsonl': history_sha,
+                                     'video_frames.jsonl': mapping_sha},
+                   'acquisition_sha256': hashlib.sha256((attempt / 'acquisition.json').read_bytes()).hexdigest(),
+                   'generated_sha256': hashes, 'frames': len(trace),
+                   'original_decoded_frames': pixels['decoded_frames'],
+                   'original_media_sha256': pixels['media_sha256'],
+                   'selected_measurement': measured['nearest_body_edge_range_m'],
+                   'physical_completion': False, 'legal_judgment': 'unresolved',
+                   'graph_capture_required': True}
+        (stage / 'receipt.json').write_text(json.dumps(receipt, indent=2, allow_nan=False) + '\n')
+        if output.exists() or output.is_symlink():
+            raise ValueError('refusing to overwrite diagnostic Core packet')
+        os.replace(stage, output)
+        return receipt
+    except BaseException:
+        shutil.rmtree(stage, ignore_errors=True)
+        raise

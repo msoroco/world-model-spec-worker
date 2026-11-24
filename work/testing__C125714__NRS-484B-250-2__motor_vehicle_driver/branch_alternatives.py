@@ -70,19 +70,33 @@ def observe_context(site_path, map_path, reviewed_path):
             'legal_verdict_claimed':False}
 
 
-def observe_brake(controller_path, frame_map_path, other_entry_upper_s):
+def observe_brake(controller_path, frame_map_path, other_entry_upper_s,
+                  expected_frames=None):
     """A synchronized control observation; braking alone is not statutory yielding."""
     rows, mapping = load_rows(controller_path), load_rows(frame_map_path)
     if (not rows or len(rows) != len(mapping) or
+            (expected_frames is not None and
+             (type(expected_frames) is not int or len(mapping) != expected_frames)) or
             type(other_entry_upper_s) not in (int,float) or
             not math.isfinite(other_entry_upper_s)):
         raise ValueError('complete original control/frame join required')
     samples = []
+    previous_frame = None
+    previous_time = None
     for index, (control, frame) in enumerate(zip(rows,mapping)):
         if (frame.get('video_frame') != index or
                 (control.get('frame'),control.get('time_s')) !=
                 (frame.get('carla_frame'),frame.get('time_s'))):
             raise ValueError('original controller/frame identity changed')
+        current_frame = frame.get('carla_frame')
+        current_time = frame.get('time_s')
+        if (type(current_frame) is not int or type(current_time) not in (int,float) or
+                not math.isfinite(current_time) or current_time < 0):
+            raise ValueError('original controller/frame identity invalid')
+        if previous_frame is not None and (current_frame != previous_frame + 1 or
+                                           abs(current_time - previous_time - .05) > 1e-4):
+            raise ValueError('original controller/frame cadence differs from 20 Hz')
+        previous_frame, previous_time = current_frame, current_time
         brake = control.get('ego_brake')
         if type(brake) not in (int,float) or not math.isfinite(brake) or not 0 <= brake <= 1:
             raise ValueError('original ego brake sample absent')

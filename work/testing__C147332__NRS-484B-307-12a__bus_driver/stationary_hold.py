@@ -39,9 +39,20 @@ def audit(path, *, maximum_drift_m=.15, maximum_speed_mps=.2):
         raise ValueError("stationary original frame counts differ")
     first_center = None
     largest_drift = 0.0
-    for body, trace, control, frame in zip(bodies, traces, controls, frames):
+    prior_number = None
+    prior_time = None
+    for index, (body, trace, control, frame) in enumerate(zip(bodies, traces, controls, frames)):
         number = frame.get("carla_frame")
         time = frame.get("time_s")
+        if (type(number) is not int or type(frame.get("video_frame")) is not int or
+                frame["video_frame"] != index or
+                isinstance(time, bool) or not isinstance(time, (int, float)) or
+                not math.isfinite(time)):
+            raise ValueError("stationary original frame identity invalid")
+        if prior_number is not None and (number != prior_number + 1 or
+                abs((time - prior_time) - .05) > .002):
+            raise ValueError("stationary original 20 Hz frame sequence has a gap")
+        prior_number, prior_time = number, time
         if (body.get("frame") != number or trace.get("frame") != number or
                 control.get("frame") != number or body.get("elapsed_seconds") != time or
                 trace.get("time_s") != time or control.get("elapsed_seconds") != time):

@@ -70,3 +70,20 @@ Current proof SHA-256 receipts:
 - `cpu-bundle-tests.log`: `7b10f312d54751897f2d2928c9005820c871814b7b5f0a502ab54a74555e2bcc` (exit 0)
 - `cpu-bundle-static.log`: `0a4ff9e3e5d8205601b12039ecd202fc0159418643bff694b18cd0939c6dff4f` (exit 0)
 - `cpu-bundle-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
+
+## 2026-11-23 saved output custody and six-case rebundle
+
+`saved_encounter.process` now refuses an existing or symlinked output before it reads sources and uses an exclusive final create after all checks. A repeated saved-only run cannot replace a prior source-bound measurement; the new focused test proves byte preservation. The exact diagnostic bundles were rebuilt with this code and all six pinned offline constructions passed again. The focused suite passes 15 tests, pinned preflight and scoped static pass. Exact scoped strict exits 1 on truthful `partial`. Canonical semantic stages, real reviewed blindness/cue and map sources, positive/negative compatibility, runtime saved-only delivery and comparison receipts remain. The contact case is observation-only.
+
+Current refreshed CPU log SHA-256 receipts:
+
+- `cpu-bundle-build.log`: `d51b1b918534bc1261bf61fff2b9b7417ca593460d43e4121aa9480bbe43604c` (exit 0)
+- `cpu-bundle-offline-white_full_stop_wait.log`: `2e70d1284ec0672c46c3f45ac6425b0d309513edd6b436d7c8307bbe1526a719` (exit 0)
+- `cpu-bundle-offline-white_roll_through.log`: `f48b835bf27abc473cd9073306b3aba675207798dbbfde471b7c400a16e69dd4` (exit 0)
+- `cpu-bundle-offline-white_early_proceed.log`: `2bdd7ef9f4d5359625a1c57a61976f557f132ab3d0c794f335144198cc7081b1` (exit 0)
+- `cpu-bundle-offline-white_contact_stop.log`: `0e090932003b2e8d9bb7b3a36f122ad515b34632199ea1a1dc06a24608e38017` (exit 0)
+- `cpu-bundle-offline-red_tip_full_stop_wait.log`: `dec0f3f8e231667d09f397f6a74f510756a0052dc8acc130e83b5473014623ac` (exit 0)
+- `cpu-bundle-offline-assisted_full_stop_wait.log`: `39e638c70033f51440849d7a1a7f581842c5ee925a4bea2db43b551ea2a7a4ce` (exit 0)
+- `cpu-bundle-tests.log`: `d84fd8b0f2f9e5d9619c99a65221b5c0f0fb8c384fbb064140e521d704bc25c4` (exit 0)
+- `cpu-bundle-static.log`: `0a4ff9e3e5d8205601b12039ecd202fc0159418643bff694b18cd0939c6dff4f` (exit 0)
+- `cpu-bundle-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
