@@ -10,7 +10,9 @@ from pathlib import Path
 
 ASSIGNMENT = 'testing__C111125__NRS-484B-307-2b__pedestrian'
 SUFFIXES = {'marked_cross', 'unmarked_cross', 'other_device_stop',
-            'other_device_cross', 'outside_cross'}
+            'other_device_cross', 'outside_cross', 'walk_cross',
+            'flashing_countdown_cross', 'flashing_no_countdown_wait',
+            'walk_then_flash_continue', 'walk_then_steady_continue'}
 
 
 def check(root):
@@ -26,7 +28,7 @@ def check(root):
         raise ValueError('20 Hz, 45 second capture required')
     if scene.get('diagnostic_only') is not True or config.get('source_packets') != []:
         raise ValueError('diagnostic bundle cannot assert reviewed site sources')
-    if scene.get('requested_crossing') != (suffix != 'other_device_stop'):
+    if scene.get('requested_crossing') != scene['scenario_parameters']['pedestrian_enters_highway']:
         raise ValueError('requested crossing differs from exact case')
     return scene
 

@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "circular green alone, official signal and facing pedestrian",
+      "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+      "kind": "measured",
+      "method": "measure_signal",
+      "output_key": "c111125_signal",
+      "value_type": "object",
+      "inputs": [
+        "site.json",
+        "head.json",
+        "frames.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "marked or qualifying unmarked crosswalk boundaries and highway route",
+      "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+      "kind": "measured",
+      "method": "measure_crosswalk",
+      "output_key": "c111125_crosswalk",
+      "value_type": "object",
+      "inputs": [
+        "site.json",
+        "map.json",
+        "frames.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "contrary direction by another applicable device and NRS 484B.283 reference",
+      "source": "inputs/testing__C111125__NRS-484B-307-2b__pedestrian/assignment.json",
+      "kind": "measured",
+      "method": "measure_device",
+      "output_key": "c111125_other_device",
+      "value_type": "object",
+      "inputs": [
+        "site.json",
+        "devices.json",
+        "frames.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "head.json"
+    ],
+    "error_contains": "Missing required source: head.json"
+  },
+  "independent_auditor": "delivery_audit.py",
+  "unresolved_judgments": [
+    "Native site identity",
+    "NRS 484B.283 device applicability",
+    "physical maneuver and legal permission"
+  ]
+}

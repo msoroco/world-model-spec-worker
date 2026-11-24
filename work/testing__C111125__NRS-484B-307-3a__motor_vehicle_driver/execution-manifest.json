@@ -1,0 +1,596 @@
+{
+  "assignment_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver",
+  "status": "production_source_gated_cpu_partial",
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear",
+      "construction": "construction-dual_clear.json",
+      "construction_sha256": "4105c51f815cd6fa0ee509c22db3238c610b7a12d33831f006475625e556be62",
+      "measurement_contract": "measurement-contract-dual_clear.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original circular-green and arrow pixels may be too small or occluded in the primary approach camera; a second independently surveyed pose may make both lamp aspects resolvable without changing the movement or other-user contrast."
+      },
+      "fixture_recipe": "work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/fixture-recipe-dual_clear.json",
+      "acquisition": {
+        "signal_head_history": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "signal_head_history.jsonl"
+        },
+        "ego_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "ego_body_history.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "vehicle_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "pedestrian_body_history.jsonl"
+        },
+        "intersection_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "intersection_geometry.jsonl"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "crosswalk_geometry.jsonl"
+        },
+        "lawful_presence_context": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "lawful_presence_context.jsonl"
+        },
+        "original_lamp_pixels": {
+          "entrypoint": "native_cameras.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "original_lamp_pixels.jsonl"
+        },
+        "site_source_survey": {
+          "entrypoint": "dual_green.py",
+          "method": "source-hashed site survey and exact geometry check",
+          "evidence": "site-source-survey.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-dual_clear-receipt.json",
+        "sha256": "cdc81dd75318e36567fdf9e11839660af29058d5d7a1fb8a31f41ae4d131c535",
+        "log": "compat-dual_clear-analysis.log"
+      },
+      "negative": {
+        "log": "compat-dual_clear-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c6b1c3a02b66a22f6223f44f944a3c2c12791e365c5ebae5c59a698d1df0ba52",
+        "command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_clear --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-diagnostic-dual_clear.json --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-dual_clear.log",
+        "test_log_sha256": "8557a596feea6d6f9ad466ae2f7cf8b408a0f1baddbb2b68ce85cb363d5108f7",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_clear --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-negative-dual_clear.json --diagnostic-fixture --negative-remove-handoff",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-source-handoff.json",
+        "negative_log": "delivery-negative-dual_clear.log",
+        "negative_log_sha256": "b82be037236e8b30f46f4a4f75aa997fe16c4c36a65ccbc7df0f2d965e74f577"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_clear-saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_clear-saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-dual_clear.log",
+        "test_log_sha256": "5340bd8fc95cbe498e68c4c3ff7c6a118990ac9e25188d0b5eed460d21996168"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-dual_clear.json",
+          "construction_sha256": "00c369da201d76ddc87f765958374ae9a4d394c4614151a291f2d08344796bec",
+          "trigger": {
+            "source": "delivery_audit.py and saved original approach-camera PNGs",
+            "metric": "independent dual-lamp pixel resolvability",
+            "failure_condition": "primary approach pixels cannot independently resolve both simultaneously lit aspects"
+          },
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site.json"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "00c369da201d76ddc87f765958374ae9a4d394c4614151a291f2d08344796bec",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear --candidate fallback1 --output .runtime-work/c111125-3a-owner/offline-fallback1-dual_clear --python .venv-cpu/bin/python",
+            "log": "cpu-fallback1-offline-dual_clear.log",
+            "log_sha256": "4fa4dbae2d43c49223fe7079cd2bdc09867b096292d0061254dda6ce41eea96c"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compat-dual_clear-receipt.json",
+            "sha256": "b641ab13cc24dd1db9718c6af6fd8c8f09515c931d5c7384c9135b5b9a8cd791",
+            "log": "fallback1-compat-dual_clear-analysis.log",
+            "negative_log": "fallback1-compat-dual_clear-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-dual_clear.json",
+        "sha256": "ac185be28b1af7ccd7d3bc39314be96b2b1967851833578e2e4337ed2b0e3c6a"
+      },
+      "kind": "delivery",
+      "offline": {
+        "construction_sha256": "4105c51f815cd6fa0ee509c22db3238c610b7a12d33831f006475625e556be62",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear --output .runtime-work/c111125-3a-owner/offline-v14-dual_clear",
+        "exit_code": 0,
+        "log": "cpu-source-handoff-offline-dual_clear.log",
+        "log_sha256": "38d429c94ecc37ac8982d29173e0114626d58d1684a23668af7a28175fdab3db"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present",
+      "construction": "construction-dual_vehicle_present.json",
+      "construction_sha256": "05d5bafab87dff21328274efcabe4bb1e0af150c6875269d2dc347eff97344e6",
+      "measurement_contract": "measurement-contract-dual_vehicle_present.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original circular-green and arrow pixels may be too small or occluded in the primary approach camera; a second independently surveyed pose may make both lamp aspects resolvable without changing the movement or other-user contrast."
+      },
+      "fixture_recipe": "work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/fixture-recipe-dual_vehicle_present.json",
+      "acquisition": {
+        "signal_head_history": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "signal_head_history.jsonl"
+        },
+        "ego_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "ego_body_history.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "vehicle_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "pedestrian_body_history.jsonl"
+        },
+        "intersection_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "intersection_geometry.jsonl"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "crosswalk_geometry.jsonl"
+        },
+        "lawful_presence_context": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "lawful_presence_context.jsonl"
+        },
+        "original_lamp_pixels": {
+          "entrypoint": "native_cameras.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "original_lamp_pixels.jsonl"
+        },
+        "site_source_survey": {
+          "entrypoint": "dual_green.py",
+          "method": "source-hashed site survey and exact geometry check",
+          "evidence": "site-source-survey.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-dual_vehicle_present-receipt.json",
+        "sha256": "8d41887f3fda20c16c8594ff93906b663c50478031d03c797bc66940d60a02ad",
+        "log": "compat-dual_vehicle_present-analysis.log"
+      },
+      "negative": {
+        "log": "compat-dual_vehicle_present-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c6b1c3a02b66a22f6223f44f944a3c2c12791e365c5ebae5c59a698d1df0ba52",
+        "command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_vehicle_present --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-diagnostic-dual_vehicle_present.json --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-dual_vehicle_present.log",
+        "test_log_sha256": "124fbfd472e1a6922384c757b4ce34485d11b0eb90a73487f0355f3611921319",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_vehicle_present --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-negative-dual_vehicle_present.json --diagnostic-fixture --negative-remove-handoff",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-source-handoff.json",
+        "negative_log": "delivery-negative-dual_vehicle_present.log",
+        "negative_log_sha256": "b82be037236e8b30f46f4a4f75aa997fe16c4c36a65ccbc7df0f2d965e74f577"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_vehicle_present-saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_vehicle_present-saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-dual_vehicle_present.log",
+        "test_log_sha256": "ea4e240efea458c3abde4669e7399e46fa3448a891e21782dd9fc61dc78df2e8"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-dual_vehicle_present.json",
+          "construction_sha256": "929fe36dac163dc34e69d09b71bf446b5b979b100c4556b6382804b9cda9b686",
+          "trigger": {
+            "source": "delivery_audit.py and saved original approach-camera PNGs",
+            "metric": "independent dual-lamp pixel resolvability",
+            "failure_condition": "primary approach pixels cannot independently resolve both simultaneously lit aspects"
+          },
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site.json"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "929fe36dac163dc34e69d09b71bf446b5b979b100c4556b6382804b9cda9b686",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present --candidate fallback1 --output .runtime-work/c111125-3a-owner/offline-fallback1-dual_vehicle_present --python .venv-cpu/bin/python",
+            "log": "cpu-fallback1-offline-dual_vehicle_present.log",
+            "log_sha256": "de92b838bc1c65169f81f8263433724d15ea8ec05601e7129226db6f3d64c374"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compat-dual_vehicle_present-receipt.json",
+            "sha256": "5cb1b8e95996c72b0a7880330b03228d5c979d184fd137d1fa7a399847738d59",
+            "log": "fallback1-compat-dual_vehicle_present-analysis.log",
+            "negative_log": "fallback1-compat-dual_vehicle_present-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-dual_vehicle_present.json",
+        "sha256": "dfa4797c56f664c4681450e6a3498c1fd9a5c4b56284bf78b875da8e1a497a86"
+      },
+      "kind": "delivery",
+      "offline": {
+        "construction_sha256": "05d5bafab87dff21328274efcabe4bb1e0af150c6875269d2dc347eff97344e6",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_vehicle_present --output .runtime-work/c111125-3a-owner/offline-v14-dual_vehicle_present",
+        "exit_code": 0,
+        "log": "cpu-source-handoff-offline-dual_vehicle_present.log",
+        "log_sha256": "a7697b082b6887f31850864501377bb2a8e5cb691dd8e069fc62714e554075a3"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present",
+      "construction": "construction-dual_pedestrian_present.json",
+      "construction_sha256": "0daed8863b644c7879e7a8a13a3a329afc82ada51646e12dcc60a11af75de992",
+      "measurement_contract": "measurement-contract-dual_pedestrian_present.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original circular-green and arrow pixels may be too small or occluded in the primary approach camera; a second independently surveyed pose may make both lamp aspects resolvable without changing the movement or other-user contrast."
+      },
+      "fixture_recipe": "work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/fixture-recipe-dual_pedestrian_present.json",
+      "acquisition": {
+        "signal_head_history": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "signal_head_history.jsonl"
+        },
+        "ego_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "ego_body_history.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "vehicle_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "pedestrian_body_history.jsonl"
+        },
+        "intersection_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "intersection_geometry.jsonl"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "crosswalk_geometry.jsonl"
+        },
+        "lawful_presence_context": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "lawful_presence_context.jsonl"
+        },
+        "original_lamp_pixels": {
+          "entrypoint": "native_cameras.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "original_lamp_pixels.jsonl"
+        },
+        "site_source_survey": {
+          "entrypoint": "dual_green.py",
+          "method": "source-hashed site survey and exact geometry check",
+          "evidence": "site-source-survey.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-dual_pedestrian_present-receipt.json",
+        "sha256": "58450efad5b9168e80b9acd2a2ea8b12bf2cbcc6974a037b3e33ddae071c90e9",
+        "log": "compat-dual_pedestrian_present-analysis.log"
+      },
+      "negative": {
+        "log": "compat-dual_pedestrian_present-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c6b1c3a02b66a22f6223f44f944a3c2c12791e365c5ebae5c59a698d1df0ba52",
+        "command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_pedestrian_present --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-diagnostic-dual_pedestrian_present.json --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-dual_pedestrian_present.log",
+        "test_log_sha256": "d8c0a489d723ec202ddfff5527474e4e2fb7b397ae752832940f558f93f70524",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_pedestrian_present --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-negative-dual_pedestrian_present.json --diagnostic-fixture --negative-remove-handoff",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-source-handoff.json",
+        "negative_log": "delivery-negative-dual_pedestrian_present.log",
+        "negative_log_sha256": "b82be037236e8b30f46f4a4f75aa997fe16c4c36a65ccbc7df0f2d965e74f577"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_pedestrian_present-saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_pedestrian_present-saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-dual_pedestrian_present.log",
+        "test_log_sha256": "c66e868eca1e31b9c88a8220bfc85a1925b3885a3fa1b8058518f813d23dfc91"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-dual_pedestrian_present.json",
+          "construction_sha256": "8cb2d66583101c489707da5ab683f42ab23f95ac409d6b5053149ab273e16c78",
+          "trigger": {
+            "source": "delivery_audit.py and saved original approach-camera PNGs",
+            "metric": "independent dual-lamp pixel resolvability",
+            "failure_condition": "primary approach pixels cannot independently resolve both simultaneously lit aspects"
+          },
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site.json"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8cb2d66583101c489707da5ab683f42ab23f95ac409d6b5053149ab273e16c78",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present --candidate fallback1 --output .runtime-work/c111125-3a-owner/offline-fallback1-dual_pedestrian_present --python .venv-cpu/bin/python",
+            "log": "cpu-fallback1-offline-dual_pedestrian_present.log",
+            "log_sha256": "cfe62afe5c63e7b80fb0408a36f4a1cef76d024afd8947c282552cba8eb6be17"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compat-dual_pedestrian_present-receipt.json",
+            "sha256": "caa82208b9ef6f8f8b9037b9e6378d63aa46a42758119ab73a344937578289cd",
+            "log": "fallback1-compat-dual_pedestrian_present-analysis.log",
+            "negative_log": "fallback1-compat-dual_pedestrian_present-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-dual_pedestrian_present.json",
+        "sha256": "f216aa07d47c60a3b0af42127b6949d64b04f9907af983d482fc00ddd208dac7"
+      },
+      "kind": "delivery",
+      "offline": {
+        "construction_sha256": "0daed8863b644c7879e7a8a13a3a329afc82ada51646e12dcc60a11af75de992",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present --output .runtime-work/c111125-3a-owner/offline-v14-dual_pedestrian_present",
+        "exit_code": 0,
+        "log": "cpu-source-handoff-offline-dual_pedestrian_present.log",
+        "log_sha256": "f68c01d91a0bc3ea0529b0d1350444ebcb9e79f1a9a1d333c65586fdfe2d3801"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late",
+      "construction": "construction-dual_pedestrian_late.json",
+      "construction_sha256": "b62cec9d5138adc8af36faafd1a7dde9bb130c1fbdca4ebe6d5c7c2530922a06",
+      "measurement_contract": "measurement-contract-dual_pedestrian_late.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original circular-green and arrow pixels may be too small or occluded in the primary approach camera; a second independently surveyed pose may make both lamp aspects resolvable without changing the movement or other-user contrast."
+      },
+      "fixture_recipe": "work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/fixture-recipe-dual_pedestrian_late.json",
+      "acquisition": {
+        "signal_head_history": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "signal_head_history.jsonl"
+        },
+        "ego_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "ego_body_history.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "vehicle_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "pedestrian_body_history.jsonl"
+        },
+        "intersection_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "intersection_geometry.jsonl"
+        },
+        "crosswalk_geometry": {
+          "entrypoint": "native_attempt.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "crosswalk_geometry.jsonl"
+        },
+        "lawful_presence_context": {
+          "entrypoint": "source_handoff.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "lawful_presence_context.jsonl"
+        },
+        "original_lamp_pixels": {
+          "entrypoint": "native_cameras.py",
+          "method": "same-frame original source acquisition and saved channel projection",
+          "evidence": "original_lamp_pixels.jsonl"
+        },
+        "site_source_survey": {
+          "entrypoint": "dual_green.py",
+          "method": "source-hashed site survey and exact geometry check",
+          "evidence": "site-source-survey.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "compat-dual_pedestrian_late-receipt.json",
+        "sha256": "cde5fa0882784b4a8f66b54b472bae84bf91e2c3fc963598e7c3051990441706",
+        "log": "compat-dual_pedestrian_late-analysis.log"
+      },
+      "negative": {
+        "log": "compat-dual_pedestrian_late-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c6b1c3a02b66a22f6223f44f944a3c2c12791e365c5ebae5c59a698d1df0ba52",
+        "command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_pedestrian_late --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-diagnostic-dual_pedestrian_late.json --diagnostic-fixture",
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-dual_pedestrian_late.log",
+        "test_log_sha256": "6c58a859ed9c0f652e46fbe9035e1542ee20e78d264ef5065ddce6683cae280f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery_audit.py --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late --attempt .runtime-work/c111125-3a-owner/compat-v4-dual_pedestrian_late --output work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/delivery-negative-dual_pedestrian_late.json --diagnostic-fixture --negative-remove-handoff",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-source-handoff.json",
+        "negative_log": "delivery-negative-dual_pedestrian_late.log",
+        "negative_log_sha256": "b82be037236e8b30f46f4a4f75aa997fe16c4c36a65ccbc7df0f2d965e74f577"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_pedestrian_late-saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/dual_pedestrian_late-saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-dual_pedestrian_late.log",
+        "test_log_sha256": "d4c5fc035544d9a3a07b576610af68bc23c4a78a074439b44dfb4ee892912f35"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-dual_pedestrian_late.json",
+          "construction_sha256": "f097bcfd2b43ebab83e38de25ab4b58314b7a08b5801d0c1bceea47c27697df8",
+          "trigger": {
+            "source": "delivery_audit.py and saved original approach-camera PNGs",
+            "metric": "independent dual-lamp pixel resolvability",
+            "failure_condition": "primary approach pixels cannot independently resolve both simultaneously lit aspects"
+          },
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site.json"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "f097bcfd2b43ebab83e38de25ab4b58314b7a08b5801d0c1bceea47c27697df8",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late --candidate fallback1 --output .runtime-work/c111125-3a-owner/offline-fallback1-dual_pedestrian_late --python .venv-cpu/bin/python",
+            "log": "cpu-fallback1-offline-dual_pedestrian_late.log",
+            "log_sha256": "23e3f8239f53a21df9856970d1fc46be7386fe170cab2e22fb3ae3cee1d56744"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compat-dual_pedestrian_late-receipt.json",
+            "sha256": "65dcde4b7605b2eadb6b5049d71434b16c819a8968ed50257ce46ab1e82ae651",
+            "log": "fallback1-compat-dual_pedestrian_late-analysis.log",
+            "negative_log": "fallback1-compat-dual_pedestrian_late-negative.log"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-dual_pedestrian_late.json",
+        "sha256": "cf79c695bdd2a6e483e9e8a869ee307f23550cf6d0ccd4662c16c6edfb610498"
+      },
+      "kind": "delivery",
+      "offline": {
+        "construction_sha256": "b62cec9d5138adc8af36faafd1a7dde9bb130c1fbdca4ebe6d5c7c2530922a06",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-3a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_late --output .runtime-work/c111125-3a-owner/offline-v14-dual_pedestrian_late",
+        "exit_code": 0,
+        "log": "cpu-source-handoff-offline-dual_pedestrian_late.log",
+        "log_sha256": "208fc1b4601e59b7fa3b547dbbab6dba970fd766539f31f9a070c422ac6ed0a8"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

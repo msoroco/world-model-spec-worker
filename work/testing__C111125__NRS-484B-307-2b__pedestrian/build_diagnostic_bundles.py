@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
 SOURCES = ('runner.py', 'analysis.py', 'native_crossing.py', 'pedestrian_control.py',
+           'device_timeline.py',
            'native_capture.py', 'saved_measurement.py', 'saved_media_audit.py',
            'delivery_audit.py', 'comparison_audit.py')
 CAMERAS = [('overview', 1920, 1080), ('approach', 1280, 720),
@@ -49,8 +50,11 @@ def write(path, value):
 def diagnostic_sources(suffix):
     crosswalk_kind = 'unmarked' if suffix == 'unmarked_cross' else 'marked'
     outside = suffix == 'outside_cross'
-    stop = suffix == 'other_device_stop'
-    device = 'DONT_WALK' if suffix.startswith('other_device_') else 'none'
+    stop = suffix in ('other_device_stop', 'flashing_no_countdown_wait')
+    device = ('WALK' if suffix in ('walk_cross', 'walk_then_flash_continue',
+                                   'walk_then_steady_continue') else
+              'DONT_WALK' if suffix.startswith('other_device_') or suffix in
+              ('flashing_countdown_cross', 'flashing_no_countdown_wait') else 'none')
     point_y = 8 if outside else 5
     objects = {
         'map.json': {'public_highway': True,
@@ -77,13 +81,29 @@ def diagnostic_sources(suffix):
             'pedestrian_blueprint_id': 'walker.pedestrian.0001',
             'pedestrian_spawn_xyz': [-2, point_y, 0]}
     texts['site.json'] = json.dumps(site, indent=2) + '\n'
-    points = [[-2, point_y], [-2, point_y], [-2, point_y]] if stop else [
+    points = [[-2, point_y]] * (4 if suffix in ('flashing_countdown_cross',
+                                               'walk_then_flash_continue',
+                                               'walk_then_steady_continue') else 3) if stop else [
         [-2, point_y], [2, point_y], [11, point_y]]
+    if suffix in ('flashing_countdown_cross', 'walk_then_flash_continue',
+                  'walk_then_steady_continue'):
+        points.append([11, point_y])
+    modes = {
+        'flashing_countdown_cross': ['flashing_countdown'] * 4,
+        'flashing_no_countdown_wait': ['flashing_no_countdown'] * 3,
+        'walk_then_flash_continue': ['walk', 'walk', 'flashing_no_countdown', 'steady'],
+        'walk_then_steady_continue': ['walk', 'walk', 'steady', 'steady'],
+        'walk_cross': ['walk'] * 3,
+    }.get(suffix)
     frames = [{'frame': i, 'official_signal_head_id': 'diagnostic-head',
                'pedestrian_faces_head': True, 'lit_aspects': ['circular_green'],
                'pedestrian_xy': point, 'other_device_id': 'diagnostic-device',
-               'other_device_indication': device,
-               'other_device_mode': 'steady' if device != 'none' else 'absent'}
+               'other_device_indication': ('WALK' if modes and modes[i] == 'walk' else
+                                           'DONT_WALK' if modes else device),
+               'other_device_mode': modes[i] if modes else
+                                    'steady' if device != 'none' else 'absent',
+               'other_device_countdown': 3 - i if modes and modes[i] ==
+                                         'flashing_countdown' else None}
               for i, point in enumerate(points)]
     texts['frames.json'] = json.dumps(frames, indent=2) + '\n'
     mapping = [{'video_frame': i, 'carla_frame': i, 'time_s': i / 20}
@@ -142,10 +162,10 @@ def diagnostic_sources(suffix):
 
 def measurement_contract(plan, case, suffix):
     fields = [(0, 'measure_signal', 'c111125_signal', ['site.json', 'head.json', 'frames.json'])]
-    if suffix in ('marked_cross', 'unmarked_cross', 'outside_cross'):
+    if suffix not in ('other_device_stop', 'other_device_cross'):
         fields.append((1, 'measure_crosswalk', 'c111125_crosswalk',
                        ['site.json', 'map.json', 'frames.json']))
-    else:
+    if suffix not in ('marked_cross', 'unmarked_cross', 'outside_cross'):
         fields.append((2, 'measure_device', 'c111125_other_device',
                        ['site.json', 'devices.json', 'frames.json']))
     dispositions = plan['requirement_dispositions']
@@ -166,8 +186,8 @@ def measurement_contract(plan, case, suffix):
 def build():
     plan = json.loads((ROOT / 'case-plan.json').read_text())
     cases = plan['cases']
-    if len(cases) != 5 or len({case['case_id'] for case in cases}) != 5:
-        raise ValueError('five distinct exact cases required')
+    if len(cases) < 5 or len({case['case_id'] for case in cases}) != len(cases):
+        raise ValueError('distinct exact cases required')
     repo = ROOT.parents[1]
     assignment_source = Path('inputs') / ASSIGNMENT / 'assignment.json'
     manifest = {'format': 'worker-diagnostic-case-index', 'assignment_id': ASSIGNMENT,
@@ -177,13 +197,15 @@ def build():
     for case in cases:
         suffix = case['case_id'].removeprefix(ASSIGNMENT + '__')
         if suffix not in {'marked_cross', 'unmarked_cross', 'other_device_stop',
-                          'other_device_cross', 'outside_cross'}:
+                          'other_device_cross', 'outside_cross', 'walk_cross',
+                          'flashing_countdown_cross', 'flashing_no_countdown_wait',
+                          'walk_then_flash_continue', 'walk_then_steady_continue'}:
             raise ValueError('unknown exact pedestrian case')
         scene = {'case_id': case['case_id'], 'case_suffix': suffix,
                  'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
                  'actor': plan['actor'], 'diagnostic_only': True,
                  'source_status': 'reviewed Native site missing',
-                 'requested_crossing': suffix != 'other_device_stop',
+                 'requested_crossing': case['scenario_parameters']['pedestrian_enters_highway'],
                  'scenario_parameters': case['scenario_parameters'],
                  'recording_description': RECORDING}
         config = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
@@ -243,7 +265,7 @@ def build():
                 'NRS 484B.283 device applicability and legal permission remain unresolved'],
             'diagnostic_only': True, 'recording_description': RECORDING})
     write(ROOT / 'diagnostic-manifest.json', manifest)
-    write(ROOT / 'proposals/cases.json', {
+    write(ROOT / 'proposals/diagnostic-cases.json', {
         'cell_id': plan['cell_id'], 'actor': plan['actor'], 'status': 'draft',
         'diagnostic_only': True, 'cases': proposal_cases})
     return manifest

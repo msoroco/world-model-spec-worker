@@ -11,9 +11,9 @@ from worker_exchange.package_compatibility import check_receipts
 
 
 class CompatibilityReceipts(unittest.TestCase):
-    def test_five_exact_positive_and_missing_source_negative(self):
+    def test_exact_positive_and_missing_source_negative(self):
         manifest = json.loads((ROOT / 'diagnostic-manifest.json').read_text())
-        self.assertEqual(len(manifest['cases']), 5)
+        self.assertEqual(len(manifest['cases']), 10)
         self.assertTrue(check_receipts(REPO, ROOT, manifest))
         for entry in manifest['cases']:
             receipt = json.loads((ROOT / entry['compatibility']['receipt']).read_text())

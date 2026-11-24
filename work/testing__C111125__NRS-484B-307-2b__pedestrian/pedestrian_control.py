@@ -2,8 +2,10 @@
 from __future__ import annotations
 import math
 
-ENTER_CASES = {'marked_cross', 'unmarked_cross', 'other_device_cross', 'outside_cross'}
-WAIT_CASES = {'other_device_stop'}
+ENTER_CASES = {'marked_cross', 'unmarked_cross', 'other_device_cross', 'outside_cross',
+               'walk_cross', 'flashing_countdown_cross',
+               'walk_then_flash_continue', 'walk_then_steady_continue'}
+WAIT_CASES = {'other_device_stop', 'flashing_no_countdown_wait'}
 
 
 def target_control(case_suffix, site, position_xy, control_factory, vector_factory, speed_mps=1.2):

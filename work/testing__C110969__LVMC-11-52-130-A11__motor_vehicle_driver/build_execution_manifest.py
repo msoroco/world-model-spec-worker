@@ -68,6 +68,7 @@ def main():
             "physical_preparation": {"receipt": str(physical_path.relative_to(HERE)),
                                      "sha256": sha(physical_path)},
             "measurement_contract": "cases/" + suffix + "/measurement-contract.json",
+            "fixture_recipe": "work/" + HERE.name + "/cases/" + suffix + "/fixture-recipe.json",
             "measurement_procedure": {"entrypoint": "analysis.py"},
             "pending_cpu_proofs": [
                 "reviewed Native map and original context source packet binding",

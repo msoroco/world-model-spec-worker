@@ -465,6 +465,38 @@ class CrossingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'clearance missing'):
             delivery.audit(self.root, site_ref, 'marked_cross')
 
+    def test_countdown_clearance_uses_original_frames_and_rejects_early_zero(self):
+        from io import BytesIO
+        from PIL import Image
+        stream = BytesIO()
+        Image.new('RGB', (8, 6)).save(stream, format='PNG')
+        png = stream.getvalue()
+        readers = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+                   for name in capture_module.CAMERAS}
+        self.write('site.json', json.dumps(self.site))
+        site_ref = {'path': 'site.json',
+                    'sha256': hashlib.sha256((self.root / 'site.json').read_bytes()).hexdigest()}
+        actor, world, head, _ = self.native_fakes()
+        def device(identity):
+            return {'device_id': identity, 'indication': 'DONT_WALK',
+                    'mode': 'flashing_countdown', 'countdown': max(230 - world.frame, 0)}
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'flashing_countdown_cross', head, device, lambda **kw: kw,
+            lambda *xyz: xyz, self.root, ticks=240, camera_readers=readers,
+            camera_dimensions={name: (8, 6) for name in capture_module.CAMERAS})
+        result = delivery.audit(self.root, site_ref, 'flashing_countdown_cross')
+        self.assertTrue(result['device_timeline']['cleared_before_countdown_zero_observed'])
+        self.assertIsNone(result['legal_verdict'])
+        frame_path = self.root / receipt['original_frames']['path']
+        rows = json.loads(frame_path.read_text())
+        for row in rows:
+            row['other_device_countdown'] = max(100 - row['frame'], 0)
+        frame_path.write_text(json.dumps(rows))
+        receipt['original_frames']['sha256'] = hashlib.sha256(frame_path.read_bytes()).hexdigest()
+        (self.root / 'capture-receipt.json').write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, 'clearance before zero not observed'):
+            delivery.audit(self.root, site_ref, 'flashing_countdown_cross')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -68,6 +68,7 @@ def main():
             not packet.get("parking_source_ref") or not packet.get("intersection_source_ref")):
         raise ValueError("Reviewed Native site case or provenance differs")
     import carla
+    from pipeline_capture import PipelineCapture
     from owned_capture import capture_owned
 
     def transform(spec):
@@ -82,7 +83,8 @@ def main():
     capture_owned(client, args.site_packet, args.output_dir, case_id=case,
                   mode=case.rsplit("__", 1)[-1], transform_factory=transform,
                   control_factory=carla.VehicleControl,
-                  light_enum=carla.VehicleLightState)
+                  light_enum=carla.VehicleLightState,
+                  pipeline_factory=PipelineCapture)
 
 
 if __name__ == "__main__":

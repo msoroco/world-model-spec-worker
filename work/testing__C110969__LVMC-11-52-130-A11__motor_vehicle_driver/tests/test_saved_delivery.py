@@ -99,6 +99,25 @@ class SavedDeliveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Diagnostic source"):
             audit(self.attempt_path)
 
+    def test_text_only_diagnostic_requires_explicit_marker_and_no_pixels(self):
+        (self.root / "fixture-provenance.json").write_text(json.dumps({
+            "diagnostic_fixture": True,
+            "scope": "CPU diagnostic only; no original camera pixels"}))
+        (self.root / "acquisition-provenance.json").write_text(json.dumps({
+            "diagnostic_fixture": True, "provenance_kind": "synthetic_fixture"}))
+        for camera in CAMERAS:
+            for frame in range(900):
+                (self.root / f"{camera}-{frame:06d}.png").unlink()
+        result = audit(self.attempt_path, allow_diagnostic=True)
+        self.assertEqual(result["decoded_original_images"], 0)
+        self.assertFalse(result["original_pixels_decoded"])
+        with self.assertRaisesRegex(ValueError, "Diagnostic source"):
+            audit(self.attempt_path)
+        (self.root / "acquisition-provenance.json").write_text(json.dumps({
+            "diagnostic_fixture": True, "provenance_kind": "original_native"}))
+        with self.assertRaisesRegex(ValueError, "Synthetic text-only"):
+            audit(self.attempt_path, allow_diagnostic=True)
+
     def test_saved_process_records_case_probe_after_full_decode(self):
         output = self.root / "processed" / "receipt.json"
         result = process_saved(self.attempt_path, output, allow_diagnostic=True)

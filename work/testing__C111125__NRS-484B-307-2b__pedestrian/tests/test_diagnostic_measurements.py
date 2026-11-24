@@ -1,4 +1,4 @@
-"""Five exact case source joins and missing-source rejection."""
+"""Exact case source joins and missing-source rejection."""
 import json
 import os
 import subprocess
@@ -16,7 +16,7 @@ from worker_exchange.native_output import validate_result
 
 
 class DiagnosticMeasurements(unittest.TestCase):
-    def test_five_exact_positive_and_negative(self):
+    def test_exact_positive_and_negative(self):
         plan = json.loads((ROOT / 'case-plan.json').read_text())
         manifest = json.loads((ROOT / 'diagnostic-manifest.json').read_text())
         scratch = REPO / '.runtime-work/c111125-tmp'
@@ -40,13 +40,16 @@ class DiagnosticMeasurements(unittest.TestCase):
                     report = json.loads((positive / 'analysis-report.json').read_text())
                     self.assertFalse(report['physical_acceptance_claimed'])
                     self.assertFalse(report['legal_verdict_claimed'])
-                    self.assertEqual(len(verify_report(contract, report, positive)), 2)
+                    self.assertEqual(len(verify_report(contract, report, positive)),
+                                     len(contract['requirements']))
+                    self.assertIsNone(report['device_timeline']['legal_verdict'])
                     execution = validate_result(json.loads((positive / 'result.json').read_text()))
                     self.assertEqual(execution['case_id'], entry['case_id'])
                     self.assertEqual(execution['recording_description'], construction['recording_description'])
                     self.assertFalse(execution['setup_confirmed'])
                     self.assertFalse(execution['target_checks'][0]['physical_cause_confirmed'])
-                    self.assertEqual(len((positive / execution['recording_evidence'][0]['reference']).read_text().splitlines()), 3)
+                    self.assertEqual(len((positive / execution['recording_evidence'][0]['reference']).read_text().splitlines()),
+                                     len(json.loads((positive / 'frames.json').read_text())))
                     self.assertTrue((positive / execution['recording_evidence'][1]['reference']).is_file())
                     negative = base / 'negative'
                     materialize(REPO, REPO / entry['fixture_recipe'], negative)

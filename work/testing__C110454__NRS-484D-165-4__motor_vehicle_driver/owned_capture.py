@@ -12,7 +12,8 @@ from native_capture import capture_interval
 
 def capture_owned(client, packet_path, output_dir, *, case_id, mode,
                   transform_factory, control_factory, light_enum,
-                  recorder_factory=CameraRecorder, diagnostic_fixture=False):
+                  recorder_factory=CameraRecorder, diagnostic_fixture=False,
+                  pipeline_factory=None):
     """Capture an exact original interval from a supplied reviewed site packet.
 
     The packet is source material, not proof that its parking and intersection
@@ -42,6 +43,8 @@ def capture_owned(client, packet_path, output_dir, *, case_id, mode,
     reviewed['source_sha256'] = hashlib.sha256(raw).hexdigest()
     saved = snapshot(client)
     spawned = []
+    pipeline = None
+    completed = False
     try:
         world = client.get_world()
         settings = copy.copy(world.get_settings())
@@ -82,15 +85,23 @@ def capture_owned(client, packet_path, output_dir, *, case_id, mode,
         if control.hand_brake is not True:
             raise ValueError('parking control readback differs')
         recorder = recorder_factory(cameras, output)
+        if pipeline_factory is not None:
+            pipeline = pipeline_factory(client, vehicle, output, case_id)
         receipt = capture_interval(world, vehicle, light_enum, control, recorder,
-                                   reviewed, output, case_id=case_id, mode=mode)
+                                   reviewed, output, case_id=case_id, mode=mode,
+                                   capture_after_tick=None if pipeline is None else pipeline.capture)
+        completed = True
         output.mkdir(parents=True, exist_ok=True)
         (output / 'native-source-receipt.json').write_text(
             json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8')
         return receipt
     finally:
         try:
-            for actor in reversed(spawned):
-                actor.destroy()
+            try:
+                if pipeline is not None:
+                    pipeline.close(confirmed=completed)
+            finally:
+                for actor in reversed(spawned):
+                    actor.destroy()
         finally:
             restore(client, saved)

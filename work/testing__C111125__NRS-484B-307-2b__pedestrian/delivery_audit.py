@@ -13,6 +13,7 @@ from native_crossing import source
 from pedestrian_control import ENTER_CASES, WAIT_CASES
 from saved_measurement import build_sealed
 from saved_media_audit import audit as audit_media
+from device_timeline import observe_timeline
 
 
 def audit(attempt_root, site_ref, case_suffix):
@@ -32,6 +33,7 @@ def audit(attempt_root, site_ref, case_suffix):
     if media['case_id'] != case_id or media['frame_count'] != measured['facts']['frame_count']:
         raise ValueError('saved measurement and camera source join mismatch')
     facts = measured['facts']['measurements']
+    timeline = observe_timeline(measured['facts'])
     entry = measured['facts']['first_highway_entry']
     if case_suffix in WAIT_CASES:
         if entry is not None:
@@ -47,6 +49,22 @@ def audit(attempt_root, site_ref, case_suffix):
                 raise ValueError('outside-cross case entered crosswalk')
         elif not entry['in_crosswalk']:
             raise ValueError('crosswalk entry not observed')
+    if case_suffix == 'walk_cross' and timeline['entry_device_mode'] != 'walk':
+        raise ValueError('WALK entry mode not observed')
+    if case_suffix == 'flashing_countdown_cross':
+        if (timeline['entry_device_mode'] != 'flashing_countdown' or
+                timeline['cleared_before_countdown_zero_observed'] is not True):
+            raise ValueError('countdown entry and clearance before zero not observed')
+    if case_suffix == 'flashing_no_countdown_wait':
+        if not any(row['other_device_mode'] == 'flashing_no_countdown' for row in facts):
+            raise ValueError('flashing without countdown not observed')
+    if case_suffix in ('walk_then_flash_continue', 'walk_then_steady_continue'):
+        if timeline['entry_device_mode'] != 'walk' or timeline['first_steady_frame'] is None:
+            raise ValueError('WALK entry and later steady transition not observed')
+        if case_suffix == 'walk_then_flash_continue' and (
+                not any(row['other_device_mode'] == 'flashing_no_countdown' for row in facts) or
+                timeline['cleared_before_steady_observed'] is not True):
+            raise ValueError('flashing continuation and clearance before steady not observed')
     return {'format': 'worker-pedestrian-delivery-protocol',
             'assignment_id': ASSIGNMENT, 'case_id': case_id,
             'capture_receipt_sha256': receipt_ref['sha256'],
@@ -54,6 +72,7 @@ def audit(attempt_root, site_ref, case_suffix):
             'frame_count': media['frame_count'],
             'decoded_images': media['decoded_images'],
             'first_highway_entry_frame': entry['frame'] if entry else None,
+            'device_timeline': timeline,
             'source_join_passed': True, 'physical_completion_protocol_passed': True,
             'physical_acceptance': False, 'legal_verdict': None}
 

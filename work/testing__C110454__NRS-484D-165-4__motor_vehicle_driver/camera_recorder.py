@@ -9,6 +9,7 @@ import hashlib
 import io
 from pathlib import Path
 from queue import Empty, Queue
+import subprocess
 import zipfile
 
 from PIL import Image
@@ -20,6 +21,46 @@ PROFILE_DIMENSIONS = {
     "reference_corner": (1280, 720),
     "driver_reference": (1280, 720),
 }
+
+
+def encode_original_videos(output: Path, frame_rows: list[dict], *, rate_hz: int = 20) -> dict:
+    """Encode the retained original PNG frames without altering their archives."""
+    output = Path(output)
+    if rate_hz != 20 or not frame_rows or any(
+            row['video_frame'] != index or type(row['carla_frame']) is not int
+            for index, row in enumerate(frame_rows)):
+        raise ValueError('original 20 Hz video frame map invalid')
+    references = {}
+    for view in VIEWS:
+        archive_path = output / (view + '.zip')
+        movie = output / (view + '.mkv')
+        if movie.exists():
+            raise ValueError('original movie already exists: ' + movie.name)
+        with zipfile.ZipFile(archive_path) as archive:
+            expected = [str(row['carla_frame']) + '.png' for row in frame_rows]
+            if archive.namelist() != expected:
+                raise ValueError('original camera archive/frame map differs: ' + view)
+            command = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
+                       '-framerate', str(rate_hz), '-f', 'image2pipe', '-vcodec', 'png',
+                       '-i', 'pipe:0', '-an', '-c:v', 'ffv1', '-level', '3', str(movie)]
+            process = subprocess.Popen(command, stdin=subprocess.PIPE,
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            try:
+                for name in expected:
+                    process.stdin.write(archive.read(name))
+                process.stdin.close()
+                error = process.stderr.read().decode('utf-8', errors='replace')
+                code = process.wait()
+            except Exception:
+                process.kill()
+                process.wait()
+                raise
+            if code != 0 or not movie.is_file() or movie.stat().st_size == 0:
+                raise ValueError('original camera encode failed: ' + view + ': ' + error[-500:])
+        references[view] = {'path': movie.name,
+                            'sha256': hashlib.sha256(movie.read_bytes()).hexdigest(),
+                            'source_frame_count': len(frame_rows)}
+    return references
 
 
 class CameraRecorder:

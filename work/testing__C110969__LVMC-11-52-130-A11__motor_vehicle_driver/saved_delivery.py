@@ -64,6 +64,16 @@ def audit(attempt_path, *, allow_diagnostic=False):
     if packet.get("acquisition_kind") != "original_native" and not allow_diagnostic:
         raise ValueError("Diagnostic source cannot satisfy delivery audit")
     root = attempt_path.parent
+    diagnostic_text_only = (packet.get("acquisition_kind") == "diagnostic_fixture" and
+                            (root / "fixture-provenance.json").is_file())
+    if diagnostic_text_only:
+        marker = json.loads((root / "fixture-provenance.json").read_text())
+        provenance = json.loads((root / "acquisition-provenance.json").read_text())
+        if (not allow_diagnostic or marker.get("diagnostic_fixture") is not True or
+                "CPU diagnostic only" not in marker.get("scope", "") or
+                provenance.get("diagnostic_fixture") is not True or
+                provenance.get("provenance_kind") != "synthetic_fixture"):
+            raise ValueError("Synthetic text-only diagnostic provenance required")
     measurement_path = _source(root, packet["measurement_packet"])
     measurement_packet = json.loads(measurement_path.read_text(encoding="utf-8"))
     pose_path = _source(measurement_path.parent, measurement_packet["pose_source"])
@@ -108,11 +118,21 @@ def audit(attempt_path, *, allow_diagnostic=False):
             if row.get("camera") != name or not row.get("original_frame_sha256") or \
                     not row.get("original_frame_path"):
                 raise ValueError(name + " original camera frame receipt missing")
-            frame_path = _source(root, {"path": row["original_frame_path"],
-                                        "sha256": row["original_frame_sha256"]})
-            if frame_path in seen_paths:
+            relative_frame = Path(row["original_frame_path"])
+            if relative_frame.is_absolute() or ".." in relative_frame.parts or \
+                    relative_frame.suffix != ".png" or \
+                    len(row["original_frame_sha256"]) != 64:
+                raise ValueError(name + " original camera frame receipt malformed")
+            frame_path = (root / relative_frame).resolve()
+            if not frame_path.is_relative_to(root.resolve()) or frame_path in seen_paths:
                 raise ValueError(name + " reuses an original camera frame path")
             seen_paths.add(frame_path)
+            if diagnostic_text_only:
+                if frame_path.exists():
+                    raise ValueError("Text-only diagnostic unexpectedly supplies camera pixels")
+                continue
+            frame_path = _source(root, {"path": row["original_frame_path"],
+                                        "sha256": row["original_frame_sha256"]})
             try:
                 with Image.open(frame_path) as image:
                     if image.format != "PNG" or image.mode not in ("RGB", "RGBA"):
@@ -144,7 +164,7 @@ def audit(attempt_path, *, allow_diagnostic=False):
         "context_sha256": packet["context"]["sha256"],
         "camera_receipt_sha256": camera_hashes,
         "full_video_decode": False,
-        "original_pixels_decoded": True,
+        "original_pixels_decoded": not diagnostic_text_only,
         "actual_pixels": False,
         "all_participants": False,
         "physical_completion": False,

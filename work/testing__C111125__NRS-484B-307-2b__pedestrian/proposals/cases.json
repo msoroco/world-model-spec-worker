@@ -2,12 +2,82 @@
   "cell_id": "C111125",
   "actor": "pedestrian",
   "status": "draft",
-  "diagnostic_only": true,
   "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Reference circular-green marked crosswalk and no contrary device.",
+      "variable_assignments": {
+        "circular_green_alone": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "other_device_indication": {
+          "kind": "world_setup",
+          "value": "none"
+        },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "absent",
+            "absent",
+            "absent"
+          ]
+        },
+        "pedestrian_enters_highway": {
+          "kind": "controller",
+          "value": true
+        },
+        "entry_inside_crosswalk": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Timestamp join of sealed diagnostic frames and original trace",
+            "time_window": "all saved diagnostic frames",
+            "reference_frame": "diagnostic map local XY",
+            "uncertainty": "synthetic fixture coordinates; no physical calibration",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 hashes of saved diagnostic sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic source only; no Native physical or legal claim."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
+    },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "diagnostic_source_join",
+      "target_type": "boundary_probe",
       "rationale": "Marked crosswalk crossing while facing circular green alone; no contrary device",
       "variable_assignments": {
         "circular_green_alone": {
@@ -22,20 +92,30 @@
           "kind": "world_setup",
           "value": "none"
         },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "absent",
+            "absent",
+            "absent"
+          ]
+        },
         "pedestrian_enters_highway": {
           "kind": "controller",
           "value": true
         },
         "entry_inside_crosswalk": {
-          "kind": "controller",
+          "kind": "world_setup",
           "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Native site, official signal and device authority require original source binding",
-        "NRS 484B.283 device applicability and legal permission remain unresolved"
-      ],
-      "diagnostic_only": true,
+      "paired_probe_id": "reference_vs_marked_cross",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "crosswalk_kind",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Marked crosswalk crossing while facing circular green alone; no contrary device"
+      },
       "recording_description": {
         "channels": [
           {
@@ -67,12 +147,15 @@
         "limitations": [
           "Synthetic diagnostic source only; no Native physical or legal claim."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "diagnostic_source_join",
+      "target_type": "boundary_probe",
       "rationale": "Qualifying unmarked crosswalk crossing while facing circular green alone; no contrary device",
       "variable_assignments": {
         "circular_green_alone": {
@@ -87,20 +170,32 @@
           "kind": "world_setup",
           "value": "none"
         },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "absent",
+            "absent",
+            "absent"
+          ]
+        },
         "pedestrian_enters_highway": {
           "kind": "controller",
           "value": true
         },
         "entry_inside_crosswalk": {
-          "kind": "controller",
+          "kind": "world_setup",
           "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Native site, official signal and device authority require original source binding",
-        "NRS 484B.283 device applicability and legal permission remain unresolved"
+      "paired_probe_id": "reference_vs_unmarked_cross",
+      "deliberate_differences": [
+        "crosswalk_kind"
       ],
-      "diagnostic_only": true,
+      "probe": {
+        "primary_variable": "crosswalk_kind",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Qualifying unmarked crosswalk crossing while facing circular green alone; no contrary device"
+      },
       "recording_description": {
         "channels": [
           {
@@ -132,12 +227,15 @@
         "limitations": [
           "Synthetic diagnostic source only; no Native physical or legal claim."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "diagnostic_source_join",
+      "target_type": "boundary_probe",
       "rationale": "Contrary pedestrian device indication; remain outside highway",
       "variable_assignments": {
         "circular_green_alone": {
@@ -152,20 +250,34 @@
           "kind": "world_setup",
           "value": "DONT_WALK"
         },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "steady",
+            "steady",
+            "steady"
+          ]
+        },
         "pedestrian_enters_highway": {
           "kind": "controller",
           "value": false
         },
         "entry_inside_crosswalk": {
-          "kind": "controller",
+          "kind": "world_setup",
           "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Native site, official signal and device authority require original source binding",
-        "NRS 484B.283 device applicability and legal permission remain unresolved"
+      "paired_probe_id": "reference_vs_other_device_stop",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes",
+        "pedestrian_enters_highway"
       ],
-      "diagnostic_only": true,
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Contrary pedestrian device indication; remain outside highway"
+      },
       "recording_description": {
         "channels": [
           {
@@ -197,12 +309,15 @@
         "limitations": [
           "Synthetic diagnostic source only; no Native physical or legal claim."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "diagnostic_source_join",
+      "target_type": "boundary_probe",
       "rationale": "Same contrary indication; observed highway entry within marked crosswalk",
       "variable_assignments": {
         "circular_green_alone": {
@@ -217,20 +332,33 @@
           "kind": "world_setup",
           "value": "DONT_WALK"
         },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "steady",
+            "steady",
+            "steady"
+          ]
+        },
         "pedestrian_enters_highway": {
           "kind": "controller",
           "value": true
         },
         "entry_inside_crosswalk": {
-          "kind": "controller",
+          "kind": "world_setup",
           "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Native site, official signal and device authority require original source binding",
-        "NRS 484B.283 device applicability and legal permission remain unresolved"
+      "paired_probe_id": "reference_vs_other_device_cross",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes"
       ],
-      "diagnostic_only": true,
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Same contrary indication; observed highway entry within marked crosswalk"
+      },
       "recording_description": {
         "channels": [
           {
@@ -262,12 +390,15 @@
         "limitations": [
           "Synthetic diagnostic source only; no Native physical or legal claim."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "diagnostic_source_join",
+      "target_type": "boundary_probe",
       "rationale": "Circular green entry outside measured crosswalk boundaries",
       "variable_assignments": {
         "circular_green_alone": {
@@ -282,20 +413,32 @@
           "kind": "world_setup",
           "value": "none"
         },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "absent",
+            "absent",
+            "absent"
+          ]
+        },
         "pedestrian_enters_highway": {
           "kind": "controller",
           "value": true
         },
         "entry_inside_crosswalk": {
-          "kind": "controller",
+          "kind": "world_setup",
           "value": false
         }
       },
-      "unresolved_judgment_calls": [
-        "Native site, official signal and device authority require original source binding",
-        "NRS 484B.283 device applicability and legal permission remain unresolved"
+      "paired_probe_id": "reference_vs_outside_cross",
+      "deliberate_differences": [
+        "entry_inside_crosswalk"
       ],
-      "diagnostic_only": true,
+      "probe": {
+        "primary_variable": "entry_inside_crosswalk",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Circular green entry outside measured crosswalk boundaries"
+      },
       "recording_description": {
         "channels": [
           {
@@ -327,7 +470,439 @@
         "limitations": [
           "Synthetic diagnostic source only; no Native physical or legal claim."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
+      "target_law_id": "NRS-484B-307-2b",
+      "target_type": "boundary_probe",
+      "rationale": "WALK indication throughout entry and crossing",
+      "variable_assignments": {
+        "circular_green_alone": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "other_device_indication": {
+          "kind": "world_setup",
+          "value": "WALK"
+        },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "walk",
+            "walk",
+            "walk"
+          ]
+        },
+        "pedestrian_enters_highway": {
+          "kind": "controller",
+          "value": true
+        },
+        "entry_inside_crosswalk": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "paired_probe_id": "reference_vs_walk_cross",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes"
+      ],
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "WALK indication throughout entry and crossing"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Timestamp join of sealed diagnostic frames and original trace",
+            "time_window": "all saved diagnostic frames",
+            "reference_frame": "diagnostic map local XY",
+            "uncertainty": "synthetic fixture coordinates; no physical calibration",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 hashes of saved diagnostic sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic source only; no Native physical or legal claim."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross",
+      "target_law_id": "NRS-484B-307-2b",
+      "target_type": "boundary_probe",
+      "rationale": "Flashing countdown entry and observed clearance before zero",
+      "variable_assignments": {
+        "circular_green_alone": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "other_device_indication": {
+          "kind": "world_setup",
+          "value": "DONT_WALK"
+        },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "flashing_countdown",
+            "flashing_countdown",
+            "flashing_countdown",
+            "flashing_countdown"
+          ]
+        },
+        "pedestrian_enters_highway": {
+          "kind": "controller",
+          "value": true
+        },
+        "entry_inside_crosswalk": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "paired_probe_id": "reference_vs_flashing_countdown_cross",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes"
+      ],
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Flashing countdown entry and observed clearance before zero"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Timestamp join of sealed diagnostic frames and original trace",
+            "time_window": "all saved diagnostic frames",
+            "reference_frame": "diagnostic map local XY",
+            "uncertainty": "synthetic fixture coordinates; no physical calibration",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 hashes of saved diagnostic sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic source only; no Native physical or legal claim."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
+      "target_law_id": "NRS-484B-307-2b",
+      "target_type": "boundary_probe",
+      "rationale": "Flashing without countdown while the pedestrian waits outside the highway",
+      "variable_assignments": {
+        "circular_green_alone": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "other_device_indication": {
+          "kind": "world_setup",
+          "value": "DONT_WALK"
+        },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "flashing_no_countdown",
+            "flashing_no_countdown",
+            "flashing_no_countdown"
+          ]
+        },
+        "pedestrian_enters_highway": {
+          "kind": "controller",
+          "value": false
+        },
+        "entry_inside_crosswalk": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "paired_probe_id": "reference_vs_flashing_no_countdown_wait",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes",
+        "pedestrian_enters_highway"
+      ],
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "Flashing without countdown while the pedestrian waits outside the highway"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Timestamp join of sealed diagnostic frames and original trace",
+            "time_window": "all saved diagnostic frames",
+            "reference_frame": "diagnostic map local XY",
+            "uncertainty": "synthetic fixture coordinates; no physical calibration",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 hashes of saved diagnostic sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic source only; no Native physical or legal claim."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+      "target_law_id": "NRS-484B-307-2b",
+      "target_type": "boundary_probe",
+      "rationale": "WALK entry followed by flashing without countdown and observed clearance before steady",
+      "variable_assignments": {
+        "circular_green_alone": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "other_device_indication": {
+          "kind": "world_setup",
+          "value": "WALK"
+        },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "walk",
+            "walk",
+            "flashing_no_countdown",
+            "steady"
+          ]
+        },
+        "pedestrian_enters_highway": {
+          "kind": "controller",
+          "value": true
+        },
+        "entry_inside_crosswalk": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "paired_probe_id": "reference_vs_walk_then_flash_continue",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes"
+      ],
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "WALK entry followed by flashing without countdown and observed clearance before steady"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Timestamp join of sealed diagnostic frames and original trace",
+            "time_window": "all saved diagnostic frames",
+            "reference_frame": "diagnostic map local XY",
+            "uncertainty": "synthetic fixture coordinates; no physical calibration",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 hashes of saved diagnostic sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic source only; no Native physical or legal claim."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue",
+      "target_law_id": "NRS-484B-307-2b",
+      "target_type": "boundary_probe",
+      "rationale": "WALK entry followed by steady indication and observed later clearance",
+      "variable_assignments": {
+        "circular_green_alone": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "other_device_indication": {
+          "kind": "world_setup",
+          "value": "WALK"
+        },
+        "device_modes": {
+          "kind": "world_setup",
+          "value": [
+            "walk",
+            "walk",
+            "steady",
+            "steady"
+          ]
+        },
+        "pedestrian_enters_highway": {
+          "kind": "controller",
+          "value": true
+        },
+        "entry_inside_crosswalk": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "paired_probe_id": "reference_vs_walk_then_steady_continue",
+      "deliberate_differences": [
+        "other_device_indication",
+        "device_modes"
+      ],
+      "probe": {
+        "primary_variable": "other_device_indication",
+        "comparison_or_standard": "source-measured reference case",
+        "target_value_or_branch": "WALK entry followed by steady indication and observed later clearance"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Timestamp join of sealed diagnostic frames and original trace",
+            "time_window": "all saved diagnostic frames",
+            "reference_frame": "diagnostic map local XY",
+            "uncertainty": "synthetic fixture coordinates; no physical calibration",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 hashes of saved diagnostic sources"
+          }
+        ],
+        "limitations": [
+          "Synthetic diagnostic source only; no Native physical or legal claim."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unless directed otherwise by another device as provided in NRS 484B.283"
+      ]
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "device_applicability_source_review",
+      "target_law_id": "NRS-484B-307-2b",
+      "judgment_refs": [
+        {
+          "phrase": "unless directed otherwise by another device as provided in NRS 484B.283",
+          "note": "Device route applicability and source-governed entry or continuation cannot be decided from a synthetic indication label."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed Native device inventory or crosswalk route supports a source-bound applicability sweep.",
+      "missing_inputs": [
+        "reviewed Native intersection and official signal head",
+        "source-verified device route applicability and phase timing",
+        "physical pedestrian clearance feasibility"
+      ]
+    }
+  ],
+  "diagnostic_only": true
 }

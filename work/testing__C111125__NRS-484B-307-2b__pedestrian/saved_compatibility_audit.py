@@ -5,6 +5,9 @@ import hashlib
 import json
 from pathlib import Path
 
+from device_timeline import observe_timeline
+from native_crossing import measure, verify_site
+
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -47,6 +50,13 @@ def audit(attempt, receipt_path):
     trace = rows(attempt / result['trace_reference'])
     mapping = rows(attempt / result['video_frame_map_reference'])
     frames = read(attempt / 'frames.json')
+    site = read(attempt / 'site.json')
+    verify_site(site, attempt)
+    measured = measure(site, attempt, {'path': 'frames.json',
+                                      'sha256': sha(attempt / 'frames.json')})
+    timeline = observe_timeline(measured)
+    if report.get('device_timeline') != timeline or timeline['legal_verdict'] is not None:
+        raise ValueError('saved pedestrian device timeline differs')
     channel = rows(attempt / 'channels/pedestrian_body_center_xy_m.jsonl')
     if not trace or not len(trace) == len(mapping) == len(frames) == len(channel):
         raise ValueError('saved pedestrian frame join incomplete')
@@ -82,6 +92,7 @@ def audit(attempt, receipt_path):
             'compatibility_receipt_sha256': sha(receipt_path),
             'frames_joined': len(trace), 'original_cameras': len(result['video_references']),
             'source_hashes_checked': len(receipt['fixture_manifest']),
+            'device_timeline': timeline,
             'physical_acceptance': False, 'legal_verdict': None}
 
 

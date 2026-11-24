@@ -65,6 +65,8 @@ def measure_device(root, source):
 
 def finalize(root, case_id):
     root = Path(root)
+    for relative in SOURCES:
+        _required(root, relative)
     source = audit(root / "original-attempt/attempt.json",
                    allow_diagnostic=json.loads((root / "acquisition-provenance.json").read_text()).get("diagnostic_fixture") is True)
     if source["case_id"] != case_id:

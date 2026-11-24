@@ -1,0 +1,67 @@
+{
+  "template_id": "NRS-484B-307-2b@pedestrian",
+  "law_id": "NRS-484B-307-2b",
+  "actor": "pedestrian",
+  "quote": "When the signal is circular green alone: Pedestrians facing such a signal may proceed across the highway within any marked or unmarked crosswalk, unless directed otherwise by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
+  "structure": {
+    "law_id": "NRS-484B-307-2b",
+    "activation": {
+      "condition": "Pedestrian faces an official circular-green-alone signal at a public highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Pedestrian may proceed within a marked or qualifying unmarked crosswalk, subject to another applicable device under NRS 484B.283.",
+      "type": "may",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "unless directed otherwise by another device as provided in NRS 484B.283",
+        "description": "unless directed otherwise by another device as provided in NRS 484B.283",
+        "numeric_conditions": []
+      }
+    ],
+    "timing": {
+      "description": "Original signal, device mode, entry and clearance are joined by frame.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "unless directed otherwise by another device as provided in NRS 484B.283",
+        "note": "Device route applicability and source-governed entry or continuation cannot be decided from a synthetic indication label."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "circular_green_alone",
+      "kind": "world_setup",
+      "range_or_domain": "official facing signal shows circular green alone"
+    },
+    {
+      "name": "crosswalk_kind",
+      "kind": "world_setup",
+      "range_or_domain": "marked or source-qualified unmarked"
+    },
+    {
+      "name": "other_device_indication",
+      "kind": "world_setup",
+      "range_or_domain": "none, WALK or DONT_WALK"
+    },
+    {
+      "name": "device_modes",
+      "kind": "world_setup",
+      "range_or_domain": "absent, walk, flashing countdown, flashing without countdown, steady by frame"
+    },
+    {
+      "name": "pedestrian_enters_highway",
+      "kind": "controller",
+      "range_or_domain": "requested crossing or wait; actual entry remains measured"
+    },
+    {
+      "name": "entry_inside_crosswalk",
+      "kind": "world_setup",
+      "range_or_domain": "requested within or outside sourced crosswalk geometry"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from native_crossing import measure, verify_site
+from device_timeline import observe_timeline
 
 
 def required(root, name):
@@ -69,22 +70,28 @@ def build_report(root):
         raise ValueError('Diagnostic highway entry differs from selected case')
     if entry and entry['in_crosswalk'] != expected['entry_inside_crosswalk']:
         raise ValueError('Diagnostic crossing boundary differs from selected case')
-    if any(r['other_device_indication'] != expected['other_device_indication'] for r in facts['measurements']):
+    if expected.get('device_modes'):
+        if [r['other_device_mode'] for r in facts['measurements']] != expected['device_modes']:
+            raise ValueError('Diagnostic device timeline differs from selected case')
+    elif any(r['other_device_indication'] != expected['other_device_indication']
+             for r in facts['measurements']):
         raise ValueError('Diagnostic device state differs from selected case')
+    timeline = observe_timeline(facts)
     measurements = {
         'c111125_signal': {'method': 'measure_signal', 'value': measure_signal(facts),
                            'sources': sources(root, ('site.json', 'head.json', 'frames.json'))},
     }
-    if suffix in ('marked_cross', 'unmarked_cross', 'outside_cross'):
+    if suffix not in ('other_device_stop', 'other_device_cross'):
         measurements['c111125_crosswalk'] = {
             'method': 'measure_crosswalk', 'value': measure_crosswalk(facts),
             'sources': sources(root, ('site.json', 'map.json', 'frames.json'))}
-    if suffix in ('other_device_stop', 'other_device_cross'):
+    if suffix not in ('marked_cross', 'unmarked_cross', 'outside_cross'):
         measurements['c111125_other_device'] = {
             'method': 'measure_device', 'value': measure_device(facts),
             'sources': sources(root, ('site.json', 'devices.json', 'frames.json'))}
     return {'format': 'worker-analysis-report', 'case_id': config['selected_case_id'],
             'analysis_complete': True, 'measurements': measurements,
+            'device_timeline': timeline,
             'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
             'legal_verdict_claimed': False, 'physical_acceptance_claimed': False,
             'limitations': ['Diagnostic fixture only; Native site, capture and legal assessment remain unverified.']}

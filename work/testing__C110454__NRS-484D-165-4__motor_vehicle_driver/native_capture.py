@@ -27,7 +27,7 @@ def _xy(vertex):
 
 def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
                      reviewed_site: dict, output_dir: Path, *, case_id: str,
-                     mode: str, ticks: int = 900):
+                     mode: str, ticks: int = 900, capture_after_tick=None):
     """Retain original 20 Hz state and four-camera frame map for one exact case.
 
     `frame_reader(frame)` returns four original sensor frame identities after
@@ -85,6 +85,8 @@ def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
                 raise ValueError("original four-camera frame join missing")
             if any(observed[v] != frame for v in VIEWS):
                 raise ValueError("original camera frame does not match Native world")
+            if capture_after_tick is not None:
+                capture_after_tick(frame, timestamp)
             rows.append({"frame": frame, "time_s": timestamp,
                          "speed_mps": speed, "parking_brake": bool(parking_control.hand_brake),
                          "footprint_inside_reviewed_parking_polygon": footprint["footprint_inside_reviewed_parking_polygon"],
@@ -99,6 +101,10 @@ def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
         root.mkdir(parents=True, exist_ok=True)
         for name, values in (("actor-state.jsonl", rows), ("camera-frame-map.jsonl", maps)):
             (root / name).write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in values))
+        (root / "video_frames.jsonl").write_text("".join(
+            json.dumps({"video_frame": index, "carla_frame": row["frame"],
+                        "time_s": row["time_s"]}) + "\n"
+            for index, row in enumerate(rows)))
         hashes = {name: _sha(root / name) for name in ("actor-state.jsonl", "camera-frame-map.jsonl")}
         media = frame_reader.finish(ticks) if hasattr(frame_reader, "finish") else None
         return {"format": "parked-headlamp-native-source-v1", "case_id": case_id,
