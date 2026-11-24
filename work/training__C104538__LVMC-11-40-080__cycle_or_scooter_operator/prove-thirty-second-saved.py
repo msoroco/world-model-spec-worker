@@ -51,7 +51,7 @@ def build(destination, kind='mounted_turn', candidate='primary', manifest=None):
                        'dismounted_turn': '__controlled_3'}[kind])
     manifest = Path(manifest) if manifest is not None else HERE/'draft-thirty-second-execution-manifest.json'
     motor_attempt = motor.make_attempt(destination.parent/'motor', 'witness_2')
-    materialize(manifest, case, destination)
+    materialize(manifest, case, destination, candidate=candidate)
     for name in ('native_samples.jsonl', 'video_frames.jsonl', 'body_history.jsonl',
                  'trace.jsonl'):
         shutil.copyfile(motor_attempt/name, destination/name)

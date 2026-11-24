@@ -17,10 +17,11 @@ def check(bundle):
         raise ValueError('Frozen assignment source changed')
     if assignment['law_id']!='NRS-484B-300-1' or assignment['cell_id']!='C10389' or assignment['actor']!='motor_vehicle_driver':
         raise ValueError('Wrong law, cell, or actor')
-    if cfg['case_id'] not in [assignment['assignment_id']+'__signal_red_stop',assignment['assignment_id']+'__signal_green_proceed']:
-        raise ValueError('Wrong signal case identity')
     suffix=cfg['case_id'].rsplit('__',1)[1]
-    aspect='red' if suffix=='signal_red_stop' else 'green'
+    if suffix not in ('signal_red_stop','signal_red_proceed','signal_green_stop','signal_green_proceed') or cfg['case_id']!=assignment['assignment_id']+'__'+suffix:
+        raise ValueError('Wrong signal case identity')
+    aspect='red' if suffix.startswith('signal_red_') else 'green'
+    stop=suffix.endswith('_stop')
     if cfg['requested_signal_aspect']!=aspect or cfg['rate_hz']!=20 or cfg['frames']!=600 or cfg['duration_s']!=30:
         raise ValueError('Signal aspect or temporal contract changed')
     for key,name in [('road_sha256','alley-stop.xodr'),('tracks_sha256','requested-tracks.jsonl')]:
@@ -32,9 +33,9 @@ def check(bundle):
     rows=[json.loads(line) for line in (bundle/'requested-tracks.jsonl').read_text().splitlines()]
     if len(rows)!=600 or any(row.get('frame')!=i or row.get('requested_signal_aspect')!=aspect for i,row in enumerate(rows)):
         raise ValueError('Signal request frame/aspect differs')
-    if aspect=='red' and not any(row['requested_speed_mps']==0 for row in rows):
-        raise ValueError('Red stop request absent')
-    if aspect=='green' and not any(row['requested_ego_x_m']>50 for row in rows):
-        raise ValueError('Green crossing request absent')
+    if stop and not any(row['requested_speed_mps']==0 for row in rows):
+        raise ValueError('Stop request absent')
+    if not stop and not any(row['requested_ego_x_m']>50 for row in rows):
+        raise ValueError('Crossing request absent')
     return {'case_id':cfg['case_id'],'candidate_id':cfg['candidate_id'],
             'requested_signal_aspect':aspect,'frames':600,'original_native_observed':False}

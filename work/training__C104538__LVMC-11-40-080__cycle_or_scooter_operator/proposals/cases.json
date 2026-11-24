@@ -2,308 +2,19 @@
   "actor": "cycle_or_scooter_operator",
   "cases": [
     {
-      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1",
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__neutral_baseline",
       "comparison_variable": "mounted_u_turn",
       "controller": {
         "requested_behavior": "mounted bicycle obeys no-U-turn sign"
       },
+      "deliberate_differences": [
+        "requested_turn_path",
+        "requested_dismount"
+      ],
       "expected_scenario_outcome": null,
       "kind": "planned_only",
       "physical_target": "mounted bicycle obeys no-U-turn sign",
-      "recording_description": {
-        "channels": [
-          {
-            "method": "Native landmark readback and original sign pixels; authorization review pending",
-            "name": "dev.regulatory_sign",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original sign pixels joined to surveyed approach lane; applicability review pending",
-            "name": "dev.governs",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Native landmark station and sign camera frame",
-            "name": "dev.position",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native bicycle blueprint, actor ID and full-body pose",
-            "name": "ru.bicycle",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original rider pixels required; Native actor class alone cannot establish mounting",
-            "name": "ru.rider_posture",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native body and heading trace; requested turn is separate",
-            "name": "drv.u_turn",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native forward vector per joined frame",
-            "name": "kin.heading",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original bicycle full-body polygon and Native lane ID",
-            "name": "rel.occupies",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native pose, speed and controller request",
-            "name": "native_body_pose_control",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Four original source cameras joined to Native frame and time",
-            "name": "camera_frame_join",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "Native lane/landmark readback and original sign pixel review",
-            "name": "signed_hill_crest",
-            "unit": "structured"
-          }
-        ],
-        "limitations": [
-          "Authored sign is not proof of legal authorization",
-          "Bicycle blueprint does not prove mounted rider posture",
-          "Requested turn does not prove physical movement or a legal outcome"
-        ]
-      },
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
-      "subject_behavior": {
-        "status": "unobserved",
-        "value": null
-      },
-      "sweep_measurements": [],
-      "target_law_id": "LVMC-11-40-080",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [],
-      "variable_assignments": {
-        "mounted_u_turn": {
-          "kind": "subject_behavior",
-          "unit": "boolean",
-          "value": null
-        }
-      },
-      "world_setup": {
-        "activation_conditions_to_verify": [
-          "authorized no-U-turn sign governs mounted bicycle approach",
-          "rider remains mounted and makes or avoids U-turn"
-        ],
-        "frozen_cell": {
-          "control": "turn_prohibition_device",
-          "layout": "hill_crest",
-          "maneuver": "u_turn"
-        }
-      }
-    },
-    {
-      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2",
-      "comparison_variable": "mounted_u_turn",
-      "controller": {
-        "requested_behavior": "mounted bicycle executes signed U-turn"
-      },
-      "expected_scenario_outcome": null,
-      "kind": "planned_only",
-      "physical_target": "mounted bicycle executes signed U-turn",
-      "recording_description": {
-        "channels": [
-          {
-            "method": "Native landmark readback and original sign pixels; authorization review pending",
-            "name": "dev.regulatory_sign",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original sign pixels joined to surveyed approach lane; applicability review pending",
-            "name": "dev.governs",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Native landmark station and sign camera frame",
-            "name": "dev.position",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native bicycle blueprint, actor ID and full-body pose",
-            "name": "ru.bicycle",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original rider pixels required; Native actor class alone cannot establish mounting",
-            "name": "ru.rider_posture",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native body and heading trace; requested turn is separate",
-            "name": "drv.u_turn",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native forward vector per joined frame",
-            "name": "kin.heading",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original bicycle full-body polygon and Native lane ID",
-            "name": "rel.occupies",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Original Native pose, speed and controller request",
-            "name": "native_body_pose_control",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          },
-          {
-            "method": "Four original source cameras joined to Native frame and time",
-            "name": "camera_frame_join",
-            "reference_frame": "Native map and original camera frame",
-            "sampling_rate_hz": 20,
-            "time_window": "entire 24 s / 480-frame attempt",
-            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
-            "unit": "structured"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "Native lane/landmark readback and original sign pixel review",
-            "name": "signed_hill_crest",
-            "unit": "structured"
-          }
-        ],
-        "limitations": [
-          "Authored sign is not proof of legal authorization",
-          "Bicycle blueprint does not prove mounted rider posture",
-          "Requested turn does not prove physical movement or a legal outcome"
-        ]
-      },
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
-      "subject_behavior": {
-        "status": "unobserved",
-        "value": null
-      },
-      "sweep_measurements": [],
-      "target_law_id": "LVMC-11-40-080",
-      "target_type": "controlled_attempt",
-      "unresolved_judgment_calls": [],
-      "variable_assignments": {
-        "mounted_u_turn": {
-          "kind": "subject_behavior",
-          "unit": "boolean",
-          "value": null
-        }
-      },
-      "world_setup": {
-        "activation_conditions_to_verify": [
-          "authorized no-U-turn sign governs mounted bicycle approach",
-          "rider remains mounted and makes or avoids U-turn"
-        ],
-        "frozen_cell": {
-          "control": "turn_prohibition_device",
-          "layout": "hill_crest",
-          "maneuver": "u_turn"
-        }
-      }
-    },
-    {
-      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3",
-      "comparison_variable": "dismount_before_turn",
-      "controller": {
-        "requested_behavior": "dismount before the U-turn and walk the bicycle while following pedestrian rules"
-      },
-      "expected_scenario_outcome": null,
-      "kind": "planned_only",
-      "physical_target": "dismount before the U-turn and walk the bicycle while following pedestrian rules",
+      "rationale": "Unselected shared context reference; no recording or legal result.",
       "recording_description": {
         "channels": [
           {
@@ -459,6 +170,625 @@
       "selection_targets": [
         "full-train"
       ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "sweep_measurements": [],
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "requested_dismount": {
+          "kind": "controller",
+          "value": false
+        },
+        "requested_turn_path": {
+          "kind": "controller",
+          "value": "through"
+        }
+      },
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "authorized no-U-turn sign governs mounted bicycle approach",
+          "rider remains mounted and makes or avoids U-turn"
+        ],
+        "frozen_cell": {
+          "control": "turn_prohibition_device",
+          "layout": "hill_crest",
+          "maneuver": "u_turn"
+        }
+      }
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1",
+      "comparison_variable": "mounted_u_turn",
+      "controller": {
+        "requested_behavior": "mounted bicycle obeys no-U-turn sign"
+      },
+      "deliberate_differences": [
+        "requested_turn_path",
+        "requested_dismount"
+      ],
+      "expected_scenario_outcome": null,
+      "kind": "planned_only",
+      "paired_probe_id": "signed_rider_turn_and_dismount",
+      "physical_target": "mounted bicycle obeys no-U-turn sign",
+      "probe": {
+        "comparison_or_standard": "source-bound controlled turn/dismount request under one authored sign; original applicability and legal outcome unverified",
+        "primary_variable": "requested_turn_path",
+        "target_value_or_branch": "through"
+      },
+      "rationale": "Compare mounted obey and mounted U-turn source behavior under the same authored sign.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native landmark readback and original sign pixels; authorization review pending",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original sign pixels joined to surveyed approach lane; applicability review pending",
+            "name": "dev.governs",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native landmark station and sign camera frame",
+            "name": "dev.position",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native bicycle blueprint, actor ID and full-body pose",
+            "name": "ru.bicycle",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original rider pixels required; Native actor class alone cannot establish mounting",
+            "name": "ru.rider_posture",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native body and heading trace; requested turn is separate",
+            "name": "drv.u_turn",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native forward vector per joined frame",
+            "name": "kin.heading",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original bicycle full-body polygon and Native lane ID",
+            "name": "rel.occupies",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native pose, speed and controller request",
+            "name": "native_body_pose_control",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four original source cameras joined to Native frame and time",
+            "name": "camera_frame_join",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native machine class and original body pixels distinguish the selected bicycle from an electric bicycle.",
+            "name": "ru.electric_bicycle",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native machine class and original body pixels distinguish the selected bicycle from an electric scooter.",
+            "name": "ru.electric_scooter",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved rider and Native heading history identify whether a turn was attempted.",
+            "name": "drv.turning",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Rider posture and walking-machine source rows locate the potential dismount exception.",
+            "name": "ru.pedestrian",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved original trace velocity measures walking speed without a statutory cutoff.",
+            "name": "kin.speed",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native lane/landmark readback and original sign pixel review",
+            "name": "signed_hill_crest",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Authored sign is not proof of legal authorization",
+          "Bicycle blueprint does not prove mounted rider posture",
+          "Requested turn does not prove physical movement or a legal outcome"
+        ]
+      },
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "sweep_measurements": [],
+      "target_law_id": "LVMC-11-40-080",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "requested_dismount": {
+          "kind": "controller",
+          "value": false
+        },
+        "requested_turn_path": {
+          "kind": "controller",
+          "value": "through"
+        }
+      },
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "authorized no-U-turn sign governs mounted bicycle approach",
+          "rider remains mounted and makes or avoids U-turn"
+        ],
+        "frozen_cell": {
+          "control": "turn_prohibition_device",
+          "layout": "hill_crest",
+          "maneuver": "u_turn"
+        }
+      }
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2",
+      "comparison_variable": "mounted_u_turn",
+      "controller": {
+        "requested_behavior": "mounted bicycle executes signed U-turn"
+      },
+      "deliberate_differences": [
+        "requested_turn_path",
+        "requested_dismount"
+      ],
+      "expected_scenario_outcome": null,
+      "kind": "planned_only",
+      "paired_probe_id": "signed_rider_turn_and_dismount",
+      "physical_target": "mounted bicycle executes signed U-turn",
+      "probe": {
+        "comparison_or_standard": "source-bound controlled turn/dismount request under one authored sign; original applicability and legal outcome unverified",
+        "primary_variable": "requested_turn_path",
+        "target_value_or_branch": "u_turn"
+      },
+      "rationale": "Compare mounted obey and mounted U-turn source behavior under the same authored sign.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native landmark readback and original sign pixels; authorization review pending",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original sign pixels joined to surveyed approach lane; applicability review pending",
+            "name": "dev.governs",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native landmark station and sign camera frame",
+            "name": "dev.position",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native bicycle blueprint, actor ID and full-body pose",
+            "name": "ru.bicycle",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original rider pixels required; Native actor class alone cannot establish mounting",
+            "name": "ru.rider_posture",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native body and heading trace; requested turn is separate",
+            "name": "drv.u_turn",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native forward vector per joined frame",
+            "name": "kin.heading",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original bicycle full-body polygon and Native lane ID",
+            "name": "rel.occupies",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native pose, speed and controller request",
+            "name": "native_body_pose_control",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four original source cameras joined to Native frame and time",
+            "name": "camera_frame_join",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native machine class and original body pixels distinguish the selected bicycle from an electric bicycle.",
+            "name": "ru.electric_bicycle",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native machine class and original body pixels distinguish the selected bicycle from an electric scooter.",
+            "name": "ru.electric_scooter",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved rider and Native heading history identify whether a turn was attempted.",
+            "name": "drv.turning",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Rider posture and walking-machine source rows locate the potential dismount exception.",
+            "name": "ru.pedestrian",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved original trace velocity measures walking speed without a statutory cutoff.",
+            "name": "kin.speed",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native lane/landmark readback and original sign pixel review",
+            "name": "signed_hill_crest",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Authored sign is not proof of legal authorization",
+          "Bicycle blueprint does not prove mounted rider posture",
+          "Requested turn does not prove physical movement or a legal outcome"
+        ]
+      },
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Mounted intended U-turn governed by a no-U-turn sign",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "sweep_measurements": [],
+      "target_law_id": "LVMC-11-40-080",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "requested_dismount": {
+          "kind": "controller",
+          "value": false
+        },
+        "requested_turn_path": {
+          "kind": "controller",
+          "value": "u_turn"
+        }
+      },
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "authorized no-U-turn sign governs mounted bicycle approach",
+          "rider remains mounted and makes or avoids U-turn"
+        ],
+        "frozen_cell": {
+          "control": "turn_prohibition_device",
+          "layout": "hill_crest",
+          "maneuver": "u_turn"
+        }
+      }
+    },
+    {
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3",
+      "comparison_variable": "dismount_before_turn",
+      "controller": {
+        "requested_behavior": "dismount before the U-turn and walk the bicycle while following pedestrian rules"
+      },
+      "deliberate_differences": [
+        "requested_turn_path",
+        "requested_dismount"
+      ],
+      "expected_scenario_outcome": null,
+      "kind": "planned_only",
+      "paired_probe_id": "signed_rider_turn_and_dismount",
+      "physical_target": "dismount before the U-turn and walk the bicycle while following pedestrian rules",
+      "probe": {
+        "comparison_or_standard": "source-bound controlled turn/dismount request under one authored sign; original applicability and legal outcome unverified",
+        "primary_variable": "requested_turn_path",
+        "target_value_or_branch": "u_turn"
+      },
+      "rationale": "Compare mounted obey and mounted U-turn source behavior under the same authored sign.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native landmark readback and original sign pixels; authorization review pending",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original sign pixels joined to surveyed approach lane; applicability review pending",
+            "name": "dev.governs",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native landmark station and sign camera frame",
+            "name": "dev.position",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native bicycle blueprint, actor ID and full-body pose",
+            "name": "ru.bicycle",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original rider pixels required; Native actor class alone cannot establish mounting",
+            "name": "ru.rider_posture",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native body and heading trace; requested turn is separate",
+            "name": "drv.u_turn",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native forward vector per joined frame",
+            "name": "kin.heading",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original bicycle full-body polygon and Native lane ID",
+            "name": "rel.occupies",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original Native pose, speed and controller request",
+            "name": "native_body_pose_control",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four original source cameras joined to Native frame and time",
+            "name": "camera_frame_join",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original sign and rider pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native machine class and original body pixels distinguish the selected bicycle from an electric bicycle.",
+            "name": "ru.electric_bicycle",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native machine class and original body pixels distinguish the selected bicycle from an electric scooter.",
+            "name": "ru.electric_scooter",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved rider and Native heading history identify whether a turn was attempted.",
+            "name": "drv.turning",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Rider posture and walking-machine source rows locate the potential dismount exception.",
+            "name": "ru.pedestrian",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          },
+          {
+            "method": "Saved original trace velocity measures walking speed without a statutory cutoff.",
+            "name": "kin.speed",
+            "reference_frame": "Native map and original camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s / 600-frame attempt",
+            "uncertainty": "50 ms sampling; original posture and machine pixels require review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Native lane/landmark readback and original sign pixel review",
+            "name": "signed_hill_crest",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Authored sign is not proof of legal authorization",
+          "Bicycle blueprint does not prove mounted rider posture",
+          "Requested turn does not prove physical movement or a legal outcome",
+          "Pedestrian-rule compliance requires original walking route and signal review; synthetic posture rows are not physical proof"
+        ]
+      },
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
       "source_branch": "Express dismount exception to sign obedience",
       "subject_behavior": {
         "status": "unobserved",
@@ -466,7 +796,7 @@
       },
       "sweep_measurements": [],
       "target_law_id": "LVMC-11-40-080",
-      "target_type": "controlled_attempt",
+      "target_type": "violating_attempt",
       "unresolved_judgment_calls": [],
       "variable_assignments": {
         "dismount_before_turn": {
@@ -490,5 +820,6 @@
     }
   ],
   "cell_id": "C104538",
-  "status": "draft_not_selected"
+  "status": "draft",
+  "sweep_specs": []
 }

@@ -11,12 +11,14 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def write(path,obj):path.write_text(json.dumps(obj,indent=2,ensure_ascii=False)+'\n')
 
 
-def build():
+def build(suffixes=('signal_red_stop','signal_green_proceed')):
     assignment=source();base=HERE/'cases/branch-requests';road=base/'alley-signal.xodr'
     capture=(base/'signal_capture.py').read_text();check=(base/'signal_check.py').read_text()
     recording=json.loads((HERE/'config.json').read_text())['recording_description']
     output=[]
-    for suffix in ('signal_red_stop','signal_green_proceed'):
+    for suffix in suffixes:
+        if suffix not in CASES or CASES[suffix][0]!='signal_specific_307':
+            raise ValueError('Unknown signal grid case')
         target=base/suffix;target.mkdir(parents=True,exist_ok=True)
         rows=[json.loads(line) for line in (base/(suffix+'.jsonl')).read_text().splitlines()]
         tracks=[]
@@ -32,7 +34,7 @@ def build():
         (target/'assignment-source.json').write_bytes(assignment.read_bytes())
         (target/'runner.py').write_text(capture)
         (target/'signal_check.py').write_text(check)
-        aspect='red' if suffix=='signal_red_stop' else 'green'
+        aspect=CASES[suffix][1]
         cfg={'format':'c10389-signal-native-request-v1','assignment_id':ASSIGNMENT,
              'case_id':ASSIGNMENT+'__'+suffix,'candidate_id':'primary',
              'law_id':'NRS-484B-300-1','cell_id':'C10389','actor':'motor_vehicle_driver',

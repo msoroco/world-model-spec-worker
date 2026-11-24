@@ -1,9 +1,23 @@
 {
-  "format": "worker-draft-proposals-v1",
+  "format": "worker-canonical-cases-v1",
+  "cell_id": "C102372",
+  "actor": "heavy_vehicle_driver",
+  "law_id": "NRS-484B-127-2",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
-      "target_type": "below",
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Common hill-crest context; not a selected physical delivery case.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -55,10 +69,97 @@
           "Original truck classification, conditions and camera pixels need physical review"
         ]
       }
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected probe_1 observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "probe_1"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native 80-inch truck body/pose/lane/velocity",
+            "time_window": "full original 30 s / 600-frame attempt",
+            "reference_frame": "Native hill-crest road, actor body and original frame",
+            "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+          },
+          {
+            "name": "lead_body_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Separate original Native lead truck body/pose/lane/velocity",
+            "time_window": "full original 30 s / 600-frame attempt",
+            "reference_frame": "Native hill-crest road, actor body and original frame",
+            "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+          },
+          {
+            "name": "surface_gap_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original full-body bumper gap sampled before speed request",
+            "time_window": "full original 30 s / 600-frame attempt",
+            "reference_frame": "Native hill-crest road, actor body and original frame",
+            "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original four-view video to Native frame join",
+            "time_window": "full original 30 s / 600-frame attempt",
+            "reference_frame": "Native hill-crest road, actor body and original frame",
+            "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "conditions_permit",
+            "unit": "structured",
+            "method": "original conditions review required; synthetic assertion is diagnostic"
+          }
+        ],
+        "limitations": [
+          "Road-arc gap is a measurement, not a legal verdict",
+          "Original truck classification, conditions and camera pixels need physical review"
+        ]
+      },
+      "paired_probe_id": "gap_pair",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "probe_1"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_2",
-      "target_type": "controlled_attempt",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected probe_2 observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "probe_2"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -109,11 +210,33 @@
           "Road-arc gap is a measurement, not a legal verdict",
           "Original truck classification, conditions and camera pixels need physical review"
         ]
-      }
+      },
+      "paired_probe_id": "gap_pair",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "probe_2"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__two_lane_exception",
-      "target_type": "controlled_attempt",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected two_lane_exception observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "two_lane_exception"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -164,11 +287,33 @@
           "Road-arc gap is a measurement, not a legal verdict",
           "Original truck classification, conditions and camera pixels need physical review"
         ]
-      }
+      },
+      "paired_probe_id": "lane_exception",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "two_lane_exception"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_hold",
-      "target_type": "below",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected passing_hold observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "passing_hold"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -219,11 +364,33 @@
           "Road-arc gap is a measurement, not a legal verdict",
           "Original truck classification, conditions and camera pixels need physical review"
         ]
-      }
+      },
+      "paired_probe_id": "passing_pair",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "passing_hold"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_overtake",
-      "target_type": "controlled_attempt",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected passing_overtake observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "passing_overtake"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -274,11 +441,33 @@
           "Road-arc gap is a measurement, not a legal verdict",
           "Original truck classification, conditions and camera pixels need physical review"
         ]
-      }
+      },
+      "paired_probe_id": "passing_pair",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "passing_overtake"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_steady",
-      "target_type": "below",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected conditions_steady observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "conditions_steady"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -329,11 +518,33 @@
           "Road-arc gap is a measurement, not a legal verdict",
           "Original truck classification, conditions and camera pixels need physical review"
         ]
-      }
+      },
+      "paired_probe_id": "conditions_pair",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "conditions_steady"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_lead_brake",
-      "target_type": "controlled_attempt",
+      "target_law_id": "NRS-484B-127-2",
+      "target_type": "judgment_sweep",
+      "cell_id": "C102372",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Source-bound selected conditions_lead_brake observation; legal conditions remain open.",
+      "variable_assignments": {
+        "selected_branch_request": {
+          "kind": "controller",
+          "value": "conditions_lead_brake"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -384,7 +595,38 @@
           "Road-arc gap is a measurement, not a legal verdict",
           "Original truck classification, conditions and camera pixels need physical review"
         ]
-      }
+      },
+      "paired_probe_id": "conditions_pair",
+      "deliberate_differences": [
+        "selected_branch_request"
+      ],
+      "probe": {
+        "primary_variable": "selected_branch_request",
+        "comparison_or_standard": "exact NRS 484B.127(2) branch and original source review",
+        "target_value_or_branch": "conditions_lead_brake"
+      },
+      "unresolved_judgment_calls": [
+        "whenever conditions permit"
+      ]
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c102372-conditions-review",
+      "target_law_id": "NRS-484B-127-2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "whenever conditions permit",
+          "note": "The source leaves whether physical traffic and road conditions permit the space to independent review."
+        }
+      ],
+      "rationale": "Original-source conditions require independent physical and legal review.",
+      "missing_inputs": [
+        "Independent original traffic and road condition review",
+        "Original four-view pixel and passing-entry safety review"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

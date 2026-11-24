@@ -10,8 +10,12 @@ FRAMES=600
 RATE=20
 CASES={
     'signal_red_stop':('signal_specific_307','red','none',True),
+    'signal_red_proceed':('signal_specific_307','red','none',False),
+    'signal_green_stop':('signal_specific_307','green','none',True),
     'signal_green_proceed':('signal_specific_307','green','none',False),
     'officer_no_direction_stop':('police_direction','not_applicable','none',True),
+    'officer_no_direction_proceed':('police_direction','not_applicable','none',False),
+    'officer_directed_stop':('police_direction','not_applicable','proceed',True),
     'officer_directed_proceed':('police_direction','not_applicable','proceed',False),
 }
 
@@ -83,8 +87,8 @@ def build(destination):
                         'sha256':sha(path),'review':review})
     return {'format':'c10389-statutory-branch-requests-v1','assignment_id':ASSIGNMENT,
             'frozen_assignment_sha256':sha(source_path),'entries':entries,
-            'comparisons':[['signal_red_stop','signal_green_proceed'],
-                           ['officer_no_direction_stop','officer_directed_proceed']],
+            'comparisons':[['signal_red_stop','signal_red_proceed','signal_green_stop','signal_green_proceed'],
+                           ['officer_no_direction_stop','officer_no_direction_proceed','officer_directed_stop','officer_directed_proceed']],
             'source_kind':'authored_cpu_request','native_executed':False,
             'selected_delivery':False}
 

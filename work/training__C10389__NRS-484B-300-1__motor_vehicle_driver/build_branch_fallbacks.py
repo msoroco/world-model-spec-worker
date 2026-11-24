@@ -10,9 +10,9 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def write(path,obj):path.write_text(json.dumps(obj,indent=2,ensure_ascii=False)+'\n')
 
 
-def build():
+def build(suffixes=('signal_red_stop','signal_green_proceed','officer_no_direction_stop','officer_directed_proceed')):
     base=HERE/'cases/branch-requests';entries=[]
-    for suffix in ('signal_red_stop','signal_green_proceed','officer_no_direction_stop','officer_directed_proceed'):
+    for suffix in suffixes:
         source=base/suffix;target=base/(suffix+'-fallback1');target.mkdir(parents=True,exist_ok=True)
         for name in ('runner.py','signal_check.py' if suffix.startswith('signal_') else 'officer_check.py',
                      'assignment-source.json','alley-stop.xodr','requested-tracks.jsonl'):

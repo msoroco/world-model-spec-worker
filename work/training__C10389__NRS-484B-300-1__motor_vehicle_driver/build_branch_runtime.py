@@ -70,18 +70,20 @@ def build(suffix,candidate):
               'sha256':sha(raw/name)} for name in source_names]
     sources.append({'path':'road.xodr','source':(bundle/'alley-stop.xodr').relative_to(ROOT).as_posix(),
                     'sha256':sha(bundle/'alley-stop.xodr')})
+    placement=suffix.startswith('placement_')
     write(bundle/'recipe.json',{'format':'worker-fixture-recipe','sources':sources,
           'generator':{'source':(bundle/'generator.json').relative_to(ROOT).as_posix(),
                        'sha256':sha(bundle/'generator.json')}})
-    index=1 if suffix.startswith('signal_') else 2
+    index=3 if placement else (1 if suffix.startswith('signal_') else 2)
     write(bundle/'measurement-contract.json',{'format':'worker-measurement-contract',
           'case_id':config['case_id'],'requirements':[{'disposition_index':index,
               'requirement':'NRS-484B-300-1','source':'NRS 484B.300(1)',
-              'output_key':'branch_response','method':'measure_branch_response',
+              'output_key':'placement_provenance' if placement else 'branch_response',
+              'method':'source_hash_and_status_readback' if placement else 'measure_branch_response',
               'value_type':'object','kind':'measured',
-              'inputs':['native-raw-actors.jsonl','native-map-readback.json']}],
-          'negative':{'remove':['native-raw-actors.jsonl'],
-              'error_contains':'Missing required source: native-raw-actors.jsonl'},
+              'inputs':['placement-record.json'] if placement else ['native-raw-actors.jsonl','native-map-readback.json']}],
+          'negative':{'remove':['placement-record.json'] if placement else ['native-raw-actors.jsonl'],
+              'error_contains':'Missing required source: '+('placement-record.json' if placement else 'native-raw-actors.jsonl')},
           'status':'unselected_diagnostic'})
     write(bundle/'probe-manifest.json',{'format':'worker-unselected-current-v2-probe-manifest',
           'assignment_id':ASSIGNMENT,'runtime_manifest_sha256':sha(ROOT/'runtime/SOURCE-MANIFEST.json'),

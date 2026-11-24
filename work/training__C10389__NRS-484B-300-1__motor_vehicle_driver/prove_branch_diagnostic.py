@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+from branch_requests import CASES
 
 HERE=Path(__file__).resolve().parent;BASE=HERE/'cases/branch-requests'
 spec=importlib.util.spec_from_file_location('branch_diagnostic_finalize',HERE/'branch-diagnostic-finalize.py')
@@ -14,7 +15,7 @@ def main():
     checks=[]
     with tempfile.TemporaryDirectory(prefix='c10389-branch-meter-',dir=HERE.parents[1]/'.runtime-work') as name:
         root=Path(name)
-        for suffix in ('signal_red_stop','signal_green_proceed','officer_no_direction_stop','officer_directed_proceed'):
+        for suffix in CASES:
             for candidate in ('primary','fallback1'):
                 bundle=BASE/(suffix if candidate=='primary' else suffix+'-'+candidate)
                 target=root/(suffix+'-'+candidate);target.mkdir()
@@ -22,14 +23,14 @@ def main():
                     if f.is_file():shutil.copyfile(f,target/f.name)
                 shutil.copyfile(bundle/'config.json',target/'config.json')
                 result=module.measure_branch_response(target)['value']
-                expected_stop=suffix in ('signal_red_stop','officer_no_direction_stop')
+                expected_stop=suffix.endswith('_stop')
                 if expected_stop!=(result['stopped_before_frames']>=20):
                     raise ValueError('Branch diagnostic stop contrast differs')
                 if not expected_stop and result['body_at_station_frames']==0:
                     raise ValueError('Branch diagnostic crossing absent')
                 if suffix.startswith('signal_') and len(result['signal_states'])!=1:
                     raise ValueError('Signal source state absent')
-                if suffix=='officer_directed_proceed' and result['officer_actor_frames']!=600:
+                if suffix.startswith('officer_directed_') and result['officer_actor_frames']!=600:
                     raise ValueError('Directed officer actor source absent')
                 checks.append({'suffix':suffix,'candidate':candidate,'value':result})
         damaged=root/'signal_red_stop-primary';mapping=damaged/'native-map-readback.json'

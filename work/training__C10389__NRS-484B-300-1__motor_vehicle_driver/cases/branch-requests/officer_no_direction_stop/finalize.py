@@ -50,6 +50,7 @@ def measure_branch_response(root):
 
 def channel_value(name,actor,frame,mapping):
     ego=actor['ego'];landmark=mapping['stop_landmark_readback']
+    if name=='device_body':return {'ego_body_native_xyz_m':ego['body_native_xyz_m'],'device':landmark,'official_placement_verified':False}
     if name=='dev.traffic_signal':return actor.get('signal_state_observed') or {'status':'not_observed_in_synthetic_fixture'}
     if name=='dev.regulatory_sign':return landmark['type'] if landmark['type']=='206' else {'status':'not_observed_in_synthetic_fixture'}
     if name=='dev.stop_sign':return landmark['id'] if landmark['type']=='206' else {'status':'not_observed_in_synthetic_fixture'}
@@ -86,7 +87,7 @@ def finalize(attempt,output):
     context={'official_placement_authority':{'status':'unverified_synthetic_fixture','authority_source':None}}
     (channels/'official_placement_authority.json').write_text(json.dumps(context)+'\n')
     values=measurement['value'];suffix=config['case_id'].rsplit('__',1)[1]
-    requested_stop=suffix in ('signal_red_stop','officer_no_direction_stop')
+    requested_stop=suffix.endswith('_stop')
     matched=(values['stopped_before_frames']>=20 if requested_stop else values['body_at_station_frames']>0)
     result={'case_id':config['case_id'],'measured_values':values,
             'target_checks':[{'target':'authored statutory branch motion request',

@@ -36,6 +36,7 @@ def main():
                 'ru.pedestrian', 'kin.speed', 'drv.turning'})
             config['recording_description']['limitations'].append(
                 'Pedestrian-rule compliance requires original walking route and signal review; synthetic posture rows are not physical proof')
+            construction['recording_description'] = config['recording_description']
             part['content'] = json.dumps(config, indent=2) + '\n'
     target = HERE / 'draft-thirty-second-dismounted-turn-primary-construction.json'
     write(target, construction)
@@ -49,13 +50,19 @@ def main():
     write(contract_path, contract)
     manifest_path = HERE / 'draft-thirty-second-execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
+    batch = json.loads((HERE.parents[1] / 'batch.json').read_text())
+    manifest['runtime_manifest_sha256'] = batch['runtime']['source_manifest_sha256']
     entry = copy.deepcopy(next(e for e in manifest['cases'] if e['case_id'].endswith('__controlled_2')))
     entry['case_id'] = CASE
     entry['construction'] = target.name
     entry['construction_sha256'] = sha(target)
     entry['measurement_contract'] = contract_path.name
     entry['measurement_procedure']['output_schema'] = 'c104538-lvmc-synthetic-saved-dismount-diagnostic-v1-600'
-    entry.pop('fixture_recipe', None)
+    recipe = HERE / 'v2-dismounted-turn-primary-recipe.json'
+    if recipe.is_file():
+        entry['fixture_recipe'] = f'work/{HERE.name}/{recipe.name}'
+    else:
+        entry.pop('fixture_recipe', None)
     entry['candidates'] = []
     manifest['cases'] = [e for e in manifest['cases'] if e['case_id'] != CASE] + [entry]
     write(manifest_path, manifest)
@@ -92,6 +99,18 @@ def main():
             {'machine': 'electric_scooter', 'reason': 'same statutory mechanism but distinct physical machine outside selected bicycle witness'}],
         'applicability_channels': ['dev.regulatory_sign', 'ru.bicycle',
                                    'ru.electric_bicycle', 'ru.electric_scooter']}
+    alternatives = [
+        ('no-right-turn sign', 'Requires a right-turn maneuver outside the frozen u_turn cell; compatible frozen binding or candidate cell remains to be constructed.'),
+        ('no-left-turn sign', 'Requires a left-turn maneuver outside the frozen u_turn cell; compatible frozen binding or candidate cell remains to be constructed.'),
+        ('electric-bicycle operator', 'Requires its own physical machine and controlled applicable-sign comparison; bicycle source does not establish this class.'),
+        ('electric-scooter operator', 'Requires its own physical machine and controlled applicable-sign comparison; bicycle source does not establish this class.'),
+    ]
+    for branch, gap in alternatives:
+        if not any(d['branch'] == branch for d in plan['requirement_dispositions']):
+            plan['requirement_dispositions'].append({
+                'branch': branch, 'case_ids': [], 'evidence_or_gap': gap,
+                'requirement': 'LVMC-11-40-080', 'source': 'LVMC 11.40.080',
+                'status': 'alternative_pending'})
     write(plan_path, plan)
     proposals_path = HERE / 'proposals/cases.json'
     proposals = json.loads(proposals_path.read_text())

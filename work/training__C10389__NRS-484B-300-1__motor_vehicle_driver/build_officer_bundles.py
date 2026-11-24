@@ -2,18 +2,20 @@
 import hashlib
 import json
 from pathlib import Path
-from branch_requests import HERE, ASSIGNMENT, source
+from branch_requests import HERE, ASSIGNMENT, source, CASES
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def write(path,obj):path.write_text(json.dumps(obj,indent=2,ensure_ascii=False)+'\n')
 
 
-def build():
+def build(suffixes=('officer_no_direction_stop','officer_directed_proceed')):
     assignment=source();base=HERE/'cases/branch-requests';road=HERE/'native/device/alley-stop.xodr'
     capture=(base/'officer_capture.py').read_text();check=(base/'officer_check.py').read_text()
     recording=json.loads((HERE/'config.json').read_text())['recording_description'];output=[]
-    for suffix in ('officer_no_direction_stop','officer_directed_proceed'):
+    for suffix in suffixes:
+        if suffix not in CASES or CASES[suffix][0]!='police_direction':
+            raise ValueError('Unknown officer grid case')
         target=base/suffix;target.mkdir(parents=True,exist_ok=True)
         rows=[json.loads(line) for line in (base/(suffix+'.jsonl')).read_text().splitlines()]
         tracks=[]
@@ -27,7 +29,7 @@ def build():
         (target/'alley-stop.xodr').write_bytes(road.read_bytes())
         (target/'assignment-source.json').write_bytes(assignment.read_bytes())
         (target/'runner.py').write_text(capture);(target/'officer_check.py').write_text(check)
-        direction='none' if suffix=='officer_no_direction_stop' else 'proceed'
+        direction=CASES[suffix][2]
         cfg={'format':'c10389-officer-native-request-v1','assignment_id':ASSIGNMENT,
              'case_id':ASSIGNMENT+'__'+suffix,'candidate_id':'primary',
              'law_id':'NRS-484B-300-1','cell_id':'C10389','actor':'motor_vehicle_driver',

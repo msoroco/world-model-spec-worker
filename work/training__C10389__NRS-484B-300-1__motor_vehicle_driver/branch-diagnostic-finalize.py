@@ -48,8 +48,20 @@ def measure_branch_response(root):
             'scope':'Synthetic CPU branch diagnostic; authority and legal effect unverified'}
 
 
+def source_hash_and_status_readback(root):
+    root=Path(root);record=json.loads(required(root,'placement-record.json').read_text())
+    config=json.loads(required(root,'config.json').read_text())
+    if sha(root/'placement-record.json')!=config['placement_record_sha256'] or record.get('official_placement_verified') is not False:
+        raise ValueError('Placement source record changed or claims unverified authority')
+    return {'value':{'document_present':record['document_present'],'official_placement_verified':False},
+            'method':'source_hash_and_status_readback',
+            'sources':{'placement-record.json':sha(root/'placement-record.json')},
+            'scope':'Authored source-document availability only; administrative authenticity unverified'}
+
+
 def channel_value(name,actor,frame,mapping):
     ego=actor['ego'];landmark=mapping['stop_landmark_readback']
+    if name=='device_body':return {'ego_body_native_xyz_m':ego['body_native_xyz_m'],'device':landmark,'official_placement_verified':False}
     if name=='dev.traffic_signal':return actor.get('signal_state_observed') or {'status':'not_observed_in_synthetic_fixture'}
     if name=='dev.regulatory_sign':return landmark['type'] if landmark['type']=='206' else {'status':'not_observed_in_synthetic_fixture'}
     if name=='dev.stop_sign':return landmark['id'] if landmark['type']=='206' else {'status':'not_observed_in_synthetic_fixture'}
@@ -86,7 +98,12 @@ def finalize(attempt,output):
     context={'official_placement_authority':{'status':'unverified_synthetic_fixture','authority_source':None}}
     (channels/'official_placement_authority.json').write_text(json.dumps(context)+'\n')
     values=measurement['value'];suffix=config['case_id'].rsplit('__',1)[1]
-    requested_stop=suffix in ('signal_red_stop','officer_no_direction_stop')
+    placement=suffix.startswith('placement_')
+    if placement:
+        placement_measurement=source_hash_and_status_readback(root)
+        record=json.loads(required(root,'placement-record.json').read_text())
+        (channels/'placement_provenance_record.json').write_text(json.dumps(record)+'\n')
+    requested_stop=suffix.endswith('_stop') or placement
     matched=(values['stopped_before_frames']>=20 if requested_stop else values['body_at_station_frames']>0)
     result={'case_id':config['case_id'],'measured_values':values,
             'target_checks':[{'target':'authored statutory branch motion request',
@@ -103,7 +120,7 @@ def finalize(attempt,output):
             'video_references':['overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv'],
             'video_frame_map_reference':'video_frames.jsonl',
             'recording_description':recorded,
-            'recording_evidence':[{'name':c['name'],'unit':c['unit'],'reference':'channels/'+c['name']+'.jsonl'} for c in recorded['channels']]+[{'name':'official_placement_authority','unit':'source_document','reference':'channels/official_placement_authority.json'}],
+            'recording_evidence':[{'name':c['name'],'unit':c['unit'],'reference':'channels/'+c['name']+'.jsonl'} for c in recorded['channels']]+[{'name':'official_placement_authority','unit':'source_document','reference':'channels/official_placement_authority.json'}]+([{'name':'placement_provenance_record','unit':'source_document','reference':'channels/placement_provenance_record.json'}] if placement else []),
             'realized_observables':{},'provenance_kind':'synthetic_cpu_fixture',
             'accepted':False,'legal_verdict_claimed':False}
     (root/'result.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -111,6 +128,8 @@ def finalize(attempt,output):
             'measurements':{'branch_response':measurement},'source_only':True,
             'official_placement_verified':False,'police_authority_verified':False,
             'legal_outcome_claimed':False}
+    if placement:
+        report['measurements']['placement_provenance']=placement_measurement
     Path(output).write_text(json.dumps(report,indent=2)+'\n')
     return report
 

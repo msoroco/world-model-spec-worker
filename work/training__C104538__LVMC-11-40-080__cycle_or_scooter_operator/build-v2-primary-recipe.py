@@ -23,6 +23,7 @@ def main():
     parser.add_argument('--source', required=True)
     parser.add_argument('--kind', choices=('mounted_obey', 'mounted_turn', 'dismounted_turn'), default='mounted_turn')
     parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2'), default='primary')
+    parser.add_argument('--replace', action='store_true', help='Refresh retained sources after construction changes')
     args = parser.parse_args()
     source = Path(args.source).resolve()
     stem = 'v2-'+args.kind.replace('_', '-')+'-'+args.candidate
@@ -34,7 +35,9 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         if target.exists():
             if sha(target) != sha(src):
-                raise ValueError('Existing source differs: '+name)
+                if not args.replace:
+                    raise ValueError('Existing source differs: '+name)
+                shutil.copyfile(src, target)
         else:
             shutil.copyfile(src, target)
         if target.stat().st_size > 2*1024*1024:

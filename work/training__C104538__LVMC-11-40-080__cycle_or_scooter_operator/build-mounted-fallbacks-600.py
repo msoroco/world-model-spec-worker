@@ -1,4 +1,4 @@
-"""Prepare one shared approach-runway fallback for linked mounted cases."""
+"""Prepare one shared approach-runway fallback for all linked rider cases."""
 import copy
 import hashlib
 import json
@@ -22,12 +22,14 @@ def main():
     for entry in manifest['cases']:
         primary = json.loads((HERE / entry['construction']).read_text())
         candidate = copy.deepcopy(primary)
+        candidate['candidate_id'] = 'fallback1'
         for part in candidate['files']:
             if part['path'] == 'config.json':
                 config = json.loads(part['content'])
                 config['candidate_id'] = 'fallback1'
                 part['content'] = json.dumps(config, indent=2) + '\n'
-        kind = 'mounted_obey' if entry['case_id'].endswith('__controlled_1') else 'mounted_turn'
+        kind = {'controlled_1': 'mounted_obey', 'controlled_2': 'mounted_turn',
+                'controlled_3': 'dismounted_turn'}[entry['case_id'].rsplit('__', 1)[-1]]
         relative = f'current-candidates/{kind}/fallback1/construction.json'
         target = HERE / relative
         write(target, candidate)
@@ -44,7 +46,7 @@ def main():
             'changed_knobs': ['approach start -35 m to -50 m'],
         }]
     write(path, manifest)
-    print(json.dumps({'candidates': 2, 'manifest_sha256': sha(path)}))
+    print(json.dumps({'candidates': len(manifest['cases']), 'manifest_sha256': sha(path)}))
 
 
 if __name__ == '__main__':

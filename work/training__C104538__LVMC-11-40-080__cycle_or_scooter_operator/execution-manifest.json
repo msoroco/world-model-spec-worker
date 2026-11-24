@@ -1,0 +1,253 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Bicycle approach may not settle onto the signed lane before the governed turn region; original Native lane/body samples must decide.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -35 m to -50 m"
+          ],
+          "construction": "current-candidates/mounted_obey/fallback1/construction.json",
+          "construction_sha256": "6b28ddd61c617bdf056963b635dfe6f1150c48314e6caca4ab64c2e516ca31ed",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "less than 35 m of measured settled approach before the sign",
+            "metric": "available_approach_runway_m",
+            "source": "original Native lane and body samples joined to rider camera frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1 --candidate fallback1 --output .runtime-work/c104538-fallback-offline-controlled_1",
+            "exit_code": 0,
+            "construction_sha256": "6b28ddd61c617bdf056963b635dfe6f1150c48314e6caca4ab64c2e516ca31ed",
+            "log": "selected-proof/controlled_1/fallback1/offline.log",
+            "log_sha256": "536f71647d84f869729b69b0afe66088cd6a89578333d21d60df05422793b4d8"
+          }
+        }
+      ],
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1",
+      "construction": "draft-thirty-second-mounted-obey-primary-construction.json",
+      "construction_sha256": "03da804336e662496b4a83bb386aecd230f1cb41f2417772f04d53bcb887905d",
+      "fixture_recipe": "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/v2-mounted-obey-primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "v2-mounted-obey-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "original_geometry_entrypoint": "measure_geometry.py",
+        "original_geometry_scope": "unreviewed posture; unaccepted",
+        "output_schema": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "6b5447a6b5d4ba287ac758d5288d1f1df7195d2c1165edc1300a78da128cf41a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1 --output .runtime-work/c104538-current-offline-controlled_1",
+        "exit_code": 0,
+        "construction_sha256": "03da804336e662496b4a83bb386aecd230f1cb41f2417772f04d53bcb887905d",
+        "log": "selected-proof/controlled_1/primary/offline.log",
+        "log_sha256": "cb641eb53521aaf3ca74cf1c824f96f953918913814aecad82ce73e4a9e5c478"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "b80eded3c4165dd657cc96e484b19a29e39f18749cfeffc2133ed1fbc137e272",
+        "command": ".venv-cpu/bin/python work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/delivery_audit.py --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-controlled_1-selftest.log",
+        "test_log_sha256": "bae1458f05977e7fa75feaf36aa2f4aeb37c99939965096aa6f556eaac6185b3",
+        "negative_command": ".venv-cpu/bin/python work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/delivery_audit.py --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_1 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: rider_native_samples.jsonl",
+        "negative_log": "delivery-controlled_1-negative-selftest.log",
+        "negative_log_sha256": "5fe562bf5b1fabf92eb9457365adae63cd1fb21ce851cba7c77bce13db0548c2",
+        "scope": "synthetic CPU audit mechanics; original sign, rider posture and pedestrian-rule conduct pending"
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Bicycle approach may not settle onto the signed lane before the governed turn region; original Native lane/body samples must decide.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -35 m to -50 m"
+          ],
+          "construction": "current-candidates/mounted_turn/fallback1/construction.json",
+          "construction_sha256": "a0ad9e1160784724e0f187030ccc4b338f3f3a19c99117ccece24bcbc11b542d",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "less than 35 m of measured settled approach before the sign",
+            "metric": "available_approach_runway_m",
+            "source": "original Native lane and body samples joined to rider camera frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2 --candidate fallback1 --output .runtime-work/c104538-fallback-offline-controlled_2",
+            "exit_code": 0,
+            "construction_sha256": "a0ad9e1160784724e0f187030ccc4b338f3f3a19c99117ccece24bcbc11b542d",
+            "log": "selected-proof/controlled_2/fallback1/offline.log",
+            "log_sha256": "351947678b4ebf9aa89b80341476840b28c626c4728f50930a594f446ab6ebc5"
+          }
+        }
+      ],
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2",
+      "construction": "draft-thirty-second-mounted-turn-primary-construction.json",
+      "construction_sha256": "b38363c0d40e7943f8a476826e9a5eb5bfc53fb11993422804b38b57df06f998",
+      "fixture_recipe": "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/v2-mounted-turn-primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "v2-mounted-turn-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "original_geometry_entrypoint": "measure_geometry.py",
+        "original_geometry_scope": "unreviewed posture; unaccepted",
+        "output_schema": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1-600"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "5441e4a095893063863a067e4df61dc8c6112f35d6d02864020d60c7a74ae442"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2 --output .runtime-work/c104538-current-offline-controlled_2",
+        "exit_code": 0,
+        "construction_sha256": "b38363c0d40e7943f8a476826e9a5eb5bfc53fb11993422804b38b57df06f998",
+        "log": "selected-proof/controlled_2/primary/offline.log",
+        "log_sha256": "ba97f74cc61fe57626c12e5fbed39be25fe80cfd115dc69bda6ad22b4b5ea975"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "b80eded3c4165dd657cc96e484b19a29e39f18749cfeffc2133ed1fbc137e272",
+        "command": ".venv-cpu/bin/python work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/delivery_audit.py --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-controlled_2-selftest.log",
+        "test_log_sha256": "0ff9dae3d15b28999a90a3e6e54cab1e33fbe4f53983d21954b7581d0af69f1e",
+        "negative_command": ".venv-cpu/bin/python work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/delivery_audit.py --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_2 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: rider_native_samples.jsonl",
+        "negative_log": "delivery-controlled_2-negative-selftest.log",
+        "negative_log_sha256": "5fe562bf5b1fabf92eb9457365adae63cd1fb21ce851cba7c77bce13db0548c2",
+        "scope": "synthetic CPU audit mechanics; original sign, rider posture and pedestrian-rule conduct pending"
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Bicycle approach may not settle onto the signed lane before the governed turn region; original Native lane/body samples must decide.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -35 m to -50 m"
+          ],
+          "construction": "current-candidates/dismounted_turn/fallback1/construction.json",
+          "construction_sha256": "e9d25bea1f76c268060a31ca749990470c51142af687763965c2280e7a202a67",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "less than 35 m of measured settled approach before the sign",
+            "metric": "available_approach_runway_m",
+            "source": "original Native lane and body samples joined to rider camera frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3 --candidate fallback1 --output .runtime-work/c104538-fallback-offline-controlled_3",
+            "exit_code": 0,
+            "construction_sha256": "e9d25bea1f76c268060a31ca749990470c51142af687763965c2280e7a202a67",
+            "log": "selected-proof/controlled_3/fallback1/offline.log",
+            "log_sha256": "049f4e0287aff96504d992c2c56ebc529dc814a09b0d77e0ab9aefc6b883e8d0"
+          }
+        }
+      ],
+      "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3",
+      "construction": "draft-thirty-second-dismounted-turn-primary-construction.json",
+      "construction_sha256": "e7828d7fc830518b8cc6763fa086860ae3c50cdfdc58c96d201deee66703d4cc",
+      "fixture_recipe": "work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/v2-dismounted-turn-primary-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "v2-dismounted-turn-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "original_geometry_entrypoint": "measure_geometry.py",
+        "original_geometry_scope": "unreviewed posture; unaccepted",
+        "output_schema": "c104538-lvmc-synthetic-saved-dismount-diagnostic-v1-600"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_3/proof.json",
+        "sha256": "84dcd1f4cd24500deaa4c850804ac4e6d8a81585a8ddd441dc9af0cf719e9f5f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/execution-manifest.json --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3 --output .runtime-work/c104538-current-offline-controlled_3",
+        "exit_code": 0,
+        "construction_sha256": "e7828d7fc830518b8cc6763fa086860ae3c50cdfdc58c96d201deee66703d4cc",
+        "log": "selected-proof/controlled_3/primary/offline.log",
+        "log_sha256": "afcc45004ee97ecfaeee748241291f539d7025b5c898420c56dbcf5a1e61ba88"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "b80eded3c4165dd657cc96e484b19a29e39f18749cfeffc2133ed1fbc137e272",
+        "command": ".venv-cpu/bin/python work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/delivery_audit.py --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-controlled_3-selftest.log",
+        "test_log_sha256": "e3ba68eab8eb89ccea2eba7593d58c057149e54ccbbd612a6f2f6dbc4d54f044",
+        "negative_command": ".venv-cpu/bin/python work/training__C104538__LVMC-11-40-080__cycle_or_scooter_operator/native/delivery_audit.py --case training__C104538__LVMC-11-40-080__cycle_or_scooter_operator__controlled_3 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: rider_native_samples.jsonl",
+        "negative_log": "delivery-controlled_3-negative-selftest.log",
+        "negative_log_sha256": "5fe562bf5b1fabf92eb9457365adae63cd1fb21ce851cba7c77bce13db0548c2",
+        "scope": "synthetic CPU audit mechanics; original sign, rider posture and pedestrian-rule conduct pending"
+      }
+    }
+  ]
+}

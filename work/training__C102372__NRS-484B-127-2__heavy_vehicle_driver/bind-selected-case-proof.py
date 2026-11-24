@@ -52,6 +52,8 @@ def bind() -> None:
                           'two_lane_exception' and candidate_id == 'primary' else
                           f'c102372-selected-{stem}-fallback1-offline-v1' if suffix ==
                           'two_lane_exception' else
+                          f'c102372-selected-{stem}-{candidate_id}-offline-v3' if suffix ==
+                          'passing_overtake' else
                           f'c102372-selected-{stem}-{candidate_id}-offline-v1')
         candidate_arg = '' if candidate_id == 'primary' else ' --candidate fallback1'
         target['offline'] = {
