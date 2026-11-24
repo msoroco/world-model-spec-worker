@@ -807,3 +807,7 @@ Return cap checkpoint: 7 unbound historical top-level logs and former test rows 
 ## 2026-11-23 decoded-video sidecar archive
 
 To preserve the 8,600-file return limit, twelve generated decoded-video audit sidecars were moved byte-exactly into `work/_shared/c125751-decoded-video-sidecars-20261123.json` with original paths and SHA256 hashes (archive SHA256 `a797841d089d036c7d7353a48c10ad399da25a0cf76a46e7cea370fad1bf46f5`). The assignment-scoped complete strict delivery-ready check passed after archival. The package remains **ready** on its current CPU proof.
+
+## 2026-11-23 historical log archive and ready recheck
+
+Six historical diagnostic logs, including the sole former result test row for the straight comparator, were preserved with exact paths, byte sizes, SHA256 hashes and row data in `work/_shared/c125751-result-only-logs-20261123.tar.xz` (SHA256 `d8880e2e40a4961717cd40523720ab44f2ff02606c4957359f558fbf50741419`). The archive was verified member by member before originals were removed. The assignment-scoped complete strict delivery-ready check passed afterward. C125751 remains **ready**; active construction and manifest receipts are unchanged.

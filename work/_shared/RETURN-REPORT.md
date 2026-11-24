@@ -1,3 +1,15 @@
+## 2026-11-23 C125763 CPU readiness and C125751 archival
+
+C125763 now returns all five root review sources byte-for-byte from its active construction and a four-case qualitative judgment decision plan. Its 41-test CPU proof and 16 synthetic physical/lifecycle commands remain bound to the unchanged manifest; pinned preflight, scoped nonready check and the scoped strict delivery-ready gate pass. Its result is **ready/delivery_prepared** for CPU delivery, with Native site facts, official-device/subsection-4 qualification, physical acceptance and legal judgment explicitly unverified.
+
+Six historical C125751 logs and one former result test row were preserved in `c125751-result-only-logs-20261123.tar.xz` (SHA256 `d8880e2e40a4961717cd40523720ab44f2ff02606c4957359f558fbf50741419`) to free exactly five return slots. Every archived member was verified before removal; C125751 passed its scoped strict ready gate afterward. The batch now has 29 ready and 14 partial assignments, so the full strict gate remains open.
+
+## 2026-11-23 C215286 exact delivery proof and C149237 archival
+
+C215286 now declares the canonical first GPU dispatch and both frozen target sets, and binds fresh positive and tampered-source delivery audits for its two reverse-crosswalk cases. Fifteen CPU tests, pinned preflight and the scoped nonready check pass. Five exact root construction files and the four-view 45-second camera plan were materialized. Its source-observation mapping identifies the still-unbuilt intersection and around-corner alternatives. C215286 remains partial; Native/pixel and legal outcomes are unclaimed. Current manifest SHA256 `8d29b9a2953f921c373ab221b9be79182bc732d7700e5bad1062677584b087e3`, combined test/audit log SHA256 `2c462d68434bc875bb86de5f49be9847e2fe770723649a65d3dad900a2033fe9`.
+
+Six historical C149237 result-only logs were archived byte-exactly with their test rows in `c149237-result-only-logs-20261123.tar.xz` (SHA256 `bc86cea5e442eabd5f262c5b3137d5fe3b87965191d2b184ff944a5128bbcdba`). The C149237 scoped strict ready gate still passes. This kept the return within the 8,600-file cap. The full batch strict gate remains open.
+
 ## 2026-11-23 C144550 exact-case indicator component
 
 C144550 now maps all five exact cases to planned Native indicator commands, with the late case triggered by observed body departure. Native light-state updates preserve unrelated lamps and return readback; original camera and lane history remain the display evidence. Four CPU tests, pinned preflight and the scoped nonready check pass. The case plan binds the component source and test hashes. C144550 remains partial pending runner integration, saved processing and exact-case proofs.

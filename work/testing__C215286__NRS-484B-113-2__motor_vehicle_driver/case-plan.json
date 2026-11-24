@@ -218,5 +218,110 @@
     "physical_acceptance_claimed": false,
     "required_capture_seal_sources": 14,
     "candidate_selection_checked": true
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete ego body, crosswalk footprint and marked boundary",
+        "interval": "entire 45-second reverse maneuver"
+      },
+      {
+        "view": "approach",
+        "subject": "rear body motion and approach corridor",
+        "interval": "entire 45-second reverse maneuver"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crosswalk width, complete ego body and boundary contact",
+        "interval": "entire 45-second reverse maneuver"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego-mounted rearward reference image and nearby traffic",
+        "interval": "entire 45-second reverse maneuver"
+      }
+    ],
+    "source_review_boundary": "Native camera poses require local original-pixel review; synthetic CPU decodes only prove software handling."
+  },
+  "source_observation_mapping": {
+    "drv.backing": {
+      "evidence": "Native reverse control and original complete-body displacement projected against the measured heading; selected crosswalk cases",
+      "channels": [
+        "native_reverse",
+        "backward_motion"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "implemented_for_crosswalk_cases"
+    },
+    "st.intersection": {
+      "evidence": "The frozen assignment names the intersection alternative; selected crosswalk site packets do not yet provide independently sourced intersection geometry",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "pending_intersection_case"
+    },
+    "st.crosswalk": {
+      "evidence": "Sourced crosswalk polygon, site packet, marking review and original camera context in selected crosswalk cases",
+      "channels": [
+        "crosswalk_overlap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "implemented_for_crosswalk_cases"
+    },
+    "rel.occupies": {
+      "evidence": "Original complete-body intersection with sourced crosswalk polygon is measured; intersection occupation remains pending",
+      "channels": [
+        "crosswalk_overlap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "partial_intersection_pending"
+    },
+    "drv.turning": {
+      "evidence": "The frozen assignment includes backing around a street corner; no selected exact case yet measures a corner-following reverse route",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "pending_corner_case"
+    },
+    "kin.heading": {
+      "evidence": "Original reverse history includes heading and forward vector with equality validation, but heading change around a corner remains unmeasured",
+      "channels": [
+        "backward_motion"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/assignment.json",
+          "sha256": "534885d734c01485f5677db058ba21aff9736b04702d0c1eaaad8da717444d1f"
+        }
+      ],
+      "status": "partial_corner_change_pending"
+    }
   }
 }

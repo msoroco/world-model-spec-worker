@@ -395,3 +395,7 @@ Seven historical root builder/proof scripts with no JSON or Python import refere
 ## Return file consolidation
 
 Eight historical command logs are preserved byte-for-byte in `command-log-archive.json` with member hashes; `result.json` binds the archive where applicable. Standalone copies are in ignored `.runtime-work/retired-logs/20261121-c149237-archive/`. These are prior diagnostic proofs.
+
+## 2026-11-23 historical result-only log archival
+
+Six historical result-only proof logs and their exact result test rows were preserved byte-for-byte in `work/_shared/c149237-result-only-logs-20261123.tar.xz` (SHA256 `bc86cea5e442eabd5f262c5b3137d5fe3b87965191d2b184ff944a5128bbcdba`). Its index includes each original path, size and SHA256; every archived member was decompressed and rehashed. Their redundant `result.json.tests` rows were removed. The current C149237 assignment-scoped strict ready gate still passes. This freed five returned-file slots for C215286 root construction without changing the ready status.
