@@ -1,3 +1,9 @@
+## 2026-11-23 wrong-direction primary source-bound CPU proof
+
+The `left_wrong_signal_clear_gap` primary has distinct 900-frame synthetic original sources: lane history reports `right`, trace has right lamp bit 64, and both base graph and capture observations set the ego right lamp. Its diagnostic recipe pins every source hash. Runtime compatibility, missing-`lane_history.jsonl` negative analysis, Native adapter/Lean conversion and recorded-only `process-saved` all passed. The measured left departure has `indicator_at_movement=right`, `appropriate_signal_before_movement=false` and an 8.0 m target gap. Current receipts are bound in `execution-manifest.json`; pinned static receipt verification for the first three primaries and the C144550 scoped nonready complete check both pass. This is a synthetic CPU diagnostic, not Native physical or legal acceptance.
+
+The package remains `partial`: two exact primaries, all fallback compatibility and saved proofs, canonical semantic stages and independent audits remain. Current manifest SHA256: `de63b9ed9f145ab6086d28a5fc63fad964b7688bbef016e717783c8cea9c264d`. Receipt and source hashes are in `case-plan.json.wrong_direction_primary_cpu_proof`.
+
 Current returned file count is 8,599 of 8,600 after the later archived-log consolidation. The older 8,600 count below records the prior checkpoint.
 
 ## 2026-11-23 C144550 late-signal source-bound CPU proof

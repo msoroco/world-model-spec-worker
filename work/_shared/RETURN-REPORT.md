@@ -1,4 +1,8 @@
-Current return count after the three additional indexed archives is 8,599 of the 8,600-file limit; the earlier 8,600 count below is a historical checkpoint. The batch remains 29 ready and 14 partial, so the full strict gate has not passed.
+Current return count is 8,600 of the 8,600-file limit; the earlier counts below are historical checkpoints. Batch remains 29 ready and 14 partial. The full strict gate has not passed.
+
+## 2026-11-23 C144550 wrong-direction primary
+
+Constructed and CPU-proved a third distinct source-bound exact primary. The wrong-direction case commands the right indicator before a left lane departure. Compatibility, the missing-source negative, recorded-only saved processing, three-primary static receipt verification, and C144550 scoped complete check passed. The manifest binds current receipt hashes; case plan and package HANDOFF list all source and proof hashes. C144550 stays `partial` because two primaries, fallback compatibility/saved proofs, semantic stages and audits remain. Two unbound C125745 repair artifacts and an unused validation helper are archived; six active sweep diagnostics and the semantic index were restored byte-exactly. Seven small archives were consolidated into a single indexed archive to remain at the return cap. Its scoped complete check passed after restoration. See shared HANDOFF for archive recovery and SHA256.
 
 ## 2026-11-23 C144550 late-signal source-bound CPU proof
 
