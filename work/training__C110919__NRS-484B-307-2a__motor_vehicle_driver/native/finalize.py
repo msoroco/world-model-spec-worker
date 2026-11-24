@@ -155,7 +155,7 @@ def finalize(attempt: Path,output: Path):
         raise ValueError('Retain prior finalization; use a fresh attempt')
     config=json.loads(source(attempt,'config.json').read_text())
     count=config['rate_hz']*config['duration_s']
-    if count!=480:raise ValueError('Exact 480-frame contract differs')
+    if count!=600:raise ValueError('Exact 600-frame contract differs')
     native,mapping,original=joins(attempt,count)
     geometry=json.loads(source(attempt,'road_geometry.json').read_text())
     signal=measure_signal(attempt,native,geometry)
@@ -196,7 +196,7 @@ def finalize(attempt: Path,output: Path):
         'realized_observables':{'first_front_stop_line_crossing_frame':{
             'value':stop['value']['first_front_crossing_frame'],'unit':'frame',
             'method':'source-hashed sampled full-body stop-line crossing',
-            'time_window':'entire original 24 s attempt','statistic':'first',
+            'time_window':'entire original 30 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
         'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result

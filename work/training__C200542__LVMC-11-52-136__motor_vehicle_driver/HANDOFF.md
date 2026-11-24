@@ -1,15 +1,11 @@
-# LVMC-11-52-136 at C200542
+# LVMC 11.52.136 at C200542: partial CPU checkpoint
 
-Actor: `motor_vehicle_driver`. Frozen cell: `public_access_premises` / `park` / `access_aisle`.
+Frozen cell: `public_access_premises` / `park` / `access_aisle`; actor: `motor_vehicle_driver`. Exact law text: “No person shall park a vehicle in an access aisle.” The source hash is retained in `case-plan.json`. No accepted recording is available.
 
-Exact source: LVMC 11.52.136. The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: premises access-aisle parking.
+The selected controlled pair now has authored executable Native CPU drafts in `native/bundles/controlled_1/construction.json` and `native/bundles/controlled_2/construction.json`. The OpenDRIVE premises surface carries adjacent bay and aisle extents. The original Native runner plans 600 frames at 20 Hz, a vehicle parked outside or inside the aisle, four synchronized FFV1 cameras, full body corners, speed, and a FrameMap. It restores the world. Its hatching is diagnostic; it does not prove the official access-aisle designation or public-access status.
 
-Controlled variable: `vehicle footprint overlap with access aisle`. Requested pair: park outside access aisle; park inside marked access aisle. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+The pinned offline check passed for each case. Construction SHA-256: `3151302c10b0edfb52bb80e259641a0c26ee3ca506a3d358c09f2a57b06d03eb` and `cfc015b59ceff24dab739b018f22b175c914fb371089743558033befb53c5068`. The corresponding log SHA-256 values are `40f82f484adf3a99a0e5f123544e1c04515474fbecaa6637275cb23d5872f65a` and `3eb41bf10e275486773f74d8165e817f01ffd327a35512fb168d3eb7df9dd5a7`.
 
-Statutory branch dispositions: 1. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+`native/prove_saved.py` exercised the source-bound 600-frame measurement shape with synthetic fixtures: zero stationary overlap samples outside, 480 inside. It rejected an unreviewed designation and a missing camera. Log SHA-256: `1a1d34a08dc4b51375c171d66c2f073c090b691eaa4756612f1ac0b40e290c6f`. These fixtures are diagnostic and do not represent CARLA execution. The measurer also leaves `parked_classification` for independent source review.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Access-aisle boundaries and designation must be evidenced; ordinary drive aisle or generic parking-lot stripe cannot substitute.
+Scoped `.venv-cpu/bin/python worker_check.py --assignment training__C200542__LVMC-11-52-136__motor_vehicle_driver --complete` passed. `result.json` remains `partial`. Next CPU work: make four distinct source-preserving candidates per case, run their pinned offline and compatibility proofs, validate original-source measurement and negative cases, prepare the execution manifest and independent audit, then run the assignment-scoped strict ready gate. Physical realization and designation review remain unverified.

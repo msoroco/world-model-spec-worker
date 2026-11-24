@@ -32,7 +32,7 @@
         "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1",
         "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+      "evidence_or_gap": "Primary CPU drafts exist, but exact delivery manifests, authority source bindings, three distinct fallbacks per case, saved processing, compatibility proofs, independent audits and physical realization remain incomplete."
     }
   ],
   "neutral_baseline": {
@@ -50,7 +50,9 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "construction_draft": "draft-parking/controlled_1/primary/construction.json",
+      "draft_status": "primary Native runner and offline CPU proof passed; exact delivery selection and authority source binding incomplete"
     },
     {
       "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2",
@@ -62,7 +64,9 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "construction_draft": "draft-parking/controlled_2/primary/construction.json",
+      "draft_status": "primary Native runner and offline CPU proof passed; exact delivery selection and authority source binding incomplete"
     }
   ],
   "comparisons": [
@@ -85,7 +89,7 @@
   "mandatory_observation_terms": [
     {
       "term": "st.parking_space",
-      "purpose": "designation municipal — the space designated for City vehicles",
+      "purpose": "designation municipal \u2014 the space designated for City vehicles",
       "status": "measurement_mapping_pending"
     },
     {
@@ -95,7 +99,7 @@
     },
     {
       "term": "ru.official_vehicle",
-      "purpose": "kind municipal — the entitled class",
+      "purpose": "kind municipal \u2014 the entitled class",
       "status": "measurement_mapping_pending"
     },
     {
@@ -118,7 +122,7 @@
     {
       "name": "st.parking_space",
       "mandatory": true,
-      "reason": "designation municipal — the space designated for City vehicles"
+      "reason": "designation municipal \u2014 the space designated for City vehicles"
     },
     {
       "name": "dev.regulatory_sign",
@@ -128,7 +132,7 @@
     {
       "name": "ru.official_vehicle",
       "mandatory": true,
-      "reason": "kind municipal — the entitled class"
+      "reason": "kind municipal \u2014 the entitled class"
     },
     {
       "name": "ru.subject",
@@ -159,10 +163,10 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
     "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
     "No CARLA execution or accepted recording is claimed.",
-    "City Council designation and posted/marked space need independent context; City-vehicle status is a legal classification, not inferred from color or blueprint."
+    "City Council designation and posted/marked space need independent context; City-vehicle status is a legal classification, not inferred from color or blueprint.",
+    "Two primary Native draft bundles pass pinned offline CPU checks; City Council designation, due posting/marking, jurisdiction and non-City vehicle status still need independent source bindings; positive/negative compatibility and saved processing are not built."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -170,7 +174,105 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
+    "Primary CPU drafts exist, but exact delivery manifests, authority source bindings, three distinct fallbacks per case, saved processing, compatibility proofs, independent audits and physical realization remain incomplete."
   ],
-  "source_context_review": "City Council designation and posted/marked space need independent context; City-vehicle status is a legal classification, not inferred from color or blueprint."
+  "source_context_review": "City Council designation and posted/marked space need independent context; City-vehicle status is a legal classification, not inferred from color or blueprint.",
+  "source_observation_mapping": [
+    {
+      "term": "st.parking_space",
+      "measurement": "st_parking_space_source_measure",
+      "evidence": "Original Native parking-inventory.json plus independent source review; no legal verdict",
+      "channels": [
+        "parking-inventory.json"
+      ],
+      "source_refs": [
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/assignment.json",
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/witnesses.json"
+      ],
+      "fields": [
+        "city_space_polygon_xy_m",
+        "council_designation_source_id"
+      ]
+    },
+    {
+      "term": "dev.regulatory_sign",
+      "measurement": "dev_regulatory_sign_source_measure",
+      "evidence": "Original Native parking-inventory.json plus independent source review; no legal verdict",
+      "channels": [
+        "parking-inventory.json"
+      ],
+      "source_refs": [
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/assignment.json",
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/witnesses.json"
+      ],
+      "fields": [
+        "posting_or_marking_source_id",
+        "posting_space_id"
+      ]
+    },
+    {
+      "term": "ru.official_vehicle",
+      "measurement": "ru_official_vehicle_source_measure",
+      "evidence": "Original Native parking-inventory.json plus independent source review; no legal verdict",
+      "channels": [
+        "parking-inventory.json"
+      ],
+      "source_refs": [
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/assignment.json",
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/witnesses.json"
+      ],
+      "fields": [
+        "subject_city_vehicle",
+        "subject_status_source_id"
+      ]
+    },
+    {
+      "term": "ru.subject",
+      "measurement": "ru_subject_source_measure",
+      "evidence": "Original Native vehicle-poses.jsonl plus independent source review; no legal verdict",
+      "channels": [
+        "vehicle-poses.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/assignment.json",
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/witnesses.json"
+      ],
+      "fields": [
+        "vehicle_id",
+        "blueprint_id"
+      ]
+    },
+    {
+      "term": "drv.standing_or_parked",
+      "measurement": "drv_standing_or_parked_source_measure",
+      "evidence": "Original Native vehicle-poses.jsonl plus independent source review; no legal verdict",
+      "channels": [
+        "vehicle-poses.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/assignment.json",
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/witnesses.json"
+      ],
+      "fields": [
+        "speed_mps",
+        "time_s"
+      ]
+    },
+    {
+      "term": "rel.occupies",
+      "measurement": "rel_occupies_source_measure",
+      "evidence": "Original Native vehicle-poses.jsonl plus independent source review; no legal verdict",
+      "channels": [
+        "vehicle-poses.jsonl"
+      ],
+      "source_refs": [
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/assignment.json",
+        "inputs/training__C150129__LVMC-11-52-340__motor_vehicle_driver/witnesses.json"
+      ],
+      "fields": [
+        "vehicle_xy_m",
+        "bbox_half_length_m"
+      ]
+    }
+  ]
 }

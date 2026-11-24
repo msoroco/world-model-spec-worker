@@ -84,7 +84,7 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     for name,values in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
                         ('video_frames.jsonl',mapping),('native_samples.jsonl',native),
                         ('body_history.jsonl',body)]:write_rows(destination/name,values)
-    (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':480,
+    (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':600,
                                                                    'synthetic_diagnostic':True}))
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
     (destination/'channels').mkdir()
@@ -109,8 +109,8 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     for name in ('overview','approach','reference_corner','driver_reference'):
         size=sizes[name] if full_resolution else '32x32'
         subprocess.run([str(ROOT/'.runtime-work/linux_arm64/ffmpeg'),'-nostdin','-hide_banner','-loglevel','error','-y',
-            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=24',
-            '-frames:v','480','-c:v','ffv1',str(destination/(name+'.mkv'))],
+            '-f','lavfi','-i',f'color=c=black:s={size}:r=20:d=30',
+            '-frames:v','600','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=120)
     if full_resolution:
         # Retained graph topology is diagnostic software input. Frame/pose and
@@ -160,7 +160,7 @@ def run():
             from worker_exchange.measurement_contract import verify_report
             contract=json.loads((FOLDER/'draft-candidates'/case/'measurement-contract.json').read_text())
             verify_report(contract,report,positive)
-            assert report['original_joins']['frames']==480
+            assert report['original_joins']['frames']==600
             assert result['target_checks'][0]['matched']
             assert result['maneuver_completed']
             (negative/'road_geometry.json').unlink()
@@ -174,7 +174,7 @@ def run():
                             'negative_exit_code':failure.returncode,
                             'analysis_sha256':sha(positive/'analysis-report.json'),
                             'result_sha256':sha(positive/'result.json'),
-                            'source_unchanged':True,'video_decoded':4,'frames':480,
+                            'source_unchanged':True,'video_decoded':4,'frames':600,
                             'scope':'synthetic saved finalization only; no CARLA/physical/acceptance'})
     return records
 

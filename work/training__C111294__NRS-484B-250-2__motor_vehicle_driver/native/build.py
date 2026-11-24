@@ -9,7 +9,7 @@ CASE = HERE.parent
 ROOT = CASE.parents[1]
 SOURCE = ROOT / "inputs" / CASE.name / "assignment.json"
 PLAN = CASE / "case-plan.json"
-SOURCE_SHA = "91097a36e8dbbb1493a174ebacd22e566df58d0e914af050a9f8a8e990ed83cd"
+SOURCE_SHA = "d005cde0eec41f63fcc0dc8aedb3a3d81c39daa3ed8b2d193fca4161769dd738"
 RATE = 20
 FRAMES = 600
 CASES = ("controlled_1", "controlled_2")
@@ -102,7 +102,7 @@ def build():
         raise ValueError("Frozen assignment changed")
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    if (plan["source_law"]["text"] != source["law_record"]["text"] or
+    if (plan["source_law"]["text"] != source["law"]["text"] or
             source["actor"] != "motor_vehicle_driver" or
             {k: source["cell"][k] for k in ("layout", "maneuver", "control")} !=
             {"layout": "intersection", "maneuver": "travel", "control": "other_vehicle"}):
@@ -121,7 +121,7 @@ def build():
                    "case_id": CASE.name + "__" + suffix, "candidate_id": candidate,
                    "assignment_sha256": SOURCE_SHA, "case_plan_sha256": sha(PLAN),
                    "road_sha256": sha(bundle / "crossroads.xodr"), "tracks_sha256": sha(track),
-                   "source_text": source["law_record"]["text"], "rate_hz": RATE, "frames": FRAMES,
+                   "source_text": source["law"]["text"], "rate_hz": RATE, "frames": FRAMES,
                    "ego_highway_road_ids": [250, 251, 252], "right_other_highway_road_ids": [253, 254, 255],
                    "ego_entry_boundary_x_m": -20, "other_entry_boundary_y_m": -20,
                    "requested_speed_mps": speed, "camera_policy": camera,

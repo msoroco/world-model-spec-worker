@@ -18,7 +18,7 @@ REQUIRED = {
 def audit():
     source = json.loads(SOURCE.read_text())
     plan = json.loads(PLAN.read_text())
-    law = source["law_record"]["text"]
+    law = source["law"]["text"]
     if sha(SOURCE) != SOURCE_SHA or plan["source_law"]["text"] != law:
         raise ValueError("Frozen law or plan source changed")
     if any(fragment not in law for fragment in REQUIRED.values()):

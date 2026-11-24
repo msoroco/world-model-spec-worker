@@ -1,15 +1,13 @@
 # NRS-484B-600-1e at C131055
 
-Actor: `motor_vehicle_driver`. Frozen cell: `multilane_roundabout` / `exit_roundabout` / `lane_allocation`.
+Status: **partial**. No selected delivery case, original CARLA motion, measured speed, or accepted equivalence is claimed.
 
-Exact source: NRS 484B.600(1)(e). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: selected assignment branch.
+Actor: `motor_vehicle_driver`. Frozen cell: `multilane_roundabout` / `exit_roundabout` / `lane_allocation`. Exact NRS 484B.600(1)(e) prohibits driving or operating any vehicle at a rate greater than 80 mph. The 80 mph boundary comes from the law; the controller's requested speed does not establish actual speed. Three accepted recording membership IDs exist, but no source-hashed equivalence receipt has been established.
 
-Controlled variable: `measured speed relative to 80 mph`. Requested pair: drive below 80 mph; drive above 80 mph. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+## Executable Native CPU draft
 
-Statutory branch dispositions: 1. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 3; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+`native/geometry.py` authors a two-lane large-radius roundabout arc joined to a two-lane east exit. `native/runner.py` surveys both lanes on the arc and exit, spawns a vehicle on the outer arc lane, follows lane waypoints through the exit with steering and speed control, records 600 post-tick original velocity/pose/lane rows with a `FrameMap`, captures four synchronized FFV1 camera streams, and restores the prior world in `finally`. `native/measure.py` verifies frame/time/subject/survey joins and computes maximum measured mph and above-80 samples from saved velocity. It requires actual traversal from arc road 1 to exit road 2 and makes no legal conclusion. The below-80 and above-80 controller requests are 29 and 38 m/s; achieved Native speeds remain unobserved.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
+`build-draft.py` bundles the above-80 request as an unselected primary in `draft-roundabout/above_80_request/primary/construction.json` (SHA-256 `25743fcb3a4ea93629243e9afcb8c0e9ac85c78f459246683b59b058d4e039e7`). Pinned CPU command: `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131055-proof" TMPDIR="$PWD/.runtime-work/c131055-tmp" .venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/draft-roundabout-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --output .runtime-work/c131055-offline-01 --python "$PWD/.venv-cpu/bin/python"` passed with `offline_passed: true` and `simulation_started: false`; see `roundabout-offline.log`.
 
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Statutory boundary is 80 mph. Use measured full-trace speed and a disclosed sampling/uncertainty convention; no model performance metric substitutes for the law.
+Next CPU work: review the three accepted recordings against current speed and cell requirements; author the below-80 comparison and source-preserving fallbacks; run current public positive/negative compatibility and recorded-only saved processing; prepare semantic proposals and independent acceptance/comparison audits; then run the scoped strict gate. Local Native execution must verify arc/exit connectivity, high-speed lane retention, actual velocity and original pixels before physical claims.

@@ -60,7 +60,7 @@ def check(bundle):
     speed, camera, stop = POLICIES[candidate]
     if (cfg["assignment_id"] != CASE.name or cfg["assignment_sha256"] != SOURCE_SHA or
             cfg["case_plan_sha256"] != sha(PLAN) or
-            cfg["source_text"] != source["law_record"]["text"] or
+            cfg["source_text"] != source["law"]["text"] or
             cfg["rate_hz"] != 20 or cfg["frames"] != FRAMES or
             cfg["ego_highway_road_ids"] != [250, 251, 252] or
             cfg["right_other_highway_road_ids"] != [253, 254, 255] or

@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 RATE_HZ=20
-FRAMES=480
+FRAMES=600
 STOP_LINE_Y_M=-14.0
 BODY_FRONT_M=2.6
 
@@ -21,7 +21,7 @@ def measure(path: Path, expected_sha256: str) -> dict:
         raise ValueError('Unsupported source kind')
     frames=record.get('frames')
     if not isinstance(frames,list) or len(frames)!=FRAMES:
-        raise ValueError('Requires exactly 480 consecutive frames')
+        raise ValueError('Requires exactly 600 consecutive frames')
     previous_front=None
     previous_xy=None
     previous_speed=None
@@ -130,6 +130,6 @@ if __name__=='__main__':
     args=parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=True)
     for case in ('controlled_1','controlled_2'):
-        path=args.output/f'{case}-480.json'
+        path=args.output/f'{case}-600.json'
         path.write_text(json.dumps(synthetic(case),separators=(',',':'))+'\n')
         print(json.dumps(measure(path,sha256(path))))

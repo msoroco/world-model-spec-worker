@@ -22,7 +22,7 @@ def audit():
     manifest = json.loads((HERE / "manifest.json").read_text())
     if (manifest["assignment_sha256"] != sha(SOURCE) or
             manifest["case_plan_sha256"] != sha(PLAN) or len(manifest["entries"]) != 8 or
-            plan["source_law"]["text"] != source["law_record"]["text"]):
+            plan["source_law"]["text"] != source["law"]["text"]):
         raise ValueError("Source or manifest mismatch")
     pairs = {}
     joins = 0

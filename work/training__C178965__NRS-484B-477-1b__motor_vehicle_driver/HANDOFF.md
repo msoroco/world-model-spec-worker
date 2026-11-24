@@ -1,15 +1,16 @@
-# NRS-484B-477-1b at C178965
+# NRS 484B.477(1)(b) at C178965 — partial CPU construction checkpoint
 
-Actor: `motor_vehicle_driver`. Frozen cell: `paved_road` / `park` / `other_vehicle`.
+The fixed paved-road/park/other-vehicle cell, exact source text and two controlled case IDs are preserved. The witness allows a paved road to be constructed as an alley only if independent alley-definition facts hold. No accepted recording is reused. The statutory local-ordinance qualifier remains operative and unresolved.
 
-Exact source: NRS 484B.477(1)(b). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: park.
+## New construction and proof
 
-Controlled variable: `measured unobstructed alley width`. Requested pair: park in alley leaving at least 10 feet clear; park in alley leaving less than 10 feet clear. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+- `native/geometry.py` authors two open-ended 100 m paved road widths (7.5 m and 6.0 m) on the same case plan. `native/runner.py` places a separate other vehicle, drives and brakes the subject toward it, surveys original Native lane width, and retains 600 frame identities at 20 Hz with four FFV1 camera streams, both measured vehicle poses/extents and world restoration. Actual physical geometry and parking remain unobserved.
+- `alley_measure.py` computes the unobstructed gap between both measured vehicle footprints for each cross-section where their longitudinal extents overlap. It retains every halt-proxy frame, reports exact 3.048 m (10 ft) comparisons, and emits no legal verdict. The regular and optimized CPU proof covers 600 frames, a 3.9 m versus 2.4 m controlled gap, and rejection of missing ordinance, alley-definition, identity and frame sources.
+- `finalize_alley.py` joins original saved pose and FrameMap identities, checks four camera frame identities and source files, and invokes the source-bound measure. `prove_saved.py` executes a positive saved-only fixture and rejects missing camera, missing ordinance source, altered Native frame and missing pose file. It does not decode video or claim physical acceptance.
+- Both exact primary construction drafts passed pinned `runtime.py offline`; the assignment-scoped `worker_check.py --complete` passed. The strict scoped ready command fails because the truthful result status is partial.
 
-Statutory branch dispositions: 2. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+Construction hashes: controlled_1 `0a44aed494339ea835ec65e54c6511562dbe74306846c382320ecb7653f02a6a`; controlled_2 `9dc8139addc991e71b8e679eaed2b69aafc2b51f0ba27df6f3d80a12708eca8d`. Width proof `e00a1a6f8f190126d21fad4bfd5a3ef736d9c3b89db39ea42b1f38b93cb2c008`; saved join proof `216d7fd7b6faf21c308c8fbe89900b8b8b1f65694abea949a296db55673e438f`; offline controlled_1 `7eeec4279a0c2fdc3c6198ba2bc0476beefe587763d590de23febd7c8e91bc4e`; offline controlled_2 `3280c71014e32313a95a97f8ed762447f56a8cf75a542b95252c479d51b24779`; scoped check `1947f2636b10c1237adeecdc9c1a575c581e8f3251a364a702635833d503a687`.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
+## Remaining worker-owned CPU work
 
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: The 10-foot clear-width duty concerns an alley and is subject to local ordinance. Measure available width across the vehicle footprint, not just centerline clearance.
+Bind independent facts that this is a public highway alley in a city block, providing rear access to abutting property, not a cul-de-sac; identify local jurisdiction, ordinance effect and the meaning of "any other alley" in context. Complete selected execution manifest, three distinct tested fallbacks per selected case, runtime process-saved/finalizer integration, positive/negative compatibility with real four-camera video decoding, independent acceptance and comparison audits, semantic proposals and exact queue entries. Preserve stop, stand and park alternatives when completing full statutory branch review. Rebind all affected proofs and run the strict assignment ready gate only after those parts exist.

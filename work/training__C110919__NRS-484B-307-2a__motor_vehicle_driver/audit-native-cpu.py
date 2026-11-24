@@ -13,11 +13,11 @@ def module(name):
 def audit():
     source=json.loads((HERE.parent.parent/'inputs'/HERE.name/'assignment.json').read_text())
     geom=module('geometry');eng=module('engineering');meas=module('measure')
-    assert source['law_record']['id']=='NRS-484B-307-2a'
+    assert source['law']['id']=='NRS-484B-307-2a'
     assert source['cell']['maneuver']=='right_turn' and source['cell']['control']=='traffic_light'
-    assert 'circular green alone' in source['law_record']['text']
-    assert 'unless another device' in source['law_record']['text']
-    assert 'must yield the right-of-way' in source['law_record']['text']
+    assert 'circular green alone' in source['law']['text']
+    assert 'unless another device' in source['law']['text']
+    assert 'must yield the right-of-way' in source['law']['text']
     assert geom.check()['passed']
     assert (NATIVE/'road.xodr').read_text()==geom.open_drive()
     assert json.loads((NATIVE/'route.json').read_text())==geom.route()
@@ -32,24 +32,24 @@ def audit():
         assert len({json.dumps(x['knobs'],sort_keys=True) for x in candidates})==4
         for x in candidates[1:]:
             assert sum(x['knobs'][k]!=candidates[0]['knobs'][k] for k in candidates[0]['knobs'])==1
-        path=NATIVE/'fixtures'/(case+'-480.json')
+        path=NATIVE/'fixtures'/(case+'-600.json')
         result=meas.measure(path,meas.sha256(path))
-        assert result['circular_green_frames']==480 and result['turn_prohibition_absent']
+        assert result['circular_green_frames']==600 and result['turn_prohibition_absent']
         assert not result['physical_behavior_observed'] and result['legal_verdict'] is None
         pair.append(result)
     assert [x['yielded_to_lawful_users'] for x in pair]==[True,False]
     assert [x['turn_entry_frame'] for x in pair]==[181,145]
     assert [x['last_pedestrian_conflict_frame'] for x in pair]==[160,160]
     assert [x['last_cross_traffic_conflict_frame'] for x in pair]==[160,160]
-    a=json.loads((NATIVE/'fixtures/controlled_1-480.json').read_text())['frames']
-    b=json.loads((NATIVE/'fixtures/controlled_2-480.json').read_text())['frames']
+    a=json.loads((NATIVE/'fixtures/controlled_1-600.json').read_text())['frames']
+    b=json.loads((NATIVE/'fixtures/controlled_2-600.json').read_text())['frames']
     for x,y in zip(a,b):
         for k in ('frame','time_s','signal_state','signal_governs_ego','turn_prohibition_present',
                   'approach_lane','intersecting_road','pedestrian_conflict_occupied',
                   'cross_traffic_conflict_occupied'):
             assert x[k]==y[k]
     with tempfile.TemporaryDirectory() as temp:
-        bad=Path(temp)/'bad.json';modified=json.loads((NATIVE/'fixtures/controlled_1-480.json').read_text())
+        bad=Path(temp)/'bad.json';modified=json.loads((NATIVE/'fixtures/controlled_1-600.json').read_text())
         modified['frames'][0]['signal_state']='steady_red';bad.write_text(json.dumps(modified))
         try:meas.measure(bad,meas.sha256(bad))
         except ValueError as exc:assert 'green' in str(exc)

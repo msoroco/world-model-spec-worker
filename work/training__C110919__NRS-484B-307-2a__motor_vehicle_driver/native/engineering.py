@@ -9,7 +9,7 @@ CASES = ('controlled_1','controlled_2')
 CANDIDATES = ('primary','fallback1','fallback2','fallback3')
 BASE = {'stop_hold_s':0.0, 'route_tracking_lookahead_m':5.0,
         'yield_clearance_margin_s':1.0, 'overview_fov_deg':90.0,
-        'rate_hz':20, 'duration_s':24.0,
+        'rate_hz':20, 'duration_s':30.0,
         'camera_profile':['overview','approach','reference_corner','driver_reference']}
 CHANGES = {'primary':{},
            'fallback1':{'route_tracking_lookahead_m':3.0},
