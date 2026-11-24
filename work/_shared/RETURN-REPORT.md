@@ -965,3 +965,17 @@ C144550 gained a read-only Native source preflight and three reproducible reject
 - `result.json` contains 71 existing log-backed test records with matching hashes; the unit test record remains exit code 1 after six manifest-hash failures. The six staged cases need new per-case physical preparation receipts from their source-bound diagnostics, current manifest proof binding, and then a fresh full unit run. Other exact case/fallback/comparison and queue integration checks remain before a truthful ready status.
 
 2026-11-24 verification addendum: C125751 scoped strict gate passed again after all four historical v2 saved JSON files were archived. C125745 scoped nonready check passed; C125745 remains partial.
+
+## 2026-11-24 C125745 first staged physical receipt
+
+Qualified `c125745-1-0000` passed fresh synthetic source-bound complete, incomplete, missing-evidence and lifecycle fixtures. The four result documents and `physical-proofs/c125745-1-0000/receipt.json` are returned, command-backed, and pass the current `physical_preparation` validator. The scoped nonready check passes. Five staged cases and the affected saved/comparison/queue proofs remain. The 75-test suite currently has 69 passes and six manifest-hash failures in previously recorded fallback physical plans; `cpu-tests.log` records that failure. C125745 remains partial and claims no Native, physical, or legal acceptance.
+
+Ten historical C144550 diagnostic and preflight logs were archived byte-exactly in `work/_shared/c144550-historical-delivery-source-logs-20261124.tar.xz` (SHA-256 `c0d5d732561fba053471d9fee13a8482a4518aefbe06327880c45904b8cd1aca`) to recover returned-file capacity. The old audit document still names standalone paths; restore its archive members before treating it as a current ready proof. C144550 scoped nonready check passed and its status remains partial.
+
+## 2026-11-24 continued staged physical CPU work
+
+Pinned CPU preflight passed. C125745 now has seven validated physical preparation receipts: four original selected cases and three exact frame-axis staged cases. The three remaining hold-axis staged cases each passed fresh complete, incomplete, missing-evidence and lifecycle synthetic fixture runs; their exact compressed results, commands and hashes are retained in `case-plan.json.staged_physical_current_20261124` and independently verified. Those three still need returned receipts and manifest bindings. The 75-test suite has 69 passes and six stale manifest-hash failures for prior fallback physical plans. C125745 remains partial; no Native, physical or legal acceptance is claimed.
+
+Historical files moved byte-exactly to `work/_shared/unreferenced-and-historical-diagnostics-20261124.tar.xz` (SHA-256 `b669bffe1a57a69a736e0eef352a49570ad1a2f1020528019727dff45c73df32`): one unreferenced C125751 audit, one unreferenced C136559 processing manifest and two C144550 source-audit logs. C125751 and C136559 each passed its scoped strict gate after relocation. The C144550 diagnostic/preflight archive now holds ten prior logs at SHA-256 `c0d5d732561fba053471d9fee13a8482a4518aefbe06327880c45904b8cd1aca`; C144550 remains partial and must restore proof-named standalone log paths before ready.
+
+The supplied automatic checkpoint failure is a remote pack write/rename and push rejection, not a local whitespace finding. The worker did not run Git or alter the remote. Local work/ size and formatting were scanned separately.

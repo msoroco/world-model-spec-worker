@@ -819,3 +819,5 @@ Older result-linked logs from this package were preserved byte-exactly, includin
 2026-11-24 archive note: four unreferenced historical `opposite-turn-v2-*-saved.json` files are retained by exact path inside `work/_shared/unreferenced-historical-saved-20261124.tar.xz` (SHA-256 `71d858e40a4b538a50f50c2f8560745e89f28a1c51614a4b22f32138b80333c0`). The current active package remained ready; its scoped strict gate passed after the first three were archived.
 
 2026-11-24 verification addendum: C125751 scoped strict gate passed again after all four historical v2 saved JSON files were archived. C125745 scoped nonready check passed; C125745 remains partial.
+
+2026-11-24: The unreferenced historical `opposite-turn-v2-primary-delivery-audit.json` is preserved as an exact member of `work/_shared/unreferenced-and-historical-diagnostics-20261124.tar.xz` (SHA-256 `b669bffe1a57a69a736e0eef352a49570ad1a2f1020528019727dff45c73df32`). This assignment passed its scoped strict gate after archival.

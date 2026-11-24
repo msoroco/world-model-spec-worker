@@ -16,7 +16,7 @@ class SecondCaseTests(unittest.TestCase):
                          ['fallback1', 'fallback2', 'fallback3'])
         self.assertEqual([c['changed_knobs'] for c in case['candidates']],
                          [['other_release_frame'], ['site.camera_poses.overview'],
-                          ['capture_duration']])
+                          ['other_release_frame']])
         for candidate in [case, *case['candidates']]:
             construction = HERE / candidate['construction']
             self.assertEqual(hashlib.sha256(construction.read_bytes()).hexdigest(),

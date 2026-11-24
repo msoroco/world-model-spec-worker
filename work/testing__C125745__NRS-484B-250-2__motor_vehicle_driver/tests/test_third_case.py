@@ -55,7 +55,7 @@ class ThirdCaseTests(unittest.TestCase):
         self.assertEqual(receipt['negative_removed'], 'controller_history.jsonl')
         self.assertEqual([c['changed_knobs'] for c in third['candidates']],
                          [['ego_hold_after_clear_frames'], ['other_release_frame'],
-                          ['capture_duration']])
+                          ['other_release_frame']])
         for candidate in third['candidates']:
             fallback_path = HERE / candidate['construction']
             self.assertEqual(hashlib.sha256(fallback_path.read_bytes()).hexdigest(),
