@@ -28,15 +28,34 @@ def lines(path, values):
 
 
 def main():
-    case_id = HERE.name + '__probe_a'
-    fixture = HERE / 'current-v2-probe_a-fixture'
+    suffix = sys.argv[1] if len(sys.argv) > 1 else 'probe_a'
+    if suffix not in ('probe_a', 'probe_b'):
+        raise ValueError('Only the exact two parking probes are supported')
+    case_id = HERE.name + '__' + suffix
+    fixture = HERE / f'current-v2-{suffix}-fixture'
     fixture.mkdir(exist_ok=True)
-    construction = HERE / 'duration-600-drafts/probe_a/primary/construction.json'
+    construction = HERE / f'duration-600-drafts/{suffix}/primary/construction.json'
     bundle = json.loads(construction.read_text())
+    for item in bundle['files']:
+        if item['path'] == 'cameras.py':
+            item['content'] = item['content'].replace('"name":"intersection"',
+                '"name":"reference_corner"').replace('"name":"parking"',
+                '"name":"driver_reference"')
+        elif item['path'] == 'finalize.py':
+            item['content'] = item['content'].replace("('overview','approach','intersection','parking')",
+                "('overview','approach','reference_corner','driver_reference')")
+        elif item['path'] == 'config.json':
+            declared = json.loads(item['content'])
+            names = {'intersection': 'reference_corner', 'parking': 'driver_reference'}
+            for camera in declared['cameras']:
+                camera['name'] = names.get(camera['name'], camera['name'])
+            item['content'] = json.dumps(declared, indent=2) + '\n'
+    construction_path = HERE / f'current-v2-{suffix}-primary-construction.json'
+    write(construction_path, bundle)
     config = json.loads(next(item['content'] for item in bundle['files'] if item['path'] == 'config.json'))
     motion, trace, frames, body, evidence, graphs, native_frames = [], [], [], [], [], [], []
     for i in range(600):
-        row = sample('probe_a', i)
+        row = sample(suffix, i)
         corners = row['body_xy_m']
         center = [round(sum(v[0] for v in corners) / 4, 5), -1.75]
         vertices = [[x, y, z] for x, y in corners for z in (0.0, 1.5)]
@@ -87,11 +106,11 @@ def main():
               'native_signal_count': 0, 'source_kind': 'synthetic_cpu_fixture'}
     write(fixture / 'road_geometry.json', survey)
     write(fixture / 'context.json', {'surveyed_intersection': survey})
-    (fixture / 'road.xodr').write_text(next(item['content'] for item in bundle['files']
-                                           if item['path'] == 'road.xodr'))
+    (fixture / 'road.xodr').unlink(missing_ok=True)
+    road_content = next(item['content'] for item in bundle['files'] if item['path'] == 'road.xodr')
     write(fixture / 'capture/manifest.json',
           {'extraction_confirmed': True, 'frames': 600, 'synthetic_diagnostic': True,
-           'sources': {'road.xodr': sha(fixture / 'road.xodr'),
+           'sources': {'road.xodr': hashlib.sha256(road_content.encode()).hexdigest(),
                        'trace.jsonl': sha(fixture / 'trace.jsonl')}})
     write(fixture / 'native-capture-report.json',
           {'case_id': case_id, 'candidate_id': 'primary', 'requested_frames': 600,
@@ -108,9 +127,8 @@ def main():
             'videos': [{'path': f'{name}.mkv', 'frames': 600, 'width': width,
                         'height': height, 'fps': 20, 'color': 'black'}
                        for name, width, height in [('overview',1920,1080), ('approach',1280,720),
-                                                   ('reference_corner',1280,720), ('driver_reference',1280,720),
-                                                   ('intersection',1280,720), ('parking',1280,720)]]}
-    spec_path = HERE / 'current-v2-probe_a-fixture-spec.json'
+                                                   ('reference_corner',1280,720), ('driver_reference',1280,720)]]}
+    spec_path = HERE / f'current-v2-{suffix}-fixture-spec.json'
     write(spec_path, spec)
     sources = []
     for path in sorted(fixture.rglob('*')):
@@ -118,20 +136,22 @@ def main():
             relative = path.relative_to(fixture).as_posix()
             sources.append({'path': relative, 'source': path.relative_to(ROOT).as_posix(),
                             'sha256': sha(path)})
-    recipe_path = HERE / 'current-v2-probe_a-fixture-recipe.json'
+    recipe_path = HERE / f'current-v2-{suffix}-fixture-recipe.json'
     write(recipe_path, {'format': 'worker-fixture-recipe', 'sources': sources,
                         'generator': {'source': spec_path.relative_to(ROOT).as_posix(),
                                       'sha256': sha(spec_path)}})
-    contract = json.loads((HERE / 'draft-candidates/probe_a/measurement-contract.json').read_text())
+    contract = json.loads((HERE / f'draft-candidates/{suffix}/measurement-contract.json').read_text())
     contract['format'] = 'worker-measurement-contract'
-    contract_path = HERE / 'current-v2-probe_a-measurement-contract.json'
+    contract_path = HERE / f'current-v2-{suffix}-measurement-contract.json'
     write(contract_path, contract)
     manifest = json.loads((HERE / 'draft-execution-manifest-600.json').read_text())
-    manifest['cases'] = [manifest['cases'][0]]
+    manifest['cases'] = [next(case for case in manifest['cases'] if case['case_id'] == case_id)]
     manifest['cases'][0]['candidates'] = []
     manifest['cases'][0]['fixture_recipe'] = recipe_path.relative_to(ROOT).as_posix()
     manifest['cases'][0]['measurement_contract'] = contract_path.name
-    manifest_path = HERE / 'current-v2-probe_a-primary-manifest.json'
+    manifest['cases'][0]['construction'] = construction_path.name
+    manifest['cases'][0]['construction_sha256'] = sha(construction_path)
+    manifest_path = HERE / f'current-v2-{suffix}-primary-manifest.json'
     write(manifest_path, manifest)
     print(json.dumps({'manifest_sha256': sha(manifest_path), 'recipe_sha256': sha(recipe_path),
                       'spec_sha256': sha(spec_path), 'sources': len(sources)}))

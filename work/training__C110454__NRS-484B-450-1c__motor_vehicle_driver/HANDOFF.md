@@ -1,3 +1,13 @@
+# Current v2 two-primary CPU proof — 2026-11-23
+
+The package remains **partial and unselected**. `build-current-v2-primary.py` builds two 30-second/600-frame source-hashed JSON-graph recipes and exact primary bundles. Both use the current four named cameras: overview, approach, reference_corner and driver_reference. Synthetic retained Native rows, body history, frame map, map survey, evidence and adapter graphs are separately source inventoried. The earlier three-frame pinned-fixture blocker no longer applies to this runtime.
+
+Both primaries passed `runtime.py compatibility`, including exact analysis, Native validation, mandatory observations, Core/Lean, composed four-camera video, full decode, selected measurement contract and missing-`native_samples.jsonl` negative. Both then passed actual `runtime.py process-saved` with originals preserved and 600 final decoded frames. The independent `audit-current-v2-pair.py` reproduces manifest/construction/recipe/contract bindings, receipt hashes, source negative and the controlled sampled overlap contrast: 0.0 m² outside versus 11.44 m² inside, with 360 parked frames each. Durable summary: `current-v2-primary-pair-proof.json` SHA-256 `c45ce19b7b790c79b650043bca9e952ef155cd0846f5c546048517f347fc138a`. The exact compatibility, negative and saved-processing receipts are also copied under this assignment.
+
+These are synthetic CPU diagnostics only; original Native motion, visible pixels, physical completion and statutory/acceptance judgment remain unobserved. Worker-owned CPU work remains: select exact cases after source/evidence review, current-risk fallback review with at most two tested alternatives per case, the four exception comparisons, semantic proposals, independent delivery/comparison audits, and ordered queue integration by the lead. The previous eight 600-frame drafts remain historical construction proposals; their old camera names and three fallback entries are not current selected proof.
+
+---
+
 # Current 600-frame CPU checkpoint — 2026-11-23
 
 The package remains **partial and unselected**. The earlier 24-second/480-frame bundles and portable receipts below are historical diagnostics. `build-600-drafts.py` preserves them while creating eight separate 30-second/600-frame exact Native construction bundles at `duration-600-drafts/`, with manifest `draft-execution-manifest-600.json` (SHA-256 `83632e5a83db9d0c13835dc6d9cf60eb358a26f1a07968314a53851483057dc8`). Both probes keep the same cell, actor, route topology, four cameras, 20 Hz and engineering controls, with only the parking footprint target differing. Each has primary and three distinct fallback knobs. These bundles are proposals and have not run in CARLA.

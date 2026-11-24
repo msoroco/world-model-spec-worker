@@ -20,12 +20,15 @@ def create_media():
     media = OUT / 'media'
     media.mkdir(parents=True, exist_ok=True)
     hashes = {}
+    dimensions = {'overview': '1920x1080', 'approach': '1280x720',
+                  'reference_corner': '1280x720', 'driver_reference': '1280x720'}
     for name in CAMERAS:
         path = media / (name + '.mkv')
         result = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
                                  '-y', '-f', 'lavfi', '-i',
-                                 'color=c=black:s=32x32:r=20', '-frames:v', str(FRAMES),
-                                 '-c:v', 'ffv1', str(path)], capture_output=True,
+                                 'color=c=black:s=' + dimensions[name] + ':r=20', '-frames:v', str(FRAMES),
+                                 '-c:v', 'ffv1', '-threads', '1', '-fflags', '+bitexact',
+                                 '-flags:v', '+bitexact', str(path)], capture_output=True,
                                 text=True, timeout=120)
         if result.returncode:
             raise RuntimeError('Diagnostic camera encoding failed: ' + result.stderr)

@@ -8,7 +8,7 @@ import subprocess
 from check import check
 from request import FRAMES, RATE
 
-CAMERAS = ('overview', 'approach', 'first_intersection', 'driver_reference')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):

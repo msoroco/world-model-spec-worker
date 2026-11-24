@@ -43,7 +43,7 @@ def build():
     proposals=[]
     for case in eng.CASES:
         case_id=FOLDER.name+'__'+case
-        contract={'format':'worker-measurement-contract-v1','case_id':case_id,
+        contract={'format':'worker-measurement-contract','case_id':case_id,
                   'requirements':[{'disposition_index':index,
                                    'requirement':dispositions[index]['requirement'],
                                    'source':dispositions[index]['source'],
@@ -61,6 +61,9 @@ def build():
                'measurement_contract':str(contract_path.relative_to(FOLDER)),
                'measurement_procedure':{'entrypoint':'finalize.py','output_schema':'c110919-saved-analysis-v1'},
                'candidates':[]}
+        recipe=FOLDER/('current-v2-primary-recipe.json' if case=='controlled_1' else 'current-v2-controlled_2-recipe.json')
+        if recipe.is_file():
+            entry['fixture_recipe']=str(recipe.relative_to(ROOT))
         for candidate in eng.CANDIDATES:
             config=json.loads((NATIVE/'config.json').read_text())
             config.update(case_id=case_id,selected_case_id=case_id,case_suffix=case,

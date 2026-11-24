@@ -149,6 +149,41 @@ def video_frames(path: Path):
         raise ValueError('Source video decode failed: '+path.name)
     return int(completed.stdout.strip())
 
+def rebuild_channels(attempt: Path, native: list[dict], mapping: list[dict],
+                     geometry: dict, config: dict):
+    """Create derived observations from retained source rows, never fixture channels."""
+    destination=attempt/'channels'
+    if destination.exists():raise ValueError('Retain prior derived channels; use a fresh attempt')
+    destination.mkdir()
+    names={item['name'] for item in config['recording_description']['channels']}
+    expected={'dev.traffic_signal','st.stop_line','st.crosswalk','drv.stopped',
+              'kin.velocity','drv.extreme_lane','st.one_way_roadway',
+              'drv.yields_to','native_body_pose_control','camera_frame_join'}
+    if names!=expected:raise ValueError('Declared saved observation channels differ')
+    for name in sorted(names):
+        lines=[]
+        for sample, frame in zip(native,mapping):
+            if sample['native_frame']!=frame['native_frame'] or \
+                    abs(sample['time_s']-frame['time_s'])>1e-4:
+                raise ValueError('Derived channel source frame join differs')
+            if name=='dev.traffic_signal':
+                value={'observed_state':sample['signal_state_observed'],
+                       'native_actor_id':geometry['signal_actor_id']}
+            elif name=='st.stop_line':value=geometry['stop_line_y_m']
+            elif name=='st.crosswalk':value=geometry['nearest_crosswalk_y_m']
+            elif name=='drv.stopped':value=sample['speed_mps']<.05
+            elif name=='kin.velocity':value=sample['speed_mps']
+            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_right']
+            elif name=='st.one_way_roadway':value=geometry['lanes']
+            elif name=='drv.yields_to':value={
+                'walker_conflict_occupied':sample['walker_conflict_occupied'],
+                'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied']}
+            elif name=='native_body_pose_control':value=sample
+            else:value=frame
+            lines.append(json.dumps({'time_s':sample['time_s'],'value':value},
+                                    allow_nan=False)+'\n')
+        (destination/(name+'.jsonl')).write_text(''.join(lines))
+
 def finalize(attempt: Path,output: Path):
     attempt=attempt.resolve();output=output.resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -168,6 +203,7 @@ def finalize(attempt: Path,output: Path):
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):
         raise ValueError('Original source video frame count differs')
+    rebuild_channels(attempt,native,mapping,geometry,config)
     expected=config['case_suffix']=='controlled_1'
     observed=turn['value']['yielded_to_lawful_users']
     recording=[]
@@ -198,7 +234,9 @@ def finalize(attempt: Path,output: Path):
             'method':'source-hashed sampled full-body stop-line crossing',
             'time_window':'entire original 30 s attempt','statistic':'first',
             'reference':'native_samples.jsonl'}},
-        'provenance_kind':'native','accepted':False,'legal_verdict_claimed':False}
+        'provenance_kind':('synthetic_local_diagnostic' if json.loads(
+            source(attempt,'capture/manifest.json').read_text()).get('synthetic_diagnostic')
+            else 'native'),'accepted':False,'legal_verdict_claimed':False}
     from worker_exchange.native_output import validate_result
     validate_result(result)
     report={'format':'c110919-saved-analysis-v1','case_id':config['case_id'],

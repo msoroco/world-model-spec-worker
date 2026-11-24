@@ -5,7 +5,6 @@ import importlib.util
 import json
 import math
 import os
-import pickle
 from pathlib import Path
 import shutil
 import subprocess
@@ -24,7 +23,8 @@ def write_rows(path,values):
     path.write_text(''.join(json.dumps(value,allow_nan=False)+'\n' for value in values))
 def digest(path):
     return {str(p.relative_to(path)):sha(p) for p in path.rglob('*')
-            if p.is_file() and p.name not in ('analysis-report.json','result.json')}
+            if p.is_file() and p.name not in ('analysis-report.json','result.json')
+            and 'channels' not in p.relative_to(path).parts}
 
 def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     destination.mkdir();(destination/'capture').mkdir()
@@ -87,24 +87,6 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':600,
                                                                    'synthetic_diagnostic':True}))
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.lincoln.mkz_2020\n')
-    (destination/'channels').mkdir()
-    for channel in config['recording_description']['channels']:
-        name=channel['name'];values=[]
-        for i,sample in enumerate(native):
-            if name=='dev.traffic_signal':value={'observed_state':'Green','native_actor_id':601}
-            elif name=='st.stop_line':value=-14.0
-            elif name=='st.crosswalk':value=-11.0
-            elif name=='drv.stopped':value=sample['speed_mps']<.05
-            elif name=='kin.velocity':value=sample['speed_mps']
-            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_right']
-            elif name=='st.one_way_roadway':value=geometry['lanes']
-            elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied'],
-                'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied']}
-            elif name=='native_body_pose_control':value=sample
-            elif name=='camera_frame_join':value=mapping[i]
-            else:raise ValueError('Unknown channel: '+name)
-            values.append({'time_s':sample['time_s'],'value':value})
-        write_rows(destination/'channels'/(name+'.jsonl'),values)
     sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
     for name in ('overview','approach','reference_corner','driver_reference'):
         size=sizes[name] if full_resolution else '32x32'
@@ -113,20 +95,25 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
             '-frames:v','600','-c:v','ffv1',str(destination/(name+'.mkv'))],
             check=True,timeout=120)
     if full_resolution:
-        # Retained graph topology is diagnostic software input. Frame/pose and
-        # provenance are synthesized here and never presented as original CARLA.
+        # Current live JSON graph topology is diagnostic software input.
+        # Frame, pose and provenance are synthetic, never original CARLA.
         sys.path.insert(0,str(ROOT/'runtime/pipeline/scenario_pipeline'))
-        from traffic_spec_adapter.adapter import load_graph
+        from worker_exchange.fixture_generator import _graph
+        from traffic_spec_adapter.adapter import write_adapter_graph
         from geometry import open_drive
-        graph=load_graph(ROOT/'runtime/pipeline/fixtures/retained-speed/capture/native/graphs/base/00021714.pkl')
+        example=json.loads((ROOT/'runtime/pipeline/fixtures/example.json').read_text())
+        graph_spec=next(item for item in example['graphs'] if '/base/' in item['path'])
+        graph=_graph(graph_spec)
         graph_dir=destination/'capture/native/graphs/base';graph_dir.mkdir(parents=True)
         frame_rows=[]
         for item in mapping:
             frame=item['native_frame'];time=item['time_s']
             graph.graph['frame']=frame
-            (graph_dir/f'{frame:08d}.pkl').write_bytes(pickle.dumps(graph,protocol=4))
+            graph.graph['synthetic_diagnostic']=True
+            write_adapter_graph(graph,graph_dir/f'{frame:08d}.adapter.json')
             frame_rows.append({'frame':frame,'simulation_time':time,'time_s':time,
-                               'base':f'graphs/base/{frame:08d}.pkl',
+                               'adapter_graph':f'graphs/base/{frame:08d}.adapter.json',
+                               'base':f'graphs/base/{frame:08d}.adapter.json',
                                'abstract':f'graphs/abstract/{frame:08d}.pkl',
                                'synthetic_diagnostic':True})
         write_rows(destination/'capture/native/frames.jsonl',frame_rows)
@@ -145,6 +132,7 @@ def run():
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c110919-8c-saved-') as tmp:
         for case in ('controlled_1','controlled_2'):
             base=Path(tmp)/(case+'-base');make_attempt(base,case)
+            assert not (base/'channels').exists()
             positive=Path(tmp)/(case+'-positive');negative=Path(tmp)/(case+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
             before=digest(positive)
@@ -161,6 +149,10 @@ def run():
             contract=json.loads((FOLDER/'draft-candidates'/case/'measurement-contract.json').read_text())
             verify_report(contract,report,positive)
             assert report['original_joins']['frames']==600
+            assert result['provenance_kind']=='synthetic_local_diagnostic'
+            assert len(list((positive/'channels').glob('*.jsonl')))==10
+            assert all(len(path.read_text().splitlines())==600
+                       for path in (positive/'channels').glob('*.jsonl'))
             assert result['target_checks'][0]['matched']
             assert result['maneuver_completed']
             (negative/'road_geometry.json').unlink()
@@ -170,11 +162,21 @@ def run():
                                    stderr=subprocess.STDOUT,timeout=300)
             if failure.returncode==0 or 'Missing required source: road_geometry.json' not in failure.stdout:
                 raise RuntimeError('Negative missing-source diagnostic accepted: '+failure.stdout)
+            no_native=Path(tmp)/(case+'-no-native')
+            shutil.copytree(base,no_native)
+            (no_native/'native_samples.jsonl').unlink()
+            absent=subprocess.run([sys.executable,str(NATIVE/'finalize.py'),
+                '--attempt',str(no_native),'--output',str(no_native/'analysis-report.json')],
+                env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
+            if absent.returncode==0 or 'Missing required source: native_samples.jsonl' not in absent.stdout:
+                raise RuntimeError('Negative missing Native samples accepted: '+absent.stdout)
             records.append({'case':case,'positive_exit_code':success.returncode,
                             'negative_exit_code':failure.returncode,
+                            'missing_native_exit_code':absent.returncode,
                             'analysis_sha256':sha(positive/'analysis-report.json'),
                             'result_sha256':sha(positive/'result.json'),
                             'source_unchanged':True,'video_decoded':4,'frames':600,
+                            'channels_derived_from_raw':10,
                             'scope':'synthetic saved finalization only; no CARLA/physical/acceptance'})
     return records
 
