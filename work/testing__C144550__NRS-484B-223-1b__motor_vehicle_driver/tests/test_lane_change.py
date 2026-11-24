@@ -109,5 +109,44 @@ class LaneChangeTests(unittest.TestCase):
         self.assertEqual(construction.apply_indicator(vehicle,Lights,"right")["readback_state"],6)
         self.assertEqual(construction.apply_indicator(vehicle,Lights,"off")["readback_state"],4)
 
+    def test_native_control_uses_selected_lane_and_exact_indicator(self):
+        class Lights(IntFlag):
+            LeftBlinker=1
+            RightBlinker=2
+            LowBeam=4
+        ego=NS(state=Lights.LowBeam,control=None,
+               get_light_state=lambda:ego.state,
+               set_light_state=lambda state:setattr(ego,"state",state),
+               get_transform=lambda:NS(location=NS(x=0.0,y=0.0),rotation=NS(yaw=0.0)),
+               get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0),
+               apply_control=lambda control:setattr(ego,"control",control))
+        left=NS(transform=NS(location=NS(x=8.0,y=3.5)))
+        selected={"direction":"left","target":left,"target_lane_id":-2}
+        make_control=lambda **kwargs:NS(**kwargs)
+        before=construction.CASE_PREFIX+"left_signal_before_clear_gap"
+        result=construction.step_toward_marked_lane(
+            ego,selected,before,False,Lights,make_control)
+        self.assertGreater(result["control"].steer,0)
+        self.assertEqual(result["signal"]["readback_state"],5)
+        self.assertEqual(result["target_lane_id"],-2)
+        self.assertFalse(result["control"].reverse)
+        self.assertIs(result["control"],ego.control)
+        self.assertEqual(result["legal_safety_ascertainment"],"unresolved")
+        late=construction.CASE_PREFIX+"left_signal_late_clear_gap"
+        result=construction.step_toward_marked_lane(
+            ego,selected,late,False,Lights,make_control)
+        self.assertEqual(result["signal"]["readback_state"],4)
+        with self.assertRaisesRegex(ValueError,"direction differ"):
+            construction.step_toward_marked_lane(
+                ego,selected,construction.CASE_PREFIX+"right_signal_before_clear_gap",
+                False,Lights,make_control)
+        right={"direction":"right","target":NS(transform=NS(location=NS(x=8.0,y=-3.5))),
+               "target_lane_id":-3}
+        result=construction.step_toward_marked_lane(
+            ego,right,construction.CASE_PREFIX+"right_signal_before_clear_gap",
+            False,Lights,make_control)
+        self.assertLess(result["control"].steer,0)
+        self.assertEqual(result["signal"]["readback_state"],6)
+
 
 if __name__=="__main__":unittest.main()
