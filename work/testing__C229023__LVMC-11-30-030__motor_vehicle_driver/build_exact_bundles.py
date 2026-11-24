@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from case_construction import CASES
+from build_semantic_draft import recording_description
 from crosswalk_measurements import ASSIGNMENT_ID
 
 HERE = Path(__file__).resolve().parent
@@ -18,7 +19,7 @@ SOURCES = (
     "case_construction.py", "crosswalk_construction.py", "crosswalk_measurements.py",
     "native_crosswalk_capture.py", "native_crosswalk_world.py", "saved_capture_audit.py",
     "native_crosswalk_media.py", "saved_video_audit.py", "saved_crosswalk_finalizer.py",
-    "saved_comparison_audit.py",
+    "saved_comparison_audit.py", "native_crosswalk_actors.py", "native_crosswalk_session.py",
 )
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -57,13 +58,26 @@ def check():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--site')
     parser.add_argument('--output-dir')
+    parser.add_argument('--carla-host', default='127.0.0.1')
+    parser.add_argument('--carla-port', type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print('diagnostic crosswalk bundle passed: ' + case)
         return
-    raise ValueError('Reviewed road intersection and Native actor/camera sources required')
+    if not args.site or not args.output_dir:
+        raise ValueError('Reviewed road intersection site and original output directory required')
+    from case_construction import construct
+    from native_crosswalk_session import capture_case
+    proposal = construct(args.site, case, plan_path=Path(__file__).with_name('case-plan.json'))
+    import carla
+    client = carla.Client(args.carla_host, args.carla_port)
+    client.set_timeout(30.0)
+    result = capture_case(world=client.get_world(), carla=carla, proposal=proposal,
+                          output=args.output_dir)
+    print(json.dumps(result, sort_keys=True))
 
 
 if __name__ == '__main__':
@@ -85,7 +99,7 @@ class ExactBundleTests(unittest.TestCase):
 
     def test_unsourced_native_launch_rejected(self):
         with patch('sys.argv', ['runner.py', '--output-dir', '/tmp/not-used']):
-            with self.assertRaisesRegex(ValueError, 'Reviewed road intersection'):
+            with self.assertRaisesRegex(ValueError, 'Reviewed road intersection site'):
                 runner.main()
 
 
@@ -133,10 +147,7 @@ def build() -> list[dict]:
             "law_id": "LVMC-11-30-030", "cell_id": "C229023",
             "actor": "motor_vehicle_driver", "case_id": case_id,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {
-                "status": "diagnostic_only_reviewed_site_and_native_sources_pending",
-                "channels": list(CAMERAS), "rate_hz": 20, "duration_s": 45,
-            },
+            "recording_description": recording_description(),
             "files": [{"path": path, "content": content} for path, content in sorted(files.items())],
         }
         path = HERE / f"construction-{suffix}.json"

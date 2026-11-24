@@ -49,6 +49,16 @@ class SavedFinalizerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'original trace digest differs'):
                 run_analysis(negative,negative/'analysis-report.json')
             report = run_analysis(attempt,attempt/'analysis-report.json')
+            from scenario_pipeline.worker_exchange.measurement_contract import validate, verify_report
+            contract = json.loads((ROOT/'measurement-contract-precedence.json').read_text())
+            plan = json.loads((ROOT/'case-plan.json').read_text())
+            self.assertEqual(len(validate(contract,plan['requirement_dispositions'],
+                                          (ROOT/'analysis.py').read_text(),case)),4)
+            self.assertEqual(len(verify_report(contract,report,attempt)),4)
+            changed = json.loads(json.dumps(report))
+            changed['measurements']['crossing_context']['sources']['crossing-survey.json'] = '0'*64
+            with self.assertRaisesRegex(ValueError,'Measurement source hash differs'):
+                verify_report(contract,changed,attempt)
             self.assertEqual(report['measurements']['entry_time_difference_s']['method'],
                              'measure_entry_timing')
             self.assertFalse(report['physical_acceptance_claimed'])

@@ -68,7 +68,7 @@ class EntryTimingTests(unittest.TestCase):
             config = json.loads(files['config.json'])
             self.assertEqual(config['requested_entry_difference_s'],
                              planned[row['case_id']]['requested_entry_difference_s'])
-            self.assertTrue(package['diagnostic_only'])
+            self.assertFalse(package['diagnostic_only'])
 
     def test_original_entry_brackets_right_side_and_unresolved_law(self):
         result = measure(trace(), survey())

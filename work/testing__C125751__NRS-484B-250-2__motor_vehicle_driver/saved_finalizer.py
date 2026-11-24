@@ -7,6 +7,7 @@ from pathlib import Path
 
 from saved_delivery import audit
 from native_capture import _source_path
+from canonical_evidence import project
 
 
 def build_result(attempt, survey_path, video_relative):
@@ -37,6 +38,7 @@ def build_result(attempt, survey_path, video_relative):
          'tolerance':0, 'matched':measured_response == selected['requested_ego_response'],
          'physical_cause_confirmed':False, 'cause_evidence':{'status':'physical_review_pending'}}]
     manifest = json.loads((attempt/'source-manifest.json').read_text())
+    recording_description,recording_evidence=project(attempt,case_id)
     return {'case_id':case_id, 'measured_values':observation,
             'target_checks':targets, 'setup_confirmed':False,
             'behavior_attempted':False, 'maneuver_completed':False,
@@ -45,11 +47,13 @@ def build_result(attempt, survey_path, video_relative):
             'trace_reference':manifest['trace']['path'],
             'video_references':[video_relative],
             'video_frame_map_reference':manifest['frame_map']['path'],
-            'recording_description':'C125751 median-opening crossing entry timing',
-            'recording_evidence':[{'name':'original_trace','reference':manifest['trace']['path']},
-                                  {'name':'original_camera_index','reference':manifest['camera_index']['path']},
-                                  {'name':'original_primary_video','reference':video_relative}],
-            'realized_observables':observation,
+            'recording_description':recording_description,
+            'recording_evidence':recording_evidence,
+            'realized_observables':{'entry_time_difference_s':{
+                'value':measured_difference,'unit':'s',
+                'method':'first original full-body entry transition upper timestamps',
+                'time_window':'entire original episode through both entry events',
+                'statistic':'last','reference':manifest['trace']['path']}},
             'source_sha256':{'source_manifest':hashlib.sha256((attempt/'source-manifest.json').read_bytes()).hexdigest(),
                              'primary_video':decoded['video_sha256'],
                              'frame_map':packet['frame_map_sha256']},

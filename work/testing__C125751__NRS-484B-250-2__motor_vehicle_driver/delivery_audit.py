@@ -17,7 +17,8 @@ def audit(attempt, survey_path):
     observed = sources['entry_measurement']
     if result.get('case_id') != sources['case_id'] or result.get('measured_values') != observed:
         raise ValueError('saved result differs from original crossing measurement')
-    if result.get('realized_observables') != observed:
+    summary = result.get('realized_observables',{}).get('entry_time_difference_s',{})
+    if summary.get('value') != observed['ego_minus_other_upper_entry_s'] or summary.get('unit') != 's':
         raise ValueError('realized observables differ from original crossing measurement')
     targets = {row.get('target'):row for row in result.get('target_checks',[])}
     if set(targets) != {'ego_minus_other_entry_s','ego_response'}:

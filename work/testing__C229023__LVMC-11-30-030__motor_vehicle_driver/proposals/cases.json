@@ -1,0 +1,854 @@
+{
+  "cell_id": "C229023",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "crosswalk-judgment-1",
+      "target_law_id": "LVMC-11-30-030",
+      "judgment_refs": [
+        {
+          "phrase": "unmarked crosswalk at an intersection",
+          "note": "Actual road intersection, sidewalk lateral lines and curb or traveled-edge definition need original source review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source and original physical review remain necessary; no numeric legal cutoff inferred.",
+      "missing_inputs": [
+        "reviewed original intersection/crosswalk/purpose source and Native acquisition"
+      ]
+    },
+    {
+      "sweep_id": "crosswalk-judgment-2",
+      "target_law_id": "LVMC-11-30-030",
+      "judgment_refs": [
+        {
+          "phrase": "to permit a pedestrian to cross the roadway",
+          "note": "Lead stop purpose needs an independent original source; pedestrian movement alone cannot prove purpose."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source and original physical review remain necessary; no numeric legal cutoff inferred.",
+      "missing_inputs": [
+        "reviewed original intersection/crosswalk/purpose source and Native acquisition"
+      ]
+    },
+    {
+      "sweep_id": "crosswalk-judgment-3",
+      "target_law_id": "LVMC-11-30-030",
+      "judgment_refs": [
+        {
+          "phrase": "approaching from the rear",
+          "note": "Original actor body history and road direction must establish the relative approach."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source and original physical review remain necessary; no numeric legal cutoff inferred.",
+      "missing_inputs": [
+        "reviewed original intersection/crosswalk/purpose source and Native acquisition"
+      ]
+    },
+    {
+      "sweep_id": "crosswalk-judgment-4",
+      "target_law_id": "LVMC-11-30-030",
+      "judgment_refs": [
+        {
+          "phrase": "overtake and pass such stopped vehicle",
+          "note": "Original full body sequence must establish passage while the lead remains stopped; no numerical legal cutoff is supplied."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source and original physical review remain necessary; no numeric legal cutoff inferred.",
+      "missing_inputs": [
+        "reviewed original intersection/crosswalk/purpose source and Native acquisition"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared semantic reference; no additional selected recording.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "unmarked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "wait"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "permit_pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait",
+      "target_law_id": "LVMC-11-30-030",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound exact alternative and controlled comparison; no legal outcome is asserted.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "unmarked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "wait"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "permit_pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unmarked crosswalk at an intersection",
+        "to permit a pedestrian to cross the roadway",
+        "approaching from the rear",
+        "overtake and pass such stopped vehicle"
+      ],
+      "paired_probe_id": "crosswalk_stop_and_pass_contrasts",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "ego_behavior",
+        "comparison_or_standard": "observed original actor sequence",
+        "target_value_or_branch": "unmarked_wait"
+      }
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass",
+      "target_law_id": "LVMC-11-30-030",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound exact alternative and controlled comparison; no legal outcome is asserted.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "unmarked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "pass"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "permit_pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unmarked crosswalk at an intersection",
+        "to permit a pedestrian to cross the roadway",
+        "approaching from the rear",
+        "overtake and pass such stopped vehicle"
+      ],
+      "paired_probe_id": "crosswalk_stop_and_pass_contrasts",
+      "deliberate_differences": [
+        "ego_behavior"
+      ],
+      "probe": {
+        "primary_variable": "ego_behavior",
+        "comparison_or_standard": "observed original actor sequence",
+        "target_value_or_branch": "unmarked_pass"
+      }
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait",
+      "target_law_id": "LVMC-11-30-030",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound exact alternative and controlled comparison; no legal outcome is asserted.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "wait"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "permit_pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unmarked crosswalk at an intersection",
+        "to permit a pedestrian to cross the roadway",
+        "approaching from the rear",
+        "overtake and pass such stopped vehicle"
+      ],
+      "paired_probe_id": "crosswalk_stop_and_pass_contrasts",
+      "deliberate_differences": [
+        "crosswalk_kind"
+      ],
+      "probe": {
+        "primary_variable": "crosswalk_kind",
+        "comparison_or_standard": "observed original actor sequence",
+        "target_value_or_branch": "marked_wait"
+      }
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass",
+      "target_law_id": "LVMC-11-30-030",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound exact alternative and controlled comparison; no legal outcome is asserted.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "marked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "pass"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "permit_pedestrian"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unmarked crosswalk at an intersection",
+        "to permit a pedestrian to cross the roadway",
+        "approaching from the rear",
+        "overtake and pass such stopped vehicle"
+      ],
+      "paired_probe_id": "crosswalk_stop_and_pass_contrasts",
+      "deliberate_differences": [
+        "crosswalk_kind",
+        "ego_behavior"
+      ],
+      "probe": {
+        "primary_variable": "crosswalk_kind",
+        "comparison_or_standard": "observed original actor sequence",
+        "target_value_or_branch": "marked_pass"
+      }
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait",
+      "target_law_id": "LVMC-11-30-030",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound exact alternative and controlled comparison; no legal outcome is asserted.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "unmarked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "wait"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "other"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unmarked crosswalk at an intersection",
+        "to permit a pedestrian to cross the roadway",
+        "approaching from the rear",
+        "overtake and pass such stopped vehicle"
+      ],
+      "paired_probe_id": "crosswalk_stop_and_pass_contrasts",
+      "deliberate_differences": [
+        "lead_stop_purpose"
+      ],
+      "probe": {
+        "primary_variable": "lead_stop_purpose",
+        "comparison_or_standard": "observed original actor sequence",
+        "target_value_or_branch": "unmarked_other_stop_wait"
+      }
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass",
+      "target_law_id": "LVMC-11-30-030",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound exact alternative and controlled comparison; no legal outcome is asserted.",
+      "variable_assignments": {
+        "crosswalk_kind": {
+          "kind": "world_setup",
+          "value": "unmarked"
+        },
+        "ego_behavior": {
+          "kind": "controller",
+          "value": "pass"
+        },
+        "lead_stop_purpose": {
+          "kind": "world_setup",
+          "value": "other"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "lead_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original lead eight-vertex body, center and velocity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "original_actor_body_sequence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original joined ego/lead/pedestrian actor identities, bodies and speeds",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "pedestrian_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian center and actor identity every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "four_camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four original RGB camera frames joined to each Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          },
+          {
+            "name": "complete_native_source_and_pixels",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Full original actor trace and decoded four-view pixels at every Native tick",
+            "time_window": "45 s original approach, lead stop and crossing",
+            "reference_frame": "source-hashed Native world XY and elapsed time",
+            "uncertainty": "20 Hz samples and physical visibility require original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_crosswalk_geometry",
+            "unit": "source packet",
+            "method": "SHA-bound OpenDRIVE, intersection, opposite sidewalks, curb/edge and marking source where applicable"
+          },
+          {
+            "name": "lead_stop_purpose",
+            "unit": "original observer statement",
+            "method": "Independently cited and SHA-bound source distinct from pedestrian motion"
+          },
+          {
+            "name": "original_crosswalk_and_purpose",
+            "unit": "source packet",
+            "method": "Cited original road intersection, crossing geometry and independent stop-purpose source"
+          }
+        ],
+        "limitations": [
+          "Sampled motion and pixels cannot alone establish legal crosswalk status or driver purpose.",
+          "Physical passage and visibility require original Native review; legal judgment remains unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "unmarked crosswalk at an intersection",
+        "to permit a pedestrian to cross the roadway",
+        "approaching from the rear",
+        "overtake and pass such stopped vehicle"
+      ],
+      "paired_probe_id": "crosswalk_stop_and_pass_contrasts",
+      "deliberate_differences": [
+        "ego_behavior",
+        "lead_stop_purpose"
+      ],
+      "probe": {
+        "primary_variable": "ego_behavior",
+        "comparison_or_standard": "observed original actor sequence",
+        "target_value_or_branch": "unmarked_other_stop_pass"
+      }
+    }
+  ]
+}

@@ -32,6 +32,14 @@ def measure_governing_device(result):
     return result['measured_values']['governing_device_states']
 
 
+def measure_crossing_context(survey):
+    """Report surveyed physical context without deciding statutory applicability."""
+    return {'crossing_kind': survey['crossing_kind'],
+            'crossing_bounds_xy_m': survey['crossing_bounds_xy_m'],
+            'approach_road_ids': survey['approach_road_ids'],
+            'governing_device': survey['governing_device']}
+
+
 def run(attempt, output):
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
@@ -45,7 +53,12 @@ def run(attempt, output):
     evidence = {name: checksum(source(attempt, name)) for name in names}
     result_path = finalize(attempt, attempt/'crossing-survey.json', 'raw.mkv')
     result = json.loads(result_path.read_text())
+    survey = json.loads((attempt/'crossing-survey.json').read_text())
     measures = {
+        'crossing_context': {'value': measure_crossing_context(survey),
+                             'method': 'measure_crossing_context',
+                             'sources': {name: evidence[name] for name in
+                                         ('crossing-survey.json', 'source-manifest.json')}},
         'entry_time_difference_s': {'value': measure_entry_timing(result),
                                     'method': 'measure_entry_timing',
                                     'sources': {name: evidence[name] for name in

@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 from pixel_frame_index import index_attempt, read_exact, sha
 from pixel_review_export import export, selected_frames
+from pixel_review_annotations import validate as validate_annotations
 from test_saved_analysis import sealed_fixture
 
 
@@ -24,6 +25,18 @@ class PixelFrameIndexTests(unittest.TestCase):
             self.assertEqual(receipt["script_sha256"], sha(ROOT / receipt["script"]))
             self.assertIn("--pixel-index", receipt["command"])
             self.assertFalse(receipt["pixel_visibility_reviewed"])
+            human = entry["delivery_acceptance"]["pixel_review_annotations"]
+            self.assertEqual(human["script_sha256"], sha(ROOT / human["script"]))
+            self.assertIn("--review", human["command"])
+            self.assertIn("--attempt", human["command"])
+            self.assertIn("--pixel-index", human["command"])
+            self.assertIn(receipt["command"].split("--output ", 1)[1],
+                          human["command"])
+            pixel = entry["delivery_acceptance"]["pixel_index"]
+            self.assertIn(pixel["command"].split("--output ", 1)[1],
+                          human["command"])
+            self.assertFalse(human["reviewed"])
+            self.assertFalse(human["physical_acceptance_claimed"])
 
     def test_source_bound_review_export_keeps_visibility_unreviewed(self):
         scratch = REPO / ".runtime-work" / "c147332-pixel-review-tests"
@@ -48,6 +61,59 @@ class PixelFrameIndexTests(unittest.TestCase):
             index_path.write_text(json.dumps(altered) + "\n")
             with self.assertRaisesRegex(ValueError, "pixel index differs"):
                 export(attempt, index_path, base / "rejected", diagnostic=True)
+
+    def test_human_review_requires_every_source_bound_frame_and_rejects_fixture(self):
+        scratch = REPO / ".runtime-work" / "c147332-pixel-review-tests"
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            base = Path(directory)
+            attempt = base / "attempt"
+            attempt.mkdir()
+            sealed_fixture(attempt)
+            index_path = base / "index.json"
+            index_path.write_text(json.dumps(index_attempt(attempt, diagnostic=True)) + "\n")
+            export_dir = base / "images"
+            sheet = export(attempt, index_path, export_dir, diagnostic=True)
+            sheet_path = export_dir / "review-sheet.json"
+            review_path = base / "review.json"
+            review = {"case_id": sheet["case_id"], "reviewer": "synthetic protocol test",
+                      "review_sheet_sha256": sha(sheet_path),
+                      "observations": [{"image": row["image"],
+                                        "image_sha256": row["image_sha256"],
+                                        "answers": {"bus_visible": "uncertain",
+                                                    "green_arrow_legible": "uncertain",
+                                                    "lane_association_visible": "uncertain"},
+                                        "note": "synthetic frame; no visual claim"}
+                                       for row in sheet["samples"]]}
+            review_path.write_text(json.dumps(review) + "\n")
+            with self.assertRaisesRegex(ValueError, "original Native acquisition required"):
+                validate_annotations(export_dir, review_path, attempt, index_path)
+            report = validate_annotations(export_dir, review_path, attempt, index_path,
+                                          diagnostic=True)
+            self.assertEqual(report["reviewed_frames"], 12)
+            self.assertFalse(report["all_visible"])
+            self.assertFalse(report["physical_acceptance_claimed"])
+            review["observations"].pop()
+            review_path.write_text(json.dumps(review) + "\n")
+            with self.assertRaisesRegex(ValueError, "cover every"):
+                validate_annotations(export_dir, review_path, attempt, index_path,
+                                     diagnostic=True)
+            review["observations"].append({"image": "unlisted.ppm", "image_sha256": "0" * 64,
+                                           "answers": {key: "yes" for key in
+                                                       ("bus_visible", "green_arrow_legible",
+                                                        "lane_association_visible")},
+                                           "note": "unlisted"})
+            review_path.write_text(json.dumps(review) + "\n")
+            with self.assertRaisesRegex(ValueError, "identity"):
+                validate_annotations(export_dir, review_path, attempt, index_path,
+                                     diagnostic=True)
+            sheet["samples"][0]["carla_frame"] += 1
+            sheet_path.write_text(json.dumps(sheet) + "\n")
+            review["review_sheet_sha256"] = sha(sheet_path)
+            review_path.write_text(json.dumps(review) + "\n")
+            with self.assertRaisesRegex(ValueError, "sealed original frame"):
+                validate_annotations(export_dir, review_path, attempt, index_path,
+                                     diagnostic=True)
 
     def test_review_selection_requires_three_distinct_frames(self):
         self.assertEqual(selected_frames(4), [0, 2, 3])

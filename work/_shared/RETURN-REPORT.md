@@ -2,7 +2,7 @@
 
 ## Current checkpoint index
 
-Latest lead verification on 2026-11-24: substantive owner construction and exact scoped gate results are recorded at the end. Three owners continue separate CPU assignments. The batch delivery gate remains open until every package passes its own strict check.
+Latest lead verification on 2026-11-24: three owners continue C125751, C129731 and C147332, while the lead continues C229023. All four remain partial pending exact scoped strict gates. The latest substantive construction and proof results are recorded at the end.
 
 As of 2026-11-24 02:10 PT: 9 ready, 233 partial, 0 missing. Latest details are in the final dated sections. Earlier sections are historical checkpoints and may describe older counts.
 
@@ -2926,3 +2926,9 @@ The latest returned-file scan found 15,140 regular `work/` files with no UTF-8, 
 C125751 next added a saved-analysis CLI to all five exact diagnostic constructions. It checks six original source files and produces source-hashed entry timing, observed response and device-state measurements; tests reject missing survey and changed sealed trace. Fifteen focused tests, five rebuilt offline bundles, preflight and scoped static pass. The lead verified all 64 result log hashes and exact scoped strict exit 1 on truthful partial. The owner continues selected manifest, sweep, measurement contracts, compatibility and saved-only lifecycle receipts. No ready promotion.
 
 Final file scan after these updates: 15,149 regular returned files, zero UTF-8, size, trailing-whitespace, blank-EOF, conflict-marker or temporary-directory issues. Readiness remains 9 ready, 233 partial, 0 missing. The strict batch delivery gate has not passed. No Git command was run.
+
+## 2026-11-24 Native actor and session continuation
+
+C229023 now has a source-gated Native runner and actor session for all six exact diagnostic crosswalk bundles. The actor adapter verifies a separately cited SHA-bound setup file, exact case/map/blueprint kinds, original actor identities, route control and world-space body observations. The session joins 900 synchronous ticks with four original RGB streams, writes source-linked context/trace/receipt and cleans up actors and cameras. CPU tests do not establish physical motion, visibility or legal application. Forty-nine focused tests, all six refreshed pinned offline checks and scoped static pass; 76 SHA-bound result receipts match. The exact scoped strict gate exits 1 on truthful partial status. Source-reviewed site, selected delivery, semantic stages, positive/negative compatibility and independent delivery acceptance remain worker-owned CPU work. No ready promotion or Git command.
+
+C229023 later bound the six exact diagnostic cases to nine pinned semantic stages: source-exact relevance/template, four unresolved judgment observables, cell binding and case alternatives with a shared baseline. `semantic_delivery.validate` passes six selected IDs and matches each construction recording description; 50 focused tests, six refreshed exact offline checks and scoped static pass. The current result retains 13 SHA-bound proof entries; earlier construction-bound logs remain historical because the recording description changed. Exact scoped strict still exits 1 on truthful partial. Selected delivery manifest, reviewed site, positive/negative compatibility and delivery acceptance remain CPU work.

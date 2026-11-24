@@ -70,7 +70,9 @@ def source_configuration(env, case_id):
     if jurisdiction.get("city_of_las_vegas") is not True or not jurisdiction.get("source"):
         raise ValueError("Native municipal jurisdiction source missing")
     municipal = reviewed_packet(jurisdiction['source'], 'municipal jurisdiction')
-    if municipal.get('city_of_las_vegas') is not True or municipal.get('world_map') != scene.get('world_map'):
+    if (municipal.get('city_of_las_vegas') is not True or
+            municipal.get('world_map') != scene.get('world_map') or
+            municipal.get('map_sha256') != scene.get('map_sha256')):
         raise ValueError('Native municipal jurisdiction packet differs from scene')
     if inventory.get("world_map") != scene.get("world_map"):
         raise ValueError("Native asset inventory map differs from scene")

@@ -81,9 +81,14 @@ class FourCameraCapture:
                            "-f", "rawvideo", "-pix_fmt", "bgra", "-s", f'{item["width"]}x{item["height"]}',
                            "-r", "20", "-i", "pipe:0", "-an", "-c:v", "ffv1", "-threads", "1",
                            "-fflags", "+bitexact", "-flags:v", "+bitexact", str(self.output / (name + ".mkv"))]
-                self.encoders.append((name, subprocess.Popen(command, stdin=subprocess.PIPE,
-                                                              stdout=subprocess.DEVNULL,
-                                                              stderr=(self.output / (name + "-encoder.log")).open("w"))))
+                stderr_file = (self.output / (name + "-encoder.log")).open("w")
+                try:
+                    encoder = subprocess.Popen(command, stdin=subprocess.PIPE,
+                                               stdout=subprocess.DEVNULL, stderr=stderr_file)
+                except BaseException:
+                    stderr_file.close()
+                    raise
+                self.encoders.append((name, encoder, stderr_file))
             if set(self.queues) != set(CAMERAS):
                 raise ValueError("four original RGB cameras required")
         except BaseException:
@@ -99,7 +104,7 @@ class FourCameraCapture:
             expected = self.queues[name][1]["width"] * self.queues[name][1]["height"] * 4
             if len(image.raw_data) != expected:
                 raise ValueError("Native RGB byte count differs from configured dimensions")
-        for name, encoder in self.encoders:
+        for name, encoder, _ in self.encoders:
             encoder.stdin.write(bytes(images[name].raw_data))
         self.mapping.write(json.dumps(row) + "\n")
         return row
@@ -110,10 +115,13 @@ class FourCameraCapture:
         for sensor in reversed(self.sensors):
             sensor.stop()
             sensor.destroy()
-        for name, encoder in self.encoders:
-            if encoder.stdin and not encoder.stdin.closed:
-                encoder.stdin.close()
-            exit_code = encoder.wait(timeout=120)
+        for name, encoder, stderr_file in self.encoders:
+            try:
+                if encoder.stdin and not encoder.stdin.closed:
+                    encoder.stdin.close()
+                exit_code = encoder.wait(timeout=120)
+            finally:
+                stderr_file.close()
             if require_frames and exit_code:
                 raise RuntimeError("FFV1 encoder failed: " + name)
         if require_frames and self.join.count == 0:

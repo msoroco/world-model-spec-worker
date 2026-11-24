@@ -1,0 +1,58 @@
+{
+  "template_id": "LVMC-11-30-030@motor_vehicle_driver",
+  "law_id": "LVMC-11-30-030",
+  "actor": "motor_vehicle_driver",
+  "quote": "Whenever any vehicle is stopped at a marked crosswalk or at any unmarked crosswalk at an intersection to permit a pedestrian to cross the roadway, the driver of any other vehicle approaching from the rear shall not overtake and pass such stopped vehicle.",
+  "structure": {
+    "law_id": "LVMC-11-30-030",
+    "activation": {
+      "condition": "A vehicle is stopped at a marked crosswalk or an unmarked crosswalk at an intersection to permit pedestrian crossing; another driver approaches from the rear.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "The rear-approaching driver shall not overtake and pass the stopped vehicle.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Observe lead stopped state, rear approach and complete passage in original frame order.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "unmarked crosswalk at an intersection",
+        "note": "Actual road intersection, sidewalk lateral lines and curb or traveled-edge definition need original source review."
+      },
+      {
+        "phrase": "to permit a pedestrian to cross the roadway",
+        "note": "Lead stop purpose needs an independent original source; pedestrian movement alone cannot prove purpose."
+      },
+      {
+        "phrase": "approaching from the rear",
+        "note": "Original actor body history and road direction must establish the relative approach."
+      },
+      {
+        "phrase": "overtake and pass such stopped vehicle",
+        "note": "Original full body sequence must establish passage while the lead remains stopped; no numerical legal cutoff is supplied."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "crosswalk_kind",
+      "kind": "world_setup",
+      "range_or_domain": "source-marked or source-defined unmarked intersection crosswalk"
+    },
+    {
+      "name": "ego_behavior",
+      "kind": "controller",
+      "range_or_domain": "wait or pass request, measured afterward"
+    },
+    {
+      "name": "lead_stop_purpose",
+      "kind": "world_setup",
+      "range_or_domain": "independently sourced pedestrian-permitting or other purpose"
+    }
+  ]
+}

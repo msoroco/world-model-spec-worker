@@ -43,7 +43,8 @@ class NativeAdapterTests(unittest.TestCase):
             digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
             packets = {
                 'municipal': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
-                              'city_of_las_vegas': True, 'world_map': 'local'},
+                              'city_of_las_vegas': True, 'world_map': 'local',
+                              'map_sha256': digest(road)},
                 'bicycle': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
                             'human_powered': True, 'moped': False, 'blueprint_id': 'vehicle.bicycle'},
                 'rack': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
@@ -76,6 +77,23 @@ class NativeAdapterTests(unittest.TestCase):
             snapshot_sources(attempt, env, selected, CASE)
             receipt = audit_source_provenance(attempt, CASE)
             self.assertEqual(receipt['source_sha256']['road'], digest(road))
+            wrong_map = {**packets['municipal'], 'map_sha256': '0' * 64}
+            wrong_map_path = root / 'wrong-map-municipal.json'
+            wrong_map_path.write_text(json.dumps(wrong_map))
+            wrong_scene = {**scene, 'jurisdiction': {'city_of_las_vegas': True,
+                            'source': {'path': str(wrong_map_path),
+                                       'sha256': digest(wrong_map_path)}}}
+            wrong_scene_path = root / 'wrong-map-scene.json'
+            wrong_scene_path.write_text(json.dumps(wrong_scene))
+            wrong_env = {**env, 'C10307_SCENE_SOURCE': str(wrong_scene_path),
+                         'C10307_SCENE_SHA256': digest(wrong_scene_path)}
+            with self.assertRaisesRegex(ValueError, 'municipal jurisdiction packet differs'):
+                source_configuration(wrong_env, CASE)
+            wrong_attempt = root / 'wrong-map-attempt'
+            wrong_attempt.mkdir()
+            snapshot_sources(wrong_attempt, wrong_env, wrong_scene, CASE)
+            with self.assertRaisesRegex(ValueError, 'classification mismatch'):
+                audit_source_provenance(wrong_attempt, CASE)
             near_case = CASE.replace('__reference', '__pedestrian_near_rack')
             pedestrian_path = root / 'pedestrian.json'
             pedestrian_path.write_text(json.dumps({

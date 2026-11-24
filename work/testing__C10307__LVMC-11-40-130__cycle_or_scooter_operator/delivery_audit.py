@@ -61,6 +61,7 @@ def audit_source_provenance(attempt: Path, case_id: str) -> dict:
             raise ValueError('Native source provenance review missing: ' + name)
     if (packets['municipal'].get('city_of_las_vegas') is not True or
             packets['municipal'].get('world_map') != manifest['world_map'] or
+            packets['municipal'].get('map_sha256') != sources['road']['sha256'] or
             packets['bicycle'].get('human_powered') is not True or
             packets['bicycle'].get('moped') is not False or
             packets['bicycle'].get('blueprint_id') != scene.get('bicycle_blueprint_id') or

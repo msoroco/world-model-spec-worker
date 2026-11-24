@@ -1,4 +1,4 @@
-"""Build five exact timing-probe diagnostic constructions."""
+"""Build five exact source-gated timing constructions."""
 from __future__ import annotations
 
 import hashlib
@@ -44,12 +44,34 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir')
+    parser.add_argument('--survey')
+    parser.add_argument('--survey-sha256')
+    parser.add_argument('--map-source')
+    parser.add_argument('--host', default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
     case = check()
     if args.check:
         print('diagnostic entry-timing bundle passed: '+case)
         return
-    raise ValueError('Reviewed original crossing, governing device and actor sources required')
+    if not all((args.output_dir,args.survey,args.survey_sha256,args.map_source)):
+        raise ValueError('Reviewed original crossing, governing device and actor sources required')
+    survey_path = Path(args.survey).resolve()
+    map_path = Path(args.map_source).resolve()
+    if not survey_path.is_file() or not map_path.is_file():
+        raise ValueError('Reviewed original crossing source file missing')
+    if hashlib.sha256(survey_path.read_bytes()).hexdigest() != args.survey_sha256:
+        raise ValueError('Reviewed original crossing survey hash differs')
+    survey = json.loads(survey_path.read_text())
+    if hashlib.sha256(map_path.read_bytes()).hexdigest() != survey.get('opendrive_sha256'):
+        raise ValueError('Reviewed original OpenDRIVE hash differs')
+    from native_capture import capture
+    from carla_native_adapter import CarlaNativeAdapter
+    import carla
+    client = carla.Client(args.host,args.port)
+    client.set_timeout(20.0)
+    adapter = CarlaNativeAdapter(client,carla,survey)
+    capture(adapter,survey_path,args.survey_sha256,map_path,case,Path(args.output_dir).resolve())
 
 
 if __name__ == '__main__':
@@ -100,7 +122,7 @@ def build():
                   'requested_entry_difference_s': item['requested_entry_difference_s'],
                   'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
                   'cameras': list(CAMERAS), 'required_atoms': [],
-                  'diagnostic_only': True}
+                  'diagnostic_only': False}
         files = {'runner.py': RUNNER, 'entry_timing.py': (HERE/'entry_timing.py').read_text(),
                  'analysis.py': (HERE/'analysis.py').read_text(),
                  'native_capture.py': (HERE/'native_capture.py').read_text(),
@@ -114,7 +136,7 @@ def build():
                  'tests/test_bundle.py': TEST}
         construction = {'law_id': config['law_id'], 'cell_id': config['cell_id'],
                         'actor': config['actor'], 'case_id': case,
-                        'entrypoint': 'runner.py', 'diagnostic_only': True,
+                        'entrypoint': 'runner.py', 'diagnostic_only': False,
                         'recording_description': descriptions[case],
                         'files': [{'path': name, 'content': body} for name,body in files.items()]}
         suffix = case.removeprefix(AID+'__')
@@ -122,6 +144,11 @@ def build():
         path.write_text(json.dumps(construction,indent=2)+'\n')
         rows.append({'case_id': case, 'construction': path.name,
                      'construction_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                     'kind': 'delivery',
+                     'measurement_contract': 'measurement-contract-'+suffix+'.json',
+                     'measurement_contract_sha256': hashlib.sha256(
+                         (HERE/('measurement-contract-'+suffix+'.json')).read_bytes()).hexdigest(),
+                     'measurement_procedure': {'entrypoint': 'analysis.py'},
                      'candidate_risk': {'status': 'physical', 'reason': item['physical_risk']['risk']}})
     (HERE/'execution-manifest.draft.json').write_text(json.dumps({
         'assignment_id': AID, 'status': 'diagnostic_offline_only_original_sources_pending',
