@@ -1,18 +1,38 @@
 {
   "cell_id": "C158208",
   "actor": "motor_vehicle_driver",
-  "status": "draft_compatibility_probe",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
-      "target_law_id": "NRS-484B-257-2",
-      "target_type": "judgment_sweep",
-      "rationale": "Signed non-through-highway entrance, other body already inside; immediate hazard and caution remain judgments.",
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__baseline_context",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored junction and yield sign; no separate selected execution or legal outcome.",
       "variable_assignments": {
         "other_presence": {
           "kind": "world_setup",
           "value": "inside",
           "unit": "categorical"
+        },
+        "other_entrance_device": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        },
+        "officer_candidate": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "commanded_reference_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
         }
       },
       "recording_description": {
@@ -63,6 +83,15 @@
             "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
           },
           {
+            "name": "other_center_closing_valid",
+            "unit": "count",
+            "method": "original joined-frame finite-difference availability flag, 0 on first frame and 1 when a prior frame exists",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "validity of closing-rate sample only; no legal hazard meaning"
+          },
+          {
             "name": "ego_before_yield_reference",
             "unit": "count",
             "method": "complete original ego body before reviewed ordered reference",
@@ -91,22 +120,715 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "proper yield sign",
+        "proper signs",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
         "proceed cautiously",
+        "vehicles not so obligated to stop or yield",
         "immediate hazard",
-        "officer authority"
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ]
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Signed non-through-highway entrance, other body already inside; immediate hazard and caution remain judgments.",
+      "variable_assignments": {
+        "other_presence": {
+          "kind": "world_setup",
+          "value": "inside",
+          "unit": "categorical"
+        },
+        "other_entrance_device": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        },
+        "officer_candidate": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "commanded_reference_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native ego velocity at each four-camera-joined tick",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "original ego bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "original other bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_distance_to_intersection_center_m",
+            "unit": "m",
+            "method": "other body center distance to reviewed polygon centroid",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_mps",
+            "unit": "m/s",
+            "method": "finite difference of original other body-center distance",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_valid",
+            "unit": "count",
+            "method": "original joined-frame finite-difference availability flag, 0 on first frame and 1 when a prior frame exists",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "validity of closing-rate sample only; no legal hazard meaning"
+          },
+          {
+            "name": "ego_before_yield_reference",
+            "unit": "count",
+            "method": "complete original ego body before reviewed ordered reference",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_intersection_status_and_all_entrances",
+            "unit": "structured record",
+            "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+          },
+          {
+            "name": "site_and_officer_review",
+            "unit": "structured record",
+            "method": "original four-camera review bound to context and frame IDs"
+          }
+        ],
+        "limitations": [
+          "authored road status and sign geometry require original-source physical confirmation",
+          "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+          "CPU fixture colors do not prove original-pixel visibility"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "vehicles not so obligated to stop or yield",
+        "immediate hazard",
+        "traffic is being controlled by a police officer or a traffic-control signal"
       ],
-      "paired_probe_id": "other_presence",
+      "paired_probe_id": "other_presence_pair",
       "deliberate_differences": [
-        "other inside versus approaching"
+        "other_presence"
       ],
       "probe": {
         "primary_variable": "other_presence",
-        "comparison_or_standard": "original-source observed traffic relation",
+        "comparison_or_standard": "original source observation; statutory judgment unresolved",
         "target_value_or_branch": "inside"
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact signed-entrance comparison; hazard and caution judgments unresolved.",
+      "variable_assignments": {
+        "other_presence": {
+          "kind": "world_setup",
+          "value": "approaching",
+          "unit": "categorical"
+        },
+        "other_entrance_device": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        },
+        "officer_candidate": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "commanded_reference_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native ego velocity at each four-camera-joined tick",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "original ego bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "original other bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_distance_to_intersection_center_m",
+            "unit": "m",
+            "method": "other body center distance to reviewed polygon centroid",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_mps",
+            "unit": "m/s",
+            "method": "finite difference of original other body-center distance",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_valid",
+            "unit": "count",
+            "method": "original joined-frame finite-difference availability flag, 0 on first frame and 1 when a prior frame exists",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "validity of closing-rate sample only; no legal hazard meaning"
+          },
+          {
+            "name": "ego_before_yield_reference",
+            "unit": "count",
+            "method": "complete original ego body before reviewed ordered reference",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_intersection_status_and_all_entrances",
+            "unit": "structured record",
+            "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+          },
+          {
+            "name": "site_and_officer_review",
+            "unit": "structured record",
+            "method": "original four-camera review bound to context and frame IDs"
+          }
+        ],
+        "limitations": [
+          "authored road status and sign geometry require original-source physical confirmation",
+          "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+          "CPU fixture colors do not prove original-pixel visibility"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "vehicles not so obligated to stop or yield",
+        "immediate hazard",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "paired_probe_id": "other_presence_pair",
+      "deliberate_differences": [
+        "other_presence"
+      ],
+      "probe": {
+        "primary_variable": "other_presence",
+        "comparison_or_standard": "original source observation; statutory judgment unresolved",
+        "target_value_or_branch": "approaching"
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact signed-entrance comparison; hazard and caution judgments unresolved.",
+      "variable_assignments": {
+        "other_presence": {
+          "kind": "world_setup",
+          "value": "inside",
+          "unit": "categorical"
+        },
+        "other_entrance_device": {
+          "kind": "world_setup",
+          "value": "stop sign",
+          "unit": "categorical"
+        },
+        "officer_candidate": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "commanded_reference_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native ego velocity at each four-camera-joined tick",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "original ego bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "original other bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_distance_to_intersection_center_m",
+            "unit": "m",
+            "method": "other body center distance to reviewed polygon centroid",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_mps",
+            "unit": "m/s",
+            "method": "finite difference of original other body-center distance",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_valid",
+            "unit": "count",
+            "method": "original joined-frame finite-difference availability flag, 0 on first frame and 1 when a prior frame exists",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "validity of closing-rate sample only; no legal hazard meaning"
+          },
+          {
+            "name": "ego_before_yield_reference",
+            "unit": "count",
+            "method": "complete original ego body before reviewed ordered reference",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_intersection_status_and_all_entrances",
+            "unit": "structured record",
+            "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+          },
+          {
+            "name": "site_and_officer_review",
+            "unit": "structured record",
+            "method": "original four-camera review bound to context and frame IDs"
+          }
+        ],
+        "limitations": [
+          "authored road status and sign geometry require original-source physical confirmation",
+          "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+          "CPU fixture colors do not prove original-pixel visibility"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "vehicles not so obligated to stop or yield",
+        "immediate hazard",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "paired_probe_id": "yield_other_obligated",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "other_entrance_device",
+        "comparison_or_standard": "original source observation; statutory judgment unresolved",
+        "target_value_or_branch": "stop sign"
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact signed-entrance comparison; hazard and caution judgments unresolved.",
+      "variable_assignments": {
+        "other_presence": {
+          "kind": "world_setup",
+          "value": "inside",
+          "unit": "categorical"
+        },
+        "other_entrance_device": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        },
+        "officer_candidate": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "commanded_reference_speed": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native ego velocity at each four-camera-joined tick",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "original ego bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "original other bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_distance_to_intersection_center_m",
+            "unit": "m",
+            "method": "other body center distance to reviewed polygon centroid",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_mps",
+            "unit": "m/s",
+            "method": "finite difference of original other body-center distance",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_valid",
+            "unit": "count",
+            "method": "original joined-frame finite-difference availability flag, 0 on first frame and 1 when a prior frame exists",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "validity of closing-rate sample only; no legal hazard meaning"
+          },
+          {
+            "name": "ego_before_yield_reference",
+            "unit": "count",
+            "method": "complete original ego body before reviewed ordered reference",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_intersection_status_and_all_entrances",
+            "unit": "structured record",
+            "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+          },
+          {
+            "name": "site_and_officer_review",
+            "unit": "structured record",
+            "method": "original four-camera review bound to context and frame IDs"
+          }
+        ],
+        "limitations": [
+          "authored road status and sign geometry require original-source physical confirmation",
+          "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+          "CPU fixture colors do not prove original-pixel visibility"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "vehicles not so obligated to stop or yield",
+        "immediate hazard",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "paired_probe_id": "yield_no_slow",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "commanded_reference_speed",
+        "comparison_or_standard": "original source observation; statutory judgment unresolved",
+        "target_value_or_branch": 8.0
+      }
+    },
+    {
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact signed-entrance comparison; hazard and caution judgments unresolved.",
+      "variable_assignments": {
+        "other_presence": {
+          "kind": "world_setup",
+          "value": "inside",
+          "unit": "categorical"
+        },
+        "other_entrance_device": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        },
+        "officer_candidate": {
+          "kind": "world_setup",
+          "value": "present",
+          "unit": "categorical"
+        },
+        "commanded_reference_speed": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "original Native ego velocity at each four-camera-joined tick",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "original ego bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "original other bounding-box overlap with reviewed intersection polygon",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_distance_to_intersection_center_m",
+            "unit": "m",
+            "method": "other body center distance to reviewed polygon centroid",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_mps",
+            "unit": "m/s",
+            "method": "finite difference of original other body-center distance",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          },
+          {
+            "name": "other_center_closing_valid",
+            "unit": "count",
+            "method": "original joined-frame finite-difference availability flag, 0 on first frame and 1 when a prior frame exists",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "validity of closing-rate sample only; no legal hazard meaning"
+          },
+          {
+            "name": "ego_before_yield_reference",
+            "unit": "count",
+            "method": "complete original ego body before reviewed ordered reference",
+            "time_window": "entire original capture",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "sampled source state; between-frame behavior and legal meaning unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "signed_intersection_status_and_all_entrances",
+            "unit": "structured record",
+            "method": "authored map, Native sign readback and source-reviewed three-entrance inventory"
+          },
+          {
+            "name": "site_and_officer_review",
+            "unit": "structured record",
+            "method": "original four-camera review bound to context and frame IDs"
+          }
+        ],
+        "limitations": [
+          "authored road status and sign geometry require original-source physical confirmation",
+          "immediate hazard, caution, proper sign and officer authority remain legal judgments",
+          "CPU fixture colors do not prove original-pixel visibility"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "proper signs",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "vehicles not so obligated to stop or yield",
+        "immediate hazard",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "paired_probe_id": "officer_control_exception",
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "officer_candidate",
+        "comparison_or_standard": "original source observation; statutory judgment unresolved",
+        "target_value_or_branch": "present"
       }
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": true
+  "sweep_specs": [
+    {
+      "sweep_id": "c158208-2572-judgments",
+      "target_law_id": "NRS-484B-257-2",
+      "status": "incomplete",
+      "rationale": "Fixed physical grid and original source feasibility are not yet proven.",
+      "judgment_refs": [
+        {
+          "phrase": "proper signs",
+          "note": "The authored yield sign requires Native governance and original-image review."
+        },
+        {
+          "phrase": "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+          "note": "The response reference, slowing and entry timing require original source review."
+        },
+        {
+          "phrase": "proceed cautiously",
+          "note": "The statute supplies no numeric caution threshold."
+        },
+        {
+          "phrase": "vehicles not so obligated to stop or yield",
+          "note": "All entrances and governing devices determine the comparison vehicle's obligation."
+        },
+        {
+          "phrase": "immediate hazard",
+          "note": "The statute supplies no numeric proximity or closing-rate cutoff."
+        },
+        {
+          "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+          "note": "Control at entry, actor identity and authority require original source review."
+        }
+      ],
+      "missing_inputs": [
+        "Feasible Native actor and camera geometry for a fixed grid",
+        "original officer-control authority source"
+      ]
+    }
+  ]
 }

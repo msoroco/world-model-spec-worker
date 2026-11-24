@@ -1,0 +1,84 @@
+{
+  "template_id": "NRS-484B-257-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-257-2",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-257-2",
+    "activation": {
+      "condition": "signed entrance at an intersection not part of a through highway, absent officer or signal control",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "stop or yield in the subsection-1 manner before entering, then proceed cautiously and yield to vehicles without the same stop-or-yield obligation that are inside or immediately approaching",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "officer or traffic-signal control of traffic",
+        "effect": "signed-entrance rule does not govern during that control",
+        "replacement_obligation": "unresolved under the controlling officer or signal rule",
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal:"
+      }
+    ],
+    "timing": {
+      "description": "response precedes entry; caution and yield continue while ego moves across or within intersection",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "proper signs",
+        "note": "The authored yield sign requires Native governance and original-image review."
+      },
+      {
+        "phrase": "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "note": "The response reference, slowing and entry timing require original source review."
+      },
+      {
+        "phrase": "proceed cautiously",
+        "note": "The statute supplies no numeric caution threshold."
+      },
+      {
+        "phrase": "vehicles not so obligated to stop or yield",
+        "note": "All entrances and governing devices determine the comparison vehicle's obligation."
+      },
+      {
+        "phrase": "immediate hazard",
+        "note": "The statute supplies no numeric proximity or closing-rate cutoff."
+      },
+      {
+        "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+        "note": "Control at entry, actor identity and authority require original source review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "other_presence",
+      "kind": "world_setup",
+      "range_or_domain": "already inside or approaching"
+    },
+    {
+      "name": "other_entrance_device",
+      "kind": "world_setup",
+      "range_or_domain": "none or stop sign"
+    },
+    {
+      "name": "officer_candidate",
+      "kind": "world_setup",
+      "range_or_domain": "present or absent, with original authority review"
+    },
+    {
+      "name": "commanded_reference_speed",
+      "kind": "controller",
+      "range_or_domain": "positive engineering speed target in m/s"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original Native speed trace in m/s"
+    }
+  ]
+}

@@ -113,18 +113,20 @@ def build_result(attempt, config, report):
         "ego_body_in_intersection": [int(row["ego_body_in_intersection"]) for row in samples],
         "other_body_in_intersection": [int(row["other_body_in_intersection"]) for row in samples],
         "other_distance_to_intersection_center_m": [row["other_distance_to_intersection_center_m"] for row in samples],
-        "other_center_closing_mps": [row["other_center_closing_mps"] for row in samples],
+        "other_center_closing_mps": [row["other_center_closing_mps"] if row["other_center_closing_mps"] is not None else 0.0 for row in samples],
+        "other_center_closing_valid": [int(row["other_center_closing_mps"] is not None) for row in samples],
         "ego_before_yield_reference": [int(row["ego_body_before_yield_reference"]) for row in samples],
     }
     units = {"ego_speed_mps": "m/s", "ego_body_in_intersection": "count",
              "other_body_in_intersection": "count",
              "other_distance_to_intersection_center_m": "m",
-             "other_center_closing_mps": "m/s",
+             "other_center_closing_mps": "m/s", "other_center_closing_valid": "count",
              "ego_before_yield_reference": "count"}
     evidence = [{"name": name, "unit": units[name],
                  "reference": "channels/" + name + ".jsonl"} for name in channels]
-    evidence.append({"name": "signed_entrance_context", "unit": "structured record",
-                     "reference": "channels/signed_entrance_context.json"})
+    for name in ("signed_intersection_status_and_all_entrances", "site_and_officer_review"):
+        evidence.append({"name": name, "unit": "structured record",
+                         "reference": "channels/" + name + ".json"})
     result = {"case_id": case_id,
               "measured_values": {"first_ego_entry": report["first_ego_entry"],
                                   "observed_slowed_or_stopped_before_reference": report["observed_slowed_or_stopped_before_reference"],
@@ -165,13 +167,21 @@ def finalize(attempt, output):
                 stream.write(json.dumps({"original_frame": row["frame"],
                                          "time_s": row["time_s"], "value": value},
                                         allow_nan=False) + "\n")
-    context = {"signed_entrance_context": {"sources": report["sources"],
-                 "subsection_one_reference": report["subsection_one_reference"],
-                 "immediate_hazard_judgment": "unresolved",
-                 "caution_and_yield_judgment": "unresolved",
-                 "proper_sign_judgment": "unresolved",
-                 "legal_conclusion": "unresolved"}}
-    (channels / "signed_entrance_context.json").write_text(json.dumps(context, indent=2) + "\n")
+    status = {"signed_intersection_status_and_all_entrances": {
+        "non_through_highway": report["non_through_highway"],
+        "native_yield_sign_id": report["native_yield_sign_id"],
+        "other_entrance_device": report["other_entrance_device"],
+        "other_not_obligated_by_stop_or_yield": report["other_not_obligated_by_stop_or_yield"],
+        "source_sha256": report["sources"]["intersection_context.json"]}}
+    review = {"site_and_officer_review": {"subsection_one_reference": report["subsection_one_reference"],
+        "officer_control_observed": report["officer_control_observed"],
+        "officer_source_sha256": report["officer_control_source_sha256"],
+        "closing_rate_first_frame_valid": False,
+        "immediate_hazard_judgment": "unresolved", "caution_and_yield_judgment": "unresolved",
+        "proper_sign_judgment": "unresolved", "legal_conclusion": "unresolved"}}
+    for name, context in (("signed_intersection_status_and_all_entrances", status),
+                          ("site_and_officer_review", review)):
+        (channels / (name + ".json")).write_text(json.dumps(context, indent=2) + "\n")
     from worker_exchange.native_output import physical_result, write_result
     result = physical_result(attempt, result)
     write_result(attempt, result)
