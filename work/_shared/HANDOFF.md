@@ -836,3 +836,7 @@ One of four staged alternative cases, reverse into intersection, now passes the 
 ## 2026-11-24 C215286 four alternative compatibility passes
 
 All four staged intersection/street-corner reverse alternatives passed exact 900-frame synthetic compatibility with the current-library Lean decoder. The returned index and proof hashes are at `work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/alternative-full-compatibility-index.json`. Selected-manifest integration and delivery checks remain; C215286 stays partial. No prior-ready package changed and no Git was run.
+
+## 2026-11-24 no-flags batch check after archive cleanup
+
+Ran `.venv-cpu/bin/python worker_check.py` to completion. It passed the UTF-8/size traversal and failed later with `Execution manifest binds another runtime` during a retained ready package. The current `runtime/SOURCE-MANIFEST.json` SHA-256 is `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`; 29 of 34 ready execution manifests still bind the prior `5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3`. Exact traceback: `.runtime-work/worker-check-quick-c215286-full-20261124.log`. No ready status was changed and no stale proof was relabeled as current. The assignment-scoped C215286 `--complete` check passes. All four newly returned alternative compatibility receipts pass on the current runtime, but C215286 remains partial.
