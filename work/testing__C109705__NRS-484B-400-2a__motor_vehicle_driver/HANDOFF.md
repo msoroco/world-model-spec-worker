@@ -117,3 +117,7 @@ Native capture remains diagnostic unless both the adapter attests Native origin 
 ## 2026-11-23 embedded bundle synchronization
 
 All four exact construction bundles now embed the current source files; their construction hashes and offline command/output receipts were refreshed. All four pinned offline checks pass in new retained attempt directories. Scoped static passes; scoped strict rejects truthful partial status.
+
+## 2026-11-23 saved-only replay command
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/saved_delivery.py --attempt ATTEMPT --case EXACT_CASE --output .runtime-work/c109705-saved-audit.json` reopens a retained source-hashed attempt, checks the exact case and all 900 trace/camera joins, decodes every original PNG in all four cameras, and writes a JSON audit only after success. Diagnostic attempts require explicit `--allow-diagnostic`; they remain physical and legal uncertainty. The focused test exercises positive replay and verifies the default rejection leaves no output. All 21 focused tests pass in `cpu-saved-command-tests.log`; scoped static passes in `cpu-saved-command-static.log`; exact scoped strict rejects truthful partial status in `cpu-saved-command-strict.log`. The corresponding log hashes are in result.json. This command is an independent saved-only CPU audit, not the pinned runtime process-saved/compatibility receipt. Exact per-case runtime receipts, reviewed Native source, candidate construction and delivery acceptance remain unfinished CPU work.

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from dual_green import measure_original, read_source, require
+from camera_audit import audit_cameras
 
 
 def measure_saved(site, source_root, attempt_dir, case_id):
@@ -46,3 +47,13 @@ def measure_saved(site, source_root, attempt_dir, case_id):
             "original_sources": measured["original_sources"],
             "permission_verdict": None, "right_of_way_verdict": None,
             "physical_acceptance_claimed": False}
+
+
+def measure_delivery(site, source_root, attempt_dir, case_id):
+    """Require the production 900-frame, four-camera saved source join."""
+    measured = measure_saved(site, source_root, attempt_dir, case_id)
+    camera_receipt = audit_cameras(attempt_dir, case_id)
+    require(measured["frame_count"] == camera_receipt["frame_count"],
+            "delivery camera/event frame mismatch")
+    measured["camera_audit"] = camera_receipt
+    return measured

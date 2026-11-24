@@ -99,8 +99,9 @@ def sealed_fixture(root):
         "elapsed_seconds": i / 20, "requested_control": {"brake": 0, "throttle": 0.5}}) + "\n"
         for i in range(3)))
     for name in ("overview", "approach", "reference_corner", "driver_reference"):
+        size = "1920x1080" if name == "overview" else "1280x720"
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-f", "lavfi",
-                        "-i", "color=c=green:s=64x64:r=20", "-frames:v", "3", "-c:v", "ffv1",
+                        "-i", f"color=c=green:s={size}:r=20", "-frames:v", "3", "-c:v", "ffv1",
                         str(root / (name + ".mkv"))], check=True, capture_output=True)
     original_names = ("road.xodr", "trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
                       "bus-body-history.jsonl", "lane-signal-history.jsonl",
@@ -146,6 +147,24 @@ class SavedAnalysisTests(unittest.TestCase):
                 audit_attempt(root)
             (root / "lane-signal-history.jsonl").unlink()
             with self.assertRaisesRegex(ValueError, "source missing or changed"):
+                audit_attempt(root, diagnostic=True)
+
+    def test_delivery_audit_rejects_sealed_wrong_camera_profile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sealed_fixture(root)
+            video = root / "overview.mkv"
+            video.unlink()
+            subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-f", "lavfi",
+                            "-i", "color=c=green:s=64x64:r=20", "-frames:v", "3", "-c:v", "ffv1",
+                            str(video)], check=True, capture_output=True)
+            acquisition = json.loads((root / "acquisition.json").read_text())
+            acquisition["overview.mkv"] = sha(video)
+            put(root / "acquisition.json", json.dumps(acquisition))
+            seal = json.loads((root / "capture-seal.json").read_text())
+            seal["sources"]["overview.mkv"] = sha(video)
+            put(root / "capture-seal.json", json.dumps(seal))
+            with self.assertRaisesRegex(ValueError, "capture profile mismatch"):
                 audit_attempt(root, diagnostic=True)
 
     def test_pinned_saved_result_and_converter_channels_from_staged_fixture(self):

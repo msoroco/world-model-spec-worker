@@ -22,6 +22,7 @@ comparison = module('comparison_audit')
 sys.path.insert(0, str(ROOT))
 measurement = module('saved_measurement')
 capture_module = module('native_capture')
+media_audit = module('saved_media_audit')
 
 
 class CrossingTests(unittest.TestCase):
@@ -318,6 +319,56 @@ class CrossingTests(unittest.TestCase):
         receipt_ref = self.write('capture-receipt.json', json.dumps(receipt))
         with self.assertRaisesRegex(ValueError, 'frame count mismatch'):
             measurement.build_sealed(site_ref, events_ref, receipt_ref, self.root)
+
+    def test_original_four_camera_capture_and_full_pixel_audit(self):
+        from io import BytesIO
+        from PIL import Image
+        image = Image.new('RGB', (8, 6), 'green')
+        stream = BytesIO()
+        image.save(stream, format='PNG')
+        png = stream.getvalue()
+        readers = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+                   for name in capture_module.CAMERAS}
+        dimensions = {name: (8, 6) for name in capture_module.CAMERAS}
+        actor, world, head, device = self.native_fakes()
+        attempt = self.root / 'four-cameras'
+        receipt = capture_module.capture(world, actor, self.site, self.root,
+            'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            attempt, ticks=4, camera_readers=readers, camera_dimensions=dimensions)
+        self.assertTrue(receipt['camera_capture_complete'])
+        self.assertEqual(media_audit.audit(attempt)['decoded_images'], 20)
+        self.assertFalse(media_audit.audit(attempt)['physical_acceptance'])
+        archive = attempt / 'overview.png.zip'
+        archive.write_bytes(archive.read_bytes() + b'tamper')
+        with self.assertRaisesRegex(ValueError, 'source hash mismatch'):
+            media_audit.audit(attempt)
+
+    def test_original_camera_frame_mismatch_and_diagnostic_rejection(self):
+        from io import BytesIO
+        from PIL import Image
+        stream = BytesIO()
+        Image.new('RGB', (8, 6)).save(stream, format='PNG')
+        png = stream.getvalue()
+        readers = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+                   for name in capture_module.CAMERAS}
+        readers['approach'] = lambda frame: {'frame': frame + 1, 'png_bytes': png}
+        actor, world, head, device = self.native_fakes()
+        attempt = self.root / 'camera-failure'
+        with self.assertRaisesRegex(ValueError, 'camera frame identity mismatch'):
+            capture_module.capture(world, actor, self.site, self.root,
+                'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+                attempt, ticks=2, camera_readers=readers,
+                camera_dimensions={name: (8, 6) for name in capture_module.CAMERAS})
+        self.assertEqual(actor.command['speed'], 0)
+        self.assertFalse((attempt / 'capture-receipt.json').exists())
+        self.assertFalse((attempt / 'overview.png.zip').exists())
+        actor, world, head, device = self.native_fakes()
+        diagnostic = self.root / 'diagnostic-only'
+        capture_module.capture(world, actor, self.site, self.root,
+            'marked_cross', head, device, lambda **kw: kw, lambda *xyz: xyz,
+            diagnostic, ticks=2)
+        with self.assertRaisesRegex(ValueError, 'four-camera capture missing'):
+            media_audit.audit(diagnostic)
 
 
 if __name__ == '__main__':

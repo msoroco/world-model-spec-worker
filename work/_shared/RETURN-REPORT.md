@@ -1685,3 +1685,35 @@ C109749 NRS-484B-253 added sealed Native acquisition and independent five-pair c
 ## 2026-11-23 C111125 2a closeout
 
 C111125 NRS-484B-307-2a added a source-bound four-camera saved delivery audit requiring 900 frames, the pinned 1080p/720p profile, source hashes, synchronized frame map, FFprobe 20 Hz counts, full FFmpeg decode and required participant context. Lower-resolution fixtures need explicit diagnostic mode. Sixteen focused tests and scoped static pass. I verified all three proof-log hashes and reran exact scoped strict; truthful partial remains pending bundles, proposals and compatibility. C109171 pedestrian in partition 04 began as replacement owner.
+
+## 2026-11-23 C109035 and final batch recheck
+
+C109035 emergency-vehicle assignment added a source-bound saved finalizer and a four-camera SHA-bound pixel audit that decodes all 3,600 original PNGs, with exact case/document/event/frame/readback and tamper checks. Twenty-five focused tests and scoped static pass. I verified all three proof-log hashes and reran exact scoped strict; truthful partial remains pending reviewed site, adapters, seven bundles/proposals/manifest and pinned receipts. C108447 began in partition 02 as replacement owner. The full batch static recheck passed; the full strict recheck exited 1 on partial/missing packages.
+
+## 2026-11-23 C109171 closeout
+
+C109171 pedestrian added a source-checked 600-frame 20 Hz Native writer, exact four-camera original PNG callback and full 2,400-frame pixel audit, plus a lazy CARLA adapter with synchronous-world/frame/route and cleanup checks. Thirty-nine focused tests and scoped static pass. I verified four proof-log hashes and reran exact scoped strict; truthful partial remains pending reviewed Native source, proposals, exact bundles/manifest, compatibility and delivery. C110969 NRS-484B-450-1c began in partition 05 as replacement owner.
+
+## 2026-11-23 C147332 bus driver closeout
+
+C147332 now seals per-frame original BGRA hashes and independently matches all four camera sources against decoded FFV1 frames; wrong BGRA shape and pixel tampering fail focused tests. It refreshed four primary and four fallback constructions, eight offline and eight positive/negative compatibility receipts, four physical/lifecycle protocols, four recorded-only saved runs, four diagnostic delivery audits, and two diagnostic comparisons. Thirty-three focused tests, pinned manifest and exact delivery acceptance validators pass 4/4; scoped static passes. I independently checked all 153 proof-log hashes and reran exact scoped strict, which rejects truthful partial status. Genuine reviewed highway/official red-X Native source and nondiagnostic capture remain required. Own directory has 490 text files, largest 78,550 bytes, clean hygiene. C111125 3a began in partition 08 as replacement owner.
+
+## 2026-11-23 C111125 3a and C108447 closeouts
+
+C111125 NRS-484B-307-3a added source-hashed four-camera per-tick PNG capture, independent full decode/frame/time/profile audit, and 900-frame saved measurement; 17 focused tests and scoped static pass. I verified its proof hash and reran exact scoped strict; partial remains. C108447 added a 900-frame Native episode after destination entry, four-camera source archives and independent saved audit including original OpenDRIVE/parcel authority binding, 20 Hz body/signal joins and all pixel decodes; 41 focused tests and scoped static pass. I verified two proof hashes and reran exact scoped strict; partial remains. C111125 2b in partition 07 and C111125 9b in partition 03 began as replacement owners. C110969 450-1c continues in partition 05.
+
+## 2026-11-23 C110969 450-1c closeout
+
+C110969 NRS-484B-450-1c added a map-bound destination controller, four-camera original capture and saved media audit. Twenty focused tests, a 900-frame/3,600-image decode exercise and scoped static pass. I verified all four proof-log hashes and reran exact scoped strict; truthful partial remains pending canonical case bundles, proposals, manifest and delivery proofs. C111248 LVMC-11-30-140-B began in partition 04 as replacement owner.
+
+## 2026-11-23 C111125 2b and 9b closeouts
+
+C111125 NRS-484B-307-2b added a 900-row source-bound Native pedestrian capture, four synchronized original PNG archives, and independent full-decode/hash/frame/time saved audit. Twenty-three focused tests and scoped static pass; I verified its proof hash and reran exact scoped strict, which rejects truthful partial status. C111125 NRS-484B-307-9b corrected cycle measurement to count only completed signal cycles before entry, preserving original frame bounds, and added source-hashed four-camera FFV1/ffprobe/full-decode audit requiring 900 frames at 20 Hz. Twenty-one focused tests and scoped static pass; I verified its proof hash and reran exact scoped strict, which rejects truthful partial status. C111260 NRS-484B-270-5a began in partition 06; C111248 LVMC-11-30-140-B continues in partition 04. The batch remains 9 ready and 233 partial.
+
+## 2026-11-23 C111248 closeout and current checks
+
+C111248 LVMC-11-30-140-B added a source-bound 900-tick Native capture with four original PNG cameras per frame, independent hash/frame/path/dimension/full-decode media audit, and optional saved-encounter media validation. Eleven focused tests and scoped static pass. I independently verified all three proof-log hashes and reran exact scoped strict, which rejects truthful partial status pending six canonical bundles, semantic proposals, compatibility, saved processing and comparison proofs. The pinned CPU preflight, updates check and three repository tests pass. C111125 NRS-484B-307-8d began in partition 02; C111260 NRS-484B-270-5a and C147332 NRS-484B-307-12a continue in partitions 06 and 08.
+
+## 2026-11-23 C111260 closeout and root saved replay
+
+C111260 NRS-484B-270-5a added source-bound 900-tick Native capture, four synchronized PNG archives, original actor/history validation, SHA sealing and independent decoding of all 3,600 saved images. Twenty-two focused tests and scoped static pass; I checked all three proof hashes and reran exact scoped strict, which rejects truthful partial status. C158208 NRS-484B-257-1 resumed as a partition 01 owner. Root-owned C109705 NRS-484B-400-2a added a saved-only CLI that reopens the retained attempt and fully decodes all 3,600 camera PNGs before writing an audit receipt. Its default rejects diagnostic input without writing output; a diagnostic test explicitly enables it. All 21 focused tests and scoped static pass; exact scoped strict rejects truthful partial status. The three new proof-log hashes are recorded in its result.json and its HANDOFF names the remaining CPU work.

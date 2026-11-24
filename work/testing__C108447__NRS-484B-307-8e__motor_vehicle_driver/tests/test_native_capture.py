@@ -1,10 +1,14 @@
 import importlib.util
+import io
 import json
 import sys
 import tempfile
 import types
 import unittest
 from pathlib import Path
+from zipfile import ZipFile
+
+from PIL import Image
 
 BASE = Path(__file__).resolve().parents[1]
 for name in ('property_route', 'route_controller', 'native_capture'):
@@ -45,7 +49,7 @@ class FakeEgo:
 class FakeWorld:
     def __init__(self, ego, frames=None):
         self.ego = ego
-        self.frames = frames or [1, 2, 3]
+        self.frames = frames or list(range(1, len(ego.points) + 1))
         self.index = -1
 
     def tick(self):
@@ -62,7 +66,7 @@ def signals(frame, name):
 
 class NativeCaptureTests(unittest.TestCase):
     def run_capture(self, points, **changes):
-        ego = FakeEgo(points)
+        ego = FakeEgo(points + [points[-1]] * (20 - len(points)))
         world = FakeWorld(ego, changes.pop('frames', None))
         with tempfile.TemporaryDirectory() as td:
             output = Path(td) / 'original-route.json'
@@ -78,8 +82,8 @@ class NativeCaptureTests(unittest.TestCase):
 
     def test_original_trace_records_every_signal_and_body_sample(self):
         receipt, trace, ego = self.run_capture([[-3, 5], [5, 5], [13, 5]])
-        self.assertEqual(receipt['sample_count'], 3)
-        self.assertEqual([s['frame'] for s in trace['approach_signal_history']], [1, 2, 3])
+        self.assertEqual(receipt['sample_count'], 20)
+        self.assertEqual([s['frame'] for s in trace['approach_signal_history']], list(range(1, 21)))
         self.assertEqual(trace['destination_entry_frame'], 3)
         self.assertFalse(receipt['physical_acceptance_claimed'])
         self.assertEqual(ego.controls[-1]['brake'], 1.0)
@@ -119,6 +123,61 @@ class NativeCaptureTests(unittest.TestCase):
     def test_unreviewed_destination_identity_rejects(self):
         with self.assertRaisesRegex(ValueError, 'street source join'):
             self.run_capture([[-3, 5], [5, 5], [13, 5]], destination_street_id='unknown')
+
+    def test_four_original_camera_archives_and_frame_map(self):
+        ego = FakeEgo([[-3, 5], [5, 5], [13, 5]] + [[13, 5]] * 17)
+        world = FakeWorld(ego)
+        sink = io.BytesIO()
+        Image.new('RGB', (2, 2), (10, 20, 30)).save(sink, format='PNG')
+        pixels = sink.getvalue()
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            receipt = capture.capture(world=world, ego=ego, map_packet=packet(), property_id='lot',
+                                      case_id='exact-case', purpose={'source': 'original intent', 'value': 'avoid_red'},
+                                      actor_source={'source': 'original registry', 'class': 'vehicle'},
+                                      signal_observer=signals, destination_street_id='street-B',
+                                      output=root / 'trace.json', ticks=20,
+                                      control_applier=lambda actor, command: actor.apply_control(command),
+                                      camera_observer=lambda frame, name: pixels, media_directory=root)
+            media = receipt['media']
+            self.assertEqual(len((root / 'frame-map.jsonl').read_text().splitlines()), 20)
+            self.assertEqual(set(media['cameras']), set(capture.CAMERAS))
+            for name in capture.CAMERAS:
+                self.assertEqual(len(media['cameras'][name]['frames']), 20)
+                with ZipFile(root / (name + '.zip')) as archive:
+                    self.assertEqual(len(archive.namelist()), 20)
+            self.assertFalse(receipt['physical_acceptance_claimed'])
+
+    def test_planned_900_frame_episode_continues_after_entry(self):
+        ego = FakeEgo([[-3, 5], [5, 5], [13, 5]] + [[13, 5]] * 897)
+        with tempfile.TemporaryDirectory() as td:
+            receipt = capture.capture(world=FakeWorld(ego), ego=ego, map_packet=packet(),
+                                      property_id='lot', case_id='exact-case',
+                                      purpose={'source': 'original intent', 'value': 'avoid_red'},
+                                      actor_source={'source': 'original registry', 'class': 'vehicle'},
+                                      signal_observer=signals, destination_street_id='street-B',
+                                      output=Path(td) / 'trace.json',
+                                      control_applier=lambda actor, command: actor.apply_control(command))
+            self.assertEqual(receipt['sample_count'], 900)
+            self.assertEqual(receipt['destination_entry_frame'], 3)
+            self.assertEqual(receipt['last_frame'], 900)
+
+    def test_camera_failure_brakes_and_no_success_receipt(self):
+        ego = FakeEgo([[-3, 5]] * 20)
+        sink = io.BytesIO()
+        Image.new('RGB', (2, 2)).save(sink, format='PNG')
+        with tempfile.TemporaryDirectory() as td:
+            with self.assertRaisesRegex(ValueError, 'original PNG bytes'):
+                capture.capture(world=FakeWorld(ego), ego=ego, map_packet=packet(),
+                                property_id='lot', case_id='exact-case',
+                                purpose={'source': 'original intent', 'value': 'avoid_red'},
+                                actor_source={'source': 'original registry', 'class': 'vehicle'},
+                                signal_observer=signals, destination_street_id='street-B',
+                                output=Path(td) / 'trace.json', ticks=20,
+                                control_applier=lambda actor, command: actor.apply_control(command),
+                                camera_observer=lambda frame, name: None if name == 'destination' else sink.getvalue(),
+                                media_directory=Path(td))
+        self.assertEqual(ego.controls[-1]['brake'], 1.0)
 
 
 if __name__ == '__main__':

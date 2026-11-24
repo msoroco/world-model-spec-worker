@@ -26,7 +26,8 @@ def _packet(root, ref, frame, site):
 
 
 def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_for_frame,
-                       lawful_use_ref_for_frame, output_dir, case_id, frames):
+                       lawful_use_ref_for_frame, output_dir, case_id, frames,
+                       camera_frame_for_tick=None):
     """Drive and retain original frames; caller owns actor cleanup.
 
     ``controller`` applies control before each tick. ``lamp_ref_for_frame``
@@ -46,6 +47,7 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
     require(len(actors) in (1, 2), "expected ego and optional other user")
     ego = actors[0]
     rows = []
+    camera_rows = []
     previous_frame = None
     previous_time = None
     for index in range(frames):
@@ -82,6 +84,23 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
                      "aspect_observation_sha256": lamp_ref["sha256"],
                      "lit_aspects": packet["lit_aspects"],
                      "ego_xy": [pose.x, pose.y], "other_users": users})
+        if camera_frame_for_tick is not None:
+            views = camera_frame_for_tick(frame)
+            require(isinstance(views, dict) and set(views) ==
+                    {"overview", "approach", "reference_corner", "driver_reference"},
+                    "four original camera callbacks required")
+            output = Path(output_dir)
+            output.mkdir(parents=True, exist_ok=True)
+            source_refs = {}
+            for name, data in views.items():
+                require(isinstance(data, bytes) and data, "missing camera bytes")
+                source_path = output / f"original-{name}-{index:06d}.png"
+                with source_path.open("xb") as stream:
+                    stream.write(data)
+                source_refs[name] = {"path": source_path.name,
+                                     "sha256": hashlib.sha256(data).hexdigest()}
+            camera_rows.append({"video_frame": index, "carla_frame": frame,
+                                "time_s": elapsed, "views": source_refs})
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     event_path = output / "original-events.json"
@@ -91,5 +110,14 @@ def run_native_attempt(site, source_root, world, actors, controller, lamp_ref_fo
                "first_frame": rows[0]["frame"], "last_frame": rows[-1]["frame"],
                "sample_hz": 20, "physical_acceptance_claimed": False,
                "permission_verdict": None, "right_of_way_verdict": None}
+    if camera_frame_for_tick is not None:
+        manifest_path = output / "original-cameras.json"
+        manifest = {"case_id": case_id, "sample_hz": 20,
+                    "profile_version": "overview1080-capability", "frames": camera_rows}
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        receipt["camera_manifest_source"] = {
+            "path": manifest_path.name,
+            "sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+        }
     (output / "native-attempt.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     return receipt

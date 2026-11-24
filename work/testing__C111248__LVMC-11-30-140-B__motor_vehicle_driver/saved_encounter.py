@@ -19,6 +19,9 @@ spec = importlib.util.spec_from_file_location("blind_encounter", HERE / "blind_e
 encounter = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = encounter
 spec.loader.exec_module(encounter)
+audit_spec = importlib.util.spec_from_file_location("blind_delivery_audit", HERE / "delivery_audit.py")
+delivery_audit = importlib.util.module_from_spec(audit_spec)
+audit_spec.loader.exec_module(delivery_audit)
 
 
 def sha256(path: Path) -> str:
@@ -73,6 +76,8 @@ def process(manifest_path: Path, output_path: Path) -> dict:
         "carried_cue": cue_hash,
         "saved_manifest": sha256(manifest_path),
     }
+    if spec.get("original_media_map") is not None:
+        measurement["original_media_audit"] = delivery_audit.audit(manifest_path)
     measurement["physical_acceptance_claimed"] = False
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(measurement, indent=2, sort_keys=True) + "\n", encoding="utf-8")

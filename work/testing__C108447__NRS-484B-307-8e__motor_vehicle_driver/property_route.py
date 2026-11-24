@@ -94,7 +94,8 @@ def analyze(map_packet: dict[str, Any], trace: dict[str, Any], case: dict[str, A
             _require(len(history) == len(samples), f'{name} history must cover every body frame')
             _require([row.get('frame') for row in history] == [row['frame'] for row in samples], f'{name} history frame join required')
             _require(all(row.get('device_id') == history[0].get('device_id') and row.get('source') and row.get('state') in ('red_alone', 'red_combined', 'yellow', 'green', 'dark', 'unknown') for row in history), f'{name} source and stable device required')
-            _require(history[0] == trace[name] if name == 'approach_signal' else history[-1] == trace[name], f'{name} endpoint must match history')
+            expected = history[0] if name == 'approach_signal' else next((row for row in history if row['frame'] == trace['destination_entry_frame']), None)
+            _require(expected == trace[name], f'{name} endpoint must match history')
     traversed = _traversed_property_ids(samples, properties)
     known = {p['id']: p for p in properties}
     approach_history = trace.get('approach_signal_history', [trace['approach_signal']])

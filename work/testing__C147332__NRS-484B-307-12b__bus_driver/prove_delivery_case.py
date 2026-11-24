@@ -30,6 +30,7 @@ def main():
     parser.add_argument("--case", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--negative", action="store_true")
+    parser.add_argument("--source", default=".runtime-work/c147332-compat-v5")
     args = parser.parse_args()
     kind = args.case.removeprefix(ASSIGNMENT + "__")
     if args.case != ASSIGNMENT + "__" + kind or kind not in KINDS:
@@ -48,7 +49,12 @@ def main():
         raise AssertionError("changed original signal passed independent delivery audit")
     if attempt.exists():
         raise ValueError("choose a fresh exact diagnostic attempt")
-    shutil.copytree(REPO / ".runtime-work/c147332-compat-v5" / kind / "primary", attempt)
+    source = Path(args.source).resolve() / kind
+    if (source / "primary").is_dir():
+        source /= "primary"
+    if not source.is_relative_to((REPO / ".runtime-work").resolve()):
+        raise ValueError("diagnostic source must stay under .runtime-work")
+    shutil.copytree(source, attempt)
     (attempt / "carla_recorder.log").write_text("diagnostic recorder log\n")
     acquisition = json.loads((attempt / "acquisition.json").read_text())
     for name in ORIGINALS:

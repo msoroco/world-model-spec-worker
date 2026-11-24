@@ -1,6 +1,6 @@
 # testing__C109171__NRS-484B-307-4b__pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial source-gated construction with four exact planned cases. No physical recording is claimed.
 
 Exact law: NRS 484B.307(4)(b) — Where the signal is a green turn arrow alone: Pedestrians facing such a signal shall not enter the highway until permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].
 Assigned branch(es): Facing arrow before highway entry.
@@ -46,3 +46,17 @@ The site verifier also now parses all three hash-bound original packets. It requ
 `saved_measurement.py` reads SHA-bound original Native site and per-frame event packets for all four exact cases. It requires contiguous frames, 20 Hz original simulation timestamps, sole arrow throughout, a separate-device timeline, and case-specific measured entry. The WALK-entry case requires a separate WALK sample strictly before the entry sample and at entry; waiting and no-WALK cases are checked across the full history. The output retains source hashes, the sampled entry bracket, and no legal or physical verdict. Five focused positive/negative tests bring the suite to 28 passing tests. Synthetic packets validate software checks only.
 
 Still needed: reviewed actual Native map/head/device packet, executable exact capture and four-camera frame map, canonical bundles/manifest and semantic proposals, saved-only runtime processing/compatibility, media delivery audit, and physical review. The cited NRS 484B.283 permission alternatives remain for legal review; an observed WALK string alone is not asserted statutory permission.
+
+## 2026-11-24 synchronized Native capture and media proof
+
+`native_capture.py` provides a source-gated Native adapter writer for all four exact cases. It requires the original site packet and map/head/device hashes, 600 contiguous 20 Hz event frames, and four matching original camera callbacks (`front`, `left`, `right`, `rear`) on each frame. It writes an exact event source, frame map and 2,400 PNGs under an attempt directory outside returned work, then reruns `measure_saved`. `audit_frame_map` independently reopens every PNG, checks SHA-256, frame/time joins and 20 Hz drift. The adapter must supply simulator events, camera bytes and resource cleanup; the writer does not call a CARLA world itself or attest provenance.
+
+Focused CPU tests now pass 34/34, including a full 600-frame/2,400-camera fixture and negative event drift, callback drift, tampered pixel and diagnostic-site cases. This is a software proof using synthetic source-shaped packets, not a physical recording. Scoped `--complete` passes. Scoped strict still fails because the package remains partial.
+
+Next CPU work: connect this adapter protocol to an actual CARLA world and surveyed C109171 map/head/device packet; author canonical semantic proposals, exact inline bundles, source-bound diagnostic recipes and positive/negative compatibility receipts; bind saved-only runtime processing and delivery manifest; add physical camera visibility audit and final independent statutory review. Continue to keep legal permission under NRS 484B.283 unresolved pending reviewed source facts.
+
+## 2026-11-24 lazy CARLA adapter checkpoint
+
+`carla_adapter.py` now connects the Native writer to a borrowed synchronous CARLA world, pedestrian actor, four camera sensors, and an injected original-state reader. It checks 20 Hz world settings, consecutive world ticks, each camera callback's world frame, raw BGRA byte count and PNG conversion. The retained route follower applies measured-route controls; every exit stops sensor listeners and requests a zero-speed walker control. The original-state reader must come from verified signal/device sources and is never inferred from case labels. Five fake-world CPU tests cover normal motion, waiting, missing camera, camera frame drift, and asynchronous-world rejection. The focused suite now passes 39/39. This is still a software interface proof; no actual C109171 Native site, official head, pedestrian device, visibility or statutory permission has been verified.
+
+Scoped static `--complete` passes; exact scoped strict remains an expected failure because `result.json` truthfully stays partial.

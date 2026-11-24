@@ -135,6 +135,22 @@ class NativeCaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(SourceError, 'diagnostic'):
             capture(site, self.site_ref, self.root, adapter, ASSIGNMENT + '__arrow_wait', 4)
 
+    def test_full_duration_four_camera_join(self):
+        original = self.rows()
+        rows = []
+        for i in range(600):
+            row = dict(original[min(i, 3)])
+            row['frame'] = i
+            row['sim_time_seconds'] = i * 0.05
+            rows.append(row)
+        adapter = Adapter(rows, self.png)
+        result = capture(self.site, self.site_ref, self.root, adapter,
+                         ASSIGNMENT + '__arrow_wait')
+        self.assertTrue(adapter.closed)
+        self.assertEqual(result['frame_count'], 600)
+        self.assertEqual(audit_frame_map(self.root, result['frame_map_ref'],
+                                        result['events_ref'])['camera_frames_audited'], 2400)
+
 
 if __name__ == '__main__':
     unittest.main()

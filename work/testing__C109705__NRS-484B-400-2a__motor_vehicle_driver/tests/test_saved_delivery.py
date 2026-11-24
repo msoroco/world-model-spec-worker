@@ -13,7 +13,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from saved_delivery import audit, audit_comparison, CAMERAS, PREFIX
+from saved_delivery import audit, audit_comparison, main, CAMERAS, PREFIX
 from test_approach import body, context
 
 
@@ -82,6 +82,17 @@ class SavedDeliveryTests(unittest.TestCase):
             self.assertEqual(result['decoded_frames'], 7200)
             self.assertGreater(result['signed_difference_m'], 0)
             self.assertEqual(result['legal_judgment'], 'unresolved')
+            output = Path(temp) / 'saved-audit.json'
+            with self.assertRaisesRegex(ValueError, 'diagnostic'):
+                main(['--attempt', str(near), '--case', PREFIX + 'near_centerline',
+                      '--output', str(output)])
+            self.assertFalse(output.exists())
+            main(['--attempt', str(near), '--case', PREFIX + 'near_centerline',
+                  '--output', str(output), '--allow-diagnostic'])
+            receipt = json.loads(output.read_text())
+            self.assertEqual(receipt['decoded_frames'], 3600)
+            self.assertFalse(receipt['physical_completion'])
+            self.assertEqual(receipt['legal_judgment'], 'unresolved')
             with self.assertRaisesRegex(ValueError, 'distinct'):
                 audit_comparison(near, near, allow_diagnostic=True)
             acquired = json.loads((far / 'acquisition.json').read_text())

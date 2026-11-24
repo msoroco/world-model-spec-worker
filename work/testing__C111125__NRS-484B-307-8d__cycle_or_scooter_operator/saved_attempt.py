@@ -10,6 +10,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+from zipfile import BadZipFile
 
 
 BASE = Path(__file__).resolve().parent
@@ -26,6 +27,13 @@ class SavedAttemptError(ValueError):
 
 def _load_module():
     spec = importlib.util.spec_from_file_location("c111125_signal_trial_saved", BASE / "signal_trial.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _load_media_module():
+    spec = importlib.util.spec_from_file_location("c111125_saved_media_audit", BASE / "saved_media_audit.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -94,6 +102,12 @@ def process_saved(attempt_root: Path, authority_root: Path, site: dict,
         raise SavedAttemptError(str(exc)) from exc
     if receipt.get("frame_count") != measurement["duration_frames"]:
         raise SavedAttemptError("sealed frame count differs from original traces")
+    try:
+        media_audit = _load_media_module().audit_saved_media(attempt_root, case_id)
+    except (ValueError, OSError, KeyError, BadZipFile) as exc:
+        if receipt.get("diagnostic_fixture") is not True:
+            raise SavedAttemptError("original four-camera media rejected: " + str(exc)) from exc
+        media_audit = None
     return {
         "format": "c111125-saved-measurement-v1",
         "assignment_id": ASSIGNMENT_ID,
@@ -102,6 +116,7 @@ def process_saved(attempt_root: Path, authority_root: Path, site: dict,
         "packet_sha256": receipt["packet_ref"]["sha256"],
         "diagnostic_fixture": receipt.get("diagnostic_fixture") is True,
         "measurement": measurement,
+        "original_media_audit": media_audit,
         "physical_acceptance": False,
         "legal_verdict": None,
     }

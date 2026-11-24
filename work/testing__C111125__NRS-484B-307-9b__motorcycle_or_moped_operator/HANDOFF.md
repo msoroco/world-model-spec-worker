@@ -30,3 +30,13 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+
+## 2026-11-23 CPU continuation
+
+Cycle measurement now counts aspect-return cycles only when both boundary frames precede intersection entry. The measured output preserves `cycle_frame_bounds_before_entry`; an early-entry regression rejects later cycles as waiting history. `media_decode.py` verifies the source hash, 20 Hz stream, dimensions and exact frame count with ffprobe and fully decodes video with ffmpeg. This is an independent saved-camera check for eventual real media; the existing textual diagnostic camera inventory still does not establish physical image evidence. Its positive test generates a small temporary FFV1 video, and negative tests reject count, hash, corrupt media and incomplete four-view inventory. No binary media is returned.
+
+`PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator/tests -v` passed 21 tests (`cpu-tests.log`, SHA-256 `8fd24bff566bb19234da946200b76390022a4e3723abf9c8867b997df9d063cd`). Scoped `worker_check.py --assignment testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator` passed static checks (`cpu-static-check.log`). Exact scoped `--complete --require-delivery-ready` failed on truthful partial status (`cpu-strict-check.log`).
+
+Next CPU actions: implement actual Native adapter and source-surveyed signal/stop hierarchy; bind the media decoder to source-sealed real capture and physical pixel review; finish six exact case bundles, semantic proposals, offline and compatibility receipts, saved-only processing, and justified candidates. Rerun focused and strict checks before any ready claim.
+
+The saved-media command line now accepts an exact source-hashed manifest, requires 900 frames at 20 Hz for all four views, and writes a case-bound decode receipt while leaving physical visibility unreviewed. A temporary 900-frame FFV1 positive test and manifest-hash negative test exercise this path.

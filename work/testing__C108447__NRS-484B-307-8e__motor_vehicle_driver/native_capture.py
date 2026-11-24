@@ -9,10 +9,17 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from contextlib import ExitStack
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Callable
+from zipfile import ZipFile
+
+from PIL import Image
 
 from route_controller import apply_carla_control, steering_command, validate_route
+
+CAMERAS = ('overview', 'approach', 'property', 'destination')
 
 
 def _require(ok: bool, message: str) -> None:
@@ -49,6 +56,8 @@ def capture(
     destination_street_id: str, output: Path, ticks: int = 900,
     waypoint_tolerance_m: float = 1.5,
     control_applier: Callable[[Any, dict[str, float]], None] = apply_carla_control,
+    camera_observer: Callable[[int, str], bytes] | None = None,
+    media_directory: Path | None = None,
 ) -> dict[str, Any]:
     """Drive one 20 Hz episode and write observed route/phase source, or fail closed.
 
@@ -64,13 +73,21 @@ def capture(
     route = validate_route(map_packet, property_id)
     _require(map_packet.get('coordinate_frame'), 'map coordinate frame required')
     _require(output.suffix == '.json' and output.parent.is_dir(), 'existing text output directory required')
+    _require((camera_observer is None) == (media_directory is None), 'camera observer and media directory must be supplied together')
+    if media_directory is not None:
+        _require(media_directory.is_dir(), 'existing original media directory required')
     samples: list[dict[str, Any]] = []
     waypoint = 1
     entry_frame: int | None = None
     first_approach: dict[str, Any] | None = None
     approach_history: list[dict[str, Any]] = []
     destination_history: list[dict[str, Any]] = []
-    last_destination: dict[str, Any] | None = None
+    entry_destination: dict[str, Any] | None = None
+    frame_rows: list[dict[str, Any]] = []
+    camera_members: dict[str, list[dict[str, Any]]] = {name: [] for name in CAMERAS}
+    stack = ExitStack()
+    archives = {name: stack.enter_context(ZipFile(media_directory / f'{name}.zip', 'w'))
+                for name in CAMERAS} if media_directory is not None else {}
     try:
         for _ in range(ticks):
             frame = int(world.tick())
@@ -85,12 +102,28 @@ def capture(
             destination = _signal(signal_observer, frame, 'destination_signal')
             approach_history.append(approach)
             destination_history.append(destination)
+            if camera_observer is not None:
+                camera_row: dict[str, dict[str, str]] = {}
+                for name in CAMERAS:
+                    data = camera_observer(frame, name)
+                    _require(isinstance(data, bytes), f'{name} original PNG bytes required')
+                    with Image.open(BytesIO(data)) as image:
+                        _require(image.format == 'PNG' and image.width > 0 and image.height > 0, f'{name} original PNG required')
+                        image.load()
+                    member = f'{frame}.png'
+                    digest = hashlib.sha256(data).hexdigest()
+                    archives[name].writestr(member, data)
+                    camera_row[name] = {'member': member, 'sha256': digest}
+                    camera_members[name].append({'frame': frame, 'member': member, 'sha256': digest})
+                frame_rows.append({'frame': frame, 'time_s': sample['time_s'], 'cameras': camera_row})
             if first_approach is None:
                 first_approach = approach
-            last_destination = destination
-            if math.dist(location, route[-1]) <= waypoint_tolerance_m:
+            if entry_frame is None and math.dist(location, route[-1]) <= waypoint_tolerance_m:
                 entry_frame = frame
-                break
+                entry_destination = destination
+            if entry_frame is not None:
+                control_applier(ego, {'steer': 0.0, 'throttle': 0.0, 'brake': 1.0})
+                continue
             if math.dist(location, route[waypoint]) <= waypoint_tolerance_m and waypoint < len(route) - 1:
                 waypoint += 1
             command = steering_command(location, yaw, route[waypoint], speed)
@@ -102,7 +135,7 @@ def capture(
             'coordinate_frame': map_packet['coordinate_frame'],
             'actor_class': 'vehicle', 'actor_source': actor_source,
             'ego': samples, 'approach_signal': first_approach,
-            'destination_signal': last_destination,
+            'destination_signal': entry_destination,
             'approach_signal_history': approach_history,
             'destination_signal_history': destination_history,
             'destination_street_id': destination_street_id,
@@ -110,8 +143,20 @@ def capture(
             'status': 'recorded_unreviewed',
         }
         output.write_text(json.dumps(trace, indent=2, sort_keys=True) + '\n')
+        stack.close()
+        media = None
+        if media_directory is not None:
+            frame_path = media_directory / 'frame-map.jsonl'
+            frame_path.write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in frame_rows))
+            media = {'frame_map': {'path': str(frame_path), 'sha256': _sha(frame_path)},
+                     'cameras': {name: {'path': str(media_directory / f'{name}.zip'),
+                                        'sha256': _sha(media_directory / f'{name}.zip'),
+                                        'frames': camera_members[name]} for name in CAMERAS}}
         return {'case_id': case_id, 'trace_path': str(output), 'trace_sha256': _sha(output),
-                'first_frame': samples[0]['frame'], 'last_frame': entry_frame,
-                'sample_count': len(samples), 'physical_acceptance_claimed': False}
+                'first_frame': samples[0]['frame'], 'last_frame': samples[-1]['frame'],
+                'destination_entry_frame': entry_frame,
+                'sample_count': len(samples), 'media': media,
+                'physical_acceptance_claimed': False}
     finally:
+        stack.close()
         control_applier(ego, {'steer': 0.0, 'throttle': 0.0, 'brake': 1.0})

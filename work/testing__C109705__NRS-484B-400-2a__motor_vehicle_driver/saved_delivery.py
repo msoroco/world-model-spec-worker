@@ -1,11 +1,12 @@
-"""Independent saved-source integrity gate for exact left-turn approach attempts.
+"""Independent saved-source and original-pixel audits for left-turn attempts.
 
-This does not decode media or decide whether the statutory position was nearest.
-The pinned compatibility and physical delivery audits remain separate proofs.
+These checks do not decide whether the statutory position was nearest.
+Pinned compatibility and physical delivery audits remain separate proofs.
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import io
 import json
@@ -165,3 +166,22 @@ def audit_comparison(near_attempt: Path, far_attempt: Path, *,
             'full_video_decode': True,
             'physical_completion': False,
             'legal_judgment': 'unresolved'}
+
+
+def main(argv=None):
+    """Run the source and full-pixel audit using only a retained attempt."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', required=True, type=Path)
+    parser.add_argument('--case', required=True)
+    parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--allow-diagnostic', action='store_true')
+    args = parser.parse_args(argv)
+    result = audit_original_pixels(args.attempt, args.case,
+                                   allow_diagnostic=args.allow_diagnostic)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+    return result
+
+
+if __name__ == '__main__':
+    main()

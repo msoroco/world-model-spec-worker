@@ -38,13 +38,13 @@ def body_footprint(actor) -> list[list[float]]:
 
 
 def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
-            run_id: str, output: Path, sample_count: int = 100) -> dict:
+            run_id: str, output: Path, sample_count: int = 900, media_writer=None) -> dict:
     """Tick a synchronous 20 Hz world and seal original packets for the finalizer.
 
     controller.step(frame_index, actor) requests behavior. observer.observe takes
     the Native snapshot and actor, and must return original activity/context
     observations with a source_ref. None or an absent field means unknown, not
-    an absent exception. The caller is responsible for the four-camera capture.
+    an absent exception. Supply NativeMediaWriter for the four-camera capture.
     """
     _require(case_id and run_id, "case and run identity required")
     _require(sample_count >= 2, "at least two original frames required")
@@ -85,10 +85,16 @@ def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
                                                   "officer_direction_observation",
                                                   "device_direction_observation")),
                      "independent original activity/context observation missing")
+            if media_writer is not None:
+                media_writer.capture(snapshot, actor)
             samples.append({"frame": frame, "time_s": time_s,
                             "body_footprint": body_footprint(actor), "speed_mps": speed,
                             "controller_request": requested})
             activities.append({"frame": frame, **observed})
+    except BaseException:
+        if media_writer is not None:
+            media_writer.abort()
+        raise
     finally:
         controller.stop(actor)
     activity = {"case_id": case_id, "native_run_id": run_id,
@@ -109,8 +115,13 @@ def acquire(world, actor, boundary: dict, controller, observer, case_id: str,
     manifest = {"case_id": case_id, "native_run_id": run_id,
                 **{key: {"path": key + ".json", "sha256": value}
                    for key, value in seals.items()}}
+    if media_writer is not None:
+        media_sha = media_writer.close(case_id=case_id, run_id=run_id,
+                                       expected_frames=[row["frame"] for row in samples])
+        manifest["media"] = {"path": "media-manifest.json", "sha256": media_sha}
     _write(output / "source-manifest.json", manifest)
     return {"case_id": case_id, "native_run_id": run_id,
             "frame_count": len(samples), "first_frame": samples[0]["frame"],
             "last_frame": samples[-1]["frame"], "source_seals": seals,
+            "media_manifest_sha256": manifest.get("media", {}).get("sha256"),
             "physical_acceptance_claimed": False}

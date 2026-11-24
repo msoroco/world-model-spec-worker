@@ -5,7 +5,9 @@ import json
 import tempfile
 import unittest
 import sys
+import io
 from pathlib import Path
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -19,6 +21,7 @@ green = importlib.import_module("dual_green")
 compare = module("comparison_audit")
 native = module("native_attempt")
 saved = module("saved_attempt")
+cameras = module("camera_audit")
 
 
 class DualGreenTests(unittest.TestCase):
@@ -151,7 +154,7 @@ class DualGreenTests(unittest.TestCase):
         with self.assertRaisesRegex(compare.ComparisonError, "unsupported legal"):
             compare.audit_pair("vehicle_at_exhibition", clear, vehicle)
 
-    def native_fixture(self, other=False):
+    def native_fixture(self, other=False, with_cameras=False):
         class Actor:
             def __init__(self, actor_id, x, y):
                 self.id = actor_id
@@ -188,9 +191,53 @@ class DualGreenTests(unittest.TestCase):
             actor.x = (-10, 0, 10)[index]
         case_id = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_pedestrian_present" if other else "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__dual_clear"
         attempt = self.root / "attempt"
+        camera_callback = None
+        if with_cameras:
+            image = Image.new("RGB", (2, 2), (1, 2, 3))
+            buffer = io.BytesIO()
+            image.save(buffer, format="PNG")
+            payload = buffer.getvalue()
+            camera_callback = lambda frame: {name: payload for name in cameras.CAMERAS}
         receipt = native.run_native_attempt(self.site, self.root, World(), actors, controller,
-            lambda frame: lamps[frame], lambda frame, user_id: lawful[frame], attempt, case_id, 3)
+            lambda frame: lamps[frame], lambda frame, user_id: lawful[frame], attempt, case_id, 3,
+            camera_frame_for_tick=camera_callback)
         return attempt, case_id, receipt
+
+    def test_four_camera_source_decode_and_join(self):
+        attempt, case_id, receipt = self.native_fixture(with_cameras=True)
+        self.assertIn("camera_manifest_source", receipt)
+        audited = cameras.audit_cameras(attempt, case_id,
+                                        dimensions={name: (2, 2) for name in cameras.CAMERAS},
+                                        expected_frames=3)
+        self.assertEqual(audited["camera_frames_decoded"], 12)
+        self.assertFalse(audited["physical_visibility_confirmed"])
+
+    def test_four_camera_rejects_missing_and_corrupt_source(self):
+        attempt, case_id, _ = self.native_fixture(with_cameras=True)
+        image = attempt / "original-overview-000001.png"
+        image.unlink()
+        with self.assertRaisesRegex(green.EvidenceError, "missing or escaping"):
+            cameras.audit_cameras(attempt, case_id,
+                                  dimensions={name: (2, 2) for name in cameras.CAMERAS},
+                                  expected_frames=3)
+
+    def test_four_camera_rejects_frame_map_rebinding(self):
+        attempt, case_id, receipt = self.native_fixture(with_cameras=True)
+        path = attempt / "original-cameras.json"
+        manifest = json.loads(path.read_text())
+        manifest["frames"][1]["carla_frame"] = 99
+        path.write_text(json.dumps(manifest))
+        receipt["camera_manifest_source"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        (attempt / "native-attempt.json").write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(green.EvidenceError, "camera frame map mismatch"):
+            cameras.audit_cameras(attempt, case_id,
+                                  dimensions={name: (2, 2) for name in cameras.CAMERAS},
+                                  expected_frames=3)
+
+    def test_delivery_requires_full_duration(self):
+        attempt, case_id, _ = self.native_fixture(with_cameras=True)
+        with self.assertRaisesRegex(green.EvidenceError, "camera duration mismatch"):
+            saved.measure_delivery(self.site, self.root, attempt, case_id)
 
     def test_native_attempt_and_saved_source_join(self):
         attempt, case_id, receipt = self.native_fixture(other=True)

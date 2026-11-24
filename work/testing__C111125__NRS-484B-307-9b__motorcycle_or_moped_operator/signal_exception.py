@@ -87,6 +87,7 @@ def measure_attempt(site, root, event_ref):
     cycle_anchor = None
     last_composite = False
     departed = False
+    cycle_bounds = []
     phase_history = []
     for row in rows:
         frame = row['frame']
@@ -105,10 +106,11 @@ def measure_attempt(site, root, event_ref):
         if station >= site['intersection_entry_station_m'] and entry_frame is None:
             entry_frame = frame
         composite = set(aspects) == {'steady_red', 'green_turn_arrow'} and len(aspects) == 2
-        if stopped_frame is not None and frame >= stopped_frame:
+        if stopped_frame is not None and frame >= stopped_frame and (entry_frame is None or frame < entry_frame):
             if composite and not last_composite:
                 if cycle_anchor is not None and departed:
                     cycles += 1
+                    cycle_bounds.append([cycle_anchor, frame])
                 cycle_anchor = frame
                 departed = False
             elif not composite and cycle_anchor is not None:
@@ -117,7 +119,7 @@ def measure_attempt(site, root, event_ref):
         phase_history.append({'frame': frame, 'lit_aspects': aspects, 'ego_front_station_m': station})
     require(phase_history[0]['lit_aspects'] == ['steady_red', 'green_turn_arrow'], 'initial official composite phase absent')
     require(entry_frame is not None, 'ego never entered')
-    require(stopped_frame is not None or entry_frame is not None, 'missing approach history')
+    require(stopped_frame is None or stopped_frame < entry_frame, 'stop occurred after entry')
     cause = site.get('unchanged_signal_cause')
     require(cause in ('malfunction', 'failed_detection', 'not_established'), 'invalid cause classification')
     if cause != 'not_established':
@@ -131,7 +133,8 @@ def measure_attempt(site, root, event_ref):
         require(stopped_frame is None or packet['original_frame_start'] <= stopped_frame < packet['original_frame_end'], 'causal interval excludes stopped motorcycle')
     return {
         'stopped_frame': stopped_frame, 'entry_frame': entry_frame,
-        'full_cycles_after_stop': cycles, 'initial_composite_phase': True,
+        'full_cycles_after_stop': cycles, 'cycle_frame_bounds_before_entry': cycle_bounds,
+        'initial_composite_phase': True,
         'unchanged_signal_cause': cause, 'cause_source_ref': site.get('cause_source_ref'),
         'stop_reference_kind': site['stop_reference_kind'], 'stop_reference_station_m': site['stop_reference_station_m'],
         'frame_count': len(rows), 'phase_history': phase_history,

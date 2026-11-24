@@ -63,10 +63,24 @@ class SignalExceptionTest(unittest.TestCase):
         self.assertEqual(measured['full_cycles_after_stop'], 2)
         self.assertEqual(measured['stopped_frame'], 1)
         self.assertEqual(measured['entry_frame'], 6)
+        self.assertEqual(measured['cycle_frame_bounds_before_entry'], [[1, 3], [3, 5]])
         self.assertIsNone(measured['legal_permission_verdict'])
 
+    def test_cycles_after_entry_do_not_satisfy_waiting_history(self):
+        rows = self.history()
+        rows[2]['ego_front_station_m'] = 1
+        rows[3]['ego_front_station_m'] = 1
+        rows[4]['ego_front_station_m'] = 1
+        rows[5]['ego_front_station_m'] = 1
+        rows[6]['ego_front_station_m'] = 1
+        ref = source(self.root, 'entered-early.json', rows)
+        measured = module.measure_attempt(self.site, self.root, ref)
+        self.assertEqual(measured['entry_frame'], 2)
+        self.assertEqual(measured['full_cycles_after_stop'], 0)
+        self.assertEqual(measured['cycle_frame_bounds_before_entry'], [])
+
     def test_early_entry_and_rolling_stop_remain_observable(self):
-        rows = self.history()[:4]
+        rows = self.history()[:5]
         rows[-1]['ego_front_station_m'] = 1
         ref = source(self.root, 'early.json', rows)
         self.assertEqual(module.measure_attempt(self.site, self.root, ref)['full_cycles_after_stop'], 1)

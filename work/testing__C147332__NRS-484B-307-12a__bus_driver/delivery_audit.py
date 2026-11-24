@@ -33,17 +33,28 @@ def _recorded_sha(acquisition, name):
     return item.get("sha256") if isinstance(item, dict) else item
 
 
-def _decode(path):
+def _decode(path, width, height):
     probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-                            "-show_entries", "stream=nb_read_frames", "-of", "default=nw=1:nk=1",
+                            "-show_entries", "stream=nb_read_frames,width,height,avg_frame_rate,codec_name",
+                            "-of", "json",
                             str(path)], capture_output=True, text=True, timeout=90)
-    if probe.returncode or not probe.stdout.strip().isdigit():
+    if probe.returncode:
         raise ValueError("original video frame probe failed: " + path.name)
+    try:
+        streams = json.loads(probe.stdout)["streams"]
+        stream, = streams
+        count = int(stream["nb_read_frames"])
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ValueError("original video frame probe failed: " + path.name) from exc
+    if (count < 1 or stream.get("codec_name") != "ffv1" or
+            stream.get("width") != width or stream.get("height") != height or
+            stream.get("avg_frame_rate") != "20/1"):
+        raise ValueError("original video capture profile mismatch: " + path.name)
     decode = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-f", "null", "-"],
                             capture_output=True, text=True, timeout=120)
     if decode.returncode or decode.stderr.strip():
         raise ValueError("original video full decode failed: " + path.name)
-    return int(probe.stdout.strip())
+    return count
 
 
 def audit_attempt(path, *, diagnostic=False):
@@ -89,7 +100,10 @@ def audit_attempt(path, *, diagnostic=False):
                 row.get("camera_names") != list(CAMERAS)
                 for row, frame in zip(camera_rows, frames))):
         raise ValueError("original camera/frame time join incomplete")
-    decoded = {name: _decode(path / (name + ".mkv")) for name in CAMERAS}
+    decoded = {name: _decode(path / (name + ".mkv"),
+                             1920 if name == "overview" else 1280,
+                             1080 if name == "overview" else 720)
+               for name in CAMERAS}
     if any(count != len(frames) for count in decoded.values()):
         raise ValueError("decoded original video frame count differs")
     report = build_report(path)
