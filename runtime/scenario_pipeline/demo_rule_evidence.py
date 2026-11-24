@@ -222,6 +222,10 @@ def evaluate(case, attempt, trace, context):
         raise ValueError('Complete original-tick rule evidence required')
     scenes=json.loads((attempt/'traffic_spec/trace.json').read_text())['scenes']
     if len(scenes)!=len(trace):raise ValueError('Full delivered scene join required')
+    from traffic_spec_adapter.adapter import measured_kinematics, original_participants
+    manifest_path=attempt/'capture/manifest.json'
+    acquisition=json.loads(manifest_path.read_text()).get('acquisition') if manifest_path.is_file() else None
+    participant_records=original_participants(attempt/'synchronized_motion_records.jsonl',original,acquisition)
     bodies=[]
     for t,s,o,scene in zip(trace,samples,original,scenes):
         if s['frame'] != t['frame'] or abs(s['time_s']-t['time_s']) > 1e-6 or o['original_frame'] != t['frame']:
@@ -235,7 +239,15 @@ def evaluate(case, attempt, trace, context):
             delivered=bytrack.get(participant['actor_id'])
             if delivered is None:raise ValueError('Required participant missing from delivered scene')
             pos=participant['position_m'];kin=delivered['kin']
-            if math.hypot(pos[0]-kin['position'][0],-pos[1]-kin['position'][1])>1e-4 or abs(participant['speed_mps']-kin['speed'])>1e-4:
+            observation=participant
+            if participant.get('velocity_mps') is None:
+                observation=participant_records.get(t['frame'],{}).get(participant['actor_id'],{})
+                if observation and (math.dist(pos,observation['position_m'])>1e-4 or
+                        participant.get('body_vertices_m',observation['body_vertices_m'])!=observation['body_vertices_m']):
+                    raise ValueError('Participant rule/source observations differ')
+            observed=measured_kinematics({'velocity_mps':observation.get('velocity_mps')})
+            if 'speed' not in observed:raise ValueError('Participant horizontal speed requires original velocity')
+            if math.hypot(pos[0]-kin['position'][0],-pos[1]-kin['position'][1])>1e-4 or abs(observed['speed']-kin['speed'])>1e-4:
                 raise ValueError('Participant observations differ from delivered scene')
         bodies.append(measured)
     law=case['target_law_id']

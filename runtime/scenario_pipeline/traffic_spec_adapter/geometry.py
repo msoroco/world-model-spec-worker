@@ -1,7 +1,8 @@
 """Observed body geometry and sampled OpenDRIVE regions, in TrafficSpec's frame.
 
-Lane IDs identify full (road, section, lane) regions. Compatible consecutive
-road segments share one roadway; property producers cannot add overlays.
+Unique lane-source bindings identify (road, section, lane) intervals. A proven
+common physical strip may retain several Native parents without selecting a
+route reference. Compatible consecutive road segments share one roadway.
 Sampling is geometric approximation, never a legal interpretation. OpenDRIVE
 is already right-handed; only CARLA observations need y/yaw reflection.
 """
@@ -755,7 +756,59 @@ def match_regions(native, current):
     return {key:ident for key,ident in result.items() if counts[ident]==1}
 
 
-def partition_source_roads(native, current, sources, provenance, *, lane_sources=None):
+def _shared_flat_junction_surface(records):
+    """Existing common flat connector-surface qualification, not route identity."""
+    junctions={r.get('junction',-1) for r in records};heights=[r.get('flat_z') for r in records]
+    if (len(junctions)==1 and next(iter(junctions))>=0 and heights and
+            all(z is not None for z in heights) and max(heights)-min(heights)<=1e-9):
+        return {'junction':next(iter(junctions)),'flat_z':heights[0]}
+    return None
+
+
+def _shared_flat_lane_surface(root,region,matches):
+    """Qualify one physical strip, retaining every distinct Native parent.
+
+    This supplies no unique lane/road reference, marking, way or topology facts.
+    """
+    from .roadways import boundary_key
+    if root is None or region.get('kind')!='lane' or len(matches)<2:return None
+    identities={(m['road_id'],m['section'],m['lane_id']) for m in matches}
+    if len(identities)!=len(matches):return None
+    records=[];paths=[];parents=[];shape=boundary_key(clean_boundary([[round(v,6)for v in p]for p in region.get('boundary',[])]))
+    for source in matches:
+        samples=source.get('samples',[])
+        if len(samples)<2 or samples[0][0]>=samples[-1][0]:return None
+        polygon=clean_boundary([[round(v,6)for v in a]for s,a,b in samples]+[[round(v,6)for v in b]for s,a,b in reversed(samples)])
+        if boundary_key(polygon)!=shape:return None
+        centers=[tuple(round((a[j]+b[j])/2,6)for j in range(2))for s,a,b in samples]
+        if source['lane_id']>0:centers.reverse()
+        if centers[0]==centers[-1]:return None
+        paths.append(centers)
+        road=root.find("road[@id='%s']"%source['road_id'])
+        if road is None:return None
+        sections=road.findall('lanes/laneSection')
+        if not 0<=source['section']<len(sections):return None
+        lane=next((l for l in sections[source['section']].findall('./*/*')if l.tag=='lane'and int(l.get('id'))==source['lane_id']),None)
+        if lane is None or lane.get('type')!='driving' or lane.get('level','false')!='false':return None
+        if any(e.tag not in ('superelevation','crossfall')or any(float(e.get(k,'0'))!=0 for k in 'abcd')for e in road.findall('lateralProfile/*')):return None
+        if any(float(e.get(k,'0'))!=0 for e in lane.findall('height')for k in ('inner','outer')):return None
+        elevations=road.findall('elevationProfile/elevation');low,high=samples[0][0],samples[-1][0]
+        active=[e for i,e in enumerate(elevations)if float(e.get('s'))<=high and (i==len(elevations)-1 or float(elevations[i+1].get('s'))>low)]
+        if not active or float(active[0].get('s'))>low or any(float(e.get(k,'0'))!=0 for e in active for k in 'bcd'):return None
+        heights={float(e.get('a'))for e in active}
+        if len(heights)!=1:return None
+        records.append({'junction':int(road.get('junction','-1')),'flat_z':next(iter(heights))})
+        parents.append({'road_id':source['road_id'],'section':source['section'],'lane_id':source['lane_id'],'interval_m':[low,high],'samples':samples})
+    # Equal scalar profiles never select a user reference. These are additional
+    # height conditions on already identical, identically directed polygons.
+    if any(p!=paths[0]for p in paths[1:]) or any(r['flat_z']!=records[0]['flat_z']for r in records[1:]):return None
+    common=_shared_flat_junction_surface(records)
+    if common is None:return None
+    return dict(common,method='shared_flat_junction_surface',native_parents=parents,
+        physical_identity_only=True,unique_native_reference=False)
+
+
+def partition_source_roads(native, current, sources, provenance, *, lane_sources=None, physical_sources=None, source_root=None):
     """Join exact native strip intervals by indexed original cross-sections.
 
     Both ends must be source samples and the whole polygon must equal that
@@ -807,6 +860,11 @@ def partition_source_roads(native, current, sources, provenance, *, lane_sources
     if lane_sources is not None:
         for ident,matches in lane_matches.items():
             if len(matches)==1 and result.get(ident):lane_sources[ident]=matches[0]
+    if physical_sources is not None:
+        for ident,matches in lane_matches.items():
+            if result.get(ident):continue
+            proof=_shared_flat_lane_surface(source_root,regions[ident],matches)
+            if proof is not None:physical_sources[ident]=proof
     return result
 
 
@@ -1537,7 +1595,9 @@ def retained_map(evidence, first, cache=None, inventory=None):
     # Add missing observed surfaces only on roads whose full native lane geometry
     # already joins this trace. A cropped/modified lane cannot establish this scope.
     partition_lanes={}
-    partition_roads=partition_source_roads(native,first.get('structures',[]),region_sources,provenance,lane_sources=partition_lanes)
+    physical_lane_sources={}
+    partition_roads=partition_source_roads(native,first.get('structures',[]),region_sources,provenance,lane_sources=partition_lanes,
+        physical_sources=physical_lane_sources,source_root=ET.parse(path).getroot())
     mapped_roads={road for key,ident in keys.items() if ident in remap for road in [key[0]]}
     next_id=max((r['id'] for r in first.get('structures',[])),default=0)+1
     additions=[]
@@ -1616,6 +1676,12 @@ def retained_map(evidence, first, cache=None, inventory=None):
             value=fields.setdefault(ident,{})
             value['_lane_source']=partition_lanes[ident]
             value['_verified_structure_kinds']=['lane']
+    for ident,proof in physical_lane_sources.items():
+        value=fields.setdefault(ident,{})
+        if value.get('_lane_source')or value.get('_source_road_ids'):continue
+        value.update(_source_road_ids=sorted({p['road_id']for p in proof['native_parents']}),
+            _shared_flat_lane_surface_source=dict(proof,map_sha256=evidence.used.get('road.xodr')),
+            _verified_structure_kinds=sorted(set(value.get('_verified_structure_kinds',[]))|{'lane'}))
     # Native painted-object IDs/positions and measured entrance associations
     # supply source road membership for gates absent from the lane-only mesh.
     gate_candidates={}
@@ -1667,13 +1733,13 @@ def retained_map(evidence, first, cache=None, inventory=None):
             fields[r['id']]['_source_road_ids']=sorted(provenance[matches[0]['id']])
         elif len(matches)>1:
             records=[region_sources.get(n['id'],{}) for n in matches]
-            junctions={v.get('junction',-1) for v in records};heights=[v.get('flat_z') for v in records]
             # Several connector routes may reuse one flat entry surface.
             # This proof requires the same junction, XY boundary and an
             # explicitly constant, equal elevation over each full interval.
-            if len(junctions)==1 and next(iter(junctions))>=0 and all(z is not None for z in heights) and max(heights)-min(heights)<=1e-9:
+            common=_shared_flat_junction_surface(records)
+            if common is not None:
                 fields.setdefault(r['id'],{})['_roadway_source']=[evidence.used.get('road.xodr'),
-                    'shared_flat_junction_surface',next(iter(junctions)),heights[0]]
+                    'shared_flat_junction_surface',common['junction'],common['flat_z']]
     for ident,value in retained_reference_crosswalk_fields(evidence,first.get('structures',[])).items():
         fields.setdefault(ident,{}).update(value)
     for ident,value in entrance_geometry_fields(path,first.get('structures',[]),

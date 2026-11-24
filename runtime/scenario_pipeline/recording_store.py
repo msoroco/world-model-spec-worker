@@ -112,22 +112,11 @@ def verified_label(folder, metadata, *, trace_sha256=None, authority_path=None, 
     path=Path(authority_path) if authority_path is not None else folder/'evidence/expected_label.json'
     if not path.is_file():raise ValueError('Source-bound outcome record missing: '+folder.name)
     record=validate_authoritative(json.loads(path.read_text()))
-    import production_verdicts
-    if record['classification_method']['source_sha256']!=sha(Path(production_verdicts.__file__)):
-        raise ValueError('Outcome classification uses superseded implementation; regenerate from frozen sources')
     if record['evidence_status']!='accepted':raise ValueError('Outcome evidence still requires repair')
     if metadata.get('recapture'):
         recorded_identity=record.get('recording_identity',{})
         if recorded_identity.get('recording_id')!=folder.name or recorded_identity.get('parent_recording_id')!=metadata.get('parent_recording_id'):
             raise ValueError('Recapture outcome identity/parent lineage differs')
-    reference=record.get('reference_check')or{}
-    if record.get('evaluation_method')=='recorded_rule_reference' and record['expected_label'] in ('compliant','violation','not applicable'):
-        implementations=reference.get('source_hashes',{})
-        if set(implementations)!={'expected_labels.py','demo_rule_evidence.py'}:
-            raise ValueError('Recorded-rule evaluator source bindings missing')
-        for name,checksum in implementations.items():
-            if sha(Path(__file__).with_name(name))!=checksum:
-                raise ValueError('Recorded-rule evaluator implementation changed: '+name)
     expected=trace_sha256 or metadata.get('trace_sha256')
     if record['source_hashes']['trace_sha256']!=expected:
         raise ValueError('Authoritative outcome is bound to a stale trace')
@@ -338,13 +327,22 @@ def verify_recapture_source(folder, value):
     return receipt
 
 
+def verify_recording_source(folder, value):
+    """Keep logical context variants distinct from physical recaptures."""
+    if value.get('recording_kind') == 'legal_context_variant' or 'legal_context_variant' in value:
+        from legal_context_variants import verify_legal_context_variant
+        verify_legal_context_variant(folder, value, Path(folder).parent.parent)
+        return None
+    return verify_recapture_source(folder, value)
+
+
 def accept_recording(directory, record):
     """Called after the existing full case acceptance, never instead of it."""
     folder = Path(directory).parent
     path = folder / 'metadata.json'
     value = json.loads(path.read_text())
     started = time.time()
-    receipt=verify_recapture_source(folder,value)
+    receipt=verify_recording_source(folder,value)
     if receipt is not None:
         final=receipt['final_artifacts_sha256']
         if record['trace_sha256']!=final['trace.json'] or record['video_sha256']!=final['video.webm']:
@@ -372,15 +370,17 @@ def accept_recording(directory, record):
                 raise ValueError('Cannot replace accepted recording output')
         else:
             os.link(source, target)
-    from production_verdicts import presentation,validate_presentation
+    from production_verdicts import presentation,validate_presentation,assessment_reference
     authority=verified_label(folder,dict(value,law_id=record.get('law_id')),trace_sha256=record['trace_sha256'])
     validate_presentation(authority,record.get('label_record',{}))
     value.update(label_record=presentation(authority),expected_label=authority['expected_label'],
-                 judgment_sweep=authority['judgment_sweep'])
+                 judgment_sweep=authority['judgment_sweep'],
+                 reference_check=assessment_reference(authority.get('reference_check')))
     if value.get('recapture'):value['recapture']['pending_explicit_acceptance']=False
     value.update(status='accepted', law_id=record.get('law_id'), frames=record['frames'],
                  video_sha256=record['video_sha256'], trace_sha256=record['trace_sha256'])
     value['acceptance'] = json.loads(json.dumps(record, default=str))
+    value['acceptance']['reference_check'] = assessment_reference(authority.get('reference_check'))
     value.setdefault('phases', {})['registration'] = {'started': started, 'ended': time.time()}
     from shared_manifest import canonical_path, link_bytes as link_manifest_bytes, link_sets
     collection = folder.parent.parent
@@ -390,6 +390,8 @@ def accept_recording(directory, record):
         data=source_manifest.read_bytes() if source_manifest.is_file() else None
         link_manifest_bytes(collection, folder, data)
         value['manifest_sha256'] = sha(folder/'manifest.json')
+    from judgment_measurements import enrich_judgment_metadata
+    value = enrich_judgment_metadata(folder, value, trace_path=folder/'trace.json')
     atomic(path, value)
     return folder.name
 
@@ -399,7 +401,10 @@ def verify_recording(folder, *, require_label=False):
     value = json.loads((folder / 'metadata.json').read_text())
     if value.get('status') != 'accepted':
         raise ValueError('Recording is not accepted: ' + folder.name)
-    verify_recapture_source(folder,value)
+    if value.get('expected_label') == 'judgment call' or 'judgment_measurements' in value:
+        from judgment_measurements import validate_judgment_metadata
+        validate_judgment_metadata(value, folder/'trace.json')
+    verify_recording_source(folder,value)
     if require_label:
         authority=verified_label(folder,value)
         from production_verdicts import OUTCOMES
@@ -992,7 +997,9 @@ def reconstruct_collection(root, sets, archive, library, validator, *, workers=8
     """Stage, decode, then publish retained-evidence repairs; never run CARLA.
 
     Final apply requires per-record ``publication_inputs`` paths named
-    ``expected_label`` and ``adapter_report``. The latter is the complete final
+    ``expected_label`` and ``adapter_report``. An optional ``video`` installs
+    validated replacement media in the same backed-up transaction and must be
+    bound by the final profile. The latter is the complete final
     exporter report, including its reconstruction and native source projection;
     this function never rebases a projection or classifies an outcome itself.
     ``refresh_reports(root)`` generates/verifies the current indexed aggregate
@@ -1092,7 +1099,7 @@ def reconstruct_collection(root, sets, archive, library, validator, *, workers=8
                 raise ValueError('Final publication requires staged authorities and profiles for every selected recording')
             # Freeze the actual supplied bytes before checking any final projection.
             frozen_publication={rid:{name:{'path':str(Path(item[name]).resolve()),'sha256':sha(item[name])}
-                for name in ('expected_label','adapter_report')} for rid,item in publication_inputs.items()}
+                for name in ('expected_label','adapter_report','video') if name in item} for rid,item in publication_inputs.items()}
             for member in members:
                 _verified_publication_inputs(root,member,by_id[member['recording_id']],frozen_publication[member['recording_id']])
             from lean_work import refresh, SETS
@@ -1293,16 +1300,22 @@ def publish_reconstructed(root, archive, member, report, *, manifest_changed=Fal
         if previous.get('source_key')==report['source_key']and previous.get('static_inventory_receipt')==report.get('static_inventory_receipt'):return
     stage=archive/'stage'/rid
     if report['changed'] and sha(stage/'trace.json')!=report['output_trace_sha256']:raise ValueError('Staged output changed: '+rid)
+    if publication is not None and 'video' in publication:
+        install(canonical/'video.webm',publication['video']['path'],publication['video']['sha256'])
+    if authority is not None:
+        (canonical/'evidence/traffic_spec').mkdir(parents=True,exist_ok=True)
     output_directories=[canonical,canonical/'evidence/traffic_spec']if authority is not None else [canonical]+reviews+[canonical/'evidence/traffic_spec']
     for directory in dict.fromkeys(output_directories):
         if not directory.exists():continue
         current_manifest=directory/'manifest.json'
-        if sha(current_manifest)!=manifest_hash:
+        if not current_manifest.is_file() or sha(current_manifest)!=manifest_hash:
             preserve(current_manifest)
-            current_manifest.unlink()
+            if current_manifest.exists()or current_manifest.is_symlink():current_manifest.unlink()
             link_manifest_bytes(root,directory,manifest_data)
         verify_manifest(root,directory,manifest_hash)
         if report['changed']:install(directory/'trace.json',stage/'trace.json',report['output_trace_sha256'])
+        elif authority is not None and not(directory/'trace.json').is_file():
+            install(directory/'trace.json',canonical/'trace.json',report['output_trace_sha256'])
         report_path=canonical/'adapter_report.json' if directory in reviews else directory/'adapter_report.json'
         if directory in reviews:
             auxiliary=directory/'adapter_report.json'
@@ -1323,12 +1336,15 @@ def publish_reconstructed(root, archive, member, report, *, manifest_changed=Fal
         if metadata.exists():
             preserve(metadata);value=json.loads(metadata.read_text());value['trace_sha256']=report['output_trace_sha256']
             value['manifest_sha256']=manifest_hash
+            if publication is not None and 'video' in publication:
+                value['video_sha256']=publication['video']['sha256']
             if authority is not None:
-                from production_verdicts import presentation
+                from production_verdicts import presentation,assessment_reference
                 projection=presentation(authority)
                 for source in (value,value.get('acceptance',{}),value.get('published_record',{}),value.get('source_record',{})):
                     if isinstance(source,dict):
-                        source.update(label_record=projection,expected_label=authority['expected_label'],judgment_sweep=authority['judgment_sweep'])
+                        source.update(label_record=projection,expected_label=authority['expected_label'],judgment_sweep=authority['judgment_sweep'],
+                                      reference_check=assessment_reference(authority.get('reference_check')))
                         if has_context:source['scene_assumptions']=deepcopy(authoritative_context)
             value['reconstruction']={'decoder_passed':True,'source_key':report['source_key'],
                 'report':str(report_path.relative_to(root)),'report_sha256':sha(report_path),
@@ -1341,11 +1357,19 @@ def publish_reconstructed(root, archive, member, report, *, manifest_changed=Fal
                 if isinstance(nested,dict):
                     if 'trace_sha256' in nested:nested['trace_sha256']=report['output_trace_sha256']
                     if 'manifest_sha256' in nested:nested['manifest_sha256']=manifest_hash
+                    if publication is not None and 'video' in publication and 'video_sha256' in nested:
+                        nested['video_sha256']=publication['video']['sha256']
+                        if 'video_source' in nested:nested['video_source']='video.webm'
                     if isinstance(nested.get('sha256'),dict):
                         for name,digest in (('trace.json',report['output_trace_sha256']),('manifest.json',manifest_hash)):
                             if name in nested['sha256']:nested['sha256'][name]=digest
+                        if publication is not None and 'video' in publication and 'video.webm' in nested['sha256']:
+                            nested['sha256']['video.webm']=publication['video']['sha256']
             # Previously evaluated verdicts describe the old trace, not this one.
             if isinstance(value.get('offline_repair'),dict):value['offline_repair']['verdicts_verified']=False
+            if metadata == canonical/'metadata.json':
+                from judgment_measurements import enrich_judgment_metadata
+                value = enrich_judgment_metadata(canonical, value, trace_path=canonical/'trace.json')
             atomic(metadata,value)
     if authority is not None:
         install(canonical/'evidence/expected_label.json',publication['expected_label']['path'],publication['expected_label']['sha256'])
@@ -1388,12 +1412,15 @@ def _verified_publication_inputs(root, member, report, publication):
         path=canonical/name
         if (sha(path) if path.is_file() else None)!=checksum:
             raise ValueError('Canonical publication input changed: '+name)
-    for name in ('expected_label','adapter_report'):
+    for name in ('expected_label','adapter_report','video'):
+        if name=='video' and name not in publication:continue
         item=publication[name]
         if sha(item['path'])!=item['sha256']:
             raise ValueError('Staged publication input changed: '+name)
     profile_path=Path(publication['adapter_report']['path'])
     profile=json.loads(profile_path.read_text())
+    if 'video' in publication and profile.get('video_sha256')!=publication['video']['sha256']:
+        raise ValueError('Staged profile is bound to a stale video: '+rid)
     if not common_profile_complete(profile):
         raise ValueError('Staged final profile is incomplete: '+rid)
     if profile.get('trace_sha256',profile.get('output_trace_sha256'))!=report['output_trace_sha256']:

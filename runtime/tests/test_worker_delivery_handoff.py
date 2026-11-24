@@ -278,7 +278,7 @@ class DeliveryHandoffTests(unittest.TestCase):
               'job_id':7,'attempt':1,'cell_id':'C1','actor':'motor_vehicle_driver',
               'case_id':self.case_ids[0],'status':'recording','phases':{}})
         write(attempt/'result.json',{'completion':{'binding':{}}})
-        write(attempt/'traffic_spec/trace.json',{'scenes':[{'t':50}]})
+        write(attempt/'traffic_spec/trace.json',{'scenes':[{'t':50,'subject':1,'users':[]}]})
         write(attempt/'traffic_spec/manifest.json',{'fixture':'source-bound capability'})
         write(root/'inputs/shared/manifest.json',{'fixture':'source-bound capability'})
         (attempt/'raw.mkv').write_bytes(b'fixture-video')
@@ -340,7 +340,7 @@ class DeliveryHandoffTests(unittest.TestCase):
             # delivery approval does not supply a classification.
             from production_verdicts import authoritative_record
             case={'case_id':self.case_ids[0],'target_law_id':'LAW-1',
-                  'target_type':'boundary_probe','unresolved_judgment_calls':[]}
+                  'target_type':'boundary_probe','unresolved_judgment_calls':['fixture qualitative legal standard']}
             definition=attempt/'accepted_case_definition.json'
             write(definition,case)
             authority=authoritative_record(case,{'case_id':case['case_id'],
@@ -366,7 +366,7 @@ class DeliveryHandoffTests(unittest.TestCase):
             accepted=read(attempt.parent/'metadata.json')
             self.assertEqual(accepted['label_record'],presentation(authority))
             self.assertEqual(accepted['acceptance']['label_record'],presentation(authority))
-            self.assertIsNone(accepted['expected_label'])
+            self.assertEqual(accepted['expected_label'],'judgment call')
             decode_video.assert_not_called()
             auditor.write_text('AUDITOR_VERSION = 2\n')
             with self.assertRaisesRegex(ValueError,'auditor revision changed'):

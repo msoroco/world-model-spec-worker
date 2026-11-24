@@ -1,28 +1,13 @@
-# Scenario worker
-
-This branch contains frozen law–cell assignment inputs. The worker prepares
-runnable CARLA scenarios and CPU checks. CARLA capture and recording acceptance
-happen later in the local pipeline.
+# Scenario worker: full-test
 
 ## Start or resume
 
-On a machine with Git, Codex, Python 3.11, and FFmpeg installed:
-
 ```sh
-git clone --branch worker/full-test-delivery --single-branch \
-  https://github.com/msoroco/world-model-spec-worker.git scenario-worker
-cd scenario-worker
+git clone --branch worker/full-test-delivery --single-branch https://github.com/msoroco/world-model-spec-worker.git scenario-worker-full-test
+cd scenario-worker-full-test
 scripts/run-worker.sh
 ```
 
-The launcher starts Codex with [START_HERE.md](START_HERE.md) as its instructions.
-The agent sets up its CPU environment and works through `batch.json`. An
-independent timer commits and pushes `work/` progress every 15 minutes and
-after Codex exits. Run the same script again to resume; pull the branch first
-if another checkout has published newer work.
+For an existing checkout, stop the agent and checkpoint timer, preserve local work, pull the branch update, then run the same script. The timer pushes work; it does not pull runtime changes. Read AGENT_PROMPT.md for priorities and RUNTIME_REFRESH.md for this update.
 
-Do not edit `batch.json`, `inputs/`, `partitions/`, or `runtime/`. They contain
-the exact reviewed assignment context and pinned processing code. The worker
-writes implementation and proof files under `work/<assignment-id>/`.
-
-An initial assignment export has no accepted scenarios or CARLA recordings.
+The worker chooses serial execution or subagents according to completed-package throughput. Finished packages are published as they pass their assignment gate.
