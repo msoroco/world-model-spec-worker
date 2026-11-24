@@ -215,6 +215,15 @@
           "method": "derive a frame-aligned measurement from retained original lane_history.jsonl, lane_context.json, video_frames.jsonl and trace.jsonl during saved finalization",
           "evidence": "lane_history.jsonl; lane_context.json; video_frames.jsonl; channels/target_lane_gap.jsonl"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_signal_before_clear_gap/physical-preparation.json",
+        "sha256": "0e6d9a1532232862d7f693df4fef2d8af644afde6bdfc0b7a36cabcec89ce6af"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -429,6 +438,15 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/left_signal_late_clear_gap/primary-saved-processing.json",
         "sha256": "d8a53a97491f1397dcb9d5a0c694ab95ef6ffc3594426da3245f4be44b5e06ff"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_signal_late_clear_gap/physical-preparation.json",
+        "sha256": "3d65965ae3f9d2b6346c9612a8a178d8b22ee044e099bdcb3e1085fcd0335c5a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -643,6 +661,15 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/left_wrong_signal_clear_gap/primary-saved-processing.json",
         "sha256": "83fdca1cf3ff19d29c001afb59858d4ed41563c924ee138f5113fdcb4818b84b"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_wrong_signal_clear_gap/physical-preparation.json",
+        "sha256": "376e930904ff45f8fcbcb2feb63f62e739a5a220c1b56af071dc761210e506f4"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -857,6 +884,15 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/left_signal_before_close_gap/primary-saved-processing.json",
         "sha256": "cacb27142cb5e6090f0cc50bf90882a0530cf6ed4648c52db40f234c9407b194"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_signal_before_close_gap/physical-preparation.json",
+        "sha256": "f236265a4d276ded1c182527999f19d2319bf60cf86d68d0b50d72930252bd9a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1071,6 +1107,15 @@
       "diagnostic_saved_processing": {
         "receipt": "cases/right_signal_before_clear_gap/primary-saved-processing.json",
         "sha256": "13f3d685b34edeb5d8bb9aa1f4f991c695ccd4f6db5f84c26d9be726d52e8801"
+      },
+      "physical_preparation": {
+        "receipt": "cases/right_signal_before_clear_gap/physical-preparation.json",
+        "sha256": "78c449d9ee6e1ddcd535d440dc32aec6e255241492a1dddeea49577017524c05"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1088,19 +1133,109 @@
           "id": "fallback1",
           "construction": "cases/left_signal_at_departure_clear_gap/fallback1-construction.json",
           "construction_sha256": "03e729217de310d15642b4c9133e4e14cd2995dd7dbc77ec74b09b2bbf101db0",
-          "risk": "Native motion or camera view at the selected lane site may differ from the primary target"
+          "risk": "Native motion or camera view at the selected lane site may differ from the primary target",
+          "trigger": {
+            "source": "original target-lane actor body history and ego body",
+            "metric": "measured longitudinal body gap at first source-lane departure",
+            "failure_condition": "target body gap does not establish the planned clear/close comparison or causes premature physical interruption"
+          },
+          "changed_knobs": [
+            "target-lane actor initial route distance to 250 m"
+          ],
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "03e729217de310d15642b4c9133e4e14cd2995dd7dbc77ec74b09b2bbf101db0",
+            "log": "cases/left_signal_at_departure_clear_gap/fallback1-offline.log",
+            "log_sha256": "9c169f282b9d2fb8e219f41e50579fa808fa1d983b00fc3c200b200c6e8817ab"
+          },
+          "compatibility": {
+            "receipt": "cases/left_signal_at_departure_clear_gap/fallback1-compatibility.json",
+            "sha256": "8e16005bdda3bb9c1eb06d506c4894c69d52b882bbf380c7a141960b23145b8d",
+            "log": "cases/left_signal_at_departure_clear_gap/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/left_signal_at_departure_clear_gap/fallback1-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --candidate fallback1",
+            "test_log": "cases/left_signal_at_departure_clear_gap/fallback1-saved-processing.log",
+            "test_log_sha256": "330ef87689260d3a59f06caeec1888256be692db3d4fa4e01457fed98b8e3f2b",
+            "test_exit_code": 0,
+            "processing_receipt": "cases/left_signal_at_departure_clear_gap/fallback1-saved-processing.json",
+            "processing_sha256": "330ef87689260d3a59f06caeec1888256be692db3d4fa4e01457fed98b8e3f2b"
+          }
         },
         {
           "id": "fallback2",
           "construction": "cases/left_signal_at_departure_clear_gap/fallback2-construction.json",
           "construction_sha256": "b601d978e48209be5e333e8d6d35fd68bf4528e1d970ff4bb31d5aebb5620086",
-          "risk": "Native motion or camera view at the selected lane site may differ from the primary target"
+          "risk": "Native motion or camera view at the selected lane site may differ from the primary target",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed produces off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --candidate fallback2",
+            "exit_code": 0,
+            "construction_sha256": "b601d978e48209be5e333e8d6d35fd68bf4528e1d970ff4bb31d5aebb5620086",
+            "log": "cases/left_signal_at_departure_clear_gap/fallback2-offline.log",
+            "log_sha256": "2dc74f45cffbccf4beb06ced91a507321f15c587e0409c8a1fd894dbcb7dd519"
+          },
+          "compatibility": {
+            "receipt": "cases/left_signal_at_departure_clear_gap/fallback2-compatibility.json",
+            "sha256": "ca0d71d89532c9a941088b152b18bd266b8cdef5e2c5197525ade3b4f9c919a3",
+            "log": "cases/left_signal_at_departure_clear_gap/fallback2-compatibility-analysis.log",
+            "negative_log": "cases/left_signal_at_departure_clear_gap/fallback2-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --candidate fallback2",
+            "test_log": "cases/left_signal_at_departure_clear_gap/fallback2-saved-processing.log",
+            "test_log_sha256": "5b5df47a64bf3c4a34aa51dfbb16d6fb1379f2f80daa08b2d058d6a37fec2fe6",
+            "test_exit_code": 0,
+            "processing_receipt": "cases/left_signal_at_departure_clear_gap/fallback2-saved-processing.json",
+            "processing_sha256": "5b5df47a64bf3c4a34aa51dfbb16d6fb1379f2f80daa08b2d058d6a37fec2fe6"
+          }
         },
         {
           "id": "fallback3",
           "construction": "cases/left_signal_at_departure_clear_gap/fallback3-construction.json",
           "construction_sha256": "eefe324d5a53ce6a430e107bd11cf77f0ed9623b0a34e0a1f692ecd14ed83f6b",
-          "risk": "Native motion or camera view at the selected lane site may differ from the primary target"
+          "risk": "Native motion or camera view at the selected lane site may differ from the primary target",
+          "trigger": {
+            "source": "decoded original overview pixels and lane/camera frame map",
+            "metric": "complete ego and target bodies plus marked crossing visible during source-lane departure",
+            "failure_condition": "primary overview crops a required complete body or marked lane crossing"
+          },
+          "changed_knobs": [
+            "overview camera along-lane pose from 65 to 75 m"
+          ],
+          "offline": {
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --candidate fallback3",
+            "exit_code": 0,
+            "construction_sha256": "eefe324d5a53ce6a430e107bd11cf77f0ed9623b0a34e0a1f692ecd14ed83f6b",
+            "log": "cases/left_signal_at_departure_clear_gap/fallback3-offline.log",
+            "log_sha256": "fb47da02e2d7dde3980c7c2a4fe502a0dc797fd6b6a0d1888494366604875c72"
+          },
+          "compatibility": {
+            "receipt": "cases/left_signal_at_departure_clear_gap/fallback3-compatibility.json",
+            "sha256": "c44df8d0cf4e5fd4c49de9f360ed0e71dfd1630bea58320ada5519031642dbfe",
+            "log": "cases/left_signal_at_departure_clear_gap/fallback3-compatibility-analysis.log",
+            "negative_log": "cases/left_signal_at_departure_clear_gap/fallback3-negative-analysis.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-zero .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/zero-execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap --candidate fallback3",
+            "test_log": "cases/left_signal_at_departure_clear_gap/fallback3-saved-processing.log",
+            "test_log_sha256": "22e6fd1a7607a9d976e8c3ce4348448139d8fbee1db2d2089505966e51614d3e",
+            "test_exit_code": 0,
+            "processing_receipt": "cases/left_signal_at_departure_clear_gap/fallback3-saved-processing.json",
+            "processing_sha256": "22e6fd1a7607a9d976e8c3ce4348448139d8fbee1db2d2089505966e51614d3e"
+          }
         }
       ],
       "acquisition": {
@@ -1179,6 +1314,15 @@
       },
       "negative": {
         "log": "cases/left_signal_at_departure_clear_gap/primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/left_signal_at_departure_clear_gap/physical-preparation.json",
+        "sha256": "9e760c4495ac950339052570ae1407a41a94fced0cd669c38bc921d5584eaa28"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1191,7 +1335,22 @@
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-cases/signal-appropriateness-pending-0000/fallback1-construction.json",
+          "construction_sha256": "00ab4123e9c4a43283c4343b777c46a0a3a1eb59a51d8c97e0f185180ede3d57",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed causes off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "authored_cpu_fallback_pending_proof"
+        }
+      ],
       "status": "selected_cpu_diagnostic_proven",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -1282,6 +1441,15 @@
         "test_exit_code": 0,
         "processing_receipt": "sweep-cases/signal-appropriateness-pending-0000/selected-processing.json",
         "processing_sha256": "88aaaf27d83a274c9b52829dd84b3ced5c7de563b2d0de84d2d34baf8073758f"
+      },
+      "physical_preparation": {
+        "receipt": "sweep-cases/signal-appropriateness-pending-0000/physical-preparation.json",
+        "sha256": "ea7657e67d69fc765b62c5cabe1d394eb8e1420577820f594f655fb80f6520ae"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1294,7 +1462,22 @@
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-cases/signal-appropriateness-pending-0001/fallback1-construction.json",
+          "construction_sha256": "ce0c92930fd4b233314cdfd3e54aa6028b652251e8f8c2dea46e4b084cbe3162",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed causes off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "authored_cpu_fallback_pending_proof"
+        }
+      ],
       "status": "selected_cpu_diagnostic_proven",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -1385,6 +1568,15 @@
         "test_exit_code": 0,
         "processing_receipt": "sweep-cases/signal-appropriateness-pending-0001/selected-processing.json",
         "processing_sha256": "32a63efd760844b8049f6fd778d482276fe353fe1fbe2a25e8bdc2241c7a25e5"
+      },
+      "physical_preparation": {
+        "receipt": "sweep-cases/signal-appropriateness-pending-0001/physical-preparation.json",
+        "sha256": "2be1960b2dd3f1ce37b9dc3d94f8550330032b265c3b72ef4d0e13c72481f929"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1397,7 +1589,22 @@
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-cases/signal-appropriateness-pending-0002/fallback1-construction.json",
+          "construction_sha256": "9816b6e2b20130747972f73efd887e6e8dfbb3c6d516610552a766a1384b0fd1",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed causes off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "authored_cpu_fallback_pending_proof"
+        }
+      ],
       "status": "selected_cpu_diagnostic_proven",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -1488,6 +1695,15 @@
         "test_exit_code": 0,
         "processing_receipt": "sweep-cases/signal-appropriateness-pending-0002/selected-processing.json",
         "processing_sha256": "fdad084ec4e61586bd21fe1db2170bd83a9015bb89eaec34eb05311613e3d09e"
+      },
+      "physical_preparation": {
+        "receipt": "sweep-cases/signal-appropriateness-pending-0002/physical-preparation.json",
+        "sha256": "d3d4fb8928900380261753a7c9d4c59697adff04c4defd709f58245f715c3cce"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1500,7 +1716,22 @@
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-cases/safety-ascertainment-pending-0000/fallback1-construction.json",
+          "construction_sha256": "98fc7f24a0c2928eb0883d8554ec808679475fd926155cf978999a8195d416c8",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed causes off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "authored_cpu_fallback_pending_proof"
+        }
+      ],
       "status": "selected_cpu_diagnostic_proven",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -1591,6 +1822,15 @@
         "test_exit_code": 0,
         "processing_receipt": "sweep-cases/safety-ascertainment-pending-0000/selected-processing.json",
         "processing_sha256": "a9ec864e39f8824b5eba8b3ab35ed90aacd6f9ba99591d78fda9d70cf23629b3"
+      },
+      "physical_preparation": {
+        "receipt": "sweep-cases/safety-ascertainment-pending-0000/physical-preparation.json",
+        "sha256": "16ed9242e2e03e7111f7ee4db3fa187fba8e12098eba926cbea0e2f39a1587ed"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
@@ -1603,7 +1843,22 @@
         "status": "physical",
         "reason": "Original marking/signal visibility and measured target gap or motion may fail at the selected Native site"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "sweep-cases/safety-ascertainment-pending-0001/fallback1-construction.json",
+          "construction_sha256": "d98343ca39873988a1d9e376dd350a128c86cd4c672c77c608a4ba73c8584887",
+          "trigger": {
+            "source": "original ego body and speed history",
+            "metric": "completed lane transition within 900 frames without target collision",
+            "failure_condition": "primary speed causes off-route or collision interruption before completed lane transition"
+          },
+          "changed_knobs": [
+            "ego target speed from 5.0 to 4.2 m/s"
+          ],
+          "status": "authored_cpu_fallback_pending_proof"
+        }
+      ],
       "status": "selected_cpu_diagnostic_proven",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -1694,6 +1949,15 @@
         "test_exit_code": 0,
         "processing_receipt": "sweep-cases/safety-ascertainment-pending-0001/selected-processing.json",
         "processing_sha256": "899fc8a5c899dc5871d97c797b357964d9292f1bc8294ee245234c56d146555e"
+      },
+      "physical_preparation": {
+        "receipt": "sweep-cases/safety-ascertainment-pending-0001/physical-preparation.json",
+        "sha256": "b03ee7ede7dcd70a88dae1348550f2ea01f8f794411bc9bd12f275b3931d068e"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]
