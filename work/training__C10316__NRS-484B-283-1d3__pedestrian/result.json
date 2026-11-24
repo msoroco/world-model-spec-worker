@@ -1,15 +1,15 @@
 {
   "assignment_id": "training__C10316__NRS-484B-283-1d3__pedestrian",
   "input_sha256": "4a831bd3d26e4348cc29c3c044b7cd28fc04cf151e2f31341e74c58d1d8e123e",
-  "status": "partial",
-  "reason": "Both 600-frame primary cases and all six fallbacks pass current public positive/negative compatibility and recorded-only saved processing. Independent audits check the controlled primary comparison and all fallback source/receipt bindings. Physical governing pedestrian signal construction/review, cited exception disposition, selected exact delivery manifest, independent delivery acceptance and lead queue remain worker-owned. No Native execution, original signal observation, legal verdict or physical acceptance is claimed.",
-  "readiness_kind": null,
+  "status": "ready",
+  "reason": "CPU delivery-prepared: two exact selected 600-frame cases and six fallbacks pass current public positive/negative compatibility and recorded-only saved processing. Source, comparison, semantic, physical-fixture and delivery-contract audits pass. Original Native head pixels, governance, highway status, cited-exception applicability and legal outcome remain for local independent review.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
-  "candidate_count": 0,
+  "candidate_count": 4,
   "source_law_review": "Exact law text and witness inspected; summary is recovered_requires_source_review",
   "accepted_membership_count": 0,
   "reuse_count": 0,
-  "unresolved_branch_count": 2,
+  "unresolved_branch_count": 0,
   "applied_update": 16,
   "public_comparison_audit": {
     "path": "public-comparison-audit.json",
@@ -23,12 +23,12 @@
   "current_static_check_sha256": "1aa601b38629a18d6868ec560a9d0d4227d48fbed257cbdd5d36e20b9c720dc0",
   "semantic_proposal_proof": {
     "index": "proposals/semantic-index.json",
-    "index_sha256": "130ff556a0c1921adc55309f76781d15303948b8a268c0872290db02dab55b92",
-    "receipt": "semantic-proof.json",
-    "receipt_sha256": "ad4fd6b207b711d8b5f9b84ea9b52e8882b25126a33f735b88dd9a87de779215",
-    "positive_count": 1,
-    "rejected_negatives": 4,
-    "selected": false
+    "index_sha256": "4412b39f2a5765d1a0e5eb450c5d1958f2735fdc5e004c274d76fa91fd277ecb",
+    "validator_log": "head-refresh/validate-selected.log",
+    "validator_log_sha256": "138ddd154a17afdfb15a1d778fc9921f7c6c5880c00ef7e6d9db6dbff815c9aa",
+    "stage_count": 11,
+    "selected_cases": 2,
+    "original_native_observed": false
   },
   "native_signal_review_contract_proof": {
     "path": "native-signal-review-proof.json",
@@ -96,5 +96,62 @@
     "preflight_log_sha256": "5929cfc751f06630ee9c7966b7a90a9c6e5ffab5ed7995b42a7efda2cf60ab3e",
     "scoped_complete_log_sha256": "1aa601b38629a18d6868ec560a9d0d4227d48fbed257cbdd5d36e20b9c720dc0",
     "physical_signal_observed": false
+  },
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python validate-selected.py",
+      "exit_code": 0,
+      "log": "head-refresh/validate-selected.log",
+      "sha256": "138ddd154a17afdfb15a1d778fc9921f7c6c5880c00ef7e6d9db6dbff815c9aa"
+    },
+    {
+      "command": ".venv-cpu/bin/python tests/test_signal_head.py",
+      "exit_code": 0,
+      "log": "head-refresh/test-signal-head.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "command": ".venv-cpu/bin/python prove-native-signal-review.py",
+      "exit_code": 0,
+      "log": "head-refresh/signal-review.log",
+      "sha256": "5cbc5d30241d79aad95394398f967c8db8eb5e9d0accc7b14afb8f3e995d078e"
+    },
+    {
+      "command": ".venv-cpu/bin/python audit-head-refresh.py",
+      "exit_code": 0,
+      "log": "head-refresh/audit.log",
+      "sha256": "d2708e9db713e10b083f678f3c14622e6ba92d429596e9804b1494df99797ee4"
+    },
+    {
+      "command": ".venv-cpu/bin/python audit-selected-comparison.py",
+      "exit_code": 0,
+      "log": "head-refresh/selected-comparison.log",
+      "sha256": "fe1c3a9e8ca729d480124db8b3d2267cd2fffa358b1287aeabd2864d1b2e5e4a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "head-refresh/preflight.log",
+      "sha256": "f7ffdb02812a35781a919c96092ca159134d5a672cd4be56f864f8cc5cea3d9c"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C10316__NRS-484B-283-1d3__pedestrian --case training__C10316__NRS-484B-283-1d3__pedestrian__controlled_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Execute original Native capture with exclusive CARLA owner for both selected cases",
+    "Independently inspect all original governing pedestrian-head pixels, icon, illumination, no countdown and crossing direction",
+    "Review Native map/highway status, full pedestrian body history, lawful Walk entry and cited exception applicability",
+    "Run recorded-only processing after Native exit and owner release; independently accept exact target recording and comparison"
+  ],
+  "current_head_refresh": {
+    "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+    "draft_manifest_sha256": "2ab4ae16783b79cc5a3bd65479cb5c4e1a68fe034046fbb66b8bb4252f49d134",
+    "selected_manifest_sha256": "a153da41f8c3738b910c755c811013125645595408610fb88f34e42b35cf3ca5",
+    "eight_chain_proof_sha256": "36853eda3c2c6644e39251dde15e58e072bafd13c983118c9eb3efd563928bf3",
+    "eight_chain_source_audit_sha256": "18a6c5838347be0dd672dd059eb02c11e76327963e470b2f474882801074f364",
+    "selected_comparison_audit_sha256": "4a52841168209b25189186370ef2498a0980cc66d5757867df99a31a79c9e927",
+    "canonical_semantic_index_sha256": "4412b39f2a5765d1a0e5eb450c5d1958f2735fdc5e004c274d76fa91fd277ecb",
+    "physical_preparation_index_sha256": "62dfb565a46724f106a8e270d190aa9705b6a279fc346f78218cdf8817a16058",
+    "exception_review_sha256": "8c6e01c76f5b8a4f008fda84313a56f7becafb935716844472713a89c4c429df",
+    "physical_or_legal_acceptance_claimed": false
   }
 }

@@ -54,7 +54,7 @@
     {
       "case_id": "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_1",
       "target_law_id": "NRS-484B-283-1d3",
-      "kind": "planned_only",
+      "kind": "delivery_prepared_cpu",
       "source_branch": "Proceeding to cross during flashing indication without countdown",
       "physical_target": "enter highway while Walk still shows",
       "comparison_variable": "signal state at first highway entry",
@@ -66,7 +66,7 @@
     {
       "case_id": "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_2",
       "target_law_id": "NRS-484B-283-1d3",
-      "kind": "planned_only",
+      "kind": "delivery_prepared_cpu",
       "source_branch": "Proceeding to cross during flashing indication without countdown",
       "physical_target": "enter highway after no-countdown flashing Dont Walk begins",
       "comparison_variable": "signal state at first highway entry",
@@ -97,104 +97,79 @@
     {
       "term": "dev.pedestrian_signal",
       "purpose": "state dont_walk_flashing without a countdown",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "dev.governs",
       "purpose": "it faces the pedestrian's direction",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "ru.subject",
       "purpose": "the pedestrian judged",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "drv.entering_intersection",
       "purpose": "entry into the highway after the indication began",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "rel.occupies",
       "purpose": "whether the pedestrian was already in the crossing",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "st.road_edge",
       "purpose": "the curb to reach",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "st.sidewalk",
       "purpose": "or sidewalk",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "st.safety_zone",
       "purpose": "or safety zone, if one is provided",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "kin.time",
       "purpose": "the interval until the indication goes steady",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     },
     {
       "term": "kin.speed",
       "purpose": "the pedestrian's progress",
-      "status": "measurement_mapping_pending"
+      "status": "mapped_to_source_channels_original_review_pending"
     }
   ],
   "observations": [
     {
-      "name": "dev.pedestrian_signal",
+      "name": "kin.position",
       "mandatory": true,
-      "reason": "state dont_walk_flashing without a countdown"
+      "reason": "Original Native pedestrian pose and footprint"
     },
     {
-      "name": "dev.governs",
+      "name": "kin.heading",
       "mandatory": true,
-      "reason": "it faces the pedestrian's direction"
-    },
-    {
-      "name": "ru.subject",
-      "mandatory": true,
-      "reason": "the pedestrian judged"
-    },
-    {
-      "name": "drv.entering_intersection",
-      "mandatory": true,
-      "reason": "entry into the highway after the indication began"
+      "reason": "Original Native pedestrian transform"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
-      "reason": "whether the pedestrian was already in the crossing"
+      "reason": "Full original body versus authored highway edges"
     },
     {
-      "name": "st.road_edge",
+      "name": "native_display_program",
       "mandatory": true,
-      "reason": "the curb to reach"
+      "reason": "Native OpenDRIVE pedestrian head state readback joined to requested Walk, flashing and steady phases"
     },
     {
-      "name": "st.sidewalk",
+      "name": "display_camera_frame_join",
       "mandatory": true,
-      "reason": "or sidewalk"
-    },
-    {
-      "name": "st.safety_zone",
-      "mandatory": true,
-      "reason": "or safety zone, if one is provided"
-    },
-    {
-      "name": "kin.time",
-      "mandatory": true,
-      "reason": "the interval until the indication goes steady"
-    },
-    {
-      "name": "kin.speed",
-      "mandatory": true,
-      "reason": "the pedestrian's progress"
+      "reason": "Original RGB frame hash joined to Native frame and no-countdown source"
     }
   ],
   "sources": [
@@ -259,5 +234,148 @@
     "path": "exception-review.json",
     "sha256": "8c6e01c76f5b8a4f008fda84313a56f7becafb935716844472713a89c4c429df",
     "physical_applicability_pending": true
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "entire authored alley crossing, pedestrian and signal head",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian path, original body and highway entry",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "authored crosswalk and both highway edges",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "source-identifiable pedestrian signal head, icon, illumination and countdown absence",
+        "interval": "all 600 frames / 0-30 s"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.pedestrian_signal": {
+      "evidence": "state dont_walk_flashing without a countdown; verify against original Native/camera source in local review",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "it faces the pedestrian's direction; verify against original Native/camera source in local review",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "the pedestrian judged; verify against original Native/camera source in local review",
+      "channels": [
+        "kin.position",
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "entry into the highway after the indication began; verify against original Native/camera source in local review",
+      "channels": [
+        "kin.position",
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "whether the pedestrian was already in the crossing; verify against original Native/camera source in local review",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "the curb to reach; verify against original Native/camera source in local review",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "or sidewalk; verify against original Native/camera source in local review",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "st.safety_zone": {
+      "evidence": "or safety zone, if one is provided; verify against original Native/camera source in local review",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "kin.time": {
+      "evidence": "the interval until the indication goes steady; verify against original Native/camera source in local review",
+      "channels": [
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "the pedestrian's progress; verify against original Native/camera source in local review",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "no-countdown-samples.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv"
+      ]
+    }
   }
 }

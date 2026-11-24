@@ -1,11 +1,23 @@
 {
+  "cell_id": "C10316",
+  "actor": "pedestrian",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_1",
-      "target_law_id": "NRS-484B-283-1d3",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "case_id": "training__C10316__NRS-484B-283-1d3__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected common crossing context.",
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_flash_start_s": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -13,7 +25,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -22,7 +34,7 @@
             "unit": "unit vector",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -31,7 +43,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -39,8 +51,8 @@
             "name": "native_display_program",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Requested frame-synchronized Walk, flashing and steady indication without countdown",
-            "time_window": "entire 240-frame 12-second crossing",
+            "method": "Native OpenDRIVE pedestrian head state readback joined to requested Walk, flashing and steady phases",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -49,7 +61,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and no-countdown source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -62,24 +74,138 @@
           }
         ],
         "limitations": [
-          "Requested debug display is not a verified physical pedestrian signal",
+          "Authored OpenDRIVE head and Native state readback do not prove a Walk or Dont Walk icon or the absence of a countdown",
           "Original display pixels and signal governance require independent saved audit",
           "Walk entry, no-countdown flashing and steady timing alone do not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_flash_start_s",
-      "requested_setting": 2,
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "a pedestrian who entered the highway lawfully pursuant to subparagraph (1)",
+        "other place of safety",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_1",
+      "target_law_id": "NRS-484B-283-1d3",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare original first highway entry while requested indication is Walk or no-countdown flashing; keep legal judgment open.",
+      "paired_probe_id": "c10316-no-countdown-entry-pair",
+      "deliberate_differences": [
+        "requested_flash_start_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_flash_start_s",
+        "comparison_or_standard": "original entry state under exact clause",
+        "target_value_or_branch": 2.0
+      },
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_flash_start_s": {
+          "kind": "world_setup",
+          "value": 2.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian pose and footprint",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "unit vector",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian transform",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original body versus authored highway edges",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "native_display_program",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native OpenDRIVE pedestrian head state readback joined to requested Walk, flashing and steady phases",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "display_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB frame hash joined to Native frame and no-countdown source",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Authored OpenDRIVE head and Native state readback do not prove a Walk or Dont Walk icon or the absence of a countdown",
+          "Original display pixels and signal governance require independent saved audit",
+          "Walk entry, no-countdown flashing and steady timing alone do not assign a legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "a pedestrian who entered the highway lawfully pursuant to subparagraph (1)",
+        "other place of safety",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d3__pedestrian__controlled_2",
       "target_law_id": "NRS-484B-283-1d3",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare original first highway entry while requested indication is Walk or no-countdown flashing; keep legal judgment open.",
+      "paired_probe_id": "c10316-no-countdown-entry-pair",
+      "deliberate_differences": [
+        "requested_flash_start_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_flash_start_s",
+        "comparison_or_standard": "original entry state under exact clause",
+        "target_value_or_branch": 0.5
+      },
+      "variable_assignments": {
+        "actual_entry_state": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_flash_start_s": {
+          "kind": "world_setup",
+          "value": 0.5
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -87,7 +213,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -96,7 +222,7 @@
             "unit": "unit vector",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -105,7 +231,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -113,8 +239,8 @@
             "name": "native_display_program",
             "unit": "structured",
             "sampling_rate_hz": 20,
-            "method": "Requested frame-synchronized Walk, flashing and steady indication without countdown",
-            "time_window": "entire 240-frame 12-second crossing",
+            "method": "Native OpenDRIVE pedestrian head state readback joined to requested Walk, flashing and steady phases",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -123,7 +249,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and no-countdown source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -136,17 +262,58 @@
           }
         ],
         "limitations": [
-          "Requested debug display is not a verified physical pedestrian signal",
+          "Authored OpenDRIVE head and Native state readback do not prove a Walk or Dont Walk icon or the absence of a countdown",
           "Original display pixels and signal governance require independent saved audit",
           "Walk entry, no-countdown flashing and steady timing alone do not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_flash_start_s",
-      "requested_setting": 0.5,
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "a pedestrian who entered the highway lawfully pursuant to subparagraph (1)",
+        "other place of safety",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c10316-original-signal-and-exception-review",
+      "target_law_id": "NRS-484B-283-1d3",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+          "note": "An OpenDRIVE head and Native state readback do not establish original displayed icon or countdown."
+        },
+        {
+          "phrase": "a pedestrian who entered the highway lawfully pursuant to subparagraph (1)",
+          "note": "Lawful prior entry depends on original pre-entry pixels and the cited Walk clause."
+        },
+        {
+          "phrase": "other place of safety",
+          "note": "Original destination and its safety status need an independent judgment."
+        },
+        {
+          "phrase": "Except as otherwise provided in NRS 484B.287",
+          "note": "The cross-referenced crossing exceptions require original context review."
+        },
+        {
+          "phrase": "484B.290",
+          "note": "The cross-referenced blind-person condition requires original context review."
+        },
+        {
+          "phrase": "484B.350",
+          "note": "The cross-referenced school-lane condition requires original context review."
+        }
+      ],
+      "rationale": "Two source-shaped entry-state probes are prepared; actual governing display and cited-law applicability require original local review.",
+      "missing_inputs": [
+        "Original Native pedestrian-head pixels and governance",
+        "Independent countdown and exception-context review"
+      ]
     }
   ]
 }
