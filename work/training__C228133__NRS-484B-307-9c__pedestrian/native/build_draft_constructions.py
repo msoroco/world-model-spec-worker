@@ -10,7 +10,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent.name
-SOURCE = ('runner.py', 'signal_display.py', 'source_capture.py', 'source_review.py',
+SOURCE = ('runner.py', 'signal_display.py', 'source_capture.py', 'fallback_trigger.py', 'source_review.py',
           'road_entry_measure.py', 'saved_source_analysis.py',
           'finalize_saved.py', 'test_offline.py')
 FALLBACKS = {

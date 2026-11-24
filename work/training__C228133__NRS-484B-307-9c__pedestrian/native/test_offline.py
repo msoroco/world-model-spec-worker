@@ -7,6 +7,7 @@ import unittest
 
 from runner import check, FRAMES, RATE_HZ
 from signal_display import segments
+from fallback_trigger import evaluate as evaluate_path_trigger
 
 
 HERE = Path(__file__).resolve().parent
@@ -62,6 +63,10 @@ class Offline(unittest.TestCase):
             'pedestrian_enters_highway_requested']
         with self.assertRaisesRegex(ValueError, 'comparison variable'):
             check(other)
+
+    def test_packaged_fallback_path_source_is_fail_closed(self):
+        with self.assertRaises((ValueError, FileNotFoundError)):
+            evaluate_path_trigger(HERE, {}, self.config['walker_speed_mps'])
 
 
 if __name__ == '__main__':

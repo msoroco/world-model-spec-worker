@@ -1,5 +1,29 @@
 # training__C150142__LVMC-11-52-030-A__motor_vehicle_driver
 
+## 2026-11-23 tour bus loading-purpose saved comparison
+
+`audit-tour-bus-loading-comparison.py` independently checks the selected primary `tour_bus_at` and `tour_bus_no_loading` saved reports against their current construction, manifest, processing and source-audit receipts. Both have the same tour-bus service, red curb, sign, 1,800-second duration, 36,121 frames, four-view join, map and statute source. The at case records one positive-duration passenger-loading event; the no-loading case records none. A changed service class and loss of the activity distinction are rejected. The synthetic receipt is `current-tour-bus-loading-comparison-audit.json`, SHA-256 `efdd74498a7bea55f6d1dad293336179b8757869e697606370bac28bdb7a6f0d`; auditor SHA-256 `9b5e289dfc55b39496f1dec3750b53c1fe8b557b6a40ec49d5f812e8d1f4675e`. This does not establish original Native motion, boarding, statutory exception, physical acceptance or legal verdict. Other comparison and official long recipe compatibility/delivery proofs remain CPU work. Status stays `partial`.
+
+
+## 2026-11-23 tour bus 30-minute saved comparison
+
+`audit-tour-bus-boundary-comparison.py` independently joins the selected
+primary below/at/above tour-bus saved reports to their current construction,
+manifest, source-audit and processing hashes. It confirms the same tour-bus
+service class, sign, red curb extent, map source, statute source, passenger
+activity and camera join across all three synthetic cases. The saved durations
+are 1799.95, 1800.00 and 1800.05 seconds with 36,120/36,121/36,122 frames;
+changing the middle case's service class is rejected. The receipt is
+`current-tour-bus-boundary-comparison-audit.json`, SHA-256
+`adf9738a84871ab56eebb94ae271653eb6e0d9daeb7e8a40268c41b0d7fb8c50`;
+auditor SHA-256
+`924c70248cbdd1d9681508fffe7ce3f392dafa3cd656e41e031188135f695224`.
+Command: `.venv-cpu/bin/python
+work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/audit-tour-bus-boundary-comparison.py`
+(exit 0). This is one synthetic comparison audit, not original Native or legal
+acceptance. Other comparisons, official long recipe compatibility, delivery
+and integration audits remain CPU work. Assignment status remains `partial`.
+
 Status: partial. No delivery recording is selected or claimed.
 
 ## Source review

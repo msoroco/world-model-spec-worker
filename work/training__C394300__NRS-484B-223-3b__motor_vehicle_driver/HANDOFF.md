@@ -1,5 +1,30 @@
 # NRS-484B-223-3b at C394300
 
+## 2026-11-23 near-event speed CPU proposal
+
+The existing 5 m/s target can span about 0.50 m across the two 20 Hz
+entry/turn event brackets, wider than the 0.3048 m spacing between the
+199/200/201-foot probes. `native/boundary_speed.py` proposes 2.4 m/s within
+4 m of the requested entry and turn stations, retaining 5 m/s between them.
+At 20 Hz, with an assumed 0.02 m per-event position allowance, its two-event
+interval budget is 0.28 m. A CPU proof resolves idealized 199 feet below and
+201 feet above 200 feet, while leaving exactly 200 feet unresolved. Five
+negative checks include the unmodified speed budget, reversed event order,
+nonfinite route station, invalid position error and zero event speed.
+
+`prove-boundary-speed.py` exit 0. Proposal SHA-256
+`fd57dd153f7b8d6f7d0cb3bc344dc5167d2f7a42438a55df8f2b042effbb7f16`;
+proof script SHA-256
+`ff7be356ca277cb177f414cf30577a89e85effca930d8867ad80a5abda7085a3`;
+`boundary-speed-proof.json` SHA-256
+`bb204954b15fcb54b9453431f1df7822c14e78e31309868bde8293f21a4e1001`.
+This is an unbundled engineering proposal. The 0.02 m allowance and 2.4 m/s
+near-event target are not measured Native facts; they must be checked from
+original pose/body source and incorporated into selected construction before
+they can support a boundary proof. Existing twenty bundles and receipts are
+unchanged. Core bidirectional lane semantics and strict selected v2 remain
+open; status stays `partial`.
+
 Actor: `motor_vehicle_driver`. Frozen cell: `road` / `left_turn` / `center_turn_lane`.
 
 Exact statutory source: NRS 484B.223(3)(b). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.

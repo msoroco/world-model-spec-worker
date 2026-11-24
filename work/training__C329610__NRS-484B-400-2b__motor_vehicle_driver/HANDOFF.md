@@ -68,3 +68,17 @@ The saved finalizer now requires a complete pinned capture seal with unchanged s
 ## Current Native speed-frame repair, 2026-11-07
 
 The saved `speed_mps` now comes from the same post-tick Native state as the recorded pose and body. The controller retains the pre-tick speed for its command. A two-test CPU mock checks changed and nonfinite velocity; both tests are embedded in every rebuilt draft. All eight exact unselected primary/fallback bundles pass pinned offline with 18 Native tests each, independent source/receipt and controlled comparison audits, and refreshed full-resolution synthetic v1 package positives plus missing-Native-source negatives. The independent package audit passes. Current manifest SHA-256 `4f9c9bbb4666e18e02d5f22873e16960ace265f66683499236e6a9f8a3238b6c`; offline summary `3fa31279eba54618672ca736a88d1110d2b7da053b6a4134c6d15b5c24d7e23b`; package audit `706e2bebaee11a2579dfcd5af035f6cc8e4a648e1594629a5dc81957eb3a8eb8`. `case-plan.json` and `result.json` bind current hashes. These are synthetic software diagnostics; strict v2, physical Native observations, statutory closure, independent delivery acceptance and a dispatchable GPU queue remain unfinished. The assignment stays blocked and unselected.
+
+## 2026-11-23 current pinned-runtime offline refresh
+
+Added `prove-current-draft-offline.py` and reran all eight exact unselected primary/fallback constructions through the current pinned `runtime.py offline` entry point. The script checks every construction file against its manifest hash before launch and verifies each offline result reports `simulation_started: false`. Both planned exit-side cases pass primary and three fallbacks each. All materialized runners and temporary logs stayed under `.runtime-work/`; the returned JSON contains the eight current offline log hashes. `runtime.py preflight` and assignment-scoped `worker_check.py --complete` also pass. This refresh does not select cases or turn historical v1 compatibility/saved receipts into current v2 proofs.
+
+Commands (all exit 0, with `TMPDIR`, `PYTHONDONTWRITEBYTECODE=1`, and `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work/`):
+
+- `.venv-cpu/bin/python runtime.py preflight > current-preflight.log 2>&1`
+- `.venv-cpu/bin/python prove-current-draft-offline.py > current-draft-offline-proof.json`
+- `.venv-cpu/bin/python worker_check.py --assignment training__C329610__NRS-484B-400-2b__motor_vehicle_driver --complete > current-static-check.log 2>&1`
+
+SHA-256: proof script `b98a70ab8f1aef75eedad1a782ab77c35b2833b33c59cb18dd8d518d9d430a14`; eight-construction proof `6950d09d1b29fd71d5c5b913d9e3c5598f026d5c1facfcd70396323f7c4ef9a9`; preflight log `38d35a6e27163fae54b45c3a71666025271deb855ba948259439901135f9d255`; scoped checkpoint log `11b5608fbc27293a226ea53423cb9c90d21e681c93e0546abe201893db2a7ae3`.
+
+Next CPU work: upgrade exact cases to current JSON graph/capture and adapter contract, run current positive and missing-source negative compatibility plus process-saved for both exit-side cases and justified fallbacks, bind semantic proposals and independent delivery/comparison audits, then run the scoped strict gate. Keep the status partial and selected delivery case count zero until these proofs pass.

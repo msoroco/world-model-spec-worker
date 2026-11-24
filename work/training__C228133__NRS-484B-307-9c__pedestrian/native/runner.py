@@ -17,6 +17,7 @@ import traceback
 from source_capture import (VIEWS, frame_map_row, pedestrian_device_row,
                             pedestrian_row, signal_state_row)
 from signal_display import draw as draw_signal_display, segments as signal_segments
+from fallback_trigger import digest as source_digest, evaluate as evaluate_path_trigger
 
 HERE = Path(__file__).resolve().parent
 RATE_HZ = 20
@@ -241,6 +242,11 @@ def execute(config, output, host, port):
             'signal_faces_pedestrian_verified': False,
             'other_device_inventory_verified': False,
             'highway_legal_status_verified': False})
+        trigger_sources = ('native-pedestrian-frames.jsonl', 'video_frames.jsonl',
+                           'road-boundary.json')
+        trigger_hashes = {name: source_digest(output / name) for name in trigger_sources}
+        _write_new(output / 'fallback2-path-trigger.json', evaluate_path_trigger(
+            output, trigger_hashes, config['walker_speed_mps']))
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
                  'traceback': traceback.format_exc()}

@@ -1,5 +1,12 @@
 # training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator
 
+## 2026-11-23 exact twilight and low-visibility activation CPU proof
+
+Added `native/prove_temporal_activation.py` to test the current source measurement code over three complete 600-frame, 20-Hz synthetic source intervals. The dusk case crosses sunset plus 1,800 seconds at frame 200 and checks a dark headlamp just before and at the boundary, plus a stationary dark-tail frame. The dawn case crosses sunrise minus 1,800 seconds at frame 200 and checks that the boundary frame remains in the activation window while the next frame does not. A daylight case makes only two frames have reduced 500-foot discernibility, one moving and one stationary, and verifies that only the moving frame requires burning. A changed final-frame UTC timestamp is rejected. This is source-shaped numerical proof of the statutory time and motion conditions, not a physical lamp-distance or visibility observation.
+
+`native/temporal-activation-proof.json` passes three synthetic cases and one negative control (SHA-256 `892e8a5137dcc596b8fef553230bbc38d087646182c86b7ea23d010ec424fbb9`); script SHA-256 `53606bc954d0d1123dadaef83295a7f6c64c30514cd9573f40c75dac491e2c2b`. Command: `.venv-cpu/bin/python work/training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator/native/prove_temporal_activation.py` (exit 0). The 30-second source contract stays intact. Current exact-case saved processing and calibrated original review, selected delivery manifest/semantic proposals, independent acceptance/comparison audits, and strict readiness remain CPU work. Status stays `partial`; no original Native, pixel, physical or legal conclusion is claimed.
+
+
 Status: partial. No delivery recording is selected or claimed.
 
 ## 2026-11-23 unselected contrast construction checkpoint
