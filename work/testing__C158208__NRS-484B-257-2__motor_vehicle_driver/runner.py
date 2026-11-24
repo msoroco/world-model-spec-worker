@@ -9,6 +9,7 @@ from queue import Empty, Queue
 
 from camera_encoder import FFV1Writer
 from camera_setup import SIZES, source_cameras
+from officer_source import spawn_candidate, write_candidate_packet
 from yield_capture import CAMERAS, EntrySourceWriter
 from yield_construction import stage_case
 from yield_context import build as build_context
@@ -122,7 +123,13 @@ def capture(args, config, stage):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
-        with stage_case(world, stage, location_factory=carla.Location) as staging:
+        officer_factory = (lambda native_world, location_factory: spawn_candidate(
+            native_world, location_factory=location_factory,
+            rotation_factory=carla.Rotation, transform_factory=carla.Transform))
+        with stage_case(world, stage, location_factory=carla.Location,
+                        officer_factory=officer_factory) as staging:
+            if staging["officer"] is not None:
+                write_candidate_packet(output, staging["officer"])
             status_path = _write_status_review(output, stage, site)
             context = build_context(stage, site, status_path)
             reference = config["reference_plan"]

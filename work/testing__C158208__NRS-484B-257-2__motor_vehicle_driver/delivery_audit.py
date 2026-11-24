@@ -133,6 +133,14 @@ def audit(attempt, case_id, *, diagnostic_fixture=False):
                                                     for name in CAMERAS}
                 or officer.get("authority_judgment") != "unresolved"):
             raise ValueError("Original officer-control source is incomplete or stale")
+        if not diagnostic_fixture:
+            candidate = read(root / "officer-candidate.json")
+            if (candidate.get("format") != "worker-officer-candidate-construction"
+                    or candidate.get("blueprint_id") != "walker.pedestrian.0001"
+                    or type(candidate.get("actor_id")) is not int
+                    or candidate["actor_id"] != officer.get("officer_actor_id")
+                    or officer.get("officer_candidate_sha256") != sha(root / "officer-candidate.json")):
+                raise ValueError("Original officer candidate and review actor differ")
     if not diagnostic_fixture:
         sealed = read(root / "result.json")
         if (sealed.get("case_id") != case_id or sealed.get("provenance_kind") != "native"

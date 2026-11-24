@@ -6,6 +6,7 @@ from types import SimpleNamespace as NS
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from yield_construction import stage_case
+from officer_source import BLUEPRINT_ID, spawn_candidate, write_candidate_packet
 from yield_stage import PREFIX, primary
 
 
@@ -78,6 +79,36 @@ class ConstructionTests(unittest.TestCase):
                             location_factory=self.location):
                 pass
         self.assertEqual(len(world.destroyed), 2)
+
+    def test_officer_candidate_is_spawned_identified_and_owned(self):
+        world = World()
+        vehicle_spawn = world.try_spawn_actor
+        world.get_blueprint_library = lambda: NS(find=lambda name: NS(id=name))
+
+        def spawn(blueprint, transform):
+            if blueprint.id == BLUEPRINT_ID:
+                actor = NS(id=17, type_id=BLUEPRINT_ID,
+                           get_location=lambda: transform.location,
+                           destroy=lambda: world.destroyed.append(transform.location))
+                world.spawned.append(actor)
+                return actor
+            return vehicle_spawn(blueprint.id, transform)
+
+        world.try_spawn_actor = spawn
+        factory = lambda native, location: spawn_candidate(
+            native, location_factory=location,
+            rotation_factory=lambda yaw: NS(yaw=yaw),
+            transform_factory=lambda position, rotation: NS(location=position, rotation=rotation))
+        with stage_case(world, primary(PREFIX + "officer_control_exception"),
+                        location_factory=self.location, officer_factory=factory) as actors:
+            self.assertEqual(actors["officer"].id, 17)
+            self.assertEqual(actors["officer"].get_location().x, 6.0)
+            with __import__("tempfile").TemporaryDirectory() as tmp:
+                packet = write_candidate_packet(tmp, actors["officer"])
+                record = __import__("json").loads(packet.read_text())
+                self.assertEqual(record["actor_id"], 17)
+                self.assertEqual(record["police_authority_judgment"], "unresolved")
+        self.assertEqual(len(world.destroyed), 3)
 
 
 if __name__ == "__main__":
