@@ -155,6 +155,124 @@
         },
         "limitations": "Synthetic CPU source comparison only; Native lane appearance and actual driver safety ascertainment remain unresolved."
       }
+    },
+    {
+      "comparison_id": "signal_departure_boundary",
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_at_departure_clear_gap",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap"
+      ],
+      "fixed_conditions": [
+        "same left lane-change road and marked lanes, target actor placement, vehicle route, four-camera 20 Hz 45 s capture, and source-bound physical measurement"
+      ],
+      "deliberate_differences": [
+        "first appropriate left lamp relative to original first body departure: one frame after, at departure, and one frame before; no statutory lead-time cutoff inferred"
+      ]
+    },
+    {
+      "comparison_id": "signal_lead_finite_sweep",
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal-appropriateness-pending-0000",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal-appropriateness-pending-0001",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal-appropriateness-pending-0002"
+      ],
+      "fixed_conditions": [
+        "same left lane-change road, target actor body gap setpoint 8.0 m, indicator direction, vehicle route, four-camera 20 Hz 45 s capture, and original source measurement"
+      ],
+      "deliberate_differences": [
+        "fixed diagnostic appropriate-signal lead setpoints of -1, +1 and 0 original frames; actual signal/body timing must be measured and the legal judgment remains open"
+      ],
+      "cpu_diagnostic_audit": {
+        "status": "passed_synthetic_source_comparison",
+        "script": "audit_finite_sweeps.py",
+        "script_sha256": "4c6eb1795bad725d93cd7cec42056e2f11efc908a817300d8d8a3557f273c6f6",
+        "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_lead_finite_sweep",
+        "positive_log": "signal_lead_finite_sweep-positive.log",
+        "positive_sha256": "a7e1a34817a3eba7a55d8ec2c37b63ba54efe5381abb4b4f7e90ad70754a8923",
+        "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_lead_finite_sweep --negative",
+        "negative_log": "signal_lead_finite_sweep-negative.log",
+        "negative_sha256": "280711f603f7539f6e66d63815ea2141db31fff9030b54da03a0b09ff5561314",
+        "negative_expected_error": "Selected sweep changed fixed original fields: lane_history.jsonl",
+        "original_frames": 900,
+        "original_source_sha256": {
+          "capture/evidence.jsonl": {
+            "signal-appropriateness-pending-0000": "bb0d62cbf730b2d82fe43bba22d6d73a4b6068862311ba61ec9f966af07989c0",
+            "signal-appropriateness-pending-0001": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353",
+            "signal-appropriateness-pending-0002": "fd95caa10f34d4a5a5cbc783ab311864ffaa2287d3fc226bf211b60ece110d83"
+          },
+          "lane_context.json": {
+            "signal-appropriateness-pending-0000": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "signal-appropriateness-pending-0001": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "signal-appropriateness-pending-0002": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae"
+          },
+          "lane_history.jsonl": {
+            "signal-appropriateness-pending-0000": "ecb4b32d1763ee2840c247f95c2c415334557afbdb95c973b14481dcb6831894",
+            "signal-appropriateness-pending-0001": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+            "signal-appropriateness-pending-0002": "f2d9b0912bac577b0a7cc1085755d653e875e8d0482d2eb786c2b65c5b18fe49"
+          },
+          "trace.jsonl": {
+            "signal-appropriateness-pending-0000": "9655d7e3372b93078765b6ef32c70798664693065b4edde1c14ee9ac6ccc878c",
+            "signal-appropriateness-pending-0001": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "signal-appropriateness-pending-0002": "f8d5685d402c28198bb7810787e5510f7b562b3ae4eff5ef1f2c5213229dd7e0"
+          },
+          "video_frames.jsonl": {
+            "signal-appropriateness-pending-0000": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+            "signal-appropriateness-pending-0001": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+            "signal-appropriateness-pending-0002": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          }
+        },
+        "limitations": "Synthetic diagnostic source comparison only; Native physical realization, independent pixels and legal judgment remain open."
+      }
+    },
+    {
+      "comparison_id": "target_gap_finite_sweep",
+      "case_ids": [
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__safety-ascertainment-pending-0000",
+        "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__safety-ascertainment-pending-0001"
+      ],
+      "fixed_conditions": [
+        "same left lane-change road, appropriate left signal lead setpoint one original frame, vehicle route, four-camera 20 Hz 45 s capture, and original source measurement"
+      ],
+      "deliberate_differences": [
+        "fixed diagnostic target-body longitudinal gap setpoints 3.0 m and 8.0 m; actual gap must be measured and no legal safety cutoff inferred"
+      ],
+      "cpu_diagnostic_audit": {
+        "status": "passed_synthetic_source_comparison",
+        "script": "audit_finite_sweeps.py",
+        "script_sha256": "4c6eb1795bad725d93cd7cec42056e2f11efc908a817300d8d8a3557f273c6f6",
+        "positive_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison target_gap_finite_sweep",
+        "positive_log": "target_gap_finite_sweep-positive.log",
+        "positive_sha256": "8c03cc2f50a2955c8b5eba17fbf56800b44d298280cbef7461d42f9b2103e648",
+        "negative_command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison target_gap_finite_sweep --negative",
+        "negative_log": "target_gap_finite_sweep-negative.log",
+        "negative_sha256": "280711f603f7539f6e66d63815ea2141db31fff9030b54da03a0b09ff5561314",
+        "negative_expected_error": "Selected sweep changed fixed original fields: lane_history.jsonl",
+        "original_frames": 900,
+        "original_source_sha256": {
+          "capture/evidence.jsonl": {
+            "safety-ascertainment-pending-0000": "5177aa55075c7fdbce8d2e1b2476223a28846a2a7c03387a23965395afc88e8b",
+            "safety-ascertainment-pending-0001": "d7150d04799f3205489a77fe749bba71b735ea6f76f4836417b47b5f642e3353"
+          },
+          "lane_context.json": {
+            "safety-ascertainment-pending-0000": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+            "safety-ascertainment-pending-0001": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae"
+          },
+          "lane_history.jsonl": {
+            "safety-ascertainment-pending-0000": "67cd05fa62e7905bef0a94b63382b8c5f904c26eca097dc26068a7f095308b52",
+            "safety-ascertainment-pending-0001": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed"
+          },
+          "trace.jsonl": {
+            "safety-ascertainment-pending-0000": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313",
+            "safety-ascertainment-pending-0001": "684f882b7e94748b0d067c73222b66e743cc3408ca7f2e1c7c1610ec4634f313"
+          },
+          "video_frames.jsonl": {
+            "safety-ascertainment-pending-0000": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+            "safety-ascertainment-pending-0001": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+          }
+        },
+        "limitations": "Synthetic diagnostic source comparison only; Native physical realization, independent pixels and legal judgment remain open."
+      }
     }
   ],
   "evidence_review": {

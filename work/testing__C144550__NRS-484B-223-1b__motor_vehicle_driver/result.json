@@ -168,14 +168,68 @@
       "sha256": "1023b9e793ae888a8c1ee2e02319c16734727cd9dd6022dfb9822b2af347783b"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-receipt-check PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python selected primary receipt verifier",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-receipt-check PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/verify_selected_primary_receipts.py",
       "exit_code": 0,
       "log": "selected-receipt-static.log",
       "sha256": "2b87427480df3e7595365fa3ec6ad079a9a201762172dd8aad643a210a556539"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-physical-outcomes PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_physical_lifecycle.py",
+      "exit_code": 0,
+      "log": "physical-lifecycle.log",
+      "sha256": "00d540966ec1e729cd598a0b12d088841338a9d0de17dd00707fccf1fb629bd0"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/bind_physical_preparation.py",
+      "exit_code": 0,
+      "log": "physical-binding.log",
+      "sha256": "5ef584929d46312cc4161abd498d602ab3d2086514f9af08b3e321694e69e332"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/build_sweep_fallbacks.py",
+      "exit_code": 0,
+      "log": "sweep-fallback-build.log",
+      "sha256": "783b09b9f22d5fa3708d94c03ee28d28539cb50a3a31ab41c94505d59a18083f"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/bind_sweep_fallback_receipts.py",
+      "exit_code": 0,
+      "log": "sweep-fallback-binding.log",
+      "sha256": "e0f5dfad4b8af81c279a81c9f01f2c853b1d12bda17e3179078dacda8116df45"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-validation PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/verify_selected_execution.py",
+      "exit_code": 0,
+      "log": "execution-static-verify.log",
+      "sha256": "3c289aa43be59b4f84ae231562353f3c7db0916f9d6ff46e8ca49557e2abccde"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-validation .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison signal_lead_finite_sweep",
+      "exit_code": 0,
+      "log": "signal_lead_finite_sweep-positive.log",
+      "sha256": "a7e1a34817a3eba7a55d8ec2c37b63ba54efe5381abb4b4f7e90ad70754a8923"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-validation .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/audit_finite_sweeps.py --comparison target_gap_finite_sweep",
+      "exit_code": 0,
+      "log": "target_gap_finite_sweep-positive.log",
+      "sha256": "8c03cc2f50a2955c8b5eba17fbf56800b44d298280cbef7461d42f9b2103e648"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-validation .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/verify_delivery_acceptance.py",
+      "exit_code": 0,
+      "log": "delivery-acceptance-static-verify.log",
+      "sha256": "566dd76bced2a868df229e26aa4feecc5e2076969362737cd6e7a3b6d9d7bec5"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c144550-validation .venv-cpu/bin/python work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/prove_delivery_rejections.py",
+      "exit_code": 0,
+      "log": "delivery-rejections.log",
+      "sha256": "1521bf5a8e26f6cbc6c4808afe5b983501c929d7f14f52cbf1f172973e2bb7fb"
     }
   ],
   "remaining_gpu_checks": [
     "Actual marked lanes, indicator display, lane-body movement, target traffic/gap and camera visibility."
   ],
-  "reason": "Eleven selected exact primary constructions pass current-runtime offline checks and selected semantic coverage. All eleven selected primary positive/negative compatibility receipts pass package static verification, and all eleven have recorded-only saved-processing receipts with originals preserved. The original fifteen fallback candidates still require current-runtime reconstruction/proof after runner changes; the zero fallbacks have separate current-runtime proofs but are not yet selected-bound. Physical outcome/lifecycle, tested sweep fallbacks, delivery acceptance, exact queue and comparison audits remain. Strict scoped readiness has not passed; no Native, physical or legal acceptance is claimed."
+  "reason": "C144550 remains partial. Eleven exact cases have current-runtime selected primary and justified fallback CPU proofs, source-bound physical diagnostic outcomes and 11 independently validated exact delivery-acceptance contracts. The acceptance probe joins 900 synthetic original frames per case and rejects a changed physical source; it makes no Native or pixel acceptance claim. Six controlled comparisons now cover all 11 selected cases; the two finite sweeps pass original-source fixed-field comparison and tamper rejection. Remaining worker-owned CPU work includes Native audit negative coverage, exact comparison audit bindings for the other comparisons, original fallback current-runtime reproof, feedback/queue and shared branch review. No Native, physical or legal acceptance is claimed."
 }
