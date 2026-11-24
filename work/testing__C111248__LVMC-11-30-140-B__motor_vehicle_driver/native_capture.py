@@ -42,7 +42,7 @@ def _source_copy(source: Path, dest: Path, label: str) -> dict:
     return {"path": dest.name, "sha256": _sha(dest)}
 
 
-def _control(case, row: dict) -> dict:
+def _control(case, row: dict, approach_speed_cap_mps: float = 2.0) -> dict:
     """Bounded engineering policy; contact is never a commanded action."""
     if row["person_in_path"] and not row["person_clear"]:
         if case.response == "rolling" and row["body_gap_m"] > 8:
@@ -50,11 +50,15 @@ def _control(case, row: dict) -> dict:
         return {"throttle": 0.0, "brake": 1.0, "target_speed_mps": 0.0}
     if case.precaution == "wait_until_clear" and not row["person_clear"]:
         return {"throttle": 0.0, "brake": 1.0, "target_speed_mps": 0.0}
-    return {"throttle": 0.0, "brake": 0.0, "target_speed_mps": 2.0}
+    if not 0 < approach_speed_cap_mps <= 2.0:
+        raise ValueError("Bounded approach speed cap required")
+    return {"throttle": 0.0, "brake": 0.0,
+            "target_speed_mps": approach_speed_cap_mps}
 
 
 def capture(adapter, case_id: str, output: Path, *, attestation: Path,
-            carried_cue: Path, frame_count: int = 900) -> dict:
+            carried_cue: Path, frame_count: int = 900,
+            approach_speed_cap_mps: float = 2.0) -> dict:
     """Collect closed original sources for saved_encounter.process.
 
     Adapter tick returns the actual simulator frame identity and time. observe
@@ -65,6 +69,8 @@ def capture(adapter, case_id: str, output: Path, *, attestation: Path,
     case = encounter.CASE_BY_ID[case_id]
     if frame_count != 900:
         raise ValueError("45 seconds at 20 Hz requires 900 original frames")
+    if type(approach_speed_cap_mps) not in (int, float) or not 0 < approach_speed_cap_mps <= 2.0:
+        raise ValueError("Bounded approach speed cap required")
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()):
@@ -107,10 +113,16 @@ def capture(adapter, case_id: str, output: Path, *, attestation: Path,
                 path.write_bytes(source)
                 media.append({"frame": frame, "camera": camera, "path": str(path.relative_to(output)), "sha256": _sha(path)})
             rows.append(row)
-            adapter.apply_control(_control(case, row))
+            adapter.apply_control(_control(case, row, approach_speed_cap_mps))
         encounter.measure_saved(case_id, rows, attestation=att_data, cue_source=cue_data)
         history = output / "original-history.jsonl"
         history.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows), encoding="utf-8")
+        # Preserve the same original samples under the canonical trace name.
+        (output / "trace.jsonl").write_bytes(history.read_bytes())
+        (output / "video_frames.jsonl").write_text(
+            "".join(json.dumps({"video_frame": index, "carla_frame": row["frame"],
+                                "native_frame": row["frame"], "time_s": row["time_s"]}) + "\n"
+                    for index, row in enumerate(rows)), encoding="utf-8")
         media_map = output / "original-media-map.json"
         media_map.write_text(json.dumps(media, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         manifest = {
@@ -129,7 +141,8 @@ def capture(adapter, case_id: str, output: Path, *, attestation: Path,
         adapter.close()
 
 
-def capture_reviewed(adapter, case_id: str, output: Path, *, source_packet: Path) -> dict:
+def capture_reviewed(adapter, case_id: str, output: Path, *, source_packet: Path,
+                     approach_speed_cap_mps: float = 2.0) -> dict:
     """Require a reviewed, hash-bound source packet before Native capture.
 
     Actor creation and CARLA world restoration remain the caller's responsibility.
@@ -144,7 +157,8 @@ def capture_reviewed(adapter, case_id: str, output: Path, *, source_packet: Path
     att = root / packet["blindness_attestation"]["path"]
     cue = root / packet["carried_cue"]["path"]
     output = Path(output)
-    manifest = capture(adapter, case_id, output, attestation=att, carried_cue=cue)
+    manifest = capture(adapter, case_id, output, attestation=att, carried_cue=cue,
+                       approach_speed_cap_mps=approach_speed_cap_mps)
     if reviewed.prepare(source_packet)["reviewed_source_bindings"] != plan["reviewed_source_bindings"]:
         raise ValueError("reviewed original sources changed during Native capture")
     source_dir = output / "reviewed-source"
@@ -163,6 +177,8 @@ def capture_reviewed(adapter, case_id: str, output: Path, *, source_packet: Path
         destination = source_dir / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, destination)
+    map_source = root / packet["reviewed_map_route"]["path"]
+    shutil.copyfile(map_source, output / "reviewed-map-route.json")
     retained = source_dir / source_packet.name
     copied = reviewed.prepare(retained)
     if copied["reviewed_source_bindings"] != plan["reviewed_source_bindings"]:

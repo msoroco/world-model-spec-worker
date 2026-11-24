@@ -29,8 +29,13 @@ def build():
         source = ROOT / row['construction']
         if sha(source) != row['construction_sha256']:
             raise ValueError('selected construction changed after exact offline proof')
+        compat_log = ROOT / f'cpu-compat-offline-{name}.log'
+        semantic_log = ROOT / f'cpu-semantic-offline-{name}.log'
         selected_log = ROOT / f'cpu-selected-offline-{name}.log'
-        log_name = selected_log.name if selected_log.is_file() else f'cpu-source-review-review-offline-{name}.log'
+        log_name = (compat_log.name if compat_log.is_file() else
+                    semantic_log.name if semantic_log.is_file() else
+                    selected_log.name if selected_log.is_file() else
+                    f'cpu-source-review-review-offline-{name}.log')
         log = ROOT / log_name
         if not log.is_file():
             raise ValueError('current exact offline proof log missing')
@@ -41,7 +46,7 @@ def build():
             'candidate_risk': row['candidate_risk'], 'candidates': [],
             'preparation_status': 'offline_only_partial',
             'offline': {
-                'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/execution-manifest.json --case {case} --output .runtime-work/c109705-2b-nov24/selected-offline-{name} --python $PWD/.venv-cpu/bin/python',
+                'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/execution-manifest.json --case {case} --output .runtime-work/c109705-2b-nov24/semantic-offline-{name} --python $PWD/.venv-cpu/bin/python',
                 'exit_code': 0,
                 'construction_sha256': row['construction_sha256'],
                 'log': log_name, 'log_sha256': sha(log),
@@ -49,6 +54,23 @@ def build():
             'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                'host_env_var': 'CARLA_HOST',
                                'port_env_var': 'CARLA_PORT'},
+            'measurement_contract': f'cases/{name}/measurement-contract.json',
+            'fixture_recipe': f'work/{ROOT.name}/cases/{name}/fixture-recipe.json',
+            'measurement_procedure': {'entrypoint': 'analysis.py'},
+            'acquisition': {
+                'full_body_departure_xy': {'entrypoint': 'native_capture.py',
+                                           'method': 'capture',
+                                           'evidence': 'sealed original trace full-body corners'},
+                'centerline_and_right_half': {'entrypoint': 'native_seal.py',
+                                              'method': 'seal',
+                                              'evidence': 'reviewed destination centerline and highway status'},
+                'departure_heading': {'entrypoint': 'native_capture.py',
+                                      'method': 'capture',
+                                      'evidence': 'original heading and road readback'},
+                'camera_sources': {'entrypoint': 'native_camera_source.py',
+                                   'method': 'camera_frame',
+                                   'evidence': 'four source-hashed original camera PNG streams'},
+            },
         })
     manifest = {
         'format': 'worker-execution-manifest',

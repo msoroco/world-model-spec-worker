@@ -3295,3 +3295,13 @@ C202480 completed six current saved-only proofs, 82 tests, pinned execution-mani
 
 - C111248 owner: 27 focused CPU tests pass for exact actor-ID mismatch, reverse cleanup, failed capture/restore, clock readback and owned camera teardown. Six rebuilt offline constructions and scoped static check pass. Canonical delivery, semantic proposals, compatibility and saved processing remain in progress; strict exits 1 on partial.
 - C109705 NRS-484B-400-2b owner: 49 focused tests and four refreshed exact offline bundles pass. Native sealing now hashes original map bytes, trace and four-camera index after reviewed highway/map checks. Canonical manifest and audit proofs remain in progress; result is partial.
+
+- C109705 NRS-484B-400-2b now has four exact `kind: delivery` selected-manifest entries bound to the current runtime, construction hashes and passing selected-manifest offline proofs. Scoped static exits 0 and exact strict exits 1 on its truthful partial status. The owner continues semantic, compatibility, saved and audit proof fields; assignment hygiene checked clean.
+
+- C109705 NRS-484B-400-2b canonical seven-stage semantic chain now validates on active runtime for all four exact cases, and all four refreshed selected-manifest offline proofs exit 0. Owner is binding measurement, compatibility and saved proofs.
+- C111248 selected manifest now binds six diagnostic constructions, a canonical semantic proposal chain and synthetic physical fixture receipts; selected requirement dispositions and named mandatory observations are added. Scoped static passes. Owner is binding exact measurement and saved-only finalization.
+- Latest non-Git hygiene scan after these writes: 25,796 files under work/, largest 2,088,012 bytes, zero UTF-8, size, trailing-whitespace, blank-EOF, conflict-marker or bytecode issues.
+
+- C109705 NRS-484B-400-2b added source-bound `analysis.py` for original map/trace/camera packets and four exact measurement contracts; owner is binding fixtures and compatibility proofs.
+- C111248 all six selected constructions now embed saved-only `analysis.py`, five exact source-backed measurement contracts and explicit fixture recipes. One 900-frame diagnostic fixture materializes; finalizer verifies five source hashes and rejects missing blindness attestation. Six refreshed offline preflights and 28 focused tests pass. Manifest validation identified the contact case's mandatory physical fallback; owner is constructing it.
+- C202480 second proof cycle has completed eight of twelve selected primary/fallback offline and compatibility paths without a new failure. Result and queue remain partial/unchanged until acquisition map, saved proofs and strict gate are complete.

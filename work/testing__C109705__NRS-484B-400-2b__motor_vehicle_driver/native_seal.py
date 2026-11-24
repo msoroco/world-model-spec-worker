@@ -101,7 +101,8 @@ def seal(output_dir, *, case_id, survey_path, survey_sha256, map_source_path,
     map_copy = output / 'original-map.xodr'
     map_packet_path = output / 'original-map-packet.json'
     manifest_path = output / 'source-manifest.json'
-    for path in (map_copy, map_packet_path, manifest_path):
+    bindings_path = output / 'original-bindings.json'
+    for path in (map_copy, map_packet_path, manifest_path, bindings_path):
         if path.exists() or path.is_symlink():
             raise ValueError('refusing to overwrite sealed original Native source')
     with map_copy.open('xb') as stream:
@@ -131,6 +132,9 @@ def seal(output_dir, *, case_id, survey_path, survey_sha256, map_source_path,
         'physical_completion': False, 'statutory_judgment': None,
     }
     with manifest_path.open('x', encoding='utf-8') as stream:
+        json.dump(manifest, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+    with bindings_path.open('x', encoding='utf-8') as stream:
         json.dump(manifest, stream, indent=2, allow_nan=False)
         stream.write('\n')
     return {'source_manifest_path': str(manifest_path),

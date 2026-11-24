@@ -1,0 +1,91 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Driver approaches or comes in contact with protected person",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "approach_contact_measurement",
+      "method": "measure_approach",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.jsonl",
+        "video_frames.jsonl",
+        "reviewed-map-route.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Protected person is wholly or partially blind and carries a qualifying white or red-tipped cane, or is assisted as the statute describes",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "protected_person_measurement",
+      "method": "measure_protected_person",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "blindness-attestation.json",
+        "carried-cue.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Driver immediately comes to a full stop",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "full_stop_measurement",
+      "method": "measure_full_stop",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Driver takes necessary precautions before proceeding",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "precaution_measurement",
+      "method": "measure_precautions",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Avoidance of accident or injury to the protected person",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "consequence_measurement",
+      "method": "measure_consequence",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "blindness-attestation.json"
+    ],
+    "error_contains": "Missing required source: blindness-attestation.json"
+  }
+}

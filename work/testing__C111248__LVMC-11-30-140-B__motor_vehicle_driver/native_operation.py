@@ -28,7 +28,7 @@ def configure_clock(world) -> None:
 
 def run_native_attempt(client, source_packet: Path, output: Path, *,
                        construction_adapter_factory, capture_adapter_factory,
-                       restore_api) -> dict:
+                       restore_api, approach_speed_cap_mps: float = 2.0) -> dict:
     """Capture with exact reviewed identities; always destroy and restore.
 
     The construction adapter owns spawns for the source-reviewed vehicle,
@@ -59,7 +59,8 @@ def run_native_attempt(client, source_packet: Path, output: Path, *,
         if capture_adapter is None:
             raise ValueError("original camera and observation adapter required")
         result = capture_reviewed(capture_adapter, plan["case_id"], output,
-                                  source_packet=source_packet)
+                                  source_packet=source_packet,
+                                  approach_speed_cap_mps=approach_speed_cap_mps)
         if result.get("reviewed_source_bindings") != plan["reviewed_source_bindings"]:
             raise ValueError("captured reviewed sources differ from launch")
     except BaseException as exc:

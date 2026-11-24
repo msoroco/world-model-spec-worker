@@ -11,7 +11,7 @@ SOURCE_FILES = (
     "construction.py", "native_map.py", "native_capture.py", "native_camera_source.py",
     "native_ego_adapter.py", "native_seal.py",
     "departure_geometry.py", "saved_delivery.py", "saved_pixels.py",
-    "finalize.py", "comparison_audit.py",
+    "finalize.py", "comparison_audit.py", "analysis.py",
 )
 
 RUNNER = '''"""Exact two-directional left-turn departure bundle preflight."""
@@ -134,6 +134,9 @@ if __name__ == "__main__":
 def build():
     source = (HERE / "case-plan.json").read_bytes()
     plan = json.loads(source)
+    semantic = json.loads((HERE / "proposals/cases.json").read_text())
+    descriptions = {entry["case_id"]: entry["recording_description"]
+                    for entry in semantic["cases"] if entry["target_type"] != "baseline"}
     rows = []
     for item in plan["cases"]:
         case = item["case_id"]
@@ -159,7 +162,7 @@ def build():
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_original_accepted_sources_absent", "channels": config["cameras"]},
+            "recording_description": descriptions[case],
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         output = HERE / ("construction-" + suffix + ".json")

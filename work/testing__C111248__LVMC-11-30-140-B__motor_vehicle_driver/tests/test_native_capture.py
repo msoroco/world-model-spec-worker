@@ -53,6 +53,17 @@ class Adapter:
 
 
 class TestNativeCapture(unittest.TestCase):
+    def test_contact_fallback_bounds_unobstructed_approach(self):
+        from native_capture import _control
+        from blind_encounter import CASE_BY_ID
+        case = CASE_BY_ID['white_contact_stop']
+        clear = {'person_in_path': False, 'person_clear': True,
+                 'body_gap_m': 20.0}
+        self.assertEqual(_control(case, clear, 2.0)['target_speed_mps'], 2.0)
+        self.assertEqual(_control(case, clear, 1.0)['target_speed_mps'], 1.0)
+        blocked = dict(clear, person_in_path=True, person_clear=False)
+        self.assertEqual(_control(case, blocked, 1.0)['brake'], 1.0)
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
