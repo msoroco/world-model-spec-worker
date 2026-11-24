@@ -55,3 +55,40 @@ def audit_body_history(scene: dict, rows: list[dict], expected_frames: int = 400
             'body_center_last_xy_m': centers[-1],
             'legal_route_classification': 'unresolved',
             'physical_visibility': 'unconfirmed'}
+
+
+def evaluate_crossing_completion(scene: dict, rows: list[dict] | None) -> dict:
+    """Check measured route completion, leaving legal and image review unresolved.
+
+    The 0.25 m endpoint radius is a walker-control engineering check, not a
+    statutory route or curb tolerance. Caller provenance is reported separately.
+    """
+    method = '400 consecutive 20 Hz original body samples; observed endpoint within 0.25 m of the authored route target'
+    sources = ['scene.json', 'walker-body-history.jsonl']
+    if not rows:
+        return {'maneuver_completed': False,
+                'physical_checks': {'maneuver': {'status': 'unverified', 'method': method,
+                                                 'sources': sources, 'reason': 'body history missing'}},
+                'realized_observables': {}}
+    try:
+        history = audit_body_history(scene, rows)
+    except ValueError as exc:
+        return {'maneuver_completed': False,
+                'physical_checks': {'maneuver': {'status': 'unverified', 'method': method,
+                                                 'sources': sources, 'reason': str(exc)}},
+                'realized_observables': {}}
+    target = point(scene['route_xy_m'][-1])
+    endpoint = history['body_center_last_xy_m']
+    distance = math.dist(endpoint, target)
+    status = 'met' if distance <= 0.25 else 'not_met'
+    return {'maneuver_completed': status == 'met',
+            'physical_checks': {'maneuver': {'status': status, 'method': method,
+                                             'sources': sources,
+                                             'endpoint_distance_m': distance}},
+            'realized_observables': {'frame_count': history['frame_count'],
+                                     'original_frame_range': [history['first_original_frame'],
+                                                              history['last_original_frame']],
+                                     'endpoint_distance_m': distance,
+                                     'crosswalk_overlap_frames': len(history['body_crosswalk_overlap_frames'])},
+            'legal_route_classification': 'unresolved',
+            'physical_visibility': 'unconfirmed'}

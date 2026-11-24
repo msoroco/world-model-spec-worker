@@ -23,7 +23,7 @@ def check():
         raise ValueError("exact selected case mismatch")
     if config["rate_hz"] != 20 or config["duration_s"] != 45:
         raise ValueError("capture cadence mismatch")
-    if [c["name"] for c in config["cameras"]] != ["front", "rear", "left", "right"]:
+    if [c["name"] for c in config["cameras"]] != ["overview", "approach", "reference_corner", "driver_reference"]:
         raise ValueError("four-camera plan mismatch")
     if config["case"] != CASES[key]:
         raise ValueError("case conditions mismatch")

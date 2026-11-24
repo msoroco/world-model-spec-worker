@@ -3,9 +3,10 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from copy import deepcopy
 
 ROOT=Path(__file__).resolve().parent
-RUNTIME='8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8'
+RUNTIME=hashlib.sha256((ROOT.parents[1]/'runtime/SOURCE-MANIFEST.json').read_bytes()).hexdigest()
 CAMERAS=[{'name':name,'width':1920 if name=='overview' else 1280,
           'height':1080 if name=='overview' else 720,'fov_deg':75,
           'pose_strategy':'complete pedestrian crossing and both curbs'}
@@ -50,14 +51,30 @@ def build():
                       'termination_rules':{'duration_s':20,'early_termination':'retain failed Native attempt'},
                       'mechanisms':['Native walker controller with readback','original body-history measurement; source map binding pending']}
         dest=directory/'construction.json';dump(dest,construction)
+        fallback=deepcopy(construction)
+        for file in fallback['files']:
+            if file['path']=='native_controller.py':
+                alternate=ROOT/'native_controller_fallback.py'
+                file['source']=str(alternate.relative_to(ROOT.parents[1]))
+                file['content']=alternate.read_text()
+        fallback['mechanisms'].append('fallback1: slower same-route walker control for measured waypoint overshoot')
+        fallback_path=directory/'fallback1-construction.json'
+        dump(fallback_path,fallback)
         entries.append({'case_id':case_id,'construction':str(dest.relative_to(ROOT)),
-                        'construction_sha256':sha(dest),'candidates':[],
+                        'construction_sha256':sha(dest),
+                        'candidates':[{'id':'fallback1',
+                                      'construction':str(fallback_path.relative_to(ROOT)),
+                                      'construction_sha256':sha(fallback_path),
+                                      'trigger':{'source':'original Native walker body history and requested control trace',
+                                                 'metric':'waypoint overshoot or route deviation',
+                                                 'failure_condition':'primary measured body route overshoots a target waypoint or leaves its authored route corridor'},
+                                      'changed_knobs':['walker requested speed 1.2 m/s to 0.8 m/s on the same route']}],
                         'measurement_contract':str((directory/'measurement-contract.json').relative_to(ROOT)),
                         'measurement_procedure':{'entrypoint':'analysis.py'},
                         'fixture_recipe':str((directory/'fixture-recipe.json').relative_to(ROOT.parents[1]))})
     manifest={'format':'c227749-draft-offline-manifest','assignment_id':plan['assignment_id'],
               'runtime_manifest_sha256':RUNTIME,'cases':entries,
-              'limitations':'Offline authored geometry only; Native map, semantic and compatibility proofs pending.'}
+              'limitations':'Original Native map, reviewed site sources, judgment sweep and physical outcome proofs pending.'}
     dump(ROOT/'draft-offline-manifest.json',manifest)
     return manifest
 

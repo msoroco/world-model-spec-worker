@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -24,6 +25,21 @@ def _ref(path):
     return json.loads(Path(path).read_text())
 
 
+def _stage_sources(source_root, attempt, refs):
+    """Copy only reviewed original source bytes before Native capture begins."""
+    from crosswalk import sealed_json, require
+    attempt = Path(attempt).resolve()
+    for ref in refs:
+        require(ref['path'].startswith('source-inputs/'), 'reviewed sources need source-inputs/ paths')
+        sealed_json(ref, source_root)
+        source = (source_root/ref['path']).resolve()
+        target = (attempt/ref['path']).resolve()
+        require(target.is_relative_to(attempt) and not target.exists(), 'source staging collision')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source,target)
+        sealed_json(ref, attempt)
+
+
 def run_native(config, args):
     from crosswalk import sealed_json
     from native_capture import capture
@@ -41,9 +57,24 @@ def run_native(config, args):
     site = sealed_json(site_ref, source_root)
     sealed_json(vehicle_ref, source_root)
     exception_ref = args.exception_ref or os.environ.get('C214977_EXCEPTION_REF')
-    packet = sealed_json(_ref(exception_ref), source_root) if exception_ref else None
+    exception_source = _ref(exception_ref) if exception_ref else None
+    packet = sealed_json(exception_source, source_root) if exception_source else None
     if config['case']['exception'] != 'none' and packet is None:
         raise ValueError('reviewed exact exception packet required')
+    if packet is not None:
+        if not packet.get('instruction_source') or not packet.get('review_source'):
+            raise ValueError('original instruction and independent review sources required')
+        sealed_json(packet['instruction_source'], source_root)
+        sealed_json(packet['review_source'], source_root)
+        if (packet.get('source_sha256') != packet['instruction_source']['sha256'] or
+                packet.get('reviewed_instruction_sha256') != packet['review_source']['sha256']):
+            raise ValueError('exception source or review hash differs')
+    refs = [site_ref, vehicle_ref]
+    if exception_source:
+        refs += [exception_source, packet['instruction_source'], packet['review_source']]
+    attempt = Path(args.output_dir)
+    _stage_sources(source_root, attempt, refs)
+    source_root = attempt.resolve()
 
     import carla
     client = carla.Client(args.host or 'localhost', int(args.port or 2000))
@@ -51,6 +82,8 @@ def run_native(config, args):
     saved = snapshot(client)
     adapter = None
     sensors = {}
+    receipt = None
+    restoration = None
     try:
         world = client.get_world()
         settings = world.get_settings()
@@ -64,8 +97,8 @@ def run_native(config, args):
         adapter = CarlaCrosswalkAdapter(world, carla, case_id=config['selected_case_id'],
                                         cameras=sensors, exception_packet=packet)
         adapter.owned.extend(sensors.values())
-        return capture(adapter, site_ref, vehicle_ref, config['case'], source_root,
-                       Path(args.output_dir))
+        receipt = capture(adapter, site_ref, vehicle_ref, config['case'], source_root,
+                          attempt, exception_ref=exception_source)
     finally:
         try:
             if adapter is not None:
@@ -74,7 +107,13 @@ def run_native(config, args):
                 for sensor in sensors.values():
                     sensor.destroy()
         finally:
-            restore(client, saved)
+            restoration = restore(client, saved)
+    if receipt is None or restoration is None:
+        raise ValueError('Native capture or world restoration incomplete')
+    from native_output_bridge import seal_original_capture
+    seal_original_capture(attempt, config['case'], saved['opendrive'],
+                          restoration_verified=restoration['restored'])
+    return receipt
 
 
 def main():

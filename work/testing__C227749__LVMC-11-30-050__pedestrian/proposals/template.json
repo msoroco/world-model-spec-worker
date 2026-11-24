@@ -1,0 +1,55 @@
+{
+  "template_id": "LVMC-11-30-050@pedestrian",
+  "law_id": "LVMC-11-30-050",
+  "actor": "pedestrian",
+  "quote": "No pedestrian shall cross a roadway at any place other than by a route at right angles to the curb or by the shortest route to the opposite curb except in a crosswalk.",
+  "structure": {
+    "activation": "pedestrian crosses a roadway outside a crosswalk",
+    "disjunctive_routes": [
+      "route at right angles to the curb",
+      "shortest route to the opposite curb"
+    ],
+    "exception": "except in a crosswalk",
+    "judgment_calls_needed": [
+      {
+        "phrase": "at right angles to the curb",
+        "note": "Use original body route and sourced curb geometry; no legal angle tolerance is inferred."
+      },
+      {
+        "phrase": "shortest route to the opposite curb",
+        "note": "Measure original path and source-backed finite opposite curb; no legal length tolerance is inferred."
+      },
+      {
+        "phrase": "except in a crosswalk",
+        "note": "Require source-backed marked and unmarked crosswalk boundaries and original full-body route."
+      }
+    ],
+    "obligation": "Outside a crosswalk, pedestrian uses either a route at right angles to the curb or the shortest route to the opposite curb",
+    "exceptions": [
+      {
+        "source_clause": "except in a crosswalk",
+        "condition": "source-backed original body crossing is in a marked or unmarked crosswalk"
+      }
+    ],
+    "timing": {
+      "event": "entire roadway crossing"
+    }
+  },
+  "parameter_refs": [
+    {
+      "name": "original_walker_body_route",
+      "kind": "measured_value",
+      "range_or_domain": "sealed Native frame history; 20 Hz full crossing target"
+    },
+    {
+      "name": "starting_and_opposite_curb",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed original site geometry"
+    },
+    {
+      "name": "crosswalk_boundaries",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed original map and site sources"
+    }
+  ]
+}

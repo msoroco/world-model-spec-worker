@@ -84,6 +84,13 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(comparison_source['original_frame_count'],900)
         self.assertFalse(comparison_source['delivery_accepted'])
         self.assertFalse(any(comparison_source['exception_sources'].values()))
+        (self.root/'out'/'site.json').write_bytes((self.root/'site.json').read_bytes())
+        (self.root/'out'/'vehicle.json').write_bytes((self.root/'vehicle.json').read_bytes())
+        derived = s.prepare_analysis_sources(self.root/'out',self.case)
+        self.assertEqual(derived['verified']['decoded_original_pngs'],3600)
+        self.assertEqual(len((self.root/'out'/'crosswalk-rows.jsonl').read_text().splitlines()),900)
+        with self.assertRaisesRegex(n.SourceError,'derived source output collision'):
+            s.prepare_analysis_sources(self.root/'out',self.case)
         with self.assertRaisesRegex(n.SourceError, 'measured destination mismatch'):
             s.comparison_source(receipt_ref,self.root,self.root/'out',
                                 {**self.case,'destination':'off'},verified)
@@ -118,6 +125,15 @@ class TestCapture(unittest.TestCase):
         a = Adapter()
         with self.assertRaisesRegex(n.SourceError,'900 frames'):
             n.capture(a,self.sref,self.vref,self.case,self.root,self.root/'out',20)
+        self.assertEqual(a.i,0)
+    def test_exception_requires_matching_sealed_packet(self):
+        a = Adapter()
+        case = {**self.case, 'exception':'police_direction'}
+        with self.assertRaisesRegex(n.SourceError,'exact exception source missing'):
+            n.capture(a,self.sref,self.vref,case,self.root,self.root/'out')
+        packet = seal(self.root,'exception.json',{'kind':'device_direction'})
+        with self.assertRaisesRegex(n.SourceError,'kind differs'):
+            n.capture(a,self.sref,self.vref,case,self.root,self.root/'out',exception_ref=packet)
         self.assertEqual(a.i,0)
 
 

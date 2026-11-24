@@ -3,7 +3,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import copy
 from pathlib import Path
+
+from analysis import canonical_trace_rows
 
 ROOT = Path(__file__).resolve().parents[2]
 FOLDER = Path(__file__).resolve().parent
@@ -21,11 +24,12 @@ def encoded(value) -> str:
 
 
 def build() -> dict:
+    core_example = json.loads((ROOT / 'runtime/fixtures/example.json').read_text())
     for suffix in SUFFIXES:
         case_id = ASSIGNMENT + '__' + suffix
         folder = FOLDER / 'diagnostics' / suffix
         folder.mkdir(parents=True, exist_ok=True)
-        xodr = '<OpenDRIVE><header name="C108447 diagnostic only"/></OpenDRIVE>\n'
+        xodr = core_example['files']['road.xodr']
         property_status = 'public' if suffix == 'public_bypass' else 'private'
         connector = {'lot': [[-3, 5], [5, 5], [13, 5]]}
         roadway = [[-3, -2], [5, -2], [13, -2]]
@@ -51,15 +55,15 @@ def build() -> dict:
         samples = [{'frame': frame, 'time_s': (frame - 100) / 20,
                     'x': -3 if frame == 100 else 5 if frame == 101 else 13,
                     'y': y, 'speed_mps': 0 if frame > 102 else 2,
-                    'yaw_rad': 0} for frame in range(100, 120)]
+                    'yaw_rad': 0} for frame in range(100, 109)]
         approach_state = 'green' if suffix == 'no_approach_red' else 'red_alone'
         destination_state = 'red_alone' if suffix == 'destination_red' else 'yellow'
         approach = [{'frame': frame, 'device_id': 'approach-A',
                      'source': {'diagnostic_device': 'A'}, 'facing_ego': True,
-                     'state': approach_state} for frame in range(100, 120)]
+                     'state': approach_state} for frame in range(100, 109)]
         destination = [{'frame': frame, 'device_id': 'destination-B',
                         'source': {'diagnostic_device': 'B'}, 'facing_ego': False,
-                        'state': destination_state} for frame in range(100, 120)]
+                        'state': destination_state} for frame in range(100, 109)]
         trace = {'format': 'diagnostic-property-route-v1', 'diagnostic_fixture': True,
                  'case_id': case_id, 'coordinate_frame': 'diagnostic-xy',
                  'actor_class': 'vehicle', 'actor_source': {'source': 'diagnostic actor'},
@@ -73,18 +77,54 @@ def build() -> dict:
         frame_map = ''.join(json.dumps({'video_frame': index, 'carla_frame': row['frame'],
                                         'time_s': row['time_s']}, sort_keys=True) + '\n'
                             for index, row in enumerate(samples))
+        core_files = core_example['files']
+        source_trace = ''.join(json.dumps(row) + '\n' for row in canonical_trace_rows(samples))
+        core_evidence = [json.loads(line) for line in core_files['capture/evidence.jsonl'].splitlines()]
+        core_frames = [json.loads(line) for line in core_files['capture/native/frames.jsonl'].splitlines()]
+        graphs = copy.deepcopy(core_example['graphs'])
+        for index, body in enumerate(samples):
+            event = core_evidence[index]
+            frame = core_frames[index]
+            graph = graphs[index]
+            event['original_frame'] = body['frame']
+            event['replay_frame'] = body['frame']
+            event['recording_time_s'] = body['time_s']
+            event['replay_simulation_time_s'] = 40 + body['time_s']
+            event['ego']['position_m'] = [body['x'], body['y'], body.get('z', 0)]
+            event['ego']['speed_mps'] = body['speed_mps']
+            event['ego']['speed_provenance'] = 'synthetic_native_sample'
+            event['original_observations']['frame'] = body['frame']
+            event['original_observations']['time_s'] = body['time_s']
+            frame['frame'] = body['frame']
+            frame['simulation_time'] = 40 + body['time_s']
+            frame['adapter_graph'] = f'graphs/base/{body["frame"]:08d}.adapter.json'
+            graph['path'] = 'capture/native/' + frame['adapter_graph']
+            graph['attributes']['frame'] = body['frame']
+        capture_manifest = json.loads(core_files['capture/manifest.json'])
+        capture_manifest['case_id'] = case_id
+        capture_manifest['acquisition'] = 'synthetic_fixture'
+        capture_manifest['source_run'] = 'C108447 diagnostic source fixture'
+        capture_manifest['required_observations'] = []
+        capture_manifest['sources']['road.xodr'] = sha(xodr.encode())
+        capture_manifest['sources']['trace.jsonl'] = sha(source_trace.encode())
         spec = {'files': {'road.xodr': xodr, 'authority.json': authority_text,
                           'map-packet.json': encoded(packet), 'trace.json': encoded(trace),
-                          'video_frames.jsonl': frame_map},
-                'graphs': [],
-                'videos': [{'path': f'{name}.mkv', 'frames': 20, 'width': width,
+                          'video_frames.jsonl': frame_map,
+                          'trace.jsonl': source_trace,
+                          'capture/evidence.jsonl': ''.join(json.dumps(row) + '\n' for row in core_evidence),
+                          'capture/native/frames.jsonl': ''.join(json.dumps(row) + '\n' for row in core_frames),
+                          'capture/manifest.json': encoded(capture_manifest),
+                          'capture/native_map_facts.json': core_files['capture/native_map_facts.json'],
+                          'capture/recorder_info.txt': core_files['capture/recorder_info.txt']},
+                'graphs': graphs,
+                'videos': [{'path': f'{name}.mkv', 'frames': 9, 'width': width,
                             'height': height, 'fps': 20, 'color': 'black'}
                            for name, width, height in [('overview', 1920, 1080),
                                                        ('approach', 1280, 720),
                                                        ('reference_corner', 1280, 720),
                                                        ('driver_reference', 1280, 720)]]}
         source = folder / 'specification.json'
-        source.write_text(encoded(spec))
+        source.write_text(json.dumps(spec, separators=(',', ':')) + '\n')
         reference = str(source.relative_to(ROOT))
         recipe = {'format': 'worker-fixture-recipe',
                   'sources': [{'path': 'diagnostic-source.json', 'source': reference,

@@ -8,6 +8,9 @@ import queue
 from parked_lamps import require
 
 NAMES = ("front", "rear", "left", "right")
+VIEWS = {"front": "overview", "rear": "approach",
+         "left": "reference_corner", "right": "driver_reference"}
+STATIONS = {view: station for station, view in VIEWS.items()}
 
 
 class OriginalCameras:
@@ -19,7 +22,8 @@ class OriginalCameras:
         self.queues = {}
         try:
             for entry in config["cameras"]:
-                name = entry["name"]
+                require(entry["name"] in STATIONS, "unknown canonical camera view")
+                name = STATIONS[entry["name"]]
                 require(name in transforms and transforms[name].get("source"),
                         name + " camera station source missing")
                 station = transforms[name]
@@ -32,6 +36,14 @@ class OriginalCameras:
                 require(0 < entry["fov_deg"] < 180, name + " camera field of view invalid")
                 blueprint.set_attribute("fov", str(entry["fov_deg"]))
                 blueprint.set_attribute("sensor_tick", "0.05")
+                compensation = config.get("exposure_compensation")
+                if compensation is not None:
+                    require(isinstance(compensation, (int, float)) and not isinstance(compensation, bool)
+                            and -5.0 <= compensation <= 5.0,
+                            "camera exposure compensation invalid")
+                    require(blueprint.has_attribute("exposure_compensation"),
+                            "CARLA camera exposure compensation unavailable")
+                    blueprint.set_attribute("exposure_compensation", str(compensation))
                 transform = carla.Transform(carla.Location(*station["xyz"]), carla.Rotation(*station["rpy"]))
                 sensor = world.spawn_actor(blueprint, transform)
                 require(sensor is not None, name + " camera spawn failed")

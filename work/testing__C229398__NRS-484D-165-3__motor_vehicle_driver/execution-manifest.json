@@ -1,28 +1,57 @@
 {
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "cases": [
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on",
       "kind": "delivery",
       "construction": "construction-dark_lamps_on.json",
-      "construction_sha256": "ee80b541f15b93b234cc2206337c1f40b490f1d517a0770964c07ab283397b8c",
+      "construction_sha256": "7ea0f14d7c3a64314483058f3df68d39f68db5bdaa390711a9343f7980e897e3",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Long sight stations and lamp pixels may be too small or occluded at the fixed profile; source review and physical validation required."
+        "reason": "Original fixed-station pixels may be underexposed; a source-bound independent review triggers the shared exposure candidate before another Native recording."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-dark_lamps_on-fallback1.json",
+          "construction_sha256": "748bddb3b884bae52210fcb616de612ab9569b28e631090c76b4e3c71d83058a",
+          "trigger": {
+            "source": "independent original-pixel review of named source stations",
+            "metric": "front/rear 500-foot lamp and 1,000-foot person/object pixel readability",
+            "failure_condition": "station image underexposed so required physical observations are unknown"
+          },
+          "changed_knobs": [
+            "CARLA RGB sensor exposure_compensation: default to +1.0 at all four fixed source stations"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --output .runtime-work/c229398-offline-v8-fallback1/dark_lamps_on --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "748bddb3b884bae52210fcb616de612ab9569b28e631090c76b4e3c71d83058a",
+            "log": "cases/dark_lamps_on/fallback1-offline.log",
+            "log_sha256": "1e27d4ead3b01199d8ed0477128ec41bceca5f3068e97b80c14cdf4ab1a0043c"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --output .runtime-work/c229398-compat-v6-fallback1-dark_lamps_on --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/dark_lamps_on/fallback1-compatibility.json",
+            "sha256": "deb876a55baa5e55492dabc95119472927454e8088f0941c255a4b99a3c466b3",
+            "log": "cases/dark_lamps_on/fallback1-analysis-proof.log",
+            "negative_log": "cases/dark_lamps_on/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/dark_lamps_on/measurement-contract.json",
       "fixture_recipe": "work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/cases/dark_lamps_on/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "finalize_original.py"
       },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --output .runtime-work/c229398-compat-dark-lamps-on-v2 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --output .runtime-work/c229398-compat-v6-primary-dark_lamps_on --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
         "receipt": "cases/dark_lamps_on/compatibility.json",
-        "sha256": "138a12403bbc83c81d60b1093035221d86cb203ef03544e7ca80b81b1936d163",
-        "log": "cases/dark_lamps_on/analysis-proof.log"
+        "sha256": "2a7ef266521bb9a4f889d1235610146e68416f86c0ae3db0b2255b3c2e86489a",
+        "log": "cases/dark_lamps_on/analysis-proof.log",
+        "negative_log": "cases/dark_lamps_on/negative-analysis.log"
       },
       "negative": {
         "log": "cases/dark_lamps_on/negative-analysis.log",
@@ -31,11 +60,11 @@
         "removed": "capture/site_packet.json"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --output .runtime-work/c229398-offline-v4/dark_lamps_on --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --output .runtime-work/c229398-offline-v8-primary/dark_lamps_on --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "ee80b541f15b93b234cc2206337c1f40b490f1d517a0770964c07ab283397b8c",
+        "construction_sha256": "7ea0f14d7c3a64314483058f3df68d39f68db5bdaa390711a9343f7980e897e3",
         "log": "proof-dark_lamps_on.log",
-        "log_sha256": "6c0aa6c35c2ac3e1707ee91cbaa83b6a299ae925569cce08b94a4556a290a365"
+        "log_sha256": "955f94e2e0fc084d3a399148410e00bc9b55f60dac82f5d3c4318d58d67b424b"
       },
       "acquisition": {
         "parked_lamp_observations": {
@@ -43,28 +72,99 @@
           "method": "capture",
           "evidence": "sealed original_history.jsonl and source camera frame map projected to parked_lamp_observations.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --attempt .runtime-work/c229398-saved-v3-dark_lamps_on/attempt --output .runtime-work/c229398-saved-v3-dark_lamps_on/versions --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find .runtime-work/c229398-saved-v3-dark_lamps_on/versions -name feedback.json -type f -print",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_lamps_on/process-saved.log",
+        "test_log_sha256": "b0cdee345e5d16118374df0495f7b8156856b48a85ca42e7894c98d59fb79e4c"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "tests/prove_delivery.py",
+        "script_sha256": "1e01fa15371fe9c3dcfa3a6260f436c3f7aba5aca6c640893f2a3ad4b6402a56",
+        "command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_lamps_on/delivery-positive.log",
+        "test_log_sha256": "4455fc65c505788c6271da8b6e93c859b2d2c8bf80e812ed647b3cb358da6779",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "physical original-pixel review required",
+        "negative_log": "cases/dark_lamps_on/delivery-negative.log",
+        "negative_log_sha256": "5db742db165451d6a6062e6e4473427356e0966b8df9401a8939741e28f11376"
+      },
+      "physical_preparation": {
+        "receipt": "cases/dark_lamps_on/physical-preparation.json",
+        "sha256": "9fbfac5d81fef67a0b976681d21c71007286bb71901f3f70924a5cda5d7e449f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off",
       "kind": "delivery",
       "construction": "construction-dark_lamps_off.json",
-      "construction_sha256": "49d3abf10d4cc901f725abff9671a036c2467d2bff060518b7326df2be733cc5",
+      "construction_sha256": "86bfe091097b5f459949ad46acad1028566dcd5e3e165c52fef5b9952a719282",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Long sight stations and lamp pixels may be too small or occluded at the fixed profile; source review and physical validation required."
+        "reason": "Original fixed-station pixels may be underexposed; a source-bound independent review triggers the shared exposure candidate before another Native recording."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-dark_lamps_off-fallback1.json",
+          "construction_sha256": "b8ad17fb59c3e5b163de58fa7d9d579bbbc60996a58f94226ce17c9a6821ee04",
+          "trigger": {
+            "source": "independent original-pixel review of named source stations",
+            "metric": "front/rear 500-foot lamp and 1,000-foot person/object pixel readability",
+            "failure_condition": "station image underexposed so required physical observations are unknown"
+          },
+          "changed_knobs": [
+            "CARLA RGB sensor exposure_compensation: default to +1.0 at all four fixed source stations"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --output .runtime-work/c229398-offline-v8-fallback1/dark_lamps_off --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "b8ad17fb59c3e5b163de58fa7d9d579bbbc60996a58f94226ce17c9a6821ee04",
+            "log": "cases/dark_lamps_off/fallback1-offline.log",
+            "log_sha256": "93d8da95126f0870c8f3f7a063094e48c8e1573d6d2b8a7ea012467e8b1bafe5"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --output .runtime-work/c229398-compat-v6-fallback1-dark_lamps_off --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/dark_lamps_off/fallback1-compatibility.json",
+            "sha256": "1effa053cf7fba6f2664541b723dd52305ecf350ac693ff1cf7a5b9a15629b53",
+            "log": "cases/dark_lamps_off/fallback1-analysis-proof.log",
+            "negative_log": "cases/dark_lamps_off/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/dark_lamps_off/measurement-contract.json",
       "fixture_recipe": "work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/cases/dark_lamps_off/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "finalize_original.py"
       },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --output .runtime-work/c229398-compat-v3-dark_lamps_off --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --output .runtime-work/c229398-compat-v6-primary-dark_lamps_off --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
         "receipt": "cases/dark_lamps_off/compatibility.json",
-        "sha256": "a0497a464b0bd7c11b8f9db24cbd92be9d0f28e1bcdb2d28e6f7c81f1e914478",
-        "log": "cases/dark_lamps_off/analysis-proof.log"
+        "sha256": "b820c3cac5e4a0c882212910d1a3ab02a72a19e5499d5d541842c2d97fa26bad",
+        "log": "cases/dark_lamps_off/analysis-proof.log",
+        "negative_log": "cases/dark_lamps_off/negative-analysis.log"
       },
       "negative": {
         "log": "cases/dark_lamps_off/negative-analysis.log",
@@ -73,11 +173,11 @@
         "removed": "capture/site_packet.json"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --output .runtime-work/c229398-offline-v4/dark_lamps_off --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --output .runtime-work/c229398-offline-v8-primary/dark_lamps_off --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "49d3abf10d4cc901f725abff9671a036c2467d2bff060518b7326df2be733cc5",
+        "construction_sha256": "86bfe091097b5f459949ad46acad1028566dcd5e3e165c52fef5b9952a719282",
         "log": "proof-dark_lamps_off.log",
-        "log_sha256": "4542ecb6fcfd5fd1f5ce85263b94759e1f41793ae10d2ef83cbf93d35dc13b39"
+        "log_sha256": "ba8904bca4de5ed2a9ac052ee39f520700e8c0a1ab878f29cf7a9a54d170c6fe"
       },
       "acquisition": {
         "parked_lamp_observations": {
@@ -85,28 +185,99 @@
           "method": "capture",
           "evidence": "sealed original_history.jsonl and source camera frame map projected to parked_lamp_observations.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --attempt .runtime-work/c229398-saved-v3-dark_lamps_off/attempt --output .runtime-work/c229398-saved-v3-dark_lamps_off/versions --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find .runtime-work/c229398-saved-v3-dark_lamps_off/versions -name feedback.json -type f -print",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_lamps_off/process-saved.log",
+        "test_log_sha256": "5c51b67ccbcfe83abc7a8cfdf2d95327c06570c7bbb38923b19fe1d6fd6eb94e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "tests/prove_delivery.py",
+        "script_sha256": "1e01fa15371fe9c3dcfa3a6260f436c3f7aba5aca6c640893f2a3ad4b6402a56",
+        "command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_lamps_off/delivery-positive.log",
+        "test_log_sha256": "d59a7c26f749645e7c761d98b38b2ed0a6e6d3f7c39cfa023df9883412e425ec",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "physical original-pixel review required",
+        "negative_log": "cases/dark_lamps_off/delivery-negative.log",
+        "negative_log_sha256": "5db742db165451d6a6062e6e4473427356e0966b8df9401a8939741e28f11376"
+      },
+      "physical_preparation": {
+        "receipt": "cases/dark_lamps_off/physical-preparation.json",
+        "sha256": "a4dc6548899dfbaa8c5b92ebfa5af18670607241d4bc2572b71beacfdb0a03ff"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended",
       "kind": "delivery",
       "construction": "construction-dark_attended.json",
-      "construction_sha256": "0701d32a4aa61b6d32e55c88abf7517e5f805f24f7d53e73bd8cfacd37183213",
+      "construction_sha256": "5a33790865eb91bdb5676db676fdf7208bb40e19bda459fbe5eee521a044471d",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Long sight stations and lamp pixels may be too small or occluded at the fixed profile; source review and physical validation required."
+        "reason": "Original fixed-station pixels may be underexposed; a source-bound independent review triggers the shared exposure candidate before another Native recording."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-dark_attended-fallback1.json",
+          "construction_sha256": "0acf0f5bf087ca6aaf429e54a0755948775fdfdb7ea52ac14a201ab3c5c789f0",
+          "trigger": {
+            "source": "independent original-pixel review of named source stations",
+            "metric": "front/rear 500-foot lamp and 1,000-foot person/object pixel readability",
+            "failure_condition": "station image underexposed so required physical observations are unknown"
+          },
+          "changed_knobs": [
+            "CARLA RGB sensor exposure_compensation: default to +1.0 at all four fixed source stations"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --output .runtime-work/c229398-offline-v8-fallback1/dark_attended --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "0acf0f5bf087ca6aaf429e54a0755948775fdfdb7ea52ac14a201ab3c5c789f0",
+            "log": "cases/dark_attended/fallback1-offline.log",
+            "log_sha256": "2f210093e2919a303f80fc51d75f6f987919e35a24b50e0e915fd7b02f86be3a"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --output .runtime-work/c229398-compat-v6-fallback1-dark_attended --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/dark_attended/fallback1-compatibility.json",
+            "sha256": "5a927f00fb9797113dabfbadcf78a153773d723cf9f78cca8b2876a39ba198f5",
+            "log": "cases/dark_attended/fallback1-analysis-proof.log",
+            "negative_log": "cases/dark_attended/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/dark_attended/measurement-contract.json",
       "fixture_recipe": "work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/cases/dark_attended/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "finalize_original.py"
       },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --output .runtime-work/c229398-compat-v3-dark_attended --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --output .runtime-work/c229398-compat-v6-primary-dark_attended --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
         "receipt": "cases/dark_attended/compatibility.json",
-        "sha256": "2c5b30fb01cf3e3d97dc18eae2a32cd3da2814b7b736f683d2e8ccd50355dd63",
-        "log": "cases/dark_attended/analysis-proof.log"
+        "sha256": "06a02c8eb7aea662ace6601a9a4a2d73907fcebe1b32795cedb33299ff7c8e06",
+        "log": "cases/dark_attended/analysis-proof.log",
+        "negative_log": "cases/dark_attended/negative-analysis.log"
       },
       "negative": {
         "log": "cases/dark_attended/negative-analysis.log",
@@ -115,11 +286,11 @@
         "removed": "capture/site_packet.json"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --output .runtime-work/c229398-offline-v4/dark_attended --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --output .runtime-work/c229398-offline-v8-primary/dark_attended --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "0701d32a4aa61b6d32e55c88abf7517e5f805f24f7d53e73bd8cfacd37183213",
+        "construction_sha256": "5a33790865eb91bdb5676db676fdf7208bb40e19bda459fbe5eee521a044471d",
         "log": "proof-dark_attended.log",
-        "log_sha256": "e61a9293e82cf818843ca3b4393cfaa1be4408bbad6cd24224340c2c341515ad"
+        "log_sha256": "6f7cd000106882e732933777ee96d942bc5c23ddee679969bb72300e4aa49812"
       },
       "acquisition": {
         "parked_lamp_observations": {
@@ -127,28 +298,99 @@
           "method": "capture",
           "evidence": "sealed original_history.jsonl and source camera frame map projected to parked_lamp_observations.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --attempt .runtime-work/c229398-saved-v3-dark_attended/attempt --output .runtime-work/c229398-saved-v3-dark_attended/versions --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find .runtime-work/c229398-saved-v3-dark_attended/versions -name feedback.json -type f -print",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_attended/process-saved.log",
+        "test_log_sha256": "00691d865ac068d0859e468094ebe9ad8d015d832977850c0cd0b122e1658812"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "tests/prove_delivery.py",
+        "script_sha256": "1e01fa15371fe9c3dcfa3a6260f436c3f7aba5aca6c640893f2a3ad4b6402a56",
+        "command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_attended/delivery-positive.log",
+        "test_log_sha256": "60c678c0145b69f0d6a1df2192cfaa7bd0437636da4414d37780fd814875d4a6",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "physical original-pixel review required",
+        "negative_log": "cases/dark_attended/delivery-negative.log",
+        "negative_log_sha256": "5db742db165451d6a6062e6e4473427356e0966b8df9401a8939741e28f11376"
+      },
+      "physical_preparation": {
+        "receipt": "cases/dark_attended/physical-preparation.json",
+        "sha256": "a3005a604384e31e87dce7ed1f6a982d9c33cf2fcfad6ddae82b4cb518cdd652"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled",
       "kind": "delivery",
       "construction": "construction-dark_traveled.json",
-      "construction_sha256": "adf3ec8499c2a76077bcc3f7871a0da6d176fc58d374c151ec236218cb99e4fd",
+      "construction_sha256": "8311cb2133ef50dec2c4a84af639116ed6c18cdf14b9c931721fbb864a46160d",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Long sight stations and lamp pixels may be too small or occluded at the fixed profile; source review and physical validation required."
+        "reason": "Original fixed-station pixels may be underexposed; a source-bound independent review triggers the shared exposure candidate before another Native recording."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-dark_traveled-fallback1.json",
+          "construction_sha256": "9ee209104c72515199292dba90544ecee980d37f6eef0322c9ffaf7b6391bf37",
+          "trigger": {
+            "source": "independent original-pixel review of named source stations",
+            "metric": "front/rear 500-foot lamp and 1,000-foot person/object pixel readability",
+            "failure_condition": "station image underexposed so required physical observations are unknown"
+          },
+          "changed_knobs": [
+            "CARLA RGB sensor exposure_compensation: default to +1.0 at all four fixed source stations"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --output .runtime-work/c229398-offline-v8-fallback1/dark_traveled --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "9ee209104c72515199292dba90544ecee980d37f6eef0322c9ffaf7b6391bf37",
+            "log": "cases/dark_traveled/fallback1-offline.log",
+            "log_sha256": "353f3c5d7c9ac87c59a7fd3af78a4d203448dadaac15a550c47428db5ae897f1"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --output .runtime-work/c229398-compat-v6-fallback1-dark_traveled --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/dark_traveled/fallback1-compatibility.json",
+            "sha256": "5eb8ed3184fdc899697ed95327017a30ed912c2be1ffbf4527942155603bbe85",
+            "log": "cases/dark_traveled/fallback1-analysis-proof.log",
+            "negative_log": "cases/dark_traveled/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/dark_traveled/measurement-contract.json",
       "fixture_recipe": "work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/cases/dark_traveled/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "finalize_original.py"
       },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --output .runtime-work/c229398-compat-v3-dark_traveled --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --output .runtime-work/c229398-compat-v6-primary-dark_traveled --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
         "receipt": "cases/dark_traveled/compatibility.json",
-        "sha256": "09ea9b8273272146263f36a731cfbaa9d5b35d90f3c81fd4631740f4838ba378",
-        "log": "cases/dark_traveled/analysis-proof.log"
+        "sha256": "a5d0cb7af9be141fe14aab775d54bdfa03c2f9cbf9f5f53b03aa0fc9df886210",
+        "log": "cases/dark_traveled/analysis-proof.log",
+        "negative_log": "cases/dark_traveled/negative-analysis.log"
       },
       "negative": {
         "log": "cases/dark_traveled/negative-analysis.log",
@@ -157,11 +399,11 @@
         "removed": "capture/site_packet.json"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --output .runtime-work/c229398-offline-v4/dark_traveled --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --output .runtime-work/c229398-offline-v8-primary/dark_traveled --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "adf3ec8499c2a76077bcc3f7871a0da6d176fc58d374c151ec236218cb99e4fd",
+        "construction_sha256": "8311cb2133ef50dec2c4a84af639116ed6c18cdf14b9c931721fbb864a46160d",
         "log": "proof-dark_traveled.log",
-        "log_sha256": "be2d2c08ac567e7a44de2289323aaf5491bb0e75cae73d52b82caa366cb68c38"
+        "log_sha256": "a9c9f92ee2e7067185af82b282678dfd70d1405f5367fee3e2f879ddc3c56502"
       },
       "acquisition": {
         "parked_lamp_observations": {
@@ -169,28 +411,99 @@
           "method": "capture",
           "evidence": "sealed original_history.jsonl and source camera frame map projected to parked_lamp_observations.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --attempt .runtime-work/c229398-saved-v3-dark_traveled/attempt --output .runtime-work/c229398-saved-v3-dark_traveled/versions --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find .runtime-work/c229398-saved-v3-dark_traveled/versions -name feedback.json -type f -print",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_traveled/process-saved.log",
+        "test_log_sha256": "8c53f37f1657f5dda55701d25b1612d14b15c1a393f14ac1e857cbe411681a75"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "tests/prove_delivery.py",
+        "script_sha256": "1e01fa15371fe9c3dcfa3a6260f436c3f7aba5aca6c640893f2a3ad4b6402a56",
+        "command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled",
+        "test_exit_code": 0,
+        "test_log": "cases/dark_traveled/delivery-positive.log",
+        "test_log_sha256": "77fcdb2da350e131ffed3bfbb84a4337c069abb5f070e7394f7273f5b0369517",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "physical original-pixel review required",
+        "negative_log": "cases/dark_traveled/delivery-negative.log",
+        "negative_log_sha256": "5db742db165451d6a6062e6e4473427356e0966b8df9401a8939741e28f11376"
+      },
+      "physical_preparation": {
+        "receipt": "cases/dark_traveled/physical-preparation.json",
+        "sha256": "98ac39f5129113da81f33faad8f6e17624170342290bd0b2f18a6f09bfa8461d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light",
       "kind": "delivery",
       "construction": "construction-sufficient_light.json",
-      "construction_sha256": "658d43603a19f3612fcbbdfd9e45674fde22dbf10ad483dc7f25734a3ce5af0e",
+      "construction_sha256": "4d954459b42c71fc6368295ac9c9bf0094a9cfd1d8d8748afeb08ec2c15350c1",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Long sight stations and lamp pixels may be too small or occluded at the fixed profile; source review and physical validation required."
+        "reason": "Original fixed-station pixels may be underexposed; a source-bound independent review triggers the shared exposure candidate before another Native recording."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-sufficient_light-fallback1.json",
+          "construction_sha256": "fcba16beb8345a4c48c365da15c23d14c9076e8abfff85fac38a27351db02ea5",
+          "trigger": {
+            "source": "independent original-pixel review of named source stations",
+            "metric": "front/rear 500-foot lamp and 1,000-foot person/object pixel readability",
+            "failure_condition": "station image underexposed so required physical observations are unknown"
+          },
+          "changed_knobs": [
+            "CARLA RGB sensor exposure_compensation: default to +1.0 at all four fixed source stations"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --output .runtime-work/c229398-offline-v8-fallback1/sufficient_light --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "fcba16beb8345a4c48c365da15c23d14c9076e8abfff85fac38a27351db02ea5",
+            "log": "cases/sufficient_light/fallback1-offline.log",
+            "log_sha256": "374281e699f63a83832fd2e5cb061f2a5fab12d141ff1be946128df6dff8fb03"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --output .runtime-work/c229398-compat-v6-fallback1-sufficient_light --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/sufficient_light/fallback1-compatibility.json",
+            "sha256": "55b2d0b0102490a50c58522c0565094d743ef7a9527eef06e5ebcd08d9c8b6ad",
+            "log": "cases/sufficient_light/fallback1-analysis-proof.log",
+            "negative_log": "cases/sufficient_light/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/sufficient_light/measurement-contract.json",
       "fixture_recipe": "work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/cases/sufficient_light/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "finalize_original.py"
       },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --output .runtime-work/c229398-compat-v3-sufficient_light --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --output .runtime-work/c229398-compat-v6-primary-sufficient_light --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
         "receipt": "cases/sufficient_light/compatibility.json",
-        "sha256": "15f700630a0a7f8886a38ef8116cc629d71a50eb8d297ce3f1224749ac5dec29",
-        "log": "cases/sufficient_light/analysis-proof.log"
+        "sha256": "e52d6264bb23c9b26cc1db229fbd7ebf1a93618b6b82ada2b02c16bf1ef9a595",
+        "log": "cases/sufficient_light/analysis-proof.log",
+        "negative_log": "cases/sufficient_light/negative-analysis.log"
       },
       "negative": {
         "log": "cases/sufficient_light/negative-analysis.log",
@@ -199,11 +512,11 @@
         "removed": "capture/site_packet.json"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --output .runtime-work/c229398-offline-v4/sufficient_light --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --output .runtime-work/c229398-offline-v8-primary/sufficient_light --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "658d43603a19f3612fcbbdfd9e45674fde22dbf10ad483dc7f25734a3ce5af0e",
+        "construction_sha256": "4d954459b42c71fc6368295ac9c9bf0094a9cfd1d8d8748afeb08ec2c15350c1",
         "log": "proof-sufficient_light.log",
-        "log_sha256": "dfebc92b1b29ca5b555c1a5e6ec9229dca1b4348e4ae5f933a8455d96e005577"
+        "log_sha256": "e53fbae3a9b7594692b2715bd0d75e5814ccb75eafd3f28d5f4cdb69982956d3"
       },
       "acquisition": {
         "parked_lamp_observations": {
@@ -211,28 +524,99 @@
           "method": "capture",
           "evidence": "sealed original_history.jsonl and source camera frame map projected to parked_lamp_observations.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --attempt .runtime-work/c229398-saved-v3-sufficient_light/attempt --output .runtime-work/c229398-saved-v3-sufficient_light/versions --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find .runtime-work/c229398-saved-v3-sufficient_light/versions -name feedback.json -type f -print",
+        "test_exit_code": 0,
+        "test_log": "cases/sufficient_light/process-saved.log",
+        "test_log_sha256": "37639c672acaf7513156ba0a6f3e4419bcbcff2c3f763ced98bbf4c7fc1b7b78"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "tests/prove_delivery.py",
+        "script_sha256": "1e01fa15371fe9c3dcfa3a6260f436c3f7aba5aca6c640893f2a3ad4b6402a56",
+        "command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light",
+        "test_exit_code": 0,
+        "test_log": "cases/sufficient_light/delivery-positive.log",
+        "test_log_sha256": "5ac65834e6c52904dc29fb06bda962248c63650548e9382a8ac7538712fad697",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "physical original-pixel review required",
+        "negative_log": "cases/sufficient_light/delivery-negative.log",
+        "negative_log_sha256": "5db742db165451d6a6062e6e4473427356e0966b8df9401a8939741e28f11376"
+      },
+      "physical_preparation": {
+        "receipt": "cases/sufficient_light/physical-preparation.json",
+        "sha256": "137c287e0ae7704f2d190fa0bedd964a68c8fa404bc048b45573cfb12995389d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time",
       "kind": "delivery",
       "construction": "construction-outside_referenced_time.json",
-      "construction_sha256": "f80ea7cda6c06df15fcfef4d032eea5f3db03becf156d9bed80d2618eb95cc77",
+      "construction_sha256": "ab3134bc758e51d893ed034db2f92b44399bfcb9c947b4dc5a90b4541917529f",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Long sight stations and lamp pixels may be too small or occluded at the fixed profile; source review and physical validation required."
+        "reason": "Original fixed-station pixels may be underexposed; a source-bound independent review triggers the shared exposure candidate before another Native recording."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-outside_referenced_time-fallback1.json",
+          "construction_sha256": "8252739f559fea2b3f078102c0a8587ba98a38be7a1e1b31439126fb7ed8910a",
+          "trigger": {
+            "source": "independent original-pixel review of named source stations",
+            "metric": "front/rear 500-foot lamp and 1,000-foot person/object pixel readability",
+            "failure_condition": "station image underexposed so required physical observations are unknown"
+          },
+          "changed_knobs": [
+            "CARLA RGB sensor exposure_compensation: default to +1.0 at all four fixed source stations"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --output .runtime-work/c229398-offline-v8-fallback1/outside_referenced_time --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "8252739f559fea2b3f078102c0a8587ba98a38be7a1e1b31439126fb7ed8910a",
+            "log": "cases/outside_referenced_time/fallback1-offline.log",
+            "log_sha256": "531ee497ef5464ee5ba24a534d00062904f327296f8c1b7dbdacb71f21747a5f"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --output .runtime-work/c229398-compat-v6-fallback1-outside_referenced_time --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck --candidate fallback1",
+            "receipt": "cases/outside_referenced_time/fallback1-compatibility.json",
+            "sha256": "c7f79a553a245ddaeac0d4f850c18dcd988ee849eaf812b649ecdb44b3542075",
+            "log": "cases/outside_referenced_time/fallback1-analysis-proof.log",
+            "negative_log": "cases/outside_referenced_time/fallback1-negative-analysis.log"
+          }
+        }
+      ],
       "measurement_contract": "cases/outside_referenced_time/measurement-contract.json",
       "fixture_recipe": "work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/cases/outside_referenced_time/fixture-recipe.json",
       "measurement_procedure": {
         "entrypoint": "finalize_original.py"
       },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --output .runtime-work/c229398-compat-v3-outside_referenced_time --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --output .runtime-work/c229398-compat-v6-primary-outside_referenced_time --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
         "receipt": "cases/outside_referenced_time/compatibility.json",
-        "sha256": "b968e3ca2463da929cf4050536210e013dd975f43bb09aaaf765823621ab9311",
-        "log": "cases/outside_referenced_time/analysis-proof.log"
+        "sha256": "250c18ab93ab6d311ad8b2e9d5b6f8644632fe9e9413d6a94132c892b744a600",
+        "log": "cases/outside_referenced_time/analysis-proof.log",
+        "negative_log": "cases/outside_referenced_time/negative-analysis.log"
       },
       "negative": {
         "log": "cases/outside_referenced_time/negative-analysis.log",
@@ -241,11 +625,11 @@
         "removed": "capture/site_packet.json"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --output .runtime-work/c229398-offline-v4/outside_referenced_time --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --output .runtime-work/c229398-offline-v8-primary/outside_referenced_time --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "f80ea7cda6c06df15fcfef4d032eea5f3db03becf156d9bed80d2618eb95cc77",
+        "construction_sha256": "ab3134bc758e51d893ed034db2f92b44399bfcb9c947b4dc5a90b4541917529f",
         "log": "proof-outside_referenced_time.log",
-        "log_sha256": "51da0cdb7e0fbfb015c324f20a75ee4e16fdca94bbefb63cfa42b703df0af286"
+        "log_sha256": "886335a3cf358bfed17f0473106c5eea2dc12a3e851a19d78e2d4c04c2718295"
       },
       "acquisition": {
         "parked_lamp_observations": {
@@ -253,6 +637,48 @@
           "method": "capture",
           "evidence": "sealed original_history.jsonl and source camera frame map projected to parked_lamp_observations.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/execution-manifest.json --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --attempt .runtime-work/c229398-saved-v3-outside_referenced_time/attempt --output .runtime-work/c229398-saved-v3-outside_referenced_time/versions --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find .runtime-work/c229398-saved-v3-outside_referenced_time/versions -name feedback.json -type f -print",
+        "test_exit_code": 0,
+        "test_log": "cases/outside_referenced_time/process-saved.log",
+        "test_log_sha256": "d9261f5810e81948fdbe1c91adb28e83f1ea070a7007757e346c245d58f76a3e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "tests/prove_delivery.py",
+        "script_sha256": "1e01fa15371fe9c3dcfa3a6260f436c3f7aba5aca6c640893f2a3ad4b6402a56",
+        "command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time",
+        "test_exit_code": 0,
+        "test_log": "cases/outside_referenced_time/delivery-positive.log",
+        "test_log_sha256": "72096191dbb34e3e0209199c0d98a6d9acddd6e28e0215669edb1c6f2e3e87a3",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229398__NRS-484D-165-3__motor_vehicle_driver/tests/prove_delivery.py --case testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "physical original-pixel review required",
+        "negative_log": "cases/outside_referenced_time/delivery-negative.log",
+        "negative_log_sha256": "5db742db165451d6a6062e6e4473427356e0966b8df9401a8939741e28f11376"
+      },
+      "physical_preparation": {
+        "receipt": "cases/outside_referenced_time/physical-preparation.json",
+        "sha256": "aaa051b6022d4574d335538d78f69a1d443d0e0af9f05560a2c86a80153f152d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]

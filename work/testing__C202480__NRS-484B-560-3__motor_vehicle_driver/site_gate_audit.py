@@ -11,14 +11,20 @@ from reviewed_site_gate import verify
 
 def audit(attempt: Path, case_id: str) -> dict:
     attempt = Path(attempt).resolve()
-    provenance_path = attempt / 'acquisition-provenance.json'
+    provenance_path = attempt / 'capture-seal.json'
     if not provenance_path.is_file():
-        raise ValueError('original Native acquisition provenance missing')
+        raise ValueError('sealed original Native acquisition missing')
     provenance = json.loads(provenance_path.read_text(encoding='utf-8'))
     if (provenance.get('provenance_kind') != 'native' or
-            provenance.get('diagnostic_fixture') is not False):
+            provenance.get('diagnostic_fixture') is not False or
+            provenance.get('events') != ['capture_finished', 'encoders_closed',
+                                         'restoration_verified'] or
+            provenance.get('restoration', {}).get('restored') is not True):
         raise ValueError('canonical site audit requires original Native acquisition')
     packet = attempt / 'site/packet.json'
+    if provenance.get('sources', {}).get('site/packet.json') != hashlib.sha256(
+            packet.read_bytes()).hexdigest():
+        raise ValueError('sealed original site packet differs')
     result = verify(packet, Path(__file__).with_name('case-plan.json'), case_id)
     result['original_acquisition_provenance_sha256'] = hashlib.sha256(
         provenance_path.read_bytes()).hexdigest()

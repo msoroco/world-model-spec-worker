@@ -60,6 +60,15 @@ def measure_vehicle(packet, trace, observation, case_audit):
             'destination_entry_frame': trace['destination_entry_frame']}
 
 
+def canonical_trace_rows(ego):
+    return [{'frame': body['frame'], 'time_s': body['time_s'],
+             'position': {'x': body['x'], 'y': body['y'], 'z': body.get('z', 0)},
+             'position_m': [body['x'], body['y'], body.get('z', 0)],
+             'heading_deg': body['yaw_rad'] * 180 / 3.141592653589793,
+             'speed_mps': body['speed_mps'],
+             'speed_mph': body['speed_mps'] / 0.44704} for body in ego]
+
+
 ROWS = (
     ('property_approach_signal', 'measure_approach', ('map-packet.json', 'trace.json')),
     ('property_route_class', 'measure_property', ('road.xodr', 'authority.json', 'map-packet.json', 'trace.json')),
@@ -100,6 +109,85 @@ def build_report(root):
             'limitations': ['Parcel authority, purpose and physical movement require independent review.']}
 
 
+def build_result(root, report):
+    """Write only measurements derived from retained source bytes."""
+    from worker_exchange.native_output import write_result
+
+    root = Path(root).resolve()
+    config = json.loads(required(root, 'config.json').read_text())
+    packet = json.loads(required(root, 'map-packet.json').read_text())
+    trace = json.loads(required(root, 'trace.json').read_text())
+    mapping = [json.loads(line) for line in required(root, 'video_frames.jsonl').read_text().splitlines()]
+    ego = trace['ego']
+    if len(ego) != len(mapping) or not ego:
+        raise ValueError('Original ego/frame map length differs')
+    for index, (body, frame) in enumerate(zip(ego, mapping)):
+        if (body['frame'] != frame['carla_frame'] or
+                abs(body['time_s'] - frame['time_s']) > 1e-6 or
+                frame['video_frame'] != index):
+            raise ValueError('Original ego/frame map identity differs')
+    rows = canonical_trace_rows(ego)
+    trace_text = ''.join(json.dumps(row) + '\n' for row in rows)
+    trace_path = root / 'trace.jsonl'
+    if trace_path.exists():
+        if trace_path.read_text() != trace_text:
+            raise ValueError('Original converter trace differs from saved ego source')
+    else:
+        trace_path.write_text(trace_text)
+    histories = (trace['approach_signal_history'], trace['destination_signal_history'])
+    if any(len(history) != len(ego) for history in histories):
+        raise ValueError('Original signal histories differ from ego frames')
+    channels = config['case']['recording_description']['channels']
+    values = (
+        lambda i: {'class': trace['actor_class'], 'source': trace['actor_source']},
+        lambda i: histories[0][i],
+        lambda i: packet['properties'],
+        lambda i: ego[i],
+        lambda i: histories[1][i],
+        lambda i: trace['purpose'],
+        lambda i: mapping[i],
+    )
+    if len(channels) != len(values):
+        raise ValueError('Original recording channel inventory differs')
+    evidence = []
+    for index, (channel, value) in enumerate(zip(channels, values)):
+        name = f'recording-channel-{index}.jsonl'
+        stream = [{'time_s': body['time_s'], 'value': value(i)}
+                  for i, body in enumerate(ego)]
+        (root / name).write_text(''.join(json.dumps(row) + '\n' for row in stream))
+        evidence.append({'name': channel['name'], 'unit': channel['unit'],
+                         'reference': name})
+    context = config['case']['recording_description']['context_inputs'][0]
+    context_name = 'recording-map-context.json'
+    (root / context_name).write_text(json.dumps({context['name']: {
+        'packet_sha256': sha(required(root, 'map-packet.json')),
+        'authority_sha256': sha(required(root, 'authority.json')),
+        'opendrive_sha256': sha(required(root, 'road.xodr'))}}, indent=2) + '\n')
+    evidence.append({'name': context['name'], 'unit': context['unit'],
+                     'reference': context_name})
+    result = {'case_id': report['case_id'],
+              'measured_values': {key: value['value'] for key, value in report['measurements'].items()},
+              'target_checks': [{'target': 'source_observation_complete', 'requested': True,
+                                 'measured': True, 'method': 'five retained source-bound measurements',
+                                 'tolerance': 0, 'matched': True,
+                                 'physical_cause_confirmed': False,
+                                 'cause_evidence': 'physical movement and source authority require review'}],
+              'setup_confirmed': False, 'behavior_attempted': False,
+              'maneuver_completed': False,
+              'termination_reason': 'diagnostic source processing; physical completion unverified',
+              'physical_failure_flags': ['physical_completion_unverified'],
+              'trace_reference': 'trace.jsonl',
+              'video_references': [camera['name'] + '.mkv' for camera in config['cameras']],
+              'video_frame_map_reference': 'video_frames.jsonl',
+              'recording_description': config['case']['recording_description'],
+              'recording_evidence': evidence, 'realized_observables': {},
+              'provenance_kind': report['provenance_kind'],
+              'diagnostic_fixture': report['diagnostic_fixture'],
+              'legal_verdict_claimed': False, 'physical_acceptance_claimed': False}
+    write_result(root, result)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
@@ -110,6 +198,7 @@ def main():
     if output.exists():
         raise ValueError('Analysis output already exists')
     output.write_text(json.dumps(report, indent=2) + '\n')
+    build_result(args.attempt, report)
     print(json.dumps({'case_id': report['case_id'], 'measurements': len(report['measurements'])}))
 
 

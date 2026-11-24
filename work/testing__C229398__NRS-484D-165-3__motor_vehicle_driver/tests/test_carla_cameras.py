@@ -4,7 +4,7 @@ import types
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-from carla_cameras import OriginalCameras
+from carla_cameras import OriginalCameras, VIEWS
 
 
 class Blueprint:
@@ -12,6 +12,8 @@ class Blueprint:
         self.attrs = {}
     def set_attribute(self, key, value):
         self.attrs[key] = value
+    def has_attribute(self, key):
+        return key == "exposure_compensation"
 
 
 class Sensor:
@@ -53,11 +55,12 @@ class CameraTest(unittest.TestCase):
         site = {name: {"xyz": [1.0, 2.0, 3.0], "rpy": [0.0, 0.0, 0.0], "source": "survey"}
                 for name in ("front", "rear", "left", "right")}
         config = {"cameras": [{"name": name, "width": 2, "height": 2, "fov_deg": 90}
-                              for name in ("front", "rear", "left", "right")]}
+                              for name in VIEWS.values()], "exposure_compensation": 1.0}
         cameras = OriginalCameras(world, carla, {"camera_transforms": site}, config)
         self.assertEqual(len(world.sensors), 4)
         self.assertTrue(all(bp.attrs["sensor_tick"] == "0.05" for bp in world.blueprints))
         self.assertTrue(all(bp.attrs["fov"] == "90" for bp in world.blueprints))
+        self.assertTrue(all(bp.attrs["exposure_compensation"] == "1.0" for bp in world.blueprints))
         image = types.SimpleNamespace(frame=12, width=2, height=2, raw_data=b"\x00\x00\xff\xff" * 4)
         for sensor in world.sensors:
             sensor.callback(image)

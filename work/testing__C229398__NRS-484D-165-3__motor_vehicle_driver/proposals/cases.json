@@ -1,8 +1,68 @@
 {
   "cell_id": "C229398",
   "actor": "motor_vehicle_driver",
-  "status": "draft_source_bound",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared C229398 source-backed parked setup; no planned recording",
+      "variable_assignments": {
+        "placement": {
+          "kind": "world_setup",
+          "value": "shoulder",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "lighting": {
+          "kind": "world_setup",
+          "value": "insufficient",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "lamps": {
+          "kind": "controller",
+          "value": "on",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "attendance": {
+          "kind": "world_setup",
+          "value": "unattended",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "time_qualifies": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "parked_lamp_observations",
+            "unit": "structured",
+            "method": "original Native per-frame vehicle and source-station observation packet",
+            "time_window": "full 45-second parked interval",
+            "reference_frame": "Native world frame and named source camera stations",
+            "uncertainty": "Original pixels require independent review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_packet",
+            "unit": "metadata",
+            "method": "source-hashed independent site document and exact case packet"
+          }
+        ],
+        "limitations": [
+          "Original camera pixels and statutory assessments remain unreviewed."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "insufficient light to reveal person or object within 1,000 feet",
+        "as near as practicable to passing traffic"
+      ]
+    },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_on",
       "target_law_id": "NRS-484D-165-3",
@@ -61,7 +121,16 @@
       "unresolved_judgment_calls": [
         "insufficient light to reveal person or object within 1,000 feet",
         "as near as practicable to passing traffic"
-      ]
+      ],
+      "paired_probe_id": "lamp_activation",
+      "deliberate_differences": [
+        "lamps"
+      ],
+      "probe": {
+        "primary_variable": "lamps",
+        "comparison_or_standard": "lamp_activation",
+        "target_value_or_branch": "on"
+      }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_lamps_off",
@@ -121,7 +190,16 @@
       "unresolved_judgment_calls": [
         "insufficient light to reveal person or object within 1,000 feet",
         "as near as practicable to passing traffic"
-      ]
+      ],
+      "paired_probe_id": "lamp_activation",
+      "deliberate_differences": [
+        "lamps"
+      ],
+      "probe": {
+        "primary_variable": "lamps",
+        "comparison_or_standard": "lamp_activation",
+        "target_value_or_branch": "off"
+      }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_attended",
@@ -181,7 +259,16 @@
       "unresolved_judgment_calls": [
         "insufficient light to reveal person or object within 1,000 feet",
         "as near as practicable to passing traffic"
-      ]
+      ],
+      "paired_probe_id": "attendance_scope",
+      "deliberate_differences": [
+        "attendance"
+      ],
+      "probe": {
+        "primary_variable": "attendance",
+        "comparison_or_standard": "attendance_scope",
+        "target_value_or_branch": "attended"
+      }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__dark_traveled",
@@ -241,7 +328,16 @@
       "unresolved_judgment_calls": [
         "insufficient light to reveal person or object within 1,000 feet",
         "as near as practicable to passing traffic"
-      ]
+      ],
+      "paired_probe_id": "parked_placement",
+      "deliberate_differences": [
+        "placement"
+      ],
+      "probe": {
+        "primary_variable": "placement",
+        "comparison_or_standard": "parked_placement",
+        "target_value_or_branch": "traveled"
+      }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__sufficient_light",
@@ -301,7 +397,16 @@
       "unresolved_judgment_calls": [
         "insufficient light to reveal person or object within 1,000 feet",
         "as near as practicable to passing traffic"
-      ]
+      ],
+      "paired_probe_id": "revelation_precondition",
+      "deliberate_differences": [
+        "lighting"
+      ],
+      "probe": {
+        "primary_variable": "lighting",
+        "comparison_or_standard": "revelation_precondition",
+        "target_value_or_branch": "sufficient"
+      }
     },
     {
       "case_id": "testing__C229398__NRS-484D-165-3__motor_vehicle_driver__outside_referenced_time",
@@ -361,8 +466,95 @@
       "unresolved_judgment_calls": [
         "insufficient light to reveal person or object within 1,000 feet",
         "as near as practicable to passing traffic"
+      ],
+      "paired_probe_id": "referenced_time_precondition",
+      "deliberate_differences": [
+        "time_qualifies"
+      ],
+      "probe": {
+        "primary_variable": "time_qualifies",
+        "comparison_or_standard": "referenced_time_precondition",
+        "target_value_or_branch": false
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "source-bound-physical-coverage-pending",
+      "target_law_id": "NRS-484D-165-3",
+      "judgment_refs": [
+        {
+          "phrase": "insufficient light to reveal any person or object within a distance of 1,000 feet",
+          "note": "Original 1,000-foot station and source light condition require independent visual review."
+        },
+        {
+          "phrase": "visible from a distance of 500 feet",
+          "note": "Front/rear lamp pixels, color and both 500-foot stations require independent review."
+        },
+        {
+          "phrase": "as near as practicable to the side of the vehicle which is closest to passing traffic",
+          "note": "Source traffic side and installation geometry require independent review."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Frozen training range inventory has no NRS 484D.165(3) definitions; physical source-station sweep bounds cannot be invented.",
+      "variable_assignments": {
+        "placement": {
+          "kind": "world_setup",
+          "value": "shoulder",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "lighting": {
+          "kind": "world_setup",
+          "value": "insufficient",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "lamps": {
+          "kind": "controller",
+          "value": "on",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "attendance": {
+          "kind": "world_setup",
+          "value": "unattended",
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        },
+        "time_qualifies": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "Exact comparison condition; physical realization remains unreviewed"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "parked_lamp_observations",
+            "unit": "structured",
+            "method": "original Native per-frame vehicle and source-station observation packet",
+            "time_window": "full 45-second parked interval",
+            "reference_frame": "Native world frame and named source camera stations",
+            "uncertainty": "Original pixels require independent review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_packet",
+            "unit": "metadata",
+            "method": "source-hashed independent site document and exact case packet"
+          }
+        ],
+        "limitations": [
+          "Original camera pixels and statutory assessments remain unreviewed."
+        ]
+      },
+      "missing_inputs": [
+        "Source-hashed applicable training range definitions for each judgment phrase and feasible physical station sweep axes."
       ]
     }
   ],
-  "sweep_specs": []
+  "sweeps_expanded": true
 }

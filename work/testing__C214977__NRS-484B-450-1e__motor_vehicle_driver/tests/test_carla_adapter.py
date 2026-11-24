@@ -1,5 +1,7 @@
 import hashlib
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace as Obj
@@ -7,6 +9,7 @@ from types import SimpleNamespace as Obj
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from carla_adapter import CarlaCrosswalkAdapter, spawn_reviewed_cameras
 from crosswalk import SourceError
+from runner import _stage_sources
 
 
 class API:
@@ -123,6 +126,18 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(len(sensors),4)
         self.assertEqual({v.attributes['image_size_x'] for v in sensors.values()}, {'1920','1280'})
         self.world.get_blueprint_library=old
+
+    def test_reviewed_source_staging_preserves_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory);source=base/'review';attempt=base/'attempt'
+            (source/'source-inputs').mkdir(parents=True);attempt.mkdir()
+            raw=(json.dumps({'map_name':'Town'})+'\n').encode()
+            path=source/'source-inputs/site.json';path.write_bytes(raw)
+            ref={'path':'source-inputs/site.json','sha256':hashlib.sha256(raw).hexdigest()}
+            _stage_sources(source,attempt,[ref])
+            self.assertEqual((attempt/ref['path']).read_bytes(),raw)
+            with self.assertRaisesRegex(SourceError,'collision'):
+                _stage_sources(source,attempt,[ref])
 
 
 if __name__=='__main__': unittest.main()

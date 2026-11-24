@@ -233,7 +233,12 @@ class CarlaCrosswalkAdapter:
                    'device_direction': 'device_direction'}[self.exception]
             flags[key] = active
         return {'frame': frame, 'case_id': self.case_id, 'subject_id': actor_id,
-                'speed_mps': speed, 'halt_activity': self.action if self.at_end and speed < 0.1 else 'travel',
+                'speed_mps': speed, 'position_m': [transform.location.x, transform.location.y,
+                                                   transform.location.z],
+                'velocity_mps': [velocity.x, velocity.y, velocity.z],
+                'heading_deg': transform.rotation.yaw,
+                'body_vertices_m': [[float(p.x),float(p.y),float(p.z)] for p in corners],
+                'halt_activity': self.action if self.at_end and speed < 0.1 else 'travel',
                 'body_corners_xy': polygon, 'crosswalk_id': self.site['crosswalk_id'],
                 'marking_status': self.site['marking_status'], **flags}
 

@@ -11,6 +11,44 @@ from crosswalk import footprint_relation, measure, require, sealed_json
 from native_capture import CAMERAS, CAMERA_SIZES
 
 
+def prepare_analysis_sources(attempt_root: Path, expected_case: dict) -> dict:
+    """Derive compact analysis inputs from sealed original Native sources.
+
+    This runs in the saved processing stage. The original attempt is copied there
+    before this function is called; no original source is rewritten.
+    """
+    attempt_root = Path(attempt_root).resolve()
+    receipt_path = attempt_root/'native-receipt.json'
+    require(receipt_path.is_file(), 'Missing required source: native-receipt.json')
+    receipt_ref = {'path':'native-receipt.json',
+                   'sha256':hashlib.sha256(receipt_path.read_bytes()).hexdigest()}
+    verified = verify(receipt_ref, attempt_root, attempt_root, expected_case)
+    receipt = sealed_json(receipt_ref, attempt_root)
+    site = sealed_json(receipt['site_source'], attempt_root)
+    rows = sealed_json(receipt['sources']['actor_rows'], attempt_root)
+    exception_ref = receipt.get('exception_source')
+    packet = sealed_json(exception_ref, attempt_root) if exception_ref else None
+    context = {'case_id':expected_case['case_id'], 'subject_id':receipt['subject_id'],
+               'action':expected_case['action'], 'destination':expected_case['destination'],
+               'exception':expected_case['exception'], 'crosswalk_id':site['crosswalk_id'],
+               'marking_status':site['marking_status'], 'crosswalk_polygon':site['crosswalk_polygon'],
+               'geometry_source':receipt['site_source']['sha256'],
+               'activity_source':receipt['sources']['actor_rows']['sha256'],
+               'exception_source_id':packet.get('source_id') if packet else None}
+    for name, value in [('crosswalk-context.json',json.dumps(context,separators=(',',':'))+'\n'),
+                        ('crosswalk-rows.jsonl',''.join(json.dumps(row,separators=(',',':'))+'\n' for row in rows))]:
+        path = attempt_root/name
+        require(not path.exists(), 'derived source output collision: '+name)
+        path.write_text(value)
+    if packet:
+        path = attempt_root/'exception-source.json'
+        require(not path.exists(), 'derived exception source output collision')
+        path.write_text(json.dumps(packet,separators=(',',':'))+'\n')
+    return {'case_id':expected_case['case_id'], 'verified':verified,
+            'derived_inputs':['crosswalk-context.json','crosswalk-rows.jsonl']+
+                             (['exception-source.json'] if packet else [])}
+
+
 def comparison_source(receipt_ref: dict, source_root: Path, attempt_root: Path,
                       expected_case: dict, verified: dict) -> dict:
     """Prepare a sealed candidate source for later independent delivery review.
@@ -58,6 +96,20 @@ def verify(receipt_ref: dict, source_root: Path, attempt_root: Path, expected_ca
     require(receipt.get('camera_source_format') == 'png_original', 'original camera pixel source missing')
     site = sealed_json(receipt['site_source'], source_root)
     sealed_json(receipt['vehicle_source'], source_root)
+    exception_ref = receipt.get('exception_source')
+    if expected_case['exception'] != 'none':
+        require(exception_ref is not None, 'exact exception source missing')
+        packet = sealed_json(exception_ref, source_root)
+        require(packet.get('kind') == expected_case['exception'], 'exact exception source kind differs')
+        require(packet.get('instruction_source') and packet.get('review_source'),
+                'exception instruction and review sources missing')
+        sealed_json(packet['instruction_source'], source_root)
+        sealed_json(packet['review_source'], source_root)
+        require(packet.get('source_sha256') == packet['instruction_source']['sha256'] and
+                packet.get('reviewed_instruction_sha256') == packet['review_source']['sha256'],
+                'exception nested source hash mismatch')
+    else:
+        require(exception_ref is None, 'unexpected exception source')
     rows = sealed_json(receipt['sources']['actor_rows'], attempt_root)
     mapping = sealed_json(receipt['sources']['frame_map'], attempt_root)
     cameras = sealed_json(receipt['sources']['camera_readbacks'], attempt_root)

@@ -3,13 +3,38 @@
   "actor": "pedestrian",
   "status": "draft",
   "sweeps_expanded": true,
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "C227749-crossing-route-source-range",
+      "target_law_id": "LVMC-11-30-050",
+      "judgment_refs": [
+        {
+          "phrase": "at right angles to the curb",
+          "note": "Use original body route and sourced curb geometry; no legal angle tolerance is inferred."
+        },
+        {
+          "phrase": "shortest route to the opposite curb",
+          "note": "Measure original path and source-backed finite opposite curb; no legal length tolerance is inferred."
+        },
+        {
+          "phrase": "except in a crosswalk",
+          "note": "Require source-backed marked and unmarked crosswalk boundaries and original full-body route."
+        }
+      ],
+      "rationale": "The original law has no numeric route or crosswalk tolerance. A later finite physical sweep needs source-supported curb, route and crosswalk geometry without legal labels.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "No matching LVMC-11-30-050 training source range in supplied judgment_ranges.json.",
+        "Reviewed Native curb, crosswalk and roadway geometry for this exact site is absent."
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__outside_right_angle",
+      "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__semantic_baseline",
       "target_law_id": "LVMC-11-30-050",
-      "target_type": "boundary_probe",
-      "rationale": "right-angle route outside crosswalk; authored engineering target, Native realization and legal judgment unresolved",
+      "target_type": "baseline",
+      "rationale": "Shared semantic route baseline only; no additional planned recording or case ID in execution manifest.",
       "variable_assignments": {
         "walker_route_xy_m": {
           "kind": "controller",
@@ -89,20 +114,24 @@
       }
     },
     {
-      "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__outside_shortest_endpoint",
+      "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__semantic_crosswalk_reference",
       "target_law_id": "LVMC-11-30-050",
-      "target_type": "boundary_probe",
-      "rationale": "oblique shortest route to finite opposite curb endpoint; authored engineering target, Native realization and legal judgment unresolved",
+      "target_type": "baseline",
+      "rationale": "Shared semantic outside-crosswalk route reference for exception comparison; no additional recording.",
       "variable_assignments": {
         "walker_route_xy_m": {
           "kind": "controller",
           "value": [
             [
-              12,
+              5,
               0
             ],
             [
-              10,
+              8,
+              3
+            ],
+            [
+              7,
               6
             ]
           ]
@@ -113,7 +142,7 @@
         }
       },
       "deliberate_differences": [
-        "route geometry or crosswalk placement as specified in case-plan.json"
+        "crosswalk_context"
       ],
       "unresolved_judgment_calls": [
         "right angles to the curb",
@@ -168,6 +197,221 @@
         ],
         "limitations": [
           "Authored scene is an engineering target; original map and site context pending."
+        ]
+      },
+      "paired_probe_id": "outside_vs_crosswalk_exception",
+      "probe": {
+        "primary_variable": "walker_route_xy_m",
+        "comparison_or_standard": "right_angle_vs_neither",
+        "target_value_or_branch": [
+          [
+            5,
+            0
+          ],
+          [
+            8,
+            3
+          ],
+          [
+            7,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__outside_right_angle",
+      "target_law_id": "LVMC-11-30-050",
+      "target_type": "boundary_probe",
+      "rationale": "right-angle route outside crosswalk; authored engineering target, Native realization and legal judgment unresolved",
+      "variable_assignments": {
+        "walker_route_xy_m": {
+          "kind": "controller",
+          "value": [
+            [
+              5,
+              0
+            ],
+            [
+              5,
+              6
+            ]
+          ]
+        },
+        "crosswalk_context": {
+          "kind": "world_setup",
+          "value": "outside"
+        }
+      },
+      "deliberate_differences": [
+        "walker_route_xy_m"
+      ],
+      "unresolved_judgment_calls": [
+        "right angles to the curb",
+        "shortest route to opposite curb",
+        "except in a crosswalk"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "walker_body_route",
+            "unit": "m",
+            "method": "original Native walker body vertices and centers",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          },
+          {
+            "name": "curb_and_crosswalk_geometry",
+            "unit": "m",
+            "method": "original map and site source packets",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          },
+          {
+            "name": "route_angle_and_length",
+            "unit": "degree and m",
+            "method": "saved measurement from original body history",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          },
+          {
+            "name": "governing_context",
+            "unit": "source",
+            "method": "municipal jurisdiction and original device context",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "roadway_and_jurisdiction",
+            "unit": "source",
+            "method": "reviewed source packet"
+          }
+        ],
+        "limitations": [
+          "Authored scene is an engineering target; original map and site context pending."
+        ]
+      },
+      "paired_probe_id": "right_angle_vs_neither",
+      "probe": {
+        "primary_variable": "walker_route_xy_m",
+        "comparison_or_standard": "right_angle_vs_neither",
+        "target_value_or_branch": [
+          [
+            5,
+            0
+          ],
+          [
+            5,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__outside_shortest_endpoint",
+      "target_law_id": "LVMC-11-30-050",
+      "target_type": "boundary_probe",
+      "rationale": "oblique shortest route to finite opposite curb endpoint; authored engineering target, Native realization and legal judgment unresolved",
+      "variable_assignments": {
+        "walker_route_xy_m": {
+          "kind": "controller",
+          "value": [
+            [
+              12,
+              0
+            ],
+            [
+              10,
+              6
+            ]
+          ]
+        },
+        "crosswalk_context": {
+          "kind": "world_setup",
+          "value": "outside"
+        }
+      },
+      "deliberate_differences": [
+        "walker_route_xy_m"
+      ],
+      "unresolved_judgment_calls": [
+        "right angles to the curb",
+        "shortest route to opposite curb",
+        "except in a crosswalk"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "walker_body_route",
+            "unit": "m",
+            "method": "original Native walker body vertices and centers",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          },
+          {
+            "name": "curb_and_crosswalk_geometry",
+            "unit": "m",
+            "method": "original map and site source packets",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          },
+          {
+            "name": "route_angle_and_length",
+            "unit": "degree and m",
+            "method": "saved measurement from original body history",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          },
+          {
+            "name": "governing_context",
+            "unit": "source",
+            "method": "municipal jurisdiction and original device context",
+            "time_window": "entire crossing",
+            "sampling_rate_hz": 20,
+            "reference_frame": "source-bound world XY",
+            "uncertainty": "physical realization unconfirmed"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "roadway_and_jurisdiction",
+            "unit": "source",
+            "method": "reviewed source packet"
+          }
+        ],
+        "limitations": [
+          "Authored scene is an engineering target; original map and site context pending."
+        ]
+      },
+      "paired_probe_id": "shortest_vs_detour",
+      "probe": {
+        "primary_variable": "walker_route_xy_m",
+        "comparison_or_standard": "shortest_vs_detour",
+        "target_value_or_branch": [
+          [
+            12,
+            0
+          ],
+          [
+            10,
+            6
+          ]
         ]
       }
     },
@@ -200,7 +444,7 @@
         }
       },
       "deliberate_differences": [
-        "route geometry or crosswalk placement as specified in case-plan.json"
+        "walker_route_xy_m"
       ],
       "unresolved_judgment_calls": [
         "right angles to the curb",
@@ -255,6 +499,25 @@
         ],
         "limitations": [
           "Authored scene is an engineering target; original map and site context pending."
+        ]
+      },
+      "paired_probe_id": "right_angle_vs_neither",
+      "probe": {
+        "primary_variable": "walker_route_xy_m",
+        "comparison_or_standard": "right_angle_vs_neither",
+        "target_value_or_branch": [
+          [
+            5,
+            0
+          ],
+          [
+            8,
+            3
+          ],
+          [
+            7,
+            6
+          ]
         ]
       }
     },
@@ -287,7 +550,7 @@
         }
       },
       "deliberate_differences": [
-        "route geometry or crosswalk placement as specified in case-plan.json"
+        "walker_route_xy_m"
       ],
       "unresolved_judgment_calls": [
         "right angles to the curb",
@@ -343,12 +606,31 @@
         "limitations": [
           "Authored scene is an engineering target; original map and site context pending."
         ]
+      },
+      "paired_probe_id": "shortest_vs_detour",
+      "probe": {
+        "primary_variable": "walker_route_xy_m",
+        "comparison_or_standard": "shortest_vs_detour",
+        "target_value_or_branch": [
+          [
+            12,
+            0
+          ],
+          [
+            11,
+            3
+          ],
+          [
+            9,
+            6
+          ]
+        ]
       }
     },
     {
       "case_id": "testing__C227749__LVMC-11-30-050__pedestrian__inside_crosswalk_oblique",
       "target_law_id": "LVMC-11-30-050",
-      "target_type": "exception_probe",
+      "target_type": "boundary_probe",
       "rationale": "crosswalk exception with oblique route; authored engineering target, Native realization and legal judgment unresolved",
       "variable_assignments": {
         "walker_route_xy_m": {
@@ -374,7 +656,7 @@
         }
       },
       "deliberate_differences": [
-        "route geometry or crosswalk placement as specified in case-plan.json"
+        "crosswalk_context"
       ],
       "unresolved_judgment_calls": [
         "right angles to the curb",
@@ -430,6 +712,12 @@
         "limitations": [
           "Authored scene is an engineering target; original map and site context pending."
         ]
+      },
+      "paired_probe_id": "outside_vs_crosswalk_exception",
+      "probe": {
+        "primary_variable": "crosswalk_context",
+        "comparison_or_standard": "outside_vs_crosswalk_exception",
+        "target_value_or_branch": "inside"
       }
     }
   ]

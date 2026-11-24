@@ -9,6 +9,9 @@ sys.path.insert(0, str(ROOT))
 spec = importlib.util.spec_from_file_location('native_controller', ROOT/'native_controller.py')
 m = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(m)
+fallback_spec = importlib.util.spec_from_file_location('native_controller_fallback', ROOT/'native_controller_fallback.py')
+fallback = importlib.util.module_from_spec(fallback_spec)
+fallback_spec.loader.exec_module(fallback)
 
 
 class Carla:
@@ -68,6 +71,16 @@ class NativeControllerTests(unittest.TestCase):
         actor = m.spawn_walker(World(), Carla, item)
         with self.assertRaisesRegex(ValueError, 'target index'):
             m.request_next_control(actor, Carla, item, 2)
+
+    def test_fallback_keeps_route_and_reduces_requested_speed(self):
+        item = scene([[5,0],[5,6]])
+        primary_actor = m.spawn_walker(World(), Carla, item)
+        alternate_actor = fallback.spawn_walker(World(), Carla, item)
+        m.request_next_control(primary_actor, Carla, item, 1)
+        fallback.request_next_control(alternate_actor, Carla, item, 1)
+        self.assertEqual(primary_actor.control.direction.y, alternate_actor.control.direction.y)
+        self.assertEqual(primary_actor.control.speed, 1.2)
+        self.assertEqual(alternate_actor.control.speed, 0.8)
 
 
 if __name__ == '__main__': unittest.main()

@@ -25,7 +25,8 @@ def _write_sealed(root: Path, name: str, value: object) -> dict:
 
 
 def capture(adapter, site_ref: dict, vehicle_ref: dict, case: dict,
-            source_root: Path, output_root: Path, frame_count: int = 900) -> dict:
+            source_root: Path, output_root: Path, frame_count: int = 900,
+            exception_ref: dict | None = None) -> dict:
     """Use adapter.tick/read_subject/read_cameras; require original 20 Hz identity.
 
     A Native adapter must return real simulator frame/time and actual actor and
@@ -35,6 +36,19 @@ def capture(adapter, site_ref: dict, vehicle_ref: dict, case: dict,
     output_root = Path(output_root)
     output_root.mkdir(parents=True, exist_ok=True)
     site = sealed_json(site_ref, source_root)
+    if case['exception'] != 'none':
+        require(exception_ref is not None, 'exact exception source missing')
+        packet = sealed_json(exception_ref, source_root)
+        require(packet.get('kind') == case['exception'], 'exact exception source kind differs')
+        require(packet.get('instruction_source') and packet.get('review_source'),
+                'exception instruction and review sources missing')
+        sealed_json(packet['instruction_source'], source_root)
+        sealed_json(packet['review_source'], source_root)
+        require(packet.get('source_sha256') == packet['instruction_source']['sha256'] and
+                packet.get('reviewed_instruction_sha256') == packet['review_source']['sha256'],
+                'exception nested source hash mismatch')
+    else:
+        require(exception_ref is None, 'unexpected exception source')
     subject = None
     rows, frame_map, camera_map = [], [], {name: [] for name in CAMERAS}
     try:
@@ -80,7 +94,8 @@ def capture(adapter, site_ref: dict, vehicle_ref: dict, case: dict,
         receipt = {'format': 'crosswalk-native-source-receipt', 'case_id': case['case_id'],
                    'subject_id': subject, 'fps': 20, 'frame_count': frame_count,
                    'source_format': 'native_original', 'site_source': site_ref,
-                   'vehicle_source': vehicle_ref, 'sources': refs, 'measurement': measurement,
+                   'vehicle_source': vehicle_ref, 'exception_source': exception_ref,
+                   'sources': refs, 'measurement': measurement,
                    'camera_source_format': 'png_original', 'video_decode': 'not_run',
                    'physical_acceptance': 'unreviewed'}
         _write_sealed(output_root, 'native-receipt.json', receipt)
