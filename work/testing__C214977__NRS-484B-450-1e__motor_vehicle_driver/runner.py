@@ -30,7 +30,7 @@ def _stage_sources(source_root, attempt, refs):
     from crosswalk import sealed_json, require
     attempt = Path(attempt).resolve()
     for ref in refs:
-        require(ref['path'].startswith('source-inputs/'), 'reviewed sources need source-inputs/ paths')
+        require(ref['path'].startswith('reviewed-inputs/'), 'reviewed sources need reviewed-inputs/ paths')
         sealed_json(ref, source_root)
         source = (source_root/ref['path']).resolve()
         target = (attempt/ref['path']).resolve()
@@ -56,6 +56,15 @@ def run_native(config, args):
     vehicle_ref = _ref(args.vehicle_ref or os.environ.get('C214977_VEHICLE_REF'))
     site = sealed_json(site_ref, source_root)
     sealed_json(vehicle_ref, source_root)
+    site_reviews = []
+    for name, digest_key in (('frontage_review_source','frontage_review_sha256'),
+                             ('highway_review_source','highway_review_sha256'),
+                             ('camera_pose_review_source','camera_pose_review_sha256')):
+        review_ref = site.get(name)
+        if not isinstance(review_ref, dict) or site.get(digest_key) != review_ref.get('sha256'):
+            raise ValueError('reviewed site source missing or hash differs: '+name)
+        sealed_json(review_ref, source_root)
+        site_reviews.append(review_ref)
     exception_ref = args.exception_ref or os.environ.get('C214977_EXCEPTION_REF')
     exception_source = _ref(exception_ref) if exception_ref else None
     packet = sealed_json(exception_source, source_root) if exception_source else None
@@ -69,7 +78,7 @@ def run_native(config, args):
         if (packet.get('source_sha256') != packet['instruction_source']['sha256'] or
                 packet.get('reviewed_instruction_sha256') != packet['review_source']['sha256']):
             raise ValueError('exception source or review hash differs')
-    refs = [site_ref, vehicle_ref]
+    refs = [site_ref, vehicle_ref, *site_reviews]
     if exception_source:
         refs += [exception_source, packet['instruction_source'], packet['review_source']]
     attempt = Path(args.output_dir)
@@ -84,18 +93,27 @@ def run_native(config, args):
     sensors = {}
     receipt = None
     restoration = None
+    recorder_started = False
     try:
         world = client.get_world()
         settings = world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
+        settings.no_rendering_mode = False
         world.apply_settings(settings)
         readback = world.get_settings()
-        if not readback.synchronous_mode or abs(readback.fixed_delta_seconds - 0.05) > 1e-9:
+        if (not readback.synchronous_mode or readback.no_rendering_mode or
+                abs(readback.fixed_delta_seconds - 0.05) > 1e-9):
             raise ValueError('Native 20 Hz settings readback failed')
+        recorder_path = attempt/'carla_recorder.log'
+        if recorder_path.exists():
+            raise ValueError('retain prior Native recorder source')
+        client.start_recorder(str(recorder_path), True)
+        recorder_started = True
         sensors = spawn_reviewed_cameras(world, carla, site, config['cameras'])
         adapter = CarlaCrosswalkAdapter(world, carla, case_id=config['selected_case_id'],
-                                        cameras=sensors, exception_packet=packet)
+                                        cameras=sensors, exception_packet=packet,
+                                        target_speed_mps=config.get('approach_speed_mps',4.0))
         adapter.owned.extend(sensors.values())
         receipt = capture(adapter, site_ref, vehicle_ref, config['case'], source_root,
                           attempt, exception_ref=exception_source)
@@ -107,7 +125,11 @@ def run_native(config, args):
                 for sensor in sensors.values():
                     sensor.destroy()
         finally:
-            restoration = restore(client, saved)
+            try:
+                if recorder_started:
+                    client.stop_recorder()
+            finally:
+                restoration = restore(client, saved)
     if receipt is None or restoration is None:
         raise ValueError('Native capture or world restoration incomplete')
     from native_output_bridge import seal_original_capture

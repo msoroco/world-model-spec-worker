@@ -107,9 +107,12 @@ def capture(
                      'original Native 20 Hz clock drift')
             location = _xy(ego)
             speed = _speed(ego)
+            velocity = ego.get_velocity()
+            velocity_mps = [float(velocity.x), float(velocity.y), float(getattr(velocity, 'z', 0.0))]
             yaw = math.radians(float(ego.get_transform().rotation.yaw))
-            _require(all(math.isfinite(v) for v in (*location, speed, yaw)), 'finite Native body sample required')
-            sample = {'frame': frame, 'time_s': time_s, 'x': location[0], 'y': location[1], 'speed_mps': speed, 'yaw_rad': yaw}
+            _require(all(math.isfinite(v) for v in (*location, *velocity_mps, speed, yaw)), 'finite Native body sample required')
+            sample = {'frame': frame, 'time_s': time_s, 'x': location[0], 'y': location[1],
+                      'speed_mps': speed, 'velocity_mps': velocity_mps, 'yaw_rad': yaw}
             samples.append(sample)
             approach = _signal(signal_observer, frame, 'approach_signal')
             destination = _signal(signal_observer, frame, 'destination_signal')

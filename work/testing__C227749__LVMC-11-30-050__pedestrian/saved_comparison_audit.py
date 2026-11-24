@@ -3,6 +3,7 @@
 This compares controlled engineering inputs and retained diagnostic measurements;
 it makes no physical or legal acceptance claim.
 """
+import argparse
 import json
 from pathlib import Path
 
@@ -77,9 +78,13 @@ def compare(root, scratch, compat_prefix='compat-v4-'):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--scratch', type=Path)
+    parser.add_argument('--compat-prefix', default='compat-v4-')
+    args = parser.parse_args()
     root = Path(__file__).resolve().parent
-    scratch = root.parents[1] / '.runtime-work' / 'p08-c227749-nov23'
-    result = compare(root, scratch)
+    scratch = args.scratch or root.parents[1] / '.runtime-work' / 'p08-c227749-nov23'
+    result = compare(root, scratch, args.compat_prefix)
     output = root / 'saved-comparison-diagnostic.json'
     output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     print(f'checked {len(result["comparisons"])} saved diagnostic comparisons; output SHA256 {sha(output)}')

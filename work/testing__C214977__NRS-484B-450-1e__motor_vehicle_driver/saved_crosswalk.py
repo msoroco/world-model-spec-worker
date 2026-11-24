@@ -60,6 +60,13 @@ def comparison_source(receipt_ref: dict, source_root: Path, attempt_root: Path,
             and verified['decoded_original_pngs'] == 3600, 'saved source verification required')
     receipt = sealed_json(receipt_ref, attempt_root)
     site = sealed_json(receipt['site_source'], source_root)
+    for name, digest_key in (('frontage_review_source','frontage_review_sha256'),
+                             ('highway_review_source','highway_review_sha256'),
+                             ('camera_pose_review_source','camera_pose_review_sha256')):
+        ref = site.get(name)
+        require(isinstance(ref, dict) and site.get(digest_key) == ref.get('sha256'),
+                'reviewed site source missing or hash differs: '+name)
+        sealed_json(ref, source_root)
     vehicle = sealed_json(receipt['vehicle_source'], source_root)
     rows = sealed_json(receipt['sources']['actor_rows'], attempt_root)
     flags = {'traffic_conflict': 'traffic_conflict', 'law': 'law_direction',
@@ -79,6 +86,7 @@ def comparison_source(receipt_ref: dict, source_root: Path, attempt_root: Path,
             'crosswalk_polygon': site['crosswalk_polygon'], 'parking_route': site['parking_route'],
             'vehicle_source_sha256': receipt['vehicle_source']['sha256'],
             'vehicle_blueprint': vehicle['blueprint'], 'camera_plan_sha256': camera_hash,
+            'camera_pose_review_sha256':site['camera_pose_review_sha256'],
             'original_frame_count': receipt['frame_count'], 'source_format': receipt['source_format'],
             'action': expected_case['action'], 'destination': observed_destination,
             'exception': expected_case['exception'],
@@ -96,6 +104,13 @@ def verify(receipt_ref: dict, source_root: Path, attempt_root: Path, expected_ca
     require(receipt.get('camera_source_format') == 'png_original', 'original camera pixel source missing')
     site = sealed_json(receipt['site_source'], source_root)
     sealed_json(receipt['vehicle_source'], source_root)
+    for name, digest_key in (('frontage_review_source','frontage_review_sha256'),
+                             ('highway_review_source','highway_review_sha256'),
+                             ('camera_pose_review_source','camera_pose_review_sha256')):
+        ref = site.get(name)
+        require(isinstance(ref, dict) and site.get(digest_key) == ref.get('sha256'),
+                'reviewed site source missing or hash differs: '+name)
+        sealed_json(ref, source_root)
     exception_ref = receipt.get('exception_source')
     if expected_case['exception'] != 'none':
         require(exception_ref is not None, 'exact exception source missing')

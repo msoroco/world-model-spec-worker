@@ -1,26 +1,58 @@
 {
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver",
-  "runtime_manifest_sha256": "8c37e7719b3607424c88237d679368075e9278af4dddb569d2123f456e0fefa8",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "cases": [
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_on",
       "kind": "delivery",
       "construction": "cases/park_on/construction.json",
-      "construction_sha256": "8741c923dd9d36b41ec1633da42a5d9b5b3a5b69a5951c6ba3f27e73362fb247",
+      "construction_sha256": "e5c6fca39110770fe08d0410e5aae1490c9020188f42885620b7de26c3ef740b",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_on/fallback1-construction.json",
+          "construction_sha256": "e140aa5eab7b47362654d0c100c698a6042fd113de2b9b201adf7e2ee0d55719",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_on --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_on-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e140aa5eab7b47362654d0c100c698a6042fd113de2b9b201adf7e2ee0d55719",
+            "log": "proof-offline-park_on-fallback1.log",
+            "log_sha256": "0e766fabfc8f385cec71e27cde19ce23401f97291d767f067b6033e69ca1bd11",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/park_on/fallback1-compatibility.json",
+            "sha256": "84215e39741fcd0ea37a48767e2a92f4b98f98e5443eae01e2fcbce45a28ad09",
+            "log": "cases/park_on/fallback1-compat-analysis.log",
+            "negative_log": "cases/park_on/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "8741c923dd9d36b41ec1633da42a5d9b5b3a5b69a5951c6ba3f27e73362fb247"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_on --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_on-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "e5c6fca39110770fe08d0410e5aae1490c9020188f42885620b7de26c3ef740b",
+        "log": "proof-offline-park_on-primary.log",
+        "log_sha256": "5da2551e21c32a364dfa792a582dbb7f09818fb98e918ddf4f659a14cc0e31e3",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/park_on/measurement-contract.json",
       "measurement_procedure": {
@@ -28,10 +60,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/park_on/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/park_on/compatibility.json",
+        "sha256": "edc7b52e726963c8f2d35c371a1e975727a3cc3d71bc89c1d3b83a5fea34de4b",
+        "log": "cases/park_on/compat-analysis.log",
+        "negative_log": "cases/park_on/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/park_on/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -59,26 +94,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_on/physical-preparation.json",
+        "sha256": "e71689d826558210f7fd29282e8bd25300656fc71cdc0dd81ba650f5394ec35d"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_off",
       "kind": "delivery",
       "construction": "cases/park_off/construction.json",
-      "construction_sha256": "71da0ff8dcef168bb9289ce55fc4bedf3815aa98530f803c08565b1d3157d721",
+      "construction_sha256": "8bc49da8ec0b52952ea721df22b8adb9b9f495f284fe0c7025404febb77fe17f",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_off/fallback1-construction.json",
+          "construction_sha256": "09643a0c54bd762e39c31edccc6b45d4cd483de12b28e7910952357550a48fd9",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_off --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_off-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "09643a0c54bd762e39c31edccc6b45d4cd483de12b28e7910952357550a48fd9",
+            "log": "proof-offline-park_off-fallback1.log",
+            "log_sha256": "d5b6b90a92c0d38c9ef645371a8f408dd1f79b8e773cbc7f586d0180ea3c1b43",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/park_off/fallback1-compatibility.json",
+            "sha256": "67b5ceb7c59d5499bde620c197a9a5390b7c78b5d5bf213de249c8e537d70ae2",
+            "log": "cases/park_off/fallback1-compat-analysis.log",
+            "negative_log": "cases/park_off/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "71da0ff8dcef168bb9289ce55fc4bedf3815aa98530f803c08565b1d3157d721"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_off --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_off-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8bc49da8ec0b52952ea721df22b8adb9b9f495f284fe0c7025404febb77fe17f",
+        "log": "proof-offline-park_off-primary.log",
+        "log_sha256": "b18d96dcef98b56cf69f7c27361eaf480d398819b448eba12cb94ccf6ee3b978",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/park_off/measurement-contract.json",
       "measurement_procedure": {
@@ -86,10 +157,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/park_off/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/park_off/compatibility.json",
+        "sha256": "6ee0a2ae98883545e823d274f0d1562e5ad9dc0abc2cb5802d959be1240fcd01",
+        "log": "cases/park_off/compat-analysis.log",
+        "negative_log": "cases/park_off/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/park_off/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -117,26 +191,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_off/physical-preparation.json",
+        "sha256": "53861d1d4f83783a7baf6a412de89ffe9f7ceb2ea4ab2c4a64e4efe3dce68619"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_on",
       "kind": "delivery",
       "construction": "cases/stop_on/construction.json",
-      "construction_sha256": "708c123d2be19a36d44683a56fc8f086c876c5719fbfbe616fdd2fc630bb4829",
+      "construction_sha256": "efe55236fec1c5955fa7ec45abe186a9c73af5ae15fc292bda8711a7a803d3c1",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stop_on/fallback1-construction.json",
+          "construction_sha256": "0d1bcf98dfa79f73681cd22b0a9e2d4c2faae8ccb9e99a9d42c3e0414d4e11c4",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_on --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-stop_on-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0d1bcf98dfa79f73681cd22b0a9e2d4c2faae8ccb9e99a9d42c3e0414d4e11c4",
+            "log": "proof-offline-stop_on-fallback1.log",
+            "log_sha256": "fb8daaa7986c571377e5f3b17069977eb27784581af3df88a3e573afb8504bf7",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/stop_on/fallback1-compatibility.json",
+            "sha256": "c944143862bf6cfdc2bb8558c3c6088ae6ff4ea7fe5bcc801e5fabeda81e24c1",
+            "log": "cases/stop_on/fallback1-compat-analysis.log",
+            "negative_log": "cases/stop_on/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "708c123d2be19a36d44683a56fc8f086c876c5719fbfbe616fdd2fc630bb4829"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_on --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-stop_on-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "efe55236fec1c5955fa7ec45abe186a9c73af5ae15fc292bda8711a7a803d3c1",
+        "log": "proof-offline-stop_on-primary.log",
+        "log_sha256": "0bd4f4b826e79ff47246129656c124dc68be87dbede6d5a6b1cb0f0d82830f11",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/stop_on/measurement-contract.json",
       "measurement_procedure": {
@@ -144,10 +254,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/stop_on/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/stop_on/compatibility.json",
+        "sha256": "d1a7d57e693b693c3eb27eaee05dc931434f0b18ec761d0b022667462515a9ca",
+        "log": "cases/stop_on/compat-analysis.log",
+        "negative_log": "cases/stop_on/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/stop_on/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -175,26 +288,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/stop_on/physical-preparation.json",
+        "sha256": "c54b9efa29608fdd7521782af6017e8cae41f3af949664c3ec80aca799897692"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stand_on",
       "kind": "delivery",
       "construction": "cases/stand_on/construction.json",
-      "construction_sha256": "1a054717f92a0876663817e2506be92e47aebac0b00f60e9b1bdc7e844bc0e67",
+      "construction_sha256": "3b179ed6c9d503934ae312f7f290628bba429098940ba2f6c3513ccf69b529bc",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stand_on/fallback1-construction.json",
+          "construction_sha256": "1ff6f93d8282abbbfffcf3af0db5fbe30ce3264199931da231dd5d6985f304d4",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stand_on --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-stand_on-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "1ff6f93d8282abbbfffcf3af0db5fbe30ce3264199931da231dd5d6985f304d4",
+            "log": "proof-offline-stand_on-fallback1.log",
+            "log_sha256": "db1208f135957832d31f1f8e49bd1ca515b0c81a983f4d396eb2f2f7cd1891be",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/stand_on/fallback1-compatibility.json",
+            "sha256": "015bc05d1da646c0cbe1105e8b4c5d50015e5a1c82adf127176095040acdedec",
+            "log": "cases/stand_on/fallback1-compat-analysis.log",
+            "negative_log": "cases/stand_on/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "1a054717f92a0876663817e2506be92e47aebac0b00f60e9b1bdc7e844bc0e67"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stand_on --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-stand_on-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3b179ed6c9d503934ae312f7f290628bba429098940ba2f6c3513ccf69b529bc",
+        "log": "proof-offline-stand_on-primary.log",
+        "log_sha256": "2154c37c7612409a5808416c06574f21607605dde63e8c04a25aa1ca453ffa26",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/stand_on/measurement-contract.json",
       "measurement_procedure": {
@@ -202,10 +351,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/stand_on/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/stand_on/compatibility.json",
+        "sha256": "e0b324c1a8565410336ff42d03d77f63ec46e6c8492eb2c29ee8b4885c5a5b72",
+        "log": "cases/stand_on/compat-analysis.log",
+        "negative_log": "cases/stand_on/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/stand_on/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -233,26 +385,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/stand_on/physical-preparation.json",
+        "sha256": "6ac30366e50c3784293c83e8891e38ab2a3e19190bc359288c211bb06adbe768"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict",
       "kind": "delivery",
       "construction": "cases/stop_conflict/construction.json",
-      "construction_sha256": "4615d1d71cebda14eba53b4cc6c0b15cbdbca44028a572c634501a2038459e6c",
+      "construction_sha256": "f3dd7539497762ea4b7003bb396cf07d4116b0a5a90ebfcb4cbfba28b716b0a2",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stop_conflict/fallback1-construction.json",
+          "construction_sha256": "e2b6862ab5954a34c6b0c4e73f0f3c94cbe307150a2c38c03a97374c28a8c8f1",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-stop_conflict-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e2b6862ab5954a34c6b0c4e73f0f3c94cbe307150a2c38c03a97374c28a8c8f1",
+            "log": "proof-offline-stop_conflict-fallback1.log",
+            "log_sha256": "267271a957e03e8e167eb31d1b786a174eea6ab774436ed80d41f15ce205c953",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/stop_conflict/fallback1-compatibility.json",
+            "sha256": "4b88ce737569a654716460e07d510356c806d1949dda64aaeaae7a484553dfe0",
+            "log": "cases/stop_conflict/fallback1-compat-analysis.log",
+            "negative_log": "cases/stop_conflict/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "4615d1d71cebda14eba53b4cc6c0b15cbdbca44028a572c634501a2038459e6c"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-stop_conflict-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "f3dd7539497762ea4b7003bb396cf07d4116b0a5a90ebfcb4cbfba28b716b0a2",
+        "log": "proof-offline-stop_conflict-primary.log",
+        "log_sha256": "ac8e07550faf535b2165ce11f774a4d5cfb5b3c466323bad33ec21742e9fad60",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/stop_conflict/measurement-contract.json",
       "measurement_procedure": {
@@ -260,10 +448,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/stop_conflict/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/stop_conflict/compatibility.json",
+        "sha256": "5bc98ee900b96962543880ca65fe91ae215fdb28c6327fe91ad2868da0125ff2",
+        "log": "cases/stop_conflict/compat-analysis.log",
+        "negative_log": "cases/stop_conflict/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/stop_conflict/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -291,26 +482,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/stop_conflict/physical-preparation.json",
+        "sha256": "669ef4143f4231852275c89c9ebd9349202a0c3ca6042e3d89668f6e2b392256"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_law",
       "kind": "delivery",
       "construction": "cases/park_law/construction.json",
-      "construction_sha256": "5c7ba62def3c5a2237068e591ab93efe239b2d44a73b87d6c8251e6a80b4db3b",
+      "construction_sha256": "179af49b504d26cc086b426609299c2cb877fb3372fefef4f3f25fc24c4fc095",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_law/fallback1-construction.json",
+          "construction_sha256": "7f5d532f411af05a99e8e4264646455990ff429b987283557d3b9b22c94ea8bf",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_law --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_law-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7f5d532f411af05a99e8e4264646455990ff429b987283557d3b9b22c94ea8bf",
+            "log": "proof-offline-park_law-fallback1.log",
+            "log_sha256": "7dcfe68c59098908d75451afb6caf7e47649a25726333e40f8e8931f853056ea",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/park_law/fallback1-compatibility.json",
+            "sha256": "5be61e497acf2727a8703df3be6134f3e7114399a57b13424ac14c1b3c1eae04",
+            "log": "cases/park_law/fallback1-compat-analysis.log",
+            "negative_log": "cases/park_law/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "5c7ba62def3c5a2237068e591ab93efe239b2d44a73b87d6c8251e6a80b4db3b"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_law --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_law-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "179af49b504d26cc086b426609299c2cb877fb3372fefef4f3f25fc24c4fc095",
+        "log": "proof-offline-park_law-primary.log",
+        "log_sha256": "83ef2483cf20bc45a1b99be67ea2fbd16eb718b82190a8fa0cf12241ebb8d457",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/park_law/measurement-contract.json",
       "measurement_procedure": {
@@ -318,10 +545,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/park_law/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/park_law/compatibility.json",
+        "sha256": "9e24d994423c0891282da0190ed33b20868dc9b6e33cb32a5b8ef031faf4fae2",
+        "log": "cases/park_law/compat-analysis.log",
+        "negative_log": "cases/park_law/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/park_law/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -349,26 +579,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_law/physical-preparation.json",
+        "sha256": "758416cd09fc4b5883078c264f3e066876ffb26289e64c48fa3a6d7ed0a1b17e"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_police",
       "kind": "delivery",
       "construction": "cases/park_police/construction.json",
-      "construction_sha256": "9cd56175a5ed9c3a629bd919a44faab5c5de51fe9f348a5c3aee9655c5c8e9d6",
+      "construction_sha256": "7270807e9a28e34d31e77781ee1785aae3bb7c75c9cd0379521809e0f8566b07",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_police/fallback1-construction.json",
+          "construction_sha256": "bb86d731e7521de4fbc716ca466058cbcd10fac8b81ab97a46b526209b2cfe0e",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_police --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_police-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "bb86d731e7521de4fbc716ca466058cbcd10fac8b81ab97a46b526209b2cfe0e",
+            "log": "proof-offline-park_police-fallback1.log",
+            "log_sha256": "42f86d9652052b2e35eeb8e4cdea3dd34e38b81f74edd93961f6eae1a12386b1",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/park_police/fallback1-compatibility.json",
+            "sha256": "d92cfac73026ee1d5a6b944479b634f028d05edfd26dbdedd624112af898d807",
+            "log": "cases/park_police/fallback1-compat-analysis.log",
+            "negative_log": "cases/park_police/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "9cd56175a5ed9c3a629bd919a44faab5c5de51fe9f348a5c3aee9655c5c8e9d6"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_police --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_police-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "7270807e9a28e34d31e77781ee1785aae3bb7c75c9cd0379521809e0f8566b07",
+        "log": "proof-offline-park_police-primary.log",
+        "log_sha256": "43942ff5be72febe05f660f25242d1f59f5780148dd61bdf3621993265f1e76e",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/park_police/measurement-contract.json",
       "measurement_procedure": {
@@ -376,10 +642,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/park_police/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/park_police/compatibility.json",
+        "sha256": "e8ccbdf4bdc20403f2c180c6bf4101ca132ab8f929cb7e23205b157c07b3c1cb",
+        "log": "cases/park_police/compat-analysis.log",
+        "negative_log": "cases/park_police/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/park_police/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -407,26 +676,62 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_police/physical-preparation.json",
+        "sha256": "ef08e8ff5a2663d970a19f644cd85abad032c890a63dbc5b42e2d54ea072d5af"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_device",
       "kind": "delivery",
       "construction": "cases/park_device/construction.json",
-      "construction_sha256": "8777fbd37a94e4e0b1bb6340604f99f5d53e0dccd26e6544b0251473dfe0c21c",
+      "construction_sha256": "cd64dccc7ed64df89fdd6c92bbb364eed281183fbb9ad0bc3de09ad6cfe2e7a6",
       "candidate_risk": {
         "status": "physical",
         "reason": "A crosswalk destination must be reachable by driven parking route; its actual complete vehicle footprint and markings require Native and camera readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_device/fallback1-construction.json",
+          "construction_sha256": "221ae35e54dc4207844858bfb4ea3e5b0b405714d718e6f85e30a6f1d64a3dcb",
+          "trigger": {
+            "source": "original actor-rows.json and saved physical check",
+            "metric": "halt overlap and target completion",
+            "failure_condition": "Primary approach overshoots reviewed on/off crosswalk destination or fails controlled halt"
+          },
+          "changed_knobs": [
+            "approach_speed_mps: 4.0 to 2.0; all case and recording variables fixed"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_device --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_device-fallback1-v6 --candidate fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "221ae35e54dc4207844858bfb4ea3e5b0b405714d718e6f85e30a6f1d64a3dcb",
+            "log": "proof-offline-park_device-fallback1.log",
+            "log_sha256": "490d9bed2d96ddf65a19ba0a9335bcb7685d5411cb3d8604f9e43eb84bf5f0a8",
+            "scope": "Exact bundle and CPU checks; Native physical execution pending"
+          },
+          "compatibility": {
+            "receipt": "cases/park_device/fallback1-compatibility.json",
+            "sha256": "e8b7b601bf62785da468004fce2d28abe3da8861dc67643f4ef5b149fd12f01f",
+            "log": "cases/park_device/fallback1-compat-analysis.log",
+            "negative_log": "cases/park_device/fallback1-compat-negative.log"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "status": "pending_revalidation",
-        "construction_sha256": "8777fbd37a94e4e0b1bb6340604f99f5d53e0dccd26e6544b0251473dfe0c21c"
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/execution-manifest.json --case testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_device --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c214977-offline-park_device-primary-v6 --candidate primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "cd64dccc7ed64df89fdd6c92bbb364eed281183fbb9ad0bc3de09ad6cfe2e7a6",
+        "log": "proof-offline-park_device-primary.log",
+        "log_sha256": "a190bff2a8a576c1f677a3fd34a8cc53ba0358cb904438e603f03269d2a3dd19",
+        "scope": "Exact bundle and CPU checks; Native physical execution pending"
       },
       "measurement_contract": "cases/park_device/measurement-contract.json",
       "measurement_procedure": {
@@ -434,10 +739,13 @@
       },
       "fixture_recipe": "work/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/cases/park_device/fixture-recipe.json",
       "compatibility": {
-        "status": "pending_revalidation"
+        "receipt": "cases/park_device/compatibility.json",
+        "sha256": "a77edc8951a9719a2060c5679ed1c636f678106f4217d87d8678ac851f3cb7a1",
+        "log": "cases/park_device/compat-analysis.log",
+        "negative_log": "cases/park_device/compat-negative.log"
       },
       "negative": {
-        "status": "pending_revalidation"
+        "log": "cases/park_device/compat-negative.log"
       },
       "acquisition": {
         "crosswalk_geometry": {
@@ -465,6 +773,10 @@
           "method": "source-sealed original rows and reviewed site context",
           "evidence": "crosswalk-rows.jsonl and crosswalk-context.json"
         }
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_device/physical-preparation.json",
+        "sha256": "c8967d3af333e62d11a6dd0ba7fcb96dc76a97038c2efad4959861a8ceb38ee7"
       }
     }
   ]

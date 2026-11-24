@@ -72,6 +72,9 @@ def seal_original_capture(attempt, case, map_text, *, restoration_verified):
     from saved_crosswalk import verify
     verified = verify(receipt_ref, root, root, case)
     require(verified['decoded_original_pngs'] == 3600, 'original four-camera decode incomplete')
+    recorder = root/'carla_recorder.log'
+    require(recorder.is_file() and recorder.stat().st_size > 0,
+            'original CARLA recorder source missing')
     rows = sealed_json(receipt['sources']['actor_rows'], root)
     mapping = sealed_json(receipt['sources']['frame_map'], root)
     cameras = sealed_json(receipt['sources']['camera_readbacks'], root)
@@ -127,6 +130,7 @@ def seal_original_capture(attempt, case, map_text, *, restoration_verified):
         'acquisition':'original_live_run','case_id':case['case_id'],
         'diagnostic_fixture':False,'extraction_confirmed':True,'frames':900,
         'sources':{'road.xodr':map_sha,'trace.jsonl':_sha(root/'trace.jsonl'),
+                   'carla_recorder.log':_sha(recorder),
                    'native-receipt.json':receipt_ref['sha256']},
         'scope':'original measured crosswalk actor and four RGB callbacks'})
     videos = {}

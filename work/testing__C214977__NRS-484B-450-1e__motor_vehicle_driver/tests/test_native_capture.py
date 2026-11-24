@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -40,6 +41,9 @@ class Adapter(Fake):
     def read_subject(self, subject, frame):
         return {'frame': frame, 'case_id': 'case-park-on', 'subject_id': subject,
                 'speed_mps': 0, 'halt_activity': 'park',
+                'position_m': [2.0, 2.0, 0.0],
+                'velocity_mps': [0.0, 0.0, 0.0], 'heading_deg': 0.0,
+                'body_vertices_m': [[x, y, z] for x, y in ((1,1),(3,1),(3,3),(1,3)) for z in (0.0,1.0)],
                 'body_corners_xy': [[1,1],[3,1],[3,3],[1,3]],
                 'crosswalk_id': 'cw', 'marking_status': 'marked',
                 'traffic_conflict': False, 'law_direction': False,
@@ -55,11 +59,21 @@ class TestCapture(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        reviews = {name: seal(self.root,name+'.json',{'reviewer':'CPU source fixture','scope':name})
+                   for name in ('frontage','highway','camera_pose')}
         self.site = {'cell_id':'C214977','layout':'residence_district','map_name':'Town',
                      'highway_source':'native_map','frontage_source':'survey',
                      'crosswalk_source':'native_map','marking_status_source':'native_map',
                      'signal_governance_source':'native_device','crosswalk_polygon':P,
-                     'parking_route':[[-5,2],[2,2]], 'crosswalk_id':'cw', 'marking_status':'marked'}
+                     'parking_route':[[-5,2],[2,2]], 'crosswalk_id':'cw', 'marking_status':'marked',
+                     'frontage_review_source':reviews['frontage'],
+                     'frontage_review_sha256':reviews['frontage']['sha256'],
+                     'highway_review_source':reviews['highway'],
+                     'highway_review_sha256':reviews['highway']['sha256'],
+                     'camera_pose_review_source':reviews['camera_pose'],
+                     'camera_pose_review_sha256':reviews['camera_pose']['sha256']}
+        self.map_text = '<OpenDRIVE/>'
+        self.site['native_opendrive_sha256'] = hashlib.sha256(self.map_text.encode()).hexdigest()
         self.sref = seal(self.root,'site.json',self.site)
         self.vref = seal(self.root,'vehicle.json',{'blueprint':'vehicle.sedan','driver_source':'assigned actor'})
         self.case = {'case_id':'case-park-on','action':'park','exception':'none','destination':'on'}
@@ -86,6 +100,8 @@ class TestCapture(unittest.TestCase):
         self.assertFalse(any(comparison_source['exception_sources'].values()))
         (self.root/'out'/'site.json').write_bytes((self.root/'site.json').read_bytes())
         (self.root/'out'/'vehicle.json').write_bytes((self.root/'vehicle.json').read_bytes())
+        for name in ('frontage','highway','camera_pose'):
+            (self.root/'out'/(name+'.json')).write_bytes((self.root/(name+'.json')).read_bytes())
         derived = s.prepare_analysis_sources(self.root/'out',self.case)
         self.assertEqual(derived['verified']['decoded_original_pngs'],3600)
         self.assertEqual(len((self.root/'out'/'crosswalk-rows.jsonl').read_text().splitlines()),900)
@@ -101,6 +117,25 @@ class TestCapture(unittest.TestCase):
         (self.root/'out'/'camera-sources'/'overview'/'0000.png').write_bytes(b'bad')
         with self.assertRaisesRegex(n.SourceError,'camera PNG hash mismatch'):
             s.verify(receipt_ref,self.root,self.root/'out',self.case)
+
+    def test_full_native_projection_and_seal(self):
+        from native_output_bridge import seal_original_capture
+        out = self.root/'out'
+        n.capture(Adapter(),self.sref,self.vref,self.case,self.root,out)
+        for name in ('site','vehicle','frontage','highway','camera_pose'):
+            (out/(name+'.json')).write_bytes((self.root/(name+'.json')).read_bytes())
+        (out/'carla_recorder.log').write_text('synthetic recorder fixture\n')
+        (out/'construction.json').write_text(json.dumps({'case_id':self.case['case_id']})+'\n')
+        (out/'runner.py').write_text('# CPU fixture entrypoint\n')
+        (out/'config.json').write_text(json.dumps({'case':self.case})+'\n')
+        seal = seal_original_capture(out,self.case,self.map_text,restoration_verified=True)
+        self.assertTrue(seal.is_file())
+        for name in ('trace.jsonl','video_frames.jsonl','capture/evidence.jsonl',
+                     'capture/native/frames.jsonl','overview.mkv','approach.mkv',
+                     'reference_corner.mkv','driver_reference.mkv'):
+            self.assertTrue((out/name).is_file(),name)
+        self.assertEqual(len((out/'capture/native/frames.jsonl').read_text().splitlines()),900)
+        self.assertFalse(json.loads(seal.read_text())['physical_acceptance_claimed'])
     def test_missing_camera_pixels_rejected(self):
         a = Adapter()
         a.pngs['overview'] = b''

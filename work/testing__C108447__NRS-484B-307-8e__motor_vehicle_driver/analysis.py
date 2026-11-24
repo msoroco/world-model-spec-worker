@@ -66,7 +66,9 @@ def canonical_trace_rows(ego):
              'position_m': [body['x'], body['y'], body.get('z', 0)],
              'heading_deg': body['yaw_rad'] * 180 / 3.141592653589793,
              'speed_mps': body['speed_mps'],
-             'speed_mph': body['speed_mps'] / 0.44704} for body in ego]
+             'speed_mph': body['speed_mps'] / 0.44704,
+             'velocity_mps': body['velocity_mps'],
+             'control': body.get('control', {})} for body in ego]
 
 
 ROWS = (

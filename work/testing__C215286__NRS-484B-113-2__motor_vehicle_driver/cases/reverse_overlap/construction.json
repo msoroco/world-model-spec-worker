@@ -19,7 +19,29 @@
       "content": "import json\nimport unittest\nfrom runner import check\nfrom pathlib import Path\nclass BundleTest(unittest.TestCase):\n    def test_exact_case(self):\n        scene=json.loads(Path(\"scene.json\").read_text())\n        self.assertTrue(check(scene)[\"native_source_packet_required\"])\n    def test_reject_wrong_target(self):\n        scene=json.loads(Path(\"scene.json\").read_text())\n        scene[\"target_physical_relation\"]=\"invalid\"\n        with self.assertRaises(ValueError): check(scene)\n"
     }
   ],
-  "recording_description": "Source-bound reverse overlap marked-crosswalk body relation; no legal verdict",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "reverse_body_crosswalk",
+        "unit": "structured",
+        "method": "Native original frame body and marked-crossing polygon measurement",
+        "time_window": "full reverse maneuver",
+        "reference_frame": "Native world XY",
+        "uncertainty": "Actual body relation requires independent physical review",
+        "sampling_rate_hz": 20
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "marked_crosswalk_source",
+        "unit": "metadata",
+        "method": "Native map SHA-256 and marked-crossing geometry"
+      }
+    ],
+    "limitations": [
+      "No legal verdict is inferred from physical relation."
+    ]
+  },
   "measurement_plan": [
     "original body-crosswalk polygon relation during observed reverse motion at 20 Hz"
   ],

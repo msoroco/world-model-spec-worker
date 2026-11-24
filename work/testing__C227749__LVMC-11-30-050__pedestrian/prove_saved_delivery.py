@@ -1,4 +1,5 @@
 """Check all five saved diagnostic receipts against their original sources."""
+import argparse
 import json
 from pathlib import Path
 
@@ -11,12 +12,12 @@ SCRATCH = PROJECT / '.runtime-work' / 'p08-c227749-nov23'
 ASSIGNMENT = ROOT.name
 
 
-def main():
+def main(scratch=SCRATCH, compat_prefix='compat-v4-'):
     results = []
     for construction in sorted((ROOT / 'cases').glob('*/construction.json')):
         name = construction.parent.name
-        version = SCRATCH / ('process-' + name) / 'v0001'
-        attempt = SCRATCH / ('compat-v4-' + name)
+        version = scratch / ('process-' + name) / 'v0001'
+        attempt = scratch / (compat_prefix + name)
         result = audit(version, attempt, ASSIGNMENT + '__' + name, sha(construction))
         results.append(result)
     if len(results) != 5 or any(r['status'] != 'software_diagnostic_complete' for r in results):
@@ -32,4 +33,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--scratch', type=Path, default=SCRATCH)
+    parser.add_argument('--compat-prefix', default='compat-v4-')
+    args = parser.parse_args()
+    main(args.scratch, args.compat_prefix)

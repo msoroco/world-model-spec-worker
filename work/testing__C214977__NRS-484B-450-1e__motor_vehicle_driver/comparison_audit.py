@@ -31,20 +31,26 @@ def sealed(root: Path, ref: dict) -> dict:
 
 
 def _case(root: Path, ref: dict, case_id: str) -> dict:
-    delivery = sealed(root, ref)
-    need(delivery.get('format') == 'crosswalk-reviewed-delivery' and
+    need(isinstance(ref, dict) and set(ref) == {'delivery','source'},
+         'delivery and comparison source references required')
+    delivery = sealed(root, ref['delivery'])
+    need(delivery.get('format') == 'worker-delivery-audit' and
          delivery.get('case_id') == case_id, 'exact delivery receipt mismatch')
-    need(delivery.get('delivery_accepted') is True and
-         delivery.get('physical_completion') is True and
-         delivery.get('full_video_decode') is True and
-         delivery.get('actual_pixels') is True, 'delivery acceptance or physical proof missing')
-    source = sealed(root, delivery.get('source_receipt'))
+    checks = delivery.get('checks',{})
+    need(delivery.get('passed') is True and
+         all(checks.get(name) is True for name in ('native_source','all_participants',
+              'time_join','full_video_decode','actual_pixels','physical_completion')),
+         'delivery acceptance or physical proof missing')
+    source = sealed(root, ref['source'])
     need(source.get('format') == 'crosswalk-comparison-source' and
          source.get('case_id') == case_id, 'comparison source mismatch')
+    need(source.get('source_receipt_sha256') == delivery.get('native_receipt_sha256'),
+         'comparison source differs from reviewed Native receipt')
     need(source.get('original_frame_count') == 900 and
          source.get('source_format') == 'native_original', 'original source profile missing')
     need(source.get('site_source_sha256') and source.get('vehicle_source_sha256') and
-         source.get('camera_plan_sha256'), 'source bindings missing')
+         source.get('camera_plan_sha256') and source.get('camera_pose_review_sha256'),
+         'source bindings missing')
     need(isinstance(source.get('exception_sources'), dict) and
          set(source['exception_sources']) == {'traffic_conflict', 'law', 'police_direction', 'device_direction'},
          'exception source inventory missing')
@@ -74,7 +80,7 @@ def audit(plan: dict, comparison_id: str, root: Path, refs: dict) -> dict:
         'crosswalk_id': lambda x: x['crosswalk_id'],
         'road_geometry': lambda x: (x['site_source_sha256'], x['crosswalk_polygon'], x['parking_route']),
         'vehicle_blueprint': lambda x: (x['vehicle_source_sha256'], x['vehicle_blueprint']),
-        'camera_plan': lambda x: x['camera_plan_sha256'],
+        'camera_plan': lambda x: (x['camera_plan_sha256'],x['camera_pose_review_sha256']),
         'duration_frames': lambda x: x['original_frame_count'],
     }
     for key, get_value in fixed_values.items():

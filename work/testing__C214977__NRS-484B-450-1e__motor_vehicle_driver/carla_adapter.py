@@ -51,11 +51,14 @@ def spawn_reviewed_cameras(world, api, site, camera_plan):
 
 
 class CarlaCrosswalkAdapter:
-    def __init__(self, world, api, *, case_id, cameras=None, exception_packet=None, timeout_s=3.0):
+    def __init__(self, world, api, *, case_id, cameras=None, exception_packet=None,
+                 target_speed_mps=4.0, timeout_s=3.0):
         self.world, self.api = world, api
         self.cameras = {} if cameras is None else dict(cameras)
         self.exception_packet = exception_packet
         self.timeout_s = timeout_s
+        require(1.0 <= float(target_speed_mps) <= 6.0, 'bounded approach speed required')
+        self.target_speed_mps = float(target_speed_mps)
         self.owned = []
         self.vehicle = None
         require(isinstance(case_id, str) and case_id, 'exact case identity required')
@@ -180,8 +183,8 @@ class CarlaCrosswalkAdapter:
         else:
             bearing = math.degrees(math.atan2(target[1]-here.y, target[0]-here.x))
             error = (bearing - pose.rotation.yaw + 180) % 360 - 180
-            control = self.api.VehicleControl(throttle=max(0.0, min(0.5, (4.0-speed)*0.2)),
-                                              brake=max(0.0, min(1.0, (speed-4.0)*0.3)),
+            control = self.api.VehicleControl(throttle=max(0.0, min(0.5, (self.target_speed_mps-speed)*0.2)),
+                                              brake=max(0.0, min(1.0, (speed-self.target_speed_mps)*0.3)),
                                               steer=max(-0.8, min(0.8, error/45)))
         self.vehicle.apply_control(control)
         return at_end

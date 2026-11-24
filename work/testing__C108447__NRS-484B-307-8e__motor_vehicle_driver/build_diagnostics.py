@@ -55,6 +55,7 @@ def build() -> dict:
         samples = [{'frame': frame, 'time_s': (frame - 100) / 20,
                     'x': -3 if frame == 100 else 5 if frame == 101 else 13,
                     'y': y, 'speed_mps': 0 if frame > 102 else 2,
+                    'velocity_mps': [0 if frame > 102 else 2, 0, 0],
                     'yaw_rad': 0} for frame in range(100, 109)]
         approach_state = 'green' if suffix == 'no_approach_red' else 'red_alone'
         destination_state = 'red_alone' if suffix == 'destination_red' else 'yellow'
@@ -95,11 +96,13 @@ def build() -> dict:
             event['ego']['speed_provenance'] = 'synthetic_native_sample'
             event['original_observations']['frame'] = body['frame']
             event['original_observations']['time_s'] = body['time_s']
+            event['original_observations']['participants'] = []
             frame['frame'] = body['frame']
             frame['simulation_time'] = 40 + body['time_s']
             frame['adapter_graph'] = f'graphs/base/{body["frame"]:08d}.adapter.json'
             graph['path'] = 'capture/native/' + frame['adapter_graph']
             graph['attributes']['frame'] = body['frame']
+            graph['attributes']['observed_evidence'] = event['original_observations']
         capture_manifest = json.loads(core_files['capture/manifest.json'])
         capture_manifest['case_id'] = case_id
         capture_manifest['acquisition'] = 'synthetic_fixture'

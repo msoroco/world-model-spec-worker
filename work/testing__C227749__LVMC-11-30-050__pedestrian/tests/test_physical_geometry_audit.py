@@ -32,6 +32,19 @@ def rows(start, end):
 
 
 class BodyGeometryTests(unittest.TestCase):
+    def test_completion_three_source_states(self):
+        s = scene('outside_right_angle')
+        complete = mod.evaluate_crossing_completion(s, rows(s['route_xy_m'][0], s['route_xy_m'][-1]))
+        self.assertEqual(complete['physical_checks']['maneuver']['status'], 'met')
+        self.assertTrue(complete['maneuver_completed'])
+        midpoint = [(a + b) / 2 for a, b in zip(s['route_xy_m'][0], s['route_xy_m'][-1])]
+        incomplete = mod.evaluate_crossing_completion(s, rows(s['route_xy_m'][0], midpoint))
+        self.assertEqual(incomplete['physical_checks']['maneuver']['status'], 'not_met')
+        self.assertFalse(incomplete['maneuver_completed'])
+        missing = mod.evaluate_crossing_completion(s, None)
+        self.assertEqual(missing['physical_checks']['maneuver']['status'], 'unverified')
+        self.assertFalse(missing['maneuver_completed'])
+
     def test_outside_and_inside_full_duration_original_body(self):
         for name in ('outside_right_angle', 'inside_crosswalk_oblique'):
             s = scene(name)

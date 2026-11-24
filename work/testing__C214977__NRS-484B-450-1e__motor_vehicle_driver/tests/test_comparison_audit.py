@@ -37,6 +37,7 @@ class ComparisonAuditTests(unittest.TestCase):
                       'parking_route': [[-3, 0], [0, 0]],
                       'vehicle_source_sha256': 'vehicle-hash',
                       'vehicle_blueprint': 'sedan', 'camera_plan_sha256': 'camera-hash',
+                      'camera_pose_review_sha256':'pose-hash',
                       'original_frame_count': 900, 'source_format': 'native_original',
                       'action': case['action'], 'destination': case['destination'],
                       'exception': case['exception'],
@@ -49,12 +50,15 @@ class ComparisonAuditTests(unittest.TestCase):
             mutate(sources)
         refs = {}
         for i, (case_id, source) in enumerate(zip(ids, sources)):
+            source['source_receipt_sha256'] = 'native-'+str(i)
             source_ref = self.seal(f'source-{i}.json', source)
-            delivery = {'format': 'crosswalk-reviewed-delivery', 'case_id': case_id,
-                        'source_receipt': source_ref, 'delivery_accepted': True,
-                        'physical_completion': True, 'full_video_decode': True,
-                        'actual_pixels': True}
-            refs[case_id] = self.seal(f'delivery-{i}.json', delivery)
+            delivery = {'format': 'worker-delivery-audit', 'case_id': case_id,
+                        'native_receipt_sha256':source['source_receipt_sha256'],
+                        'passed': True,'checks':{name:True for name in (
+                            'native_source','all_participants','time_join','full_video_decode',
+                            'actual_pixels','physical_completion')}}
+            refs[case_id] = {'delivery':self.seal(f'delivery-{i}.json', delivery),
+                             'source':source_ref}
         return refs
 
     def test_all_seven_planned_pairs(self):
@@ -71,17 +75,19 @@ class ComparisonAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(audit.ComparisonError, 'both exact'):
             audit.audit(self.plan, comp['comparison_id'], self.root, {comp['case_ids'][0]: refs[comp['case_ids'][0]]})
         bad = dict(refs)
-        bad[comp['case_ids'][1]] = {**bad[comp['case_ids'][1]], 'sha256': '0' * 64}
+        bad[comp['case_ids'][1]] = {**bad[comp['case_ids'][1]],
+                                   'delivery':{**bad[comp['case_ids'][1]]['delivery'],
+                                               'sha256': '0' * 64}}
         with self.assertRaisesRegex(audit.ComparisonError, 'hash mismatch'):
             audit.audit(self.plan, comp['comparison_id'], self.root, bad)
 
     def test_missing_physical_acceptance_rejected(self):
         comp = self.plan['comparisons'][0]
         refs = self.pair(comp)
-        path = self.root / refs[comp['case_ids'][1]]['path']
+        path = self.root / refs[comp['case_ids'][1]]['delivery']['path']
         delivery = json.loads(path.read_text())
-        delivery['physical_completion'] = False
-        refs[comp['case_ids'][1]] = self.seal(path.name, delivery)
+        delivery['checks']['physical_completion'] = False
+        refs[comp['case_ids'][1]]['delivery'] = self.seal(path.name, delivery)
         with self.assertRaisesRegex(audit.ComparisonError, 'physical proof missing'):
             audit.audit(self.plan, comp['comparison_id'], self.root, refs)
 
