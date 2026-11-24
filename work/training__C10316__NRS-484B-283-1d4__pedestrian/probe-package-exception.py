@@ -14,7 +14,7 @@ import networkx as nx
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
 from worker_exchange.package_compatibility import run, materialize_case
 from worker_exchange.runtime_cli import execution_env
 

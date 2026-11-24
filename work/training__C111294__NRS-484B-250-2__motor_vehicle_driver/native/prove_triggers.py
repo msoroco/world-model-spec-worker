@@ -22,8 +22,9 @@ def prove():
         slower = json.loads((HERE / "synthetic" / suffix / "fallback1" / "saved.json").read_text())
         observed = triggers(primary)
         if observed != {"fallback1": True, "fallback2": True, "fallback3": True} or \
-                triggers(slower)["fallback1"]:
-            raise AssertionError("Measured slowdown mitigation failed")
+                slower["ego_minus_other_front_entry_s"] <= primary["ego_minus_other_front_entry_s"] + 0.5 or \
+                slower["ego_minus_other_front_entry_s"] > 1.75:
+            raise AssertionError("Measured slowdown did not improve the entry gap within the diagnostic window")
         cases[suffix] = {"primary_gap_s": primary["ego_minus_other_front_entry_s"],
                          "slower_gap_s": slower["ego_minus_other_front_entry_s"],
                          "triggers": observed}

@@ -75,7 +75,7 @@ def build():
                       'source_packets': [],
                       'cameras': [{'name': name, 'width': width, 'height': height} for name, width, height in (
                           ('overview', 1920, 1080), ('approach', 1280, 720),
-                          ('crosswalk_side', 1280, 720), ('display_close', 1280, 720))],
+                          ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))],
                       'recording_description': description,
                       'status': 'unselected_steady_native_capture_proposal'}
             assert (e['display_camera_width'], e['display_camera_height']) == (1280, 720)

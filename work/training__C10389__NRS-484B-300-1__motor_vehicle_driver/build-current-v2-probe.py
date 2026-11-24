@@ -1,13 +1,12 @@
 """Build one source-hashed current adapter diagnostic for the 300(1) primary."""
 import hashlib
 import json
+import argparse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 DEVICE = HERE / 'native/device'
-CASE = HERE.name + '__probe_1'
-RAW = DEVICE / 'offline/raw-fixtures/probe_1/primary'
 
 
 def sha(path):
@@ -30,8 +29,13 @@ def jsonl(rows):
     return ''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows)
 
 
-def main():
-    construction = json.loads((DEVICE / 'runtime-drafts/probe_1/primary/construction.json').read_text())
+def main(suffix='probe_1', candidate='primary'):
+    if suffix not in ('probe_1', 'probe_2') or candidate not in ('primary', 'fallback1', 'fallback2', 'fallback3'):
+        raise ValueError('Unknown exact case or candidate')
+    case = HERE.name + '__' + suffix
+    raw = DEVICE / 'offline/raw-fixtures' / suffix / candidate
+    stem = f'current-v3-{suffix}-{candidate}'
+    construction = json.loads((DEVICE / 'runtime-drafts' / suffix / candidate / 'construction.json').read_text())
     files = {item['path']: item for item in construction['files']}
     config = json.loads(files['config.json']['content'])
     description = {
@@ -46,20 +50,20 @@ def main():
                         'Diagnostic camera pixels and body motion are synthetic'],
     }
     config.update(cell_id='C10389', law_id='NRS-484B-300-1', actor='motor_vehicle_driver',
-                  selected_case_id=CASE, duration_s=30, rate_hz=20,
+                  selected_case_id=case, duration_s=30, rate_hz=20,
                   required_atoms=['kin.speed'], source_packets=[],
                   cameras=['overview', 'approach', 'reference_corner', 'driver_reference'],
                   recording_description=description,
-                  case={'case_id': CASE, 'recording_description': description})
+                  case={'case_id': case, 'recording_description': description})
     files['config.json']['content'] = json.dumps(config, indent=2) + '\n'
     files['finalize.py']['content'] = (HERE / 'current-v2-finalize.py').read_text()
     construction['recording_description'] = description
-    construction['status'] = 'unselected_current_v2_primary_probe'
-    construction_path = HERE / 'current-v2-primary-construction.json'
+    construction['status'] = 'unselected_current_v3_source_diagnostic'
+    construction_path = HERE / f'{stem}-construction.json'
     write(construction_path, construction, compact=True)
 
-    actors = lines(RAW / 'native-raw-actors.jsonl')
-    frames = lines(RAW / 'video_frames.jsonl')
+    actors = lines(raw / 'native-raw-actors.jsonl')
+    frames = lines(raw / 'video_frames.jsonl')
     if len(actors) != 600 or len(frames) != 600:
         raise ValueError('Retained source must have 600 frames')
     generator = {'files': {}, 'graphs': [], 'videos': []}
@@ -119,20 +123,20 @@ def main():
          'height': 1080 if name == 'overview' else 720,
          'fps': 20, 'color': 'black'}
         for name in ('overview', 'approach', 'reference_corner', 'driver_reference', 'forward')]
-    generator_path = HERE / 'current-v2-primary-generator.json'
+    generator_path = HERE / f'{stem}-generator.json'
     write(generator_path, generator, compact=True)
     sources = []
     for name in ('native-map-readback.json', 'native-raw-actors.jsonl',
                  'frame-review.jsonl', 'native-capture-report.json'):
-        path = RAW / name
+        path = raw / name
         sources.append({'path': name, 'source': path.relative_to(ROOT).as_posix(), 'sha256': sha(path)})
     road = DEVICE / 'alley-stop.xodr'
     sources.append({'path': 'road.xodr', 'source': road.relative_to(ROOT).as_posix(), 'sha256': sha(road)})
     recipe = {'format': 'worker-fixture-recipe', 'sources': sources,
               'generator': {'source': generator_path.relative_to(ROOT).as_posix(), 'sha256': sha(generator_path)}}
-    recipe_path = HERE / 'current-v2-primary-recipe.json'
+    recipe_path = HERE / f'{stem}-recipe.json'
     write(recipe_path, recipe)
-    contract = {'format': 'worker-measurement-contract', 'case_id': CASE,
+    contract = {'format': 'worker-measurement-contract', 'case_id': case,
                 'requirements': [{'disposition_index': 0, 'requirement': 'NRS-484B-300-1',
                                   'source': 'NRS 484B.300(1)', 'output_key': 'device_response',
                                   'method': 'measure_device_response', 'value_type': 'object',
@@ -141,19 +145,19 @@ def main():
                 'negative': {'remove': ['native-raw-actors.jsonl'],
                              'error_contains': 'Missing required source: native-raw-actors.jsonl'},
                 'status': 'unselected_diagnostic'}
-    contract_path = HERE / 'current-v2-primary-measurement-contract.json'
+    contract_path = HERE / f'{stem}-measurement-contract.json'
     write(contract_path, contract)
     proposal = {'format': 'worker-case-proposals', 'cases': [{
-        'case_id': CASE, 'target_law_id': 'NRS-484B-300-1',
+        'case_id': case, 'target_law_id': 'NRS-484B-300-1',
         'target_type': 'controlled_attempt', 'recording_description': description,
         'variable_assignments': {}, 'sweep_measurements': [],
         'claim': 'Diagnostic construction only; official placement and legal effect unverified'}]}
-    write(HERE / 'proposals/cases.json', proposal)
-    runtime = sha(ROOT / 'runtime/pipeline/SOURCE-MANIFEST.json')
+    write(HERE / f'{stem}-proposal.json', proposal)
+    runtime = sha(ROOT / 'runtime/SOURCE-MANIFEST.json')
     manifest = {'format': 'worker-unselected-current-v2-probe-manifest',
                 'assignment_id': HERE.name, 'runtime_manifest_sha256': runtime,
                 'status': 'draft_not_selected', 'cases': [{
-                    'case_id': CASE, 'kind': 'draft_not_selected', 'id': 'primary',
+                    'case_id': case, 'kind': 'draft_not_selected', 'id': candidate,
                     'construction': construction_path.relative_to(HERE).as_posix(),
                     'construction_sha256': sha(construction_path),
                     'candidate_risk': {'status': 'physical',
@@ -163,7 +167,7 @@ def main():
                     'measurement_procedure': {'entrypoint': 'finalize.py',
                                               'status': 'saved_source_diagnostic'},
                     'fixture_recipe': recipe_path.relative_to(ROOT).as_posix()}]}
-    manifest_path = HERE / 'current-v2-primary-probe-manifest.json'
+    manifest_path = HERE / f'{stem}-probe-manifest.json'
     write(manifest_path, manifest)
     print(json.dumps({'manifest_sha256': sha(manifest_path),
                       'construction_sha256': sha(construction_path),
@@ -172,4 +176,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--suffix', choices=('probe_1', 'probe_2'), default='probe_1')
+    parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'), default='primary')
+    args = parser.parse_args()
+    main(args.suffix, args.candidate)

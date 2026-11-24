@@ -58,7 +58,13 @@ def capture(bundle, output, host, port):
     if previous.get_settings().synchronous_mode or any(a.type_id.startswith(("vehicle.", "walker.", "sensor."))
                                                 for a in previous.get_actors()):
         raise RuntimeError("Exclusive idle asynchronous CARLA world required")
-    output.mkdir(parents=True, exist_ok=False)
+    if output.exists():
+        if output != bundle or not (output / 'config.json').is_file() or any(
+                (output / name).exists() for name in
+                ('native-raw-actors.jsonl', 'native-capture-report.json', 'raw.mkv')):
+            raise ValueError('Original capture requires a fresh materialized bundle')
+    else:
+        output.mkdir(parents=True, exist_ok=False)
     owned, sensors, encoders, logs = [], {}, {}, {}
     changed = False; frames = 0; error = None; restoration = None
     try:
