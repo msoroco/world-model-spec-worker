@@ -2,7 +2,7 @@ import io
 import sys
 import unittest
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'runtime' / 'scenario_pipeline'))
 from worker_exchange.capture import PROFILE, layout
 from worker_exchange.media import frames
 

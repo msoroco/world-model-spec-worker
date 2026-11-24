@@ -126,13 +126,13 @@ Record required raw observations and instance geometry, grade, friction inputs, 
 
 ## Outputs and progress
 
-Per-run artifacts live under `runs/scenario_pipeline/work/<run-id>/`: inputs, shared templates, logs, per-cell/actor relevance/bindings/cases, and distinct execution attempt directories. The new single-cell entry point uses separate `state/judgment-sweeps.sqlite`. Historical outputs remain under `legacy/C353238` and must not be regenerated.
+New run administration, semantic outputs and logs live under `runs/scenario_pipeline/state/operations/<run-id>/`. Frozen inputs belong in `inputs/`, original attempts and canonical evidence in `recordings/`, and accepted review outputs in `work/`. Use the CLI and path helpers to resolve exact locations; historical pilot layouts and one-shot entry points are retired.
 
 `status` and `export` provide stage counts, token usage when reported, exact input/review provenance and dependency state. `sweep_coverage.json` and `progress.html` expose each frozen spec, planned/selected/unselected counts, failures, realized values, gaps, raw evidence references and video links. Joint measured points are retained separately from marginal coverage. Unselected points are not failures; missing measurements are not replaced by requested values. Reporting never triggers runs or adapts sampling.
 
 No legal verdict is emitted. Non-judgment attempt labels identify test intent only. Later threshold choices, legal predicates and video labels belong outside this pipeline.
 
-Use `examples/C353238/run.py` for the fresh one-shot workflow and `docs/handoff.md` for its handoff. Existing trace conversion remains available through `adapt-trace`; see `docs/traffic_spec_adapter.md`. This change does not rebuild extraction infrastructure.
+Use the import, selection, semantic processing, construction, and execution commands above. Saved trace conversion uses `adapt-trace`; see [traffic_spec_adapter.md](traffic_spec_adapter.md).
 
 ## Restricted-law runs and downstream few-shots
 
@@ -167,14 +167,6 @@ required controls. Engineering target failures and unknown setup fields remain
 failures in `delivery_index.json`, even when the capture gate passes. A recovered
 valid original capture is reused; it does not request another driving episode.
 
-`recover_recordings.py` adapts retained original recordings without driving again.
-It retains the original execution error and target checks, checks saved video frame
-counts, and requires native control governance and signal indications where needed.
-A non-scalar event summary is retained separately from numeric observable summaries;
-it is never replaced by an invented measurement. `compare_recordings.py` joins
-original elapsed-time footage; a held last frame is explicitly labeled when one
-recording is shorter.
-
 Completion reports include executions from superseded constructions that consumed
 the same frozen sweep specification. Endpoint allowance counts all their retained
 attempts. Changing construction versions cannot clear a physical failure. The
@@ -182,54 +174,10 @@ adapter retains native junction geometry, opposing-lane centerlines and painted 
 objects with explicit source and uncertainty; these do not establish a legal entry
 boundary or geographic law classification.
 
-`repair_left_reporting.py` versions a postprocessing-only correction for pending
-left-turn constructions: maximum absolute lane-center error is compared with zero,
-while the requested coordinate is retained separately. Offline recovery recomputes
-the original error from original post-tick poses before projecting that comparison.
-Original result files and errors remain immutable; a report correction does not
-request another driving episode or change a tolerance.
-
-
 `run_selected.py --case ID` restricts execution to new frozen points in one cell.
 It requires an already validated original capture for that cell and keeps the full
 planned case set and existing failure/capture entries. It cannot silently repeat
 an older successful clip or truncate the full plan.
-
-`recover_recordings.py --project-lane-signal-measurement` is restricted to the
-frozen API-indicator sweep. It recomputes the onset-to-departure planar path
-integral from synchronized original poses and queried device states, checks the
-original event report, and writes a separate scalar projection. Integration-input
-time and completed-report availability time remain separate: the completed lead
-is first available at the engineering departure annotation. Original result,
-channels, videos and failures remain unchanged. Strict numeric evidence validation
-still applies; there is no new simulation or legal timing interpretation.
-
-`finalize_demo_delivery.py` requires all planned cases and no live execution or
-simulator lease. It decodes every final trace again with the full-Core Lean checker
-and records the exact final trace/manifest hashes, verifies source hashes, complete
-base/abstract graph references and original telemetry/video frame joins, checks
-native controls and signal states, and audits the frozen maneuver-completion quota.
-Current stale delivery errors move into historical metadata; original failures
-remain accessible. A campaign may finish with explicitly documented failures and
-missing-input judgment plans.
-
-For browser playback of the demo delivery, run:
-
-```bash
-PYTHONPATH=scenario_pipeline /usr/bin/python3.11 scenario_pipeline/convert_demo_videos.py \
-  --output runs/scenario_pipeline/work/demo-five-20261005 --workers 4
-PYTHONPATH=scenario_pipeline /usr/bin/python3.11 scenario_pipeline/publish_demo_delivery.py
-```
-
-The converter writes VP9 WebM copies beside every MKV in the campaign and linked
-context runs, including retained historical attempts. It preserves original MKVs,
-checks current source hashes, fully decodes/counts each output, and verifies frame
-counts and dimensions. Playback copies use CRF24 and yuv420p with no rescaling,
-trimming or frame-rate conversion. They are lossy viewing copies; original camera
-evidence and TrafficSpec adapter inputs remain unchanged. Per-video receipts and
-`webm_conversion_audit.json` bind the two files. The index retains original video
-receipts and adds WebM playback references; publication prefers those references.
-Existing verified conversions can be reused after exact source/output hash checks.
 
 ## Current delivery contract
 
@@ -237,4 +185,4 @@ The reusable delivery, runtime-edit, and diagnosed-repair workflows are document
 
 ## Canonical storage
 
-See [storage.md](storage.md) for the single recording store, explicit end-of-set finalization, optional packaging, and one-time migration. Case processing does not consolidate or export datasets.
+See [storage.md](storage.md) for the single recording store, explicit end-of-set finalization, optional packaging, and current review navigation. Case processing does not consolidate or export datasets.

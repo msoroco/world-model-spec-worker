@@ -11,7 +11,7 @@ output=(Path(configured).expanduser().resolve() if configured else private/'adap
 if output != private and private not in output.parents:
     raise ValueError('Worker output root must be under '+str(private))
 os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']=str(output)
-sys.path.insert(0, str(root / 'runtime' / 'pipeline' / 'scenario_pipeline'))
+sys.path.insert(0, str(root / 'runtime' / 'scenario_pipeline'))
 from worker_exchange.preparation import check
 
 if __name__ == '__main__':

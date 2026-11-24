@@ -4,7 +4,7 @@ import os
 import hashlib
 from pathlib import Path
 root=Path(__file__).resolve().parent
-runtime=root/'runtime/pipeline'
+runtime=root/'runtime'
 operation=hashlib.sha256('\0'.join(sys.argv[1:]).encode()).hexdigest()
 private=(root/'.runtime-work').resolve()
 configured=os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT')
