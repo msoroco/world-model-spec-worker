@@ -28,6 +28,90 @@ def body(x,y):
 
 
 class LaneChangeTests(unittest.TestCase):
+    def test_canonical_construction_materializes_current_runner_and_sources(self):
+        construction_doc=json.loads((ROOT/"construction.json").read_text())
+        self.assertEqual(construction_doc["entrypoint"],"runner.py")
+        self.assertEqual(construction_doc["case_id"],
+                         construction.CASE_PREFIX+"left_signal_before_clear_gap")
+        self.assertEqual(construction_doc["recording_description"],
+                         json.loads((ROOT/"config.json").read_text())["recording_description"])
+        for entry in construction_doc["files"]:
+            self.assertEqual(entry["content"],(ROOT/entry["path"]).read_text())
+
+    def test_canonical_runner_cpu_check_rejects_wrong_identity(self):
+        check=subprocess.run([sys.executable,"runner.py","--check"],cwd=ROOT,
+                             capture_output=True,text=True,check=True)
+        self.assertTrue(json.loads(check.stdout)["cpu_check_passed"])
+        self.assertFalse(json.loads(check.stdout)["simulation_started"])
+        sys.path.insert(0,str(ROOT))
+        try:
+            runner=load("runner")
+            cfg=json.loads((ROOT/"config.json").read_text())
+            runner.validate_config(cfg)
+            cfg["cell_id"]="wrong"
+            with self.assertRaisesRegex(ValueError,"assignment identity"):
+                runner.validate_config(cfg)
+        finally:
+            sys.path.remove(str(ROOT))
+
+    def test_case_staging_uses_target_lane_distance_and_releases_actors(self):
+        staged=[]
+        def spawn(blueprint,transform):
+            actor=NS(transform=transform,autopilot=None,destroyed=False)
+            actor.set_autopilot=lambda value:setattr(actor,"autopilot",value)
+            actor.destroy=lambda:setattr(actor,"destroyed",True)
+            staged.append(actor)
+            return actor
+        world=NS(try_spawn_actor=spawn)
+        target=NS(road_id=7,lane_id=-2)
+        target.next=lambda distance:[NS(road_id=7,lane_id=-2,
+                                         transform=NS(distance=distance))]
+        site={"spawn":NS(distance=0),"selected":{"target":target,"direction":"left"}}
+        prefix=construction.CASE_PREFIX
+        with construction.stage_native_lane_case(
+                world,site,prefix+"left_signal_before_clear_gap",object()) as actors:
+            self.assertEqual(actors["target_initial_route_distance_m"],245)
+            self.assertIs(actors["ego"],staged[0])
+            self.assertEqual(staged[1].transform.distance,245)
+        self.assertTrue(all(actor.destroyed and actor.autopilot is False for actor in staged))
+        with construction.stage_native_lane_case(
+                world,site,prefix+"left_signal_before_close_gap",object()) as actors:
+            self.assertEqual(actors["target_initial_route_distance_m"],25)
+            self.assertEqual(staged[3].transform.distance,25)
+        self.assertTrue(staged[2].destroyed and staged[3].destroyed)
+        with self.assertRaisesRegex(ValueError,"direction differ"):
+            with construction.stage_native_lane_case(
+                    world,site,prefix+"right_signal_before_clear_gap",object()):pass
+        self.assertEqual(len(staged),4)
+        failures=[]
+        def fail_second(blueprint,transform):
+            if transform.distance: return None
+            actor=NS(destroyed=False,set_autopilot=lambda value:None)
+            actor.destroy=lambda:setattr(actor,"destroyed",True)
+            failures.append(actor)
+            return actor
+        world.try_spawn_actor=fail_second
+        with self.assertRaisesRegex(ValueError,"target"):
+            with construction.stage_native_lane_case(
+                    world,site,prefix+"left_signal_before_clear_gap",object()):pass
+        self.assertTrue(failures[0].destroyed)
+
+    def test_site_camera_poses_rotate_with_selected_native_spawn(self):
+        fake_carla=NS(Location=lambda **kwargs:NS(**kwargs),
+                      Rotation=lambda **kwargs:NS(**kwargs),
+                      Transform=lambda location,rotation:NS(location=location,rotation=rotation))
+        site={"spawn":NS(location=NS(x=10,y=20,z=1),rotation=NS(yaw=90))}
+        poses=construction.camera_transforms_for_site(fake_carla,site)
+        self.assertEqual(set(poses),set(construction.CAMERA_SIZES))
+        self.assertAlmostEqual(poses["overview"].location.x,10)
+        self.assertAlmostEqual(poses["overview"].location.y,85)
+        self.assertEqual(poses["overview"].location.z,49)
+        self.assertEqual(poses["approach"].rotation.yaw,75)
+        self.assertEqual(poses["driver_reference"].location.x,.8)
+        with self.assertRaisesRegex(ValueError,"Finite selected Native site pose"):
+            construction.camera_transforms_for_site(fake_carla,{"spawn":NS(
+                location=NS(x=0,y=0,z=0),rotation=NS(yaw=float("nan")))})
+
     def test_native_camera_sources_join_frames_and_release_sensors(self):
         spawned=[]
         class Blueprint:
@@ -357,6 +441,34 @@ class LaneChangeTests(unittest.TestCase):
         self.assertEqual(second["ego_lane_id"],-2)
         self.assertTrue(second["body_left_source_lane"])
 
+    def test_native_site_selector_requires_full_marked_corridor(self):
+        class Waypoint:
+            road_id=7
+            lane_id=-1
+            lane_type="Driving"
+            lane_width=3.5
+            def __init__(self,index,mark="Broken"):
+                self.index=index
+                self.left_lane_marking=NS(type=mark)
+                self.transform=NS(location=NS(x=2.0*index,y=0.0),rotation=NS(yaw=0.0))
+            def get_left_lane(self):return NS(road_id=7,lane_id=-2,lane_type="Driving")
+            def next(self,step):return [Waypoint(self.index+1)]
+            def previous(self,step):return [Waypoint(self.index-1)]
+        spawns=[NS(location=NS(x=x,y=0.0,z=0.0)) for x in (40.0,20.0)]
+        mapping=NS(get_spawn_points=lambda:spawns,
+                   get_waypoint=lambda location,project_to_road=False:
+                   Waypoint(round(location.x/2)))
+        world=NS(get_map=lambda:mapping)
+        site=construction.find_native_lane_site(world,"left","Driving")
+        self.assertIs(site["spawn"],spawns[1])
+        self.assertEqual(site["candidate_count"],2)
+        mapping.get_waypoint=lambda location,project_to_road=False:Waypoint(
+            round(location.x/2),"None" if location.x==20 else "Broken")
+        self.assertIs(construction.find_native_lane_site(world,"left","Driving")["spawn"],spawns[0])
+        mapping.get_waypoint=lambda location,project_to_road=False:Waypoint(round(location.x/2),"None")
+        with self.assertRaisesRegex(ValueError,"No uninterrupted marked"):
+            construction.find_native_lane_site(world,"left","Driving")
+
     def test_exact_case_signal_policy_and_native_readback(self):
         prefix=construction.CASE_PREFIX
         before=prefix+"left_signal_before_clear_gap"
@@ -419,6 +531,26 @@ class LaneChangeTests(unittest.TestCase):
         self.assertLess(result["control"].steer,0)
         self.assertEqual(result["signal"]["readback_state"],6)
 
+    def test_route_target_advances_after_initial_target_is_passed(self):
+        current_location=NS(x=30.0,y=0.0)
+        ego=NS(get_transform=lambda:NS(location=current_location))
+        target=NS(road_id=7,lane_id=-2)
+        target.next=lambda distance:[NS(road_id=7,lane_id=-2,
+                                        transform=NS(location=NS(x=current_location.x+distance,y=3.5)))]
+        source=NS(road_id=7,lane_id=-1,get_left_lane=lambda:target)
+        mapping=NS(get_waypoint=lambda location,project_to_road=False:source)
+        world=NS(get_map=lambda:mapping)
+        selected={"source":source,"source_lane_id":-1,"target_lane_id":-2,
+                  "direction":"left","target":NS(transform=NS(location=NS(x=0.0,y=3.5)))}
+        ahead=construction.route_target_for_tick(world,ego,selected)
+        self.assertEqual(ahead.transform.location.x,38)
+        mapping.get_waypoint=lambda location,project_to_road=False:target
+        current_location.y=3.5
+        self.assertEqual(construction.route_target_for_tick(world,ego,selected).transform.location.x,38)
+        mapping.get_waypoint=lambda location,project_to_road=False:NS(road_id=7,lane_id=-3)
+        with self.assertRaisesRegex(ValueError,"unselected lane"):
+            construction.route_target_for_tick(world,ego,selected)
+
     def test_exact_native_capture_core_joins_four_cameras_and_closes(self):
         repo=ROOT.parents[1]
         os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]=str(repo/".runtime-work"/"c144550-frame-map-test")
@@ -434,7 +566,12 @@ class LaneChangeTests(unittest.TestCase):
                set_light_state=lambda state:setattr(ego,"state",state),
                get_transform=lambda:NS(location=NS(x=0.0,y=0.0),rotation=NS(yaw=0.0)),
                get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0),apply_control=lambda control:None)
-        world=NS(frame=0,tick=lambda:None,get_snapshot=lambda:None)
+        target_lane=NS(road_id=7,lane_id=-2,
+                       next=lambda distance:[NS(road_id=7,lane_id=-2,
+                                                transform=NS(location=NS(x=8.0,y=3.5)))])
+        source_lane=NS(road_id=7,lane_id=-1,get_left_lane=lambda:target_lane)
+        mapping=NS(get_waypoint=lambda location,project_to_road=False:source_lane)
+        world=NS(frame=0,tick=lambda:None,get_snapshot=lambda:None,get_map=lambda:mapping)
         def tick():
             world.frame+=1
             return world.frame
@@ -447,15 +584,18 @@ class LaneChangeTests(unittest.TestCase):
             writer.close=lambda w=writer:setattr(w,"closed",True)
             writer.require_complete=lambda w=writer:self.assertEqual(len(w.frames),900)
         cameras={name:(lambda frame:NS(frame=frame)) for name in names}
-        selected={"direction":"left","target":NS(transform=NS(location=NS(x=8.0,y=3.5))),
-                  "target_lane_id":-2}
+        selected={"direction":"left","source":source_lane,"source_lane_id":-1,
+                  "target":NS(transform=NS(location=NS(x=8.0,y=3.5))),"target_lane_id":-2}
         observe=lambda frame,time:{"frame":frame,"time_s":time,
                                    "body_left_source_lane":frame>100}
         frame_map=FrameMap(retained/"video_frames.jsonl")
         history=(retained/"lane_history.jsonl").open("x")
+        pipeline_frames=[]
+        capture_pipeline=lambda frame,time:pipeline_frames.append((frame,time))
         rows=construction.capture_native_case(
             world,ego,selected,construction.CASE_PREFIX+"left_signal_late_clear_gap",
-            Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers,frame_map,history)
+            Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers,
+            frame_map,history,capture_pipeline)
         self.assertEqual(len(rows),900)
         self.assertEqual(rows[0]["requested_indicator"],"off")
         self.assertEqual(rows[101]["requested_indicator"],"left")
@@ -465,6 +605,7 @@ class LaneChangeTests(unittest.TestCase):
         self.assertEqual(mapped[0]["carla_frame"],1)
         self.assertEqual(mapped[-1]["time_s"],45.0)
         self.assertEqual(len(mapped),len(saved))
+        self.assertEqual(pipeline_frames,[(row["carla_frame"],row["time_s"]) for row in mapped])
         self.assertEqual(saved[101]["frame"],mapped[101]["carla_frame"])
         self.assertTrue(frame_map.stream.closed and history.closed)
         world.frame=0
@@ -476,11 +617,13 @@ class LaneChangeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Camera skipped"):
             construction.capture_native_case(
                 world,ego,selected,construction.CASE_PREFIX+"left_signal_before_clear_gap",
-                Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers,frame_map,history)
+                Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers,
+                frame_map,history,capture_pipeline)
         self.assertTrue(all(w.closed for w in writers.values()))
         self.assertTrue(frame_map.stream.closed and history.closed)
         self.assertEqual((retained/"failed_video_frames.jsonl").read_text(),"")
         self.assertEqual((retained/"failed_lane_history.jsonl").read_text(),"")
+        self.assertEqual(len(pipeline_frames),900)
         world.frame=0
         cameras["overview"]=lambda frame:NS(frame=frame)
         for writer in writers.values():writer.frames=[];writer.closed=False
@@ -490,7 +633,8 @@ class LaneChangeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"encoder close failed"):
             construction.capture_native_case(
                 world,ego,selected,construction.CASE_PREFIX+"left_signal_before_clear_gap",
-                Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers,frame_map,history)
+                Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers,
+                frame_map,history,capture_pipeline)
         self.assertTrue(frame_map.stream.closed and history.closed)
         self.assertTrue(all(w.closed for name,w in writers.items() if name!="overview"))
 

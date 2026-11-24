@@ -21,6 +21,38 @@ CAMERA_SIZES={"overview":(1920,1080),"approach":(1280,720),
               "reference_corner":(1280,720),"driver_reference":(1280,720)}
 
 
+def camera_transforms_for_site(carla, site):
+    """Construct candidate camera poses from the selected Native lane spawn.
+
+    These are acquisition poses; original pixels must still establish that the
+    marking, complete vehicles and indicators are visible before acceptance.
+    """
+    spawn=site.get("spawn") if isinstance(site,dict) else None
+    if spawn is None or not hasattr(spawn,"location") or not hasattr(spawn,"rotation"):
+        raise ValueError("Selected Native lane spawn required for cameras")
+    loc=spawn.location
+    yaw=float(spawn.rotation.yaw)
+    values=(float(loc.x),float(loc.y),float(loc.z),yaw)
+    if not all(math.isfinite(value) for value in values):
+        raise ValueError("Finite selected Native site pose required")
+    rad=math.radians(yaw)
+    fx,fy=math.cos(rad),math.sin(rad)
+    lx,ly=-fy,fx
+    def static(along,side,height,yaw_delta,pitch):
+        return carla.Transform(
+            carla.Location(x=loc.x+along*fx+side*lx,
+                           y=loc.y+along*fy+side*ly,z=loc.z+height),
+            carla.Rotation(yaw=yaw+yaw_delta,pitch=pitch))
+    return {
+        "overview":static(65,0,48,0,-82),
+        "approach":static(-24,12,9,-15,-12),
+        "reference_corner":static(50,-18,14,145,-25),
+        "driver_reference":carla.Transform(
+            carla.Location(x=0.8,y=0,z=1.6),
+            carla.Rotation(yaw=0,pitch=-5)),
+    }
+
+
 @contextmanager
 def source_cameras(world,ego,transforms,timeout_s=10):
     """Acquire four original Native RGB streams at the pinned camera profile.
@@ -170,6 +202,60 @@ def sample_source_lane_polygon(source,forward_m=260,backward_m=10,step_m=2):
     return polygon
 
 
+def find_native_lane_site(world,direction,lane_type_driving):
+    """Choose a deterministic marked same-direction corridor from Native map spawns."""
+    mapping=world.get_map()
+    candidates=[]
+    for spawn in mapping.get_spawn_points():
+        waypoint=mapping.get_waypoint(spawn.location,project_to_road=False)
+        if waypoint is None:continue
+        try:
+            selected=select_adjacent_marked_lane(waypoint,direction,lane_type_driving)
+            polygon=sample_source_lane_polygon(waypoint)
+        except ValueError:
+            continue
+        location=spawn.location
+        if not all(math.isfinite(float(value)) for value in (location.x,location.y,location.z)):
+            continue
+        key=(int(waypoint.road_id),int(waypoint.lane_id),
+             round(float(location.x),3),round(float(location.y),3))
+        candidates.append((key,spawn,selected,polygon))
+    if not candidates:raise ValueError("No uninterrupted marked same-direction Native lane corridor")
+    _,spawn,selected,polygon=min(candidates,key=lambda item:item[0])
+    return {"spawn":spawn,"selected":selected,"source_polygon":polygon,
+            "candidate_count":len(candidates),"selection_rule":"lowest road/lane/spawn coordinates"}
+
+
+@contextmanager
+def stage_native_lane_case(world,site,case_id,vehicle_blueprint):
+    """Spawn source-lane ego and a measurable target-lane actor; release both."""
+    if not isinstance(site,dict) or not all(key in site for key in ("spawn","selected")):
+        raise ValueError("Verified Native lane site required")
+    selected=site["selected"]
+    suffix=case_id[len(CASE_PREFIX):] if case_id.startswith(CASE_PREFIX) else ""
+    if suffix not in SIGNAL_CASES or SIGNAL_CASES[suffix][0]!=selected.get("direction"):
+        raise ValueError("Exact case and selected lane direction differ")
+    target=selected.get("target")
+    if target is None:raise ValueError("Selected Native target lane required")
+    # Distances are scenario construction knobs, never statutory gap thresholds.
+    requested_distance=25 if suffix.endswith("close_gap") else 245
+    candidates=[waypoint for waypoint in target.next(requested_distance)
+                if waypoint.road_id==target.road_id and waypoint.lane_id==target.lane_id]
+    if len(candidates)!=1:raise ValueError("Target-lane staging corridor interrupted or branches")
+    staged=[]
+    try:
+        for role,transform in (("ego",site["spawn"]),("target",candidates[0].transform)):
+            actor=world.try_spawn_actor(vehicle_blueprint,transform)
+            if actor is None:raise ValueError("Native vehicle spawn failed: "+role)
+            staged.append(actor)
+            actor.set_autopilot(False)
+        yield {"ego":staged[0],"target":staged[1],
+               "target_initial_route_distance_m":requested_distance,
+               "target_behavior":"stationary at staged Native waypoint; measure actual body gap"}
+    finally:
+        for actor in reversed(staged):actor.destroy()
+
+
 def make_native_lane_context(world,selected,source_polygon):
     """Bind the two observed marked same-direction lanes to the sampled map."""
     if not isinstance(selected,dict) or not all(selected.get(key) is not None for key in
@@ -257,8 +343,30 @@ def apply_indicator(ego, light_states, command):
     return {"requested_indicator":command,"readback_state":int(ego.get_light_state())}
 
 
+def route_target_for_tick(world,ego,selected,lookahead_m=8):
+    """Resolve a forward waypoint in the selected target lane at the current pose."""
+    if not isinstance(lookahead_m,(int,float)) or isinstance(lookahead_m,bool) or not 2<=lookahead_m<=30:
+        raise ValueError("Bounded Native route lookahead required")
+    current=world.get_map().get_waypoint(ego.get_transform().location,project_to_road=False)
+    if current is None or current.road_id!=selected["source"].road_id:
+        raise ValueError("Native ego left selected source road")
+    if current.lane_id==selected["target_lane_id"]:
+        lane=current
+    elif current.lane_id==selected["source_lane_id"]:
+        lane=current.get_left_lane() if selected["direction"]=="left" else current.get_right_lane()
+    else:
+        raise ValueError("Native ego entered an unselected lane")
+    if lane is None or lane.road_id!=current.road_id or lane.lane_id!=selected["target_lane_id"]:
+        raise ValueError("Selected target lane disappeared at current Native pose")
+    candidates=[waypoint for waypoint in lane.next(lookahead_m)
+                if waypoint.road_id==lane.road_id and waypoint.lane_id==lane.lane_id]
+    if len(candidates)!=1:raise ValueError("Native target-lane route interrupted or branches")
+    return candidates[0]
+
+
 def step_toward_marked_lane(ego, selected, case_id, body_left_source_lane,
-                            light_states, control_factory, target_speed_mps=5.0):
+                            light_states, control_factory, target_speed_mps=5.0,
+                            target_waypoint=None):
     """Issue one bounded Native control step toward the verified adjacent lane.
 
     The target is a route waypoint, not a claimed safe gap or legal decision.
@@ -273,7 +381,7 @@ def step_toward_marked_lane(ego, selected, case_id, body_left_source_lane,
     suffix=case_id[len(CASE_PREFIX):] if case_id.startswith(CASE_PREFIX) else ""
     if suffix not in SIGNAL_CASES or SIGNAL_CASES[suffix][0]!=selected["direction"]:
         raise ValueError("Exact case and selected lane direction differ")
-    target=selected["target"].transform.location
+    target=(target_waypoint or selected["target"]).transform.location
     transform=ego.get_transform()
     here=transform.location
     dx,dy=target.x-here.x,target.y-here.y
@@ -300,12 +408,15 @@ def step_toward_marked_lane(ego, selected, case_id, body_left_source_lane,
 
 def capture_native_case(world, ego, selected, case_id, light_states, control_factory,
                         observe_original, camera_sources, camera_writers,
-                        frame_map, lane_history_stream, frames=900):
+                        frame_map, lane_history_stream, capture_pipeline_frame,
+                        frames=900):
     """Tick one exact Native case with joined source rows and four raw cameras.
 
     The caller supplies a native_output.FrameMap and an exclusive lane-history
-    stream. Identities and observations are written during acquisition, after
-    all four cameras join the current Native frame. The caller owns final sealing.
+    stream and the pinned PipelineCapture.capture callback. Identities and
+    observations are written during acquisition, after all four cameras and
+    the shared graph/trace capture join the current Native frame. The caller
+    owns PipelineCapture closure and final sealing.
     """
     names=("overview","approach","reference_corner","driver_reference")
     if type(frames) is not int or frames!=900:
@@ -319,11 +430,15 @@ def capture_native_case(world, ego, selected, case_id, light_states, control_fac
         raise ValueError("Capture-time native_output.FrameMap required")
     if not callable(getattr(lane_history_stream,"write",None)) or not callable(getattr(lane_history_stream,"close",None)):
         raise ValueError("Exclusive original lane-history stream required")
+    if not callable(capture_pipeline_frame):
+        raise ValueError("Pinned shared graph/trace capture callback required")
     rows=[];last_frame=-1;last_time=-math.inf;left_source=False
     try:
         for _ in range(frames):
+            target_waypoint=route_target_for_tick(world,ego,selected)
             command=step_toward_marked_lane(
-                ego,selected,case_id,left_source,light_states,control_factory)
+                ego,selected,case_id,left_source,light_states,control_factory,
+                target_waypoint=target_waypoint)
             frame=world.tick()
             snapshot=world.get_snapshot()
             time=float(snapshot.timestamp.elapsed_seconds)
@@ -344,6 +459,7 @@ def capture_native_case(world, ego, selected, case_id, light_states, control_fac
                 if getattr(image,"frame",None)!=frame:
                     raise ValueError("Camera skipped Native frame: "+name)
                 camera_writers[name].write(image)
+            capture_pipeline_frame(frame,time)
             frame_map.append(frame,time)
             lane_history_stream.write(json.dumps(row,sort_keys=True,allow_nan=False)+"\n")
             rows.append(row)

@@ -1,3 +1,19 @@
+## 2026-11-23 C144550 canonical runner draft
+
+C144550 now has a CPU-checkable `runner.py`, `config.json` and inline `construction.json` wiring Native actor staging, original four-camera and graph/trace capture, frame-map/lane-history persistence, resource cleanup, restoration and capture sealing. Twenty-three package tests, pinned Core atom preflight, runtime preflight and scoped nonready check pass. Runner SHA256 `6bcd9c8a22f20d60846b0f8be8d24271e1e2206397eb4cfcd4520dd491369f4b`; construction SHA256 `beb7d2ba9cffb87cf6a570000746c93db510ef37b5a86bb29ed5d06c2ccdb555`; test log SHA256 `07eff5589b1a934e514e117624e11412c54c9758dd24b706f114fc97ef611ef1`. This is a draft pending exact offline/manifest/saved and fallback/audit proofs, and no CARLA execution or acceptance is claimed. C144550 remains partial; batch remains 29 ready, 14 partial. The full strict gate has not passed.
+
+## 2026-11-23 C144550 Native actor staging
+
+C144550 now has CPU-tested ego and target-lane actor staging with exact-case direction checks, distinct construction distances and guaranteed cleanup. Twenty-one tests, pinned preflight and scoped nonready check pass. Source SHA256 `3b8f21a283d253fb1f041d5ce995741b8c80f9cc9a3d26034cc1d5876f3580b7`; test log SHA256 `2823943e2b8a79eb87c1f74a8e4b163c910c6e7f90dfe823bedd1eca685bbd30`. The target is currently stationary and actual gap/collision behavior is unobserved. Exact runner, manifest, fallbacks and delivery proofs remain worker-owned. C144550 remains partial; batch remains 29 ready, 14 partial, and the full strict gate has not passed.
+
+## 2026-11-23 C144550 dynamic route and site camera poses
+
+C144550 now resolves a target-lane waypoint ahead of the ego on every Native tick and derives four candidate camera poses from the selected spawn. Twenty CPU tests, pinned preflight and scoped nonready check pass. Source SHA256 `4dfc0641be31fee13d74e25e8da4e47c241379ccf6a985f8cf5a753a4ff4fce1`; test log SHA256 `75b0ed764c6a0741a369e681c878b20247ab0c703d1e00db300e483179983da6`. Actual pixels and motion remain unobserved; exact runner/manifest, fallbacks and delivery proofs remain worker-owned. C144550 is partial. Batch remains 29 ready, 14 partial; the full strict gate has not passed.
+
+## 2026-11-23 C144550 Native site and shared graph join
+
+C144550 now has a deterministic Native marked-lane site selector and a capture callback for the pinned shared graph/trace collector. CPU tests verify 900 four-camera frame joins to that callback and the canonical map, plus rejection before source writes when a camera frame is missing. Eighteen tests, pinned preflight and scoped nonready check pass. Construction SHA256 `ba9aca099c9dca70abef08b81c5f8c2595fac7542a2cf4d21b558ce05a8bbf73`; test log SHA256 `19d4997175b3861b6ff5976bdcf7162402138de672c0c1466b5073ca4bdaa74b`. C144550 remains partial pending the exact entrypoint, site camera transforms, manifest and delivery proofs. Batch remains 29 ready, 14 partial; full strict gate has not passed.
+
 ## 2026-11-23 C144550 four-camera source acquisition
 
 C144550 now has CPU-tested Native RGB sensor acquisition and a lossless FFV1/bgr0 source writer for the pinned four-camera profile. Tests verify frame joins, skipped/missing-frame rejection, sensor cleanup, decoded BGR pixel equality and exact writer completion. Seventeen tests, pinned preflight and scoped nonready check pass. Native source SHA256 `8e4f80c4be67da8ed91c20b2452f2a6bab8a42f691f86198fed460ddef7ce24d`; test log SHA256 `6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74`. C144550 remains partial pending actual site transforms, exact runner/manifest and delivery proofs. Batch remains 29 ready, 14 partial; full strict gate has not passed.
