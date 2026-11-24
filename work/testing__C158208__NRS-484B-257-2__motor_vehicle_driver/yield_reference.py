@@ -33,6 +33,11 @@ def inspect(root, context):
     expected = {name: sha(root / (name + ".mkv")) for name in CAMERAS}
     if review.get("camera_sha256") != expected:
         raise ValueError("Original site-review camera source changed")
+    frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+    ids = [row.get("carla_frame") for row in frames]
+    if (not ids or review.get("reviewed_carla_frames") != ids
+            or review.get("reviewed_frame_count") != len(ids)):
+        raise ValueError("Incomplete original site-review frame coverage")
     line, crossing = review.get("marked_stop_line_observed"), review.get("near_crosswalk_observed")
     if type(line) is not bool or type(crossing) is not bool:
         raise ValueError("Stop-line and near-crosswalk source review required")

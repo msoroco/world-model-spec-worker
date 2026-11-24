@@ -33,7 +33,9 @@ class YieldEntryTests(unittest.TestCase):
              "yield_reference_source":"native-line-or-view","highway_status_source":"road-review",
              "non_through_highway":True,"police_control":False,"traffic_signal_control":False,
              "ego_entrance_device":"yield",
-             "entrances":[{"road_id":7,"device":"yield"},{"road_id":9,"device":other_device}],
+             "entrance_road_ids":[7,9,11],
+             "entrances":[{"road_id":7,"device":"yield"},{"road_id":9,"device":other_device},
+                          {"road_id":11,"device":"none"}],
              "intersection_polygon_xy_m":[[10,-5],[20,-5],[20,5],[10,5]]}
         (root/"intersection_context.json").write_text(json.dumps(ctx))
         cameras={}
@@ -46,7 +48,8 @@ class YieldEntryTests(unittest.TestCase):
             "native_yield_sign_id":25,"sign_face_observed":"yield",
             "proper_sign_judgment":"unresolved","marked_stop_line_observed":True,
             "near_crosswalk_observed":True,"nearest_view_point_xy_m":[9,0],
-            "camera_sha256":cameras}))
+            "camera_sha256":cameras,
+            "reviewed_carla_frames":[100,101,102],"reviewed_frame_count":3}))
         rows=[]
         for i,(ego_x,other_x,speed) in enumerate(((0,0,4),(0,0,2),(12,12,1))):
             rows.append({"frame":100+i,"time_s":1+i*.05,"ego_road_id":7,
@@ -54,7 +57,8 @@ class YieldEntryTests(unittest.TestCase):
                          "ego_body_before_yield_reference":i<2,
                          "ego_body_vertices_xy_m":body(ego_x),
                          "other_body_vertices_xy_m":body(other_x)})
-        frames=[{"video_frame":i,"carla_frame":r["frame"],"time_s":r["time_s"]} for i,r in enumerate(rows)]
+        frames=[{"video_frame":i,"carla_frame":r["frame"],"time_s":r["time_s"],
+                 "camera_frame_ids":{name:r["frame"] for name in cameras}} for i,r in enumerate(rows)]
         (root/"entry_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
         (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
 
@@ -106,7 +110,42 @@ class YieldEntryTests(unittest.TestCase):
             frames=[json.loads(r) for r in (root/"video_frames.jsonl").read_text().splitlines()]
             frames[1]["carla_frame"]=999
             (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
-            with self.assertRaisesRegex(ValueError,"frame join"):measure.analyze(root)
+            with self.assertRaisesRegex(ValueError,"frame"):measure.analyze(root)
+
+    def test_all_native_entrances_must_have_reviewed_devices(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            ctx=json.loads((root/"intersection_context.json").read_text())
+            ctx["entrances"].pop()
+            (root/"intersection_context.json").write_text(json.dumps(ctx))
+            review=json.loads((root/"site_review.json").read_text())
+            review["intersection_context_sha256"]=hashlib.sha256((root/"intersection_context.json").read_bytes()).hexdigest()
+            (root/"site_review.json").write_text(json.dumps(review))
+            with self.assertRaisesRegex(ValueError,"Incomplete entrance device inventory"):
+                measure.analyze(root)
+
+    def test_officer_exception_requires_original_control_review(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            ctx=json.loads((root/"intersection_context.json").read_text())
+            ctx["case_id"]="testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception"
+            ctx["police_control"]=True
+            (root/"intersection_context.json").write_text(json.dumps(ctx))
+            review=json.loads((root/"site_review.json").read_text())
+            review["intersection_context_sha256"]=hashlib.sha256((root/"intersection_context.json").read_bytes()).hexdigest()
+            (root/"site_review.json").write_text(json.dumps(review))
+            with self.assertRaisesRegex(ValueError,"Missing original officer-control review"):
+                measure.analyze(root)
+            officer={"intersection_context_sha256":review["intersection_context_sha256"],
+                     "camera_sha256":review["camera_sha256"],
+                     "reviewed_carla_frames":[100,101,102],"officer_actor_id":99,
+                     "control_observed_at_entry":True,"authority_judgment":"unresolved"}
+            (root/"officer_review.json").write_text(json.dumps(officer))
+            self.assertTrue(measure.analyze(root)["officer_control_observed"])
+            officer["control_observed_at_entry"]=False
+            (root/"officer_review.json").write_text(json.dumps(officer))
+            with self.assertRaisesRegex(ValueError,"complete original-source control review"):
+                measure.analyze(root)
 
     def test_native_yield_trigger_selects_ego_approach(self):
         class Actors(list):

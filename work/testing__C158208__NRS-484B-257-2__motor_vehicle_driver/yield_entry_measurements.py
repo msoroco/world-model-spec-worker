@@ -46,12 +46,17 @@ def analyze(root:Path)->dict:
         if ctx.get(key) is None:raise ValueError("Missing sourced intersection context: "+key)
     if ctx.get("non_through_highway") is not True:
         raise ValueError("Non-through-highway status not sourced")
-    if ctx.get("police_control") is not False or ctx.get("traffic_signal_control") is not False:
-        raise ValueError("Officer/signal exception unresolved")
+    officer_case=str(ctx.get("case_id","")).endswith("__officer_control_exception")
+    if ctx.get("traffic_signal_control") is not False or ctx.get("police_control") is not officer_case:
+        raise ValueError("Officer/signal exception state differs from exact case")
     if ctx.get("ego_entrance_device")!="yield":raise ValueError("Ego yield-sign governance missing")
     reference=inspect_reference(root,ctx)
     entrances=ctx.get("entrances")
-    if not isinstance(entrances,list) or len(entrances)<2 or any("road_id" not in e or "device" not in e for e in entrances):
+    road_ids=ctx.get("entrance_road_ids")
+    if (not isinstance(road_ids,list) or len(road_ids)<2 or len(set(road_ids))!=len(road_ids)
+            or not isinstance(entrances,list) or len(entrances)!=len(road_ids)
+            or any("road_id" not in e or e.get("device") not in ("stop","yield","none") for e in entrances)
+            or {e["road_id"] for e in entrances}!=set(road_ids)):
         raise ValueError("Incomplete entrance device inventory")
     own=[e for e in entrances if e["road_id"]==ctx["ego_approach_road_id"]]
     other=[e for e in entrances if e["road_id"]==ctx["other_approach_road_id"]]
@@ -61,6 +66,20 @@ def analyze(root:Path)->dict:
     if not polygon.is_valid or polygon.area<=0:raise ValueError("Invalid intersection polygon")
     rows,frames=_rows(root/"entry_history.jsonl"),_rows(root/"video_frames.jsonl")
     if len(rows)<3 or len(rows)!=len(frames):raise ValueError("Incomplete entry history")
+    officer_source=None
+    if officer_case:
+        officer_path=root/"officer_review.json"
+        if not officer_path.is_file():raise ValueError("Missing original officer-control review")
+        officer=json.loads(officer_path.read_text())
+        if (officer.get("intersection_context_sha256")!=hashes["intersection_context.json"]
+                or officer.get("camera_sha256")!={name:hashes[name+".mkv"] for name in ("overview","approach","reference_corner","driver_reference")}
+                or officer.get("reviewed_carla_frames")!=[row.get("carla_frame") for row in frames]
+                or type(officer.get("officer_actor_id")) is not int
+                or officer.get("control_observed_at_entry") is not True
+                or officer.get("authority_judgment")!="unresolved"):
+            raise ValueError("Officer exception lacks complete original-source control review")
+        officer_source=hashlib.sha256(officer_path.read_bytes()).hexdigest()
+        hashes["officer_review.json"]=officer_source
     previous=(-1,-math.inf);samples=[];first_entry=None
     for i,(row,frame) in enumerate(zip(rows,frames)):
         fid,time=row.get("frame"),_number(row.get("time_s"),"time")
@@ -69,6 +88,10 @@ def analyze(root:Path)->dict:
         previous=fid,time
         if frame.get("video_frame")!=i or frame.get("carla_frame")!=fid or frame.get("time_s")!=time:
             raise ValueError("Original frame join failed")
+        camera_ids=frame.get("camera_frame_ids")
+        if (not isinstance(camera_ids,dict) or set(camera_ids)!={"overview","approach","reference_corner","driver_reference"}
+                or any(type(value) is not int or value!=fid for value in camera_ids.values())):
+            raise ValueError("Original four-camera frame join failed")
         if row.get("ego_road_id")!=ctx["ego_approach_road_id"] or row.get("yield_sign_id")!=ctx["native_yield_sign_id"]:
             raise ValueError("Ego approach/sign identity mismatch")
         speed=_number(row.get("ego_speed_mps"),"ego speed")
@@ -92,6 +115,8 @@ def analyze(root:Path)->dict:
             "other_entrance_device":other[0]["device"],
             "other_not_obligated_by_stop_or_yield":other[0]["device"] not in ("stop","yield"),
             "other_inside_at_ego_entry":next(s["other_body_in_intersection"] for s in samples if s["frame"]==first_entry["frame"]),
+            "officer_control_observed":officer_case,
+            "officer_control_source_sha256":officer_source,
             "subsection_one_reference":reference,
             "samples":samples,"immediate_hazard_judgment":"unresolved",
             "caution_and_yield_judgment":"unresolved","legal_conclusion":"unresolved"}
