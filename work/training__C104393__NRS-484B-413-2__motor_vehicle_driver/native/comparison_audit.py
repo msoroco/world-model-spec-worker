@@ -87,11 +87,11 @@ def selftest(negative):
     for feet in FEET:
         case = f'{HERE.name}__{feet}'
         entry = entries[case]
-        summary = read(HERE / f'current-v2-{feet}-summary.json')
-        primary = next(x for x in summary['candidate_receipts'] if x['candidate_id'] == 'primary')
-        receipt_path = HERE / primary['receipt']
-        require(sha(receipt_path) == primary['sha256'], 'Synthetic receipt changed')
+        receipt_path = HERE / f'current-active-{feet}-primary-receipt.json'
         receipt = read(receipt_path)
+        require(receipt.get('runtime_manifest_sha256') == manifest['runtime_manifest_sha256'] and
+                receipt.get('passed') is True and receipt.get('candidate_id') == 'primary',
+                'Current selected synthetic receipt missing')
         require(receipt['construction_sha256'] == entry['construction_sha256'],
                 'Selected construction changed')
         construction = read(HERE / entry['construction'])

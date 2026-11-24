@@ -1760,3 +1760,19 @@ Returned-work hygiene scan after these owner updates inspected 60,231 files: zer
 C110763/NRS-484B-113-2 reached 7/8 refreshed candidate paths and both selected primary delivery audits plus an independent 0-versus-3.52 m² body-overlap comparison. Before readiness, direct execution-manifest validation found the selected manifest still declared an older runtime SHA (`ade64f...` instead of active `5e2dd81...`). The owner is rebinding that assignment manifest and rerunning exact compatibility/saved receipts; the prior 7/8 run is historical. Status remains partial.
 
 C104393/NRS-484B-413-2 first current-runtime primary exposed a historical synthetic trace missing original-form `velocity_mps` needed by the measured-speed overlay. The owner added source-shaped velocity vectors to its local generator, rebound recipe/source hashes, and is rerunning the exact public primary. Status remains partial.
+
+## 2026-11-24 11:23 UTC current-runtime continuation
+
+Startup verification (`runtime.py verify --runtime runtime`), pinned CPU preflight, and `worker_check.py --updates` all exit 0; updates reports version 16 and no paused assignments. Inventory remains 21 ready / 232 partial. `PREVIOUS_READINESS.json` records 17 retained completions against its prior commit; the four recent promotions are current-runtime scoped-gate completions. The complete strict gate remains unpassed because partial assignments remain.
+
+The same three assignment owners continue C110763/NRS-484B-113-2, C104393/NRS-484B-413-2, and C229398/LVMC-11-52-060. The C229398 owner reports all 12 current-runtime offline, public positive/negative compatibility, and recorded-only saved chains have passed after rebuilding the active decoder; its virtual ready-only validator is running. Status remains partial until the final scoped strict gate passes. No new ready status is claimed.
+
+A returned-work scan found 60,357 files, no oversize files, trailing whitespace or conflict markers. It found 25 historical text files with an extra blank line at EOF, mostly old proof logs whose hashes may be bound in receipts. Those files are not being rewritten without dependency review; all new owner outputs are instructed to avoid trailing blank lines.
+
+## 2026-11-24 11:31 UTC active proof repairs
+
+C110763/NRS-484B-113-2 rebound selected manifest to active runtime SHA `5e2dd81...`, refreshed physical diagnostic receipts, and has 3/8 exact current-runtime candidate chains complete. Its scoped partial `--complete` check exits 0. The remaining chains and final bound manifest checks are pending.
+
+C104393/NRS-484B-413-2 repaired source-shaped speed traces in 12 diagnostic generators; current-runtime 300-foot primary public compatibility and recorded-only saved processing pass. A 290-foot fallback2 saved attempt failed because the owner edited the whole execution manifest between compatibility materialization and saved processing; saved processing checks the frozen whole-manifest hash. The owner froze edits for the replay and will rematerialize affected attempts after final receipt binding. This is an active proof synchronization task; status remains partial.
+
+C229398/LVMC-11-52-060 found mandatory pose and speed source channels missing from the recording contract and saved finalizer. The owner added their source acquisition mappings and finalizer outputs, rehashed all 12 constructions and semantic cases, reran three physical fixture proofs, and passed a current-runtime primary compatibility replay with the active runtime decoder. All 12 selected chains are being replayed from clean scratch. Status remains partial.

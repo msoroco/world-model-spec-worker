@@ -5,6 +5,7 @@ The diagnostic path is explicit and never claims original Native observation.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from projection_measure import measure, point, FEET_PER_METER
@@ -72,6 +73,14 @@ def finalize(attempt, output):
                 or abs(motion.get('time_s', -1) - mapping.get('time_s', -2)) > 1e-6
                 or abs(actor.get('time_s', -1) - mapping.get('time_s', -2)) > 1e-6):
             raise ValueError('Original source frame/timestamp join differs')
+        pose = motion.get('position_m')
+        if (not isinstance(pose, list) or len(pose) != 3 or
+                not all(isinstance(value, (int, float)) and math.isfinite(value) for value in pose) or
+                not isinstance(motion.get('heading_deg'), (int, float)) or
+                not math.isfinite(motion['heading_deg']) or
+                not isinstance(motion.get('speed_mps'), (int, float)) or
+                not math.isfinite(motion['speed_mps'])):
+            raise ValueError('Original ego pose or speed source missing')
     for view in VIEWS:
         required(attempt, view + '.mkv')
     footprints = attempt / 'derived-source-footprints.jsonl'
@@ -92,6 +101,15 @@ def finalize(attempt, output):
         raise ValueError('Derived channel and full-part maximum differ')
     channel_dir = attempt / 'channels'
     channel_dir.mkdir()
+    pose_channel = channel_dir / 'ego_pose.jsonl'
+    pose_channel.write_text(''.join(json.dumps({'time_s': row['time_s'],
+                                                'value': {'position_m': row['position_m'],
+                                                          'heading_deg': row['heading_deg']}},
+                                               allow_nan=False) + '\n' for row in trace))
+    speed_channel = channel_dir / 'ego_speed.jsonl'
+    speed_channel.write_text(''.join(json.dumps({'time_s': row['time_s'],
+                                                 'value': row['speed_mps']},
+                                                allow_nan=False) + '\n' for row in trace))
     channel = channel_dir / 'maximum_projection_perpendicular_to_curb.jsonl'
     channel.write_text(''.join(json.dumps({'time_s': frame['time_s'], 'value': value},
                                           allow_nan=False) + '\n'
@@ -130,6 +148,10 @@ def finalize(attempt, output):
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': construction['recording_description'],
         'recording_evidence': [
+            {'name': 'ego_pose', 'unit': 'structured record',
+             'reference': 'channels/' + pose_channel.name},
+            {'name': 'ego_speed', 'unit': 'm/s',
+             'reference': 'channels/' + speed_channel.name},
             {'name': 'maximum_projection_perpendicular_to_curb', 'unit': 'ft',
              'reference': 'channels/' + channel.name},
             {'name': 'reviewed_curb', 'unit': 'structured',

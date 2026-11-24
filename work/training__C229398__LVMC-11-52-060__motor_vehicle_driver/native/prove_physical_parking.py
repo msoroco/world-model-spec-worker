@@ -8,7 +8,7 @@ from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parent.parent
 ROOT = PACKAGE.parents[1]
-MANIFEST = PACKAGE / 'draft-primary-manifest.json'
+MANIFEST = PACKAGE / 'execution-manifest.json'
 SUFFIXES = ('below_15_ft', 'at_15_ft', 'above_15_ft')
 KINDS = ('complete_motion', 'incomplete_motion', 'missing_evidence')
 EVENTS = ['capture_finished', 'encoders_closed', 'restoration_verified',

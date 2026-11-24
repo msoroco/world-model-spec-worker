@@ -11,9 +11,9 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(ROOT / 'runtime/pipeline'))
-from scenario_pipeline.worker_exchange.native_output import assess_physical
-from scenario_pipeline.worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release, _closure
+sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
+from worker_exchange.native_output import assess_physical
+from worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release, _closure
 
 
 def write(path, value):
@@ -62,7 +62,7 @@ def main():
             if actual != expected:
                 raise ValueError(f'{kind}: measured {actual}, expected {expected}')
             result = dict(assessment, format='c104393-physical-cpu-mock', case_id=args.case,
-                          fixture_kind=kind, provenance_kind='native', diagnostic_fixture=True,
+                          fixture_kind=kind, provenance_kind='synthetic_fixture', diagnostic_fixture=True,
                           original_native_observed=False, physical_acceptance_claimed=False,
                           legal_acceptance_claimed=False)
             write(output / (kind + '.json'), result)
