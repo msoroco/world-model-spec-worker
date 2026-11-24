@@ -3,6 +3,7 @@ import json
 import base64
 import unittest
 import zlib
+import tarfile
 from pathlib import Path
 
 PACKAGE=Path(__file__).resolve().parents[1]
@@ -10,7 +11,11 @@ PACKAGE=Path(__file__).resolve().parents[1]
 
 class PhysicalProofTests(unittest.TestCase):
     def test_historical_canonical_snapshot_is_explicitly_stale(self):
-        wrapper=json.loads((PACKAGE.parent/'_shared/consolidated-proof-archives-20261123.json').read_text())
+        archive_path=PACKAGE.parent/'_shared/cpu-proof-history-plus-20261123.tar.xz'
+        with tarfile.open(archive_path,'r:xz') as packed:
+            source=packed.extractfile('consolidated-proof-archives-20261123.json')
+            self.assertIsNotNone(source)
+            wrapper=json.load(source)
         nested=next(row for row in wrapper['files'] if row['original_path'].endswith('/c125763-stale-canonical-snapshot-20261123.json'))
         source=zlib.decompress(base64.b64decode(nested['content_zlib_base64']))
         self.assertEqual(hashlib.sha256(source).hexdigest(),nested['sha256'])
@@ -34,6 +39,19 @@ class PhysicalProofTests(unittest.TestCase):
     def test_current_manifest_tracks_four_returned_physical_receipts(self):
         manifest=json.loads((PACKAGE/'execution-manifest.json').read_text())
         self.assertEqual(len(manifest['cases']),4)
+        replay=json.loads((PACKAGE/'case-plan.json').read_text())['current_manifest_saved_replay_20261123']
+        self.assertEqual(replay['manifest_sha256'],
+                         hashlib.sha256((PACKAGE/'execution-manifest.json').read_bytes()).hexdigest())
+        self.assertEqual({row['case_id'] for row in replay['rows']},
+                         {entry['case_id'] for entry in manifest['cases']})
+        bound=PACKAGE/replay['first_primary_bound_log']
+        self.assertEqual(hashlib.sha256(bound.read_bytes()).hexdigest(),
+                         replay['first_primary_bound_log_sha256'])
+        self.assertEqual(manifest['cases'][0]['post_capture']['test_log_sha256'],
+                         replay['first_primary_bound_log_sha256'])
+        self.assertEqual(json.loads(bound.read_text())['result_sha256'],
+                         json.loads(zlib.decompress(base64.b64decode(
+                             replay['rows'][0]['saved_processing']['log_zlib_base64'])))['result_sha256'])
         paths=set()
         for entry in manifest['cases']:
             with self.subTest(case=entry['case_id']):
@@ -43,6 +61,25 @@ class PhysicalProofTests(unittest.TestCase):
                 self.assertTrue((PACKAGE/path).is_file())
                 self.assertEqual(hashlib.sha256((PACKAGE/path).read_bytes()).hexdigest(),
                                  entry['physical_preparation']['sha256'])
+        for row in replay['rows']:
+            self.assertEqual(row['candidate_selection']['manifest_sha256'],replay['manifest_sha256'])
+            self.assertEqual(row['candidate_selection']['case_id'],row['case_id'])
+            self.assertEqual(row['candidate_selection']['candidate_id'],'primary')
+            for stage in ('compatibility','saved_processing'):
+                proof=row[stage]
+                source=zlib.decompress(base64.b64decode(proof['log_zlib_base64'],validate=True))
+                self.assertEqual(hashlib.sha256(source).hexdigest(),proof['log_sha256'])
+                self.assertEqual(len(source),proof['log_bytes'])
+                output=json.loads(source)
+                self.assertEqual(output['case_id'],row['case_id'])
+                self.assertTrue(output['passed'])
+                if stage=='saved_processing':
+                    self.assertTrue(output['recorded_only'])
+                    self.assertTrue(output['originals_preserved'])
+                    self.assertEqual(output['timestamp_joins']['frames'],60)
+                    self.assertTrue(output['timestamp_joins']['passed'])
+                    self.assertFalse(output['physical_acceptance_claimed'])
+                    self.assertFalse(output['legal_acceptance_claimed'])
 
     def test_current_exact_offline_logs_bind_all_constructions(self):
         manifest=json.loads((PACKAGE/'execution-manifest.json').read_text())

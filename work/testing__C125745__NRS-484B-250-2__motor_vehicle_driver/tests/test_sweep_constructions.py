@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parents[1]
-HISTORY = HERE.parent / '_shared' / 'cpu-proof-history-20261123.tar.xz'
+HISTORY = HERE.parent / '_shared' / 'cpu-proof-history-plus-20261123.tar.xz'
 NESTED_SHA256 = {
     'c125745-stale-axis-diagnostics-2026-11-23.json': 'af55976737ce91916ed74698733b4f785e1604ff4fe6d396efff0a3ce3f72772',
     'c125745-sweep-fallback1-proofs-2026-11-23.json': 'cfd2e8ca423c4627a6dbec3ab9a7f30969082aa653c6247d1c56c3feea5a2c32',
@@ -24,9 +24,12 @@ def source_bytes(path):
     if name not in NESTED_SHA256 or source.parent.resolve() != HISTORY.parent:
         raise FileNotFoundError(source)
     with tarfile.open(HISTORY, 'r:xz') as packed:
-        member = packed.extractfile(name)
-        assert member is not None
-        data = member.read()
+        inner = packed.extractfile('cpu-proof-history-20261123.tar.xz')
+        assert inner is not None
+        with tarfile.open(fileobj=inner, mode='r:xz') as history:
+            member = history.extractfile(name)
+            assert member is not None
+            data = member.read()
     assert hashlib.sha256(data).hexdigest() == NESTED_SHA256[name]
     return data
 

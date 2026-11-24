@@ -6,6 +6,7 @@ import hashlib
 import json
 import sys
 import tempfile
+import tarfile
 import zlib
 from pathlib import Path
 
@@ -23,8 +24,12 @@ def write(path,value):Path(path).write_text(json.dumps(value,indent=2,allow_nan=
 
 def archived_primary_saved_receipt(name):
     """Recover an exact archived CPU receipt without changing returned files."""
-    archive=REPO/'work/_shared/archived-unbound-negative-logs-20261119.json'
-    matches=[item for item in read(archive)['files']
+    archive=REPO/'work/_shared/unbound-worker-20261123.tar.xz'
+    with tarfile.open(archive,'r:xz') as packed:
+        source=packed.extractfile('archived-unbound-negative-logs-20261119.json')
+        if source is None:raise ValueError('Archived receipt bundle missing')
+        records=json.load(source)
+    matches=[item for item in records['files']
              if item['path']==str((ROOT/name).relative_to(REPO))]
     if len(matches)!=1:raise ValueError('Archived selected saved receipt missing')
     item=matches[0]
