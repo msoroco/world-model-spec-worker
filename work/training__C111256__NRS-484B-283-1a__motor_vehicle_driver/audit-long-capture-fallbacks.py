@@ -1,11 +1,12 @@
 """Independently bind every current 600-frame fallback runtime receipt."""
 import hashlib
 import json
+import os
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / '.runtime-work/c111256-fallbacks'
+SCRATCH = Path(os.environ.get('C111256_FALLBACK_SCRATCH', ROOT / '.runtime-work/c111256-fallbacks'))
 CASES = ('witness_1', 'witness_2', 'exception_1_1', 'exception_1_2')
 CANDIDATES = ('fallback1', 'fallback2', 'fallback3')
 CHECKS = {'actual_analysis', 'native_validation', 'mandatory_observations',
@@ -41,10 +42,11 @@ def audit(case, candidate):
     assert config['candidate_id'] == candidate
     assert {item['name'] for item in config['cameras']} == {
         'overview', 'approach', 'reference_corner', 'driver_reference'}
+    durable = HERE / 'long-capture-fallbacks' / case / candidate / 'proofs'
     scratch = SCRATCH / (case + '-' + candidate)
-    offline = (scratch / 'offline/offline.log').read_text()
+    offline = (durable / 'offline.log').read_text()
     assert 'Ran 5 tests' in offline and '\nOK\n' in offline
-    compat_path = scratch / 'compat/compatibility.json'
+    compat_path = durable / 'compatibility.json'
     compat = read(compat_path)
     assert compat['passed'] and compat['case_id'] == entry['case_id']
     assert compat['candidate_id'] == candidate
@@ -54,7 +56,7 @@ def audit(case, candidate):
     assert CHECKS <= set(compat['checks'])
     recipe = ROOT / entry['fixture_recipe']
     assert compat['fixture_recipe_sha256'] == sha(recipe)
-    saved_path = scratch / 'saved/v0001/processing.json'
+    saved_path = durable / 'processing.json'
     saved = read(saved_path)
     assert saved['passed'] and saved['case_id'] == entry['case_id']
     assert saved['candidate_id'] == candidate
@@ -64,11 +66,21 @@ def audit(case, candidate):
     assert saved['originals_preserved'] and not saved['missing_evidence']
     assert saved['final_video_checks']['passed']
     assert not saved['physical_acceptance_claimed'] and not saved['legal_acceptance_claimed']
-    selection_path = scratch / 'compat/candidate-selection.json'
+    selection_path = durable / 'candidate-selection.json'
     selection = read(selection_path)
     assert selection['manifest_sha256'] == sha(manifest_path)
     assert selection['construction_sha256'] == selected['construction_sha256']
     assert saved['original_source_hashes']['candidate-selection.json'] == sha(selection_path)
+    for temporary, permanent in ((scratch / 'compat/compatibility.json', compat_path),
+                                 (scratch / 'compat/candidate-selection.json', selection_path),
+                                 (scratch / 'compat/compatibility-analysis.log', durable / 'analysis.log'),
+                                 (scratch / 'compat/negative-analysis.log', durable / 'negative.log'),
+                                 (scratch / 'saved/v0001/processing.json', saved_path),
+                                 (scratch / 'offline/offline.log', durable / 'offline.log')):
+        if temporary.exists():
+            assert sha(temporary) == sha(permanent)
+    assert sha(durable / 'analysis.log') == compat['log_sha256']
+    assert sha(durable / 'negative.log') == compat['negative_log_sha256']
     return {'case': case, 'candidate': candidate,
             'construction_sha256': sha(construction_path),
             'manifest_sha256': sha(manifest_path),

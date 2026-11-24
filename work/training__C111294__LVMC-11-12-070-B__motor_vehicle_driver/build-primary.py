@@ -22,9 +22,13 @@ def main():
               'cameras': cameras, 'required_atoms': [], 'source_packets': [],
               'case': {'case_id': CASE}, 'status': 'unselected_native_draft',
               'recording_description': {'channels': [
-                  {'name': 'through_body_pose', 'unit': 'structured'},
-                  {'name': 'entrant_body_pose', 'unit': 'structured'},
-                  {'name': 'frame_join', 'unit': 'structured'}],
+                  {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                   'method': 'Retained source join of Native-shaped two-actor histories',
+                   'time_window': 'entire 30 s / 600-frame attempt',
+                   'reference_frame': 'original Native frame identity',
+                   'uncertainty': '50 ms sampling; physical acquisition unverified'}
+                  for name in ('through_body_pose', 'entrant_body_pose', 'frame_join')],
+                  'context_inputs': [],
                   'limitations': ['Through-highway designation and first lawful yield need original physical review']}}
     runtime_sha = sha(ROOT / 'runtime/pipeline/SOURCE-MANIFEST.json')
     manifest = {'format': 'worker-unselected-draft-construction-manifest-v1',
@@ -40,9 +44,12 @@ def main():
         current['supported_case_ids'] = [case]
         current['case'] = {'case_id': case}
         tests = '''import json\nfrom pathlib import Path\nimport unittest\nfrom runner import check, request\n\nclass ProposedCase(unittest.TestCase):\n    def test_exact_600_frame_four_camera_preflight(self):\n        value=check(json.loads(Path('config.json').read_text()))\n        self.assertTrue(value['passed'])\n        self.assertEqual(value['frames'],600)\n        self.assertEqual(len(value['cameras']),4)\n    def test_control_phases(self):\n        case=json.loads(Path('config.json').read_text())['case_id']\n        self.assertEqual(request(100,case)['through_target_speed_mps'],8)\n        self.assertEqual(request(200,case)['through_target_speed_mps'],0 if case.endswith('probe_1') else 8)\n        self.assertEqual(request(400,case)['through_target_speed_mps'],8)\n        with self.assertRaisesRegex(ValueError,'Frame'):request(600,case)\n    def test_wrong_identity_rejected(self):\n        config=json.loads(Path('config.json').read_text())\n        config['cell_id']='C999999'\n        with self.assertRaisesRegex(ValueError,'identity'):check(config)\n\nif __name__=='__main__':unittest.main()\n'''
+        current['mandatory_channels'] = [c['name'] for c in current['recording_description']['channels']]
+        current['case']['recording_description'] = current['recording_description']
         sources = {'runner.py': (HERE / 'native/runner.py').read_text(),
                    'measure_yield.py': (HERE / 'native/measure_yield.py').read_text(),
-                   'road.xodr': (HERE / 'native/road.xodr').read_text(),
+                   'finalize.py': (HERE / 'native/finalize.py').read_text(),
+                   'authored-road.xodr': (HERE / 'native/road.xodr').read_text(),
                    'config.json': json.dumps(current, indent=2) + '\n',
                    'tests/test_primary.py': tests}
         construction = {'case_id': case, 'law_id': current['law_id'], 'cell_id': current['cell_id'],

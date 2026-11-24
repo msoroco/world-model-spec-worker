@@ -33,6 +33,14 @@ def decoded_frames(path: Path) -> int:
     return int(run.stdout.strip())
 
 
+def measure_cycle_requirement(analysis: dict) -> dict:
+    """Retain a source-bound software observation, without a legal conclusion."""
+    sources = analysis["sources"]
+    return {"value": analysis["case_observation"],
+            "method": "measure_cycle_requirement",
+            "sources": {name: sources[name] for name in ("native_samples.jsonl", "road_geometry.json")}}
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     attempt = attempt.resolve()
     output = output.resolve()
@@ -107,7 +115,7 @@ def finalize(attempt: Path, output: Path) -> dict:
         "termination_reason": "Saved original-frame software measurement completed; physical and pixel review pending",
         "physical_failure_flags": ["physical_detector_causation_and_pixel_review_unverified"]
                                   + ([] if matched else ["controlled_cycle_target_mismatch"]),
-        "trace_reference": "native_samples.jsonl",
+        "trace_reference": "trace.jsonl" if (attempt / "trace.jsonl").is_file() else "native_samples.jsonl",
         "video_references": [path.name for path in video_paths],
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": config["recording_description"],
@@ -137,10 +145,16 @@ def finalize(attempt: Path, output: Path) -> dict:
                                              "source_sha256": source_hashes},
               "video_sha256": {path.name: sha(path) for path in video_paths},
               "config_sha256": sha(config_path),
+              "measurements": {"cycle_requirement": measure_cycle_requirement(analysis)},
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False}
-    output.mkdir(parents=True)
-    (output / "saved-analysis.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
-    (output / "result.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+    if output.suffix == ".json":
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+        (attempt / "result.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+    else:
+        output.mkdir(parents=True)
+        (output / "saved-analysis.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+        (output / "result.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     return report
 
 

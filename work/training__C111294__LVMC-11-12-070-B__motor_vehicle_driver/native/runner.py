@@ -61,7 +61,7 @@ def check(config):
                 for camera in config.get('cameras', [])]
     if declared != list(CAMERAS):
         raise ValueError('Current four-camera profile differs')
-    tree = ET.parse(HERE / 'road.xodr')
+    tree = ET.parse(HERE / 'authored-road.xodr')
     roads = {int(item.attrib['id']) for item in tree.findall('road')}
     links = {(item.attrib['incomingRoad'], item.attrib['connectingRoad'])
              for item in tree.findall('junction/connection')}

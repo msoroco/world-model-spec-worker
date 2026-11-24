@@ -1,0 +1,66 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111294__NRS-484B-270-7a__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "status": "unselected_current_v2_cpu_fallback_proof",
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-270-7a__cycle_or_scooter_operator__witness_1",
+      "kind": "unselected_cpu_diagnostic",
+      "measurement_contract": "native/measurement-contract-witness_1.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Bicycle blueprint, motorist reaction, body clearance and camera coverage unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "v2-fallbacks/witness_1/fallback1/construction.json",
+          "construction_sha256": "6aea479b78403f16e77f62eca61cfe562a6d0421f3a9a2bc958297d9edf43fb1",
+          "trigger": {
+            "source": "original Native bicycle pose joined to authored route and map readback",
+            "metric": "max_bicycle_route_cross_track_error_m",
+            "failure_condition": "max_bicycle_route_cross_track_error_m > 0.45"
+          },
+          "changed_knobs": [
+            "bicycle_route_tracking_lookahead_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "v2-fallbacks/witness_1/fallback2/construction.json",
+          "construction_sha256": "cfb9ef04a0f77b8390bb8dac73062cb831a8c5016573e20008710d2a09a6168f",
+          "trigger": {
+            "source": "original Native motor-vehicle pose and full body joined to bicycle full body",
+            "metric": "min_motorist_conflict_clearance_s",
+            "failure_condition": "min_motorist_conflict_clearance_s < 1.0"
+          },
+          "changed_knobs": [
+            "motorist_clearance_buffer_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "v2-fallbacks/witness_1/fallback3/construction.json",
+          "construction_sha256": "2ddd58b0d4688af64a3fae103d2339651074cb7556f0ea4bfbdf5f9318580999",
+          "trigger": {
+            "source": "original Native bicycle/motor-vehicle full-body vertices, original overview camera pose/calibration, and decoded overview frame count",
+            "metric": "min_projected_body_frame_margin_px",
+            "failure_condition": "min_projected_body_frame_margin_px < 40"
+          },
+          "changed_knobs": [
+            "overview_fov_deg"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "v2-primary/witness_1/construction.json",
+      "construction_sha256": "e9871c0f93071464c92922d0fd275d445dfeb8d05d0c5677535f0c41cafcc206",
+      "fixture_recipe": "work/training__C111294__NRS-484B-270-7a__cycle_or_scooter_operator/v2-primary/witness_1/recipe.json"
+    }
+  ]
+}

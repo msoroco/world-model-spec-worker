@@ -52,7 +52,7 @@ def analyze(attempt: Path) -> dict:
     native = _rows(native_path)
     frames = _rows(map_path)
     if not geometry_path.is_file():
-        raise ValueError("Missing required original source: road_geometry.json")
+        raise ValueError("Missing required source: road_geometry.json")
     geometry = json.loads(geometry_path.read_text())
     if geometry.get("signal_actor_id") is None or geometry.get("cross_signal_actor_id") is None:
         raise ValueError("Native governing signal and cycle source absent")

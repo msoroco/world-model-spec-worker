@@ -32,9 +32,13 @@ def main():
                   'cameras': cameras, 'required_atoms': [], 'source_packets': [],
                   'case': {'case_id': case}, 'status': 'unselected_native_draft',
                   'recording_description': {'channels': [
-                      {'name': 'ego_body_pose', 'unit': 'structured'},
-                      {'name': 'signal_phase_readback', 'unit': 'structured'},
-                      {'name': 'frame_join', 'unit': 'structured'}],
+                      {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                       'method': 'Saved source join from original Native samples and frame map',
+                       'time_window': 'entire 30 s / 600-frame attempt',
+                       'reference_frame': 'original Native frame identity',
+                       'uncertainty': '50 ms sampling; physical acquisition unverified'}
+                      for name in ('ego_body_pose', 'signal_phase_readback', 'frame_join')],
+                      'context_inputs': [],
                       'limitations': ['Physical signal causation, actor and four-camera acquisition unverified']}}
         config['mandatory_channels'] = [item['name'] for item in config['recording_description']['channels']]
         config['case']['recording_description'] = config['recording_description']

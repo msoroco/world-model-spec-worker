@@ -26,8 +26,12 @@ def measure(folder):
     context = json.loads(context_path.read_text())
     if context['approach_axis_xy'] != [1, 0] or context['centerline_y_m'] != 0:
         raise ValueError('This construction is limited to a straight eastbound approach')
-    if context['intersection_x_m'] != [0, 20]:
-        raise ValueError('Intersection geometry differs from reviewed diagnostic')
+    bounds = context['intersection_x_m']
+    if (not isinstance(bounds, list) or len(bounds) != 2 or
+            any(not isinstance(v, (int, float)) or not math.isfinite(v) for v in bounds) or
+            not bounds[0] < bounds[1] or bounds[1] - bounds[0] > 30):
+        raise ValueError('Intersection geometry invalid')
+    entry_x, exit_x = bounds
     if type(context['one_way_highway']) is not bool:
         raise ValueError('One-way applicability context is unknown')
     rows = [json.loads(line) for line in poses_path.read_text().splitlines() if line.strip()]
@@ -49,8 +53,8 @@ def measure(folder):
         front = max(point[0] for point in body)
         rear = min(point[0] for point in body)
         left = any(point[1] > 0 for point in body)
-        approach = front >= -FEET_100_M and rear < 0
-        traversal = front >= 0 and rear <= 20
+        approach = front >= entry_x - FEET_100_M and rear < entry_x
+        traversal = front >= entry_x and rear <= exit_x
         active = approach or traversal
         if active and first_active is None:
             first_active = frame
