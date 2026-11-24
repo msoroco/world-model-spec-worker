@@ -33,6 +33,13 @@ def build():
     if short_index['passed'] is not True or short_index['manifest_sha256'] != sha(HERE / 'execution-manifest.json'):
         raise ValueError('Selected short recorded-only index changed')
     short_rows = {HERE.name + '__' + row['case']: row for row in short_index['rows']}
+    long_index = json.loads((HERE / 'current-long-recorded-only-cpu-index.json').read_text())
+    if long_index['passed'] is not True or long_index['selected_manifest_sha256'] != sha(HERE / 'execution-manifest.json'):
+        raise ValueError('Selected long recorded-only index changed')
+    long_rows = {row['case_id']: row for row in long_index['cases']}
+    if set(short_rows) & set(long_rows) or set(short_rows) | set(long_rows) != {
+            row['case_id'] for row in manifest['cases']}:
+        raise ValueError('Selected recorded-only coverage incomplete')
     short_manifest = json.loads((HERE / 'current-short-bound-draft-manifest.json').read_text())
     short_bindings = {row['case_id']: row for row in short_manifest['cases']
                       if row.get('compatibility')}
@@ -122,6 +129,21 @@ def build():
                 'test_exit_code': 0,
                 'test_log': 'current-short-selected-saved-batch.log',
                 'test_log_sha256': sha(HERE / 'current-short-selected-saved-batch.log')}
+        else:
+            saved = long_rows[case]
+            if sha(HERE / saved['test_log']) != saved['test_log_sha256']:
+                raise ValueError('Long recorded-only test log changed: ' + case)
+            entry['post_capture'] = {
+                'recorded_only': True,
+                'command': '.venv-cpu/bin/python runtime.py process-saved '
+                    '--manifest work/' + HERE.name + '/execution-manifest.json '
+                    '--case ' + case + ' --attempt "$SEALED_ATTEMPT" '
+                    '--output "$PROCESSED_OUT" --library runtime/library '
+                    '--validator "$LEAN_VALIDATOR"',
+                'feedback_command': 'cat "$PROCESSED_OUT/v0001/feedback.json"',
+                'test_exit_code': saved['test_exit_code'],
+                'test_log': saved['test_log'],
+                'test_log_sha256': saved['test_log_sha256']}
     path = HERE / 'current-delivery-bound-draft-manifest.json'
     path.write_text(json.dumps(manifest, indent=2) + '\n')
     return {'cases': len(rows), 'draft_sha256': sha(path),

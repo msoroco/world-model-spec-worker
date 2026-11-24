@@ -7,7 +7,7 @@ from pathlib import Path
 
 AID='training__C404492__NRS-484B-267-2d__motor_vehicle_driver'
 COUNT=600
-CAMERAS=('overview','approach','side','rear')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

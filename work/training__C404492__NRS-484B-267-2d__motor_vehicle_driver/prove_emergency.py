@@ -4,7 +4,7 @@ import math
 import os
 from pathlib import Path
 import tempfile
-from measure_emergency import AID,measure
+from measure_emergency import AID,CAMERAS,measure
 
 
 def fixture(root,abreast):
@@ -21,7 +21,7 @@ def fixture(root,abreast):
         for i in range(600):
             n=100+i;t=i*.05;x=i*.2
             f.write(json.dumps({'video_frame':i,'native_frame':n,'time_s':t,
-                                'camera_native_frames':{name:n for name in ('overview','approach','side','rear')}})+'\n')
+                                'camera_native_frames':{name:n for name in CAMERAS}})+'\n')
             em={'actor_id':2,'x_m':x,'y_m':0,'heading_rad':0,'speed_mps':4,
                 'half_length_m':2.5,'half_width_m':1,'flashing_light_phase_on':(i//10)%2==0}
             gap=-20+min(i*.05,19) if abreast else -20
@@ -73,7 +73,7 @@ def main():
         (a/'emergency_context.json').write_text(json.dumps(c)+'\n')
         lines=(a/'trace.jsonl').read_text().splitlines();trace=json.loads(lines[42]);trace['position_m'][0]+=1
         lines[42]=json.dumps(trace);(a/'trace.jsonl').write_text('\n'.join(lines)+'\n');reject(a)
-        lines=(a/'video_frames.jsonl').read_text().splitlines();frame=json.loads(lines[42]);frame['camera_native_frames']['side']+=1
+        lines=(a/'video_frames.jsonl').read_text().splitlines();frame=json.loads(lines[42]);frame['camera_native_frames']['reference_corner']+=1
         lines[42]=json.dumps(frame);(a/'video_frames.jsonl').write_text('\n'.join(lines)+'\n');reject(a)
         lines=(b/'vehicle_poses.jsonl').read_text().splitlines();pose=json.loads(lines[42]);pose['ego']['heading_rad']=math.pi
         lines[42]=json.dumps(pose);(b/'vehicle_poses.jsonl').write_text('\n'.join(lines)+'\n');reject(b)

@@ -123,10 +123,13 @@ if __name__ == '__main__':
     cases = [args.case] if args.case else [e['case_id'] for e in
              json.loads((HERE / 'execution-manifest.json').read_text())['cases']]
     results = [prove(case) for case in cases]
-    index = {'format': 'c150142-physical-preparation-cpu-index-v1',
-             'passed': True, 'cases': results, 'source_kind': 'synthetic_fixture',
-             'original_native_observed': False,
-             'physical_acceptance_claimed': False}
-    path = HERE / 'current-physical-preparation-cpu-index.json'
-    write(path, index)
-    print(json.dumps({'cases': len(results), 'index_sha256': sha(path)}, sort_keys=True))
+    if args.case:
+        print(json.dumps(results[0], sort_keys=True))
+    else:
+        index = {'format': 'c150142-physical-preparation-cpu-index-v1',
+                 'passed': True, 'cases': results, 'source_kind': 'synthetic_fixture',
+                 'original_native_observed': False,
+                 'physical_acceptance_claimed': False}
+        path = HERE / 'current-physical-preparation-cpu-index.json'
+        write(path, index)
+        print(json.dumps({'cases': len(results), 'index_sha256': sha(path)}, sort_keys=True))

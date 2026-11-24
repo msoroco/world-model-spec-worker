@@ -22,8 +22,8 @@ def main():
     statutory = json.loads((HERE / 'statutory-crossrefs.json').read_text())
     cases = {row['case_id']: row for row in plan['cases']}
     comparisons = {row['comparison_id']: row for row in plan['comparisons']}
-    assert len(cases) == len(plan['cases']) == 10
-    assert len(comparisons) == len(plan['comparisons']) == 5
+    assert len(cases) == len(plan['cases']) == 12
+    assert len(comparisons) == len(plan['comparisons']) == 6
     summary = plan['candidate_plans']
     assert summary['selected_case_count'] == 2
     assert summary['unselected_crossref_survey_case_count'] == 8
@@ -67,10 +67,22 @@ def main():
     assert eligibility['pedestrian_candidate_cell_count'] == 0
     assert eligibility['legal_applicability_conclusion'] is None
     assert statutory['selected_crossref_cases'] == 0 and not statutory['applicability_resolved']
+    contextual = json.loads((HERE / 'crossref-287c-manifest.json').read_text())
+    contextual_ids = {row['case_id'] for row in contextual['cases']}
+    assert contextual_ids == {HERE.name + '__crossref_287c_marked',
+                              HERE.name + '__crossref_287c_unmarked'}
+    assert contextual_ids == set(comparisons[HERE.name + '__crossref_287c_marking_comparison']['case_ids'])
+    assert all(case_id in cases for case_id in contextual_ids)
+    assert all(cases[case_id]['kind'] == 'unselected_cpu_survey_preparation'
+               for case_id in contextual_ids)
+    assert all(sha(HERE / row['construction']) == row['construction_sha256']
+               for row in contextual['cases'])
     result = {'format': 'c230222-crossref-coverage-cpu-audit-v1',
               'selected_conditional_curb_cases': 2,
-              'unselected_crossref_cpu_cases': 8,
-              'controlled_comparisons': 5,
+              'unselected_crossref_cpu_cases': 10,
+              'controlled_comparisons': 6,
+              'contextual_287c_case_ids': sorted(contextual_ids),
+              'contextual_287c_source_manifest_sha256': sha(HERE / 'crossref-287c-manifest.json'),
               'survey_pairs': checked,
               'nrs_287_eligibility_proof_sha256': sha(HERE / 'crossref-287-eligibility-proof.json'),
               'positive_nrs_287_branches_pending_in_original_assignments': 3,

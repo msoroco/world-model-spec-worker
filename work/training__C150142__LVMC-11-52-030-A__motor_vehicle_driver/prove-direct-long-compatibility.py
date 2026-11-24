@@ -15,7 +15,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-sys.path.insert(0, str(REPO / 'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 from worker_exchange.package_compatibility import _process_fixture, materialize_case
 from worker_exchange.fixture_recipe import fixture_fingerprint
 from worker_exchange.common import digest
@@ -70,7 +70,7 @@ def run(case, candidate, attempt, root, validator):
     fingerprint = fixture_fingerprint(fixture)
     source = {'fixture_sha256': digest(fingerprint), 'fixture_manifest': fingerprint}
     receipt = _process_fixture(manifest, case_id, fixture, output,
-                               REPO / 'runtime/pipeline/library', validator,
+                               REPO / 'runtime/library', validator,
                                candidate, source)
     if receipt['passed'] is not True or receipt['case_id'] != case_id or \
             receipt['candidate_id'] != candidate:

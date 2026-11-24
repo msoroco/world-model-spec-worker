@@ -104,7 +104,7 @@ def main():
                 missing_authorization = survey(gap, runner.CAMERAS)
                 missing_authorization['emergency_vehicle_authorized'] = False
                 missing_camera = survey(gap, runner.CAMERAS)
-                del missing_camera['camera_world_transforms']['rear']
+                del missing_camera['camera_world_transforms']['driver_reference']
                 missing_heading=survey(gap,runner.CAMERAS)
                 del missing_heading['travel_heading_deg']
                 negatives = [rejected(lambda x=x: runner.survey_check(x)) for x in

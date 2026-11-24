@@ -25,7 +25,7 @@ def main():
         ctx['camera_sha256']=hashes;ctx_path.write_text(json.dumps(ctx)+'\n')
         report=measure(root)
         assert report['samples']==600 and len(report['source_sha256'])==7
-        ctx['camera_sha256']['rear.mkv']='0'*64;ctx_path.write_text(json.dumps(ctx)+'\n')
+        ctx['camera_sha256']['driver_reference.mkv']='0'*64;ctx_path.write_text(json.dumps(ctx)+'\n')
         try:measure(root)
         except ValueError as e:
             if 'Camera source hash differs' not in str(e):raise

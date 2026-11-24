@@ -8,7 +8,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 AID='training__C405647__NRS-484B-267-2f__motor_vehicle_driver'
-CAMERAS=('overview','ego_front','emergency_side','rear')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 RATE=20
 COUNT=600
 
@@ -33,16 +33,18 @@ def road_xml():
 def config():
     c=json.loads((Path(__file__).resolve().parent/'config.json').read_text())
     if (c.get('assignment_id')!=AID or c.get('case_id')!=AID+'__'+c.get('case_suffix','') or
-        c.get('case_suffix') not in ('controlled_1','controlled_2') or c.get('candidate_id')!='primary' or
+        c.get('case_suffix') not in ('controlled_1','controlled_2') or c.get('candidate_id') not in ('primary','fallback1','fallback2') or
         (c.get('law_id'),c.get('cell_id'),c.get('actor'))!=('NRS-484B-267-2f','C405647','motor_vehicle_driver') or
         (c.get('rate_hz'),c.get('duration_s'),c.get('frames'))!=(20,30,600) or
         [x.get('name') for x in c.get('cameras',[])]!=list(CAMERAS) or
+        [(x.get('width'),x.get('height')) for x in c['cameras']]!=[(1920,1080),(1280,720),(1280,720),(1280,720)] or
+        any(not x.get('pose_strategy') or not x.get('fov_deg') for x in c['cameras']) or
         c.get('physical_acceptance_claimed') is not False):
         raise ValueError('Exact two-phase emergency construction differs')
     return c
 
 
-def survey_check(s):
+def survey_check(s,c=None):
     for k in ('map_name','map_source','road_geometry_source','ego_blueprint','emergency_blueprint',
               'ego_spawn_xyz_m','emergency_spawn_xyz_m','camera_world_transforms',
               'emergency_authorization_source','qualifying_flash_equipment_source','officer_direction_review_source'):
@@ -54,6 +56,9 @@ def survey_check(s):
     a,b=s['ego_spawn_xyz_m'],s['emergency_spawn_xyz_m']
     if len(a)!=3 or len(b)!=3 or not a[0]<b[0]-20 or not a[1]<-1 or not b[1]>1:
         raise ValueError('Two-direction approach geometry missing')
+    if c is not None and (abs(a[1]-c['requested_ego_lane_center_y_m'])>0.01 or
+                          abs(b[0]-c['requested_emergency_spawn_x_m'])>0.01):
+        raise ValueError('Reviewed candidate spawn differs from construction')
     if set(s['camera_world_transforms'])!=set(CAMERAS):raise ValueError('Four reviewed cameras missing')
     return s
 
@@ -67,7 +72,7 @@ def execute(output,survey,host,port):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot,restore
-    c=config();survey_check(survey);output=Path(output).resolve()
+    c=config();survey_check(survey,c);output=Path(output).resolve()
     if any((output/name).exists() for name in ('video_frames.jsonl','vehicle_poses.jsonl')):
         raise ValueError('Original Native frame sources already exist')
     client=carla.Client(host,port);client.set_timeout(120)
@@ -102,8 +107,8 @@ def execute(output,survey,host,port):
             for i in range(COUNT):
                 # First ego moves toward stationary emergency. Emergency moves toward ego after frame 100.
                 emergency.set_light_state(carla.VehicleLightState(special if (i//10)%2==0 else 0))
-                emergency.set_target_velocity(carla.Vector3D(x=-2 if i>=100 else 0,y=0,z=0))
-                ego_target=1 if c['case_suffix']=='controlled_1' and i>=100 else 3
+                emergency.set_target_velocity(carla.Vector3D(x=-c['requested_subsequent_emergency_speed_mps'] if i>=100 else 0,y=0,z=0))
+                ego_target=c['requested_subsequent_subject_speed_mps'] if i>=100 else c['requested_initial_subject_speed_mps']
                 ego.set_target_velocity(carla.Vector3D(x=ego_target,y=0,z=0))
                 native=world.tick();snap=world.get_snapshot()
                 if snap.frame!=native:raise RuntimeError('Original Native frame mismatch')

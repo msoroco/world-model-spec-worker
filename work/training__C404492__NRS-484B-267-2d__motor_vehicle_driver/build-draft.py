@@ -5,7 +5,9 @@ from pathlib import Path
 
 HERE=Path(__file__).resolve().parent
 AID=HERE.name
-CAMERAS=('overview','approach','side','rear')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
+CHANNELS=('drv.responding_emergency','rel.same_direction','rel.longitudinal_overlap',
+          'drv.overtaking','rel.ahead_behind_in_lane','kin.velocity','dev.human_direction')
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -17,6 +19,14 @@ def write(path,value):
 
 
 def main():
+    recording={'channels':[{'name':name,'unit':'source_bound_structured',
+        'sampling_rate_hz':20,'method':'original Native pose, context and four-camera frame join',
+        'time_window':'all 600 frames','reference_frame':'original Native frame',
+        'uncertainty':'50 ms frame bracket; statutory qualification requires independent review'}
+        for name in CHANNELS],
+        'context_inputs':['independent emergency authorization and qualifying flashing-light review',
+                          'original officer direction review'],
+        'limitations':['Synthetic fixture cannot establish physical realization or legal outcome']}
     entries=[]
     for suffix,gap in (('controlled_1',-20),('controlled_2',-20)):
         case=AID+'__'+suffix
@@ -26,7 +36,7 @@ def main():
                 'output_key':'per_frame_geometry','method':'source_joined_same_direction_abreast_and_order',
                 'value_type':'array','kind':'measured',
                 'inputs':['video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl','emergency_context.json',
-                          'overview.mkv','approach.mkv','side.mkv','rear.mkv']}],
+                          'overview.mkv','approach.mkv','reference_corner.mkv','driver_reference.mkv']}],
             'negative':{'remove':['trace.jsonl'],'error_contains':'Original frame, poses and reviewed context required'},
             'legal_result':None,'original_source_review_required':True}
         contract_path=HERE/'measurement-contracts'/(suffix+'.json')
@@ -38,9 +48,11 @@ def main():
             'cell_id':'C404492','actor':'motor_vehicle_driver','frames':600,
             'rate_hz':20,'duration_s':30,'engineering_initial_ego_gap_m':candidate_gap,
             'camera_height_offset_m':height,'camera_fov_deg':fov,
-            'cameras':[{'name':n,'width':1280,'height':720} for n in CAMERAS],
+            'cameras':[{'name':n,'width':1920 if n=='overview' else 1280,
+                        'height':1080 if n=='overview' else 720,
+                        'pose_strategy':'surveyed_world_transform','fov_deg':90} for n in CAMERAS],
             'physical_acceptance_claimed':False,'required_atoms':[],'source_packets':[],
-            'recording_description':'Two distinct adjacent-lane Native vehicles, emergency flashing-light phase, 600 original position/heading/velocity/extent frames and four synchronized cameras; independent authorization, equipment and officer-direction review required'}
+            'recording_description':recording}
             files=[{'path':name,'content':(HERE/'native'/name).read_text()} for name in ('runner.py','tests/test_native.py')]
             files.append({'path':'config.json','content':json.dumps(cfg,indent=2)+'\n'})
             files.append({'path':'measure_emergency.py','content':(HERE/'measure_emergency.py').read_text()})
@@ -48,10 +60,14 @@ def main():
             files.append({'path':'measurement-contract.json','content':contract_path.read_text()})
             construction={'format':'worker-construction','assignment_id':AID,'case_id':case,
             'law_id':'NRS-484B-267-2d','cell_id':'C404492','actor':'motor_vehicle_driver',
-            'entrypoint':'runner.py','recording_description':cfg['recording_description'],
+            'entrypoint':'runner.py','recording_description':recording,
             'measurement_plan':{'entrypoint':'measure_emergency.py','sources':[
                 'video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl','emergency_context.json'],
                 'same_direction_cutoff':None,'abreast_cutoff':None,'legal_result':None},
+            'static_checks':['case, candidate, camera profile and Native lane survey'],
+            'termination_rules':['retain exactly 600 synchronized 20-Hz original frames'],
+            'mechanisms':['survey-gated adjacent-lane two-vehicle capture',
+                          'source-joined saved geometry and independent qualification review'],
             'files':files}
             path=HERE/'draft-emergency'/suffix/candidate_id/'construction.json';write(path,construction)
             if candidate_id!='primary':

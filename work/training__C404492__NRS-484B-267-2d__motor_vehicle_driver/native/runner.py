@@ -7,7 +7,7 @@ import queue
 import subprocess
 
 AID='training__C404492__NRS-484B-267-2d__motor_vehicle_driver'
-CAMERAS=('overview','approach','side','rear')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 COUNT=600
 RATE=20
 
@@ -21,7 +21,11 @@ def config():
             or cfg.get('law_id')!='NRS-484B-267-2d' or cfg.get('cell_id')!='C404492'
             or cfg.get('actor')!='motor_vehicle_driver' or cfg.get('frames')!=COUNT
             or cfg.get('rate_hz')!=RATE or cfg.get('duration_s')!=30
-            or [c.get('name') for c in cfg.get('cameras',[])]!=list(CAMERAS)
+            or [(c.get('name'),c.get('width'),c.get('height')) for c in cfg.get('cameras',[])]
+               != [('overview',1920,1080),('approach',1280,720),
+                   ('reference_corner',1280,720),('driver_reference',1280,720)]
+            or any(c.get('pose_strategy')!='surveyed_world_transform' or c.get('fov_deg')!=90
+                   for c in cfg.get('cameras',[]))
             or cfg.get('physical_acceptance_claimed') is not False
             or cfg.get('engineering_initial_ego_gap_m') not in (-20,-25)
             or cfg.get('camera_height_offset_m') not in (0,1.0)

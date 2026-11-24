@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 
 AID='training__C405647__NRS-484B-267-2f__motor_vehicle_driver'
-CAMERAS=('overview','ego_front','emergency_side','rear')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 COUNT=600
 
 

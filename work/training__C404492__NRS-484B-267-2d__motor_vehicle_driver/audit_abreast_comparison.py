@@ -1,9 +1,10 @@
 """Audit fixed emergency trajectory and changed subject approach from original sources."""
 import argparse
 import json
+import math
 from pathlib import Path
 
-from measure_emergency import measure, rows
+from measure_emergency import AID, measure, rows
 
 
 def audit(reference_root, contrast_root):
@@ -19,17 +20,28 @@ def audit(reference_root, contrast_root):
     for left, right in zip(ref_poses, alt_poses):
         if left['emergency'] != right['emergency']:
             raise ValueError('Emergency vehicle trajectory or light phase differs')
-        for key in ('actor_id', 'y_m', 'heading_rad', 'half_length_m', 'half_width_m'):
+        for key in ('actor_id', 'heading_rad', 'half_length_m', 'half_width_m'):
             if left['ego'][key] != right['ego'][key]:
                 raise ValueError('Subject fixed geometry or identity differs')
+        heading = left['emergency']['heading_rad']
+        lateral = lambda pose: ((pose['ego']['y_m'] - pose['emergency']['y_m']) * math.cos(heading)
+                                - (pose['ego']['x_m'] - pose['emergency']['x_m']) * math.sin(heading))
+        if abs(lateral(left) - lateral(right)) > 1e-6:
+            raise ValueError('Subject lateral lane position differs')
     for key in ('actor_id', 'x_m', 'y_m', 'heading_rad', 'half_length_m', 'half_width_m'):
         if ref_poses[0]['ego'][key] != alt_poses[0]['ego'][key]:
             raise ValueError('Initial subject pose or extent differs')
     ref_context = json.loads((reference_root / 'emergency_context.json').read_text())
     alt_context = json.loads((contrast_root / 'emergency_context.json').read_text())
-    for key in ('assignment_id', 'emergency_vehicle_authorized',
+    if (ref_context.get('case_id') != AID + '__controlled_1'
+            or alt_context.get('case_id') != AID + '__controlled_2'):
+        raise ValueError('Exact controlled case identities differ')
+    for key in ('assignment_id', 'review_kind', 'emergency_vehicle_authorized',
                 'qualifying_flash_equipment_reviewed', 'officer_directed_otherwise',
-                'ego_actor_id', 'emergency_actor_id'):
+                'ego_actor_id', 'emergency_actor_id', 'ego_driver_source',
+                'ego_vehicle_source', 'emergency_authorization_source',
+                'qualifying_flash_equipment_source', 'flashing_light_visual_source',
+                'lane_boundary_source', 'officer_direction_review_source'):
         if ref_context[key] != alt_context[key]:
             raise ValueError('Qualifying statutory context differs')
     ref_overlap = sum(x['longitudinal_overlap_length_m'] > 0 for x in reference['per_frame_geometry'])
