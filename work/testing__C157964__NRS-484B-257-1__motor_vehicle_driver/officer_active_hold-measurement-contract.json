@@ -1,0 +1,39 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Whether a police officer actually controls traffic at complete ego-body entry",
+      "source": "NRS 484B.257(1); inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "officer_control_at_entry",
+      "method": "measure_officer_control_at_entry",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "officer_history.jsonl",
+        "officer_review.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Original-camera officer direction at complete ego-body entry",
+      "source": "NRS 484B.257(1); inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/witnesses.json",
+      "output_key": "officer_direction_at_entry",
+      "method": "measure_officer_direction_at_entry",
+      "value_type": "text",
+      "kind": "measured",
+      "inputs": [
+        "officer_review.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "officer_review.json"
+    ],
+    "error_contains": "Missing required source: officer_review.json"
+  }
+}

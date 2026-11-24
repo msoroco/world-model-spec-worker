@@ -1,0 +1,329 @@
+{
+  "cell_id": "C157964",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Police officer actually controls signed-entrance traffic; observed stop then go direction before ego entry; physical officer authority and legal control remain unresolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "go",
+          "unit": "source-reviewed category"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Source-reviewed original camera frame and ego body entry join",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "police authority and legal control unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Independent review of original camera pixels",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "programmed bone pose is not an observation"
+          },
+          {
+            "name": "through_speed_mps",
+            "unit": "m/s",
+            "method": "Original through actor get_velocity joined to same Native frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and through actor identity",
+            "sampling_rate_hz": 20,
+            "uncertainty": "speed alone does not establish immediate hazard or legal yield duty"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Saved finalizer joins original officer identity, route and junction sources to source-reviewed four-camera frames; authority and legal control unresolved",
+            "source_refs": [
+              "officer_context.json",
+              "officer_review.json",
+              "officer_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Physical police authority, proper sign erection and actual traffic control require original-source review"
+          }
+        ],
+        "limitations": [
+          "Synthetic software fixtures do not establish physical officer authority, gesture visibility, traffic control, nearest-view sufficiency or legal compliance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "actual police authority",
+        "physical traffic control",
+        "proper sign erection and nearest view"
+      ],
+      "paired_probe_id": "officer_exception_active",
+      "deliberate_differences": [
+        "actual original-frame officer traffic control at ego entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) police-officer exception, subject to original source review",
+        "target_value_or_branch": "officer_active_stop_then_go"
+      }
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Same junction and officer with hold/stop direction throughout ego approach; physical officer authority and legal control remain unresolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "source-reviewed category"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Source-reviewed original camera frame and ego body entry join",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "police authority and legal control unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Independent review of original camera pixels",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "programmed bone pose is not an observation"
+          },
+          {
+            "name": "through_speed_mps",
+            "unit": "m/s",
+            "method": "Original through actor get_velocity joined to same Native frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and through actor identity",
+            "sampling_rate_hz": 20,
+            "uncertainty": "speed alone does not establish immediate hazard or legal yield duty"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Saved finalizer joins original officer identity, route and junction sources to source-reviewed four-camera frames; authority and legal control unresolved",
+            "source_refs": [
+              "officer_context.json",
+              "officer_review.json",
+              "officer_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Physical police authority, proper sign erection and actual traffic control require original-source review"
+          }
+        ],
+        "limitations": [
+          "Synthetic software fixtures do not establish physical officer authority, gesture visibility, traffic control, nearest-view sufficiency or legal compliance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "actual police authority",
+        "physical traffic control",
+        "proper sign erection and nearest view"
+      ],
+      "paired_probe_id": "officer_direction",
+      "deliberate_differences": [
+        "observed stop then go versus sustained hold direction"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) police-officer exception, subject to original source review",
+        "target_value_or_branch": "officer_active_hold"
+      }
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Same officer visible but no actual traffic-control direction at ego entry; physical officer authority and legal control remain unresolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "source-reviewed category"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Source-reviewed original camera frame and ego body entry join",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "police authority and legal control unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Independent review of original camera pixels",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "programmed bone pose is not an observation"
+          },
+          {
+            "name": "through_speed_mps",
+            "unit": "m/s",
+            "method": "Original through actor get_velocity joined to same Native frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and through actor identity",
+            "sampling_rate_hz": 20,
+            "uncertainty": "speed alone does not establish immediate hazard or legal yield duty"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Saved finalizer joins original officer identity, route and junction sources to source-reviewed four-camera frames; authority and legal control unresolved",
+            "source_refs": [
+              "officer_context.json",
+              "officer_review.json",
+              "officer_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Physical police authority, proper sign erection and actual traffic control require original-source review"
+          }
+        ],
+        "limitations": [
+          "Synthetic software fixtures do not establish physical officer authority, gesture visibility, traffic control, nearest-view sufficiency or legal compliance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "actual police authority",
+        "physical traffic control",
+        "proper sign erection and nearest view"
+      ],
+      "paired_probe_id": "officer_exception_active",
+      "deliberate_differences": [
+        "actual original-frame officer traffic control at ego entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) police-officer exception, subject to original source review",
+        "target_value_or_branch": "officer_present_inactive"
+      }
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Same junction, properly erected yield sign, no officer control and nearest-view response; physical officer authority and legal control remain unresolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "source-reviewed category"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Source-reviewed original camera frame and ego body entry join",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "police authority and legal control unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Independent review of original camera pixels",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source camera frames",
+            "sampling_rate_hz": 20,
+            "uncertainty": "programmed bone pose is not an observation"
+          },
+          {
+            "name": "through_speed_mps",
+            "unit": "m/s",
+            "method": "Original through actor get_velocity joined to same Native frame",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and through actor identity",
+            "sampling_rate_hz": 20,
+            "uncertainty": "speed alone does not establish immediate hazard or legal yield duty"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Saved finalizer joins original officer identity, route and junction sources to source-reviewed four-camera frames; authority and legal control unresolved",
+            "source_refs": [
+              "officer_context.json",
+              "officer_review.json",
+              "officer_history.jsonl",
+              "video_frames.jsonl"
+            ],
+            "uncertainty": "Physical police authority, proper sign erection and actual traffic control require original-source review"
+          }
+        ],
+        "limitations": [
+          "Synthetic software fixtures do not establish physical officer authority, gesture visibility, traffic control, nearest-view sufficiency or legal compliance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "actual police authority",
+        "physical traffic control",
+        "proper sign erection and nearest view"
+      ],
+      "paired_probe_id": "officer_exception_active",
+      "deliberate_differences": [
+        "actual officer control at ego entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(1) police-officer exception, subject to original source review",
+        "target_value_or_branch": "no_officer_yield_nearest_view"
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

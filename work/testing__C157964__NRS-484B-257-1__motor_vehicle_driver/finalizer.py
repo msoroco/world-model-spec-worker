@@ -106,6 +106,8 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
                                          "time_s": row["time_s"], "value": row[key]},
                                         allow_nan=False) + "\n")
     (channels / "officer_context.json").write_text(json.dumps({
+        "officer_context": {"source": json.loads((attempt / "officer_context.json").read_text()),
+                            "first_ego_entry": entry},
         "case_id": case_id, "fixed_context": measured["fixed_context"],
         "first_ego_entry": entry,
         "police_authority_judgment": measured["police_authority_judgment"],

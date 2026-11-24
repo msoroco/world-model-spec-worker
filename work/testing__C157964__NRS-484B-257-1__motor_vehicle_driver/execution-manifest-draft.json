@@ -7,7 +7,7 @@
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "a8f6fbe9affa579a6a2b3d1cd24b8630df1dd3e4b0c17ee32530372f493588c8",
+      "construction_sha256": "c72131e0c3e53c72c49b37ddc550d953ce93a8bc2e1912d175180f5e03873230",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "officer_active_stop_then_go-fallback1-construction.json",
-          "construction_sha256": "3435e6e83273ef5776f3a346dcd934984bd06ff18b99de8ea658024ba5fbe101",
+          "construction_sha256": "4c056245296d08abcb55a23248c72add9a4023586a3e47b915f278efc39bf8a9",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -27,27 +27,68 @@
             "Raise and tilt the fixed reference-corner camera"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --candidate fallback1 --output .runtime-work/c157964-through-v2-officer_active_stop_then_go-fallback1",
-            "construction_sha256": "3435e6e83273ef5776f3a346dcd934984bd06ff18b99de8ea658024ba5fbe101",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-context-v3-officer_active_stop_then_go-fallback1 --candidate fallback1",
+            "construction_sha256": "4c056245296d08abcb55a23248c72add9a4023586a3e47b915f278efc39bf8a9",
             "exit_code": 0,
             "log": "construction-fallback1-officer_active_stop_then_go.log",
-            "log_sha256": "23dadb0ba0809bdfd0f86dc9d876f337c87f72e0980cac2e9f5b9edb98db31e6"
+            "log_sha256": "3325fa202602f7303688ff4d6b74fcdd1ff6bb35b6083ff5d2d39a749f8e0ac3"
+          },
+          "compatibility": {
+            "receipt": "compatibility-officer_active_stop_then_go-fallback1.json",
+            "sha256": "e4f483227eb22864a22da5c5b81a2489546ca45ea525a09f1cd2a745129cada1",
+            "log": "compatibility-analysis-officer_active_stop_then_go-fallback1.log",
+            "negative_log": "compatibility-negative-officer_active_stop_then_go-fallback1.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-compatibility-v3-officer_active_stop_then_go-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-through-v2-officer_active_stop_then_go-primary",
-        "construction_sha256": "a8f6fbe9affa579a6a2b3d1cd24b8630df1dd3e4b0c17ee32530372f493588c8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-context-v3-officer_active_stop_then_go-primary",
+        "construction_sha256": "c72131e0c3e53c72c49b37ddc550d953ce93a8bc2e1912d175180f5e03873230",
         "exit_code": 0,
         "log": "construction-primary-officer_active_stop_then_go.log",
-        "log_sha256": "f5c7d9d5462cdd27ec3c515a1a1f51453707ebd0cd77e5ffb64094aa7a85c732"
+        "log_sha256": "6883fb8951ddf0af24a670b10fb6bbab84dd4394182ef9da1c142d59081af88d"
+      },
+      "measurement_contract": "officer_active_stop_then_go-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py",
+        "method": "saved original officer-source review and same-frame ego entry"
+      },
+      "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/officer_active_stop_then_go-fixture-recipe.json",
+      "negative": {
+        "log": "compatibility-negative-officer_active_stop_then_go-primary.log",
+        "error_contains": "Missing required source: officer_review.json"
+      },
+      "compatibility": {
+        "receipt": "compatibility-officer_active_stop_then_go-primary.json",
+        "sha256": "273d84e0076df24c3b420490aba13734621329df7098f81f5c7cae11e34cb537",
+        "log": "compatibility-analysis-officer_active_stop_then_go-primary.log",
+        "negative_log": "compatibility-negative-officer_active_stop_then_go-primary.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_stop_then_go --output .runtime-work/c157964-compatibility-v3-active --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "acquisition": {
+        "officer_control_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "join original officer review and synchronized officer history at ego entry",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "source-reviewed officer direction at synchronized ego entry frame",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "method": "measure through vehicle speed from synchronized source trace at ego entry",
+          "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        }
       }
     },
     {
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold",
       "kind": "delivery",
       "construction": "officer_active_hold-construction.json",
-      "construction_sha256": "26568a9730c51a5de383a2ece92b748c178eecb23baae2521b1f829fb15f46c3",
+      "construction_sha256": "1864a04003ed21c629711ac52f905d90b56c7340e7c7c91f06a26753cd18b638",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -56,7 +97,7 @@
         {
           "id": "fallback1",
           "construction": "officer_active_hold-fallback1-construction.json",
-          "construction_sha256": "ddcdc142579bb22cc575f1782fe999bcc7305327a99f68e57fa7518c838f46a0",
+          "construction_sha256": "f2e1ed329b28d9b8d78a5cd13e485557cfc390117dbabed0773c79624301884c",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -67,27 +108,68 @@
             "Raise and tilt the fixed reference-corner camera"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --candidate fallback1 --output .runtime-work/c157964-through-v2-officer_active_hold-fallback1",
-            "construction_sha256": "ddcdc142579bb22cc575f1782fe999bcc7305327a99f68e57fa7518c838f46a0",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-context-v3-officer_active_hold-fallback1 --candidate fallback1",
+            "construction_sha256": "f2e1ed329b28d9b8d78a5cd13e485557cfc390117dbabed0773c79624301884c",
             "exit_code": 0,
             "log": "construction-fallback1-officer_active_hold.log",
-            "log_sha256": "34e611a45b8375e9977333aa5d13c6f4eff2f6d8ae7955c09278812588eaba8b"
+            "log_sha256": "8216979aeb7c5334bf92e2c91f5a96e1bf3200b5240baf2579c44cf1406ec337"
+          },
+          "compatibility": {
+            "receipt": "compatibility-officer_active_hold-fallback1.json",
+            "sha256": "9a6aca0c3ea1dc8b1ec95c8e135629f2d8f46c294f7f212cd4f46ede0f1051f5",
+            "log": "compatibility-analysis-officer_active_hold-fallback1.log",
+            "negative_log": "compatibility-negative-officer_active_hold-fallback1.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-compatibility-v3-officer_active_hold-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-through-v2-officer_active_hold-primary",
-        "construction_sha256": "26568a9730c51a5de383a2ece92b748c178eecb23baae2521b1f829fb15f46c3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-context-v3-officer_active_hold-primary",
+        "construction_sha256": "1864a04003ed21c629711ac52f905d90b56c7340e7c7c91f06a26753cd18b638",
         "exit_code": 0,
         "log": "construction-primary-officer_active_hold.log",
-        "log_sha256": "a789b0c9c7d0f40636da848fa6d9f83426c3cd6efc2e880929b1f418adef18dd"
+        "log_sha256": "951249ad54f706de79cb6694e9b1d5b4b56ecae5fc6a4be4d11e6e71bf63e2e1"
+      },
+      "measurement_contract": "officer_active_hold-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py",
+        "method": "saved original officer-source review and same-frame ego entry"
+      },
+      "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/officer_active_hold-fixture-recipe.json",
+      "negative": {
+        "log": "compatibility-negative-officer_active_hold-primary.log",
+        "error_contains": "Missing required source: officer_review.json"
+      },
+      "compatibility": {
+        "receipt": "compatibility-officer_active_hold-primary.json",
+        "sha256": "a1e93cd9145163b3b47ac69aff6189d1f104b8657942d2f4feaec02bf1d131f6",
+        "log": "compatibility-analysis-officer_active_hold-primary.log",
+        "negative_log": "compatibility-negative-officer_active_hold-primary.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_active_hold --output .runtime-work/c157964-compatibility-v3-officer_active_hold-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "acquisition": {
+        "officer_control_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "join original officer review and synchronized officer history at ego entry",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "source-reviewed officer direction at synchronized ego entry frame",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "method": "measure through vehicle speed from synchronized source trace at ego entry",
+          "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        }
       }
     },
     {
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive",
       "kind": "delivery",
       "construction": "officer_present_inactive-construction.json",
-      "construction_sha256": "1f7d12808c1656a3172624df4b6325d03ea67874df9ec5b5d8b74777e5290027",
+      "construction_sha256": "17a698cc609f22954149aa7fb1b173cf0f8e3743d68b840b847c2dd4aeec89f8",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -96,7 +178,7 @@
         {
           "id": "fallback1",
           "construction": "officer_present_inactive-fallback1-construction.json",
-          "construction_sha256": "cb31528f6de0eb3e2f24abf9ba283b66ea2bc18935e3511c9a396e53b9b82ad8",
+          "construction_sha256": "49628d594de378bbb3d12a302fd127f53ed1083956b2e60a284ca7315dabd43e",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -107,27 +189,68 @@
             "Raise and tilt the fixed reference-corner camera"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --candidate fallback1 --output .runtime-work/c157964-through-v2-officer_present_inactive-fallback1",
-            "construction_sha256": "cb31528f6de0eb3e2f24abf9ba283b66ea2bc18935e3511c9a396e53b9b82ad8",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-context-v3-officer_present_inactive-fallback1 --candidate fallback1",
+            "construction_sha256": "49628d594de378bbb3d12a302fd127f53ed1083956b2e60a284ca7315dabd43e",
             "exit_code": 0,
             "log": "construction-fallback1-officer_present_inactive.log",
-            "log_sha256": "4d34a0d738229b114d79896354e4ea32ea3734c0b21797f100c3e44b46357913"
+            "log_sha256": "5283e9d00c2fe5364fd14c253e1ed9dbcc469fc62b15c29ae40251a3ea2ee6b0"
+          },
+          "compatibility": {
+            "receipt": "compatibility-officer_present_inactive-fallback1.json",
+            "sha256": "c0a40d912aa397fa2daad469f21982c4f5526df374a063610be780bfc3b23f23",
+            "log": "compatibility-analysis-officer_present_inactive-fallback1.log",
+            "negative_log": "compatibility-negative-officer_present_inactive-fallback1.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-compatibility-v3-officer_present_inactive-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-through-v2-officer_present_inactive-primary",
-        "construction_sha256": "1f7d12808c1656a3172624df4b6325d03ea67874df9ec5b5d8b74777e5290027",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-context-v3-officer_present_inactive-primary",
+        "construction_sha256": "17a698cc609f22954149aa7fb1b173cf0f8e3743d68b840b847c2dd4aeec89f8",
         "exit_code": 0,
         "log": "construction-primary-officer_present_inactive.log",
-        "log_sha256": "49f8bfa97c44db71d59a12aab60407ed7993f79a628a6283c332f2c8107e2b7a"
+        "log_sha256": "a7d7441dbb6ac4368ca6b35459ea7c8b092fd3608c2f09f9f3f68a57117e1353"
+      },
+      "measurement_contract": "officer_present_inactive-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py",
+        "method": "saved original officer-source review and same-frame ego entry"
+      },
+      "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/officer_present_inactive-fixture-recipe.json",
+      "negative": {
+        "log": "compatibility-negative-officer_present_inactive-primary.log",
+        "error_contains": "Missing required source: officer_review.json"
+      },
+      "compatibility": {
+        "receipt": "compatibility-officer_present_inactive-primary.json",
+        "sha256": "4c393d32cf6a5e7145dbdb3dfaaf10243a58e41ef089da3c148a490533e72372",
+        "log": "compatibility-analysis-officer_present_inactive-primary.log",
+        "negative_log": "compatibility-negative-officer_present_inactive-primary.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__officer_present_inactive --output .runtime-work/c157964-compatibility-v3-officer_present_inactive-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "acquisition": {
+        "officer_control_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "join original officer review and synchronized officer history at ego entry",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "source-reviewed officer direction at synchronized ego entry frame",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "method": "measure through vehicle speed from synchronized source trace at ego entry",
+          "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        }
       }
     },
     {
       "case_id": "testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view",
       "kind": "delivery",
       "construction": "no_officer_yield_nearest_view-construction.json",
-      "construction_sha256": "67979e22a18f591a00d3d352d5cc44c2c332d259a17dd7b2105ba3e51d4040dc",
+      "construction_sha256": "144feb2dd937919a922adfecb5e2c23ed6bf5e00d77fedbd936a46b70a7202b1",
       "candidate_risk": {
         "status": "physical",
         "reason": "Officer appearance, pose visibility, sign and nearest-view geometry require original-camera review."
@@ -136,7 +259,7 @@
         {
           "id": "fallback1",
           "construction": "no_officer_yield_nearest_view-fallback1-construction.json",
-          "construction_sha256": "513aa1326e7b676a946a29280764e2da1ece0dab976bcf04fce8b34eed953069",
+          "construction_sha256": "3370b7d29f707ed8bd2295934ad9c59b2ba911bd952c82cdf3ed3a8bb938821e",
           "trigger": {
             "source": "original approach and reference_corner camera frames at ego entry",
             "metric": "source-reviewed officer/sign visibility and nearest-view coverage",
@@ -147,20 +270,61 @@
             "Raise and tilt the fixed reference-corner camera"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --candidate fallback1 --output .runtime-work/c157964-through-v2-no_officer_yield_nearest_view-fallback1",
-            "construction_sha256": "513aa1326e7b676a946a29280764e2da1ece0dab976bcf04fce8b34eed953069",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-context-v3-no_officer_yield_nearest_view-fallback1 --candidate fallback1",
+            "construction_sha256": "3370b7d29f707ed8bd2295934ad9c59b2ba911bd952c82cdf3ed3a8bb938821e",
             "exit_code": 0,
             "log": "construction-fallback1-no_officer_yield_nearest_view.log",
-            "log_sha256": "e49f9bfe28935f48a234cab9655863f133241f811617bb635d2aaec00e1f988a"
+            "log_sha256": "f883f6c57e3ff0ab84010fa440c367e06d2e7b3fd0e6753178a5dbc975ab2e17"
+          },
+          "compatibility": {
+            "receipt": "compatibility-no_officer_yield_nearest_view-fallback1.json",
+            "sha256": "c7417353caffc92a3096c97518b1b362d6700731fba8c1509fb3697c0f0972f7",
+            "log": "compatibility-analysis-no_officer_yield_nearest_view-fallback1.log",
+            "negative_log": "compatibility-negative-no_officer_yield_nearest_view-fallback1.log",
+            "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-compatibility-v3-no_officer_yield_nearest_view-fallback1 --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck --candidate fallback1"
           }
         }
       ],
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-through-v2-no_officer_yield_nearest_view-primary",
-        "construction_sha256": "67979e22a18f591a00d3d352d5cc44c2c332d259a17dd7b2105ba3e51d4040dc",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-context-v3-no_officer_yield_nearest_view-primary",
+        "construction_sha256": "144feb2dd937919a922adfecb5e2c23ed6bf5e00d77fedbd936a46b70a7202b1",
         "exit_code": 0,
         "log": "construction-primary-no_officer_yield_nearest_view.log",
-        "log_sha256": "f3b7d17702962623be6c037dd29afc6f124a566b1a949bcd17d966f5e99a8e3f"
+        "log_sha256": "01d5f0aeb65113a2e68d82d6ec8859dda689b1dc4a9a0419f934bf498983a071"
+      },
+      "measurement_contract": "no_officer_yield_nearest_view-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalizer.py",
+        "method": "saved original officer-source review and same-frame ego entry"
+      },
+      "fixture_recipe": "work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/no_officer_yield_nearest_view-fixture-recipe.json",
+      "negative": {
+        "log": "compatibility-negative-no_officer_yield_nearest_view-primary.log",
+        "error_contains": "Missing required source: officer_review.json"
+      },
+      "compatibility": {
+        "receipt": "compatibility-no_officer_yield_nearest_view-primary.json",
+        "sha256": "941ebac91c4f909eb23cbad1659dc4c110672e8596112650748bb38c4bfe158c",
+        "log": "compatibility-analysis-no_officer_yield_nearest_view-primary.log",
+        "negative_log": "compatibility-negative-no_officer_yield_nearest_view-primary.log",
+        "replay_command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C157964__NRS-484B-257-1__motor_vehicle_driver/execution-manifest-draft.json --case testing__C157964__NRS-484B-257-1__motor_vehicle_driver__no_officer_yield_nearest_view --output .runtime-work/c157964-compatibility-v3-no_officer_yield_nearest_view-primary --library runtime/library --validator .runtime-work/c144550-decoder-current/.lake/build/bin/adapterCheck"
+      },
+      "acquisition": {
+        "officer_control_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "join original officer review and synchronized officer history at ego entry",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "officer_direction_observed": {
+          "entrypoint": "finalizer.py",
+          "method": "source-reviewed officer direction at synchronized ego entry frame",
+          "evidence": "officer_review.json; officer_history.jsonl; video_frames.jsonl"
+        },
+        "through_speed_mps": {
+          "entrypoint": "finalizer.py",
+          "method": "measure through vehicle speed from synchronized source trace at ego entry",
+          "evidence": "trace.jsonl; officer_history.jsonl; video_frames.jsonl"
+        }
       }
     }
   ]
