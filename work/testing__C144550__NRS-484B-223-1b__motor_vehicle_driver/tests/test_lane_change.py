@@ -1,5 +1,9 @@
 import importlib.util
+import hashlib
 import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from enum import IntFlag
@@ -32,6 +36,9 @@ class LaneChangeTests(unittest.TestCase):
              "target_traffic_source":"native-actor-bodies",
              "signal_display_source":"original-detail-camera",
              "same_direction_marked_lane_count":2,"change_direction":"left",
+             "same_direction_lanes":[
+                 {"road_id":7,"lane_id":-1,"forward_xy":[1,0],"marking_source":"native-marking-and-camera"},
+                 {"road_id":7,"lane_id":-2,"forward_xy":[1,0],"marking_source":"native-marking-and-camera"}],
              "source_lane_polygon_xy_m":[[0,-3],[100,-3],[100,0],[0,0]],
              "lane_forward_xy":[1,0]}
         (root/"lane_context.json").write_text(json.dumps(ctx))
@@ -51,6 +58,7 @@ class LaneChangeTests(unittest.TestCase):
             root=Path(tmp);self.fixture(root)
             result=measure.analyze(root)
             self.assertTrue(result["appropriate_signal_observed_before_movement"])
+            self.assertEqual(result["same_direction_lane_ids"],[-2,-1])
             self.assertEqual(result["first_body_leaves_lane"]["frame"],101)
             self.assertIsNotNone(result["samples"][1]["nearest_target_body_longitudinal_gap_m"])
             self.assertEqual(result["legal_conclusion"],"unresolved")
@@ -69,6 +77,157 @@ class LaneChangeTests(unittest.TestCase):
             del rows[1]["target_lane_bodies"]
             (root/"lane_history.jsonl").write_text("".join(json.dumps(r)+"\n" for r in rows))
             with self.assertRaisesRegex(ValueError,"participant inventory"):measure.analyze(root)
+
+    def test_claimed_same_direction_lane_inventory_is_checked(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            ctx=json.loads((root/"lane_context.json").read_text())
+            ctx["same_direction_lanes"][1]["forward_xy"]=[-1,0]
+            (root/"lane_context.json").write_text(json.dumps(ctx))
+            with self.assertRaisesRegex(ValueError,"Opposing lane"):
+                measure.analyze(root)
+            ctx["same_direction_lanes"][1]["forward_xy"]=[1,0]
+            ctx["same_direction_lanes"][1]["lane_id"]=1
+            (root/"lane_context.json").write_text(json.dumps(ctx))
+            with self.assertRaisesRegex(ValueError,"missing from same-direction inventory"):
+                measure.analyze(root)
+            ctx["same_direction_lanes"][1]["lane_id"]=-2
+            ctx["same_direction_marked_lane_count"]=3
+            (root/"lane_context.json").write_text(json.dumps(ctx))
+            with self.assertRaisesRegex(ValueError,"inventory/count mismatch"):
+                measure.analyze(root)
+
+    def test_saved_exact_measurement_preserves_sources_and_unresolved_judgment(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            case=construction.CASE_PREFIX+"left_signal_before_clear_gap"
+            output=root/"saved"/"measurement.json"
+            report=measure.write_saved_measurements(root,case,output,expected_frames=3)
+            self.assertEqual(json.loads(output.read_text()),report)
+            self.assertTrue(report["observed_signal_pattern_matches_plan"])
+            self.assertEqual(report["legal_conclusion"],"unresolved")
+            self.assertEqual(report["driver_ascertained_safety_judgment"],"unresolved")
+            self.assertEqual(report["observed"]["nearest_target_body_longitudinal_gap_at_movement_m"],8.0)
+            for name,digest in report["sources"].items():
+                self.assertEqual(digest,hashlib.sha256((root/name).read_bytes()).hexdigest())
+
+    def test_saved_exact_measurement_records_realized_signal_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root,("off","off","left"))
+            before=construction.CASE_PREFIX+"left_signal_before_clear_gap"
+            late=construction.CASE_PREFIX+"left_signal_late_clear_gap"
+            self.assertFalse(measure.measure_exact_case(root,before,3)["observed_signal_pattern_matches_plan"])
+            self.assertFalse(measure.measure_exact_case(root,late,3)["observed_signal_pattern_matches_plan"])
+            self.fixture(root,("right","right","right"))
+            wrong=construction.CASE_PREFIX+"left_wrong_signal_clear_gap"
+            report=measure.measure_exact_case(root,wrong,3)
+            self.assertTrue(report["observed_signal_pattern_matches_plan"])
+            self.assertFalse(report["observed"]["appropriate_signal_before_movement"])
+            self.assertEqual(report["observed"]["indicator_at_movement"],"right")
+
+    def test_saved_exact_measurement_rejects_wrong_case_direction_and_short_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            prefix=construction.CASE_PREFIX
+            with self.assertRaisesRegex(ValueError,"Unknown exact"):
+                measure.measure_exact_case(root,prefix+"unplanned",3)
+            with self.assertRaisesRegex(ValueError,"frame count"):
+                measure.measure_exact_case(root,prefix+"left_signal_before_clear_gap")
+            with self.assertRaisesRegex(ValueError,"direction differ"):
+                measure.measure_exact_case(root,prefix+"right_signal_before_clear_gap",3)
+            ctx=json.loads((root/"lane_context.json").read_text())
+            ctx["change_direction"]="right"
+            (root/"lane_context.json").write_text(json.dumps(ctx))
+            report=measure.measure_exact_case(root,prefix+"right_signal_before_clear_gap",3)
+            self.assertFalse(report["observed_signal_pattern_matches_plan"])
+
+    def test_capture_rows_persist_as_original_saved_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            context=json.loads((root/"lane_context.json").read_text())
+            rows=[json.loads(line) for line in (root/"lane_history.jsonl").read_text().splitlines()]
+            retained=root/"retained"
+            observed=measure.persist_original_sources(retained,context,rows,3)
+            self.assertEqual(observed["first_body_leaves_lane"]["frame"],101)
+            case=construction.CASE_PREFIX+"left_signal_before_clear_gap"
+            report=measure.write_saved_measurements(retained,case,root/"report.json",3)
+            self.assertEqual(report["sources"],observed["sources"])
+            with self.assertRaisesRegex(ValueError,"already exist"):
+                measure.persist_original_sources(retained,context,rows,3)
+            broken=[dict(row) for row in rows]
+            del broken[1]["indicator"]
+            rejected=root/"rejected"
+            with self.assertRaisesRegex(ValueError,"indicator state"):
+                measure.persist_original_sources(rejected,context,broken,3)
+            self.assertFalse(any((rejected/name).exists() for name in measure.REQUIRED))
+
+    def test_full_900_frame_saved_measurement_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            context=json.loads((root/"lane_context.json").read_text())
+            seed=[json.loads(line) for line in (root/"lane_history.jsonl").read_text().splitlines()]
+            rows=[]
+            for index in range(900):
+                row=dict(seed[min(index,2)])
+                row["frame"]=100+index
+                row["time_s"]=1+index/20
+                row["ego_lane_id"]=-1 if index<2 else -2
+                rows.append(row)
+            retained=root/"full"
+            measure.persist_original_sources(retained,context,rows)
+            report=measure.write_saved_measurements(
+                retained,construction.CASE_PREFIX+"left_signal_before_clear_gap",
+                root/"full-report.json")
+            self.assertEqual(report["source_frame_count"],900)
+            self.assertTrue(report["observed_signal_pattern_matches_plan"])
+            self.assertEqual(report["first_body_leaves_lane"]["frame"],101)
+            self.assertEqual(report["legal_conclusion"],"unresolved")
+            config={"selected_case_id":construction.CASE_PREFIX+"left_signal_before_clear_gap",
+                    "law_id":"NRS-484B-223-1b","cell_id":"C144550","duration_s":45,
+                    "rate_hz":20,"recording_description":{"channels":["indicator_state"]},
+                    "physical_completion":{"body_key":"ego_body_vertices_xy_m",
+                                           "lane_key":"ego_lane_id",
+                                           "destination_lane":-2,
+                                           "context_sources":["lane_context.json"]}}
+            (retained/"config.json").write_text(json.dumps(config))
+            (retained/"trace.jsonl").write_text("".join(json.dumps({"frame":r["frame"],
+                "time_s":r["time_s"],"position_m":[12,1,0]})+"\n" for r in rows))
+            for camera in ("overview.mkv","approach.mkv","reference_corner.mkv","driver_reference.mkv"):
+                (retained/camera).write_bytes(b"unit-test-placeholder; no pixel claim")
+            repo=ROOT.parents[1]
+            env=dict(os.environ,PYTHONPATH=str(repo/"runtime"/"scenario_pipeline"),
+                     SCENARIO_PIPELINE_OUTPUT_ROOT=str(repo/".runtime-work"/"c144550-finalizer-test"),
+                     PYTHONDONTWRITEBYTECODE="1")
+            output=retained/"analysis-report.json"
+            completed=subprocess.run([sys.executable,str(ROOT/"lane_change_measurements.py"),
+                                      "--attempt",str(retained),"--output",str(output)],
+                                     env=env,text=True,capture_output=True)
+            self.assertEqual(completed.returncode,0,completed.stderr)
+            result=json.loads((retained/"result.json").read_text())
+            analysis=json.loads(output.read_text())
+            self.assertEqual(result["physical_checks"]["setup"]["status"],"met")
+            self.assertEqual(result["physical_checks"]["maneuver"]["status"],"met")
+            self.assertFalse(result["physical_acceptance_claimed"])
+            self.assertFalse(analysis["legal_verdict_asserted"])
+            self.assertEqual(len((retained/"channels"/"indicator_state.jsonl").read_text().splitlines()),900)
+
+    def test_physical_lane_binding_rejects_wrong_destination_and_missing_readback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            rows=[json.loads(line) for line in (root/"lane_history.jsonl").read_text().splitlines()]
+            for row in rows:row["ego_lane_id"]=-1
+            (root/"lane_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            cfg={"physical_completion":{"body_key":"ego_body_vertices_xy_m",
+                                        "lane_key":"ego_lane_id","destination_lane":-1,
+                                        "context_sources":["lane_context.json"]}}
+            with self.assertRaisesRegex(ValueError,"target lane"):
+                measure.validate_physical_binding(root,cfg)
+            cfg["physical_completion"]["destination_lane"]=-2
+            measure.validate_physical_binding(root,cfg)
+            del rows[1]["ego_lane_id"]
+            (root/"lane_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError,"readback missing"):
+                measure.validate_physical_binding(root,cfg)
 
     def test_native_adjacent_marking_both_directions(self):
         mark=NS(type="Solid")
@@ -147,6 +306,47 @@ class LaneChangeTests(unittest.TestCase):
             False,Lights,make_control)
         self.assertLess(result["control"].steer,0)
         self.assertEqual(result["signal"]["readback_state"],6)
+
+    def test_exact_native_capture_core_joins_four_cameras_and_closes(self):
+        class Lights(IntFlag):
+            LeftBlinker=1
+            RightBlinker=2
+        ego=NS(state=Lights(0),get_light_state=lambda:ego.state,
+               set_light_state=lambda state:setattr(ego,"state",state),
+               get_transform=lambda:NS(location=NS(x=0.0,y=0.0),rotation=NS(yaw=0.0)),
+               get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0),apply_control=lambda control:None)
+        world=NS(frame=0,tick=lambda:None,get_snapshot=lambda:None)
+        def tick():
+            world.frame+=1
+            return world.frame
+        world.tick=tick
+        world.get_snapshot=lambda:NS(timestamp=NS(elapsed_seconds=world.frame/20))
+        names=("overview","approach","reference_corner","driver_reference")
+        writers={name:NS(frames=[],closed=False) for name in names}
+        for writer in writers.values():
+            writer.write=lambda image,w=writer:w.frames.append(image.frame)
+            writer.close=lambda w=writer:setattr(w,"closed",True)
+        cameras={name:(lambda frame:NS(frame=frame)) for name in names}
+        selected={"direction":"left","target":NS(transform=NS(location=NS(x=8.0,y=3.5))),
+                  "target_lane_id":-2}
+        observe=lambda frame,time:{"frame":frame,"time_s":time,
+                                   "body_left_source_lane":frame>100}
+        rows=construction.capture_native_case(
+            world,ego,selected,construction.CASE_PREFIX+"left_signal_late_clear_gap",
+            Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers)
+        self.assertEqual(len(rows),900)
+        self.assertEqual(rows[0]["requested_indicator"],"off")
+        self.assertEqual(rows[101]["requested_indicator"],"left")
+        self.assertTrue(all(len(w.frames)==900 and w.closed for w in writers.values()))
+        world.frame=0
+        for writer in writers.values():
+            writer.frames=[];writer.closed=False
+        cameras["overview"]=lambda frame:NS(frame=frame+1)
+        with self.assertRaisesRegex(ValueError,"Camera skipped"):
+            construction.capture_native_case(
+                world,ego,selected,construction.CASE_PREFIX+"left_signal_before_clear_gap",
+                Lights,lambda **kwargs:NS(**kwargs),observe,cameras,writers)
+        self.assertTrue(all(w.closed for w in writers.values()))
 
 
 if __name__=="__main__":unittest.main()

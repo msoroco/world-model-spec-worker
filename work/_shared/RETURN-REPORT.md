@@ -1,3 +1,11 @@
+## 2026-11-23 C144550 saved finalizer CPU path
+
+C144550 now persists original lane sources and runs a 900-frame CPU fixture through its exact saved finalizer CLI. The finalizer emits three observation channels, a native result, and a source-hashed analysis report; the pinned physical checker assesses the sourced lane transition. It rejects a wrong target-lane descriptor and missing ego lane readback. Thirteen tests, pinned preflight and the scoped nonready check pass. Source SHA256 `be9bde10955daf002048391ae7ce92f916b22dac41d4e9f38e489a9ac709a8bd`; test log SHA256 `30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191`. Camera files in this fixture are placeholders, so full saved media decode, Native motion and legal judgment are unproved. C144550 remains partial pending exact runner, valid-media process-saved proof and complete delivery bundles. Batch status remains 29 ready, 14 partial; the full strict gate has not passed.
+
+## 2026-11-23 C144550 lane inventory and capture core
+
+C144550 now verifies the same-direction marked-lane inventory from original lane records and has a CPU-tested 900-frame Native capture core joining original lane observations, indicator readback and all four cameras. Seven package tests, pinned preflight and scoped nonready check pass. Measurement source SHA256 `2fb82fa111c55237805bfe73a546e58fcbfa119c18f56960e2a37d337b5c387b`; capture core SHA256 `bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7`; test log SHA256 `236e435fb6addfb89a7c6b2a49a850593bb20270b1e530fa68230fb02ea4c785`. C144550 remains partial pending sensor/source persistence, saved finalization and exact fallback proofs. Batch remains 29 ready, 14 partial; full strict gate has not passed.
+
 ## 2026-11-23 C144550 Native control construction
 
 C144550 now has a bounded exact-case Native lane-change control step that combines marked adjacent-lane selection, target steering, speed control and turn-signal readback. Five CPU tests, pinned preflight and scoped nonready check pass. Source SHA256 `d4039fb0d4998d4600194c6e3c9ae3337e9ab6c48307a8cd246416fcbbeda13d`; test log SHA256 `2139ec77a4a9e65448e72447403c7a381b473c44a3a79c39354fa5476eeb7ced`. C144550 remains partial while its exact runner and saved proof path are built. Batch remains 29 ready, 14 partial; the full strict delivery gate has not passed.

@@ -95,3 +95,47 @@ def step_toward_marked_lane(ego, selected, case_id, body_left_source_lane,
     return {"control":control,"signal":signal,"target_lane_id":selected.get("target_lane_id"),
             "heading_error_rad":error,"observed_speed_mps":speed,
             "legal_safety_ascertainment":"unresolved"}
+
+
+def capture_native_case(world, ego, selected, case_id, light_states, control_factory,
+                        observe_original, camera_sources, camera_writers, frames=900):
+    """Tick one exact Native case with joined source rows and four raw cameras.
+
+    Sensor acquisition and final sealing belong to the caller. This core closes
+    every writer even when an original frame or camera is missing.
+    """
+    names=("overview","approach","reference_corner","driver_reference")
+    if type(frames) is not int or frames!=900:
+        raise ValueError("Exact 45-second capture requires 900 frames")
+    if set(camera_sources)!=set(names) or set(camera_writers)!=set(names):
+        raise ValueError("Four named original camera streams required")
+    rows=[];last_frame=-1;last_time=-math.inf;left_source=False
+    try:
+        for _ in range(frames):
+            command=step_toward_marked_lane(
+                ego,selected,case_id,left_source,light_states,control_factory)
+            frame=world.tick()
+            snapshot=world.get_snapshot()
+            time=float(snapshot.timestamp.elapsed_seconds)
+            if type(frame) is not int or frame<=last_frame or not math.isfinite(time) or time<=last_time:
+                raise ValueError("Nonmonotone Native frame or time")
+            last_frame,last_time=frame,time
+            row=observe_original(frame,time)
+            if not isinstance(row,dict) or row.get("frame")!=frame or row.get("time_s")!=time:
+                raise ValueError("Original lane observation frame join failed")
+            left_source=row.get("body_left_source_lane")
+            if type(left_source) is not bool:
+                raise ValueError("Original body-departure observation required")
+            row=dict(row)
+            row["requested_indicator"]=command["signal"]["requested_indicator"]
+            row["native_light_readback"]=command["signal"]["readback_state"]
+            for name in names:
+                image=camera_sources[name](frame)
+                if getattr(image,"frame",None)!=frame:
+                    raise ValueError("Camera skipped Native frame: "+name)
+                camera_writers[name].write(image)
+            rows.append(row)
+    finally:
+        for name in names:
+            camera_writers[name].close()
+    return rows

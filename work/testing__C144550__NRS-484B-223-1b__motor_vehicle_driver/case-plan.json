@@ -102,9 +102,9 @@
   "planning_status": "partial; original-frame signal ordering/gap and Native left/right adjacent marked lanes CPU-tested",
   "native_indicator_policy_cpu_component": {
     "source": "native_lane_construction.py",
-    "source_sha256": "d4039fb0d4998d4600194c6e3c9ae3337e9ab6c48307a8cd246416fcbbeda13d",
+    "source_sha256": "bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "2139ec77a4a9e65448e72447403c7a381b473c44a3a79c39354fa5476eeb7ced",
+    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
     "exact_cases": [
       {
         "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
@@ -137,11 +137,64 @@
   },
   "native_lane_change_control_cpu_component": {
     "source": "native_lane_construction.py",
-    "source_sha256": "d4039fb0d4998d4600194c6e3c9ae3337e9ab6c48307a8cd246416fcbbeda13d",
+    "source_sha256": "bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "2139ec77a4a9e65448e72447403c7a381b473c44a3a79c39354fa5476eeb7ced",
+    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
     "verified": "exact-case direction and indicator, target-lane steering sign, bounded forward Native control, light-state readback",
     "legal_safety_ascertainment": "unresolved",
     "physical_acceptance_claimed": false
+  },
+  "same_direction_lane_inventory_cpu_component": {
+    "source": "lane_change_measurements.py",
+    "source_sha256": "be9bde10955daf002048391ae7ce92f916b22dac41d4e9f38e489a9ac709a8bd",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "verified": "complete original lane inventory count; road and unique Native lane IDs; forward headings; marking source; source and target membership",
+    "physical_acceptance_claimed": false
+  },
+  "native_capture_core_cpu_component": {
+    "source": "native_lane_construction.py",
+    "source_sha256": "bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "frames": 900,
+    "rate_hz": 20,
+    "cameras": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "verified": "exact-case Native tick, original observation frame join, indicator readback, four camera frame joins, writer closure on success and failure",
+    "scope": "CPU fake Native runner core; actual acquisition and source persistence unfinished",
+    "physical_acceptance_claimed": false
+  },
+  "exact_saved_measurement_cpu_component": {
+    "source": "lane_change_measurements.py",
+    "source_sha256": "be9bde10955daf002048391ae7ce92f916b22dac41d4e9f38e489a9ac709a8bd",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "expected_original_frames": 900,
+    "exact_cases": [
+      "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+      "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_late_clear_gap",
+      "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_wrong_signal_clear_gap",
+      "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_close_gap",
+      "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__right_signal_before_clear_gap"
+    ],
+    "verified": "900-frame CPU original-source persistence, exact saved finalizer CLI, three observation channels, native result and physical checker, source and signal/gap measurements, wrong destination and missing lane-readback rejection",
+    "scope": "CPU synthetic source fixture with placeholder camera files; full runtime process-saved media decode and exact manifest proofs remain unfinished",
+    "physical_acceptance_claimed": false,
+    "legal_conclusion": "unresolved",
+    "entrypoint": "lane_change_measurements.py",
+    "saved_command": ".venv-cpu/bin/python lane_change_measurements.py --attempt ATTEMPT --output ATTEMPT/analysis-report.json",
+    "required_config_physical_completion": {
+      "body_key": "ego_body_vertices_xy_m",
+      "lane_key": "ego_lane_id",
+      "destination_lane": "original target_lane_id",
+      "context_sources": [
+        "lane_context.json"
+      ]
+    }
   }
 }
