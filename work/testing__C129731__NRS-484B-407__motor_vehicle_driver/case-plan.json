@@ -26,20 +26,6 @@
   },
   "cases": [
     {
-      "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
-      "target_law_id": "NRS-484B-407",
-      "planning_status": "source_review_pending",
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "target_type": "baseline",
-      "source_site_status": "reviewed_original_map_and_routes_missing",
-      "physical_risk": {
-        "status": "physical",
-        "reason": "Original mountain-road reversal clearance and 500-foot route stations require source review and physical validation."
-      }
-    },
-    {
       "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
       "target_law_id": "NRS-484B-407",
       "planning_status": "source_review_pending",
@@ -83,11 +69,31 @@
     }
   ],
   "observations": [
-    "actual subject reversal heading and turning interval",
-    "original road curve or crest classification",
-    "both approaching directions and all inventoried lanes",
-    "original 500-foot sight-ray and terrain hits",
-    "vehicle body nine-point visibility with a declared 1.4 m virtual observer"
+    {
+      "name": "ego_motion",
+      "description": "actual subject reversal heading and turning interval",
+      "mandatory": true
+    },
+    {
+      "name": "road_geometry",
+      "description": "original road curve or crest classification",
+      "mandatory": true
+    },
+    {
+      "name": "approaching_vehicle_routes",
+      "description": "both approaching directions and all inventoried lanes",
+      "mandatory": true
+    },
+    {
+      "name": "sight_rays",
+      "description": "original 500-foot sight-ray and terrain hits",
+      "mandatory": true
+    },
+    {
+      "name": "original_camera_index",
+      "description": "vehicle body nine-point visibility with a declared 1.4 m virtual observer",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -539,7 +545,6 @@
     {
       "comparison_id": "distance_500ft",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -562,7 +567,6 @@
       "source": "NRS 484B.407 exact text",
       "evidence_or_gap": "Requires hash-bound original motion, road geometry and sight-ray packets; legal visibility remains unresolved.",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -574,7 +578,6 @@
       "source": "NRS 484B.407 exact text",
       "evidence_or_gap": "Requires hash-bound original motion, road geometry and sight-ray packets; legal visibility remains unresolved.",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -586,7 +589,6 @@
       "source": "NRS 484B.407 exact text",
       "evidence_or_gap": "Requires hash-bound original motion, road geometry and sight-ray packets; legal visibility remains unresolved.",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -598,7 +600,6 @@
       "source": "NRS 484B.407 exact text",
       "evidence_or_gap": "Requires hash-bound original motion, road geometry and sight-ray packets; legal visibility remains unresolved.",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -610,7 +611,6 @@
       "source": "NRS 484B.407 exact text",
       "evidence_or_gap": "Requires hash-bound original motion, road geometry and sight-ray packets; legal visibility remains unresolved.",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -622,7 +622,6 @@
       "source": "NRS 484B.407 exact text",
       "evidence_or_gap": "Requires hash-bound original motion, road geometry and sight-ray packets; legal visibility remains unresolved.",
       "case_ids": [
-        "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_below_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_at_500ft",
         "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_above_500ft"
@@ -656,5 +655,20 @@
       }
     ],
     "physical_view_review": "pending original Native acquisition"
-  }
+  },
+  "neutral_reference": {
+    "case_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver__distance_reference",
+    "target_law_id": "NRS-484B-407",
+    "planning_status": "source_review_pending",
+    "gap_ids": [
+      "unverified-law-coverage"
+    ],
+    "target_type": "baseline",
+    "source_site_status": "reviewed_original_map_and_routes_missing",
+    "physical_risk": {
+      "status": "physical",
+      "reason": "Original mountain-road reversal clearance and 500-foot route stations require source review and physical validation."
+    }
+  },
+  "source_observation_mapping": {}
 }

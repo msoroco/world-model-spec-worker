@@ -17,9 +17,9 @@ class SelectedDeliveryDraftTests(unittest.TestCase):
         actual = build(PACKAGE)
         committed = json.loads((PACKAGE / "selected-delivery-manifest.draft.json").read_text())
         self.assertEqual(actual, committed)
-        self.assertEqual(len(actual["cases"]), 4)
+        self.assertEqual(len(actual["cases"]), 3)
         self.assertEqual([case["target_first_turn_distance_ft"]
-                          for case in actual["cases"]], [500, 499, 500, 501])
+                          for case in actual["cases"]], [499, 500, 501])
         self.assertEqual(actual["comparisons"][0]["case_ids"],
                          [case["case_id"] for case in actual["cases"]])
         self.assertTrue(all(case["post_capture"]["recorded_only"]

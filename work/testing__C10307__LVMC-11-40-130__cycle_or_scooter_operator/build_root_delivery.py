@@ -5,14 +5,20 @@ This does not alter the sealed per-case diagnostic constructions or their proofs
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1]
 
 
 def write(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def main() -> None:
@@ -38,19 +44,15 @@ def main() -> None:
         ],
     }
     plan["source_observation_mapping"] = {}
+    for observation in plan["observations"]:
+        if observation["name"] == "bicycle_subject_and_jurisdiction":
+            observation["mandatory"] = False
+            observation["capture_via"] = "reviewed source packets in recording_description.context_inputs"
     write(ROOT / "case-plan.json", plan)
 
     channels = construction["recording_description"]["channels"]
-    if not any(row["name"] == "bicycle_subject_and_jurisdiction" for row in channels):
-        channels.append({
-            "name": "bicycle_subject_and_jurisdiction",
-            "unit": "source-bound context",
-            "method": "original actor classification and municipal map packet review",
-            "time_window": "complete original 45 s window",
-            "reference_frame": "reviewed municipal map and actor inventory",
-            "uncertainty": "physical actor identity and City of Las Vegas location require original source review",
-            "sampling_rate_hz": 20,
-        })
+    channels[:] = [row for row in channels
+                   if row["name"] != "bicycle_subject_and_jurisdiction"]
     construction["measurement_plan"] = {
         "source": "original 20 Hz bicycle motion, time-joined conditions, actor and jurisdiction packets, and synchronized four-view video",
         "observations": plan["observations"],
@@ -76,6 +78,36 @@ def main() -> None:
         if source.is_file():
             entry["content"] = source.read_text(encoding="utf-8")
     write(ROOT / "construction.json", construction)
+    manifest_path = ROOT / "execution-manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    for entry in manifest["cases"]:
+        source = ROOT / entry["construction"]
+        if source != ROOT / "construction.json":
+            exact_construction = json.loads(source.read_text(encoding="utf-8"))
+            exact_construction["recording_description"] = construction["recording_description"]
+            for file_entry in exact_construction["files"]:
+                original = (REPO / file_entry["source"] if file_entry.get("source")
+                            else source.parent / file_entry["path"])
+                if original.is_file():
+                    file_entry["content"] = original.read_text(encoding="utf-8")
+            write(source, exact_construction)
+        entry["construction_sha256"] = sha(source)
+        entry["offline"]["construction_sha256"] = entry["construction_sha256"]
+        entry["acquisition"].pop("bicycle_subject_and_jurisdiction", None)
+    for proposal_name in ("cases-stage.json", "cases.json"):
+        proposal_path = ROOT / "proposals" / proposal_name
+        proposal = json.loads(proposal_path.read_text(encoding="utf-8"))
+        for selected in proposal["cases"]:
+            if selected["target_type"] != "baseline":
+                selected["recording_description"] = construction["recording_description"]
+        for sweep in proposal["sweep_specs"]:
+            sweep["recording_description"] = construction["recording_description"]
+        write(proposal_path, proposal)
+    semantic_path = ROOT / "proposals/semantic-index.json"
+    semantic = json.loads(semantic_path.read_text(encoding="utf-8"))
+    semantic["stages"]["cases"]["sha256"] = sha(ROOT / "proposals/cases-stage.json")
+    write(semantic_path, semantic)
+    write(manifest_path, manifest)
 
 
 if __name__ == "__main__":

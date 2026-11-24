@@ -11,8 +11,11 @@ class PlannedExactCasesTests(unittest.TestCase):
         plan = json.loads((PACKAGE / "case-plan.json").read_text())
         proposals = json.loads((PACKAGE / "proposals/cases.json").read_text())
         ids = [case["case_id"] for case in plan["cases"]]
-        self.assertEqual(ids, [case["case_id"] for case in proposals["cases"]])
-        self.assertEqual(len(ids), 4)
+        selected = [case["case_id"] for case in proposals["cases"]
+                    if case["target_type"] != "baseline"]
+        self.assertEqual(ids, selected)
+        self.assertEqual(len(ids), 3)
+        self.assertEqual(plan["neutral_reference"]["case_id"], proposals["cases"][0]["case_id"])
         self.assertEqual(plan["comparisons"][0]["case_ids"], ids)
         self.assertEqual(plan["comparisons"][0]["comparison_id"], "distance_500ft")
         self.assertTrue(all(case["planning_status"] == "source_review_pending"

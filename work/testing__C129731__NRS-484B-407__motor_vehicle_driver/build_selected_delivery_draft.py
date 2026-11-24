@@ -36,10 +36,11 @@ def build(package: Path) -> dict:
     if plan.get("assignment_id") != ASSIGNMENT:
         raise ValueError("exact assignment identity changed")
     cases = plan.get("cases", [])
-    drafts = proposal.get("cases", [])
-    if (len(cases) != 4 or len(drafts) != 4 or
+    drafts = [case for case in proposal.get("cases", [])
+              if case.get("target_type") != "baseline"]
+    if (len(cases) != 3 or len(drafts) != 3 or
             [c["case_id"] for c in cases] != [c["case_id"] for c in drafts]):
-        raise ValueError("four exact planned case identities required")
+        raise ValueError("three selected exact planned case identities required")
     script_hashes = {name: _sha(package / name) for name in SCRIPTS}
     diagnostic = json.loads((package / "execution-manifest.draft.json").read_text())
     diagnostic_index = {row["case_id"]: row for row in diagnostic.get("cases", [])}

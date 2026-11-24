@@ -1,3 +1,11 @@
+## 2026-11-24 strict assignment gate passed
+
+Status: `ready`, readiness kind `delivery_prepared`. Exact command `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output TMPDIR=$PWD/.runtime-work/c129731-test-tmp .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready` exited 0. `cpu-strict-check.log` SHA-256 `f6d113fe22b0f4b45e4f8e2989aa63145e797a6933508394eb61f31cfa131fbb`. Lead independent verification remains.
+
+The canonical manifest has three selected distance probes (499, 500, 501 feet) and SHA-256 `010faafdebd1896793dbc3537149e9dfc7b012df168642866db5138c89f8b5db`. The neutral 500-foot reference stays in the semantic proposal and `case-plan.neutral_reference`, with its separate exact offline, compatibility, and saved-only receipts. The three selected probes each have exact primary and fallback Core/four-view compatibility, saved-only finalizers, positive full-decode delivery audits, and missing-source negative audits. The focused CPU suite passed 70 tests; `cpu-sight-tests.log` SHA-256 `3df386343e692892470f3ffa0bf97bb500bfb3eb0d37f13427d8874fb898c276`. Root `runner.py --check` passed for the selected 500-foot case.
+
+Original Native road/site source review, physical motion, sight-line and pixel acceptance remain GPU delivery work; diagnostic fixture receipts explicitly deny physical acceptance. The package does not claim a legal verdict. The next exact GPU command is in `result.json.first_gpu_delivery_command`. Do not run it without the reviewed source and local job bindings.
+
 # testing__C129731__NRS-484B-407__motor_vehicle_driver
 
 Status: partial source inventory. No case or recording is proposed by this checkpoint.
