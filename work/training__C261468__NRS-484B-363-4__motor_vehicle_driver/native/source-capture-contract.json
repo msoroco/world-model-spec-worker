@@ -1,0 +1,60 @@
+{
+  "format": "saved-school-zone-pass-source-contract",
+  "assignment_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver",
+  "law_id": "NRS-484B-363-4",
+  "scope": "school_zone / overtake / other_vehicle with motor_vehicle_driver",
+  "required_saved_sources": [
+    "video_frames.jsonl",
+    "pass_trace.jsonl",
+    "school_zone_context.json",
+    "camera_forward.mkv",
+    "camera_rear.mkv",
+    "camera_left.mkv",
+    "camera_right.mkv"
+  ],
+  "frame_rate_hz": 20,
+  "required_frames": 600,
+  "minimum_span_s": 29.9,
+  "source_joins": [
+    "video_frame",
+    "native_frame",
+    "time_s"
+  ],
+  "motion_fields": [
+    "ego_station_m",
+    "other_station_m",
+    "ego_route_direction_id",
+    "other_route_direction_id"
+  ],
+  "context_fields": [
+    "zone_kind",
+    "zone_station_m",
+    "zone_sign_source",
+    "zone_boundary_source",
+    "route_direction_source",
+    "school_calendar_source",
+    "operation_hours_source",
+    "civil_time_source",
+    "beacon_or_sign_source",
+    "school_in_session",
+    "pupils_in_class",
+    "beacon_operational",
+    "beacon_with_sign",
+    "beacon_yellow_lights",
+    "beacon_yellow_alternating",
+    "sign_says_limit_in_effect",
+    "civil_time_unix_s",
+    "operation_end_unix_s",
+    "next_operation_start_unix_s",
+    "camera_sha256"
+  ],
+  "measured_episode": "behind-to-ahead crossing for same-direction route while both vehicles occupy sourced signed-zone interval",
+  "statutory_exception_observations": [
+    "school in session",
+    "minutes after school operation end and before next start",
+    "operational sign-plus-two-yellow-lights beacon and alternating state",
+    "nonbeacon sign effect"
+  ],
+  "provenance": "original_native_pose only for original source review; synthetic_native_sample only for CPU diagnostics",
+  "limitation": "The checker does not decide compliance, physical completion, sign validity or school calendar truth. Original source review and exact selected delivery proofs remain required."
+}

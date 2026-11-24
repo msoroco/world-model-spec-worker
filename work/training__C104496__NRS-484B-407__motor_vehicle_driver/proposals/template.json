@@ -1,0 +1,59 @@
+{
+  "template_id": "NRS-484B-407@motor_vehicle_driver",
+  "law_id": "NRS-484B-407",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.",
+  "structure": {
+    "law_id": "NRS-484B-407",
+    "activation": {
+      "condition": "A motor vehicle is on a curve or on the approach to or near a grade crest.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Turn to proceed in the opposite direction under the stated visibility condition.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Evaluate location and visibility throughout the observed turn episode.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "upon any curve",
+        "note": "Review generated plan-view curvature and the complete physical reversal interval."
+      },
+      {
+        "phrase": "upon the approach to or near the crest of a grade",
+        "note": "Review generated grade profile, crest station and original vehicle-body location during the reversal."
+      },
+      {
+        "phrase": "turned so as to proceed in the opposite direction",
+        "note": "Review the complete original forward-reverse-forward path and final travel heading, not a controller request alone."
+      },
+      {
+        "phrase": "cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet",
+        "note": "Keep both roadway directions, actual 500-foot road distance, original body rays and pixel review distinct; an analytic centerline ray alone does not establish recognition."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "turn_to_opposite_direction",
+      "kind": "subject_behavior",
+      "range_or_domain": "full original heading and signed-motion episode; unknown until captured"
+    },
+    {
+      "name": "curve_or_crest_geometry",
+      "kind": "world_setup",
+      "range_or_domain": "generated OpenDRIVE curvature and grade readback, including curve and crest alternatives"
+    },
+    {
+      "name": "two_direction_500ft_visibility",
+      "kind": "world_setup",
+      "range_or_domain": "both original roadway approaches, body rays, pixel review and observer positions at statutory roadway distance"
+    }
+  ]
+}

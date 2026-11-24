@@ -1,6 +1,6 @@
 # training__C261468__NRS-484B-363-4__motor_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -15,3 +15,9 @@ designated school zone; ego overtakes same-direction vehicle; beacon state fixed
 ## Blockers and resumption
 
 Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Four alternative exceptions and half-hour boundary require sourced calendar/time and separate comparisons. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+
+## 2026-11-23 saved-source episode construction
+
+Added `native/measure_pass.py` and `native/source-capture-contract.json`. The checker requires 600 joined 20 Hz original frame/pose samples, four fully decoded and hashed source-camera streams, a same-direction behind-to-ahead crossing inside sourced school-zone bounds, and separately reviewed school calendar, operation schedule, civil time, beacon definition/state and sign effect. It outputs crossing time and the distinct exception facts without deciding legal compliance. `native/prove_pass.py` passed a synthetic pass with active school, school out of session, quiet operational beacon, nonbeacon sign-off and exact 30-minute elapsed observations. Nine negative tests reject missing trace, broken join, opposite route, no completed pass, crossing outside zone, stale video hash, invalid beacon definition, missing school calendar source and wrong Native provenance. Fixture poses are `synthetic_native_sample`, never original motion. Proof log SHA-256: `05a17be36fe307fc2295e0a29ae3756a3b7811df1f356a292394ecb774586296`.
+
+The current two-case plan covers only the base condition and school-not-in-session comparison. `case-plan.json.branch_gap_review` records the omitted controlled comparisons for the other three exceptions. Next CPU work is to expand those cases, build exact Native constructions and current-runtime offline/compatibility, saved-processing, candidate, semantic and independent comparison proofs. Physical zone signs, calendar authority, beacon state, camera evidence and acceptance remain unverified.

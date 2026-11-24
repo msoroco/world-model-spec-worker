@@ -37,3 +37,11 @@ The twelve draft constructions were rebuilt with those processors. Pinned `runti
 The assignment remains partial with three unselected cases. Next CPU work is selected exact manifests and current source-only fixture recipes, Core/Lean/render and pinned positive/negative compatibility, actual `process-saved` lifecycle proof, independent delivery and controlled comparison audits, and semantic proposals. The 35-second draft media guard does not substitute for these receipts.
 
 The refreshed assignment-scoped `--complete` exits 0 (log SHA-256 `cd71420bc62f800c51f3e67491f9dd4fe85702c08afffd951afe029c2f7eaa38`); the scoped strict gate exits 1 on partial status (log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`). No ready promotion was made.
+
+## Canonical semantic construction, 2026-11-23
+
+Added `proposals/relevance.json`, `relevance-batch.json`, `template.json`, four judgment-observables artifacts, `bindings.json` and `cases.json` for the exact NRS 484B.407 source. The cases preserve the existing three physical requests as draft boundary probes: shallow versus steep crest and shallow straight versus 300 m curve. The binding keeps observed reversal distinct from the commanded three-point path, and keeps both-direction 500-foot visibility unresolved until original body rays and reviewed pixels exist. Four judgment sweep specs explicitly remain incomplete; no case is selected or legal outcome assigned.
+
+`proposals/prove_semantic.py` passed all nine canonical stage artifacts under the pinned runtime and rejected four material mutations: missing grade variable, guaranteed reversal behavior, absent visibility source channel, and an asserted legal verdict. Proof SHA-256: `164f86649ec16eee991cab6efec7fa047f0d0eb9df78756ed8063b646bfd77a2`; log SHA-256: `164f86649ec16eee991cab6efec7fa047f0d0eb9df78756ed8063b646bfd77a2`. The proof uses current frozen input and runtime hashes, with direct import output root under `.runtime-work/`.
+
+Remaining CPU work: complete physical judgment sweep grids and selected exact cases, bind source-only fixture recipes, current-runtime compatibility and process-saved lifecycle for primary plus three fallbacks, and independent delivery/comparison audits. Original CARLA visibility, human pixel review and canonical acceptance remain later local tasks. Status remains partial.

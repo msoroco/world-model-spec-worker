@@ -1,6 +1,6 @@
 # training__C405647__NRS-484B-267-2c__motor_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -15,3 +15,9 @@ qualifying emergency/official vehicle moving or visibly preparing to move with r
 ## Blockers and resumption
 
 Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Be prepared to stop is qualitative; model braking readiness does not decide legal meaning. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+
+## 2026-11-23 saved-source approach construction
+
+Added `native/measure_readiness.py` and `native/source-capture-contract.json`. The checker requires 600 original joined 20 Hz motion samples and all four decoded, hashed camera streams. It binds independent review of qualifying vehicle class, referenced flashing-light requirements, visible motion/hand-signal indications and officer direction to the saved cameras. It reports actual approach gap, brake delay, stop distance and deceleration as engineering observations without deciding what “prepared to stop” means legally. `native/prove_readiness.py` passed synthetic braked/unbraked diagnostics plus nine rejections: missing trace, bad frame join, no flashing, no approach, stale camera hash, wrong vehicle class, unreviewed visibility, unsourced lights and wrong Native provenance. Fixture motion is `synthetic_native_sample`, never original CARLA velocity. Log SHA-256: `208a6c9b87241270f8598cac6b495bdaad34408497845042639a25d0a5c36c0c`.
+
+`case-plan.json.branch_gap_review` identifies separate movement/hand-signal and officer-direction branches still to plan. Next CPU work is exact Native construction, selected cases and current-runtime offline/compatibility, saved-processing, candidate, semantic and independent comparison proofs. Source qualification, physical realization and legal judgment remain unverified.

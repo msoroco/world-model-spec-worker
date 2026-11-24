@@ -62,7 +62,6 @@ def make_attempt(folder, suffix, source):
     display_digest = display_pixel_sha(videos[-1], config['cameras'][-1]['width'],
                                        config['cameras'][-1]['height'])
     mapping, trace, evidence, native = [], [], [], []
-    channels = {item['name']: [] for item in config['recording_description']['channels']}
     for index, sample in enumerate(samples):
         frame, time = sample['native_frame'], sample['time_s']
         x, y = sample['pedestrian_xy_m']
@@ -77,19 +76,11 @@ def make_attempt(folder, suffix, source):
         evidence.append({'original_frame': frame, 'recording_time_s': time,
                          'ego': {'body_vertices_m': body}, 'synthetic_diagnostic': True})
         native.append({'frame': frame, 'time_s': time, 'synthetic_diagnostic': True})
-        for name in channels:
-            channels[name].append({'time_s': time, 'value': {
-                'kin.position': [x, y], 'kin.heading': [1, 0],
-                'rel.occupies': {'footprint_xy_m': sample['pedestrian_footprint_xy_m']},
-                'native_display_program': {'displayed_countdown_s': sample['displayed_countdown_s']},
-                'display_camera_frame_join': mapped}[name]})
     write_rows(folder / 'countdown_samples.jsonl', samples)
     for name, rows in (('video_frames.jsonl', mapping), ('trace.jsonl', trace),
                        ('capture/evidence.jsonl', evidence),
                        ('capture/native/frames.jsonl', native)):
         write_rows(folder / name, rows)
-    for name, rows in channels.items():
-        write_rows(folder / 'channels' / (name + '.jsonl'), rows)
     (folder / 'capture/manifest.json').write_text(json.dumps({
         'extraction_confirmed': True, 'frames': FRAMES,
         'synthetic_diagnostic': True}) + '\n')
@@ -116,11 +107,21 @@ def main():
             assert report['display_integrity']['pixel_integrity_verified'] is True
             assert report['display_integrity']['frames'] == FRAMES
             assert result['accepted'] is False and result['legal_verdict_claimed'] is False
+            assert len(report['source_derived_channel_hashes']) == 5
+            assert all((good / 'channels' / (name + '.jsonl')).is_file()
+                       for name in report['source_derived_channel_hashes'])
             assert {p.name: sha(p) for p in good.glob('*.mkv')} == hashes
+            preexisting = scratch / (suffix + '-preexisting-channel')
+            shutil.copytree(good, preexisting)
+            (preexisting / 'result.json').unlink()
+            (preexisting / 'analysis-report.json').unlink()
+            failed_channel = run_finalizer(preexisting)
+            assert failed_channel.returncode and 'Preexisting derived channels are not an acquisition source' in failed_channel.stderr
             missing = scratch / (suffix + '-missing')
             shutil.copytree(good, missing)
             (missing / 'result.json').unlink()
             (missing / 'analysis-report.json').unlink()
+            shutil.rmtree(missing / 'channels')
             (missing / 'countdown_samples.jsonl').unlink()
             failed = run_finalizer(missing)
             assert failed.returncode and 'Missing required source: countdown_samples.jsonl' in failed.stderr
@@ -128,6 +129,7 @@ def main():
             shutil.copytree(good, changed)
             (changed / 'result.json').unlink()
             (changed / 'analysis-report.json').unlink()
+            shutil.rmtree(changed / 'channels')
             rows = [json.loads(line) for line in (changed / 'video_frames.jsonl').read_text().splitlines()]
             rows[17]['source_rgb_sha256']['display_close'] = '0' * 64
             write_rows(changed / 'video_frames.jsonl', rows)
@@ -137,6 +139,8 @@ def main():
                 'relation': result['measured_values']['clearance_relative_to_displayed_zero'],
                 'video_sources': len(hashes), 'missing_source_rejected': True,
                 'changed_pixel_hash_rejected': True, 'source_videos_unchanged': True,
+                'preexisting_channel_rejected': True,
+                'source_derived_channel_hashes': report['source_derived_channel_hashes'],
                 'display_integrity': report['display_integrity'],
                 'physical_acceptance_claimed': False})
     assert [row['relation'] for row in records] == ['before_zero', 'at_or_after_zero']

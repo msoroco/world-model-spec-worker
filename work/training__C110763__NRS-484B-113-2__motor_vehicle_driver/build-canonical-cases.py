@@ -30,18 +30,20 @@ save('bindings.json', binding)
 
 previous = load('cases.json')
 recording = copy.deepcopy(previous['cases'][0]['recording_description'])
-recording['channels'].append({
-    'name': 'source_camera_views', 'unit': 'video', 'sampling_rate_hz': 20,
-    'method': 'four original synchronized source-camera files and frame index; no synthetic frame substitutes for original capture',
-    'time_window': '30 s / 600 joined frames', 'reference_frame': 'original Native and decoded video frame IDs',
-    'uncertainty': 'one 50 ms sample; original pixels pending',
-})
+if not any(item['name'] == 'source_camera_views' for item in recording['channels']):
+    recording['channels'].append({
+        'name': 'source_camera_views', 'unit': 'video', 'sampling_rate_hz': 20,
+        'method': 'four original synchronized source-camera files and frame index; no synthetic frame substitutes for original capture',
+        'time_window': '30 s / 600 joined frames', 'reference_frame': 'original Native and decoded video frame IDs',
+        'uncertainty': 'one 50 ms sample; original pixels pending',
+    })
 for name, method in (
     ('intersection_geometry', 'surveyed original OpenDRIVE junction polygon and frame-joined body footprint'),
     ('crosswalk_geometry', 'surveyed original crosswalk polygon or verified absence on the selected road'),
     ('corner_geometry', 'surveyed original corner geometry and frame-joined vehicle path'),
 ):
-    recording['context_inputs'].append({'name': name, 'unit': 'structured', 'method': method})
+    if not any(item['name'] == name for item in recording['context_inputs']):
+        recording['context_inputs'].append({'name': name, 'unit': 'structured', 'method': method})
 
 def assignments(stop):
     return {

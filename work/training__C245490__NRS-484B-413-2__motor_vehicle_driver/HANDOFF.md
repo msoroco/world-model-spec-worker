@@ -1,6 +1,6 @@
 # training__C245490__NRS-484B-413-2__motor_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -14,4 +14,10 @@ hold district category fixed within each boundary triple; same turn or lane chan
 
 ## Blockers and resumption
 
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Business/residential 100 ft and other-area 300 ft need separate comparable triples; indicator API and actual course change may diverge. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Business/residential 100 ft and other-area 300 ft need separate comparable triples; indicator API and actual course change may diverge. Resolve exact statutory branches and source authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+
+## Current CPU construction checkpoint
+
+`measure_signal.py` now implements a saved-sample measurement of continuous signal distance before one observed course-change event. It rejects missing or reordered frames, 20 Hz time gaps, missing poses or indicator states, left-censored onset, and absent course-change events. An off or opposite-direction indicator resets continuity. `signal-measurement-contract.json` states the original-source requirements, 100/300-foot area branches, 30-second capture requirement, and independent area/course-change checks. These are source-shaped measurement software, not original Native evidence.
+
+`.venv-cpu/bin/python work/training__C245490__NRS-484B-413-2__motor_vehicle_driver/prove_signal_measure.py` exited 0. `signal-measurement-cpu.log` SHA-256 is `1d66e3a5ed2360d517378a77557f600231ef4574325aeeb5c29ab6a5fdb50f7a`; it records six synthetic boundary distances, two interruption probes, and six negative-source checks. `.venv-cpu/bin/python worker_check.py --assignment training__C245490__NRS-484B-413-2__motor_vehicle_driver --complete` exited 0 for the partial static package. The measurement module still needs integration into an exact selected case finalizer and proof against retained raw acquisition from the current runtime. Do not promote from this checkpoint.

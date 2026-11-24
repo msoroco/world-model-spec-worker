@@ -1,0 +1,56 @@
+{
+  "format": "saved-emergency-approach-source-contract",
+  "assignment_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2c",
+  "frozen_scope": "road/travel/emergency_vehicle, already-moving qualifying vehicle",
+  "required_saved_sources": [
+    "video_frames.jsonl",
+    "approach_trace.jsonl",
+    "emergency_review.json",
+    "camera_forward.mkv",
+    "camera_rear.mkv",
+    "camera_left.mkv",
+    "camera_right.mkv"
+  ],
+  "rate_hz": 20,
+  "required_frames": 600,
+  "minimum_span_s": 29.9,
+  "trace_fields": [
+    "native_frame",
+    "video_frame",
+    "source_kind",
+    "ego_speed_mps",
+    "emergency_speed_mps",
+    "surface_gap_m",
+    "ego_brake",
+    "emergency_flashing_visible",
+    "emergency_motion_visible",
+    "hand_signal_visible"
+  ],
+  "review_fields": [
+    "vehicle_class",
+    "vehicle_class_source",
+    "lights_meet_484A_480_3",
+    "flashing_light_source",
+    "visible_to_approaching_driver",
+    "visible_motion_source",
+    "officer_direction_present",
+    "officer_direction_source",
+    "camera_sha256",
+    "reviewer"
+  ],
+  "measurement_outputs": [
+    "approach trigger and gap",
+    "first brake frame and delay",
+    "observed stopped frame and distance",
+    "peak observed deceleration",
+    "minimum measured gap",
+    "emergency motion, lamp and officer facts"
+  ],
+  "not_a_legal_standard": "No speed, gap, brake delay or deceleration threshold is supplied for the qualitative duty to be prepared to stop.",
+  "provenance": "original_native_motion only for original review; synthetic_native_sample only for diagnostic fixture",
+  "limitations": [
+    "Original video/source authority must confirm vehicle class, flashing-light qualification, visibility and officer direction.",
+    "Native CARLA motion, exact delivery cases, semantic stages and independent audits remain unproved."
+  ]
+}

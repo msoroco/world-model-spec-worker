@@ -1,0 +1,18 @@
+{
+  "format": "c245490-signal-measurement-contract-v1",
+  "assignment_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver",
+  "source_law": "NRS 484B.413(2)",
+  "source": "saved original per-frame Native ego pose, original observed indicator state, and observed course-change event",
+  "required_source_fields": ["frame", "time_s", "ego_xy_m", "turn_indicator", "course_change"],
+  "required_rate_hz": 20,
+  "area_class_source": "independent original map/context review; not inferred from controller or weather",
+  "area_classes": {"business_or_residential": 100, "other": 300},
+  "measurement": "Sum horizontal Euclidean path steps from the last observed indicator onset through the single observed course-change frame. An off or opposite indicator sample resets the continuous interval.",
+  "weather_handling": "Weather does not change the threshold. The saved weather source must be retained for independent review.",
+  "capture_requirement": "Retain at least 30 seconds and enough approach to contain the entire 300-foot interval; reject left-censored signal onset.",
+  "limitations": [
+    "A 20 Hz sample can establish continuity only at saved sample times; an intersample change is not observed.",
+    "A course-change flag must be independently checked against original pose, heading and lane observations.",
+    "The CPU fixture does not establish original Native movement, video visibility, area classification, statutory compliance or accepted recording coverage."
+  ]
+}

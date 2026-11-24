@@ -22,7 +22,7 @@ def recording_description():
     channels = []
     for name, unit, method in (
         ('kin.position', 'm', 'Original Native pedestrian pose and footprint'),
-        ('kin.heading', 'unit vector', 'Original Native pedestrian transform'),
+        ('kin.heading', 'unit vector', 'Direction calculated from adjacent original pedestrian poses'),
         ('rel.occupies', 'structured', 'Full original body versus authored highway edges'),
         ('native_display_program', 'structured', 'Requested frame-synchronized indication, countdown and illumination'),
         ('display_camera_frame_join', 'structured', 'Original RGB frame hash joined to Native frame and countdown source'),

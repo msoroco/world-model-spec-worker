@@ -43,6 +43,9 @@ def verify_original_joins(folder, count):
         sample_body = {(round(v[0], 3), round(v[1], 3)) for v in s['pedestrian_footprint_xy_m']}
         if len(evidence_body) != 4 or evidence_body != sample_body:
             raise ValueError('Original countdown pedestrian footprint differs')
+        if any(abs(float(t['position_m'][axis]) - float(s['pedestrian_xy_m'][axis])) > 1e-3
+               for axis in (0, 1)):
+            raise ValueError('Original countdown pedestrian pose differs')
         previous_frame, previous_time = frame, time
     capture = json.loads(required(folder, 'capture/manifest.json').read_text())
     if capture.get('extraction_confirmed') is not True or capture.get('frames') != count:
@@ -82,6 +85,52 @@ def report(folder, case_id):
             'scope': 'synthetic_or_native_source_timing_without_exception_or_legal_verdict'}
 
 
+def derive_channels(folder, count, description):
+    """Materialize recording channels only from joined retained acquisition sources."""
+    folder = Path(folder)
+    destination = folder / 'channels'
+    if destination.exists():
+        raise ValueError('Preexisting derived channels are not an acquisition source')
+    trace = rows(folder, 'trace.jsonl')
+    evidence = rows(folder, 'capture/evidence.jsonl')
+    mapping = rows(folder, 'video_frames.jsonl')
+    samples = rows(folder, 'countdown_samples.jsonl')
+    if any(len(items) != count for items in (trace, evidence, mapping, samples)):
+        raise ValueError('Cannot derive channels from incomplete acquisition sources')
+    positions = [item['position_m'][:2] for item in trace]
+    headings = []
+    for index in range(count):
+        left, right = (index, index + 1) if index + 1 < count else (index - 1, index)
+        dx = float(positions[right][0]) - float(positions[left][0])
+        dy = float(positions[right][1]) - float(positions[left][1])
+        magnitude = math.hypot(dx, dy)
+        if magnitude <= 1e-9:
+            raise ValueError('Cannot derive pedestrian heading from stationary pose interval')
+        headings.append([dx / magnitude, dy / magnitude])
+    values = {
+        'kin.position': [[float(value) for value in position] for position in positions],
+        'kin.heading': headings,
+        'rel.occupies': [{'footprint_xy_m': sample['pedestrian_footprint_xy_m']}
+                         for sample in samples],
+        'native_display_program': [{'displayed_countdown_s': sample['displayed_countdown_s']}
+                                   for sample in samples],
+        'display_camera_frame_join': mapping,
+    }
+    expected = {item['name'] for item in description['channels']}
+    if expected != set(values):
+        raise ValueError('Recording description does not match source-derived channels')
+    destination.mkdir()
+    hashes = {}
+    for name, samples_for_channel in values.items():
+        path = destination / (name + '.jsonl')
+        with path.open('x') as output:
+            for index, value in enumerate(samples_for_channel):
+                output.write(json.dumps({'time_s': mapping[index]['time_s'], 'value': value},
+                                        allow_nan=False) + '\n')
+        hashes[name] = sha(path)
+    return hashes
+
+
 def finalize(attempt, output):
     from worker_exchange.native_output import validate_result
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
@@ -104,6 +153,7 @@ def finalize(attempt, output):
         if info != (count, camera['width'], camera['height']):
             raise ValueError('Source countdown camera frame count or dimensions differ: ' + name)
         videos[name] = {'frames': info[0], 'width': info[1], 'height': info[2]}
+    channel_hashes = derive_channels(attempt, count, config['recording_description'])
     evidence = []
     for channel in config['recording_description']['channels']:
         ref = 'channels/' + channel['name'] + '.jsonl'
@@ -144,6 +194,7 @@ def finalize(attempt, output):
     validate_result(result)
     analysis.update(format='c10316-saved-countdown-analysis-v1', candidate_id=config['candidate_id'],
                     original_joins=joins, video_frames=videos,
+                    source_derived_channel_hashes=channel_hashes,
                     display_integrity=display_integrity,
                     scope='saved source joins and video decode; no physical signal or legal finding')
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + '\n')

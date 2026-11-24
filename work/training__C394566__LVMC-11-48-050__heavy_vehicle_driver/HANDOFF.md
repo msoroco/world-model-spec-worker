@@ -1,6 +1,6 @@
 # training__C394566__LVMC-11-48-050__heavy_vehicle_driver
 
-Status: blocked. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -14,4 +14,10 @@ unladen weight above 8000 lb, residence district, 7 p.m. to 6 a.m.; no written p
 
 ## Blockers and resumption
 
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Written permit and attached conditions require external authority; weight/time boundary probes needed. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Written permit and attached conditions require authoritative source review. Resolve exact statutory branches from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+
+## Current CPU construction checkpoint
+
+`restriction_measure.py` checks source-hashed factual inputs for vehicle-specific unladen weight, residence-district class, truck-route designation, civil time with UTC offset, observed movement and written-permit status. It returns the 7 p.m. to 6 a.m. window in the local timezone and preserves both exact clock endpoints as unresolved. A permit-present flag remains insufficient to verify applicant, vehicle, route, time and attached conditions. `restriction-measurement-contract.json` records the authoritative sources required before an exact case can use the evaluator. None of these synthetic source packets establishes administrative authenticity or legal compliance.
+
+`.venv-cpu/bin/python work/training__C394566__LVMC-11-48-050__heavy_vehicle_driver/prove_restriction_measure.py` exited 0. `restriction-measurement-cpu.log` SHA-256 is `f4b694af93a685fe3dd3827fe0e3eb1822554971a1ed3bcdcca2a0ce58f4e1e3`; seven civil-time probes, seven weight/route/movement/permit probes, and six negative-source probes pass. The evaluator remains to be integrated into a selected-case finalizer and tested against retained raw acquisition. No original Native or accepted-recording claim is made.

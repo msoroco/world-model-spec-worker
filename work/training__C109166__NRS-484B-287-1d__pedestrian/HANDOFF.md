@@ -1,6 +1,6 @@
 # training__C109166__NRS-484B-287-1d__pedestrian
 
-Status: **blocked**. No selected delivery cases, CARLA construction, CPU candidate proof, CARLA execution, or accepted recording is claimed.
+Status: **partial**. No selected delivery cases, CARLA construction, CPU candidate proof, CARLA execution, or accepted recording is claimed.
 
 Exact source: `inputs/training__C109166__NRS-484B-287-1d__pedestrian/assignment.json` SHA-256 `0621873b32a1479d489bd926c90ece10b33ca266d6cc7a4188f55653ac891c63`; witnesses: `inputs/training__C109166__NRS-484B-287-1d__pedestrian/witnesses.json` SHA-256 `1b96710a3bab2c6c0e9f6cfc0ce660b6a3de465faa9c2fc4e795e37d9bf8fe92`. The statutory text and source citation are retained in `case-plan.json`; recovered summary is unreviewed.
 
@@ -19,3 +19,9 @@ The opening historical `blocked`/old input-hash note is superseded. Current inpu
 Current CPU preflight passed (log SHA-256 `5929cfc751f06630ee9c7966b7a90a9c6e5ffab5ed7995b42a7efda2cf60ab3e`). Assignment-scoped `--complete` passed (log SHA-256 `881b8956bae990ab7f456eaaf44b934952866189d509ba9cfe83fadc2ed5f76a`); scoped strict exited 1 because partial/missing packages remain (log SHA-256 `4b7c473100b0567da2a85548669f3b674e506ee243d68a01763fb24c3c8a61e2`). Original official-device pixels/authority, physical crossing and NRS 484B.290 exception are not resolved.
 
 Next worker-owned work: build executable Native geometry/device and four synchronized camera sources, add target-preserving fallback candidates and a source-only finalizer/measurement contract, then run public `runtime.py compatibility` and `process-saved` with missing-source negatives. Independently audit original device authority, pedestrian trajectory and exception evidence before selecting or claiming delivery.
+
+## 2026-11-23 saved-source finalizer checkpoint
+
+`native/saved_finalizer.py` now joins three separately hashed saved inputs: 600 pedestrian center/footprint samples, 600 device-display samples, and map/context geometry. It rejects missing or stale sources, frame/time mismatches, source-shaped pedestrian discontinuity, authority overstatement, and a device state that changes during the observed crossing. Both diagnostic cases retain an identical 16.970563 m path and intersection entry/exit frames 120/320; the displayed instruction is the sole paired difference. `native/saved-measurement-contract.json` lists the original Native, map, device-authority, video and NRS 484B.290 evidence still required.
+
+Run `TMPDIR=$PWD/.runtime-work/c109166-tmp .venv-cpu/bin/python work/training__C109166__NRS-484B-287-1d__pedestrian/prove-saved-finalizer.py`. It exited 0 with two positive 30-second `synthetic_native_sample` cases and five missing/mismatched-source negatives; `saved-finalizer-cpu.log` SHA-256 is `d54167f7d5007230a9271506269e6122b63a7bc87d43bfac3843cb254259665c`. This is a source-only diagnostic finalizer checkpoint, not the public runtime `process-saved` path or an original-device authorization finding. The earlier next-step sentence's finalizer item is now partially implemented; exact selected case integration, four source-camera videos, current-runtime compatibility/process-saved, fallbacks and independent legal/source audits remain worker-owned.
