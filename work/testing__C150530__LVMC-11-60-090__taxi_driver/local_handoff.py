@@ -53,12 +53,17 @@ def validate_row(row: dict) -> None:
         raise ValueError("saved processor attempt or manifest differs")
     if option(row["additional_source_audit_command"], "--case-id") != case:
         raise ValueError("independent auditor selects wrong case")
+    if option(row["additional_source_audit_command"], "--case") != case.removeprefix(ROOT.name + "__"):
+        raise ValueError("independent auditor selects wrong case suffix")
     if option(row["additional_source_audit_command"], "--pixel-review") != "$PIXEL_REVIEW":
         raise ValueError("independent auditor lacks pixel review")
     if (option(row["additional_source_audit_command"], "--attempt") != "$ATTEMPT"
             or option(row["additional_source_audit_command"], "--job-id") != "$JOB_ID"
+            or option(row["additional_source_audit_command"], "--attempt-number") != "$ATTEMPT_NUMBER"
+            or option(row["additional_source_audit_command"], "--recording-id") != "$RECORDING_ID"
+            or option(row["additional_source_audit_command"], "--physical-receipt") != "$PHYSICAL_RECEIPT"
             or option(row["additional_source_audit_command"], "--output") != "$AUDIT"):
-        raise ValueError("independent auditor attempt, job or audit output differs")
+        raise ValueError("independent auditor source or delivery identity differs")
     if option(row["accept_command"], "--audit") != "$AUDIT":
         raise ValueError("acceptance lacks independent audit")
     if option(row["accept_command"], "--attempt") != "$ATTEMPT_NUMBER":
@@ -105,7 +110,11 @@ def main() -> None:
                                  ("postprocessing_command", "--manifest"),
                                  ("postprocessing_command", "--attempt"),
                                  ("additional_source_audit_command", "--pixel-review"),
+                                 ("additional_source_audit_command", "--case"),
                                  ("additional_source_audit_command", "--job-id"),
+                                 ("additional_source_audit_command", "--attempt-number"),
+                                 ("additional_source_audit_command", "--recording-id"),
+                                 ("additional_source_audit_command", "--physical-receipt"),
                                  ("additional_source_audit_command", "--output"),
                                  ("execute_command", "--assignment"),
                                  ("execute_command", "--job"),

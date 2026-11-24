@@ -15,6 +15,8 @@ from pathlib import Path
 from native_camera import VIEWS
 from native_scene import VARIABLES
 from saved_conditions import FIELDS, measure as _measure
+from native_count_probes import validate_packet as validate_count_packet
+from prove_native_count_capture import prove as prove_count
 
 
 def measure(*args, **kwargs):
@@ -152,6 +154,34 @@ def analyze(attempt: Path) -> tuple[dict, dict, dict]:
     """Read sealed sources and derive requested-versus-observed metrics."""
     attempt = Path(attempt).resolve()
     setup, conditions, rows, receipt = _source_bundle(attempt)
+    count_names = ("count-probe-packet.json", "original-counts.jsonl",
+                   "original-counts.jsonl.seal.json")
+    count_present = [((attempt / name).is_file()) for name in count_names]
+    if any(count_present) and not all(count_present):
+        raise ValueError("original count source or reviewed packet missing")
+    count_proof = None
+    if all(count_present):
+        packet_path = attempt / count_names[0]
+        packet = json.loads(packet_path.read_text(encoding="utf-8"))
+        validate_count_packet(packet_path, case_id=setup["case_id"],
+                              kind=packet.get("kind"),
+                              expected_count=packet.get("expected_count"))
+        packet_sha = sha(packet_path)
+        if packet["map_sha256"] != setup["opendrive_sha256"]:
+            raise ValueError("count packet and authored OpenDRIVE differ")
+        count_proof = prove_count(
+            attempt / count_names[1], case_id=setup["case_id"],
+            kind=packet["kind"], packet_sha256=packet_sha,
+            opendrive_sha256=setup["opendrive_sha256"],
+            declared_blueprint_ids=[a["blueprint_id"] for a in packet["actors"]])
+        count_rows = _rows(attempt / count_names[1])
+        for index, (trace, condition, counted) in enumerate(zip(
+                rows, conditions["full_history"], count_rows)):
+            if (trace.get("count_source_index") != index or
+                    trace.get("observed_additional_count") != counted["observed_count"] or
+                    counted["native_frame"] != condition["frame"] or
+                    abs(counted["native_elapsed_s"] - condition["time_s"]) > .001):
+                raise ValueError("original count, condition and trace join differs")
     suffix = conditions["full_history"][180:]
     steady = {name: sum(row[name] for row in suffix) / len(suffix) for name in FIELDS}
     first, last = rows[0]["position_m"], rows[-1]["position_m"]
@@ -215,6 +245,8 @@ def analyze(attempt: Path) -> tuple[dict, dict, dict]:
                      "recording_description": recording,
                      "recording_evidence": evidence, "realized_observables": {},
                      "physical_acceptance_claimed": False}
+    if count_proof:
+        native_result["measured_values"]["additional_actor_count"] = count_proof
     hashes = {name: sha(attempt / name) for name in
               ("authored-setup.json", "authored-setup-seal.json",
                "original-conditions.jsonl", "original-conditions-seal.json",
@@ -228,6 +260,10 @@ def analyze(attempt: Path) -> tuple[dict, dict, dict]:
               "target_checks": checks, "sources": hashes,
               "original_media_receipt": receipt,
               "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
+    if count_proof:
+        report["original_count_proof"] = count_proof
+        for name in count_names:
+            report["sources"][name] = sha(attempt / name)
     report["measurements"]["basic_speed_observation"] = {
         "method": "measure", "value": {
             "case_id": setup["case_id"], "steady_means": steady,

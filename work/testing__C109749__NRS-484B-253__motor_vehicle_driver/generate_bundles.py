@@ -21,6 +21,12 @@ SOURCES = {
     "requirement_finalizer.py": "requirement_finalizer.py",
     "analysis.py": "analysis.py",
 }
+RECIPROCAL_SOURCES = (
+    "bundle_runner.py", "reciprocal_entrypoint.py", "reciprocal_live.py",
+    "reciprocal_native_capture.py", "reciprocal_saved.py", "reciprocal_witness.py",
+    "reciprocal_finalization.py", "carla_scene_factory.py", "carla_live_adapter.py",
+    "native_source_review.py", "live_capture.py",
+)
 
 RECORDING_DESCRIPTION = {
     "channels": [
@@ -78,6 +84,28 @@ def generate():
         files = [{"path": target, "source": str((ROOT / source).relative_to(ROOT.parents[1])),
                   "content": (ROOT / source).read_text(encoding="utf-8")}
                  for target, source in SOURCES.items()]
+        if suffix.startswith("reciprocal_"):
+            files.extend({"path": source,
+                          "source": str((ROOT / source).relative_to(ROOT.parents[1])),
+                          "content": (ROOT / source).read_text(encoding="utf-8")}
+                         for source in RECIPROCAL_SOURCES)
+            runner = next(item for item in files if item["path"] == "runner.py")
+            old = '    raise RuntimeError("Native CARLA adapter and world lifecycle binding still required")'
+            new = ('    from reciprocal_entrypoint import run_native\n'
+                   '    if not args.output_dir:\n'
+                   '        raise ValueError("Native attempt output directory required")\n'
+                   '    result = run_native("config.json", args.map_packet, args.output_dir,\n'
+                   '                        args.host or "127.0.0.1", int(args.port or 2000))\n'
+                   '    print(json.dumps(result, default=str))')
+            if runner["content"].count(old) != 1:
+                raise ValueError("reciprocal runner production seam changed")
+            runner["content"] = runner["content"].replace(old, new)
+            analysis = next(item for item in files if item["path"] == "analysis.py")
+            old = "from requirement_finalizer import finalize\n"
+            new = "from reciprocal_finalization import finalize_reciprocal as finalize\n"
+            if analysis["content"].count(old) != 1:
+                raise ValueError("reciprocal saved finalizer seam changed")
+            analysis["content"] = analysis["content"].replace(old, new)
         files.extend([{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"},
                       {"path": "diagnostic-map.json", "content": fixture},
                       {"path": "tests/test_bundle.py", "content":

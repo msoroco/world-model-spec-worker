@@ -19,7 +19,7 @@ SOURCE = "later-opponent-original.jsonl"
 def _read_confined(root: Path, name: str) -> bytes:
     path = root / name
     if not path.is_file() or path.is_symlink() or path.resolve().parent != root:
-        raise ValueError("original reciprocal source missing or outside attempt: " + name)
+        raise ValueError("Missing required source: " + name)
     return path.read_bytes()
 
 

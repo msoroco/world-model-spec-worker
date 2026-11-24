@@ -176,7 +176,41 @@ class NativeCarlaAdapter:
 
     def read_body(self, frame):
         body, road_id, _ = self._body(frame)
-        return {'frame': frame, 'road_id': road_id, 'body_vertices_m': body}
+        velocity = self.ego_actor.get_velocity()
+        return {'frame': frame, 'road_id': road_id, 'body_vertices_m': body,
+                'velocity_mps': [_number(velocity.x), _number(velocity.y),
+                                 _number(velocity.z)],
+                'velocity_source': 'original_trace_actor_get_velocity'}
+
+    def read_participants(self, frame):
+        """Retain same-tick source bodies and motion for every live road user."""
+        if self.current is None or self.current['frame'] != frame:
+            raise ValueError('Native participant readback frame differs')
+        actors = sorted((actor for actor in self.world.get_actors()
+                         if getattr(actor, 'is_alive', False) and
+                         isinstance(getattr(actor, 'type_id', None), str) and
+                         actor.type_id.startswith(('vehicle.', 'walker.'))),
+                        key=lambda actor: actor.id)
+        if sum(actor.id == self.ego_actor.id for actor in actors) != 1:
+            raise ValueError('Native participant stream missing subject')
+        if len({actor.id for actor in actors}) != len(actors):
+            raise ValueError('Native participant IDs duplicated')
+        result = []
+        for actor in actors:
+            transform = actor.get_transform()
+            velocity = actor.get_velocity()
+            vector = [_number(velocity.x), _number(velocity.y),
+                      _number(velocity.z)]
+            vertices = actor.bounding_box.get_world_vertices(transform)
+            if len(vertices) < 4:
+                raise ValueError('Native participant full body missing')
+            result.append({'actor_id': actor.id, 'blueprint': actor.type_id,
+                           'velocity_mps': vector,
+                           'speed_mps': math.sqrt(sum(value * value for value in vector)),
+                           'heading_deg': _number(transform.rotation.yaw),
+                           'body_vertices_m': [[_number(vertex.x), _number(vertex.y),
+                                               _number(vertex.z)] for vertex in vertices]})
+        return result
 
     def read_cameras(self, frame):
         with self.condition:

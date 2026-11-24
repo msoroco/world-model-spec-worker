@@ -66,7 +66,7 @@ class ReciprocalSavedTests(unittest.TestCase):
                     audit_saved(root, case_id=case_id)
                 source.write_bytes(original)
                 source.unlink()
-                with self.assertRaisesRegex(ValueError, "missing or outside"):
+                with self.assertRaisesRegex(ValueError, "Missing required source: later-opponent-original.jsonl"):
                     audit_saved(root, case_id=case_id)
 
     def test_cross_case_and_frame_join_rejected(self):

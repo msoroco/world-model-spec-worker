@@ -26,7 +26,17 @@ class Bundles(unittest.TestCase):
             self.assertEqual(bundle["case_id"], entry["case_id"])
             for source in bundle["files"]:
                 if "source" in source:
-                    self.assertEqual((ROOT / pathlib.Path(source["source"]).name).read_text(), source["content"])
+                    original = (ROOT / pathlib.Path(source["source"]).name).read_text()
+                    if entry["case_id"].endswith(("__reciprocal_yield", "__reciprocal_no_yield")) and source["path"] == "runner.py":
+                        self.assertIn("from reciprocal_entrypoint import run_native", source["content"])
+                        self.assertIn("result = run_native(", source["content"])
+                        self.assertNotIn("Native CARLA adapter and world lifecycle binding still required", source["content"])
+                    elif entry["case_id"].endswith(("__reciprocal_yield", "__reciprocal_no_yield")) and source["path"] == "analysis.py":
+                        self.assertEqual(source["content"], original.replace(
+                            "from requirement_finalizer import finalize\n",
+                            "from reciprocal_finalization import finalize_reciprocal as finalize\n"))
+                    else:
+                        self.assertEqual(original, source["content"])
             self.assertIn("delivery_audit.py", {f["path"] for f in bundle["files"]})
         self.assertEqual(len(hashes), len(POLICIES))
 

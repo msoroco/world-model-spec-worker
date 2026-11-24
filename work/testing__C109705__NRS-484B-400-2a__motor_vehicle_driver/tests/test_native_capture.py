@@ -90,6 +90,33 @@ def packet(path):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_reviewed_source_bytes_are_retained_before_adapter_starts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            review_path = root / 'highway-review.txt'
+            original = b'Reviewed source for the two named roads.\n'
+            review_path.write_bytes(original)
+            value = json.loads(survey.read_text())
+            value['context']['public_highway_source'] = review_path.name
+            value['public_highway_review'] = {
+                'status': 'reviewed',
+                'opendrive_sha256': value['source_sha256'],
+                'approach_road_id': value['context']['approach_road_id'],
+                'departure_road_id': value['context']['departure_road_id'],
+                'source': {'path': review_path.name,
+                           'sha256': hashlib.sha256(original).hexdigest()}}
+            survey.write_text(json.dumps(value))
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            review_path.write_bytes(b'changed after capture\n')
+            retained = attempt / 'public-highway-review-source'
+            self.assertEqual(retained.read_bytes(), original)
+            acquisition = json.loads((attempt / 'acquisition.json').read_text())
+            self.assertEqual(acquisition['public-highway-review-source']['sha256'],
+                             hashlib.sha256(original).hexdigest())
+
     def test_full_body_and_survey_sources_are_retained_and_joined(self):
         class BodyAdapter(FakeAdapter):
             def read_body(self, frame):
@@ -129,6 +156,58 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'full body geometry differs'):
                 capture(BadBodyAdapter(), CASE, survey, root / 'attempt')
             self.assertFalse((root / 'attempt').exists())
+
+    def test_attested_body_requires_original_actor_velocity(self):
+        class MissingVelocity(FakeAdapter):
+            native_attested = True
+
+            def read_body(self, frame):
+                return {'frame': frame, 'road_id': self.read_ego(frame)['road_id'],
+                        'body_vertices_m': [[x, y, 0] for x, y in body(-.7)]}
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            adapter = MissingVelocity()
+            adapter.native_attested = True
+            with self.assertRaisesRegex(ValueError, 'actor velocity source missing'):
+                capture(adapter, CASE, survey, root / 'attempt')
+            self.assertFalse((root / 'attempt').exists())
+
+    def test_original_participant_stream_joins_full_body_and_velocity(self):
+        class Participants(FakeAdapter):
+            def __init__(self):
+                super().__init__()
+                self.ego_actor = NS(id=7)
+
+            def read_body(self, frame):
+                return {'frame': frame, 'road_id': self.read_ego(frame)['road_id'],
+                        'body_vertices_m': [[x, y, 0] for x, y in body(-.7)],
+                        'velocity_mps': [0., 0., 0.],
+                        'velocity_source': 'original_trace_actor_get_velocity'}
+
+            def read_participants(self, frame):
+                physical = self.read_body(frame)
+                return [{'actor_id': 7, 'blueprint': 'vehicle.test',
+                         'body_vertices_m': physical['body_vertices_m'],
+                         'velocity_mps': physical['velocity_mps'],
+                         'speed_mps': 0., 'heading_deg': 0.}]
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(Participants(), CASE, survey, attempt)
+            rows = [json.loads(line) for line in
+                    (attempt / 'synchronized_motion_records.jsonl').read_text().splitlines()]
+            self.assertEqual(len(rows), 900)
+            self.assertEqual(rows[0]['value']['7']['actor_id'], 7)
+            acquisition = json.loads((attempt / 'acquisition.json').read_text())
+            source = attempt / 'synchronized_motion_records.jsonl'
+            self.assertEqual(acquisition[source.name]['sha256'],
+                             hashlib.sha256(source.read_bytes()).hexdigest())
 
     def test_attested_live_world_graph_collection(self):
         class LiveWorld(FakeWorld):

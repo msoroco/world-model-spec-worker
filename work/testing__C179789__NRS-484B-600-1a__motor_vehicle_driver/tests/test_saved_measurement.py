@@ -6,11 +6,13 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace as Box
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 from saved_conditions import seal
 from saved_measurement import finalize_attempt, sha
+from native_count_capture import CountCapture
 
 
 CASE_ID = "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__reference"
@@ -135,6 +137,43 @@ class SavedMeasurementTests(unittest.TestCase):
         seal_path.write_text(json.dumps(seal_doc))
         with self.assertRaisesRegex(ValueError, "one exact paved-road case"):
             finalize_attempt(self.attempt, self.attempt / "analysis-report.json")
+
+    def test_sealed_count_source_is_joined_and_missing_packet_rejected(self):
+        packet = {"format": "c179789-native-count-probe-v1", "case_id": CASE_ID,
+                  "kind": "additional_pedestrian_count", "expected_count": 1,
+                  "reviewer": "diagnostic fixture", "source_citation": "synthetic fixture",
+                  "map_sha256": "b" * 64,
+                  "actors": [{"id": "ped-1", "role": "pedestrian",
+                              "blueprint_id": "walker.reviewed",
+                              "source_citation": "synthetic fixture",
+                              "transform": {"x": 0, "y": 0, "z": 0, "yaw": 0}}]}
+        packet_path = self.attempt / "count-probe-packet.json"
+        packet_path.write_text(json.dumps(packet) + "\n")
+        actor = object()
+        counter = CountCapture({"case_id": CASE_ID, "kind": packet["kind"],
+                                "expected_count": 1, "actors": [actor],
+                                "declared_blueprint_ids": ["walker.reviewed"],
+                                "packet_sha256": sha(packet_path),
+                                "opendrive_sha256": "b" * 64})
+        trace = self.attempt / "trace.jsonl"
+        rows = [json.loads(line) for line in trace.read_text().splitlines()]
+        for index, row in enumerate(rows):
+            counter.append(Box(frame=row["frame"],
+                               timestamp=Box(elapsed_seconds=row["time_s"])),
+                           lambda _: {"actor_id": 9, "type_id": "walker.reviewed",
+                                      "alive": True})
+            row["count_source_index"] = index
+            row["observed_additional_count"] = 1
+        counter.close(self.attempt / "original-counts.jsonl")
+        trace.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        receipt_path = self.attempt / "media-receipt.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["trace_sha256"] = sha(trace)
+        receipt_path.write_text(json.dumps(receipt))
+        report = finalize_attempt(self.attempt, self.attempt / "analysis-report.json")
+        self.assertEqual(report["original_count_proof"]["first_observed_count"], 1)
+        self.assertEqual(report["original_count_proof"]["sample_count"], 900)
+        self.assertIn("count-probe-packet.json", report["sources"])
 
 
 if __name__ == "__main__":

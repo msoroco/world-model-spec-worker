@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -49,8 +50,10 @@ def main():
                               else completed.stderr[-1000:]))
         log = attempt / "offline.log"
         text = log.read_text(encoding="utf-8")
-        if "Ran 47 tests" not in text or "OK" not in text or '"bundle_checked": true' not in text:
+        counts = re.findall(r"Ran (\d+) tests?", text)
+        if not counts or int(counts[-1]) < 47 or "OK" not in text or '"bundle_checked": true' not in text:
             raise ValueError("offline evidence incomplete: " + suffix)
+        test_count = int(counts[-1])
         retained = output / (suffix + ".log")
         shutil.copyfile(log, retained)
         entry["offline"] = {
@@ -60,10 +63,10 @@ def main():
                        "--python $PWD/.venv-cpu/bin/python",
             "exit_code": 0, "construction_sha256": entry["construction_sha256"],
             "log": retained.relative_to(HERE).as_posix(),
-            "log_sha256": sha(retained), "test_count": 47,
+            "log_sha256": sha(retained), "test_count": test_count,
             "diagnostic_fixture": True, "physical_acceptance_claimed": False,
         }
-        print(json.dumps({"case_id": case_id, "tests": 47,
+        print(json.dumps({"case_id": case_id, "tests": test_count,
                           "log_sha256": sha(retained)}, sort_keys=True), flush=True)
     manifest["status"] = "partial_offline_cpu_proved_compatibility_pending"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

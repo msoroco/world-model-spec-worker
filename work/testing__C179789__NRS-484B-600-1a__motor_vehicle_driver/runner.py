@@ -12,11 +12,14 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 
 from native_camera import CameraRig
 from native_capture import capture
 from native_media import finalize as finalize_media
 from native_scene import create, validate
+from native_count_capture import CountCapture
+from native_count_probes import construct as construct_count, validate_packet as validate_count_packet
 
 
 def check_bundle() -> dict:
@@ -100,15 +103,39 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path, case_id:
     settings.fixed_delta_seconds = .05
     scene = None
     rig = None
+    count_construction = None
     acquired = None
     errors = []
     restoration = None
     try:
         world.apply_settings(settings)
         scene = create(world, packet_path, plan_path, case_id, carla.Vector3D)
+        count_path = os.environ.get("SCENARIO_NATIVE_COUNT_PACKET")
+        if count_path:
+            count_source = json.loads(Path(count_path).read_text(encoding="utf-8"))
+            validate_count_packet(Path(count_path), case_id=case_id,
+                                  kind=count_source.get("kind"),
+                                  expected_count=count_source.get("expected_count"))
+            count_construction = construct_count(
+                world, Path(count_path), case_id=case_id,
+                kind=count_source["kind"], expected_count=count_source["expected_count"],
+                transform_factory=lambda **v: carla.Transform(
+                    carla.Location(x=v["x"], y=v["y"], z=v["z"]),
+                    carla.Rotation(yaw=v["yaw"])))
         transform = lambda xyz, rpy: carla.Transform(carla.Location(*xyz), carla.Rotation(*rpy))
         rig = CameraRig(world, scene.ego, packet_path, attempt / "raw", transform)
-        acquired = capture(world, scene, rig, attempt, case_id, carla.VehicleControl)
+        acquired = capture(
+            world, scene, rig, attempt, case_id, carla.VehicleControl,
+            count_capture=CountCapture(count_construction) if count_construction else None,
+            count_reader=(lambda actor: {"actor_id": actor.id, "type_id": actor.type_id,
+                                         "alive": actor.is_alive}) if count_construction else None)
+        if count_construction:
+            target = attempt / "count-probe-packet.json"
+            if target.exists():
+                raise ValueError("retain previous reviewed count packet")
+            shutil.copy2(count_path, target)
+            if hashlib.sha256(target.read_bytes()).hexdigest() != count_construction["packet_sha256"]:
+                raise ValueError("reviewed count packet changed during Native capture")
     except Exception as error:
         errors.append("capture: " + str(error))
     finally:
@@ -122,6 +149,12 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path, case_id:
                 scene.close()
             except Exception as error:
                 errors.append("actor cleanup: " + str(error))
+        if count_construction is not None:
+            for actor in reversed(count_construction["actors"]):
+                try:
+                    actor.destroy()
+                except Exception as error:
+                    errors.append("count actor cleanup: " + str(error))
         try:
             restoration = restore(client, saved)
         except Exception as error:

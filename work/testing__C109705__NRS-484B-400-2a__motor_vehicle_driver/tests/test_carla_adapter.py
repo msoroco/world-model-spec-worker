@@ -75,6 +75,9 @@ class World:
     def get_map(self):
         return NS(name='TownTest', get_waypoint=lambda _: NS(road_id='A'))
 
+    def get_actors(self):
+        return [self.ego, *self.sensors]
+
     def get_settings(self):
         return self.settings
 
@@ -139,9 +142,16 @@ class CarlaAdapterTests(unittest.TestCase):
         self.assertEqual(self.world.ego.controls[-1].throttle, .35)
         ego = self.adapter.read_ego(frame)
         body = self.adapter.read_body(frame)
+        participants = self.adapter.read_participants(frame)
         cameras = self.adapter.read_cameras(frame)
         self.assertEqual(ego['ego_body_vertices_xy_m'],
                          [v[:2] for v in body['body_vertices_m']])
+        self.assertEqual(body['velocity_mps'], [0., 0., 0.])
+        self.assertEqual(body['velocity_source'],
+                         'original_trace_actor_get_velocity')
+        self.assertEqual([actor['actor_id'] for actor in participants], [7])
+        self.assertEqual(participants[0]['body_vertices_m'],
+                         body['body_vertices_m'])
         self.assertEqual(set(cameras), set(self.packet['camera_transforms']))
         self.assertTrue(all(row['png'].startswith(b'\x89PNG') for row in cameras.values()))
         self.assertEqual(self.adapter.read_road_geometry(), self.packet['road_geometry'])

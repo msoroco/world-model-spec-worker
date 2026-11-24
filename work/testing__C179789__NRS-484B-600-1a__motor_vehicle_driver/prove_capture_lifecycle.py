@@ -47,7 +47,9 @@ def main() -> None:
         def close(self):
             events.append("actors_closed")
 
-    def capture(*args):
+    def capture(*args, **kwargs):
+        if kwargs.get("count_capture") is not None or kwargs.get("count_reader") is not None:
+            raise ValueError("unselected diagnostic count source was supplied")
         events.append("capture_finished")
         return {"frames": 900}
 

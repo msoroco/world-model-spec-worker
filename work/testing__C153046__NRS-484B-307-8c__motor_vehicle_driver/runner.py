@@ -3,12 +3,55 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
 
 from build_case_plan import KINDS
 from red_left_turn_controller import Observation
 from native_runner import run
+
+
+def stage_reviewed_site(packet_path: Path, output_dir: Path, expected_sha256: str) -> Path:
+    """Copy a reviewed, source-checked site packet into a fresh Native attempt."""
+    from source_bound_scene import build
+
+    packet_path = Path(packet_path).resolve()
+    output_dir = Path(output_dir).resolve()
+    if not expected_sha256 or hashlib.sha256(packet_path.read_bytes()).hexdigest() != expected_sha256:
+        raise ValueError("reviewed site packet SHA-256 missing or changed")
+    config = json.loads((output_dir / "config.json").read_text())
+    suffix = config["selected_case_id"].rsplit("__", 1)[-1]
+    build(packet_path, suffix)
+    packet = json.loads(packet_path.read_text())
+    destination = output_dir / "site.json"
+    if destination.exists():
+        raise ValueError("retained site packet already exists in Native attempt")
+    for descriptor in packet["sources"].values():
+        relative = Path(descriptor["path"])
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("site source path escapes reviewed packet directory")
+        source = (packet_path.parent / relative).resolve()
+        target = output_dir / relative
+        if target.exists():
+            raise ValueError("site source shadows materialized construction")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+    shutil.copy2(packet_path, destination)
+    build(destination, suffix)
+    return destination
+
+
+def resolve_site_packet(output_dir: Path, explicit: Path | None = None) -> Path:
+    selected = explicit or os.environ.get("C153046_SITE_PACKET")
+    if not selected:
+        raise ValueError("C153046_SITE_PACKET reviewed source path required")
+    return stage_reviewed_site(
+        Path(selected), output_dir,
+        os.environ.get("C153046_SITE_PACKET_SHA256", ""),
+    )
 
 
 def capture_original(output_dir: Path, host: str, port: int, site_packet: Path) -> dict:
@@ -129,9 +172,7 @@ if __name__ == "__main__":
     if args.check:
         check()
     elif args.output_dir:
-        packet = args.site_packet or args.output_dir / "site.json"
-        if not packet.is_file():
-            parser.error("reviewed source-cited site.json required in the output directory")
+        packet = resolve_site_packet(args.output_dir, args.site_packet)
         print(json.dumps(capture_original(args.output_dir, args.host, args.port, packet)))
     else:
         parser.error("--check or --output-dir required")

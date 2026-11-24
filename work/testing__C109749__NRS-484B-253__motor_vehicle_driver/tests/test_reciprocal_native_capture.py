@@ -97,7 +97,7 @@ class ReciprocalNativeCaptureTests(unittest.TestCase):
         self.assertEqual(finalized["source_hashes"]["later-opponent-original.jsonl"],
                          observed["source_sha256"])
         (out / "later-opponent-original.jsonl").unlink()
-        with self.assertRaisesRegex(ValueError, "missing or outside"):
+        with self.assertRaisesRegex(ValueError, "Missing required source: later-opponent-original.jsonl"):
             finalize_reciprocal(case_id=case, attempt=out, allow_diagnostic=True)
 
 

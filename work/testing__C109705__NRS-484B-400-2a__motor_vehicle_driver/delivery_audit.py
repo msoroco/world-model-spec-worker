@@ -94,6 +94,17 @@ def audit(attempt, case_id, *, allow_diagnostic=False):
         survey = _source(attempt, acquisition, 'survey-packet.json')
         if _sha(survey) != binding.get('survey_packet_sha256'):
             raise ValueError('reviewed survey packet differs from Native map binding')
+        packet = json.loads(survey.read_text())
+        review = packet.get('public_highway_review', {})
+        source = review.get('source', {}) if isinstance(review, dict) else {}
+        original_review = _source(attempt, acquisition,
+                                  'public-highway-review-source')
+        if (review.get('status') != 'reviewed' or
+                source.get('sha256') != _sha(original_review) or
+                review.get('opendrive_sha256') != binding.get('opendrive_sha256') or
+                review.get('approach_road_id') != binding.get('intersection_context', {}).get('approach_road_id') or
+                review.get('departure_road_id') != binding.get('intersection_context', {}).get('departure_road_id')):
+            raise ValueError('reviewed public-highway source differs from Native binding')
     return {'case_id': case_id, 'checks': ['native_source', 'all_participants',
             'time_join', 'full_video_decode', 'actual_pixels', 'physical_completion'],
             'decoded_frames': pixels['decoded_frames'], 'physical_status': physical['status'],

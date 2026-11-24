@@ -1,7 +1,8 @@
-"""Build explicit, source-hashed two-frame compatibility fixtures for exact cases.
+"""Build explicit, source-hashed compatibility fixtures for exact cases.
 
 Every output is diagnostic text. The four video sources are generated separately
 by the pinned fixture generator; no generated frame is physical CARLA evidence.
+Reciprocal cases use a 900-frame separate third-actor source for their saved join.
 """
 
 import hashlib
@@ -43,28 +44,43 @@ def make(suffix):
     motion = []
     evidence = []
     graphs = []
-    for index in range(2):
+    reciprocal = suffix.startswith("reciprocal_")
+    count = 900 if reciprocal else 2
+    later = []
+    for index in range(count):
         time_s = index / 20
         ego_y = 0 if index == 0 else 0.5
-        other_y = 7 if approaching and index == 0 else 1 + index
+        other_y = (1 if index < 100 else 7) if reciprocal else (
+            7 if approaching and index == 0 else 1 + index)
         rows.append({"frame": index, "time_s": time_s,
                      "ego_actor_id": 11, "opponent_actor_id": 12,
-                     "ego_driver_control_source": "diagnostic ego sample",
-                     "opponent_driver_control_source": "diagnostic opponent sample",
+                     "ego_driver_control_source": "diag",
+                     "opponent_driver_control_source": "diag",
                      "ego_vertices": body(0, ego_y),
                      "opponent_vertices": body(1, other_y),
                      "ego_heading": [0, 1], "opponent_heading": [0, -1],
                      "ego_speed_mps": 1,
                      "opponent_speed_mps": 3 if suffix == "reciprocal_no_yield" else 2,
                      "ego_signal_left": signal,
-                     "ego_turn_committed": index == 1 and not wait,
+                     "ego_turn_committed": (index >= 110 if reciprocal else index == 1 and not wait),
                      "opponent_cleared": False, "ego_braking": wait})
+        if reciprocal:
+            later_y = 9 if index < 120 else 1
+            later.append({"frame": index, "time_s": time_s,
+                          "later_opponent_actor_id": 13,
+                          "later_opponent_vertices": body(2, later_y),
+                          "later_opponent_heading": [0, -1],
+                          "later_opponent_speed_mps": 2.0,
+                          "later_opponent_braking": suffix == "reciprocal_yield" and index >= 110,
+                          "later_opponent_driver_control_source": "diag"})
         trace.append({"frame": index, "time_s": time_s,
                       "control": {},
                       "position": {"x": 0, "y": ego_y, "z": 0},
                       "heading_deg": 90.0, "speed_mps": 1.0,
-                      "speed_mph": 1.0 / 0.44704,
+                      "speed_mph": 2.236936 if reciprocal else 1.0 / 0.44704,
                       "position_m": [0, ego_y, 0]})
+        if reciprocal:
+            trace[-1]["velocity_mps"] = [0, 1, 0]
         mapping.append({"video_frame": index, "carla_frame": index,
                         "native_frame": index, "time_s": time_s})
         motion.append({"frame": index, "time_s": time_s,
@@ -90,8 +106,11 @@ def make(suffix):
     receipt = {"assignment_id": ASSIGNMENT_ID, "case_id": case_id,
                "map_sha256": digest(packet_text), "trace_sha256": digest(rows_text),
                "native_map_sha256": packet["map_sha256"],
-               "source_id": "diagnostic-" + suffix, "frame_count": 2,
+               "source_id": "diagnostic-" + suffix, "frame_count": count,
                "simulator_frame_rate_hz": 20, "diagnostic_fixture": True}
+    if reciprocal:
+        later_text = "".join(encode(row) for row in later)
+        receipt["later_opponent_trace_sha256"] = digest(later_text)
     files = {"original-map.json": packet_text,
              "road.xodr": road_text,
              "original-trace.jsonl": rows_text,
@@ -105,14 +124,16 @@ def make(suffix):
              "capture/evidence.jsonl": "".join(encode(row) for row in evidence),
              "capture/native/frames.jsonl": "".join(encode({"frame": i,
                  "simulation_time": i / 20,
-                 "adapter_graph": f"graphs/base/{i:08d}.adapter.json"}) for i in range(2)),
+                 "adapter_graph": f"graphs/base/{i:08d}.adapter.json"}) for i in range(count)),
              "capture/recorder_info.txt": "Create 11: vehicle.ego (diagnostic) at (0, 0, 0)\n",
              "capture/manifest.json": encode({"case_id": case_id,
-                 "frames": 2, "status": "draft", "extraction_confirmed": True,
+                 "frames": count, "status": "draft", "extraction_confirmed": True,
                  "acquisition": "diagnostic_fixture",
                  "sources": {"trace.jsonl": digest("".join(encode(row) for row in trace)),
                              "road.xodr": digest(road_text)}})}
-    videos = [{"path": name + ".mkv", "frames": 2, "width": width,
+    if reciprocal:
+        files["later-opponent-original.jsonl"] = later_text
+    videos = [{"path": name + ".mkv", "frames": count, "width": width,
                "height": height, "fps": 20, "color": "black"}
               for name, width, height in (("overview", 1920, 1080),
                                           ("approach", 1280, 720),

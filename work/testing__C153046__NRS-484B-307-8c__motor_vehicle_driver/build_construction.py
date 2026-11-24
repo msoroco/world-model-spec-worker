@@ -16,7 +16,7 @@ SOURCES = ["runner.py", "native_capture.py", "native_runner.py", "native_frame.p
            "source_bound_scene.py", "build_case_plan.py", "case-plan.json",
            "tests/__init__.py", "tests/test_case_plan.py",
            "tests/test_red_left_turn_controller.py", "tests/test_source_bound_scene.py",
-           "tests/test_native_runner.py", "tests/test_native_frame.py", "tests/test_runner_capture_closure.py",
+           "tests/test_native_runner.py", "tests/test_native_frame.py", "tests/test_runner_capture_closure.py", "tests/test_site_handoff.py",
            "tests/test_native_camera.py", "tests/test_native_media.py", "tests/test_native_setup.py", "tests/test_native_observation.py", "tests/test_native_capture.py", "tests/test_native_routes.py",
            "tests/test_saved_measurement.py", "tests/test_saved_finalizer.py", "tests/test_saved_observation_audit.py", "tests/test_comparison_audit.py",
            "independent/__init__.py", "independent/delivery_audit.py",

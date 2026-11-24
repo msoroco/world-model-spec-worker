@@ -8,6 +8,8 @@ import unittest
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 from native_capture import VIEWS, capture
+from native_count_capture import CountCapture
+from prove_native_count_capture import prove as prove_count
 from saved_conditions import measure
 from test_native_conditions import Actor, World
 
@@ -93,6 +95,33 @@ class NativeCaptureTests(unittest.TestCase):
                 capture(self.world, self.scene, Rig(), attempt, "exact-case",
                         lambda **kw: kw, frame_map_factory=FrameMap)
 
+    def test_count_probe_joins_each_original_tick_and_seals_source(self):
+        with tempfile.TemporaryDirectory(dir=self.root) as directory:
+            attempt = Path(directory) / "attempt"
+            actor = object()
+            source = CountCapture({
+                "case_id": "exact-case", "kind": "additional_pedestrian_count",
+                "expected_count": 1, "actors": [actor],
+                "declared_blueprint_ids": ["walker.reviewed"],
+                "packet_sha256": "c" * 64, "opendrive_sha256": "d" * 64,
+            })
+            result = capture(
+                self.world, self.scene, Rig(), attempt, "exact-case",
+                lambda **kw: kw, frame_map_factory=FrameMap,
+                count_capture=source,
+                count_reader=lambda _: {"actor_id": 9, "type_id": "walker.reviewed",
+                                        "alive": True})
+            self.assertEqual(result["count_source_sha256"],
+                             prove_count(attempt / "original-counts.jsonl",
+                                         case_id="exact-case",
+                                         kind="additional_pedestrian_count",
+                                         packet_sha256="c" * 64,
+                                         opendrive_sha256="d" * 64,
+                                         declared_blueprint_ids=["walker.reviewed"])["source_sha256"])
+            trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()]
+            self.assertEqual([row["count_source_index"] for row in trace], list(range(900)))
+            self.assertEqual({row["observed_additional_count"] for row in trace}, {1})
+
     def test_missing_camera_frame_rejected_without_seal(self):
         with tempfile.TemporaryDirectory(dir=self.root) as directory:
             attempt = Path(directory) / "attempt"
@@ -108,10 +137,9 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "20 Hz Native world"):
                 capture(self.world, self.scene, Rig(), Path(directory) / "attempt",
                         "exact-case", lambda **kw: kw, frame_map_factory=FrameMap)
-        with tempfile.TemporaryDirectory() as directory:
-            with self.assertRaisesRegex(ValueError, "under .runtime-work"):
-                capture(TickWorld(), self.scene, Rig(), Path(directory) / "attempt",
-                        "exact-case", lambda **kw: kw, frame_map_factory=FrameMap)
+        with self.assertRaisesRegex(ValueError, "under .runtime-work"):
+            capture(TickWorld(), self.scene, Rig(), HERE / "outside-root-attempt",
+                    "exact-case", lambda **kw: kw, frame_map_factory=FrameMap)
 
 
 if __name__ == "__main__":

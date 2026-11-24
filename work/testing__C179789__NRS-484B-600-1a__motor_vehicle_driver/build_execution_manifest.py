@@ -14,6 +14,8 @@ REPO = HERE.parents[1]
 MODULES = (
     "runner.py", "native_camera.py", "native_capture.py", "native_conditions.py",
     "native_control.py", "native_media.py", "native_scene.py",
+    "native_count_probes.py", "native_count_capture.py",
+    "prove_native_count_capture.py",
     "saved_conditions.py", "saved_measurement.py", "comparison_audit.py",
     "delivery_audit.py", "case-plan.json", "measurement-contract.json",
 )

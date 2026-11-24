@@ -61,6 +61,7 @@ def adapt_attempt(attempt: Path, case_id: str, variables: dict):
         row["heading_deg"] = 0.0
         row["speed_mps"] = float(variables["ego_speed_request_mps"])
         row["speed_mph"] = row["speed_mps"] / 0.44704
+        row["velocity_mps"] = [row["speed_mps"], 0.0, 0.0]
     trace_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n"
                                   for row in trace_rows), encoding="utf-8")
 

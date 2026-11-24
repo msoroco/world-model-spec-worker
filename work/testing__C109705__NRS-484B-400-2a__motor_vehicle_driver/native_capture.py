@@ -74,6 +74,18 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     survey_bytes = Path(map_packet_path).read_bytes()
     if hashlib.sha256(survey_bytes).hexdigest() != binding['survey_packet_sha256']:
         raise ValueError('Native survey packet changed before capture')
+    packet = json.loads(survey_bytes)
+    review_bytes = None
+    if binding['public_highway_reviewed']:
+        source = packet['public_highway_review']['source']
+        base = Path(map_packet_path).parent.resolve()
+        review_path = (base / source['path']).resolve()
+        if (not review_path.is_relative_to(base) or not review_path.is_file() or
+                review_path.is_symlink()):
+            raise ValueError('reviewed public-highway source missing or escaped')
+        review_bytes = review_path.read_bytes()
+        if hashlib.sha256(review_bytes).hexdigest() != source['sha256']:
+            raise ValueError('reviewed public-highway source changed before capture')
     destination = Path(output_root)
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists():
@@ -84,6 +96,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     opendrive = None
     history: list[dict] = []
     body_history: list[dict] = []
+    participants_history: list[dict] = []
     frame_map: list[dict] = []
     graph_map: list[dict] = []
     archives = {}
@@ -119,7 +132,31 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                                 for value in vertex[:3]) for vertex in vertices) or
                         [vertex[:2] for vertex in vertices] != row.get('ego_body_vertices_xy_m')):
                     raise ValueError('Native full body geometry differs from approach source')
+                if getattr(adapter, 'native_attested', False):
+                    velocity = physical.get('velocity_mps')
+                    if (physical.get('velocity_source') != 'original_trace_actor_get_velocity'
+                            or not isinstance(velocity, list) or len(velocity) != 3
+                            or any(type(value) not in (int, float) or not math.isfinite(value)
+                                   for value in velocity)):
+                        raise ValueError('original Native actor velocity source missing')
                 body_history.append({**physical, 'frame': frame, 'time_s': time_s})
+            read_participants = getattr(adapter, 'read_participants', None)
+            if callable(read_participants):
+                participants = read_participants(frame)
+                actor_id = getattr(getattr(adapter, 'ego_actor', None), 'id', None)
+                if (not isinstance(participants, list) or not participants or
+                        len({p.get('actor_id') for p in participants if isinstance(p, dict)}) != len(participants) or
+                        sum(isinstance(p, dict) and p.get('actor_id') == actor_id
+                            for p in participants) != 1):
+                    raise ValueError('Native participant identities differ from owned ego')
+                ego_participant = next(p for p in participants
+                                       if p['actor_id'] == actor_id)
+                if (not body_history or
+                        ego_participant.get('body_vertices_m') != body_history[-1]['body_vertices_m'] or
+                        ego_participant.get('velocity_mps') != body_history[-1]['velocity_mps']):
+                    raise ValueError('Native participant body or velocity join differs')
+                participants_history.append({'time_s': time_s,
+                    'value': {'frame': frame, **{str(p['actor_id']): p for p in participants}}})
             camera_rows = adapter.read_cameras(frame)
             if not isinstance(camera_rows, dict) or set(camera_rows) != CAMERAS:
                 raise ValueError('Native four-camera callback set missing')
@@ -170,6 +207,8 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
             raise ValueError('Native adapter graph capture is incomplete')
         if body_history and len(body_history) != FRAMES:
             raise ValueError('Native full body capture is incomplete')
+        if participants_history and len(participants_history) != FRAMES:
+            raise ValueError('Native participant capture is incomplete')
         read_geometry = getattr(adapter, 'read_road_geometry', None)
         geometry = read_geometry() if callable(read_geometry) else None
         if geometry is not None and not isinstance(geometry, dict):
@@ -204,8 +243,14 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                   'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
         (root / 'survey-packet.json').write_bytes(survey_bytes)
         hashes['survey-packet.json'] = hashlib.sha256(survey_bytes).hexdigest()
+        if review_bytes is not None:
+            (root / 'public-highway-review-source').write_bytes(review_bytes)
+            hashes['public-highway-review-source'] = hashlib.sha256(review_bytes).hexdigest()
         if body_history:
             hashes['body_history.jsonl'] = _write_jsonl(root / 'body_history.jsonl', body_history)
+        if participants_history:
+            hashes['synchronized_motion_records.jsonl'] = _write_jsonl(
+                root / 'synchronized_motion_records.jsonl', participants_history)
         if geometry is not None:
             geometry_bytes = (json.dumps(geometry, sort_keys=True, separators=(',', ':')) + '\n').encode()
             (root / 'road_geometry.json').write_bytes(geometry_bytes)
@@ -215,7 +260,8 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
         complete_source = (getattr(adapter, 'native_attested', False) and
                            binding['public_highway_reviewed'] is True and
                            len(body_history) == FRAMES and geometry is not None and
-                           len(graph_map) == FRAMES)
+                           len(graph_map) == FRAMES and
+                           len(participants_history) == FRAMES)
         acquisition = {'case_id': case_id,
                        'diagnostic_fixture': not complete_source,
                        'map_binding': binding,

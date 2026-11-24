@@ -35,7 +35,8 @@ def _source_root(attempt: Path):
 
 
 def capture(world, scene, camera_rig, attempt: Path, case_id: str, control_factory,
-            *, frame_map_factory=None, count: int = 900) -> dict:
+            *, frame_map_factory=None, count: int = 900,
+            count_capture=None, count_reader=None) -> dict:
     """Retain one fresh attempt; every tick joins condition, control and four views."""
     if count != 900:
         raise ValueError("exact 45-second capture requires 900 Native ticks")
@@ -54,6 +55,9 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str, control_facto
         from worker_exchange.native_output import FrameMap
         frame_map_factory = FrameMap
     conditions = NativeConditionCapture(attempt, case_id)
+    if count_capture is not None and (count_reader is None or
+                                      count_capture.construction["case_id"] != case_id):
+        raise ValueError("exact count source and actor reader required")
     previous = None
     with frame_map_factory(attempt / "video_frames.jsonl") as mapping:
         with (attempt / "trace.jsonl").open("x", encoding="utf-8") as trace:
@@ -63,6 +67,8 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str, control_facto
                 if snapshot.frame != tick_frame:
                     raise ValueError("Native tick and snapshot frame differ")
                 row = conditions.append(world, scene.ego, scene.leader, snapshot)
+                count_row = (count_capture.append(snapshot, count_reader)
+                             if count_capture is not None else None)
                 if previous is not None and (row["frame"] != previous[0] + 1 or
                                              not .049 <= row["time_s"] - previous[1] <= .051):
                     raise ValueError("original Native capture cadence differs")
@@ -85,13 +91,19 @@ def capture(world, scene, camera_rig, attempt: Path, case_id: str, control_facto
                              "control": decision,
                              "source_packet_sha256": scene.source["packet_sha256"],
                              "physical_acceptance_claimed": False}
+                if count_row is not None:
+                    trace_row["count_source_index"] = index
+                    trace_row["observed_additional_count"] = count_row["observed_count"]
                 trace.write(json.dumps(trace_row, sort_keys=True, allow_nan=False) + "\n")
                 mapping.append(row["frame"], row["time_s"],
                                camera_source_sha256={name: cameras[name]["sha256"] for name in VIEWS})
     seal = conditions.close()
+    count_seal = (count_capture.close(attempt / "original-counts.jsonl")
+                  if count_capture is not None else None)
     return {"case_id": case_id, "frames": count,
             "first_frame": seal["first_frame"], "last_frame": seal["last_frame"],
             "condition_sha256": seal["sha256"],
+            "count_source_sha256": count_seal["sha256"] if count_seal else None,
             "source_packet_sha256": scene.source["packet_sha256"],
             "trace_reference": "trace.jsonl", "video_frame_map_reference": "video_frames.jsonl",
             "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
