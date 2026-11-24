@@ -39,7 +39,7 @@ class FirstFallbackTests(unittest.TestCase):
                          ['fallback1', 'fallback2', 'fallback3'])
         self.assertEqual([c['changed_knobs'] for c in case['candidates']],
                          [['other_release_frame'], ['site.camera_poses.overview'],
-                          ['capture_duration']])
+                          ['other_release_frame']])
         configs = []
         sites = []
         for candidate in case['candidates']:
@@ -57,7 +57,8 @@ class FirstFallbackTests(unittest.TestCase):
                              candidate['changed_knobs'][0])
         self.assertEqual(configs[0]['other_release_frame'], 32)
         self.assertEqual(sites[1]['camera_poses']['overview'], [28, -22, 12, 135, -20, 0])
-        self.assertEqual((configs[2]['frames'], configs[2]['duration_s']), (1100, 55))
+        self.assertEqual((configs[2]['frames'], configs[2]['duration_s']), (900, 45))
+        self.assertEqual(configs[2]['other_release_frame'], 24)
         self.assertEqual(len({c['construction_sha256'] for c in case['candidates']}), 3)
 
 
