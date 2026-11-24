@@ -102,6 +102,11 @@ def finalize(attempt, output):
                 stream.write(json.dumps({'time_s': row['time_s'],
                                          'value': channel_value(name, row, context)},
                                         allow_nan=False) + '\n')
+    control_style = config.get('control_style')
+    if type(control_style) is not int or control_style not in (0, 1):
+        raise ValueError('Missing selected controller profile index')
+    (channels / 'control_style.json').write_text(
+        json.dumps({'control_style': control_style}, indent=2) + '\n')
     source_hashes = {name: sha(attempt / name) for name in SOURCES}
     physical_flags = ['Physical curbside travel, pedestrian visibility and municipal highway status require original review']
     result = {
@@ -135,14 +140,22 @@ def finalize(attempt, output):
         'recording_evidence': [{
             'name': name, 'unit': 'structured',
             'reference': 'channels/' + name + '.jsonl',
-        } for name in channel_names],
-        'realized_observables': {},
+        } for name in channel_names] + [{
+            'name': 'control_style', 'unit': 'profile_index',
+            'reference': 'channels/control_style.json'}],
+        'realized_observables': {'control_style': {
+            'unit': 'profile_index',
+            'method': 'Read the selected config profile and join its original Native motion, body and frame streams',
+            'time_window': 'all 600 Native frames', 'statistic': 'first',
+            'reference': 'channels/control_style.json', 'value': control_style}},
         'provenance_kind': 'native' if measured['source_kind'] == 'original_native' else 'synthetic_fixture',
         'diagnostic_fixture': measured['source_kind'] != 'original_native',
         'physical_acceptance_claimed': False,
         'legal_acceptance_claimed': False,
     }
+    sweep_observables = result['realized_observables']
     result = physical_result(attempt, result)
+    result['realized_observables'].update(sweep_observables)
     write_result(attempt, result)
     report = {
         'format': 'worker-analysis-report', 'case_id': case_id,

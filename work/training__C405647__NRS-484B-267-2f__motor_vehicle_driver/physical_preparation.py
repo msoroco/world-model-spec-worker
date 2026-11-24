@@ -90,7 +90,8 @@ def fixture(suffix, kind, output):
                       negative_premature_saved_processing_rejected=True,
                       recorded_only_receipt_sha256=sha(receipt_path))
     else:
-        folder = HERE / 'current-fixture' / suffix
+        folder = (HERE / 'draft-visible/source' if suffix == 'visible_movement'
+                  else HERE / 'current-fixture' / suffix)
         path = folder / 'vehicle_poses.jsonl'
         poses = [json.loads(line) for line in path.read_text().splitlines()]
         frames = [json.loads(line) for line in
@@ -167,7 +168,7 @@ if __name__ == '__main__':
         raise SystemExit('Set TMPDIR under .runtime-work')
     parser = argparse.ArgumentParser()
     parser.add_argument('--build', action='store_true')
-    parser.add_argument('--case', choices=('controlled_1', 'controlled_2', 'official_approach', 'stopped_referral'))
+    parser.add_argument('--case', choices=('controlled_1', 'controlled_2', 'official_approach', 'stopped_referral', 'visible_movement'))
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()

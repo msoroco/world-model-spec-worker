@@ -3,8 +3,177 @@
   "actor": "motor_vehicle_driver",
   "status": "draft",
   "sweeps_expanded": true,
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__source_judgments",
+      "target_law_id": "NRS-484B-267-2f",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "authorized emergency vehicle or an official vehicle of a regulatory agency",
+          "note": "Authorization and role need an original source; blueprint identity alone is insufficient."
+        },
+        {
+          "phrase": "moving or preparing to move in any direction",
+          "note": "Join original motion and visibly indicated preparation; no speed cutoff defines preparation."
+        },
+        {
+          "phrase": "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+          "note": "Original equipment and pixels require independent review."
+        },
+        {
+          "phrase": "except when otherwise directed by a law enforcement officer",
+          "note": "Officer identity, direction content, recipient and time require original review."
+        },
+        {
+          "phrase": "Approaches the driver’s vehicle, proceed as required pursuant to subsection 1",
+          "note": "The three supplied subsection 1 duties require original yield, right-edge position and stop-until-passed review; synthetic response paths are diagnostics."
+        },
+        {
+          "phrase": "Stops, proceed as required pursuant to NRS 484B.607",
+          "note": "Record the stopped alternative; the exact 484B.607 duties are absent from the frozen corpus."
+        }
+      ],
+      "rationale": "Source qualification and visibility remain unresolved judgments; selected cases are exact categorical probes, not numeric legal cutoffs.",
+      "missing_inputs": [
+        "Original agency/authorization, lamp equipment, driver-visible preparation, hand-signal, and officer-direction source review; no numeric training judgment ranges supplied for these phrases."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__shared_baseline",
+      "target_law_id": "NRS-484B-267-2f",
+      "target_type": "baseline",
+      "rationale": "Shared semantic reference for the selected comparisons; this is not an additional capture or delivery recording.",
+      "variable_assignments": {
+        "requested_subsection_1_response": {
+          "kind": "controller",
+          "value": "move_to_right_edge_and_stop_until_passed",
+          "unit": "categorical"
+        },
+        "observed_emergency_approach": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "qualifying_source_vehicle_and_lamps": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        },
+        "officer_direction": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "responding_vehicle_kind": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "categorical"
+        },
+        "source_vehicle_stops": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "pre_approach_source_movement": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "visible_driver_hand_signal": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency or regulatory-agency vehicle with qualifying flashing lights",
+        "moving or visibly preparing to move",
+        "approaches the driver vehicle and invokes supplied subsection 1 duties",
+        "unless otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": null,
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_subsection_1_response",
+        "comparison_or_standard": "shared source-bound semantic reference",
+        "target_value_or_branch": "move_to_right_edge_and_stop_until_passed"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic fixture proves software path only",
+          "Original authorization, qualifying lamp pixels, visibility and officer direction require review"
+        ]
+      }
+    },
     {
       "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-267-2f",
@@ -39,6 +208,16 @@
         "source_vehicle_stops": {
           "kind": "world_setup",
           "value": false,
+          "unit": "boolean"
+        },
+        "pre_approach_source_movement": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "visible_driver_hand_signal": {
+          "kind": "world_setup",
+          "value": null,
           "unit": "boolean"
         }
       },
@@ -165,6 +344,16 @@
           "kind": "world_setup",
           "value": false,
           "unit": "boolean"
+        },
+        "pre_approach_source_movement": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "visible_driver_hand_signal": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
         }
       },
       "unresolved_judgment_calls": [
@@ -289,6 +478,16 @@
         "source_vehicle_stops": {
           "kind": "world_setup",
           "value": false,
+          "unit": "boolean"
+        },
+        "pre_approach_source_movement": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "visible_driver_hand_signal": {
+          "kind": "world_setup",
+          "value": null,
           "unit": "boolean"
         }
       },
@@ -416,6 +615,16 @@
           "kind": "world_setup",
           "value": true,
           "unit": "boolean"
+        },
+        "pre_approach_source_movement": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "visible_driver_hand_signal": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
         }
       },
       "unresolved_judgment_calls": [
@@ -504,6 +713,142 @@
           "Synthetic fixture proves software path only",
           "Original authorization, qualifying lamp pixels, visibility and officer direction require review",
           "NRS 484B.607 exact duties are not supplied; measure stop and preserve referral without a verdict"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__visible_movement",
+      "target_law_id": "NRS-484B-267-2f",
+      "target_type": "judgment_sweep",
+      "rationale": "Measure distinct pre-approach source-vehicle movement and retain original driver-sightline review; do not infer visible preparation from a controller request.",
+      "variable_assignments": {
+        "requested_subsection_1_response": {
+          "kind": "controller",
+          "value": "move_to_right_edge_and_stop_until_passed",
+          "unit": "categorical"
+        },
+        "observed_emergency_approach": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        },
+        "qualifying_source_vehicle_and_lamps": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        },
+        "officer_direction": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "responding_vehicle_kind": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "categorical"
+        },
+        "source_vehicle_stops": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "pre_approach_source_movement": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "visible_driver_hand_signal": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency or regulatory-agency vehicle with qualifying flashing lights",
+        "moving or visibly preparing to move",
+        "approaches the driver vehicle and invokes supplied subsection 1 duties",
+        "unless otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__visible_movement_comparison",
+      "deliberate_differences": [
+        "pre_approach_source_movement"
+      ],
+      "probe": {
+        "primary_variable": "pre_approach_source_movement",
+        "comparison_or_standard": "original source-vehicle motion onset and driver visibility review",
+        "target_value_or_branch": true
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, emergency context and camera frame join",
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic fixture proves software path only",
+          "Original authorization, qualifying lamp pixels, visibility and officer direction require review",
+          "Visible vehicle movement needs original four-camera driver sightline review"
         ]
       }
     }

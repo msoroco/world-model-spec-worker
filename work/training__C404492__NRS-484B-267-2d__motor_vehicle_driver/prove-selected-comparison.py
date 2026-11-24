@@ -6,8 +6,8 @@ from audit_abreast_comparison import audit
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-ATTEMPTS = {'controlled_1': ROOT / '.runtime-work/c404492-current-primary-compat3',
-            'controlled_2': ROOT / '.runtime-work/c404492-current-controlled2-primary-compat'}
+ATTEMPTS = {'controlled_1': ROOT / '.runtime-work/c404492-capture-final/controlled_1-primary',
+            'controlled_2': ROOT / '.runtime-work/c404492-capture-final/controlled_2-primary'}
 
 
 def sha(path):

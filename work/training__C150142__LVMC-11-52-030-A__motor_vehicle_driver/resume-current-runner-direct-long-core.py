@@ -17,8 +17,9 @@ WORK = Path(__file__).resolve().parent
 REPO = WORK.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 from batch_pipeline.carla import validate_attempt
-from worker_exchange.media import audit
+from worker_exchange.media import audit, verify_receipt
 from worker_exchange.runtime_cli import process, render
+from traffic_spec_adapter.validate import validate_output
 
 MANIFEST = WORK / 'current-runtime-runner-reference-saved-source-manifest.json'
 SOURCE = REPO / '.runtime-work/c150142-direct-long-compat-tour-bus-below-primary-current-v2/fixture'
@@ -45,8 +46,6 @@ def run(output, validator):
     positive = output / 'positive'
     if not (positive / 'result.json').is_file() or not (positive / 'four-view-receipt.json').is_file():
         raise ValueError('Long finalizer and composition have not completed')
-    if (positive / 'converted').exists():
-        raise ValueError('Prior Core output exists; inspect it before resuming')
     manifest = read(MANIFEST)
     entry = next(item for item in manifest['cases'] if item['case_id'] == CASE)
     selection = read(positive / 'candidate-selection.json')
@@ -73,8 +72,13 @@ def run(output, validator):
     source_audits = {}
     for i, video in enumerate(result['video_references']):
         receipt = positive / ('source-%d.json' % i)
-        source_audits[video] = audit(positive / video, count,
-                                    mapping_sha256=mapping_sha, receipt=receipt)
+        if receipt.is_file():
+            source_audits[video] = verify_receipt(
+                positive / video, read(receipt), count,
+                mapping_sha256=mapping_sha)
+        else:
+            source_audits[video] = audit(positive / video, count,
+                                        mapping_sha256=mapping_sha, receipt=receipt)
     proposal_case = next(case for case in read(WORK / 'proposals/cases.json')['cases']
                          if case['case_id'] == CASE)
     config = read(positive / 'config.json')
@@ -83,8 +87,14 @@ def run(output, validator):
     validate_attempt(positive, request, read(positive / 'construction.json'),
                      {'recorded_exit_code': 0}, {}, source_audits=source_audits)
     converted = positive / 'converted'
-    process(positive, converted, REPO / 'runtime/library', validator,
-            diagnostic_fixture=True)
+    if converted.exists():
+        if not all((converted / name).is_file() for name in
+                   ('trace.json', 'adapter_report.json', 'atom_contract.json')):
+            raise ValueError('Incomplete retained Core conversion')
+        validate_output(converted, validator)
+    else:
+        process(positive, converted, REPO / 'runtime/library', validator,
+                diagnostic_fixture=True)
     rendered = render(positive, converted, proposal_case)
     final = audit(rendered['video'], count, receipt=positive / 'final-decode.json')
     return {

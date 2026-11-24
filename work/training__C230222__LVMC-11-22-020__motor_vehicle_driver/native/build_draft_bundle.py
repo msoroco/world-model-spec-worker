@@ -180,6 +180,7 @@ def config(case_id, erratic):
         'case_id': case_id, 'selected_case_id': case_id,
         'cell_id': 'C230222', 'law_id': 'LVMC-11-22-020',
         'actor': 'motor_vehicle_driver', 'candidate_id': 'primary',
+        'control_style': 1 if erratic else 0,
         'spawn_point_index': 0, 'duration_s': 30, 'rate_hz': 20,
         'vehicle_blueprint': 'vehicle.tesla.model3',
         'pedestrian_blueprint_selector': 'walker.pedestrian.*',
@@ -233,7 +234,9 @@ def main():
                              for name in ('drv.time_to_conflict', 'drv.hard_deceleration',
                                           'kin.yaw_rate', 'kin.speed', 'rel.surface_gap',
                                           'rel.contact', 'st.highway', 'ru.pedestrian')],
-                'context_inputs': [],
+                'context_inputs': [{
+                    'name': 'control_style', 'unit': 'profile_index',
+                    'method': 'source-hashed selected controller schedule in config.json; numeric selector is engineering only'}],
                 'limitations': ['Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.',
                                 'Pedestrian pixel visibility and municipal highway status remain unknown until original review.',
                                 'Control requests do not establish observed motion or legal carelessness.']},

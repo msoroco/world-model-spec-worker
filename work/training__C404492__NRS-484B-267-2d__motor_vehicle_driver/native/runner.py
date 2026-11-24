@@ -2,6 +2,7 @@
 import argparse
 import json
 import math
+import os
 from pathlib import Path
 import queue
 import subprocess
@@ -140,8 +141,7 @@ def execute(output,survey,host,port):
                 str(output/(c['name']+'.mkv'))],stdin=subprocess.PIPE,stderr=subprocess.PIPE)
         first=None
         with FrameMap(output/'video_frames.jsonl') as fmap,\
-                (output/'vehicle_poses.jsonl').open('x') as out,\
-                (output/'trace.jsonl').open('x') as trace_out:
+                (output/'vehicle_poses.jsonl').open('x') as out:
             for i in range(COUNT):
                 phase=(i//10)%2==0
                 emergency.set_light_state(carla.VehicleLightState(special if phase else 0))
@@ -172,13 +172,6 @@ def execute(output,survey,host,port):
                 out.write(json.dumps({'video_frame':i,'native_frame':native,
                     'source_kind':'original_native_pose','ego':records[0],
                     'emergency':records[1]})+'\n')
-                ego_pose=ego.get_transform();ego_velocity=ego.get_velocity()
-                trace_out.write(json.dumps({'frame':native,'time_s':t,
-                    'position_m':[ego_pose.location.x,ego_pose.location.y,ego_pose.location.z],
-                    'position':{'x':ego_pose.location.x,'y':ego_pose.location.y,'z':ego_pose.location.z},
-                    'heading_deg':ego_pose.rotation.yaw,
-                    'speed_mps':records[0]['speed_mps'],
-                    'velocity_mps':[ego_velocity.x,ego_velocity.y,ego_velocity.z]})+'\n')
         for name,process in encoders.items():
             process.stdin.close();stderr=process.stderr.read()
             encoder_codes[name]=process.wait(timeout=180)
@@ -218,5 +211,8 @@ if __name__=='__main__':
     if args.check:print(json.dumps({'passed':True,'case_id':cfg['case_id'],'frames':COUNT,
         'cameras':list(CAMERAS),'native_imported':False,'physical_acceptance_claimed':False}))
     else:
-        if args.survey is None or args.output_dir is None:parser.error('--survey and --output-dir required')
-        print(json.dumps(execute(args.output_dir,json.loads(args.survey.read_text()),args.host,args.port)))
+        survey_path=args.survey or (Path(os.environ['SCENARIO_NATIVE_SURVEY'])
+                                    if os.environ.get('SCENARIO_NATIVE_SURVEY') else None)
+        if survey_path is None or args.output_dir is None:
+            parser.error('--output-dir and --survey or SCENARIO_NATIVE_SURVEY required')
+        print(json.dumps(execute(args.output_dir,json.loads(survey_path.read_text()),args.host,args.port)))

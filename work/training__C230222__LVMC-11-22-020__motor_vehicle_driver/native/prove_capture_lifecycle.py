@@ -25,7 +25,7 @@ def prove(case_id):
     output_root = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'])
     if '.runtime-work' not in output_root.parts:
         raise ValueError('Scratch root must be under .runtime-work')
-    source = REPO / '.runtime-work' / ('c230222-' + label + '-compat-physical')
+    source = REPO / '.runtime-work' / ('c230222-' + label + '-primary-compat-v6')
     receipt = json.loads((source / 'compatibility.json').read_text())
     if receipt['passed'] is not True or receipt['case_id'] != case_id:
         raise ValueError('Exact public compatibility receipt required')

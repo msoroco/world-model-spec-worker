@@ -2,7 +2,134 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C230222",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "C230222-curbside-manner",
+      "target_law_id": "LVMC-11-22-020",
+      "judgment_refs": [
+        {
+          "phrase": "careless or imprudent manner",
+          "note": "Qualitative manner requires review of original driving and conditions over the episode."
+        }
+      ],
+      "rationale": "Qualitative manner calls for source-bound physical coverage across controller requests, with legal judgment left open.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "landmarks": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "kin.yaw_rate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "rel.contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame, 30-second attempt",
+            "reference_frame": "original Native frame and simulation time",
+            "uncertainty": "50 ms sample interval; source geometry, pixels and City authority require review",
+            "method": "source-joined original Native body, collision, motion and context review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "control_style",
+            "unit": "profile_index",
+            "method": "source-hashed selected controller schedule in config.json; numeric selector is engineering only"
+          }
+        ],
+        "limitations": [
+          "Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.",
+          "Pedestrian pixel visibility and municipal highway status remain unknown until original review.",
+          "Control requests do not establish observed motion or legal carelessness."
+        ]
+      },
+      "axes": [
+        {
+          "variable": "control_style",
+          "observable": "control_style",
+          "unit": "profile_index",
+          "min": 0,
+          "max": 1,
+          "spacing": 1,
+          "range_rationale": "The two authored controller profiles are indexed zero and one; these numbers are engineering selectors, not legal bounds.",
+          "spacing_rationale": "Both available profiles are selected once.",
+          "feasibility_evidence": "The source-hashed probe_a and probe_b Native constructions contain both complete 600-frame controller schedules.",
+          "measurement": {
+            "method": "Read the selected config profile and join its original Native motion, body and frame streams",
+            "time_window": "all 600 Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "spec_version": "63e629f2cad3a65226b9129e9c33d66daecc066fa956e45dd1c48d22a92566ca",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a",
+        "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b"
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
     {
@@ -13,7 +140,7 @@
       "variable_assignments": {
         "control_style": {
           "kind": "controller",
-          "value": "controlled"
+          "value": 0
         },
         "road_and_pedestrian": {
           "kind": "world_setup",
@@ -21,7 +148,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "Whether actual municipal highway scope and driving carelessness are satisfied requires original evidence review."
+        "careless or imprudent manner"
       ],
       "recording_description": {
         "channels": [
@@ -98,7 +225,13 @@
             "method": "source-joined original Native body, collision, motion and context review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "control_style",
+            "unit": "profile_index",
+            "method": "source-hashed selected controller schedule in config.json; numeric selector is engineering only"
+          }
+        ],
         "limitations": [
           "Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.",
           "Pedestrian pixel visibility and municipal highway status remain unknown until original review.",
@@ -114,7 +247,7 @@
       "variable_assignments": {
         "control_style": {
           "kind": "controller",
-          "value": "controlled"
+          "value": 0
         },
         "road_and_pedestrian": {
           "kind": "world_setup",
@@ -122,7 +255,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "Whether actual municipal highway scope and driving carelessness are satisfied requires original evidence review."
+        "careless or imprudent manner"
       ],
       "recording_description": {
         "channels": [
@@ -199,22 +332,52 @@
             "method": "source-joined original Native body, collision, motion and context review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "control_style",
+            "unit": "profile_index",
+            "method": "source-hashed selected controller schedule in config.json; numeric selector is engineering only"
+          }
+        ],
         "limitations": [
           "Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.",
           "Pedestrian pixel visibility and municipal highway status remain unknown until original review.",
           "Control requests do not establish observed motion or legal carelessness."
         ]
       },
-      "paired_probe_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__manner_comparison",
+      "paired_probe_id": "C230222-curbside-manner",
       "deliberate_differences": [
         "control_style"
       ],
       "probe": {
         "primary_variable": "control_style",
         "comparison_or_standard": "Compare observed manner cues without deciding the qualitative standard",
-        "target_value_or_branch": "controlled"
-      }
+        "target_value_or_branch": 0
+      },
+      "sweep_id": "C230222-curbside-manner",
+      "sweep_spec_version": "63e629f2cad3a65226b9129e9c33d66daecc066fa956e45dd1c48d22a92566ca",
+      "sweep_point": {
+        "control_style": 0
+      },
+      "selection_rank": 0,
+      "judgment_refs": [
+        {
+          "phrase": "careless or imprudent manner",
+          "note": "Qualitative manner requires review of original driving and conditions over the episode."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "control_style",
+          "observable": "control_style",
+          "unit": "profile_index",
+          "measurement": {
+            "method": "Read the selected config profile and join its original Native motion, body and frame streams",
+            "time_window": "all 600 Native frames",
+            "statistic": "first"
+          }
+        }
+      ]
     },
     {
       "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b",
@@ -224,7 +387,7 @@
       "variable_assignments": {
         "control_style": {
           "kind": "controller",
-          "value": "erratic"
+          "value": 1
         },
         "road_and_pedestrian": {
           "kind": "world_setup",
@@ -232,7 +395,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "Whether actual municipal highway scope and driving carelessness are satisfied requires original evidence review."
+        "careless or imprudent manner"
       ],
       "recording_description": {
         "channels": [
@@ -309,22 +472,52 @@
             "method": "source-joined original Native body, collision, motion and context review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "control_style",
+            "unit": "profile_index",
+            "method": "source-hashed selected controller schedule in config.json; numeric selector is engineering only"
+          }
+        ],
         "limitations": [
           "Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.",
           "Pedestrian pixel visibility and municipal highway status remain unknown until original review.",
           "Control requests do not establish observed motion or legal carelessness."
         ]
       },
-      "paired_probe_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__manner_comparison",
+      "paired_probe_id": "C230222-curbside-manner",
       "deliberate_differences": [
         "control_style"
       ],
       "probe": {
         "primary_variable": "control_style",
         "comparison_or_standard": "Compare observed manner cues without deciding the qualitative standard",
-        "target_value_or_branch": "erratic"
-      }
+        "target_value_or_branch": 1
+      },
+      "sweep_id": "C230222-curbside-manner",
+      "sweep_spec_version": "63e629f2cad3a65226b9129e9c33d66daecc066fa956e45dd1c48d22a92566ca",
+      "sweep_point": {
+        "control_style": 1
+      },
+      "selection_rank": 1,
+      "judgment_refs": [
+        {
+          "phrase": "careless or imprudent manner",
+          "note": "Qualitative manner requires review of original driving and conditions over the episode."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "control_style",
+          "observable": "control_style",
+          "unit": "profile_index",
+          "measurement": {
+            "method": "Read the selected config profile and join its original Native motion, body and frame streams",
+            "time_window": "all 600 Native frames",
+            "statistic": "first"
+          }
+        }
+      ]
     }
   ]
 }

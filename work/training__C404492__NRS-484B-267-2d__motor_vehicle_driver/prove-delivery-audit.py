@@ -9,8 +9,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CASES = {
-    'controlled_1': 'c404492-current-primary-compat3',
-    'controlled_2': 'c404492-current-controlled2-primary-compat',
+    'controlled_1': 'c404492-capture-final/controlled_1-primary',
+    'controlled_2': 'c404492-capture-final/controlled_2-primary',
 }
 CHECKS = ['native_source', 'all_participants', 'time_join', 'full_video_decode',
           'actual_pixels', 'physical_completion']

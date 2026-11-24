@@ -1,0 +1,402 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft_cpu_prepared",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-native/probe_a/primary/construction.json",
+      "construction_sha256": "9d6a3f385a234bbe36f8f0f289e183bfa6b830e48c4069fa7b702acdaab753c4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The requested Native route, curbside walker separation, and four actual camera views require local physical confirmation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_a/fallback1/construction.json",
+          "construction_sha256": "a6825e39bf7c5957be6362f05b454c9621115e20fc605276b547c9c292babe7b",
+          "trigger": {
+            "source": "native-body-geometry.jsonl",
+            "metric": "minimum planar pedestrian body gap during curbside travel",
+            "failure_condition": "Primary Native body gap falls below the one-metre engineering camera/recovery margin, or the walker leaves the four-view field of view."
+          },
+          "changed_knobs": [
+            "Lower approach, curbside and departure throttle requests to reduce Native pedestrian proximity if primary exceeds the engineering proximity trigger."
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a6825e39bf7c5957be6362f05b454c9621115e20fc605276b547c9c292babe7b",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/draft-selected-execution-manifest.json --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c230222-probe_a-fallback1-offline-v7 --python $PWD/.venv-cpu/bin/python",
+            "log": "probe_a-fallback1-offline.log",
+            "log_sha256": "903185aa9897a11c72c1a37a84ca9c98158887806511b01c2d3a38b40b4786ef"
+          },
+          "compatibility": {
+            "receipt": "fallback-probe_a-compatibility.json",
+            "sha256": "4ea4e5a0feb4d11bb8df51750ada98ec5570d20899d80b82c33f91570d197568",
+            "log": "fallback-probe_a-compatibility-analysis.log",
+            "negative_log": "fallback-probe_a-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "selected-probe_a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/selected-probe_a-fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.yaw_rate": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "rel.contact": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.highway": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ru.pedestrian": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "9d6a3f385a234bbe36f8f0f289e183bfa6b830e48c4069fa7b702acdaab753c4",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/draft-selected-execution-manifest.json --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c230222-probe_a-primary-offline-v7 --python $PWD/.venv-cpu/bin/python",
+        "log": "probe_a-primary-offline.log",
+        "log_sha256": "903185aa9897a11c72c1a37a84ca9c98158887806511b01c2d3a38b40b4786ef"
+      },
+      "compatibility": {
+        "receipt": "selected-probe_a-compatibility.json",
+        "sha256": "1e07850992ca3ee33461d91d534b1eac0f4a1a1d8fc8bf9e12046daeafdce6fd",
+        "log": "selected-probe_a-compatibility-analysis.log",
+        "negative_log": "selected-probe_a-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-probe_a-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation/probe_a/physical-preparation.json",
+        "sha256": "a84204f9725ceafd623a67212548519fbaa653e62bb206b75b3a427688f1e304"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "92d52f7c8d2a7c0c51d78a7326c7fb9b6adc2f6af3e75a6a0805c5c6c596f474",
+        "command": "PYTHONPATH=$PWD/runtime/scenario_pipeline .venv-cpu/bin/python work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_a-positive.log",
+        "test_log_sha256": "b9721d239868520d152138ae3a62e6e199ee4a87c097b9c730aeb56ada7acb51",
+        "negative_command": "PYTHONPATH=$PWD/runtime/scenario_pipeline .venv-cpu/bin/python work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a --attempt .runtime-work/c230222-proofs/lifecycle-probe_a-attempt --saved .runtime-work/c230222-proofs/lifecycle-probe_a-saved/v0001 --pixel-review .runtime-work/c230222-proofs/lifecycle-probe_a-attempt/pixel-review.json --output .runtime-work/c230222-probe_a-delivery-audit.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "delivery-probe_a-negative.log",
+        "negative_log_sha256": "ae8c0f9de0789569882aa8984d3ef51ea482a97482d2866f25fefe67bfb471a1"
+      }
+    },
+    {
+      "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-native/probe_b/primary/construction.json",
+      "construction_sha256": "43b0a857dfd321efbb857ac4605fb5b5c0f3d9a14f0525cfb1a42cfd18501cdd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The requested Native route, curbside walker separation, and four actual camera views require local physical confirmation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_b/fallback1/construction.json",
+          "construction_sha256": "ed61275632b8308f22542335321a0f2017d4841d34a0f735ae31423af108a603",
+          "trigger": {
+            "source": "native-ego-frames.jsonl",
+            "metric": "original Native curbside yaw-rate excursion",
+            "failure_condition": "Primary measured yaw-rate excursion is indistinguishable from probe_a in source-joined samples, or the route leaves the observed curbside lane."
+          },
+          "changed_knobs": [
+            "Increase requested curbside steering amplitude and reduce throttle so original yaw and separation can be observed if the primary path remains nearly straight."
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "ed61275632b8308f22542335321a0f2017d4841d34a0f735ae31423af108a603",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/draft-selected-execution-manifest.json --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c230222-probe_b-fallback1-offline-v7 --python $PWD/.venv-cpu/bin/python",
+            "log": "probe_b-fallback1-offline.log",
+            "log_sha256": "e56ac382dba07e9281a681c951a0cbc81d08ec2e8f757b3ee652210fc03a7694"
+          },
+          "compatibility": {
+            "receipt": "fallback-probe_b-compatibility.json",
+            "sha256": "1d301171de417e75168df079d937dfe27ea21fe17f27d642c4c7e3fa1165c6d8",
+            "log": "fallback-probe_b-compatibility-analysis.log",
+            "negative_log": "fallback-probe_b-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "selected-probe_b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/selected-probe_b-fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.yaw_rate": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "rel.contact": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.highway": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "ru.pedestrian": {
+          "entrypoint": "finalize.py",
+          "method": "source-derived saved measurement",
+          "evidence": [
+            "native-ego-frames.jsonl",
+            "native-body-geometry.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "43b0a857dfd321efbb857ac4605fb5b5c0f3d9a14f0525cfb1a42cfd18501cdd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/draft-selected-execution-manifest.json --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c230222-probe_b-primary-offline-v7 --python $PWD/.venv-cpu/bin/python",
+        "log": "probe_b-primary-offline.log",
+        "log_sha256": "e56ac382dba07e9281a681c951a0cbc81d08ec2e8f757b3ee652210fc03a7694"
+      },
+      "compatibility": {
+        "receipt": "selected-probe_b-compatibility.json",
+        "sha256": "e8f3211db8d490d4544d5b061bbc9ef8375a47d15def7c2aee7ca672fac2088f",
+        "log": "selected-probe_b-compatibility-analysis.log",
+        "negative_log": "selected-probe_b-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-probe_b-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation/probe_b/physical-preparation.json",
+        "sha256": "f725cb146a5151b8c5a92a5c4dbc62008583347b93a336107c9c1b60fc05d92f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "92d52f7c8d2a7c0c51d78a7326c7fb9b6adc2f6af3e75a6a0805c5c6c596f474",
+        "command": "PYTHONPATH=$PWD/runtime/scenario_pipeline .venv-cpu/bin/python work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_b-positive.log",
+        "test_log_sha256": "b9721d239868520d152138ae3a62e6e199ee4a87c097b9c730aeb56ada7acb51",
+        "negative_command": "PYTHONPATH=$PWD/runtime/scenario_pipeline .venv-cpu/bin/python work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b --attempt .runtime-work/c230222-proofs/lifecycle-probe_b-attempt --saved .runtime-work/c230222-proofs/lifecycle-probe_b-saved/v0001 --pixel-review .runtime-work/c230222-proofs/lifecycle-probe_b-attempt/pixel-review.json --output .runtime-work/c230222-probe_b-delivery-audit.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "delivery-probe_b-negative.log",
+        "negative_log_sha256": "ae8c0f9de0789569882aa8984d3ef51ea482a97482d2866f25fefe67bfb471a1"
+      }
+    }
+  ]
+}

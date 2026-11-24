@@ -49,9 +49,17 @@ def main():
                 path = here / construction['construction']
                 if sha(path) != construction['construction_sha256']:
                     raise ValueError('Construction hash differs')
+                name = case.rsplit('__', 1)[-1] + '-' + candidate
+                retained_log = here / 'current-offline' / (name + '.log')
+                retained_log.parent.mkdir(parents=True, exist_ok=True)
+                data = (output / 'offline.log').read_bytes()
+                if (not data.endswith(b'\n') or data.endswith(b'\n\n')
+                        or any(line != line.rstrip() for line in data.splitlines())):
+                    raise ValueError('Offline log whitespace differs: ' + name)
+                retained_log.write_bytes(data)
                 rows.append({'case_id': case, 'candidate_id': candidate,
                              'construction_sha256': sha(path),
-                             'offline_log_sha256': sha(output / 'offline.log'),
+                             'offline_log_sha256': sha(retained_log),
                              'offline_passed': True, 'simulation_started': False})
     print(json.dumps({'format': 'c404492-current-candidate-offline-matrix',
                       'manifest_sha256': sha(manifest), 'candidates': rows,

@@ -24,7 +24,7 @@ def main():
                      'law_id': LAW['id'], 'quote': LAW['text'],
                      'applies_to': [ASSIGNMENT['actor']], 'relevance_type': 'direct',
                      'confidence': 'high',
-                     'notes': 'The selected branch routes a qualifying moving emergency vehicle approaching the driver to subsection 1.'}],
+                     'notes': 'Selected branches route a qualifying approaching emergency or regulatory official vehicle to subsection 1 and preserve a stopped-vehicle referral without inferring NRS 484B.607 duties.'}],
                  'borderline_excluded': []}
     r1 = put('relevance-batch.json', relevance)
     r2 = put('relevance.json', relevance)
@@ -49,6 +49,12 @@ def main():
          'range_or_domain': ['authorized_emergency', 'regulatory_agency_official']},
         {'name': 'source_vehicle_stops', 'kind': 'world_setup',
          'range_or_domain': [True, False]},
+        {'name': 'qualifying_source_vehicle_and_lamps', 'kind': 'world_setup',
+         'range_or_domain': [True, False, None]},
+        {'name': 'pre_approach_source_movement', 'kind': 'world_setup',
+         'range_or_domain': [True, False]},
+        {'name': 'visible_driver_hand_signal', 'kind': 'world_setup',
+         'range_or_domain': [True, False, None]},
         {'name': 'observed_emergency_approach', 'kind': 'subject_behavior',
          'range_or_domain': [True, False, None]},
         {'name': 'officer_direction', 'kind': 'world_setup',
@@ -66,18 +72,20 @@ def main():
                 'parameter_refs': parameters}
     r3 = put('template.json', template)
     observed = []
+    channel_for_judgment = ('drv.responding_emergency', 'kin.velocity',
+                            'drv.responding_emergency', 'dev.human_direction',
+                            'drv.approaching', 'drv.stopped')
     for index, judgment in enumerate(judgments):
         observed.append(put('judgment_observables_' + str(index) + '.json', {
             'template_id': TEMPLATE_ID, 'phrase': judgment['phrase'],
             'note': judgment['note'], 'status': 'draft',
             'observable_requirements': {
-                'observables': [{'name': 'original_actor_motion_and_light', 'unit': 'structured',
-                                 'description': 'Frame joined ego and emergency body, speed, lamp state and camera frames.'}],
-                'context_inputs': [{'name': 'independent_qualification_review', 'unit': 'structured',
-                                    'description': 'Authority, equipment, visible indication and officer direction source review.'}],
+                'observables': [{'name': channel_for_judgment[index], 'unit': 'structured',
+                                 'description': 'Frame-joined original actor, motion, light or officer direction source review.'}],
+                'context_inputs': [],
                 'sweep_dimensions': [], 'landmarks': [],
-                'recording_needs': [{'name': 'four_camera_frame_join', 'unit': 'structured',
-                                     'description': 'Retain original four camera and actor frame joins.'}],
+                'recording_needs': [{'name': 'rel.visible', 'unit': 'structured',
+                                     'description': 'Retain original four camera and actor frame joins for independent visibility review.'}],
                 'limitations': [judgment['note'], 'Synthetic fixture cannot establish physical or legal acceptance.']}}))
     bindings = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ASSIGNMENT['actor'],
                 'status': 'draft', 'established_contexts': [

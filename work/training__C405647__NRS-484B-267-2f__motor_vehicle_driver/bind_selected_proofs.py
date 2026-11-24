@@ -41,6 +41,13 @@ def main():
             raise ValueError('Stopped selected public or saved-only matrix did not pass')
         public_results.extend(stopped_public['results'])
         saved_results.extend(stopped_saved['results'])
+    if any(entry['case_id'].endswith('__visible_movement') for entry in current['cases']):
+        visible_public = read(HERE / 'current-public/visible-matrix.json')
+        visible_saved = read(HERE / 'current-public/visible-saved-matrix.json')
+        if not visible_public['all_passed'] or not visible_saved['all_passed']:
+            raise ValueError('Visible movement public or saved-only matrix did not pass')
+        public_results.extend(visible_public['results'])
+        saved_results.extend(visible_saved['results'])
     pr = {(r['case'], r['candidate']): r for r in public_results}
     sr = {(r['case_id'], r['candidate_id']): r for r in saved_results}
     for entry in current['cases']:
@@ -75,7 +82,8 @@ def main():
             if any(not q.is_file() for q in (offline, receipt, negative, analysis, processed)):
                 raise ValueError('Candidate proof file missing: ' + base)
             offline_version = {'official_approach': 'offline-v4-', 'stopped_referral': 'offline-v2-'}.get(suffix, 'offline-v3-')
-            offline_attempt = offline_version + base
+            offline_attempt = ('offline-visible-draft-primary' if suffix == 'visible_movement'
+                               else offline_version + base)
             dest['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/current-execution-manifest.json --case ' + case_id + ' --candidate ' + cid + ' --output .runtime-work/c405647-267-2f/' + offline_attempt + ' --python "$PWD/.venv-cpu/bin/python"',
                                'exit_code': 0, 'construction_sha256': dest['construction_sha256'],
                                'log': relative(offline), 'log_sha256': sha(offline)}

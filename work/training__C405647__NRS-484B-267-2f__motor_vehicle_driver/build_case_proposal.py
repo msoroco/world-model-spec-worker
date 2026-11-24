@@ -17,9 +17,12 @@ def main():
                      'move_to_right_edge_and_stop_until_passed')
         official = suffix == 'official_approach'
         stopped = suffix == 'stopped_referral'
+        visible = suffix == 'visible_movement'
         cases.append({'case_id': entry['case_id'], 'target_law_id': plan['law_id'],
                       'target_type': 'judgment_sweep',
-                      'rationale': ('Measure a moving emergency vehicle that stops; preserve the NRS 484B.607 referral without inferring its unsupplied duties.'
+                      'rationale': ('Measure distinct pre-approach source-vehicle movement and retain original driver-sightline review; do not infer visible preparation from a controller request.'
+                                    if visible else
+                                    'Measure a moving emergency vehicle that stops; preserve the NRS 484B.607 referral without inferring its unsupplied duties.'
                                     if stopped else
                                     'Compare regulatory-agency official vehicle approach with the fixed emergency vehicle path and the same right-edge stop request; original agency identity remains for review.'
                                     if official else
@@ -39,20 +42,41 @@ def main():
                                                       'value': 'regulatory_agency_official' if official else 'authorized_emergency',
                                                       'unit': 'categorical'},
                           'source_vehicle_stops': {'kind': 'world_setup',
-                                                   'value': stopped, 'unit': 'boolean'}},
+                                                   'value': stopped, 'unit': 'boolean'},
+                          'pre_approach_source_movement': {'kind': 'world_setup',
+                                                   'value': visible, 'unit': 'boolean'},
+                          'visible_driver_hand_signal': {'kind': 'world_setup',
+                                                   'value': None, 'unit': 'boolean'}},
                       'unresolved_judgment_calls': [
                           'authorized emergency or regulatory-agency vehicle with qualifying flashing lights',
                           'moving or visibly preparing to move',
                           'approaches the driver vehicle and invokes supplied subsection 1 duties',
                           'unless otherwise directed by a law enforcement officer'],
-                      'paired_probe_id': HERE.name + ('__stopped_referral_comparison' if stopped else '__official_kind_comparison' if official else '__approach_response_pair'),
-                      'deliberate_differences': ['source_vehicle_stops'] if stopped else ['responding_vehicle_kind'] if official else ['requested_subsection_1_response'],
-                      'probe': {'primary_variable': 'source_vehicle_stops' if stopped else 'responding_vehicle_kind' if official else 'requested_subsection_1_response',
-                                'comparison_or_standard': 'original source vehicle motion-to-stop time join' if stopped else 'original official agency source review with fixed response path' if official else 'source-bound right-edge geometry, stop-until-passed timing and continued travel',
-                                'target_value_or_branch': True if stopped else 'regulatory_agency_official' if official else requested},
+                      'paired_probe_id': HERE.name + ('__visible_movement_comparison' if visible else '__stopped_referral_comparison' if stopped else '__official_kind_comparison' if official else '__approach_response_pair'),
+                      'deliberate_differences': ['pre_approach_source_movement'] if visible else ['source_vehicle_stops'] if stopped else ['responding_vehicle_kind'] if official else ['requested_subsection_1_response'],
+                      'probe': {'primary_variable': 'pre_approach_source_movement' if visible else 'source_vehicle_stops' if stopped else 'responding_vehicle_kind' if official else 'requested_subsection_1_response',
+                                'comparison_or_standard': 'original source-vehicle motion onset and driver visibility review' if visible else 'original source vehicle motion-to-stop time join' if stopped else 'original official agency source review with fixed response path' if official else 'source-bound right-edge geometry, stop-until-passed timing and continued travel',
+                                'target_value_or_branch': True if visible or stopped else 'regulatory_agency_official' if official else requested},
                       'recording_description': recording})
+    baseline = dict(cases[0])
+    baseline['case_id'] = HERE.name + '__shared_baseline'
+    baseline['target_type'] = 'baseline'
+    baseline['rationale'] = 'Shared semantic reference for the selected comparisons; this is not an additional capture or delivery recording.'
+    baseline['paired_probe_id'] = None
+    baseline['deliberate_differences'] = []
+    baseline['probe'] = {'primary_variable': 'requested_subsection_1_response',
+                         'comparison_or_standard': 'shared source-bound semantic reference',
+                         'target_value_or_branch': 'move_to_right_edge_and_stop_until_passed'}
+    judgments = json.loads((HERE / 'proposals/template.json').read_text())['structure']['judgment_calls_needed']
+    judgment_refs = [{'phrase': row['phrase'], 'note': row['note']} for row in judgments]
     proposal = {'cell_id': plan['cell_id'], 'actor': plan['actor'], 'status': 'draft',
-                'sweeps_expanded': True, 'sweep_specs': [], 'cases': cases}
+                'sweeps_expanded': True,
+                'sweep_specs': [{'sweep_id': HERE.name + '__source_judgments',
+                                 'target_law_id': plan['law_id'], 'status': 'incomplete',
+                                 'judgment_refs': judgment_refs,
+                                 'rationale': 'Source qualification and visibility remain unresolved judgments; selected cases are exact categorical probes, not numeric legal cutoffs.',
+                                 'missing_inputs': ['Original agency/authorization, lamp equipment, driver-visible preparation, hand-signal, and officer-direction source review; no numeric training judgment ranges supplied for these phrases.']}],
+                'cases': [baseline, *cases]}
     target = HERE / 'proposals/cases.json'
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(proposal, indent=2, ensure_ascii=False) + '\n')
