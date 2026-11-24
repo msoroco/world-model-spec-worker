@@ -11,6 +11,7 @@ ROOT = HERE.parents[1]
 RAW = ('native_samples.jsonl', 'video_frames.jsonl', 'pixel_review.jsonl',
        'trace.jsonl', 'capture/evidence.jsonl', 'body_history.jsonl',
        'capture/native/frames.jsonl', 'road.xodr',
+       'scenario_geometry.json', 'scenario_rule_evidence.jsonl',
        'capture/recorder_info.txt', 'capture/manifest.json',
        'sign-review.json')
 CAMERAS = (('overview', 1920, 1080, 'blue'),
@@ -61,7 +62,25 @@ def build(case):
         elif name == 'capture/manifest.json':
             manifest = json.loads((source / name).read_text())
             manifest['sources']['trace.jsonl'] = sha(destination / 'trace.jsonl')
+            manifest['sources']['scenario_geometry.json'] = sha(destination / 'scenario_geometry.json')
+            manifest['sources']['scenario_rule_evidence.jsonl'] = sha(destination / 'scenario_rule_evidence.jsonl')
             target.write_text(json.dumps(manifest, separators=(',', ':')) + '\n')
+        elif name == 'scenario_geometry.json':
+            target.write_text(json.dumps({
+                'source': 'authored synthetic diagnostic geometry; Native designation unverified',
+                'physical_verification': {'status': 'synthetic_diagnostic_only'},
+                'directed_roadways': [], 'direction_sign_objects': [],
+            }, separators=(',', ':')) + '\n')
+        elif name == 'scenario_rule_evidence.jsonl':
+            rows = []
+            for line in (destination / 'capture/evidence.jsonl').read_text().splitlines():
+                event = json.loads(line)
+                rows.append(json.dumps({'frame': event['original_frame'],
+                                        'time_s': event['recording_time_s'],
+                                        'value': {'devices': []},
+                                        'provenance_kind': 'synthetic_fixture'},
+                                       separators=(',', ':')))
+            target.write_text('\n'.join(rows) + '\n')
         else:
             shutil.copyfile(source / name, target)
         if target.stat().st_size > 2 * 1024 * 1024:

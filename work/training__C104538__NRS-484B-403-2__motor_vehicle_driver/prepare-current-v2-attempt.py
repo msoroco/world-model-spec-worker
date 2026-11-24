@@ -6,7 +6,8 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-sys.path.insert(0, str(ROOT / 'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0, str(ROOT / 'runtime'))
+sys.path.insert(0, str(ROOT / 'runtime/scenario_pipeline'))
 from worker_exchange.fixture_recipe import materialize as make_fixture
 from worker_exchange.runtime_cli import materialize as make_construction
 from worker_exchange.saved_processing import copy_sources
@@ -25,7 +26,7 @@ def main():
     fixture = destination.parent / (destination.name + '-fixture')
     recipe = HERE / f'v2-{args.case}-recipe.json'
     source = make_fixture(ROOT, recipe, fixture)
-    manifest = HERE / 'current-v2-probe-manifest.json'
+    manifest = HERE / 'execution-manifest.json'
     case_id = HERE.name + '__' + args.case
     make_construction(manifest, case_id, destination, args.candidate)
     copy_sources(fixture, destination)

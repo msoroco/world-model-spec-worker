@@ -34,8 +34,10 @@ def build():
                           required_atoms=[], source_packets=[],
                           cameras=root_config['cameras'],
                           recording_description=root['recording_description'])
+            finalizer = ('native/finalize_v2.py' if suffix == 'reference' else
+                         'native/finalize_v2_contrast.py')
             inventory = {'runner.py': HERE / 'native/runner.py',
-                         'finalize.py': HERE / 'native/finalize_v2.py'}
+                         'finalize.py': HERE / finalizer}
             for name in ('assignment-source.json', 'case-plan.json',
                          'road.xodr', 'requested-tracks.jsonl',
                          'measure_saved.py', 'measure_camera.py',
@@ -88,7 +90,7 @@ class ExactRequestTest(unittest.TestCase):
                  'construction_sha256': primary['construction_sha256'],
                  'measurement_contract': 'v2-' + suffix + '-primary-measurement-contract.json',
                  'measurement_procedure': {'entrypoint': 'finalize.py'},
-                 'fixture_recipe': str((HERE / ('v2-' + suffix + '-primary-fixture-recipe.json')).relative_to(REPO)),
+                 'fixture_recipe': str((HERE / ('selected-' + suffix + '-fixture-recipe.json')).relative_to(REPO)),
                  'candidate_risk': {'status': risk_item['candidate_risk_status'],
                                     'reason': risk_item['physical_risk']},
                  'native_handoff': {'python_env_var': 'CARLA_PYTHON',

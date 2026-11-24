@@ -1,6 +1,14 @@
 # training__C422978__NRS-484B-117-1__heavy_vehicle_driver
 
-Status: partial. No delivery recording is selected or claimed.
+Status: partial. No original Native or City legal finding is claimed.
+
+## Current selected CPU checkpoint (2026-11-24)
+
+The root Native request is now a 30-second, 600-frame, four-camera package with two passing CPU source checks. A risk review selected reference primary and contrast primary plus two physically distinct contrast fallbacks. All four current-runtime `runtime.py offline` checks pass. All four selected diagnostic compatibility runs pass actual finalization, source preservation, Core decoding with the SHA-verified current `adapterCheck`, measured-speed rendering, full video decode, selected measurements, and a missing-source negative. The current renderer requires `velocity_mps`; the selected fixture recipes bind velocity derived from authored synthetic speed/heading and update the synthetic capture manifests. This is explicitly synthetic and cannot stand in for an original velocity trace.
+
+The selected draft manifest binds exact construction hashes, offline logs, compatibility receipts, negative logs, and candidate risk/trigger definitions. Its current SHA-256 is `602d6eaf71ddac50cade8be7ed9adc022ad881ce1de4459d21c829bd8d1e6059`. Source-hashed physical unit fixtures for complete, incomplete, and missing evidence outcomes and a mocked six-event cleanup order pass current `physical_preparation.validate` for both cases. The canonical five-stage semantic chain passes current `semantic_delivery.validate` for both cases; its template preserves the driveway/alley and subsection 2 electric three-wheel emergency, law-enforcement, and security exceptions. Exception facts remain unverified and must fail closed. The scoped non-strict `worker_check.py --assignment training__C422978__NRS-484B-117-1__heavy_vehicle_driver --complete` passes.
+
+Remaining worker-owned CPU work: independent original-delivery positive/negative audit contract, selected recorded-only processing and source-bound comparison, source-qualified exception acceptance, final execution manifest and exact strict assignment gate. Keep `result.json` partial until those pass. Original City sidewalk designation, operator duty, actual Native motion, and legal result are unresolved.
 
 ## Current CPU checkpoint (2026-11-23)
 

@@ -13,7 +13,7 @@ law=coverage.get('laws',coverage)[source['law_id']]
 result=json.loads((HERE/'result.json').read_text())
 
 assert review['assignment_id']==source['assignment_id']==HERE.name
-assert law['law']['text']==source['law_record']['text']
+assert law['law']['text']==source['law']['text']
 assert review['frozen_cell']=={key:source['cell'][key]
        for key in ('layout','maneuver','control')}|{'actor':source['actor']}
 assert {topic for branch in review['branches'] for topic in branch['source_topics']}==set(law['topics'])
@@ -25,6 +25,6 @@ assert 'outside_frozen_right_turn' in review['branches'][3]['cell_fit']
 assert '8a text' in review['upstream_stop_reference']
 for ref in review['source_refs']:
     assert (ROOT/ref).is_file()
-assert result['status']=='blocked' and result.get('cases_selected',0)==0
-assert review['cpu_readiness'] is False and review['physical_observation_claimed'] is False
-print('C110919 8c exact source, four branch scopes and unselected CPU limitations passed')
+assert result['status'] in ('partial','ready')
+assert review['physical_observation_claimed'] is False
+print('C110919 8c exact source, four branch scopes and physical limitations passed')

@@ -145,9 +145,10 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
     import carla
     import numpy as np
     for parent in Path(__file__).resolve().parents:
-        runtime_package = parent / 'runtime' / 'pipeline' / 'scenario_pipeline'
+        runtime_package = parent / 'runtime' / 'scenario_pipeline'
         if runtime_package.is_dir():
             sys.path.insert(0, str(runtime_package))
+            sys.path.insert(0, str(parent / 'runtime' / 'python'))
             break
     from worker_exchange.world_restore import snapshot, restore
     from worker_exchange.media import compose_four_views
@@ -191,6 +192,11 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         survey['native_map_sha256'] = hashlib.sha256(native_xml.encode()).hexdigest()
         _write_json_new(output / 'road_geometry.json', survey)
         _write_json_new(output / 'context.json', {'signed_hill_crest': survey})
+        _write_json_new(output / 'scenario_geometry.json', {
+            'source': 'Original Native map readback and authored geometry',
+            'physical_verification': {'status': 'original_device_designation_pending'},
+            'directed_roadways': [], 'direction_sign_objects': [],
+        })
         engineering = parameters(case_suffix, candidate_id)
         blueprint = world.get_blueprint_library().find('vehicle.lincoln.mkz_2020')
         blueprint.set_attribute('role_name', 'c104538_4032_ego')
@@ -244,7 +250,8 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'native_samples.jsonl').open('x') as native_file, \
              (output / 'video_frames.jsonl').open('x') as frame_file, \
-             (output / 'body_history.jsonl').open('x') as body_file:
+             (output / 'body_history.jsonl').open('x') as body_file, \
+             (output / 'scenario_rule_evidence.jsonl').open('x') as rule_file:
             for index in range(600):
                 before = ego.get_transform()
                 speed = observed_speed_mps(ego)
@@ -277,6 +284,11 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     'speed_mps': observed_speed, 'controller_request': command}
                 capture.capture(frame, time_s, extra={'c104538_native': sample})
                 native_file.write(json.dumps(sample, allow_nan=False) + '\n')
+                rule_file.write(json.dumps({
+                    'frame': frame, 'time_s': time_s,
+                    'value': {'devices': []},
+                    'review_status': 'original_device_designation_pending',
+                }, allow_nan=False) + '\n')
                 body_file.write(json.dumps({'frame': frame, 'time_s': time_s,
                     'body_vertices_m': [[v.x, v.y, v.z] for v in
                         ego.bounding_box.get_world_vertices(pose)]}, allow_nan=False) + '\n')

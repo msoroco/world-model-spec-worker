@@ -1928,3 +1928,35 @@ C422978/NRS-484B-117-1 next construction checkpoint: assignment-owned Native run
 C110919/NRS-484B-307-8c passed all six selected-intent current-runtime candidate offline and public compatibility chains with removed-road-source negatives: two primaries plus route-tracking and yield-clearance fallbacks per case. Candidate manifest SHA-256 `d8e6af023067f2dcccf94a9a04db81f9c4505a542660a1331b80245e6718ae02`. Six recorded-only saved replays, selected binding, audits and exact strict gate remain. Status partial.
 
 C104538/NRS-484B-403-2 has a two-case selected skeleton with route-error and sign-visibility camera fallbacks per case. Canonical semantic validation passes five stages/two selected cases; source-shaped complete/incomplete/missing-motion and lifecycle proofs pass runtime physical validation. Its current compatibility replay required a rebuilt Lean decoder and original velocity vector in diagnostic sources; those are repaired and the final 600-frame rerun is active. Selected receipts, delivery/comparison audits and strict gate remain. Status partial. Verified inventory remains 29 ready / 224 partial.
+
+## 2026-11-24 13:32 UTC active proof boundaries
+
+C110919/NRS-484B-307-8c has five of six selected-intent candidates through recorded-only saved processing, each preserving 616 synthetic sources with 600-frame joins and final decode; the sixth replay is active. All six current offline and public positive/removed-road negative chains pass. Independent six-row matrix audit, selected root/semantic/physical/delivery/comparison binding and strict gate remain. Status partial.
+
+C104538/NRS-484B-403-2 selected current-runtime public positive/negative chains pass for witness_1 primary, fallback1 and fallback3, plus witness_2 primary. The two witness_2 fallback chains are active. Selected saved processing passes witness_1 primary, with witness_2 primary active. Canonical semantic and physical CPU validation pass; independent delivery and comparison positive/negative selftests pass without original-device or Native claims. Receipt binding and strict gate remain; status partial.
+
+C422978/NRS-484B-117-1 emitted four selected current-runtime constructions (reference primary, contrast primary and two contrast fallbacks), all four passing exact offline checks; selected-draft manifest SHA starts `96d50995`. Public compatibility found an old decoder, a missing original velocity vector in diagnostic trace, and a contrast finalizer hardcoded to reference; owner is repairing these in assignment/scratch files before reproof. Semantic/delivery remain incomplete; status partial. Verified inventory remains 29 ready / 224 partial.
+
+## 2026-11-24 13:35 UTC selected reproof
+
+C104538/NRS-484B-403-2 reached six of six selected offline and public compatibility candidate chains plus both selected primary recorded-only saved paths. Binding found a stale runtime SHA in the selected skeleton, so its owner corrected that to the active batch runtime and is rerunning the six public commands for exact selected-manifest receipts. Semantic, physical, delivery and comparison CPU validators already pass; status remains partial until the rebound receipts and strict gate pass.
+
+C422978/NRS-484B-117-1 verified that the reused scratch Core decoder contract matches all six active runtime/library source hashes and its current executable. Four rebuilt selected constructions pass exact offline against selected-draft manifest SHA starting `ba48995f`; public compatibility now runs against a source-hashed synthetic trace with derived velocity. No original Native claim. Status partial. Verified inventory remains 29 ready / 224 partial.
+
+## 2026-11-24 13:37 UTC candidate matrix completion
+
+C110919/NRS-484B-307-8c completed six of six current-runtime offline, public positive/removed-road negative and recorded-only saved chains, each with 616 synthetic source files and 600 frame joins. Independent six-row matrix audit SHA-256 `940af96799f47b2bab8f147cf9792bb9f062cbd1dc452c916bc100d6ce53b171` and six-stage semantic validator (index SHA-256 `691b5aaffe097e19864812b4cc7edc2c463fd4f287a7dbbe1d9241e8410631ae`) pass. Root source-observation interface, two-case selected manifest and physical branch proofs are built. Selected receipt binding, delivery source positive/negative and comparison audits and strict gate remain; status partial.
+
+C422978/NRS-484B-117-1 completed four of four exact selected current-runtime public compatibility chains for reference primary, contrast primary and two contrast fallbacks, including current Core/render/final decode, selected measurements and missing-source negatives. Current decoder hashes match active runtime/library; synthetic trace velocity is source-derived from authored diagnostic speed/heading. Durable receipt binding, saved processing and semantic/physical/delivery audits remain; status partial. Verified inventory remains 29 ready / 224 partial.
+
+## 2026-11-24 13:39 UTC selected-source repairs
+
+C104538/NRS-484B-403-2 selected rebind superseded the earlier six diagnostic public passes. The first latest selected compatibility run exposed missing declared source packets for `dev.regulatory_sign` and an old runtime import in its Native runner. Its owner added source packet fixtures and Native packet emission, repaired imports, regenerated construction/physical receipts and started the exact current replay. Zero of six latest selected receipts are claimed yet; selected saved reproof, post-capture binding and scoped strict gate remain. Status partial.
+
+C422978/NRS-484B-117-1 now has source-hashed synthetic complete, incomplete and missing-source physical fixtures for both selected cases, plus a six-event cleanup-order mock. Active `physical_preparation.validate` passes both; a selected draft manifest SHA starts `602d6eaf`. These receipts assert synthetic unit evidence only, with no original Native/City authority/legal acceptance. Canonical semantic and delivery/comparison audits remain; status partial. Verified inventory remains 29 ready / 224 partial.
+
+## 2026-11-24 13:42 UTC selected validation progress
+
+C422978/NRS-484B-117-1 authored canonical relevance, law template, direct binding and baseline plus paired reference/contrast semantic proposals. Its law template preserves the exact driveway/alley and subsection 2 emergency, law-enforcement and security clauses; source qualification of entrance and exception context remains unverified and fail-closed. Active semantic validator passes five stages/two selected cases; root case proposals match. Delivery/comparison audits and final source qualification remain, so status partial.
+
+C104538/NRS-484B-403-2 has two of six latest exact current-runtime candidate compatibility chains passing after source-packet and import repairs, plus one refreshed selected primary saved-only pass. Four candidate compatibility chains and the other selected primary saved proof are running; receipt binding and strict gate remain. Scoped partial checker passes static checks. Status partial. Verified inventory remains 29 ready / 224 partial.

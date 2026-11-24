@@ -45,12 +45,12 @@ def run(suffix, candidate):
     compatibility = json.loads((result / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or compatibility.get('candidate_id') != candidate:
         raise ValueError('Current public compatibility did not pass')
-    for name in ('compatibility.json', 'compatibility-analysis.log', 'negative-analysis.log'):
+    for name in ('compatibility.json', 'public-analysis.log', 'negative-analysis.log'):
         shutil.copyfile(result / name, target / name)
     receipt = {'case_id': case_id, 'candidate_id': candidate, 'construction_sha256':
                compatibility['construction_sha256'], 'compatibility_sha256': sha(target / 'compatibility.json'),
                'negative_log_sha256': sha(target / 'negative-analysis.log'),
-               'offline_log_sha256': sha(target / 'offline-command.log'), 'passed': True}
+               'offline_log_sha256': sha(target / 'current-command.log'), 'passed': True}
     (target / 'proof.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps({'case': suffix, 'candidate': candidate, 'proof_sha256': sha(target / 'proof.json')}), flush=True)
 

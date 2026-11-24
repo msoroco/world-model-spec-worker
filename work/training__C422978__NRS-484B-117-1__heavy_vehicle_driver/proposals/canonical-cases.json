@@ -1,0 +1,292 @@
+{
+  "actor": "heavy_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "training__C422978__NRS-484B-117-1__heavy_vehicle_driver__baseline",
+      "rationale": "Shared authored geometry and source review; no baseline recording selected.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor position and full body corners",
+            "name": "ego_pose",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "m"
+          },
+          {
+            "method": "Native actor velocity",
+            "name": "ego_speed",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "m/s"
+          },
+          {
+            "method": "Full original body versus authored OpenDRIVE sidewalk proxy; City authority separately reviewed",
+            "name": "drive_within_sidewalk_area",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "bool"
+          },
+          {
+            "method": "Native pose, body and velocity packet",
+            "name": "subject_pose_body_speed",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "Source-bound spatial context measurement",
+            "name": "sidewalk_occupancy",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original City authority, three-wheel exception facts, camera pixels, and legal judgment require local review"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 4.0
+        },
+        "commanded_lateral_target": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 1.75
+        },
+        "drive_within_sidewalk_area": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrance_and_exception_context": {
+          "kind": "world_setup",
+          "value": "unverified; fail closed"
+        },
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane road and heavy vehicle"
+        }
+      }
+    },
+    {
+      "case_id": "training__C422978__NRS-484B-117-1__heavy_vehicle_driver__reference",
+      "deliberate_differences": [
+        "commanded_lateral_target"
+      ],
+      "paired_probe_id": "training__C422978__NRS-484B-117-1__heavy_vehicle_driver__sidewalk_pair",
+      "probe": {
+        "comparison_or_standard": "road travel versus sidewalk overlap request",
+        "primary_variable": "commanded_lateral_target",
+        "target_value_or_branch": "reference"
+      },
+      "rationale": "Requested road/sidewalk body-overlap comparison only; legal classification waits for original City and exception evidence.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor position and full body corners",
+            "name": "ego_pose",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "m"
+          },
+          {
+            "method": "Native actor velocity",
+            "name": "ego_speed",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "m/s"
+          },
+          {
+            "method": "Full original body versus authored OpenDRIVE sidewalk proxy; City authority separately reviewed",
+            "name": "drive_within_sidewalk_area",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "bool"
+          },
+          {
+            "method": "Native pose, body and velocity packet",
+            "name": "subject_pose_body_speed",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "Source-bound spatial context measurement",
+            "name": "sidewalk_occupancy",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original City authority, three-wheel exception facts, camera pixels, and legal judgment require local review"
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "NRS-484B-117-1",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 4.0
+        },
+        "commanded_lateral_target": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 1.75
+        },
+        "drive_within_sidewalk_area": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrance_and_exception_context": {
+          "kind": "world_setup",
+          "value": "unverified; fail closed"
+        },
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane road and heavy vehicle"
+        }
+      }
+    },
+    {
+      "case_id": "training__C422978__NRS-484B-117-1__heavy_vehicle_driver__contrast",
+      "deliberate_differences": [
+        "commanded_lateral_target"
+      ],
+      "paired_probe_id": "training__C422978__NRS-484B-117-1__heavy_vehicle_driver__sidewalk_pair",
+      "probe": {
+        "comparison_or_standard": "road travel versus sidewalk overlap request",
+        "primary_variable": "commanded_lateral_target",
+        "target_value_or_branch": "contrast"
+      },
+      "rationale": "Requested road/sidewalk body-overlap comparison only; legal classification waits for original City and exception evidence.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor position and full body corners",
+            "name": "ego_pose",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "m"
+          },
+          {
+            "method": "Native actor velocity",
+            "name": "ego_speed",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "m/s"
+          },
+          {
+            "method": "Full original body versus authored OpenDRIVE sidewalk proxy; City authority separately reviewed",
+            "name": "drive_within_sidewalk_area",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "bool"
+          },
+          {
+            "method": "Native pose, body and velocity packet",
+            "name": "subject_pose_body_speed",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "structured"
+          },
+          {
+            "method": "Source-bound spatial context measurement",
+            "name": "sidewalk_occupancy",
+            "reference_frame": "original Native frame and time",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 second 600 frame attempt",
+            "uncertainty": "50 ms bracket; surveyed City authority and actual pixels unverified",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original City authority, three-wheel exception facts, camera pixels, and legal judgment require local review"
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "NRS-484B-117-1",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 4.0
+        },
+        "commanded_lateral_target": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 4.7
+        },
+        "drive_within_sidewalk_area": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrance_and_exception_context": {
+          "kind": "world_setup",
+          "value": "unverified; fail closed"
+        },
+        "road_and_actors": {
+          "kind": "world_setup",
+          "value": "authored two-lane road and heavy vehicle"
+        }
+      }
+    }
+  ],
+  "cell_id": "C422978",
+  "status": "draft",
+  "sweep_specs": []
+}

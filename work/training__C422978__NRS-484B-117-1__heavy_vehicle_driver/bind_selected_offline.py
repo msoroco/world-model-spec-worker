@@ -28,7 +28,7 @@ def bind():
                      'target': entry}, *entry['candidates']]
         for item in selected:
             variant = item['id']
-            scratch = REPO / '.runtime-work' / f'c422978-selected-{suffix}-{variant}-v3'
+            scratch = REPO / '.runtime-work' / f'c422978-selected-{suffix}-{variant}-v4'
             source = scratch / 'offline.log'
             if not source.is_file() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact materializer log: ' + str(source))

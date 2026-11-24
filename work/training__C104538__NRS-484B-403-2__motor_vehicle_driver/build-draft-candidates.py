@@ -6,7 +6,7 @@ from pathlib import Path
 FOLDER = Path(__file__).resolve().parent
 NATIVE = FOLDER / 'native'
 ASSIGNMENT = FOLDER.name
-RUNTIME_MANIFEST = '391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235'
+RUNTIME_MANIFEST = '5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3'
 NAMES = ('primary', 'fallback1', 'fallback2', 'fallback3')
 FILES = ('runner.py', 'geometry.py', 'controller.py', 'engineering.py',
          'measure_u_turn.py', 'pixel_review.py', 'finalize.py', 'cameras.py')
@@ -83,7 +83,8 @@ def build():
                 'rate_hz': 20, 'duration_s': 30,
                 'required_atoms': ['dev.regulatory_sign', 'dev.governs', 'dev.position',
                                    'drv.u_turn', 'kin.heading', 'rel.occupies'],
-                'source_packets': [], 'mandatory_channels': [],
+                'source_packets': ['scenario_geometry', 'scenario_rule_evidence'],
+                'mandatory_channels': [],
                 'case': {'case_id': case_id}, 'recording_description': recording,
                 'cameras': [{'name': name, 'width': w, 'height': h,
                     'pose_strategy': 'candidate-specific Native mount in cameras.py',
