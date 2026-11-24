@@ -26,13 +26,13 @@ def build(suffix):
     frames, poses, trace, evidence, native_frames, graphs = [], [], [], [], [], []
     ego_x, ego_y, em_x = -75.0, -1.75, -15.0
     request = {'case_suffix': suffix, 'requested_initial_subject_speed_mps': 3,
-               'requested_subsequent_subject_speed_mps': 0 if suffix == 'controlled_1' else 3,
+               'requested_subsequent_subject_speed_mps': 3 if suffix == 'controlled_2' else 0,
                'requested_right_edge_center_y_m': -2.5}
     for i in range(600):
         time, native = i / 20, 1000 + i
         ego_vx, ego_vy, phase = subject_response(i, request, ego_x, ego_y, em_x)
         ego_speed = (ego_vx ** 2 + ego_vy ** 2) ** .5
-        em_speed = 2 if i >= 100 else 0
+        em_speed = 2 if i >= 100 and (suffix != 'stopped_referral' or i < 200) else 0
         ego_x += ego_vx / 20
         ego_y += ego_vy / 20
         em_x -= em_speed / 20
@@ -104,6 +104,8 @@ def build(suffix):
                'emergency_vehicle_authorized': True,
                'qualifying_flash_equipment_reviewed': True,
                'officer_directed_otherwise': False}
+    if suffix == 'stopped_referral':
+        context['requested_emergency_stop_frame'] = 200
     for key in ('ego_driver_source', 'emergency_authorization_source',
                 'qualifying_flash_equipment_source', 'flashing_light_visual_source',
                 'lane_boundary_source', 'visibility_review_source',
@@ -147,5 +149,5 @@ def build(suffix):
 
 
 if __name__ == '__main__':
-    for case_suffix in ('controlled_1', 'controlled_2'):
+    for case_suffix in ('controlled_1', 'controlled_2', 'stopped_referral'):
         print(json.dumps(build(case_suffix)))

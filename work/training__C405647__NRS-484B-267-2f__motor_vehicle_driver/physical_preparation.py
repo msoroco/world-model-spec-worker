@@ -23,7 +23,7 @@ def put(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
 
 
-def evaluate(poses, frames, requested_speed):
+def evaluate(poses, frames, requested_speed, stopped_referral=False):
     if len(poses) != 600 or len(frames) != 600:
         return 'unverified', {}
     for index, (pose, frame) in enumerate(zip(poses, frames)):
@@ -48,10 +48,15 @@ def evaluate(poses, frames, requested_speed):
                            p['ego']['speed_mps'] <= .15 for p in poses[120:passed]))
     continued_lane = all(abs(p['ego']['y_m'] + 1.75) <= .15 and
                          p['ego']['speed_mps'] >= 2.5 for p in poses[120:220])
+    stopped_source = all(p['emergency']['speed_mps'] <= .15 for p in poses[220:300])
+    right_edge_hold = all(abs(p['ego']['y_m'] + 2.5) <= .15 and
+                          p['ego']['speed_mps'] <= .15 for p in poses[120:300])
     complete = (separation(poses[80]) < separation(start) and
                 separation(end) < separation(mid) and after_emergency > .5 and
                 abs(after_ego - requested_speed) <= .25 and lamps == {True, False} and
-                (right_edge_stop if requested_speed == 0 else continued_lane))
+                (stopped_source and right_edge_hold and passed is None
+                 if stopped_referral else
+                 right_edge_stop if requested_speed == 0 else continued_lane))
     return ('met' if complete else 'not_met'), {
         'joined_frames': 600, 'initial_separation_m': separation(start),
         'subsequent_closing_m': separation(mid) - separation(end),
@@ -59,6 +64,8 @@ def evaluate(poses, frames, requested_speed):
         'after_emergency_speed_mps': after_emergency,
         'flashing_state_changes_present': lamps == {True, False},
         'right_edge_stop_until_passed': right_edge_stop,
+        'stopped_source_observed': stopped_source,
+        'right_edge_hold_observed': right_edge_hold,
         'emergency_pass_frame': passed,
         'source_kind': 'synthetic_scene_request'}
 
@@ -93,8 +100,9 @@ def fixture(suffix, kind, output):
                 row['emergency']['speed_mps'] = 0.0
         elif kind == 'missing_evidence':
             poses.pop()
-        requested = 0 if suffix == 'controlled_1' else 3
-        status, measured = evaluate(poses, frames, requested)
+        requested = 3 if suffix == 'controlled_2' else 0
+        status, measured = evaluate(poses, frames, requested,
+                                    stopped_referral=suffix == 'stopped_referral')
         expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
                     'missing_evidence': 'unverified'}[kind]
         if status != expected:
@@ -111,11 +119,13 @@ def fixture(suffix, kind, output):
                       'status': result.get('physical_checks', {}).get('maneuver', {}).get('status')}))
 
 
-def build():
+def build(only=None):
     manifest = json.loads((HERE / 'current-execution-manifest.json').read_text())
     index = []
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
+        if only is not None and suffix != only:
+            continue
         folder = HERE / 'physical-proof' / suffix
         refs = []
         for kind in (*KINDS, 'lifecycle'):
@@ -157,12 +167,12 @@ if __name__ == '__main__':
         raise SystemExit('Set TMPDIR under .runtime-work')
     parser = argparse.ArgumentParser()
     parser.add_argument('--build', action='store_true')
-    parser.add_argument('--case', choices=('controlled_1', 'controlled_2'))
+    parser.add_argument('--case', choices=('controlled_1', 'controlled_2', 'official_approach', 'stopped_referral'))
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     if args.build:
-        build()
+        build(args.case)
     elif args.case and args.kind and args.output:
         fixture(args.case, args.kind, args.output)
     else:

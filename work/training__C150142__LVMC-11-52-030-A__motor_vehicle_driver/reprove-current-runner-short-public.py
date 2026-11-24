@@ -46,13 +46,16 @@ def atomic_bytes(target, content):
 
 def verify(case_id, candidate, field, output):
     proof = json.loads((output / 'compatibility.json').read_text(encoding='utf-8'))
+    positive_log = output / 'positive-analysis.log'
+    if not positive_log.is_file():
+        positive_log = output / 'compatibility-analysis.log'
     if (proof.get('passed') is not True or proof.get('case_id') != case_id or
             proof.get('candidate_id') != candidate or
             proof.get('construction_sha256') != field['construction_sha256'] or
             not {'selected_measurements', 'negative_case_source', 'lean_decoder',
                  'final_decode'} <= set(proof.get('checks', []))):
         raise ValueError('Current public compatibility proof differs: ' + case_id + '/' + candidate)
-    if (proof['log_sha256'] != sha(output / 'compatibility-analysis.log') or
+    if (proof['log_sha256'] != sha(positive_log) or
             proof['negative_log_sha256'] != sha(output / 'negative-analysis.log') or
             proof['negative_error_contains'] not in (output / 'negative-analysis.log').read_text()):
         raise ValueError('Current public positive/negative log changed: ' + case_id + '/' + candidate)
@@ -89,7 +92,9 @@ def one(item):
         proof = verify(case_id, candidate, field, scratch)
         for name in ('compatibility.json', 'compatibility-analysis.log',
                      'negative-analysis.log'):
-            destination = target / name
+            portable_name = ('positive-analysis.log' if name ==
+                             'compatibility-analysis.log' else name)
+            destination = target / portable_name
             if destination.exists():
                 if sha(destination) != sha(scratch / name):
                     raise ValueError('Portable public proof changed: ' + str(destination))

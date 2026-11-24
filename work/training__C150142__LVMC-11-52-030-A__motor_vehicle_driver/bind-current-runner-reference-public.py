@@ -79,12 +79,15 @@ def run():
                 proof['negative_error_contains'] not in sources['negative-analysis.log'].read_text()):
             raise ValueError('Public positive or source-negative log changed: ' + variant)
         portable = PORTABLE / variant
+        portable_names = {'compatibility.json': 'compatibility.json',
+                          'compatibility-analysis.log': 'positive-analysis.log',
+                          'negative-analysis.log': 'negative-analysis.log'}
         for name, source in sources.items():
-            retain(source, portable / name)
+            retain(source, portable / portable_names[name])
         field['compatibility'] = {
             'receipt': str((portable / 'compatibility.json').relative_to(ROOT)),
             'sha256': sha(portable / 'compatibility.json'),
-            'log': str((portable / 'compatibility-analysis.log').relative_to(ROOT)),
+            'log': str((portable / 'positive-analysis.log').relative_to(ROOT)),
             'negative_log': str((portable / 'negative-analysis.log').relative_to(ROOT)),
         }
         field['negative'] = {

@@ -225,11 +225,15 @@ def main():
                            'original Native actor bounding-box geometry and collision sensor events'],
             'recording_description': {
                 'channels': [{'name': name, 'unit': 'structured',
-                              'sampling_rate_hz': 20, 'time_window': '600 frames',
+                              'sampling_rate_hz': 20,
+                              'time_window': 'entire 600-frame, 30-second attempt',
+                              'reference_frame': 'original Native frame and simulation time',
+                              'uncertainty': '50 ms sample interval; source geometry, pixels and City authority require review',
                               'method': 'source-joined original Native body, collision, motion and context review'}
                              for name in ('drv.time_to_conflict', 'drv.hard_deceleration',
                                           'kin.yaw_rate', 'kin.speed', 'rel.surface_gap',
                                           'rel.contact', 'st.highway', 'ru.pedestrian')],
+                'context_inputs': [],
                 'limitations': ['Kinematic conflict is a constant-velocity planar-body proxy, not a legal threshold.',
                                 'Pedestrian pixel visibility and municipal highway status remain unknown until original review.',
                                 'Control requests do not establish observed motion or legal carelessness.']},

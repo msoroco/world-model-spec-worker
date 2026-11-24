@@ -43,7 +43,12 @@ def main():
          'note': 'Record the stopped alternative; the exact 484B.607 duties are absent from the frozen corpus.'}]
     parameters = [
         {'name': 'requested_subsection_1_response', 'kind': 'controller',
-         'range_or_domain': ['move_to_right_edge_and_stop_until_passed', 'continue_at_3_mps']},
+         'range_or_domain': ['move_to_right_edge_and_stop_until_passed', 'continue_at_3_mps',
+                             'right_edge_hold_without_607_verdict']},
+        {'name': 'responding_vehicle_kind', 'kind': 'world_setup',
+         'range_or_domain': ['authorized_emergency', 'regulatory_agency_official']},
+        {'name': 'source_vehicle_stops', 'kind': 'world_setup',
+         'range_or_domain': [True, False]},
         {'name': 'observed_emergency_approach', 'kind': 'subject_behavior',
          'range_or_domain': [True, False, None]},
         {'name': 'officer_direction', 'kind': 'world_setup',

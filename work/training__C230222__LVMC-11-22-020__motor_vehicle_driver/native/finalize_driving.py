@@ -63,7 +63,7 @@ def channel_value(name, row, context):
 
 
 def finalize(attempt, output):
-    from worker_exchange.native_output import write_result
+    from worker_exchange.native_output import write_result, physical_result
 
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists():
@@ -142,6 +142,7 @@ def finalize(attempt, output):
         'physical_acceptance_claimed': False,
         'legal_acceptance_claimed': False,
     }
+    result = physical_result(attempt, result)
     write_result(attempt, result)
     report = {
         'format': 'worker-analysis-report', 'case_id': case_id,
@@ -150,6 +151,8 @@ def finalize(attempt, output):
             'value': measure_curbside(rows, source_hashes),
             'sources': source_hashes,
         }},
+        'physical_checks': result['physical_checks'],
+        'realized_observables': result['realized_observables'],
         'physical_or_legal_acceptance': False,
     }
     output.write_text(json.dumps(report, indent=2) + '\n')

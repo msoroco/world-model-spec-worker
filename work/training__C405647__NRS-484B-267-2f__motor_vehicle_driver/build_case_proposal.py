@@ -12,31 +12,44 @@ def main():
     cases = []
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(HERE.name + '__')
-        requested = 'move_to_right_edge_and_stop_until_passed' if suffix == 'controlled_1' else 'continue_at_3_mps'
+        requested = ('continue_at_3_mps' if suffix == 'controlled_2' else
+                     'right_edge_hold_without_607_verdict' if suffix == 'stopped_referral' else
+                     'move_to_right_edge_and_stop_until_passed')
+        official = suffix == 'official_approach'
+        stopped = suffix == 'stopped_referral'
         cases.append({'case_id': entry['case_id'], 'target_law_id': plan['law_id'],
                       'target_type': 'judgment_sweep',
-                      'rationale': 'Compare source-bound emergency approach, right-edge stop until passed, and continued travel; statutory qualification remains for original review.',
+                      'rationale': ('Measure a moving emergency vehicle that stops; preserve the NRS 484B.607 referral without inferring its unsupplied duties.'
+                                    if stopped else
+                                    'Compare regulatory-agency official vehicle approach with the fixed emergency vehicle path and the same right-edge stop request; original agency identity remains for review.'
+                                    if official else
+                                    'Compare source-bound emergency approach, right-edge stop until passed, and continued travel; statutory qualification remains for original review.'),
                       'variable_assignments': {
                           'requested_subsection_1_response': {'kind': 'controller',
                                                        'value': requested,
                                                        'unit': 'categorical'},
                           'observed_emergency_approach': {'kind': 'subject_behavior',
                                                           'value': None, 'unit': 'boolean'},
-                          'qualifying_emergency_and_lamps': {'kind': 'world_setup',
+                          'qualifying_source_vehicle_and_lamps': {'kind': 'world_setup',
                                                               'value': None,
                                                               'unit': 'boolean'},
                           'officer_direction': {'kind': 'world_setup', 'value': False,
-                                                'unit': 'boolean'}},
+                                                'unit': 'boolean'},
+                          'responding_vehicle_kind': {'kind': 'world_setup',
+                                                      'value': 'regulatory_agency_official' if official else 'authorized_emergency',
+                                                      'unit': 'categorical'},
+                          'source_vehicle_stops': {'kind': 'world_setup',
+                                                   'value': stopped, 'unit': 'boolean'}},
                       'unresolved_judgment_calls': [
                           'authorized emergency or regulatory-agency vehicle with qualifying flashing lights',
                           'moving or visibly preparing to move',
                           'approaches the driver vehicle and invokes supplied subsection 1 duties',
                           'unless otherwise directed by a law enforcement officer'],
-                      'paired_probe_id': HERE.name + '__approach_response_pair',
-                      'deliberate_differences': ['requested_subsection_1_response'],
-                      'probe': {'primary_variable': 'requested_subsection_1_response',
-                                'comparison_or_standard': 'source-bound right-edge geometry, stop-until-passed timing and continued travel',
-                                'target_value_or_branch': requested},
+                      'paired_probe_id': HERE.name + ('__stopped_referral_comparison' if stopped else '__official_kind_comparison' if official else '__approach_response_pair'),
+                      'deliberate_differences': ['source_vehicle_stops'] if stopped else ['responding_vehicle_kind'] if official else ['requested_subsection_1_response'],
+                      'probe': {'primary_variable': 'source_vehicle_stops' if stopped else 'responding_vehicle_kind' if official else 'requested_subsection_1_response',
+                                'comparison_or_standard': 'original source vehicle motion-to-stop time join' if stopped else 'original official agency source review with fixed response path' if official else 'source-bound right-edge geometry, stop-until-passed timing and continued travel',
+                                'target_value_or_branch': True if stopped else 'regulatory_agency_official' if official else requested},
                       'recording_description': recording})
     proposal = {'cell_id': plan['cell_id'], 'actor': plan['actor'], 'status': 'draft',
                 'sweeps_expanded': True, 'sweep_specs': [], 'cases': cases}

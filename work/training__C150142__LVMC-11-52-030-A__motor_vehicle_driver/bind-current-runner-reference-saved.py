@@ -1,5 +1,6 @@
-"""Retain the pinned current-runner reference saved-processing proof."""
+"""Retain a pinned current-runner reference saved-processing proof."""
 
+import argparse
 import hashlib
 import json
 import os
@@ -10,10 +11,12 @@ import tempfile
 WORK = Path(__file__).resolve().parent
 REPO = WORK.parents[1]
 SCRATCH = REPO / '.runtime-work/owner150142/current-runner-reference-saved-v1'
-MANIFEST = WORK / 'current-runtime-runner-reference-bound-manifest.json'
+MANIFEST = WORK / 'current-runtime-runner-reference-saved-source-manifest.json'
 DEST = WORK / 'current-runtime-runner-saved/reference/primary'
 TEMP = REPO / '.runtime-work/owner150142/reference-saved-binding-tmp'
 CASE = WORK.name + '__reference'
+PREPARE_LOG = REPO / '.runtime-work/owner150142/current-runner-reference-saved-prepare-v1.log'
+PROCESS_LOG = REPO / '.runtime-work/owner150142/current-runner-reference-saved-process-v1.log'
 
 
 def sha(path):
@@ -73,8 +76,8 @@ def run():
         'processing.json': processing_file,
         'analysis.log': SCRATCH / 'result/v0001/analysis.log',
         'final-decode.json': SCRATCH / 'result/v0001/final-decode.json',
-        'prepare.log': REPO / '.runtime-work/owner150142/current-runner-reference-saved-prepare-v1.log',
-        'process.log': REPO / '.runtime-work/owner150142/current-runner-reference-saved-process-v1.log',
+        'prepare.log': PREPARE_LOG,
+        'process.log': PROCESS_LOG,
     }
     for index in range(4):
         source_files[f'source-{index}.json'] = SCRATCH / f'result/v0001/source-{index}.json'
@@ -110,4 +113,21 @@ def run():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--manifest', default=str(MANIFEST))
+    parser.add_argument('--scratch', default=str(SCRATCH))
+    parser.add_argument('--destination', default=str(DEST))
+    parser.add_argument('--prepare-log', default=str(PREPARE_LOG))
+    parser.add_argument('--process-log', default=str(PROCESS_LOG))
+    args = parser.parse_args()
+    MANIFEST = Path(args.manifest).resolve()
+    SCRATCH = Path(args.scratch).resolve()
+    DEST = Path(args.destination).resolve()
+    PREPARE_LOG = Path(args.prepare_log).resolve()
+    PROCESS_LOG = Path(args.process_log).resolve()
+    if (MANIFEST.parent != WORK or WORK not in DEST.parents or
+            REPO / '.runtime-work' not in SCRATCH.parents or
+            REPO / '.runtime-work' not in PREPARE_LOG.parents or
+            REPO / '.runtime-work' not in PROCESS_LOG.parents):
+        raise ValueError('Saved proof arguments must stay under assigned roots')
     print(json.dumps(run(), sort_keys=True))

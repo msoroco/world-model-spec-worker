@@ -8,6 +8,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / 'native'))
 from measure_approach import measure
+from measure_official import measure as measure_official
 
 
 def sha(path):
@@ -27,7 +28,7 @@ def check(case_id, diagnostic):
     provenance = json.loads((fixture / 'acquisition-provenance.json').read_text())
     if provenance.get('provenance_kind') != 'synthetic_local_diagnostic' or not provenance.get('diagnostic_fixture'):
         raise ValueError('Diagnostic source provenance differs')
-    measurement = measure(fixture)
+    measurement = (measure_official if suffix == 'official_approach' else measure)(fixture)
     if measurement['assignment_id'] != HERE.name or measurement['samples'] != 600:
         raise ValueError('Source-bound 600-frame measurement missing')
     compatibility_path = HERE / 'current-public' / (suffix + '-primary-compatibility.json')

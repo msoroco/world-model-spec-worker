@@ -37,6 +37,26 @@
     {
       "requirement": "NRS-484B-267-2f",
       "source": "NRS 484B.267(2)(f); with 484B.267(4)",
+      "branch": "Regulatory-agency official vehicle approaches the driver",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__official_approach"
+      ],
+      "evidence_or_gap": "Selected CPU construction requests an official vehicle with original agency/equipment review; identity, pixels and physical outcome remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-267-2f",
+      "source": "NRS 484B.267(2)(f); with 484B.267(4)",
+      "branch": "Moving emergency vehicle stops; referral to NRS 484B.607",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__stopped_referral"
+      ],
+      "evidence_or_gap": "Selected CPU construction measures a moving vehicle stopping and preserves the unsupplied 484B.607 referral; original motion and legal source remain for review."
+    },
+    {
+      "requirement": "NRS-484B-267-2f",
+      "source": "NRS 484B.267(2)(f); with 484B.267(4)",
       "branch": "Textual exceptions, alternatives, or dependencies: except, authorized emergency vehicle",
       "status": "exception_pending",
       "case_ids": [],
@@ -77,6 +97,36 @@
       "gap_ids": [
         "approaching_referral"
       ]
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__official_approach",
+      "target_law_id": "NRS-484B-267-2f",
+      "kind": "delivery",
+      "source_branch": "Regulatory-agency official vehicle approaches the driver",
+      "physical_target": "request right-edge position and stop until regulatory official vehicle passes",
+      "comparison_variable": "source vehicle kind: authorized emergency versus regulatory-agency official",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "gap_ids": [
+        "approaching_referral"
+      ]
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__stopped_referral",
+      "target_law_id": "NRS-484B-267-2f",
+      "kind": "delivery",
+      "source_branch": "Moving emergency vehicle stops; referral to NRS 484B.607",
+      "physical_target": "request a moving source vehicle to stop and measure its original stopped state without a 484B.607 duty verdict",
+      "comparison_variable": "emergency vehicle stops versus continues approach",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "gap_ids": [
+        "approaching_referral"
+      ]
     }
   ],
   "comparisons": [
@@ -93,6 +143,32 @@
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
         "route and controller policy except requested comparison variable",
         "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__official_kind_comparison",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__controlled_1",
+        "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__official_approach"
+      ],
+      "deliberate_differences": [
+        "source vehicle kind and identity review"
+      ],
+      "fixed_conditions": [
+        "same road, driver path, source vehicle path, lights, response controller and four camera timing"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__stopped_referral_comparison",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__controlled_1",
+        "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__stopped_referral"
+      ],
+      "deliberate_differences": [
+        "emergency vehicle stops instead of continuing approach and passing"
+      ],
+      "fixed_conditions": [
+        "same road, actor kind, initial vehicle and driver trajectories, lights, right-edge request and four camera timing"
       ]
     }
   ],

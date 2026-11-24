@@ -25,8 +25,17 @@ def main():
     saved = read(HERE / 'current-public/saved-matrix.json')
     if not public['all_passed'] or not saved['all_passed']:
         raise ValueError('Selected public or saved-only matrix did not pass')
-    pr = {(r['case'], r['candidate']): r for r in public['results']}
-    sr = {(r['case_id'], r['candidate_id']): r for r in saved['results']}
+    public_results = list(public['results'])
+    saved_results = list(saved['results'])
+    if any(entry['case_id'].endswith('__official_approach') for entry in current['cases']):
+        official_public = read(HERE / 'current-public/official-matrix.json')
+        official_saved = read(HERE / 'current-public/official-saved-matrix.json')
+        if not official_public['all_passed'] or not official_saved['all_passed']:
+            raise ValueError('Official selected public or saved-only matrix did not pass')
+        public_results.extend(official_public['results'])
+        saved_results.extend(official_saved['results'])
+    pr = {(r['case'], r['candidate']): r for r in public_results}
+    sr = {(r['case_id'], r['candidate_id']): r for r in saved_results}
     for entry in current['cases']:
         case_id = entry['case_id']
         suffix = case_id.removeprefix(AID + '__')
@@ -58,7 +67,8 @@ def main():
             processed = HERE / save['receipt']
             if any(not q.is_file() for q in (offline, receipt, negative, analysis, processed)):
                 raise ValueError('Candidate proof file missing: ' + base)
-            dest['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/current-execution-manifest.json --case ' + case_id + ' --candidate ' + cid + ' --output .runtime-work/c405647-267-2f/offline-v3-' + base + ' --python .venv-cpu/bin/python',
+            offline_attempt = ('offline-v4-' if suffix == 'official_approach' else 'offline-v3-') + base
+            dest['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/current-execution-manifest.json --case ' + case_id + ' --candidate ' + cid + ' --output .runtime-work/c405647-267-2f/' + offline_attempt + ' --python "$PWD/.venv-cpu/bin/python"',
                                'exit_code': 0, 'construction_sha256': dest['construction_sha256'],
                                'log': relative(offline), 'log_sha256': sha(offline)}
             dest['compatibility'] = {'receipt': relative(receipt), 'sha256': sha(receipt),

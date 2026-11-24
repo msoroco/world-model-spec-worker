@@ -105,6 +105,106 @@
       },
       "construction": "current-bundles/controlled_2/primary/construction.json",
       "construction_sha256": "8ce6297415f35090049c5e0aa1d39f0b893ed87ecbff6c90f882160e9fb3adcc"
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__official_approach",
+      "kind": "delivery",
+      "id": "primary",
+      "candidate_risk": {
+        "reason": "Official-vehicle identity and qualifying equipment require original agency and pixel review; approach and right-edge realization require Native readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-bundles/official_approach/fallback1/construction.json",
+          "construction_sha256": "46d043a65dfe99a2ad5ed57368aa3cf505677efa1187bb5166daf96b499e7087",
+          "trigger": {
+            "source": "original vehicle_poses.jsonl",
+            "metric": "emergency closing distance in full 600-frame span",
+            "failure_condition": "Original emergency approach remains outside camera window"
+          },
+          "changed_knobs": [
+            "requested_subsequent_emergency_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "current-bundles/official_approach/fallback2/construction.json",
+          "construction_sha256": "5c5e1fc3731b990b478f6f434b26e4a59c89448e67cd5c1f2a8a27559423f324",
+          "trigger": {
+            "source": "original overview.mkv and vehicle_poses.jsonl",
+            "metric": "subject whole-body visibility",
+            "failure_condition": "Original subject body overlaps lane edge or leaves frame"
+          },
+          "changed_knobs": [
+            "requested_ego_lane_center_y_m"
+          ]
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c405647-2f-saved-analysis-v1"
+      },
+      "measurement_contract": "current-contracts/official_approach.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2f__motor_vehicle_driver/current-official_approach-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "construction": "current-bundles/official_approach/primary/construction.json",
+      "construction_sha256": "dc6b5806d9ed0d265bd60b7ef28432b1bc8a05deaffd0f74e31750a6b2056f1a"
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2f__motor_vehicle_driver__stopped_referral",
+      "kind": "delivery",
+      "id": "primary",
+      "candidate_risk": {
+        "reason": "Moving vehicle must be observed stopping within 600 frames; driver and vehicle must remain separated under Native readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-bundles/stopped_referral/fallback1/construction.json",
+          "construction_sha256": "38defeef74700ed0298f3ee4354857724a9cced463b73b4e533d0e126a741584",
+          "trigger": {
+            "source": "original vehicle_poses.jsonl",
+            "metric": "emergency closing distance in full 600-frame span",
+            "failure_condition": "Original emergency approach remains outside camera window"
+          },
+          "changed_knobs": [
+            "requested_subsequent_emergency_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "current-bundles/stopped_referral/fallback2/construction.json",
+          "construction_sha256": "3ebd70ff5be72a2726e6836a065c18f274e759969effa414b754c755737129b9",
+          "trigger": {
+            "source": "original overview.mkv and vehicle_poses.jsonl",
+            "metric": "subject whole-body visibility",
+            "failure_condition": "Original subject body overlaps lane edge or leaves frame"
+          },
+          "changed_knobs": [
+            "requested_ego_lane_center_y_m"
+          ]
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c405647-2f-saved-analysis-v1"
+      },
+      "measurement_contract": "current-contracts/stopped_referral.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2f__motor_vehicle_driver/current-stopped_referral-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "construction": "current-bundles/stopped_referral/primary/construction.json",
+      "construction_sha256": "59be0f479590e6a16d93140b43921b516571278e7acd1ffb0539fc3e85fe985d"
     }
   ]
 }

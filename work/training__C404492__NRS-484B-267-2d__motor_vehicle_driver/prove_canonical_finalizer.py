@@ -58,7 +58,7 @@ def main():
                     assert len(data)==600 and data[0]['time_s']==0
                 else:
                     data=json.loads(reference.read_text())
-                    assert data['emergency_context']['emergency_vehicle_authorized'] is True
+                    assert data['emergency_context']['authorized'] is True
                     assert data['officer_direction_context'] is False
             reject(root,root/'another-report.json')
         missing=Path(temp)/'missing'

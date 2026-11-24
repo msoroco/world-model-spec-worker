@@ -1,0 +1,379 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver",
+  "status": "partial_selected_cpu_proofs_bound",
+  "delivery_ready": false,
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1",
+      "construction": "draft-emergency/controlled_1/primary/construction.json",
+      "construction_sha256": "3f300d03954ff56d5eb642d3255152b167209b53730a4d450623fe50c03577a9",
+      "measurement_contract": "measurement-contracts/controlled_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "reason": "Authorization, qualifying lamp equipment, actual flash pixels and original same-direction Native travel require review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-emergency/controlled_1/fallback1/construction.json",
+          "construction_sha256": "5fa4725792d472f61cec1355c5c04175769c8ed6dbd6646e470bb8a24d43e3c7",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject cannot remain behind the emergency body during the approach frames",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1 --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5fa4725792d472f61cec1355c5c04175769c8ed6dbd6646e470bb8a24d43e3c7",
+            "log": "current-offline/controlled_1-fallback1.log",
+            "log_sha256": "75c8a148455974c61ad126cbcb3c5610bc73614f4f7d141b1e5d96033710e3a0"
+          },
+          "compatibility": {
+            "receipt": "current-public/controlled_1-fallback1-receipt.json",
+            "sha256": "39b7c2d328ff9dcae3ca54ed0921578692e07cbe59620d69923298704b1d07c2",
+            "log": "current-public/controlled_1-fallback1-analysis.log",
+            "negative_log": "current-public/controlled_1-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/controlled_1-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-saved/controlled_1-fallback1-receipt.json",
+            "sha256": "fd9b63c2dce5359fe10fcd561416a1f9f77b2bd1a25fbb439139380b9a764da1"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-emergency/controlled_1/fallback2/construction.json",
+          "construction_sha256": "52fcfa05353533126ef0519e9d68788bf5f935a58599f47a907cbc5ba2419735",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot see both bodies and flashing lamp pixels across the controlled episode",
+            "metric": "independent subject/emergency body and lamp visibility",
+            "source": "original four-camera pixels and frame map"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1 --candidate fallback2 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "52fcfa05353533126ef0519e9d68788bf5f935a58599f47a907cbc5ba2419735",
+            "log": "current-offline/controlled_1-fallback2.log",
+            "log_sha256": "a9790d5e3eeeb0b4cd800e5580831e18fac683c4400817f16eda3c4a6517160c"
+          },
+          "compatibility": {
+            "receipt": "current-public/controlled_1-fallback2-receipt.json",
+            "sha256": "a3644996dae3821f956af5e9756c03c9b25d2b49ba169f239b14ab4edd5aa048",
+            "log": "current-public/controlled_1-fallback2-analysis.log",
+            "negative_log": "current-public/controlled_1-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/controlled_1-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-saved/controlled_1-fallback2-receipt.json",
+            "sha256": "0f6d364d99470ac8fbce032c67a0f768f0457b4457df335212f6dff62a93c070"
+          }
+        }
+      ],
+      "id": "primary",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-controlled_1-recipe.json",
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Record subject and authorized emergency vehicle identity, original pose and flashing phase on each Native frame",
+          "evidence": "vehicle_poses.jsonl and emergency_context.template.json; authorization and equipment require independent source review"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "method": "Read back both observed driving-lane waypoints, travel heading and per-frame actor headings",
+          "evidence": "vehicle_poses.jsonl joined to video_frames.jsonl and reviewed lane context"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "Project original subject and emergency vehicle body extents onto observed travel axis and retain each overlapping frame",
+          "evidence": "vehicle_poses.jsonl, trace.jsonl and channels/rel.longitudinal_overlap.jsonl"
+        },
+        "drv.overtaking": {
+          "entrypoint": "finalize.py",
+          "method": "Track signed original relative order across frames separately from body overlap",
+          "evidence": "vehicle_poses.jsonl and channels/drv.overtaking.jsonl"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "finalize.py",
+          "method": "Report signed relative longitudinal order and distinct adjacent lane identities",
+          "evidence": "vehicle_poses.jsonl and channels/rel.ahead_behind_in_lane.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Retain observed per-frame actor velocities and ego trace at original Native frame and time",
+          "evidence": "vehicle_poses.jsonl and trace.jsonl joined to video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Carry source-reviewed officer direction as structured context with unknown preserved",
+          "evidence": "officer_direction_context review and channels/context-review.json"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "fa64fba1f5af0d413742eb10aee7d1eaa47cd5e2cc64d79adfd074a0aeed7574"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1 --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3f300d03954ff56d5eb642d3255152b167209b53730a4d450623fe50c03577a9",
+        "log": "current-offline/controlled_1-primary.log",
+        "log_sha256": "75c8a148455974c61ad126cbcb3c5610bc73614f4f7d141b1e5d96033710e3a0"
+      },
+      "compatibility": {
+        "receipt": "current-public/controlled_1-primary-receipt.json",
+        "sha256": "3c79f6bed22aa3329252106a608cb39947aed18b2b773d5c53daaad33f6c0458",
+        "log": "current-public/controlled_1-primary-analysis.log",
+        "negative_log": "current-public/controlled_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/controlled_1-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-saved/controlled_1-primary-receipt.json",
+        "sha256": "0464e916f3c78209f0a59dbf8a49d757907e3951f00c1c3d630866001dd656a0"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-saved/controlled_1-primary-receipt.json",
+        "test_log_sha256": "0464e916f3c78209f0a59dbf8a49d757907e3951f00c1c3d630866001dd656a0"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-current-primary-compat3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-saved/controlled_1-primary-receipt.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-tmp/controlled_1-delivery-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-current-primary-compat3 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-saved/controlled_1-primary-receipt.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-tmp/controlled_1-delivery-diagnostic.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "67f8d87aaf2092ad4aefdec60406e8c67e1d1f7f68c243b59581e696c81aca5d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "test_log": "delivery-proofs/controlled_1/diagnostic.log",
+        "test_log_sha256": "f7bf29e371c5c3a5457f23c049ed145ddeb3150cd4c6925f098157825d026f57",
+        "negative_log": "delivery-proofs/controlled_1/native-required.log",
+        "negative_log_sha256": "4a7d6bb87de49f846be40cefab3ddf9adf528ea2bfba7d2c8a77794cd54dc7bd"
+      }
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2",
+      "construction": "draft-emergency/controlled_2/primary/construction.json",
+      "construction_sha256": "975cf88e2827003383c4cbfad9f41c402653963b4d32e4b1dea88783c4068e57",
+      "measurement_contract": "measurement-contracts/controlled_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "reason": "Authorization, qualifying lamp equipment, actual flash pixels and original same-direction Native travel require review",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-emergency/controlled_2/fallback1/construction.json",
+          "construction_sha256": "bdd5f1d0d3bf87e6d178626bf942077108c0f1b76a55a88ae468d68f3544f0ac",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject cannot remain behind the emergency body during the approach frames",
+            "metric": "measured following trajectory and body gap",
+            "source": "original Native pose and lane survey"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2 --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "bdd5f1d0d3bf87e6d178626bf942077108c0f1b76a55a88ae468d68f3544f0ac",
+            "log": "current-offline/controlled_2-fallback1.log",
+            "log_sha256": "0d7aff477726c0e95e2902081a5b48f26ee61b359ef6f333f1f37cb49c5fea0f"
+          },
+          "compatibility": {
+            "receipt": "current-public/controlled_2-fallback1-receipt.json",
+            "sha256": "7f9ba17809e1e1960b9ed7567a801551d1f4df4156007d20a8b9517cfea34e3f",
+            "log": "current-public/controlled_2-fallback1-analysis.log",
+            "negative_log": "current-public/controlled_2-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/controlled_2-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-saved/controlled_2-fallback1-receipt.json",
+            "sha256": "1261333b450367b198ccb5ccbf2aed692a0714a19aae4d7f02e78a67e7887bb9"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-emergency/controlled_2/fallback2/construction.json",
+          "construction_sha256": "963dae1da8682f88384d83f858cf4f4b6ab7b0a0af3bf9ce57ee647286d82f0c",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot see both bodies and flashing lamp pixels across the controlled episode",
+            "metric": "independent subject/emergency body and lamp visibility",
+            "source": "original four-camera pixels and frame map"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2 --candidate fallback2 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "963dae1da8682f88384d83f858cf4f4b6ab7b0a0af3bf9ce57ee647286d82f0c",
+            "log": "current-offline/controlled_2-fallback2.log",
+            "log_sha256": "0d7aff477726c0e95e2902081a5b48f26ee61b359ef6f333f1f37cb49c5fea0f"
+          },
+          "compatibility": {
+            "receipt": "current-public/controlled_2-fallback2-receipt.json",
+            "sha256": "0043626a1425efedb7d586c43aca6a4b4db252b70f39659eaa1b0e60d4f61fbb",
+            "log": "current-public/controlled_2-fallback2-analysis.log",
+            "negative_log": "current-public/controlled_2-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/controlled_2-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-saved/controlled_2-fallback2-receipt.json",
+            "sha256": "676cad9f75060cbb7c8ee994ecc2dc90d38537806fc3fa8b62f53d640ddd43b1"
+          }
+        }
+      ],
+      "id": "primary",
+      "kind": "delivery",
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-controlled_2-recipe.json",
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Record subject and authorized emergency vehicle identity, original pose and flashing phase on each Native frame",
+          "evidence": "vehicle_poses.jsonl and emergency_context.template.json; authorization and equipment require independent source review"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "method": "Read back both observed driving-lane waypoints, travel heading and per-frame actor headings",
+          "evidence": "vehicle_poses.jsonl joined to video_frames.jsonl and reviewed lane context"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "Project original subject and emergency vehicle body extents onto observed travel axis and retain each overlapping frame",
+          "evidence": "vehicle_poses.jsonl, trace.jsonl and channels/rel.longitudinal_overlap.jsonl"
+        },
+        "drv.overtaking": {
+          "entrypoint": "finalize.py",
+          "method": "Track signed original relative order across frames separately from body overlap",
+          "evidence": "vehicle_poses.jsonl and channels/drv.overtaking.jsonl"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "finalize.py",
+          "method": "Report signed relative longitudinal order and distinct adjacent lane identities",
+          "evidence": "vehicle_poses.jsonl and channels/rel.ahead_behind_in_lane.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Retain observed per-frame actor velocities and ego trace at original Native frame and time",
+          "evidence": "vehicle_poses.jsonl and trace.jsonl joined to video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Carry source-reviewed officer direction as structured context with unknown preserved",
+          "evidence": "officer_direction_context review and channels/context-review.json"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "d750b0e70a0e323638feae98a950f461e70da05f1bc1a28c644010ac40b1f684"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2 --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "975cf88e2827003383c4cbfad9f41c402653963b4d32e4b1dea88783c4068e57",
+        "log": "current-offline/controlled_2-primary.log",
+        "log_sha256": "0d7aff477726c0e95e2902081a5b48f26ee61b359ef6f333f1f37cb49c5fea0f"
+      },
+      "compatibility": {
+        "receipt": "current-public/controlled_2-primary-receipt.json",
+        "sha256": "d3d6b712d576bed4d5ab491dc737a29369880962cea86f83ff8b8cc04c6d8a36",
+        "log": "current-public/controlled_2-primary-analysis.log",
+        "negative_log": "current-public/controlled_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/controlled_2-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-saved/controlled_2-primary-receipt.json",
+        "sha256": "3a595948688c35270e22110dcdc82e9d00ff086a29e51afe79de1deaeb27d404"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-saved/controlled_2-primary-receipt.json",
+        "test_log_sha256": "3a595948688c35270e22110dcdc82e9d00ff086a29e51afe79de1deaeb27d404"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-current-controlled2-primary-compat --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-saved/controlled_2-primary-receipt.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-tmp/controlled_2-delivery-diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__controlled_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-current-controlled2-primary-compat --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-saved/controlled_2-primary-receipt.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-tmp/controlled_2-delivery-diagnostic.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "67f8d87aaf2092ad4aefdec60406e8c67e1d1f7f68c243b59581e696c81aca5d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "test_log": "delivery-proofs/controlled_2/diagnostic.log",
+        "test_log_sha256": "be6e2fe3a9ad43d89186cc51630ed11748df1e74b472a951b716fc01d2126f99",
+        "negative_log": "delivery-proofs/controlled_2/native-required.log",
+        "negative_log_sha256": "4a7d6bb87de49f846be40cefab3ddf9adf528ea2bfba7d2c8a77794cd54dc7bd"
+      }
+    }
+  ]
+}
