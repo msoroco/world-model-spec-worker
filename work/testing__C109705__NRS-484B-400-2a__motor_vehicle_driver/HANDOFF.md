@@ -87,3 +87,21 @@ Judgment range entries inventoried for this exact law and actor: 0. Bounds are t
 `.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
 
 Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
+
+## 2026-11-24 independent saved-delivery source checkpoint
+
+`saved_delivery.py:audit` reopens the exact source-hashed approach context/history/frame map and requires 900 contiguous 20Hz rows with four hash-bound original media references confined to the attempt. It recomputes the approach measurement and rejects diagnostic or unproven sources in delivery mode. It explicitly leaves full decode, pixels, physical completion and legal judgment unresolved. `tests/test_saved_delivery.py` adds positive and tamper/case/path/duration negatives; the full focused suite passes 16 tests in `cpu-saved-delivery-tests.log` (SHA256 8e04aa7d46690f74a744c02dae0a0457cee94f0443857d6c2549fdcf793529aa). Assignment static check passes in `cpu-saved-static.log`; exact strict exits 1 in `cpu-saved-strict.log` because status remains partial.
+
+Next CPU work: bind the original Native map/camera capture and exact four-case runner, case-specific diagnostic/compatibility/process-saved proofs, canonical semantic proposals, independent decoded-media and comparison delivery audits, and tested risk-based candidate construction where the documented geometry risk applies. The original accepted trace/video/audit assets remain absent from this export; no physical coverage claim follows from metadata.
+
+## 2026-11-23 Native adapter capture checkpoint
+
+`native_capture.py` verifies the loaded OpenDRIVE hash and exact case against an intersection packet, then requires 900 sequential 20 Hz ego readbacks and four same-frame original PNG callbacks. It seals context, trace, frame map, and per-camera PNG archives into an attempt and recomputes the approach measurement. Its cleanup path brakes and releases actors after success or failure. The diagnostic adapter test exercises full saved-source reopening and rejects cadence drift and missing cameras. The 19 focused CPU tests pass (`cpu-native-capture-tests.log`). The exact scoped static check passes; the exact scoped strict gate rejects truthful partial status. Real CARLA capture, reviewed public-highway provenance, source media decode, semantic proposals, compatibility, process-saved, and delivery audits remain unfinished.
+
+## 2026-11-23 semantic draft checkpoint
+
+Draft `proposals/semantic-index.json` hashes relevance, template, bindings, all four exact cases and a judgment observable for the statute’s nearest-centerline phrase. The 1.7 m and 2.7 m targets remain construction values, not legal thresholds. Source/highway review and actual original observations remain pending. Scoped static validation passes; scoped strict remains partial.
+
+## 2026-11-23 full original pixel decode checkpoint
+
+`audit_original_pixels` reopens all four hash-bound PNG archives, requires exact 900-frame indexes per view, and decodes all 3,600 images with Pillow. A rebound malformed PNG fails decode. The diagnostic fixture passes all 20 focused tests while preserving physical and legal uncertainty. Scoped static passes; scoped strict rejects partial.

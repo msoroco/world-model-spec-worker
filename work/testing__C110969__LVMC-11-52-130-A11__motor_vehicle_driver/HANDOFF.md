@@ -2,6 +2,13 @@
 
 Status: partial executable CPU construction. Seven exact proposed cases and three controlled comparisons are in `case-plan.json`; none is a verified recording.
 
+## 2026-11-24 saved-source and loaded-map checkpoint
+
+- `saved_delivery.py` independently joins a sealed exact-case measurement packet, 900 contiguous Native world frames, a 20 Hz frame map, and four named camera receipts. It verifies each referenced original PNG hash and rejects escaped paths, changed hashes, missing cameras and frame drift. The fixture path is explicitly diagnostic; the audit keeps full video decode, actual pixels, participant completeness, physical completion and legal necessity unresolved.
+- `native_map.py` binds all seven exact case IDs to a loaded map's OpenDRIVE hash, map name, local intersection bounds, route, actor dimensions and provenance fields, and computes the requested local halt pose. A caller must still supply a genuinely reviewed packet and physical map/route evidence.
+- `cpu-geometry-tests.log` records 29 passing focused tests, including positive and negative saved-source and loaded-map cases. The assignment static check passes; the exact strict gate returns exit 1 because this package remains partial.
+- Next CPU work: integrate original pose, four-camera and exception-context acquisition into a single Native runner; author case-specific finalization, semantic proposals, exact offline and positive/negative compatibility bundles, process-saved receipts, delivery audit and execution manifest. The separate parking alternative still needs a compatible binding review. No diagnostic source establishes statutory coverage.
+
 ## 2026-11-24 Native source and comparison checkpoint
 
 - `original_capture.py` now writes an original 900-tick synchronous 20 Hz Native ego pose and requested-control trace from a caller-owned world, actor and reviewed world-to-local mapping. It checks frame continuity, finite position and velocity, approach alignment through the existing controller, and intersection intrusion, and applies a final brake during cleanup. It does not own the four cameras, observed traffic/directions, world restoration or the sealed acquisition receipt; these still need a full runner.

@@ -13,6 +13,7 @@ from pathlib import Path
 import subprocess
 
 from native_camera import VIEWS
+from owner_release import verify_release
 
 
 FEATURES = ("crossing_device", "stop_line", "rail_crossing", "lane_markings",
@@ -46,10 +47,10 @@ def _frame(video: Path, index: int, width: int, height: int) -> bytes:
     completed = subprocess.run(
         ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-i",
          str(video), "-vf", f"select=eq(n\\,{index})", "-frames:v", "1",
-         "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"],
+         "-f", "rawvideo", "-pix_fmt", "bgra", "pipe:1"],
         capture_output=True, check=True)
     raw = completed.stdout
-    if len(raw) != width * height * 3:
+    if len(raw) != width * height * 4:
         raise ValueError("review frame missing or dimensions differ")
     return raw
 
@@ -58,13 +59,14 @@ def verify(attempt: Path, review_path: Path, *, frame_reader=_frame) -> dict:
     attempt = Path(attempt).resolve()
     if not any(parent.name == ".runtime-work" for parent in attempt.parents):
         raise ValueError("review requires private original attempt")
+    verify_release(attempt)
     review_path = Path(review_path).resolve()
     if review_path.parent != attempt:
         raise ValueError("review must stay with original attempt")
     review = json.loads(review_path.read_text(encoding="utf-8"))
     packet_path = attempt / "site/packet.json"
     packet = json.loads(packet_path.read_text(encoding="utf-8"))
-    native = json.loads((attempt / "native-result.json").read_text(encoding="utf-8"))
+    native = json.loads((attempt / "native-run-status.json").read_text(encoding="utf-8"))
     mapping_path = attempt / "video_frames.jsonl"
     rows = [json.loads(line) for line in mapping_path.read_text(encoding="utf-8").splitlines()]
     media = json.loads((attempt / "media-receipt.json").read_text(encoding="utf-8"))
@@ -74,11 +76,12 @@ def verify(attempt: Path, review_path: Path, *, frame_reader=_frame) -> dict:
         expected_features.add("companion_body")
     if (review.get("format") != "c202480-original-feature-review-v1" or
             review.get("case_id") != packet.get("case_id") or
-            review.get("native_result_sha256") != sha(attempt / "native-result.json") or
+            review.get("native_status_sha256") != sha(attempt / "native-run-status.json") or
             review.get("site_packet_sha256") != sha(packet_path) or
             review.get("frame_map_sha256") != sha(mapping_path) or
             review.get("media_receipt_sha256") != sha(attempt / "media-receipt.json") or
             native.get("case_id") != packet.get("case_id") or len(rows) != 900 or
+            native.get("site_packet_sha256") != sha(packet_path) or
             media.get("frames") != 900 or
             set(media.get("video_sha256", {})) != set(views)):
         raise ValueError("original review identity or source hashes differ")
@@ -121,22 +124,27 @@ def verify(attempt: Path, review_path: Path, *, frame_reader=_frame) -> dict:
         video = attempt / (view + ".mkv")
         if media["video_sha256"][view] != sha(video):
             raise ValueError("crossing feature original video bytes differ")
+        raw = _contained(attempt, f"raw/{view}/{row['carla_frame']:08d}.bgra")
+        if sha(raw) != row["camera_source_sha256"][view]:
+            raise ValueError("crossing feature original raw camera hash differs")
         pixels = frame_reader(video, index, width, height)
-        if len(pixels) != width * height * 3 or item.get("rgb_frame_sha256") != hashlib.sha256(pixels).hexdigest():
+        if (len(pixels) != width * height * 4 or pixels != raw.read_bytes() or
+                item.get("bgra_frame_sha256") != hashlib.sha256(pixels).hexdigest()):
             raise ValueError("crossing feature decoded frame bytes differ")
-        crop = b"".join(pixels[(y * width + box[0]) * 3:(y * width + box[2]) * 3]
+        crop = b"".join(pixels[(y * width + box[0]) * 4:(y * width + box[2]) * 4]
                         for y in range(box[1], box[3]))
-        if item.get("rgb_crop_sha256") != hashlib.sha256(crop).hexdigest():
+        if item.get("bgra_crop_sha256") != hashlib.sha256(crop).hexdigest():
             raise ValueError("crossing feature crop bytes differ")
         verified.append({"feature": feature, "view": view, "video_frame": index,
                          "observation": item["observation"], "reviewer": reviewer,
-                         "rgb_crop_sha256": item["rgb_crop_sha256"]})
+                         "bgra_crop_sha256": item["bgra_crop_sha256"]})
     if seen != expected_features:
         raise ValueError("required crossing feature annotation missing")
     return {"format": "c202480-feature-review-provenance-v1",
             "case_id": packet["case_id"], "review_sha256": sha(review_path),
-            "annotations": verified, "feature_visibility_verified": all(
+            "annotations": verified, "all_features_annotated_visible": all(
                 item["observation"] == "visible" for item in verified),
+            "feature_visibility_verified": False,
             "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
 
 

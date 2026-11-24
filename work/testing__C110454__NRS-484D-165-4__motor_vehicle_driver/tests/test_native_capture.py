@@ -31,6 +31,9 @@ class World:
     def get_snapshot(self):
         return N(frame=self.frame, timestamp=N(elapsed_seconds=(self.frame - 100) * .05))
 
+    def get_map(self):
+        return N(name="TownTest", to_opendrive=lambda: "diagnostic-map")
+
 
 class Vehicle:
     id = 17
@@ -62,7 +65,9 @@ class NativeCaptureTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         site_content = dict(parking_polygon_xy_m=[[0, 0], [10, 0], [10, 4], [0, 4]],
-                            intersection_polygon_xy_m=[[10, 0], [14, 0], [14, 4], [10, 4]])
+                            intersection_polygon_xy_m=[[10, 0], [14, 0], [14, 4], [10, 4]],
+                            map_name="TownTest",
+                            map_sha256=hashlib.sha256(b"diagnostic-map").hexdigest())
         (self.root / "site.json").write_text(json.dumps(site_content))
         self.site = dict(source_path=str(self.root / "site.json"),
                          source_sha256=hashlib.sha256((self.root / "site.json").read_bytes()).hexdigest(),
@@ -139,6 +144,15 @@ class NativeCaptureTests(unittest.TestCase):
         self.site["parking_polygon_xy_m"][1][0] = 9
         with self.assertRaisesRegex(ValueError, "geometry differs"):
             self.capture()
+
+    def test_loaded_map_must_match_reviewed_site(self):
+        world = World()
+        world.get_map = lambda: N(name="TownOther", to_opendrive=lambda: "diagnostic-map")
+        with self.assertRaisesRegex(ValueError, "map name differs"):
+            self.capture(world=world)
+        world.get_map = lambda: N(name="TownTest", to_opendrive=lambda: "different-map")
+        with self.assertRaisesRegex(ValueError, "OpenDRIVE differs"):
+            self.capture(world=world)
 
 
 if __name__ == "__main__":

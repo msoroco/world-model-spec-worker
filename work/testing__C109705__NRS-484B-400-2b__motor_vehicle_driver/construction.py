@@ -42,7 +42,7 @@ def _check_road(road):
 
 
 def build(case_id, map_survey, *, map_source_path=None):
-    if not case_id.startswith(ASSIGNMENT + '__') or case_id.rsplit('__', 1)[1] not in SUFFIXES:
+    if case_id not in {ASSIGNMENT + '__' + suffix for suffix in SUFFIXES}:
         raise ValueError('case differs from exact assignment')
     suffix = case_id.rsplit('__', 1)[1]
     if map_survey.get('cell_id') != 'C109705' or map_survey.get('maneuver') != 'left_turn':

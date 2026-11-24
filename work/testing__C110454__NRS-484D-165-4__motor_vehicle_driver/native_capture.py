@@ -27,7 +27,7 @@ def _xy(vertex):
 
 def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
                      reviewed_site: dict, output_dir: Path, *, case_id: str,
-                     mode: str, ticks: int = 100):
+                     mode: str, ticks: int = 900):
     """Retain original 20 Hz state and four-camera frame map for one exact case.
 
     `frame_reader(frame)` returns four original sensor frame identities after
@@ -47,9 +47,14 @@ def capture_interval(world, vehicle, light_enum, parking_control, frame_reader,
     if not site_source.is_file() or _sha(site_source) != reviewed_site["source_sha256"]:
         raise ValueError("reviewed site source changed or missing")
     site_document = json.loads(site_source.read_text())
-    for key in ("parking_polygon_xy_m", "intersection_polygon_xy_m"):
+    for key in ("parking_polygon_xy_m", "intersection_polygon_xy_m", "map_name", "map_sha256"):
         if site_document.get(key) != reviewed_site.get(key):
             raise ValueError("reviewed site geometry differs from source")
+    native_map = world.get_map()
+    if native_map.name != reviewed_site["map_name"]:
+        raise ValueError("Native map name differs from reviewed site")
+    if hashlib.sha256(native_map.to_opendrive().encode()).hexdigest() != reviewed_site["map_sha256"]:
+        raise ValueError("Native OpenDRIVE differs from reviewed site")
     parking = reviewed_site["parking_polygon_xy_m"]
     intersection = reviewed_site["intersection_polygon_xy_m"]
     rows, maps = [], []

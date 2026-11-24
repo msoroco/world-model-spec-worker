@@ -7,9 +7,13 @@ The pinned compatibility and physical delivery audits remain separate proofs.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import math
+import zipfile
 from pathlib import Path
+
+from PIL import Image
 
 from approach import measure
 
@@ -90,3 +94,46 @@ def audit(attempt: Path, case_id: str, *, allow_diagnostic: bool = False) -> dic
         "physical_completion": False,
         "legal_judgment": "unresolved",
     }
+
+
+def audit_original_pixels(attempt: Path, case_id: str, *, allow_diagnostic: bool = False) -> dict:
+    """Decode every original archived PNG after checking exact saved provenance."""
+    integrity = audit(attempt, case_id, allow_diagnostic=allow_diagnostic)
+    attempt = Path(attempt)
+    acquisition = json.loads((attempt / 'acquisition.json').read_text())
+    rows = [json.loads(line) for line in (attempt / 'video_frames.jsonl').read_text().splitlines()
+            if line.strip()]
+    dimensions = {}
+    for camera in sorted(CAMERAS):
+        source = acquisition['media'][camera]
+        path = _inside(attempt, source['path'])
+        try:
+            with zipfile.ZipFile(path) as archive:
+                expected = [f'{index:04d}-{row["frame"]}.png'
+                            for index, row in enumerate(rows)]
+                if archive.namelist() != expected:
+                    raise ValueError(camera + ' original frame archive index differs')
+                observed_size = None
+                for name in expected:
+                    raw = archive.read(name)
+                    with Image.open(io.BytesIO(raw)) as image:
+                        if image.format != 'PNG':
+                            raise ValueError(camera + ' original frame is not PNG')
+                        image.load()
+                        if image.width <= 0 or image.height <= 0:
+                            raise ValueError(camera + ' empty original pixels')
+                        size = [image.width, image.height]
+                        if observed_size is not None and size != observed_size:
+                            raise ValueError(camera + ' frame dimensions drift')
+                        observed_size = size
+                dimensions[camera] = observed_size
+        except (zipfile.BadZipFile, OSError, EOFError) as exc:
+            raise ValueError(camera + ' original frame decode failed') from exc
+    return {'format': 'worker-400-2a-original-pixel-audit-v1',
+            'case_id': case_id, 'frame_count': FRAMES,
+            'decoded_frames': FRAMES * len(CAMERAS),
+            'dimensions': dimensions,
+            'media_sha256': integrity['media_sha256'],
+            'source_integrity_passed': True,
+            'full_video_decode': True, 'actual_pixels': True,
+            'physical_completion': False, 'legal_judgment': 'unresolved'}

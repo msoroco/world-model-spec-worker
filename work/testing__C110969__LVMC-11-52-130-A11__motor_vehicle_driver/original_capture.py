@@ -13,7 +13,8 @@ from stop_controller import command
 
 
 def capture_pose(world, ego, output, *, boundary, approach, target_gap_m,
-                 vehicle_length_m, world_to_local, frame_count=900):
+                 vehicle_length_m, world_to_local, frame_count=900,
+                 frame_observer=None):
     if frame_count != 900:
         raise ValueError("Exact case requires 900 original frames")
     settings = world.get_settings()
@@ -53,6 +54,8 @@ def capture_pose(world, ego, output, *, boundary, approach, target_gap_m,
                           "requested_throttle": request.throttle,
                           "requested_brake": request.brake,
                           "observed_front_gap_m": request.observed_front_gap_m}
+                if frame_observer is not None:
+                    frame_observer(frame, world_frame, sample)
                 stream.write(json.dumps(sample, sort_keys=True) + "\n")
                 ego.apply_control(type(ego.get_control())(
                     throttle=request.throttle, brake=request.brake))

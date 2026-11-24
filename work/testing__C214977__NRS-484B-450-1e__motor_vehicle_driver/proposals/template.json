@@ -1,0 +1,71 @@
+{
+  "template_id": "NRS-484B-450-1e@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1e",
+  "actor": "motor_vehicle_driver",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: On a crosswalk.",
+  "structure": {
+    "law_id": "NRS-484B-450-1e",
+    "activation": {
+      "condition": "Person stopping, standing or parking a vehicle on a crosswalk.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "The stated stopping, standing or parking act on a crosswalk is prohibited unless a stated exception applies.",
+      "type": "crosswalk_halt_location",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when necessary to avoid conflict with other traffic",
+        "description": "Conflict and necessity need independent traffic and timing sources."
+      },
+      {
+        "source_clause": "or in compliance with law",
+        "description": "The independently applicable law and its scope need a sourced instruction."
+      },
+      {
+        "source_clause": "or the directions of a police officer",
+        "description": "Officer identity, direction, scope and timing need source evidence."
+      },
+      {
+        "source_clause": "or official traffic-control device",
+        "description": "Device authority, applicable direction, scope and timing need source evidence."
+      }
+    ],
+    "timing": {
+      "description": "Keep original 20 Hz activity, full vehicle footprint, crosswalk and exception histories throughout the delivered trace.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": "Traffic trajectories and causal necessity remain unresolved by a boolean flag."
+      },
+      {
+        "phrase": "in compliance with law",
+        "note": "Independent legal authority and scope are required."
+      },
+      {
+        "phrase": "directions of a police officer or official traffic-control device",
+        "note": "Authority, applicability and timing require independent review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "halt_action",
+      "kind": "controller",
+      "range_or_domain": "stop, stand or park; actual observed activity may differ"
+    },
+    {
+      "name": "destination",
+      "kind": "world_setup",
+      "range_or_domain": "vehicle body on or wholly off mapped crosswalk"
+    },
+    {
+      "name": "exception_ground",
+      "kind": "world_setup",
+      "range_or_domain": "none, traffic conflict, law, police or official device"
+    }
+  ]
+}

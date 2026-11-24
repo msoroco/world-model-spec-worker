@@ -22,6 +22,7 @@ def site(case_key="dark_lamps_on"):
         "law_id": lamps.LAW, "cell_id": "C229398", "map_sha256": HASH,
         "site_source_sha256": "b" * 64, "map_name": "Town05", "curb_waypoint_xyz": [1.0, 2.0, 0.0],
         "road_id": 3, "lane_id": -1, "traffic_side": "left", "time_qualifies": case_key != "outside_referenced_time",
+        "lighting_assessment": lamps.CASES[case_key]["lighting"], "lighting_assessment_source": "reviewed source",
         "revelation_station_m": 304.8, "front_lamp_station_m": 152.4, "rear_lamp_station_m": 152.4,
         "shoulder_spawn_transform": {"xyz": [1.0, 2.0, 0.0], "rpy": [0.0, 0.0, 0.0], "source": "survey"},
         "traveled_spawn_transform": {"xyz": [1.0, 4.0, 0.0], "rpy": [0.0, 0.0, 0.0], "source": "survey"},
@@ -36,7 +37,8 @@ def frames(case_key="dark_lamps_on"):
     station = lambda n, color: {"station_m": 152.4, "source_camera": f"{n}_camera", "color_assessment": color,
                                  "visibility_assessment": "unknown"}
     one = {"map_sha256": HASH, "vehicle_alive": True, "vehicle_role": "motor_vehicle_driver",
-           "placement": spec["placement"], "attendance": spec["attendance"], "curb_boundary_visible": True,
+           "placement": spec["placement"], "attendance": spec["attendance"], "curb_boundary_visible": None,
+           "curb_boundary_source": "reviewed local source",
            "traffic_side": "left", "time_qualifies": case_key != "outside_referenced_time",
            "lighting_assessment": spec["lighting"], "parking_brake": True, "speed_mps": 0.0,
            "front_lamp_state": spec["lamps"], "rear_lamp_state": spec["lamps"],
@@ -151,6 +153,19 @@ class LampEvidenceTest(unittest.TestCase):
         keys = ["sufficient_light", "outside_referenced_time"]
         reports = [lamps.measure(site(k), k, HASH, frames(k)) for k in keys]
         self.assertEqual(lamps.audit_comparison(reports, keys, {"time_qualifies"})["changed_fields"], ["time_qualifies"])
+
+    def test_comparison_allows_changed_condition_source_but_rejects_changed_fixed_site(self):
+        keys = ["dark_lamps_off", "sufficient_light"]
+        first = lamps.measure(site(keys[0]), keys[0], HASH, frames(keys[0]))
+        second_site = site(keys[1])
+        second_site["site_source_sha256"] = "c" * 64
+        second = lamps.measure(second_site, keys[1], HASH, frames(keys[1]))
+        self.assertEqual(lamps.audit_comparison([first, second], keys, {"lighting"})["changed_fields"], ["lighting"])
+        changed_site = site(keys[1])
+        changed_site["traffic_side"] = "right"
+        second["fixed_site_signature"] = lamps.fixed_site_signature(changed_site)
+        with self.assertRaisesRegex(ValueError, "comparison fixed site changed"):
+            lamps.audit_comparison([first, second], keys, {"lighting"})
 
     def test_saved_capture_source_seals_and_missing_camera(self):
         with tempfile.TemporaryDirectory() as temp:

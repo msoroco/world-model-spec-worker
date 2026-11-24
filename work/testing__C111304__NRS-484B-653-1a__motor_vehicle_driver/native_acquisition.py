@@ -93,6 +93,10 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
             controls = adapter.read_control(actors['ego'], actors['crossing_vehicle'])
             _require(isinstance(controls, dict) and controls.get('original_frame') == frame,
                      'original control packet missing')
+            for key, expected in (('ego_target_speed_mps', case.ego_speed_mps),
+                                  ('crossing_target_speed_mps', case.crossing_speed_mps),
+                                  ('crossing_release_s', case.crossing_release_s)):
+                _require(controls.get(key) == expected, f'original {key} differs from exact case')
             source = {'actors': packets, 'control': controls, 'original_frame': frame}
             row = {
                 'case_id': f'{ASSIGNMENT}__{case.case_id}',
@@ -137,6 +141,9 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
                    'site_sha256': site['site_sha256'], 'map_sha256': site['map_sha256'],
                    'camera_plan_sha256': site['camera_plan_sha256'],
                    'public_access_basis': case.public_access_basis,
+                   'ego_target_speed_mps': case.ego_speed_mps,
+                   'crossing_target_speed_mps': case.crossing_speed_mps,
+                   'crossing_release_s': case.crossing_release_s,
                    'first_original_frame': first_frame, 'last_original_frame': first_frame + frames - 1,
                    'frame_count': frames, 'original_fps': 20,
                    'original_history_sha256': _sha(encoded_history),

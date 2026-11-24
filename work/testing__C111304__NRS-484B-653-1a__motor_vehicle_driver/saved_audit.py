@@ -72,6 +72,18 @@ def audit_comparison(left: Mapping, right: Mapping, difference: str) -> dict:
 
 def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
     """Rejoin sealed original source packets, actor rows and camera readbacks."""
+    from encounter import CASES
+    from native_acquisition import ASSIGNMENT
+
+    expected_case = next((case for case in CASES
+                          if receipt.get('case_id') == f'{ASSIGNMENT}__{case.case_id}'), None)
+    if expected_case is None:
+        raise ValueError('native receipt exact case unknown')
+    for key, value in (('ego_target_speed_mps', expected_case.ego_speed_mps),
+                       ('crossing_target_speed_mps', expected_case.crossing_speed_mps),
+                       ('crossing_release_s', expected_case.crossing_release_s)):
+        if receipt.get(key) != value:
+            raise ValueError(f'native receipt {key} differs from exact case')
     expected = ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl')
     keys = ('original_history_sha256', 'original_packets_sha256', 'original_cameras_sha256')
     tables = []
@@ -103,6 +115,9 @@ def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
         controls = packet.get('control')
         if not isinstance(controls, dict):
             raise ValueError('control source packet missing')
+        for key in ('ego_target_speed_mps', 'crossing_target_speed_mps', 'crossing_release_s'):
+            if controls.get(key) != receipt[key]:
+                raise ValueError(f'original {key} control differs from exact case')
         control_source = json.dumps(controls, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         if row.get('control_command_source_sha256') != hashlib.sha256(control_source).hexdigest():
             raise ValueError('control source packet mismatch')
@@ -133,3 +148,33 @@ def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
             'original_cameras_sha256': receipt['original_cameras_sha256'],
             'full_video_decode': False, 'actual_pixels': False,
             'physical_completion': False, 'legal_judgment': None}
+
+
+def finalize_saved_measurements(attempt: Path, case) -> dict:
+    """Measure original packets only after independent sealed-source rejoin."""
+    from encounter import CASES, measure_history
+    from native_acquisition import ASSIGNMENT
+
+    if case not in CASES:
+        raise ValueError('unknown exact case')
+    receipt_path = attempt / 'native-receipt.json'
+    if not receipt_path.is_file() or receipt_path.is_symlink():
+        raise ValueError('native receipt missing or redirected')
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
+    except (UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError('native receipt decode failed') from exc
+    if (receipt.get('assignment_id') != ASSIGNMENT or
+            receipt.get('case_id') != f'{ASSIGNMENT}__{case.case_id}'):
+        raise ValueError('native receipt exact case mismatch')
+    source = audit_native_acquisition(attempt, receipt)
+    rows = [json.loads(line) for line in (attempt / 'original-history.jsonl').read_text(
+        encoding='utf-8').splitlines() if line]
+    measured = measure_history(rows, case)
+    if measured['frame_count'] != source['frame_count']:
+        raise ValueError('measurement source count mismatch')
+    return {'assignment_id': ASSIGNMENT, 'case_id': receipt['case_id'],
+            'original_history_sha256': source['original_history_sha256'],
+            'native_receipt_sha256': hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
+            'source_audit': source, 'measurements': measured,
+            'actual_pixels': False, 'physical_completion': False, 'legal_judgment': None}

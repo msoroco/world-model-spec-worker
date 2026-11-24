@@ -81,6 +81,10 @@ def measure(original_dir: Path, expected_hashes: dict[str, str], *, mode: str,
                    ("overview_source_frame", "approach_source_frame",
                     "reference_corner_source_frame", "driver_reference_source_frame")):
             raise ValueError("missing original four-view frame map")
+        if any(mapped[view] != frame for view in
+               ("overview_source_frame", "approach_source_frame",
+                "reference_corner_source_frame", "driver_reference_source_frame")):
+            raise ValueError("stale original camera frame join")
         t = state.get("time_s")
         if type(t) not in (int, float) or not math.isfinite(t):
             raise ValueError("invalid original time")

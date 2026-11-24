@@ -12,7 +12,7 @@ import json
 import math
 from pathlib import Path
 
-from parked_lamps import ASSIGNMENT, CASES, FEET, construct, require, validate_site
+from parked_lamps import ASSIGNMENT, CASES, FEET, FIXED_SITE_FIELDS, construct, require, validate_site
 
 NAMES = ("front", "rear", "left", "right")
 COUNT = 900
@@ -41,10 +41,20 @@ def read_site(path, case_key):
     source_data = source_path.read_bytes()
     require(_sha(source_data) == site.get("site_source_sha256"), "independent site document changed")
     evidence = json.loads(source_data)
-    for key in ("highway_public_use_source", "shoulder_boundary_source", "traveled_boundary_source",
+    for key in FIXED_SITE_FIELDS:
+        require(evidence.get(key) == site.get(key), "fixed site evidence differs: " + key)
+    for key in ("case_id", "time_qualifies", "highway_public_use_source", "shoulder_boundary_source", "traveled_boundary_source",
                 "traffic_direction_source", "vehicle_class_source", "reference_time_source",
-                "visibility_station_source", "lamp_installation_source"):
+                "visibility_station_source", "lamp_installation_source", "lighting_assessment_source",
+                "lighting_assessment"):
         require(evidence.get(key) == site.get(key), "site evidence differs: " + key)
+    require(isinstance(site.get("installed_lamp_positions"), list) and site["installed_lamp_positions"],
+            "lamp installation positions missing")
+    require(site["installed_lamp_positions"] == evidence.get("installed_lamp_positions"),
+            "lamp installation positions differ from source")
+    require(site.get("camera_transforms") == evidence.get("camera_transforms") and
+            isinstance(site.get("camera_transforms"), dict) and set(site["camera_transforms"]) == set(NAMES),
+            "camera station transforms differ from source")
     validate_site(site, case_key, site["map_sha256"])
     return site, raw, source_data
 
@@ -79,9 +89,14 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
             relative = float(snapshot.timestamp.elapsed_seconds) - first_time
             require(math.isfinite(relative) and abs(relative - tick / HZ) <= .003, "Native 20 Hz time join failed")
             require(vehicle.is_alive, "parked vehicle destroyed during capture")
+            control = vehicle.get_control()
+            require(control.hand_brake is True, "Native parking brake readback missing")
             velocity = vehicle.get_velocity()
             speed = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
             require(speed <= .25, "parked vehicle moving")
+            position = vehicle.get_transform().location
+            require(all(math.isfinite(value) for value in (position.x, position.y, position.z)),
+                    "Native vehicle position invalid")
             lamp_bits = int(vehicle.get_light_state())
             require(lamp_bits == built["requested_lamp_mask"], "Native lamp readback changed")
             observed = camera_reader(native_frame)
@@ -104,10 +119,13 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
                          "map_sha256": site["map_sha256"], "vehicle_alive": True,
                          "vehicle_role": "motor_vehicle_driver", "placement": CASES[case_key]["placement"],
                          "attendance": CASES[case_key]["attendance"],
-                         "curb_boundary_visible": True, "traffic_side": site["traffic_side"],
+                         "curb_boundary_visible": None,
+                         "curb_boundary_source": site["shoulder_boundary_source"],
+                         "traffic_side": site["traffic_side"],
                          "time_qualifies": site["time_qualifies"],
-                         "lighting_assessment": CASES[case_key]["lighting"],
+                         "lighting_assessment": site["lighting_assessment"],
                          "parking_brake": True, "speed_mps": speed,
+                         "position_m": [position.x, position.y, position.z],
                          "front_lamp_state": CASES[case_key]["lamps"],
                          "rear_lamp_state": CASES[case_key]["lamps"],
                          "native_lamp_state_bits": lamp_bits,
@@ -118,6 +136,17 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
                          "installed_lamp_positions": site["installed_lamp_positions"]})
         history = "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows).encode()
         mapping = (json.dumps({"frames": camera_map}, sort_keys=True) + "\n").encode()
+        cameras = {}
+        for name in NAMES:
+            index = {"camera": name, "fps": HZ, "frames": [
+                {"frame_index": item["frame_index"], "native_frame": item["native_frame"],
+                 "path": f"cameras/{name}/{item['frame_index']:04d}.png",
+                 "sha256": item["sources"][name]["sha256"]} for item in camera_map]}
+            index_ref = _write_new(root / (name + "-camera-index.json"),
+                                   (json.dumps(index, sort_keys=True) + "\n").encode())
+            cameras[name] = {"path": index_ref["path"], "sha256": index_ref["sha256"],
+                             "source_sensor": camera_map[0]["sources"][name]["sensor"],
+                             "fps": HZ, "frames": frames, "source_format": "original_png_index"}
         history_ref = _write_new(root / "original_history.jsonl", history)
         map_ref = _write_new(root / "original_frame_map.json", mapping)
         site_ref = _write_new(root / "site_packet.json", site_raw)
@@ -127,7 +156,8 @@ def capture(world, site_path, case_key, output_dir, camera_reader, *, frames=COU
                   "site_packet_sha256": site_ref["sha256"], "fps": HZ, "frame_count": frames,
                   "original_history_path": history_ref["path"], "original_history_sha256": history_ref["sha256"],
                   "original_frame_map_path": map_ref["path"], "original_frame_map_sha256": map_ref["sha256"],
-                  "camera_image_format": "original_png", "camera_frames_per_view": frames,
+                  "cameras": cameras, "camera_image_format": "original_png",
+                  "camera_frames_per_view": frames,
                   "native_first_frame": first_frame, "native_last_frame": first_frame + frames - 1,
                   "physical_visibility_status": "unreviewed", "legal_verdict": None}
         _write_new(root / "capture-packet.json", (json.dumps(packet, indent=2, sort_keys=True) + "\n").encode())

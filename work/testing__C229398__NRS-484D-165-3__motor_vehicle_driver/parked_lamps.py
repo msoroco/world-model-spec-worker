@@ -14,6 +14,13 @@ from pathlib import Path
 ASSIGNMENT = "testing__C229398__NRS-484D-165-3__motor_vehicle_driver"
 LAW = "NRS-484D-165-3"
 FEET = {"revelation": 304.8, "lamps": 152.4}
+FIXED_SITE_FIELDS = ("map_sha256", "map_name", "curb_waypoint_xyz", "road_id", "lane_id",
+    "traffic_side", "highway_public_use_source", "shoulder_boundary_source",
+    "traveled_boundary_source", "traffic_direction_source", "vehicle_class_source",
+    "visibility_station_source", "lamp_installation_source",
+    "shoulder_spawn_transform", "traveled_spawn_transform",
+    "revelation_station_m", "front_lamp_station_m", "rear_lamp_station_m",
+    "installed_lamp_positions", "camera_transforms")
 CASES = {
     "dark_lamps_on": {"placement": "shoulder", "lighting": "insufficient", "lamps": "on", "attendance": "unattended"},
     "dark_lamps_off": {"placement": "shoulder", "lighting": "insufficient", "lamps": "off", "attendance": "unattended"},
@@ -33,6 +40,12 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def fixed_site_signature(site):
+    """Bind the controlled layout, traffic side, equipment and camera stations."""
+    return hashlib.sha256(json.dumps({key: site.get(key) for key in FIXED_SITE_FIELDS},
+                                     sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
 def validate_site(site, case_key, expected_map_sha256):
     require(case_key in CASES, "unknown exact case")
     require(site.get("law_id") == LAW and site.get("cell_id") == "C229398", "site identity mismatch")
@@ -49,6 +62,8 @@ def validate_site(site, case_key, expected_map_sha256):
     require(site.get("revelation_station_m") == FEET["revelation"], "1,000-foot station missing")
     require(site.get("front_lamp_station_m") == FEET["lamps"] and site.get("rear_lamp_station_m") == FEET["lamps"], "500-foot stations missing")
     require(site.get("time_qualifies") is (case_key != "outside_referenced_time"), "reference-time case mismatch")
+    require(site.get("lighting_assessment") == CASES[case_key]["lighting"] and site.get("lighting_assessment_source"),
+            "case lighting assessment source missing")
     return CASES[case_key]
 
 
@@ -88,7 +103,8 @@ def measure(site, case_key, expected_map_sha256, frames):
         require(frame.get("map_sha256") == expected_map_sha256 and frame.get("vehicle_alive") is True, "Native source or actor missing")
         require(frame.get("vehicle_role") == "motor_vehicle_driver", "actor role mismatch")
         require(frame.get("placement") == spec["placement"] and frame.get("attendance") == spec["attendance"], "fixed scene mismatch")
-        require(frame.get("curb_boundary_visible") is True and frame.get("traffic_side") == site["traffic_side"], "curb or traffic-side source missing")
+        require(frame.get("curb_boundary_source") == site["shoulder_boundary_source"] and frame.get("traffic_side") == site["traffic_side"], "curb or traffic-side source missing")
+        require(frame.get("curb_boundary_visible") in (True, False, None), "curb visibility assessment invalid")
         require(frame.get("time_qualifies") is site["time_qualifies"], "referenced-time source mismatch")
         require(frame.get("lighting_assessment") == spec["lighting"], "lighting source mismatch")
         require(frame.get("parking_brake") is True and frame.get("speed_mps") is not None and 0 <= frame["speed_mps"] <= 0.25, "parked interval missing")
@@ -105,7 +121,8 @@ def measure(site, case_key, expected_map_sha256, frames):
                             "revelation": revelation, "front": frame["front_lamp_observation"],
                             "rear": frame["rear_lamp_observation"]})
     return {"case_id": f"{ASSIGNMENT}__{case_key}", "map_sha256": expected_map_sha256,
-            "site_source_sha256": site["site_source_sha256"], "spec": spec,
+            "site_source_sha256": site["site_source_sha256"],
+            "fixed_site_signature": fixed_site_signature(site), "spec": spec,
             "time_qualifies": site["time_qualifies"], "original_frame_count": len(frames),
             "one_hz_original_samples": samples, "legal_status": "unresolved_photometric_and_referenced_time_review"}
 
@@ -117,9 +134,14 @@ def audit_comparison(reports, case_keys, changed_fields):
     for report, key in zip(reports, case_keys):
         require(report.get("case_id") == f"{ASSIGNMENT}__{key}", "comparison case mismatch")
         require(report.get("original_frame_count") == 900 and len(report.get("one_hz_original_samples", [])) == 45, "comparison evidence missing")
-        require(report.get("map_sha256") == expected.get("map_sha256") and report.get("site_source_sha256") == expected.get("site_source_sha256"), "comparison site changed")
+        require(report.get("map_sha256") == expected.get("map_sha256") and
+                report.get("fixed_site_signature") == expected.get("fixed_site_signature"),
+                "comparison fixed site changed")
         require(report.get("spec") == CASES[key], "comparison spec mismatch")
     require(set(changed_fields) <= set(CASES[case_keys[0]]) | {"time_qualifies"}, "unknown comparison variable")
+    if not set(changed_fields) & {"lighting", "time_qualifies"}:
+        require(all(report.get("site_source_sha256") == expected.get("site_source_sha256") for report in reports),
+                "comparison site source changed without lighting/time difference")
     for field in set(CASES[case_keys[0]]) | {"time_qualifies"}:
         values = [r["time_qualifies"] for r in reports] if field == "time_qualifies" else [CASES[k][field] for k in case_keys]
         if field in changed_fields:
@@ -153,9 +175,32 @@ def audit_saved_capture(capture_dir, case_key, expected_map_sha256):
         path = capture_dir / camera.get("path", "")
         require(path.is_file() and path.resolve().is_relative_to(capture_dir.resolve()), f"{name} camera source absent")
         require(camera.get("sha256") == digest(path), f"{name} camera seal mismatch")
+        if camera.get("source_format") == "original_png_index":
+            index = json.loads(path.read_text())
+            require(index.get("camera") == name and index.get("fps") == 20 and len(index.get("frames", [])) == 900,
+                    f"{name} original image index invalid")
+            for tick, entry in enumerate(index["frames"]):
+                require(entry.get("frame_index") == tick and type(entry.get("native_frame")) is int,
+                        f"{name} original image frame gap")
+                image_path = capture_dir / entry.get("path", "")
+                require(image_path.is_file() and image_path.resolve().is_relative_to(capture_dir.resolve()),
+                        f"{name} original image missing")
+                require(entry.get("sha256") == digest(image_path), f"{name} original image changed")
     require(packet.get("original_frame_map_path") and packet.get("original_frame_map_sha256"), "original frame map absent")
     mapping = capture_dir / packet["original_frame_map_path"]
     require(mapping.is_file() and digest(mapping) == packet["original_frame_map_sha256"], "original frame map seal mismatch")
+    require(mapping.resolve().is_relative_to(capture_dir.resolve()), "original frame map escaped capture")
+    if packet.get("camera_image_format") == "original_png":
+        frame_map = json.loads(mapping.read_text()).get("frames", [])
+        require(len(frame_map) == 900, "original frame map count mismatch")
+        first = frame_map[0].get("native_frame")
+        for tick, entry in enumerate(frame_map):
+            require(entry.get("frame_index") == tick and entry.get("native_frame") == first + tick,
+                    "original Native camera frame gap")
+            require(set(entry.get("sources", {})) == set(cameras), "original camera source set mismatch")
+            for name in cameras:
+                require(entry["sources"][name].get("native_frame") == first + tick,
+                        name + " original camera frame mismatch")
     return {"case_id": packet["case_id"], "capture_packet_sha256": digest(packet_path),
             "source_type": packet["source_type"], "camera_names": sorted(cameras),
             "physical_visibility_status": "unreviewed"}

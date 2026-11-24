@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver",
   "input_sha256": "8a14a3e8f6c0ac470e16c0195b8a7bf2e20482edfcab4c6ec968edb174a69ace",
-  "status": "partial",
   "readiness_kind": "source_bound_construction_draft",
-  "applied_update": 0,
+  "reason": "Four exact source-review cases and two controlled comparisons are planned. Four pinned exact offline bundles and 20 focused CPU tests pass. Source-bound 20 Hz measurement verifies full-body right-half geometry, left-turn heading and camera frame joins. A Native adapter capture protocol binds the loaded OpenDRIVE map to an exact survey packet and records 900 ego frames with four original PNG camera archives; saved integrity and pixel audits verify hashes and decode all 3,600 images. Test captures are diagnostic. The accepted-source inventory verifies four metadata hashes, while original trace/video/audit assets and reviewed public-highway provenance are absent in this export, so no physical or legal completion is claimed. Draft source-hashed semantic relevance, template, bindings, four exact cases and judgment observables are staged. Reviewed source packets, exact compatibility/process-saved positives and negatives, candidate fallbacks and full delivery audits remain CPU work; actual CARLA capture is also pending. Scoped static passes; scoped strict rejects truthful partial status.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
@@ -34,10 +38,30 @@
       "exit_code": 0,
       "log": "cpu-offline-imaginary_farther_from_centerline.log",
       "sha256": "e97ffbfc054e502016a815a1f9706633ddc8e8a6b82ed9f9cc8b82851a64cf4a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-saved-delivery-tests.log",
+      "sha256": "fa410d284d0527711ab86faf84719fa5c53f6986545ada71e67a76484747bd15"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-saved-static.log",
+      "sha256": "a1801a621406345b87a7b4d82ea1c8e9626c50bb5275088ad79c6466e9ca31a2"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-saved-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-capture-tests.log",
+      "sha256": "7d2ef9957401f3e638883026d766a6e938686ac3b08cb10c896269b0feb40651"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Four exact source-review cases and two controlled comparisons are planned. Thirteen focused CPU tests and four pinned exact offline bundle checks pass; source-bound 20 Hz approach/departure measurement verifies full-body right-half geometry, left-turn heading and four-camera frame joins. The accepted-source inventory verifies all four metadata hashes but the original trace/video/audit assets are absent in this export, so physical coverage is unresolved. Native capture, exact source-bound compatibility/saved-only proofs, candidate fallbacks, semantic proposals and independent delivery audit remain CPU work."
+  ]
 }

@@ -9,7 +9,7 @@ import json
 import os
 from pathlib import Path
 
-from parked_lamps import CASES, LAW, validate_site
+from parked_lamps import CASES, LAW
 
 ROOT = Path(__file__).resolve().parent
 
@@ -35,9 +35,34 @@ def native(output_dir, host, port):
     source = os.environ.get("PARKED_LAMP_SITE_PACKET")
     if not source:
         raise ValueError("PARKED_LAMP_SITE_PACKET source path is required for Native capture")
-    packet = json.loads(Path(source).read_text())
-    validate_site(packet, config["case_key"], packet["map_sha256"])
-    raise NotImplementedError("four synchronized original cameras and sealed Native capture are not yet implemented")
+    from native_capture import capture, read_site
+    from carla_cameras import OriginalCameras
+    import carla
+    import hashlib
+
+    site, _, _ = read_site(source, config["case_key"])
+    client = carla.Client(host, port)
+    client.set_timeout(20.0)
+    world = client.get_world()
+    settings = world.get_settings()
+    if not settings.synchronous_mode or abs(settings.fixed_delta_seconds - .05) > 1e-6:
+        raise ValueError("Dedicated Native world must be synchronous at 20 Hz")
+    map_digest = hashlib.sha256(world.get_map().to_opendrive().encode()).hexdigest()
+    if map_digest != site["map_sha256"]:
+        raise ValueError("Native OpenDRIVE bytes differ from reviewed site map")
+    output = Path(output_dir) / "capture"
+    output.mkdir()
+    cameras = OriginalCameras(world, carla, site, config)
+    try:
+        result = capture(world, source, config["case_key"], output, cameras.read)
+    finally:
+        cameras.close()
+    from encode_original import encode
+    encoded = encode(output_dir, config["case_key"], site["map_sha256"])
+    print(json.dumps({"case_id": result["case_id"], "original_frames": result["frame_count"],
+                      "original_camera_images": 4 * result["frame_count"],
+                      "encoded_views": sorted(encoded),
+                      "delivery_acceptance_claimed": False}))
 
 
 def main():

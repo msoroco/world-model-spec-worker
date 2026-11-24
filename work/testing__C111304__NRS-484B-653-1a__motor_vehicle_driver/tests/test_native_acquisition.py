@@ -13,13 +13,16 @@ import saved_audit
 
 
 class Adapter:
-    def __init__(self, *, bad_camera=None, bad_frame=None, bad_occupancy=False):
+    def __init__(self, *, bad_camera=None, bad_frame=None, bad_occupancy=False,
+                 case=None, bad_release=False):
         self.frame = 100
         self.destroyed = []
         self.braked = False
         self.bad_camera = bad_camera
         self.bad_frame = bad_frame
         self.bad_occupancy = bad_occupancy
+        self.case = case or encounter.CASES[0]
+        self.bad_release = bad_release
 
     def tick(self):
         frame = self.frame
@@ -39,7 +42,10 @@ class Adapter:
 
     def read_control(self, ego, crossing):
         return {'original_frame': self.frame - 1, 'ego_command': 'drive',
-                'crossing_command': 'drive'}
+                'crossing_command': 'drive',
+                'ego_target_speed_mps': self.case.ego_speed_mps,
+                'crossing_target_speed_mps': self.case.crossing_speed_mps,
+                'crossing_release_s': self.case.crossing_release_s + (1 if self.bad_release else 0)}
 
     def read_camera(self, name):
         frame = self.frame - 1
@@ -87,7 +93,7 @@ class NativeAcquisitionTests(unittest.TestCase):
     def test_missing_camera_and_actor_frame_fail_with_cleanup(self):
         case = encounter.CASES[0]
         for variant in ({'bad_camera': 'rear'}, {'bad_frame': 'occupant'},
-                        {'bad_occupancy': True}):
+                        {'bad_occupancy': True}, {'bad_release': True}):
             adapter = Adapter(**variant)
             with TemporaryDirectory() as tmp:
                 with self.assertRaises(ValueError):
@@ -118,6 +124,34 @@ class NativeAcquisitionTests(unittest.TestCase):
             invalid = site(); invalid['site_sha256'] = ''
             with self.assertRaisesRegex(ValueError, 'site/map/camera source missing'):
                 native.capture(adapter, actors(encounter.CASES[0]), encounter.CASES[0], invalid, Path(tmp))
+
+    def test_saved_measurement_finalizer_rejoins_sealed_sources(self):
+        case = encounter.CASES[0]
+        with TemporaryDirectory() as tmp:
+            attempt = Path(tmp)
+            native.capture(Adapter(), actors(case), case, site(), attempt)
+            result = saved_audit.finalize_saved_measurements(attempt, case)
+            self.assertEqual(result['measurements']['frame_count'], 900)
+            self.assertEqual(result['measurements']['min_ego_occupant_center_distance_m'], 5.0)
+            self.assertFalse(result['physical_completion'])
+            self.assertIsNone(result['legal_judgment'])
+            with self.assertRaisesRegex(ValueError, 'exact case mismatch'):
+                saved_audit.finalize_saved_measurements(attempt, encounter.CASES[1])
+            source = attempt / 'original-history.jsonl'
+            source.write_bytes(source.read_bytes() + b'\n')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                saved_audit.finalize_saved_measurements(attempt, case)
+
+    def test_late_case_control_packet_is_exact(self):
+        case = encounter.CASES[1]
+        with TemporaryDirectory() as tmp:
+            attempt = Path(tmp)
+            receipt = native.capture(Adapter(case=case), actors(case), case, site(), attempt)
+            self.assertEqual(receipt['crossing_release_s'], 4.0)
+            self.assertEqual(saved_audit.audit_native_acquisition(attempt, receipt)['frame_count'], 900)
+            receipt['crossing_release_s'] = 1.0
+            with self.assertRaisesRegex(ValueError, 'differs from exact case'):
+                saved_audit.audit_native_acquisition(attempt, receipt)
 
 
 if __name__ == '__main__':

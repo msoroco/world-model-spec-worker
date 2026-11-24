@@ -1601,3 +1601,27 @@ Owner slots rotated to C10301 LVMC-11-22-010 in partition 03 and C109171 NRS-484
 - Batch status remains 9 ready and 233 partial of 242. The full strict gate ran earlier this turn and exited 1 on partial/missing packages; every completed owner checkpoint was additionally checked with its exact assignment strict command and kept partial. No ready claim was added.
 - Final returned-file hygiene scan: 11,396 files; no size, UTF-8, trailing-whitespace or conflict-marker issues. Largest returned file is 1,846,854 bytes, under the 2 MiB per-file limit. This scan supplies the required whitespace check without running Git. The report is below 2 MiB and needs no archive.
 - Next work: continue the next partial assignments in batch order across partitions with at most three owner subagents alongside the lead; finish source-reviewed Native bindings, exact case bundles, semantic stages, saved-only/compatibility and independent delivery proofs. Promote each package only after its exact strict gate passes, then rerun the full strict gate.
+
+## 2026-11-24 C109705(400-2a) saved integrity checkpoint
+
+- `testing__C109705__NRS-484B-400-2a__motor_vehicle_driver`: lead added `saved_delivery.py` and positive/negative tests. It reopens the exact source-hashed approach context, 900 contiguous original 20Hz trace and four-camera frame map, and requires four attempt-confined, hash-bound original media sources. It recomputes the measured approach and leaves full video decode, pixels, physical completion and legal judgment unresolved. Sixteen focused tests and the assignment static gate pass; exact strict gate exits 1 on truthful partial. Current source review, Native capture/runner, canonical stages, compatibility/process-saved and decoded-media delivery audit remain CPU work.
+
+## 2026-11-23 C109705 and C214977 CPU checkpoint
+
+C109705 now has loaded-map OpenDRIVE binding, an independent saved-source integrity audit, and a 900-frame Native adapter capture protocol with four original PNG callback archives. Nineteen focused tests, four pinned offline checks, and scoped static validation pass. The test capture is diagnostic; C109705 remains partial with reviewed site provenance, actual CARLA capture, compatibility, semantic and delivery proofs pending. C214977 added a source-bound 900-frame collector, saved verifier, geometry corrections and semantic drafts; eight offline proofs and 15 focused tests pass. I checked all 11 proof-log hashes and reran its scoped strict gate, which rejected the truthful partial status. A new owner started C111304 in partition 02. Full strict gate was rerun and still rejects partial/missing packages.
+
+## 2026-11-23 C109705 semantic and C202480 source checkpoints
+
+C109705 now has a source-hashed draft semantic index covering relevance, template, bindings, four exact cases and nearest-centerline judgment observables. Its 19 focused CPU tests and scoped static check pass; scoped strict rejects truthful partial status. C202480 added original camera feature checks and OpenDRIVE lane-count source review. Its 77-test suite and scoped static check pass; I verified the result log hash and reran scoped strict, which rejects partial status. A new partition 08 owner started C104084.
+
+## 2026-11-23 C229398 and C104084 checkpoints
+
+C229398 added source-sealed 900-frame Native capture, four synchronized camera callbacks, lossless view encoding, original-frame integrity audit and source-derived lighting/site comparison. Six offline bundles and 18 focused CPU tests pass. I verified all 10 declared proof-log hashes and reran the exact scoped strict gate; it rejects partial status. C104084 has a new saved crest audit joining 900 original rows and four camera hashes; its owner reports 24 passing tests and scoped static pass, with strict partial. C110969 began in partition 04 after C229398 finished. C229398 still needs pinned Native lifecycle, compatibility/process-saved, semantic and delivery proofs.
+
+## 2026-11-23 C109705 pixel decode and C111304 site binding
+
+C109705 now decodes all 3,600 camera PNGs after source integrity checks and rejects malformed image bytes; 20 focused tests and scoped static validation pass. The fixture remains diagnostic and scoped strict rejects partial. C111304 added source-bound site validation, saved measurement and four-camera media audits; its 20 focused tests pass. I verified its proof hashes and reran scoped strict, which rejects partial. C110454 began in partition 03.
+
+## 2026-11-23 C104084 owner closeout
+
+C104084 added source-bound saved crest and cross-case comparison audits with six new positive/negative tests; 27 focused tests and scoped static validation pass. I verified the declared proof-log hash and reran its exact scoped strict gate, which rejects truthful partial status. Full capture/finalizer, case-specific compatibility and saved-only proofs, semantic proposals and delivery acceptance remain CPU work. A new partition 06 owner began C109705 2b.

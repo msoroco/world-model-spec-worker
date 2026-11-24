@@ -68,7 +68,8 @@ def capture(adapter, site_ref: dict, vehicle_ref: dict, case: dict,
                 'camera_readbacks': _write_sealed(output_root, 'camera-readbacks.json', camera_map)}
         receipt = {'format': 'crosswalk-native-source-receipt', 'case_id': case['case_id'],
                    'subject_id': subject, 'fps': 20, 'frame_count': frame_count,
-                   'source_format': 'native_original', 'sources': refs, 'measurement': measurement,
+                   'source_format': 'native_original', 'site_source': site_ref,
+                   'vehicle_source': vehicle_ref, 'sources': refs, 'measurement': measurement,
                    'video_decode': 'not_run', 'physical_acceptance': 'unreviewed'}
         _write_sealed(output_root, 'native-receipt.json', receipt)
         return receipt
