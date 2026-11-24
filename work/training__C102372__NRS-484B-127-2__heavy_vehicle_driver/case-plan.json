@@ -85,6 +85,9 @@
       "selection_targets": [
         "demo-train",
         "full-train"
+      ],
+      "gap_ids": [
+        "gap_500ft_continuous"
       ]
     },
     {
@@ -99,6 +102,9 @@
       "selection_targets": [
         "demo-train",
         "full-train"
+      ],
+      "gap_ids": [
+        "gap_500ft_continuous"
       ]
     },
     {
@@ -113,7 +119,10 @@
       "target_type": "controlled_attempt",
       "physical_target": "same-cell hill-crest 80-inch truck following at a 140 m surface gap on two same-direction driving lanes",
       "comparison_variable": "same_direction_lane_count",
-      "source_branch": "two or more same-direction lanes"
+      "source_branch": "two or more same-direction lanes",
+      "gap_ids": [
+        "two_lane_exception"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_hold",
@@ -127,7 +136,10 @@
       "target_type": "below",
       "physical_target": "same-cell one-lane hill-crest truck following without a passing sequence",
       "comparison_variable": "passing_sequence_observed",
-      "source_branch": "passing while gap closes"
+      "source_branch": "passing while gap closes",
+      "gap_ids": [
+        "passing_carveout"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_overtake",
@@ -141,7 +153,10 @@
       "target_type": "controlled_attempt",
       "physical_target": "same-cell one-lane hill-crest truck follows, enters opposing lane, overtakes and returns",
       "comparison_variable": "passing_sequence_observed",
-      "source_branch": "passing while gap closes"
+      "source_branch": "passing while gap closes",
+      "gap_ids": [
+        "passing_carveout"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_steady",
@@ -155,7 +170,10 @@
       "target_type": "below",
       "physical_target": "same-cell one-lane hill-crest steady truck following above 500 feet",
       "comparison_variable": "lead_braking_gap_compression_observed",
-      "source_branch": "conditions do not permit leaving space"
+      "source_branch": "conditions do not permit leaving space",
+      "gap_ids": [
+        "conditions_permit"
+      ]
     },
     {
       "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_lead_brake",
@@ -169,7 +187,10 @@
       "target_type": "controlled_attempt",
       "physical_target": "same-cell one-lane hill-crest stopped-obstacle lead braking with measured gap compression",
       "comparison_variable": "lead_braking_gap_compression_observed",
-      "source_branch": "conditions do not permit leaving space"
+      "source_branch": "conditions do not permit leaving space",
+      "gap_ids": [
+        "conditions_permit"
+      ]
     }
   ],
   "comparisons": [
@@ -354,53 +375,177 @@
   "selected_branch": null,
   "observations": [
     {
-      "name": "ru.truck",
+      "name": "ego_body_pose",
       "mandatory": true,
-      "reason": "both the subject and the vehicle it follows"
+      "reason": "Source-bound original Native and four-camera frame join used by the selected finalizer"
     },
     {
-      "name": "ru.trailer_or_combination",
+      "name": "lead_body_pose",
       "mandatory": true,
-      "reason": "a combination counts as well"
+      "reason": "Source-bound original Native and four-camera frame join used by the selected finalizer"
     },
     {
-      "name": "kin.extent",
+      "name": "surface_gap_m",
       "mandatory": true,
-      "reason": "overall width, to apply the 80-inch class"
+      "reason": "Source-bound original Native and four-camera frame join used by the selected finalizer"
     },
     {
-      "name": "drv.following",
+      "name": "camera_frame_join",
       "mandatory": true,
-      "reason": "the subject is following the lead truck"
-    },
-    {
-      "name": "rel.surface_gap",
-      "mandatory": true,
-      "reason": "the longitudinal space, against the 500-foot requirement"
-    },
-    {
-      "name": "rel.ahead_behind_in_lane",
-      "mandatory": true,
-      "reason": "same lane, subject behind"
-    },
-    {
-      "name": "drv.laned_roadway",
-      "mandatory": true,
-      "reason": "the exemption: two or more lanes in the same direction"
-    },
-    {
-      "name": "st.lane_adjacency",
-      "mandatory": true,
-      "reason": "the count of lanes in the subject's direction"
-    },
-    {
-      "name": "drv.overtaking",
-      "mandatory": true,
-      "reason": "the carve-out while overtaking"
+      "reason": "Source-bound original Native and four-camera frame join used by the selected finalizer"
     }
   ],
   "runtime_uncertainties": [
     "The proposed Native runner is CPU-preflighted and synthetic Native/Core/Lean/video package diagnostics pass; actual CARLA behavior has not been observed.",
     "The pinned strict fixture recipe base contains three Native frames and does not yet represent this 480-frame case; a complete selected recipe and acceptance proof remain to be constructed."
-  ]
+  ],
+  "source_observation_mapping": {
+    "ru.truck": {
+      "evidence": "Read both original Native body identities and truck blueprints; actual vehicle class still needs local review.",
+      "channels": [
+        "ego_body_pose",
+        "lead_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "Retain separate subject and lead blueprint/body sources so a combination can be classified if observed.",
+      "channels": [
+        "ego_body_pose",
+        "lead_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "Measure each original truck body vertex span against the 80-inch class boundary.",
+      "channels": [
+        "ego_body_pose",
+        "lead_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Join full body positions, lane identity and road-arc gap throughout the 600-frame following window.",
+      "channels": [
+        "ego_body_pose",
+        "lead_body_pose",
+        "surface_gap_m"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Recompute original full-body road-surface clearance continuously against 152.4 m.",
+      "channels": [
+        "surface_gap_m"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Join both original lane and body positions to establish subject behind lead.",
+      "channels": [
+        "ego_body_pose",
+        "lead_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "drv.laned_roadway": {
+      "evidence": "Survey authored road lane sections and later original highway context; lane identity comes from Native.",
+      "channels": [
+        "ego_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Read the original map lane sections at the subject track and count same-direction lanes.",
+      "channels": [
+        "ego_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Measure subject lane departure, truck clearance, lead pass and return from joined original bodies.",
+      "channels": [
+        "ego_body_pose",
+        "lead_body_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "native/runner.py",
+        "native/finalize.py"
+      ]
+    }
+  },
+  "evidence_review": {
+    "method": "Reviewed frozen assignment membership and review-context request summaries; no accepted original source copies are present in this worker checkout.",
+    "reviewer": "C102372 CPU preparation owner",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "gap_500ft_continuous",
+        "requirement": "Continuous measured qualified-truck space on both sides of 500 ft",
+        "source": "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "why_existing_insufficient": "Frozen requests list 149.352, 152.4 and 155.448 m but do not expose original joined body traces or a source-hashed equivalence receipt here."
+      },
+      {
+        "id": "two_lane_exception",
+        "requirement": "Two or more lanes available in the subject direction",
+        "source": "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "why_existing_insufficient": "One accepted two-lane membership is listed without local map and body sources needed to prove this controlled exception."
+      },
+      {
+        "id": "passing_carveout",
+        "requirement": "Subject passing versus holding behind a qualified truck",
+        "source": "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/review-context/review.json",
+        "why_existing_insufficient": "Prior passing requests lack local original trajectories and clearance receipts for this exact pair."
+      },
+      {
+        "id": "conditions_permit",
+        "requirement": "Lead braking and road conditions affecting a 500-foot space",
+        "source": "inputs/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "The frozen review gives no local source-hashed controlled lead-braking comparison; legal conditions remain unresolved."
+      }
+    ],
+    "limitation": "Accepted membership and request descriptions are not realized equivalence or statutory findings."
+  }
 }

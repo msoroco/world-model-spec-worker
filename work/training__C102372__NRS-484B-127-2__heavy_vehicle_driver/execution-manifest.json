@@ -1,0 +1,453 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_in_progress",
+  "cases": [
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+      "kind": "delivery",
+      "measurement_contract": "selected-fixture/probe_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_1/fallback1/construction.json",
+          "construction_sha256": "3c01a1af87e1ba52c24200a91a1ebffa8b52b5be2b36579d12a12957f65e1374",
+          "trigger": {
+            "source": "original full-body truck footprints, Native road elevation and 600-frame source hashes",
+            "metric": "min_surface_gap_m",
+            "failure_condition": "min_surface_gap_m < 152.4"
+          },
+          "changed_knobs": [
+            "ego_target_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_1/fallback2/construction.json",
+          "construction_sha256": "053ab45a4832f048cc32b5d0bade1ad0cd93aadbd08eae5e30c853f02271ff5c",
+          "trigger": {
+            "source": "original full-body truck footprints and target gap over joined Native frames",
+            "metric": "max_gap_shortfall_m",
+            "failure_condition": "max_gap_shortfall_m > 2.0"
+          },
+          "changed_knobs": [
+            "lead_target_speed_mps",
+            "gap_controller_gain_per_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_1/fallback3/construction.json",
+          "construction_sha256": "69c6cd767211d73f0eff89b514433704866273a50edcac032fc55a8fbbdff958",
+          "trigger": {
+            "source": "original truck 3D bodies, surveyed overview camera calibration and decoded video frame join",
+            "metric": "min_projected_truck_frame_margin_px",
+            "failure_condition": "min_projected_truck_frame_margin_px < 40.0"
+          },
+          "changed_knobs": [
+            "overview_fov_deg",
+            "overview_height_m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/probe_1/primary/construction.json",
+      "construction_sha256": "c9843d568123c3313737016329d5ecc68b27ea7e589cad59c82b6d5f9c7be547",
+      "fixture_recipe": "work/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/selected-fixture/probe_1/recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c102372-selected-probe1-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c9843d568123c3313737016329d5ecc68b27ea7e589cad59c82b6d5f9c7be547",
+        "log": "selected-proof/probe_1/primary/offline.log",
+        "log_sha256": "e4e3abdba372a1ed800443946103fb9f6efc254d237090d206faf01cf1b291c0"
+      },
+      "compatibility": {
+        "receipt": "selected-proof/probe_1/primary/compatibility.json",
+        "sha256": "d8c48dd7a4b0fd2f326ba4e1f91e2d903dc209995a058674d8ff57aea9ff3402",
+        "log": "selected-proof/probe_1/primary/analysis.log",
+        "negative_log": "selected-proof/probe_1/primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-proof/probe_1/primary/negative.log"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c102372-active-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C102372__NRS-484B-127-2__heavy_vehicle_driver/execution-manifest.json --case training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c102372-active-decoder/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proof/probe_1/primary/saved.log",
+        "test_log_sha256": "f3107aabfb7ee8877d11d5bc528b88676911512d3231d9744785a68102301ca7"
+      },
+      "saved_processing": {
+        "receipt": "selected-proof/probe_1/primary/processing.json",
+        "sha256": "f3107aabfb7ee8877d11d5bc528b88676911512d3231d9744785a68102301ca7",
+        "negative_log": "selected-proof/probe_1/primary/saved-negative.log",
+        "negative_log_sha256": "6bd2a39dce1dafbeec8e51ea153a1deaa2046206cfece4458679ba89694a7d3b"
+      }
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_2",
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contract-probe_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/probe_2/fallback1/construction.json",
+          "construction_sha256": "5cab2e5d30d5f78f2e70c0e0a56f493087d9a82ff15e1580278bf4a337df8b84",
+          "trigger": {
+            "source": "original full-body truck footprints, Native road elevation and 600-frame source hashes",
+            "metric": "min_surface_gap_m",
+            "failure_condition": "min_surface_gap_m < 152.4"
+          },
+          "changed_knobs": [
+            "ego_target_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/probe_2/fallback2/construction.json",
+          "construction_sha256": "0b8c29680de36fa42ff50cbd31ab55d5587413b104964c053f493c47e94a1402",
+          "trigger": {
+            "source": "original full-body truck footprints and target gap over joined Native frames",
+            "metric": "max_gap_shortfall_m",
+            "failure_condition": "max_gap_shortfall_m > 2.0"
+          },
+          "changed_knobs": [
+            "lead_target_speed_mps",
+            "gap_controller_gain_per_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/probe_2/fallback3/construction.json",
+          "construction_sha256": "85fe5c614aa40cd78163b580a175ceed3e51a0717292532266565fa64341b016",
+          "trigger": {
+            "source": "original truck 3D bodies, surveyed overview camera calibration and decoded video frame join",
+            "metric": "min_projected_truck_frame_margin_px",
+            "failure_condition": "min_projected_truck_frame_margin_px < 40.0"
+          },
+          "changed_knobs": [
+            "overview_fov_deg",
+            "overview_height_m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/probe_2/primary/construction.json",
+      "construction_sha256": "5750526579a5fd480a20908aed7865882232a98aa441d0800cb6e1dd5d4201f0"
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__two_lane_exception",
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contract-two_lane_exception.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/two_lane_exception/fallback1/construction.json",
+          "construction_sha256": "512c1f71b24e4d84bc016e4c5a10d0e7c4843f2a3f0abe1f069136c5264c1f81",
+          "trigger": {
+            "source": "original full-body truck footprints, Native road elevation and 600-frame source hashes",
+            "metric": "min_surface_gap_m",
+            "failure_condition": "min_surface_gap_m < 152.4"
+          },
+          "changed_knobs": [
+            "ego_target_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/two_lane_exception/fallback2/construction.json",
+          "construction_sha256": "a7a1dbc821c76feb6f76d4b3fb66c37f7320ac3eace2a552db5e20ceed99223e",
+          "trigger": {
+            "source": "original full-body truck footprints and target gap over joined Native frames",
+            "metric": "max_gap_shortfall_m",
+            "failure_condition": "max_gap_shortfall_m > 2.0"
+          },
+          "changed_knobs": [
+            "lead_target_speed_mps",
+            "gap_controller_gain_per_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/two_lane_exception/fallback3/construction.json",
+          "construction_sha256": "0c0c56a23b541a0469e4f58daa0bffcace4e70df1e110f568d83c5d5af6ecaab",
+          "trigger": {
+            "source": "original truck 3D bodies, surveyed overview camera calibration and decoded video frame join",
+            "metric": "min_projected_truck_frame_margin_px",
+            "failure_condition": "min_projected_truck_frame_margin_px < 40.0"
+          },
+          "changed_knobs": [
+            "overview_fov_deg",
+            "overview_height_m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/two_lane_exception/primary/construction.json",
+      "construction_sha256": "243dfd24e266f9c7cc6f4c0349f1fdc7d25f23d38224503ca590dcc6d7c2db3a"
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_hold",
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contract-passing_hold.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/passing_hold/fallback1/construction.json",
+          "construction_sha256": "705842eb09e01ff3c95a1e63bf15c59abfdb6890b5c8c55708b3a52685f8bdd0",
+          "trigger": {
+            "source": "source-hashed original Native truck body footprints over 600 frames",
+            "metric": "minimum_body_clearance_m",
+            "failure_condition": "minimum_body_clearance_m < 20.0"
+          },
+          "changed_knobs": [
+            "ego_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/passing_hold/fallback2/construction.json",
+          "construction_sha256": "88ab1a4a2f243a6eb0a4ffa1bff070610900e41bba92ec783b9c50612176be70",
+          "trigger": {
+            "source": "source-hashed original Native ego and lead velocities over 600 frames",
+            "metric": "maximum_speed_difference_mps",
+            "failure_condition": "maximum_speed_difference_mps > 1.0"
+          },
+          "changed_knobs": [
+            "lead_speed_mps",
+            "gap_gain"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/passing_hold/fallback3/construction.json",
+          "construction_sha256": "e585ef547d9c4b91ee86a78d112e2f76a15c2adbfc545bcc4b9a6c5e13fd366a",
+          "trigger": {
+            "source": "source-hashed original Native ego body centers over 600 frames",
+            "metric": "maximum_lane_center_error_m",
+            "failure_condition": "maximum_lane_center_error_m > 0.3"
+          },
+          "changed_knobs": [
+            "lane_center_gain"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/passing_hold/primary/construction.json",
+      "construction_sha256": "6fa1177fc07ccd8c67ac51019d612e59097aaa0c1752d83599756c5b4f14df04"
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_overtake",
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contract-passing_overtake.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/passing_overtake/fallback1/construction.json",
+          "construction_sha256": "218e25a70837bc821ae49a2ee9851f15b64685c72a320a0375b68dc85d5ed2de",
+          "trigger": {
+            "source": "600 source-hashed original Native truck body centers and frame times",
+            "metric": "final_center_offset_m",
+            "failure_condition": "final_center_offset_m < 50.0"
+          },
+          "changed_knobs": [
+            "ego_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/passing_overtake/fallback2/construction.json",
+          "construction_sha256": "1d459aacabad1f4dcafbf5b76c3456745a164acc636e8f944bcd06ca25b34797",
+          "trigger": {
+            "source": "600 source-hashed original Native 80-inch truck body footprints",
+            "metric": "minimum_body_clearance_m",
+            "failure_condition": "minimum_body_clearance_m < 1.5"
+          },
+          "changed_knobs": [
+            "opposing_center_y_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/passing_overtake/fallback3/construction.json",
+          "construction_sha256": "f9f2cda0526e6de3cb90c6a4fde3b5b86597706c68d279e55db5bad19694d593",
+          "trigger": {
+            "source": "600 source-hashed original Native lane/body frame joins",
+            "metric": "opposing_lane_frames",
+            "failure_condition": "opposing_lane_frames < 300"
+          },
+          "changed_knobs": [
+            "enter_start_s",
+            "enter_end_s",
+            "return_start_s",
+            "return_end_s"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/passing_overtake/primary/construction.json",
+      "construction_sha256": "ff90c9bb80407b274db5022beedc97b6863fe4c47252f150a2ec84f42d383fc3"
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_steady",
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contract-conditions_steady.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/conditions_steady/fallback1/construction.json",
+          "construction_sha256": "b6711d7fb459dce3b20ae5d5d8f37fa5417965d9aa3f7206dc6ebd91fe7baaec",
+          "trigger": {
+            "source": "600 source-hashed Native truck bodies and hill-crest road surface",
+            "metric": "minimum_surface_gap_m",
+            "failure_condition": "minimum_surface_gap_m < 160.0"
+          },
+          "changed_knobs": [
+            "initial_horizontal_gap_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/conditions_steady/fallback2/construction.json",
+          "construction_sha256": "dfad8d830996f469b4f1845ba739cc40fabdf45876c0e5d610cc2909efd907e0",
+          "trigger": {
+            "source": "600 source-hashed Native body/road-arc gap samples",
+            "metric": "surface_gap_compression_m",
+            "failure_condition": "surface_gap_compression_m > 1.0"
+          },
+          "changed_knobs": [
+            "ego_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/conditions_steady/fallback3/construction.json",
+          "construction_sha256": "23e8687e2f14481c4cba6115febcf6634117021ffbf29294e9dbee2a8a259cc6",
+          "trigger": {
+            "source": "600 source-hashed Native ego/lead velocity readbacks",
+            "metric": "maximum_speed_difference_mps",
+            "failure_condition": "maximum_speed_difference_mps > 1.0"
+          },
+          "changed_knobs": [
+            "gap_gain"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/conditions_steady/primary/construction.json",
+      "construction_sha256": "6bff6caa46752a5fe408a8e3201f082b061bfdd188868c4f49f0cae48f689e76"
+    },
+    {
+      "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_lead_brake",
+      "kind": "delivery",
+      "measurement_contract": "native/measurement-contract-conditions_lead_brake.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c102372-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original truck width, 600-frame control, road readback, camera and conditions unobserved"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-candidates/conditions_lead_brake/fallback1/construction.json",
+          "construction_sha256": "af2018b97ea53d8959d0bfbb8fabec348bb9c92b6c46cb1ccea53844cbc622d9",
+          "trigger": {
+            "source": "600 source-hashed Native truck bodies and hill-crest road surface",
+            "metric": "minimum_surface_gap_m",
+            "failure_condition": "minimum_surface_gap_m < 142.0"
+          },
+          "changed_knobs": [
+            "initial_horizontal_gap_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "draft-candidates/conditions_lead_brake/fallback2/construction.json",
+          "construction_sha256": "4cb966c619c94089f3931879c594cdb151202e479d6a15f0bcddfa070f790230",
+          "trigger": {
+            "source": "600 source-hashed Native body/road-arc gap samples",
+            "metric": "surface_gap_compression_m",
+            "failure_condition": "surface_gap_compression_m > 15.0"
+          },
+          "changed_knobs": [
+            "ego_brake_stop_s"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "draft-candidates/conditions_lead_brake/fallback3/construction.json",
+          "construction_sha256": "e4ba591cd4fd607d92ff8d308fae1eea153c8cbe19e68a416af3118f9658c530",
+          "trigger": {
+            "source": "600 source-hashed Native lead and stopped-obstacle body footprints",
+            "metric": "minimum_lead_obstacle_clearance_m",
+            "failure_condition": "minimum_lead_obstacle_clearance_m < 20.0"
+          },
+          "changed_knobs": [
+            "obstacle_x_m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "draft-candidates/conditions_lead_brake/primary/construction.json",
+      "construction_sha256": "073caeb6c409ef0c5e55cffda233cd26041d39b6e3942c9991fd064103468d32"
+    }
+  ]
+}

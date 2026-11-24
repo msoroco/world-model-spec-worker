@@ -66,27 +66,37 @@
     {
       "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-300-1",
-      "kind": "planned_only",
-      "target_type": "below",
+      "kind": "selected_delivery_preparation",
+      "target_type": "judgment_sweep",
       "physical_target": "obey the exact applicable official device instruction",
-      "comparison_variable": "obedience_to_official_device",
+      "comparison_variable": "commanded_stop_request",
       "source_branch": "Device-governed alley travel.",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "selected_candidate_ids": [
+        "primary",
+        "fallback1",
+        "fallback2"
       ]
     },
     {
       "case_id": "training__C10389__NRS-484B-300-1__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-300-1",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "selected_delivery_preparation",
+      "target_type": "judgment_sweep",
       "physical_target": "disobey the same applicable official device instruction",
-      "comparison_variable": "obedience_to_official_device",
+      "comparison_variable": "commanded_stop_request",
       "source_branch": "Device-governed alley travel.",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "selected_candidate_ids": [
+        "primary",
+        "fallback1",
+        "fallback2"
       ]
     }
   ],
@@ -98,11 +108,12 @@
         "training__C10389__NRS-484B-300-1__motor_vehicle_driver__probe_2"
       ],
       "deliberate_differences": [
-        "obedience_to_official_device"
+        "commanded_stop_request"
       ],
       "fixed_conditions": [
-        "frozen cell, actor and physical road context",
-        "other participants, controller policy and camera policy except law-relevant target"
+        "frozen alley cell and motor_vehicle_driver actor",
+        "same authored OpenDRIVE stop-device station and source law",
+        "primary candidate camera and route policy held fixed"
       ]
     }
   ],
@@ -242,5 +253,133 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "Eight unselected source-bound stop-device Native requests, copied request and saved CPU compatibility, four policies per controlled witness, measured stop/body geometry and independent audits are produced. Original generated-device and synchronized video evidence, official placement, police direction, NRS 484B.307 exception review, legal outcome and accepted equivalence remain unverified."
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "alley, vehicle and device",
+        "interval": "startup through approach, device station and clearance"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and device face",
+        "interval": "startup through approach, device station and clearance"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "stop station and lane relation",
+        "interval": "startup through approach, device station and clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view and signal face",
+        "interval": "startup through approach, device station and clearance"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Original Native map landmark inventory and all four source views; classify signal identity or record unknown",
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original Native map landmark inventory and four source views; classify sign type or record unknown",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.stop_sign": {
+      "evidence": "Original Native stop landmark ID 3891/type 206 and source video face review",
+      "channels": [
+        "dev.stop_sign"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.yield_sign": {
+      "evidence": "Original Native map landmark inventory and four source views; classify yield identity or record unknown",
+      "channels": [
+        "dev.yield_sign"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.speed_limit_sign": {
+      "evidence": "Original Native map landmark inventory and four source views; classify speed sign identity or record unknown",
+      "channels": [
+        "dev.speed_limit_sign"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.lane_control_signal": {
+      "evidence": "Original Native map landmark inventory and four source views; classify lane signal identity or record unknown",
+      "channels": [
+        "dev.lane_control_signal"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Original Native lane and landmark road/s/side readback joined to ego lane and approach; legal applicability remains review",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.position": {
+      "evidence": "Original Native landmark station and authored geometry joined to ego body and four source camera frames",
+      "channels": [
+        "dev.position"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original Native actor velocity vector sampled every synchronized frame",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original Native full actor body vertices joined to surveyed lane and device station",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    },
+    "dev.human_direction": {
+      "evidence": "Original Native actor inventory and synchronized four views; any police direction requires independent human review",
+      "channels": [
+        "dev.human_direction"
+      ],
+      "source_refs": [
+        "original Native map/actor readback and four synchronized camera views"
+      ]
+    }
+  }
 }

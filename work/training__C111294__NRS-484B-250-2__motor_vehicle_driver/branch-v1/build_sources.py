@@ -10,6 +10,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 BASE = HERE.parent
+REPO = BASE.parents[1]
 SOURCE = BASE / 'selected-v3/controlled_2/primary/sources'
 CASES = ('device_controlled', 'opposing_no_turn', 'opposing_left_turn')
 
@@ -127,6 +128,26 @@ def build(suffix):
         'format':'c111294-2502-branch-source-inventory-v1',
         'case_id':baseline['case_id'], 'sources':inventory,
         'rows':600,'original_native_observed':False,'legal_verdict':None})
+    original_spec = BASE/'selected-v3/controlled_2/primary/fixture-spec.json'
+    spec = json.loads(original_spec.read_text())
+    for frame,graph in enumerate(spec['graphs']):
+        other=baseline['rows'][frame]['other']
+        node=next(node for node in graph['nodes'] if node['id']=='other')
+        node['attributes']['vertex']=other['center_xyz_m']
+        node['attributes']['threedbbox']=other['body_xyz_m']
+        yaw=other.get('yaw_rad', math.pi/2)
+        node['attributes']['forward']=[round(math.cos(yaw),6),round(math.sin(yaw),6),0.0]
+        graph['attributes']['branch_context']=suffix
+    spec_path=HERE/suffix/'fixture-spec.json'
+    put(spec_path,spec)
+    if spec_path.stat().st_size>2*1024*1024:
+        raise ValueError('Branch fixture generator exceeds returned-file limit')
+    recipe={'format':'worker-fixture-recipe',
+            'sources':[{'path':name,'source':str((out/name).relative_to(REPO)),
+                        'sha256':digest} for name,digest in inventory.items()],
+            'generator':{'source':str(spec_path.relative_to(REPO)),
+                         'sha256':sha(spec_path)}}
+    put(HERE/suffix/'fixture-recipe.json',recipe)
     return {'case_id':baseline['case_id'],'source_inventory_sha256':sha(HERE/suffix/'source-inventory.json')}
 
 
