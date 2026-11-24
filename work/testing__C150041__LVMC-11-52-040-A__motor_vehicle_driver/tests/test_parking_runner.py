@@ -11,11 +11,29 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from parking_runner import check_native_map, locate_repo_root, main, run_native
+from parking_runner import check_materialized_package, check_native_map, locate_repo_root, main, run_native
+from parking_scene import build
 from test_source_review import fixture
 
 
 class RunnerTests(unittest.TestCase):
+    def test_materialized_config_packet_must_match_selected_scene(self):
+        with TemporaryDirectory(dir=ROOT.parents[1] / ".runtime-work") as tmp:
+            packet, _ = fixture(tmp)
+            scene = build(packet, tmp, "park_parallel_lawful")
+            output = Path(tmp)
+            (output / "construction.json").write_text(json.dumps({"case_id": scene["case_id"]}))
+            (output / "scene.json").write_text(json.dumps(scene))
+            (output / "runner.py").write_text("# CPU package fixture\n")
+            config = {"selected_case_id": scene["case_id"], "reviewed_source_packet":
+                {"path": "reviewed-context.json", "sha256": scene["source_packet_sha256"]}}
+            (output / "config.json").write_text(json.dumps(config))
+            check_materialized_package(output, scene)
+            config["reviewed_source_packet"]["sha256"] = "0" * 64
+            (output / "config.json").write_text(json.dumps(config))
+            with self.assertRaisesRegex(ValueError, "config source packet differs"):
+                check_materialized_package(output, scene)
+
     def test_materialized_runner_finds_frozen_runtime_from_nested_attempt(self):
         repo = ROOT.parents[1]
         with TemporaryDirectory(dir=repo / ".runtime-work") as tmp:

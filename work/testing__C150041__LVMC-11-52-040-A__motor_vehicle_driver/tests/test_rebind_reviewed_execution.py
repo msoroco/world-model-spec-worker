@@ -37,7 +37,7 @@ class ReboundExecutionTests(unittest.TestCase):
                 config = json.loads(files['config.json'])
                 self.assertEqual(scene['source_packet_sha256'],
                                  manifest['packet_sha256'][activity])
-                self.assertEqual(config['source_packets'][0]['sha256'],
+                self.assertEqual(config['reviewed_source_packet']['sha256'],
                                  scene['source_packet_sha256'])
                 self.assertEqual(config['selected_case_id'], case['case_id'])
                 self.assertIn('reviewed_sources/native-map.xodr', files)

@@ -67,6 +67,11 @@ def check_materialized_package(output, scene):
             json.loads((output / "scene.json").read_text()) !=
             json.loads(json.dumps(scene))):
         raise ValueError("Native source-bound scene differs from selected package")
+    packet = config.get("reviewed_source_packet")
+    if packet and (not isinstance(packet, dict) or
+            packet.get("path") != "reviewed-context.json" or
+            packet.get("sha256") != scene["source_packet_sha256"]):
+        raise ValueError("Native config source packet differs from selected scene")
 
 
 def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1", port=2000,
@@ -89,6 +94,8 @@ def run_native(packet_path, source_root, suffix, output_dir, *, host="127.0.0.1"
     scene = build(packet_path, source_root, suffix,
                   approach_distance_m=approach_distance_m)
     check_materialized_package(output, scene)
+    if not json.loads((output / "config.json").read_text()).get("reviewed_source_packet"):
+        raise ValueError("Native attempt requires a selected reviewed source packet")
     client = carla.Client(host, port)
     client.set_timeout(30)
     saved_world = snapshot(client)

@@ -83,11 +83,11 @@ def rebind(park_packet, stand_packet, output_dir):
                     raise ValueError('template config case differs')
                 files['scene.json']['content'] = json.dumps(scene, indent=2) + '\n'
                 files['parking_runner.py']['content'] = (ROOT / 'parking_runner.py').read_text()
-                config['source_packets'] = [{
+                config['reviewed_source_packet'] = {
                     'path': 'reviewed-context.json',
                     'sha256': binding['packet_sha256'][activity],
                     'source_kind': 'retained_reviewed_native_site_packet',
-                }]
+                }
                 files['config.json']['content'] = json.dumps(config, indent=2) + '\n'
                 files['runner.py']['content'] = (
                     '"""Reviewed-source Native parking entrypoint."""\n'

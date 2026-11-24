@@ -58,7 +58,23 @@ def main():
                 raise ValueError("selected construction changed")
             source = json.loads(construction.read_text())
             names = {item["path"] for item in source["files"]}
-            if "reviewed-context.json" in names or any(
+            if source.get("source_kind") == "retained_reviewed_native_site_packet":
+                if "reviewed-context.json" in names or any(
+                        name.startswith("reviewed_sources/") for name in names):
+                    raise ValueError("reviewed sources must be supplied by source-hashed fixture")
+                config = json.loads(next(item["content"] for item in source["files"]
+                                         if item["path"] == "config.json"))
+                packet_hash = config["reviewed_source_packet"]["sha256"]
+                scene = json.loads(next(item["content"] for item in source["files"]
+                                        if item["path"] == "scene.json"))
+                recipe = json.loads((REPO / entry["fixture_recipe"]).read_text())
+                packet_source = next((row for row in recipe["sources"]
+                                      if row["path"] == "reviewed-context.json"), None)
+                if (scene.get("source_packet_sha256") != packet_hash or
+                        packet_source is None or packet_source["sha256"] != packet_hash or
+                        sha(REPO / packet_source["source"]) != packet_hash):
+                    raise ValueError("reviewed delivery fixture packet differs from scene")
+            elif "reviewed-context.json" in names or any(
                     name.startswith("reviewed_sources/") for name in names):
                 raise ValueError("delivery construction embeds diagnostic reviewed sources")
             proof = output / kind / candidate_id

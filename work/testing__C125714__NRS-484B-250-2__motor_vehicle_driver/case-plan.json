@@ -241,14 +241,21 @@
         "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__official_device_controlled"
       ],
       "fixed_conditions": [
-        "same crossing",
-        "same two highways",
+        "same authored crossing geometry after removing signal inventory",
+        "same approach relation and original two-body motion",
         "same entry timing and capture channels"
       ],
       "deliberate_differences": [
         "reviewed official device governance"
       ],
-      "status": "planned_unexecuted_source_measurement_cpu_tested"
+      "status": "source_bound_diagnostic_cpu_comparison_passed_physical_review_pending",
+      "audit": {
+        "script": "exception_comparison_audit.py",
+        "script_sha256": "e157e84ef2a93cfe4ce3aa4585c254dcec7db3315de025c47971300110cf520f",
+        "receipt": "device-comparison-cpu-receipt.json",
+        "receipt_sha256": "046be765d56b1738280c73dae49cb7e0da86178917b9aa97e6e3c6bfd5e2e00d",
+        "physical_acceptance_claimed": false
+      }
     },
     {
       "comparison_id": "opposite_turn_realization",
@@ -264,14 +271,32 @@
       "deliberate_differences": [
         "other driver makes left turn versus intends only"
       ],
-      "status": "planned_unexecuted_source_measurement_cpu_tested"
+      "status": "source_bound_diagnostic_cpu_comparison_passed_physical_review_pending",
+      "audit": {
+        "script": "exception_comparison_audit.py",
+        "script_sha256": "e157e84ef2a93cfe4ce3aa4585c254dcec7db3315de025c47971300110cf520f",
+        "receipt": "turn-comparison-cpu-receipt.json",
+        "receipt_sha256": "bc7c6f1df201c12b863161ea9ce0a52b2d8aa40f9c13cc5f4726ba0f8e5d8882",
+        "physical_acceptance_claimed": false
+      }
     }
   ],
   "observations": [
-    "Source-hashed original OpenDRIVE and reviewed crossing/highway/device context.",
-    "Both vehicle identities, world-space footprint polygons and synchronized 20 Hz frame/time histories.",
-    "First footprint/intersection transition brackets and ego-minus-other entry time; do not infer a legal approximately-same-time threshold.",
-    "Actual yielding behavior and four-camera pixels require independent original review."
+    {
+      "name": "ego_original_footprint",
+      "mandatory": true,
+      "method": "Source-sealed original world-space body each 20 Hz tick"
+    },
+    {
+      "name": "other_original_footprint",
+      "mandatory": true,
+      "method": "Source-sealed second vehicle body at the same original ticks"
+    },
+    {
+      "name": "intersection_entry_time_difference_s",
+      "mandatory": true,
+      "method": "First original footprint crossing transition brackets; no legal timing cutoff"
+    }
   ],
   "sources": [
     {

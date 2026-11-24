@@ -39,7 +39,11 @@ def rows(path):
             if line.strip()]
 
 
-def observed_left_turn(other):
+def observed_left_turn(other, crossing_polygon):
+    if not isinstance(crossing_polygon,list) or len(crossing_polygon) < 3:
+        raise ValueError('reviewed intersection polygon missing for turn observation')
+    center = (sum(p[0] for p in crossing_polygon)/len(crossing_polygon),
+              sum(p[1] for p in crossing_polygon)/len(crossing_polygon))
     centers = []
     for row in other:
         vertices = row.get('body_vertices_xy_m', [])
@@ -48,7 +52,7 @@ def observed_left_turn(other):
         centers.append((sum(p[0] for p in vertices)/len(vertices),
                         sum(p[1] for p in vertices)/len(vertices)))
     start, end = centers[0], centers[-1]
-    pivot = min(centers, key=lambda p: math.hypot(p[0],p[1]))
+    pivot = min(centers, key=lambda p: math.hypot(p[0]-center[0],p[1]-center[1]))
     before = (pivot[0]-start[0],pivot[1]-start[1])
     after = (end[0]-pivot[0],end[1]-pivot[1])
     if min(math.hypot(*before),math.hypot(*after)) < 4:
@@ -158,7 +162,8 @@ def audit_sources(attempt, case_id):
                     (suffix == 'opposite_makes_left')):
             raise ValueError('opposite left-turn facts differ from exact delivery case')
         if suffix == 'opposite_makes_left' and not observed_left_turn(
-                rows(attempt/'other-body-history.jsonl')):
+                rows(attempt/'other-body-history.jsonl'),
+                site.get('intersection_polygon_xy_m')):
             raise ValueError('original other vehicle did not make left turn')
     elif (facts['different_highways_left_right'] is not True or
             facts['official_device_controlled'] is not False or
