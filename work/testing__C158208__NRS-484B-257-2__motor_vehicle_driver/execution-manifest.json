@@ -74,6 +74,116 @@
         "test_log": "selected-post-capture.log",
         "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
         "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/yield_other_inside/receipt.json",
+        "sha256": "8b25dc476d46f2640958db16262d4ae089b51e9dc1aa09cd11f9370a0a97ff8d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "8ad0ab364f18ee40a959ac61e9fdec5cab58a78826e6ea30fd258a5a779a8fa7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside --mode positive",
+        "test_exit_code": 0,
+        "test_log": "cases/yield_other_inside/delivery-positive.log",
+        "test_log_sha256": "997d89b9625972730057d03133929b0477d9c95556d7675433c2c98b338784cb",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_inside --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original analysis source changed: video_frames.jsonl",
+        "negative_log": "cases/yield_other_inside/delivery-negative.log",
+        "negative_log_sha256": "62566a89cd35e1f22cf8c10d0f475a2b0bdadb7a9e8f53c83af862055d91f06c"
+      },
+      "negative": {
+        "log": "cases/yield_other_inside/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records selected ego subject identity",
+          "evidence": "Native ego actor and selected case binding"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "yield_construction.py",
+          "method": "Stage ego and other motor vehicles from Native vehicle blueprints",
+          "evidence": "Native vehicle actor type and blueprint readback"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original position per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original velocity per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.speed": {
+          "entrypoint": "yield_capture.py",
+          "method": "EntrySourceWriter records ego speed from Native velocity",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records lane identity from Native map samples",
+          "evidence": "trace.jsonl and graph"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "yield_site.py",
+          "method": "Load authored signed intersection and verify Native yield actor",
+          "evidence": "intersection_context.json and Native sign actor id"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures required visibility proxy rays and original cameras",
+          "evidence": "capture source packets and synchronized four-camera frame map"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "yield_capture.py",
+          "method": "Native ego velocity magnitude per joined tick",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "ego_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source ego body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source other body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_distance_to_intersection_center_m": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute distance from source other body center",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_center_closing_mps": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute closing rate from joined source positions and times",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "other_center_closing_valid": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Report validity of joined closing-rate samples",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "ego_before_yield_reference": {
+          "entrypoint": "yield_capture.py",
+          "method": "Compare original ego body vertices with reviewed reference boundary",
+          "evidence": "entry_history.jsonl and site_review.json"
+        }
       }
     },
     {
@@ -147,6 +257,116 @@
         "test_log": "selected-post-capture.log",
         "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
         "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/yield_other_approaching/receipt.json",
+        "sha256": "bbaf5b8c3decdb678543604b72499acf2d8a87a4177c1f954217a432cc0e4dd4"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "8ad0ab364f18ee40a959ac61e9fdec5cab58a78826e6ea30fd258a5a779a8fa7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching --mode positive",
+        "test_exit_code": 0,
+        "test_log": "cases/yield_other_approaching/delivery-positive.log",
+        "test_log_sha256": "a8e0091905e901d21e0db53e5cd438886d9e23e16e1a1d8f50b08499bdc306b7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_approaching --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original analysis source changed: video_frames.jsonl",
+        "negative_log": "cases/yield_other_approaching/delivery-negative.log",
+        "negative_log_sha256": "62566a89cd35e1f22cf8c10d0f475a2b0bdadb7a9e8f53c83af862055d91f06c"
+      },
+      "negative": {
+        "log": "cases/yield_other_approaching/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records selected ego subject identity",
+          "evidence": "Native ego actor and selected case binding"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "yield_construction.py",
+          "method": "Stage ego and other motor vehicles from Native vehicle blueprints",
+          "evidence": "Native vehicle actor type and blueprint readback"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original position per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original velocity per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.speed": {
+          "entrypoint": "yield_capture.py",
+          "method": "EntrySourceWriter records ego speed from Native velocity",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records lane identity from Native map samples",
+          "evidence": "trace.jsonl and graph"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "yield_site.py",
+          "method": "Load authored signed intersection and verify Native yield actor",
+          "evidence": "intersection_context.json and Native sign actor id"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures required visibility proxy rays and original cameras",
+          "evidence": "capture source packets and synchronized four-camera frame map"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "yield_capture.py",
+          "method": "Native ego velocity magnitude per joined tick",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "ego_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source ego body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source other body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_distance_to_intersection_center_m": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute distance from source other body center",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_center_closing_mps": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute closing rate from joined source positions and times",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "other_center_closing_valid": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Report validity of joined closing-rate samples",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "ego_before_yield_reference": {
+          "entrypoint": "yield_capture.py",
+          "method": "Compare original ego body vertices with reviewed reference boundary",
+          "evidence": "entry_history.jsonl and site_review.json"
+        }
       }
     },
     {
@@ -220,6 +440,116 @@
         "test_log": "selected-post-capture.log",
         "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
         "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/yield_other_obligated/receipt.json",
+        "sha256": "35d9166a9c3fdce00917909edd8d24e4cc57248252c87f22a3e1895a5084f700"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "8ad0ab364f18ee40a959ac61e9fdec5cab58a78826e6ea30fd258a5a779a8fa7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated --mode positive",
+        "test_exit_code": 0,
+        "test_log": "cases/yield_other_obligated/delivery-positive.log",
+        "test_log_sha256": "657bc36cccfa0f58cc136d692f967878f2dc4a2f0bcb2dea6fba6e9bdbec7e7f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_other_obligated --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original analysis source changed: video_frames.jsonl",
+        "negative_log": "cases/yield_other_obligated/delivery-negative.log",
+        "negative_log_sha256": "62566a89cd35e1f22cf8c10d0f475a2b0bdadb7a9e8f53c83af862055d91f06c"
+      },
+      "negative": {
+        "log": "cases/yield_other_obligated/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records selected ego subject identity",
+          "evidence": "Native ego actor and selected case binding"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "yield_construction.py",
+          "method": "Stage ego and other motor vehicles from Native vehicle blueprints",
+          "evidence": "Native vehicle actor type and blueprint readback"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original position per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original velocity per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.speed": {
+          "entrypoint": "yield_capture.py",
+          "method": "EntrySourceWriter records ego speed from Native velocity",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records lane identity from Native map samples",
+          "evidence": "trace.jsonl and graph"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "yield_site.py",
+          "method": "Load authored signed intersection and verify Native yield actor",
+          "evidence": "intersection_context.json and Native sign actor id"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures required visibility proxy rays and original cameras",
+          "evidence": "capture source packets and synchronized four-camera frame map"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "yield_capture.py",
+          "method": "Native ego velocity magnitude per joined tick",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "ego_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source ego body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source other body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_distance_to_intersection_center_m": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute distance from source other body center",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_center_closing_mps": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute closing rate from joined source positions and times",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "other_center_closing_valid": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Report validity of joined closing-rate samples",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "ego_before_yield_reference": {
+          "entrypoint": "yield_capture.py",
+          "method": "Compare original ego body vertices with reviewed reference boundary",
+          "evidence": "entry_history.jsonl and site_review.json"
+        }
       }
     },
     {
@@ -293,6 +623,116 @@
         "test_log": "selected-post-capture.log",
         "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
         "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/yield_no_slow/receipt.json",
+        "sha256": "acb2d0b2d099442c3a49eed3deaacaadc63a61b74487a6b17e3852ac92e87bb8"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "8ad0ab364f18ee40a959ac61e9fdec5cab58a78826e6ea30fd258a5a779a8fa7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow --mode positive",
+        "test_exit_code": 0,
+        "test_log": "cases/yield_no_slow/delivery-positive.log",
+        "test_log_sha256": "0b11a6266dea5712d8eff355c6f3e1e5c2528ebe48fe562ea8a0ee982744c104",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__yield_no_slow --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original analysis source changed: video_frames.jsonl",
+        "negative_log": "cases/yield_no_slow/delivery-negative.log",
+        "negative_log_sha256": "62566a89cd35e1f22cf8c10d0f475a2b0bdadb7a9e8f53c83af862055d91f06c"
+      },
+      "negative": {
+        "log": "cases/yield_no_slow/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records selected ego subject identity",
+          "evidence": "Native ego actor and selected case binding"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "yield_construction.py",
+          "method": "Stage ego and other motor vehicles from Native vehicle blueprints",
+          "evidence": "Native vehicle actor type and blueprint readback"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original position per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original velocity per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.speed": {
+          "entrypoint": "yield_capture.py",
+          "method": "EntrySourceWriter records ego speed from Native velocity",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records lane identity from Native map samples",
+          "evidence": "trace.jsonl and graph"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "yield_site.py",
+          "method": "Load authored signed intersection and verify Native yield actor",
+          "evidence": "intersection_context.json and Native sign actor id"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures required visibility proxy rays and original cameras",
+          "evidence": "capture source packets and synchronized four-camera frame map"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "yield_capture.py",
+          "method": "Native ego velocity magnitude per joined tick",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "ego_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source ego body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source other body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_distance_to_intersection_center_m": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute distance from source other body center",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_center_closing_mps": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute closing rate from joined source positions and times",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "other_center_closing_valid": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Report validity of joined closing-rate samples",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "ego_before_yield_reference": {
+          "entrypoint": "yield_capture.py",
+          "method": "Compare original ego body vertices with reviewed reference boundary",
+          "evidence": "entry_history.jsonl and site_review.json"
+        }
       }
     },
     {
@@ -366,6 +806,116 @@
         "test_log": "selected-post-capture.log",
         "test_log_sha256": "d12e0388cc31db0fec1829864b09033ea135dbcd9a4b702f13b7f6f3b0326de4",
         "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-proofs/officer_control_exception/receipt.json",
+        "sha256": "266dfe59e1f3c410e5636862883bc0fa32cbcdb9b84f34e7c5a1b313db241fd6"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "8ad0ab364f18ee40a959ac61e9fdec5cab58a78826e6ea30fd258a5a779a8fa7",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception --mode positive",
+        "test_exit_code": 0,
+        "test_log": "cases/officer_control_exception/delivery-positive.log",
+        "test_log_sha256": "045ef73ff74d036b58d805d3747dd529cdd8584bf6ffd8b1de767b1e3dd5ecf1",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__officer_control_exception --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original analysis source changed: video_frames.jsonl",
+        "negative_log": "cases/officer_control_exception/delivery-negative.log",
+        "negative_log_sha256": "62566a89cd35e1f22cf8c10d0f475a2b0bdadb7a9e8f53c83af862055d91f06c"
+      },
+      "negative": {
+        "log": "cases/officer_control_exception/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records selected ego subject identity",
+          "evidence": "Native ego actor and selected case binding"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "yield_construction.py",
+          "method": "Stage ego and other motor vehicles from Native vehicle blueprints",
+          "evidence": "Native vehicle actor type and blueprint readback"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original position per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures original velocity per Native snapshot",
+          "evidence": "trace.jsonl and original frame map"
+        },
+        "kin.speed": {
+          "entrypoint": "yield_capture.py",
+          "method": "EntrySourceWriter records ego speed from Native velocity",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture records lane identity from Native map samples",
+          "evidence": "trace.jsonl and graph"
+        },
+        "dev.yield_sign": {
+          "entrypoint": "yield_site.py",
+          "method": "Load authored signed intersection and verify Native yield actor",
+          "evidence": "intersection_context.json and Native sign actor id"
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture captures required visibility proxy rays and original cameras",
+          "evidence": "capture source packets and synchronized four-camera frame map"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "yield_capture.py",
+          "method": "Native ego velocity magnitude per joined tick",
+          "evidence": "entry_history.jsonl:ego_speed_mps"
+        },
+        "ego_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source ego body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_body_in_intersection": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute polygon overlap from source other body vertices",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_distance_to_intersection_center_m": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute distance from source other body center",
+          "evidence": "entry_history.jsonl and intersection_context.json"
+        },
+        "other_center_closing_mps": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Compute closing rate from joined source positions and times",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "other_center_closing_valid": {
+          "entrypoint": "yield_entry_measurements.py",
+          "method": "Report validity of joined closing-rate samples",
+          "evidence": "entry_history.jsonl and video_frames.jsonl"
+        },
+        "ego_before_yield_reference": {
+          "entrypoint": "yield_capture.py",
+          "method": "Compare original ego body vertices with reviewed reference boundary",
+          "evidence": "entry_history.jsonl and site_review.json"
+        }
       }
     }
   ]

@@ -9,8 +9,10 @@ import math
 from pathlib import Path
 
 
-BLUEPRINT_ID = "walker.pedestrian.0001"
+BLUEPRINT_ID = "walker.pedestrian.0030"
 POSITION_XYZ_M = (6.0, -6.0, 0.25)
+GESTURE_BONE = "crl_shoulder__R"
+GESTURE_PITCH_OFFSET_DEG = -70.0
 
 
 def spawn_candidate(world, *, location_factory, rotation_factory, transform_factory):
@@ -36,7 +38,43 @@ def spawn_candidate(world, *, location_factory, rotation_factory, transform_fact
     return actor
 
 
-def write_candidate_packet(output, actor):
+def apply_direction_pose(actor, *, transform_factory, rotation_factory,
+                         bone_control_factory):
+    """Command a right-arm direction pose and record the native bone readback.
+
+    The command is a construction fact. Whether it is visible as traffic
+    direction at the entry is decided from original camera frames.
+    """
+    before = {row[0]: row[3] for row in actor.get_bones().bone_transforms}
+    if GESTURE_BONE not in before:
+        raise ValueError("Officer direction shoulder bone unavailable")
+    relative = before[GESTURE_BONE]
+    baseline = relative.rotation
+    wanted = rotation_factory(pitch=baseline.pitch + GESTURE_PITCH_OFFSET_DEG,
+                              yaw=baseline.yaw, roll=baseline.roll)
+    actor.get_pose_from_animation()
+    actor.set_bones(bone_control_factory([
+        (GESTURE_BONE, transform_factory(relative.location, wanted))]))
+    actor.show_pose()
+    return {"bone": GESTURE_BONE,
+            "pitch_offset_deg": GESTURE_PITCH_OFFSET_DEG,
+            "commanded_relative_rotation_deg":
+                {"pitch": wanted.pitch, "yaw": wanted.yaw, "roll": wanted.roll}}
+
+
+def read_direction_pose(actor, command):
+    after = {row[0]: row[3] for row in actor.get_bones().bone_transforms}
+    if GESTURE_BONE not in after:
+        raise ValueError("Officer direction bone readback unavailable")
+    rotation = after[GESTURE_BONE].rotation
+    wanted = command["commanded_relative_rotation_deg"]
+    actual = {"pitch": rotation.pitch, "yaw": rotation.yaw, "roll": rotation.roll}
+    if any(abs(actual[axis] - wanted[axis]) > 2.0 for axis in wanted):
+        raise ValueError("Officer direction pose Native readback differs")
+    return actual
+
+
+def write_candidate_packet(output, actor, *, pose_command, pose_readback):
     output = Path(output)
     if type(actor.id) is not int or actor.type_id != BLUEPRINT_ID:
         raise ValueError("Missing source-identified officer candidate")
@@ -44,6 +82,8 @@ def write_candidate_packet(output, actor):
     packet = {"format": "worker-officer-candidate-construction",
               "actor_id": actor.id, "blueprint_id": actor.type_id,
               "position_xyz_m": [actual.x, actual.y, actual.z],
+              "direction_pose_command": pose_command,
+              "direction_pose_readback_deg": pose_readback,
               "police_authority_judgment": "unresolved",
               "traffic_control_observed": "pending original-camera review"}
     path = output / "officer-candidate.json"

@@ -28,19 +28,20 @@ def ensure_validator():
     return VALIDATOR
 
 
-def build(kind, output):
+def build(kind, output, manifest=MANIFEST):
     output = Path(output)
+    manifest = Path(manifest)
     if output.exists():
         raise ValueError("Fresh compatibility output path required")
     ensure_validator()
     case = PREFIX + kind
-    entries = json.loads(MANIFEST.read_text())["cases"]
+    entries = json.loads(manifest.read_text())["cases"]
     if sum(entry["case_id"] == case for entry in entries) != 1:
         raise ValueError("Unknown exact comparison/audit case")
     environment = dict(os.environ, PYTHONDONTWRITEBYTECODE="1",
                        SCENARIO_PIPELINE_OUTPUT_ROOT=str(ROOT / ".runtime-work/c158208-audit-fixtures"))
     command = [str(ROOT / ".venv-cpu/bin/python"), str(ROOT / "runtime.py"), "compatibility",
-               "--manifest", str(MANIFEST), "--case", case, "--output", str(output),
+               "--manifest", str(manifest), "--case", case, "--output", str(output),
                "--library", str(ROOT / "runtime/library"), "--validator", str(VALIDATOR)]
     result = subprocess.run(command, cwd=ROOT, env=environment, text=True,
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
