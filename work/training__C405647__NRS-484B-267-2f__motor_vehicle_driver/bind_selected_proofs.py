@@ -1,4 +1,4 @@
-"""Bind the current two selected cases without claiming full-branch readiness."""
+"""Bind selected case proofs without claiming full-branch readiness."""
 import hashlib
 import json
 from pathlib import Path
@@ -34,6 +34,13 @@ def main():
             raise ValueError('Official selected public or saved-only matrix did not pass')
         public_results.extend(official_public['results'])
         saved_results.extend(official_saved['results'])
+    if any(entry['case_id'].endswith('__stopped_referral') for entry in current['cases']):
+        stopped_public = read(HERE / 'current-public/stopped-matrix.json')
+        stopped_saved = read(HERE / 'current-public/stopped-saved-matrix.json')
+        if not stopped_public['all_passed'] or not stopped_saved['all_passed']:
+            raise ValueError('Stopped selected public or saved-only matrix did not pass')
+        public_results.extend(stopped_public['results'])
+        saved_results.extend(stopped_saved['results'])
     pr = {(r['case'], r['candidate']): r for r in public_results}
     sr = {(r['case_id'], r['candidate_id']): r for r in saved_results}
     for entry in current['cases']:
@@ -67,7 +74,8 @@ def main():
             processed = HERE / save['receipt']
             if any(not q.is_file() for q in (offline, receipt, negative, analysis, processed)):
                 raise ValueError('Candidate proof file missing: ' + base)
-            offline_attempt = ('offline-v4-' if suffix == 'official_approach' else 'offline-v3-') + base
+            offline_version = {'official_approach': 'offline-v4-', 'stopped_referral': 'offline-v2-'}.get(suffix, 'offline-v3-')
+            offline_attempt = offline_version + base
             dest['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + AID + '/current-execution-manifest.json --case ' + case_id + ' --candidate ' + cid + ' --output .runtime-work/c405647-267-2f/' + offline_attempt + ' --python "$PWD/.venv-cpu/bin/python"',
                                'exit_code': 0, 'construction_sha256': dest['construction_sha256'],
                                'log': relative(offline), 'log_sha256': sha(offline)}

@@ -8,9 +8,9 @@ HERE = Path(__file__).resolve().parent
 def main():
     manifest = json.loads((HERE / 'current-execution-manifest.json').read_text())
     plan = json.loads((HERE / 'case-plan.json').read_text())
-    recording = json.loads((HERE / manifest['cases'][0]['construction']).read_text())['recording_description']
     cases = []
     for entry in manifest['cases']:
+        recording = json.loads((HERE / entry['construction']).read_text())['recording_description']
         suffix = entry['case_id'].removeprefix(HERE.name + '__')
         requested = ('continue_at_3_mps' if suffix == 'controlled_2' else
                      'right_edge_hold_without_607_verdict' if suffix == 'stopped_referral' else

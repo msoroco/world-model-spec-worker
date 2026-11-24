@@ -16,7 +16,21 @@
         "status": "physical",
         "reason": "The requested Native route, curbside walker separation, and four actual camera views require local physical confirmation."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_a/fallback1/construction.json",
+          "construction_sha256": "66c51691076a5799cc0f81fa652ff32b1fce7959fbc00712fd9c7fdfa96eb241",
+          "trigger": {
+            "source": "native-body-geometry.jsonl",
+            "metric": "minimum planar pedestrian body gap during curbside travel",
+            "failure_condition": "Primary Native body gap falls below the one-metre engineering camera/recovery margin, or the walker leaves the four-view field of view."
+          },
+          "changed_knobs": [
+            "Lower approach, curbside and departure throttle requests to reduce Native pedestrian proximity if primary exceeds the engineering proximity trigger."
+          ]
+        }
+      ],
       "measurement_contract": "selected-probe_a-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -135,6 +149,19 @@
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/draft-native-manifest.json --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_a --output .runtime-work/c230222-probe_a-offline-physical --python $PWD/.venv-cpu/bin/python",
         "log": "draft-native-probe_a-offline.log",
         "log_sha256": "a06af1e04818c28830fbd82ca84d40ad516178e28ac5d20b44333e640cd4253d"
+      },
+      "compatibility": {
+        "receipt": "selected-probe_a-compatibility.json",
+        "sha256": "b3ab7d7d75ced9b5b8710d330e9b0df27effbec14a5d1d0becd182e325e753a4",
+        "log": "selected-probe_a-compatibility-analysis.log",
+        "negative_log": "selected-probe_a-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-probe_a-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation/probe_a/physical-preparation.json",
+        "sha256": "229dc9c9eaa68efbbaa4000169d721d496f9a30c2d94b29ea1ccaf8738d3cd01"
       }
     },
     {
@@ -147,7 +174,21 @@
         "status": "physical",
         "reason": "The requested Native route, curbside walker separation, and four actual camera views require local physical confirmation."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_b/fallback1/construction.json",
+          "construction_sha256": "1de692d1ef4910147a962eba4b9d6a8b50afdcd869789a4f2cee5c3d7fa73273",
+          "trigger": {
+            "source": "native-ego-frames.jsonl",
+            "metric": "original Native curbside yaw-rate excursion",
+            "failure_condition": "Primary measured yaw-rate excursion is indistinguishable from probe_a in source-joined samples, or the route leaves the observed curbside lane."
+          },
+          "changed_knobs": [
+            "Increase requested curbside steering amplitude and reduce throttle so original yaw and separation can be observed if the primary path remains nearly straight."
+          ]
+        }
+      ],
       "measurement_contract": "selected-probe_b-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -266,6 +307,19 @@
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230222__LVMC-11-22-020__motor_vehicle_driver/draft-native-manifest.json --case training__C230222__LVMC-11-22-020__motor_vehicle_driver__probe_b --output .runtime-work/c230222-probe_b-offline-physical --python $PWD/.venv-cpu/bin/python",
         "log": "draft-native-probe_b-offline.log",
         "log_sha256": "e56ac382dba07e9281a681c951a0cbc81d08ec2e8f757b3ee652210fc03a7694"
+      },
+      "compatibility": {
+        "receipt": "selected-probe_b-compatibility.json",
+        "sha256": "469e33f892d735ccbc5a3a3fd39f8bc35107a401dafb782cb14ffe82e262caf9",
+        "log": "selected-probe_b-compatibility-analysis.log",
+        "negative_log": "selected-probe_b-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-probe_b-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation/probe_b/physical-preparation.json",
+        "sha256": "1d162373a3590434ea6a4a48e10845129d310bc1d02ed5a916b3f820b820cdce"
       }
     }
   ]
