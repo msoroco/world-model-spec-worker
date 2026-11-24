@@ -1,3 +1,5 @@
+Read AGENT_PROMPT.md first. Its completion and scheduling policy supersedes conflicting continuation guidance below.
+
 # Starting prompt
 
 From the repository root, start or resume the agent with `scripts/run-worker.sh`.
