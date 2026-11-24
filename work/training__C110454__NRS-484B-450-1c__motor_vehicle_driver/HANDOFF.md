@@ -1,3 +1,15 @@
+# Current 600-frame CPU checkpoint — 2026-11-23
+
+The package remains **partial and unselected**. The earlier 24-second/480-frame bundles and portable receipts below are historical diagnostics. `build-600-drafts.py` preserves them while creating eight separate 30-second/600-frame exact Native construction bundles at `duration-600-drafts/`, with manifest `draft-execution-manifest-600.json` (SHA-256 `83632e5a83db9d0c13835dc6d9cf60eb358a26f1a07968314a53851483057dc8`). Both probes keep the same cell, actor, route topology, four cameras, 20 Hz and engineering controls, with only the parking footprint target differing. Each has primary and three distinct fallback knobs. These bundles are proposals and have not run in CARLA.
+
+`run-600-offline.py` ran all eight exact bundles through `runtime.py offline`; all five bundled Native tests passed per candidate. `draft-offline-600-proof.json` SHA-256 is `956759b026ff70b2c0540eebcaf1742393483a50b16697df92086af4fca51215`. `prove-600-saved.py` generated two 600-row retained synthetic Native sample traces under `.runtime-work/`, then ran each bundle's source-only saved finalizer. All eight positives report 360 parked frames and the controlled 0 versus 11.44 m² intersection overlap; all eight missing-Native-source negatives rejected. `draft-saved-600-proof.json` SHA-256 is `f09901f31d432b167da657040453ff6724cce7a3ee756048fc68debebe59691e`.
+
+`audit-600-drafts.py` independently read each retained trace and exact bundle, checked source and construction hashes, full 600-frame/20 Hz joins, exception controls, 360 stopped frames, body overlap, fixed comparison conditions and one-knob fallbacks. `draft-600-audit.json` SHA-256 is `b7b336f9f4dcbbf02cf7e5b3aca3c9f174abc7316c5f27a03b1d8a6ec738a842`. These are synthetic software proofs only; no original Native trajectory, camera pixels, physical outcome or legal judgment is established.
+
+Current frozen assignment input SHA-256 is `2a99383bee777b4422bfc50a5789e8156c827b5522b842e6f58b84cf641429e0`. Next CPU work: convert these 600-frame proposals to exact selected current-runtime JSON-graph fixture recipes, prove actual `process-saved` with four source cameras and Core/Lean, add the three statutory exception comparisons, bind semantic proposals and independent delivery/comparison audits, then integrate ordered queue entries. Do not reuse the historical 480-frame portable receipts as proof of the new constructions.
+
+---
+
 # C110454 / NRS 484B.450(1)(c) parking in an intersection
 
 Frozen cell: `intersection` / `park` / `intersection_boundary`; actor: `motor_vehicle_driver`. The source is `inputs/training__C110454__NRS-484B-450-1c__motor_vehicle_driver/assignment.json` (SHA-256 `d70eef5a2ce71f394acbf9ad7133ea933d5702fd4e27331ab9bf251e15a315b0`). The controlling text prohibits stopping, standing or parking within an intersection except to avoid conflict with other traffic or comply with law, police directions, or an official traffic-control device. See `statutory-review.json`.

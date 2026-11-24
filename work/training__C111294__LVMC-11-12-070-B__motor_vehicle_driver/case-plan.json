@@ -102,47 +102,47 @@
     {
       "term": "drv.priority_roadway",
       "purpose": "the through highway",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "drv.approaching",
       "purpose": "the other drivers approaching the intersection on it",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "drv.yields_to",
       "purpose": "the yield they owe",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "drv.entering_intersection",
       "purpose": "the yielding driver now entering or crossing",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "st.intersection",
       "purpose": "the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "st.lane_enters",
       "purpose": "the lanes of the through highway on which the other drivers approach enter the intersection",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "drv.arrival_order",
       "purpose": "the order through the conflict point",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "drv.stopped",
       "purpose": "the stop the entering driver has already made",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     },
     {
       "term": "drv.hard_deceleration",
       "purpose": "evidence the yield was not given",
-      "status": "measurement_mapping_pending"
+      "status": "source_mapping_drafted_unverified_original"
     }
   ],
   "candidate_plans": [],
@@ -214,5 +214,128 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.priority_roadway": {
+      "evidence": "Authored road geometry distinguishes through and entrant routes; public through-highway designation still needs physical source review.",
+      "channels": [
+        "road.xodr",
+        "through.road_id"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Observed through-body position and velocity over synchronized frames locate approach.",
+      "channels": [
+        "through.y_m",
+        "through.speed_mps",
+        "time_s"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Source-derived hold and conflict-entry order measure response, without a legal verdict.",
+      "channels": [
+        "through.y_m",
+        "through.speed_mps",
+        "entrant.x_m"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "drv.entering_intersection": {
+      "evidence": "Source-derived entrant entry window locates the crossing history.",
+      "channels": [
+        "entrant.x_m",
+        "entrant.road_id"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Authored junction and Native road IDs locate the intersection; physical map verification remains.",
+      "channels": [
+        "road.xodr",
+        "through.road_id",
+        "entrant.road_id"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "OpenDRIVE lane links and Native lane IDs distinguish approach legs.",
+      "channels": [
+        "road.xodr",
+        "through.lane_id",
+        "entrant.lane_id"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "Joined body locations and original time order distinguish yielding response.",
+      "channels": [
+        "through.y_m",
+        "entrant.x_m",
+        "time_s"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Entrant prior stop is measured before approach to crossing; lawful first yield remains a separate review.",
+      "channels": [
+        "entrant.x_m",
+        "entrant.speed_mps"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Observed speed history can quantify deceleration; diagnostic never treats one threshold as law.",
+      "channels": [
+        "through.speed_mps",
+        "time_s"
+      ],
+      "source_refs": [
+        "inputs/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/assignment.json",
+        "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/native/measure_yield.py"
+      ]
+    }
+  },
+  "diagnostic_checkpoint": {
+    "exact_unselected_cases": [
+      "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1",
+      "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2"
+    ],
+    "source_proof": "yield-sequence-proof.json",
+    "offline_logs": [
+      "draft-probe-1-offline.log",
+      "draft-probe-2-offline.log"
+    ],
+    "status": "paired_synthetic_cpu_diagnostic_only",
+    "limitations": [
+      "Native capture loop and synchronized four-camera saved source absent",
+      "Actual current-runtime compatibility and process-saved not proved",
+      "Through-highway legal designation and prior lawful yield require original source review"
+    ]
+  }
 }

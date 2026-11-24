@@ -1,0 +1,135 @@
+{
+  "format": "worker-unselected-600-draft-construction-manifest-v1",
+  "assignment_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected",
+  "source_manifest": "draft-execution-manifest.json",
+  "source_manifest_sha256": "60f3dc3baf084225d1da473bf24c9af953cfb5e772755e6a1866e158a1a5bcda",
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+      "kind": "draft_not_selected",
+      "measurement_contract": "draft-measurement-contract-probe_a.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "CARLA lane readback, original actor tracking, pixels and due-care necessity unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-approach-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "duration-600-drafts/probe_a/fallback1/construction.json",
+          "construction_sha256": "897b2568269b7b3df13155decefad223e673e2ebc4342a38744f53292a97f677",
+          "trigger": {
+            "source": "hashed saved Native samples",
+            "metric": "approach minus preentry speed, mph",
+            "failure_condition": "decrease_mph < 3.0"
+          },
+          "changed_knobs": [
+            "brake_start_y_m",
+            "brake_finish_y_m",
+            "other_start_x_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "duration-600-drafts/probe_a/fallback2/construction.json",
+          "construction_sha256": "2587da41cb2ceeb2eb30481069e88fe08e275d13d3edaa98c2a4ef8e3a9e6f93",
+          "trigger": {
+            "source": "hashed saved Native samples",
+            "metric": "crossing peak relative to approach speed, mph",
+            "failure_condition": "crossing_peak_mph > approach_start_mph - 2.0"
+          },
+          "changed_knobs": [
+            "brake_start_y_m",
+            "brake_finish_y_m",
+            "target_mph",
+            "other_start_x_m"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "duration-600-drafts/probe_a/fallback3/construction.json",
+          "construction_sha256": "e4f95dc4293838082a4078fb2f341b9c9135fef94fd4c06b2ce647102e8f722e",
+          "trigger": {
+            "source": "hashed saved Native samples",
+            "metric": "preentry speed, mph",
+            "failure_condition": "preentry_mph > 21.0"
+          },
+          "changed_knobs": [
+            "brake_start_y_m",
+            "brake_finish_y_m",
+            "target_mph",
+            "other_start_x_m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "duration-600-drafts/probe_a/primary/construction.json",
+      "construction_sha256": "09a559eef8b7b97cd5486b4973bf5f11e99c492bdcfdadf4a7bb216b856ea4a6"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+      "kind": "draft_not_selected",
+      "measurement_contract": "draft-measurement-contract-probe_b.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "CARLA lane readback, original actor tracking, pixels and due-care necessity unobserved"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-approach-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "duration-600-drafts/probe_b/fallback1/construction.json",
+          "construction_sha256": "d5b02d201bf3f3cbf6d6c85769795a162368fcb1ff386fd7e6b623e9ec4da42f",
+          "trigger": {
+            "source": "hashed saved Native samples",
+            "metric": "approach minus preentry speed, mph",
+            "failure_condition": "decrease_mph >= 1.0"
+          },
+          "changed_knobs": [
+            "other_start_x_m",
+            "other_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "duration-600-drafts/probe_b/fallback2/construction.json",
+          "construction_sha256": "6db3e3347335c9e7b7d797e45b3452df87381e76a917a545901301d30e49c75c",
+          "trigger": {
+            "source": "hashed saved Native samples",
+            "metric": "approach start speed, mph",
+            "failure_condition": "approach_start_mph < 29.0"
+          },
+          "changed_knobs": [
+            "other_start_x_m",
+            "other_speed_mps"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "duration-600-drafts/probe_b/fallback3/construction.json",
+          "construction_sha256": "0f19dc0c8cd2fe0964c0905cb858f450c8036d084453dcef9900097d0ee1c054",
+          "trigger": {
+            "source": "hashed saved Native samples",
+            "metric": "crossing peak speed, mph",
+            "failure_condition": "crossing_peak_mph < 29.0"
+          },
+          "changed_knobs": [
+            "other_start_x_m",
+            "other_speed_mps"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "duration-600-drafts/probe_b/primary/construction.json",
+      "construction_sha256": "0b59085113f279882022603ac705b21d952697d164b3e7f2b02f2a90e0a5caa3"
+    }
+  ]
+}

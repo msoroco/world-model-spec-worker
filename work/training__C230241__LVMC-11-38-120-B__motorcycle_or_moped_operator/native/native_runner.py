@@ -30,7 +30,8 @@ def check(config):
             config.get('actor') == 'motorcycle_or_moped_operator' and
             config.get('frozen_cell') == {'layout': 'road', 'maneuver': 'travel',
                                           'control': 'ice_cream_truck'} and
-            config.get('candidate_id') == 'primary' and
+            config.get('candidate_id') in ('primary', 'fallback1',
+                                           'fallback2', 'fallback3') and
             config.get('rate_hz') == RATE and config.get('duration_s') == 30 and
             config.get('vehicle_blueprint') == 'vehicle.harley-davidson.low_rider' and
             config.get('vendor_blueprint') == 'vehicle.volkswagen.t2' and
@@ -72,7 +73,8 @@ def check(config):
                 'Controller schedule has a gap or invalid request')
         next_frame = phase['last_frame'] + 1
     require(next_frame == FRAMES, 'Controller ends before frame 599')
-    return {'case_id': case_id, 'frames': FRAMES, 'rate_hz': RATE,
+    return {'case_id': case_id, 'candidate_id': config['candidate_id'],
+            'frames': FRAMES, 'rate_hz': RATE,
             'source_views': list(VIEWS), 'controller_phases': len(phases),
             'carla_contacted': False, 'physical_visibility_verified': False,
             'legal_verdict': None}
