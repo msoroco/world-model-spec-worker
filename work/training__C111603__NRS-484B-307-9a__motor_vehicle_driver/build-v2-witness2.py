@@ -26,6 +26,8 @@ def main():
     bundle = NATIVE / 'drafts/witness_2/primary'
     construction = dict(draft)
     construction['files'] = [dict(item) for item in draft['files']]
+    construction['entrypoint'] = 'runner.py'
+    construction['files'].append({'path': 'runner.py', 'content': (HERE / 'runner.py').read_text()})
     for item in construction['files']:
         if item['path'] == 'work/' + HERE.name + '/native/capture.py':
             item['content'] = (NATIVE / 'capture.py').read_text()

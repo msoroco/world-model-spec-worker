@@ -1,0 +1,167 @@
+{
+  "cell_id": "C111603",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "lawful_presence_and_yield_review",
+      "target_law_id": "NRS-484B-307-9a",
+      "judgment_refs": [
+        {
+          "phrase": "pedestrians lawfully within an adjacent crosswalk",
+          "note": "Original crosswalk, pedestrian position and lawful status require independent source review."
+        },
+        {
+          "phrase": "other traffic lawfully using the intersection",
+          "note": "Other-vehicle physical presence is insufficient to establish lawful use."
+        },
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Relative motion and precedence require original sources; no numerical legal cutoff is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative lawful presence and yielding must stay unresolved pending original source and independent legal review.",
+      "missing_inputs": [
+        "Original pedestrian/crosswalk and other-vehicle legal context",
+        "original arrow pixels and governing direction",
+        "original precedence and yielding source review"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected shared physical context.",
+      "variable_assignments": {
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "right_arrow_turn"
+        },
+        "observed_ego_heading": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "pedestrians lawfully within an adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_actor_signal_samples",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor and OpenDRIVE signal-head readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native actor, map and camera-frame identities",
+            "uncertainty": "Directional-arrow pixels, governance and lawful use require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU source-shape draft has no physical Native pixels or legal verdict"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Authored movement contrast under the same red/green-head and other-vehicle fixture; actual arrow direction and yielding remain unknown.",
+      "variable_assignments": {
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "right_arrow_turn"
+        },
+        "observed_ego_heading": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "pedestrians lawfully within an adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "commanded_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "commanded_turn_path",
+        "comparison_or_standard": "same signal and other vehicle, different requested movement",
+        "target_value_or_branch": "right_arrow_turn"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_actor_signal_samples",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor and OpenDRIVE signal-head readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native actor, map and camera-frame identities",
+            "uncertainty": "Directional-arrow pixels, governance and lawful use require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU source-shape draft has no physical Native pixels or legal verdict"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Authored movement contrast under the same red/green-head and other-vehicle fixture; actual arrow direction and yielding remain unknown.",
+      "variable_assignments": {
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight"
+        },
+        "observed_ego_heading": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "pedestrians lawfully within an adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-9a__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "commanded_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "commanded_turn_path",
+        "comparison_or_standard": "same signal and other vehicle, different requested movement",
+        "target_value_or_branch": "straight"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "native_actor_signal_samples",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor and OpenDRIVE signal-head readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native actor, map and camera-frame identities",
+            "uncertainty": "Directional-arrow pixels, governance and lawful use require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU source-shape draft has no physical Native pixels or legal verdict"
+        ]
+      }
+    }
+  ]
+}

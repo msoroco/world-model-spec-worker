@@ -11,6 +11,7 @@ from pathlib import Path
 import queue
 import subprocess
 import traceback
+import os
 
 from build import FRAMES, RATE, check, digest
 from signal_heads import resolve as resolve_signal_heads, sample as sample_signal_heads
@@ -78,9 +79,15 @@ def capture(bundle, output, host, port):
             actor.type_id.startswith(("vehicle.", "walker.", "sensor.", "controller."))
             for actor in previous.get_actors()):
         raise RuntimeError("Exclusive idle asynchronous CARLA world required")
-    output.mkdir(parents=True, exist_ok=False)
+    output.mkdir(parents=True, exist_ok=True)
+    for source_name in ('native-raw-actors.jsonl', 'video_frames.jsonl',
+                        'native-map-readback.json', 'native-capture-report.json'):
+        if (output / source_name).exists():
+            raise RuntimeError('Original capture would overwrite source: ' + source_name)
     owned, sensors, encoders, logs = [], {}, {}, {}
     changed = False
+    recording = False
+    recorder_path = None
     frames = 0
     error = restoration = None
     try:
@@ -110,6 +117,13 @@ def capture(bundle, output, host, port):
         red.freeze(True)
         arrow.set_state(carla.TrafficLightState.Green)
         arrow.freeze(True)
+        scratch = Path(os.environ.get('TMPDIR', str(output.parent))).resolve()
+        scratch.mkdir(parents=True, exist_ok=True)
+        recorder_path = scratch / ('c111603-' + hashlib.sha256(str(output).encode()).hexdigest()[:16] + '-native.rec')
+        if recorder_path.exists():
+            raise RuntimeError('Native recorder scratch path already exists')
+        client.start_recorder(str(recorder_path))
+        recording = True
         library = world.get_blueprint_library()
         ego = world.try_spawn_actor(library.find(cfg["ego_blueprint"]), carla.Transform(
             carla.Location(x=-1.75, y=-50, z=1.5), carla.Rotation(yaw=90)))
@@ -165,9 +179,12 @@ def capture(bundle, output, host, port):
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 observed_heads = sample_signal_heads(red, arrow)
+                weather = world.get_weather()
                 actor_file.write(json.dumps({
                     "frame": index, "native_frame": frame, "time_s": time_s,
                     "source_kind": "original_native", "request_frame": request["frame"],
+                    "weather_readback": {key: float(getattr(weather, key)) for key in
+                        ('cloudiness', 'precipitation', 'wetness', 'fog_density')},
                     "ego": actor_row(ego), "other_vehicle": actor_row(other),
                     "red_actor_id": red.id, "red_state": str(red.get_state()),
                     "arrow_actor_id": arrow.id, "arrow_state": str(arrow.get_state()),
@@ -190,13 +207,22 @@ def capture(bundle, output, host, port):
                     source_rgb_sha256[name] = hashlib.sha256(rgb_bytes).hexdigest()
                     encoders[name].stdin.write(rgb_bytes)
                 video_file.write(json.dumps({"video_frame": index,
-                                             "native_frame": frame, "time_s": time_s,
+                                             "native_frame": frame, "carla_frame": frame,
+                                             "time_s": time_s,
                                              "source_rgb_sha256": source_rgb_sha256}) + "\n")
                 frames += 1
     except BaseException as exc:
         error = {"type": type(exc).__name__, "message": str(exc),
                  "traceback": traceback.format_exc()}
     finally:
+        if recording:
+            try:
+                client.stop_recorder()
+                info = client.show_recorder_file_info(str(recorder_path), False)
+                (output / 'capture').mkdir(exist_ok=True)
+                (output / 'capture/recorder_info.txt').write_text(info.rstrip() + '\n')
+            except BaseException as exc:
+                error = error or {'recorder_error': str(exc)}
         for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
