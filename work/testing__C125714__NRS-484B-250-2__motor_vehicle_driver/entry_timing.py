@@ -165,6 +165,7 @@ def measure(attempt: Path, diagnostic_fixture: bool = False) -> dict:
             "approach_relation": site["approach_relation"],
             "official_device_controls_intersection": site["official_device_controls_intersection"],
             "other_left_turn_intent": site["other_left_turn_intent"],
+            "other_left_turn_making": site.get("other_left_turn_making", False),
             "subsection_4_context_reviewed": site["subsection_4_context_reviewed"],
             "original_frame_count": len(ego),
             "source_sha256": {name: manifest[name]["sha256"] for name in SOURCES},

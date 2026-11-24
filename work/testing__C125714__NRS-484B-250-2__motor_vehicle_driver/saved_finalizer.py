@@ -17,7 +17,8 @@ SPEC.loader.exec_module(entry)
 ASSIGNMENT = entry.ASSIGNMENT
 ALLOWED = {ASSIGNMENT + '__' + suffix for suffix in (
     'timing_below_training', 'timing_inside_training', 'timing_above_training',
-    'yield_wait_for_other_clear', 'advance_at_release')}
+    'yield_wait_for_other_clear', 'advance_at_release',
+    'official_device_controlled', 'opposite_intends_left', 'opposite_makes_left')}
 
 
 def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> dict:
@@ -26,11 +27,23 @@ def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> d
     measured = entry.measure(Path(attempt), diagnostic_fixture=diagnostic_fixture)
     if measured.get('case_id') != case_id:
         raise ValueError('saved original case identity differs from selected case')
-    if measured['approach_relation'] != 'crossing' or measured['ego_side'] != 'left' or \
+    suffix = case_id.removeprefix(ASSIGNMENT+'__')
+    if measured['subsection_4_context_reviewed'] is not True:
+        raise ValueError('subsection-4 qualification not source reviewed')
+    if suffix == 'official_device_controlled':
+        if measured['approach_relation'] != 'crossing' or \
+                measured['official_device_controls_intersection'] is not True:
+            raise ValueError('official-device exception source context missing')
+    elif suffix in ('opposite_intends_left','opposite_makes_left'):
+        if measured['approach_relation'] != 'opposite' or \
+                measured['official_device_controls_intersection'] is not False or \
+                measured['other_left_turn_intent'] is not True or \
+                measured['other_left_turn_making'] is not (suffix == 'opposite_makes_left'):
+            raise ValueError('opposite-direction left-turn source context missing')
+    elif measured['approach_relation'] != 'crossing' or measured['ego_side'] != 'left' or \
             measured['other_side'] != 'right' or \
             measured['official_device_controls_intersection'] is not False or \
-            measured['other_left_turn_intent'] is not False or \
-            measured['subsection_4_context_reviewed'] is not True:
+            measured['other_left_turn_intent'] is not False:
         raise ValueError('selected left-yields-right crossing context not source established')
     result = {'format': 'worker-c125714-selected-diagnostic-v1',
             'assignment_id': ASSIGNMENT, 'case_id': case_id,
@@ -45,6 +58,7 @@ def finalize(attempt: Path, case_id: str, diagnostic_fixture: bool = False) -> d
             'approach_relation': measured['approach_relation'],
             'official_device_controls_intersection': measured['official_device_controls_intersection'],
             'other_left_turn_intent': measured['other_left_turn_intent'],
+            'other_left_turn_making': measured['other_left_turn_making'],
             'subsection_4_context_reviewed': measured['subsection_4_context_reviewed'],
             'original_frame_count': measured['original_frame_count'],
             'source_sha256': measured['source_sha256'],

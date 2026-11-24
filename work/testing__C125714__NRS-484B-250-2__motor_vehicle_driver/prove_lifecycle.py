@@ -10,13 +10,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', required=True)
     parser.add_argument('--scratch', type=Path, required=True)
+    parser.add_argument('--tag', default='')
     args = parser.parse_args()
     sys.path.insert(0, 'runtime')
     from scenario_pipeline.worker_exchange.native_output import seal_capture
     from scenario_pipeline.worker_exchange.saved_processing import (
         record_native_exit, acknowledge_owner_release, _closure)
 
-    source = args.scratch / ('source-' + args.case)
+    source = args.scratch / (args.tag + 'source-' + args.case)
     stage = args.scratch / ('lifecycle-' + args.case)
     if stage.exists():
         shutil.rmtree(stage)

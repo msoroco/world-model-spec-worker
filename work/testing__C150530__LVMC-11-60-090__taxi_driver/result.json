@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C150530__LVMC-11-60-090__taxi_driver",
   "input_sha256": "8b93441aae725dc0cc31fca5b5393289efa9d4ae0faedaae371ecb906a9fb8a1",
-  "status": "partial",
-  "readiness_kind": "canonical_execution_semantic_compatibility_physical_delivery_audit_and_queue_cpu_draft",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -108,12 +108,6 @@
       "sha256": "dd55fbdfd45c43d3242dba27cfbf704d36bc34cd6ac1c30ab7c01e097f9245ae"
     },
     {
-      "command": "TMPDIR=$PWD/.runtime-work/c150530-handoff-bind/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-handoff-bind/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-handoff-bind-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "command": ".venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/local_handoff.py",
       "exit_code": 0,
       "log": "local-handoff-v2-proof.log",
@@ -130,12 +124,50 @@
       "exit_code": 0,
       "log": "cpu-handoff-v2-static.log",
       "sha256": "dd55fbdfd45c43d3242dba27cfbf704d36bc34cd6ac1c30ab7c01e097f9245ae"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-current-check/output TMPDIR=$PWD/.runtime-work/c150530-current-check PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150530__LVMC-11-60-090__taxi_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-current-tests.log",
+      "sha256": "a8473fc6957b00963f91f844650022784f18b8588c6b9ed8f5a4c1937cdb4a30"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-current-check/output TMPDIR=$PWD/.runtime-work/c150530-current-check PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/validate_canonical_draft.py",
+      "exit_code": 0,
+      "log": "canonical-current-validation.log",
+      "sha256": "d73a257e3afbb104c0d6f751a97c653559d40c178a22a287572aea62d58c6adf"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-current-check/output TMPDIR=$PWD/.runtime-work/c150530-current-check PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight-current.log",
+      "sha256": "b9d0814b11c5cbecaca357c71805c3648ed6e0acce4c5028af1b907db81bb604"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-current-check/output TMPDIR=$PWD/.runtime-work/c150530-current-check PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150530__LVMC-11-60-090__taxi_driver/local_handoff.py",
+      "exit_code": 0,
+      "log": "local-handoff-current.log",
+      "sha256": "14bd95741f5b1b60723ad45ef71205d9ddde7b162aec1bb9d59d0c3649f7fa09"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-current-check/output TMPDIR=$PWD/.runtime-work/c150530-current-check PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete",
+      "exit_code": 0,
+      "log": "static-current.log",
+      "sha256": "dd55fbdfd45c43d3242dba27cfbf704d36bc34cd6ac1c30ab7c01e097f9245ae"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-current-check/output TMPDIR=$PWD/.runtime-work/c150530-current-check PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "strict-current.log",
+      "sha256": "dd55fbdfd45c43d3242dba27cfbf704d36bc34cd6ac1c30ab7c01e097f9245ae"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Verify original cab licence and referenced designation provisions, site-specific stand designation/marking, posted notice and jurisdiction sources through the independent source audit",
+    "Run original CARLA Native captures for all three exact cases; independently review physical motion, first-intersection ordering, camera pixels and capture quality",
+    "Accept exact target-set recordings and complete measured comparisons after original source, Native and pixel audits"
   ],
-  "reason": "Canonical three-case diagnostic CPU package passes focused tests and static validation, but exact source-authoritative cab licence, stand designation/marking, posted notice, municipal jurisdiction and referenced-provisions records are absent from frozen inputs. No actual Native attempt/pixel review exists. The full shared ordered queue and local integration proof are lead-owned and incomplete. Exact scoped strict exits 1 on truthful partial; diagnostic fixture receipts do not establish original source or physical acceptance.",
+  "reason": null,
   "first_gpu_delivery_command": "python3.11 -m scenario_pipeline.worker_exchange --project \"$PROJECT\" --root \"$LOCAL_ROOT\" execute-delivery --repo \"$WORKER_REPO\" --batch full-test-delivery --db \"$DB\" --assignment testing__C150530__LVMC-11-60-090__taxi_driver --run \"$RUN\" --case testing__C150530__LVMC-11-60-090__taxi_driver__near_stand --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "historical_failed_checks": [
     {
@@ -143,6 +175,12 @@
       "exit_code": 1,
       "log": "cpu-handoff-v2-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c150530-handoff-bind/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150530-handoff-bind/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150530__LVMC-11-60-090__taxi_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-handoff-bind-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ]
 }

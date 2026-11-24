@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from native_crossing import CASE_SUFFIXES, points
+from exception_construction import heading
 
 
 def require(ok, message):
@@ -47,17 +48,46 @@ def check_scene(scene_path=Path('scene.json')):
     require(junction is not None and {'10', '31'} <=
             {x.get('incomingRoad') for x in junction.findall('connection')},
             'authored crossing lacks both junction connections')
-    require(scene.get('ego_highway') != scene.get('other_highway') and
-            scene.get('ego_side') == 'left' and scene.get('other_side') == 'right' and
-            scene.get('approach_relation') == 'crossing',
-            'different-highway left/right crossing missing')
+    exception = suffix in ('official_device_controlled','opposite_intends_left',
+                           'opposite_makes_left')
+    if suffix == 'official_device_controlled':
+        require(scene.get('ego_highway') != scene.get('other_highway') and
+                scene.get('approach_relation') == 'crossing' and
+                scene.get('official_device_controls_intersection') is True and
+                scene.get('official_device_id'), 'device-governed crossing missing')
+        require(any(signal.get('id') == scene['official_device_id']
+                    for signal in root.findall('.//signal')),
+                'authored official control signal missing from OpenDRIVE')
+    elif suffix in ('opposite_intends_left','opposite_makes_left'):
+        require(scene.get('ego_highway') == scene.get('other_highway') and
+                scene.get('approach_relation') == 'opposite' and
+                scene.get('other_left_turn_intent') is True and
+                scene.get('official_device_controls_intersection') is False,
+                'opposite-direction left-turn context missing')
+        ego_heading = heading(scene['ego_route_xyz_m'],0,1)
+        other_heading = heading(scene['other_route_xyz_m'],0,1)
+        require(sum(a*b for a,b in zip(ego_heading,other_heading)) < -0.8,
+                'opposite route headings missing')
+        if suffix == 'opposite_makes_left':
+            exit_heading = heading(scene['other_route_xyz_m'],1,2)
+            require(other_heading[0]*exit_heading[1] -
+                    other_heading[1]*exit_heading[0] > .7,
+                    'left-turn route geometry missing')
+        else:
+            require(scene.get('other_left_turn_making') is False,
+                    'intent-only route must be straight')
+    else:
+        require(scene.get('ego_highway') != scene.get('other_highway') and
+                scene.get('ego_side') == 'left' and scene.get('other_side') == 'right' and
+                scene.get('approach_relation') == 'crossing',
+                'different-highway left/right crossing missing')
     for name in ('ego', 'other'):
         points(scene.get(name + '_route_xyz_m'), name)
     require(scene['ego_route_xyz_m'][0][0] < -10 and
             scene['ego_route_xyz_m'][-1][0] > 10 and
-            scene['other_route_xyz_m'][0][1] < -10 and
-            scene['other_route_xyz_m'][-1][1] > 10,
-            'authored routes do not cross at median opening')
+            (exception or (scene['other_route_xyz_m'][0][1] < -10 and
+             scene['other_route_xyz_m'][-1][1] > 10)),
+            'authored routes do not reach median opening')
     require(scene.get('capture_rate_hz') == 20 and
             type(scene.get('duration_s')) in (int, float) and scene['duration_s'] >= 8 and
             type(scene.get('requested_entry_offset_s')) in (int, float) and

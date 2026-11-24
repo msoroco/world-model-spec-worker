@@ -51,7 +51,7 @@ def main():
                              'result_sha256': sha(result)})
         life_log = case_dir / 'physical-lifecycle.log'
         command = [sys.executable, str(folder / 'prove_lifecycle.py'),
-                   '--case', case, '--scratch', str(scratch)]
+                   '--case', case, '--scratch', str(scratch), '--tag', args.tag]
         proc = subprocess.run(command, capture_output=True, text=True, env=env)
         life_log.write_text((proc.stdout + proc.stderr).rstrip() + '\n')
         if proc.returncode:

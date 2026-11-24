@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from runner import check_construction
 
@@ -30,6 +31,12 @@ class OfflineBundleTests(unittest.TestCase):
                 path.write_text(json.dumps(altered), encoding="utf-8")
                 with self.assertRaisesRegex(ValueError, message):
                     check_construction(path, HERE / "case-plan.json")
+
+    def test_supplied_site_runs_production_gate(self):
+        packet = Path("reviewed-site-packet.json")
+        with patch("runner.verify_site") as gate:
+            result = check_construction(HERE / "config.json", HERE / "case-plan.json", packet)
+        gate.assert_called_once_with(packet, HERE / "case-plan.json", result["case_id"])
 
 
 if __name__ == "__main__":

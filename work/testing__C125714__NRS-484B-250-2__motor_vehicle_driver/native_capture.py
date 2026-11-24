@@ -12,6 +12,7 @@ import os
 import queue
 import shutil
 import subprocess
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from native_body_capture import append_pair, capture_pair
@@ -65,12 +66,37 @@ def reviewed_context(scene, road):
             raise ValueError('reviewed site context missing: ' + key)
     if packet['map_sha256'] != sha(road):
         raise ValueError('reviewed OpenDRIVE identity differs')
-    if (packet['ego_highway'] == packet['other_highway'] or
+    suffix = scene['case_id'].split('__')[-1]
+    if packet['subsection_4_context_reviewed'] is not True:
+        raise ValueError('subsection-4 qualification unreviewed')
+    if suffix == 'official_device_controlled':
+        signals = ET.fromstring(road.read_bytes()).findall('.//signal')
+        if (packet['ego_highway'] == packet['other_highway'] or
+                packet['approach_relation'] != 'crossing' or
+                packet['official_device_controls_intersection'] is not True or
+                not any(s.get('id') == packet.get('official_device_id') for s in signals)):
+            raise ValueError('source-reviewed governing device missing from live map')
+    elif suffix in ('opposite_intends_left','opposite_makes_left'):
+        from exception_construction import heading
+        ego = heading(packet['ego_route_xyz_m'],0,1)
+        other = heading(packet['other_route_xyz_m'],0,1)
+        if (packet['ego_highway'] != packet['other_highway'] or
+                packet['approach_relation'] != 'opposite' or
+                packet['official_device_controls_intersection'] is not False or
+                packet['other_left_turn_intent'] is not True or
+                packet.get('other_left_turn_making') is not
+                    (suffix == 'opposite_makes_left') or
+                sum(a*b for a,b in zip(ego,other)) >= -0.8):
+            raise ValueError('source-reviewed opposite left-turn context missing')
+        if suffix == 'opposite_makes_left':
+            end = heading(packet['other_route_xyz_m'],1,2)
+            if other[0]*end[1]-other[1]*end[0] <= .7:
+                raise ValueError('source-reviewed left-turn route geometry missing')
+    elif (packet['ego_highway'] == packet['other_highway'] or
             packet['ego_side'] != 'left' or packet['other_side'] != 'right' or
             packet['approach_relation'] != 'crossing' or
             packet['official_device_controls_intersection'] is not False or
-            packet['other_left_turn_intent'] is not False or
-            packet['subsection_4_context_reviewed'] is not True):
+            packet['other_left_turn_intent'] is not False):
         raise ValueError('different-highway left/right and exception context unreviewed')
     retained = {}
     for key in ('map_source', 'highway_source', 'device_source',
@@ -212,8 +238,10 @@ def run_native(scene, road, output, host, port):
         world.apply_settings(settings)
         library = world.get_blueprint_library()
         named = {}
-        for name, yaw in (('ego', 0), ('other', 90)):
+        for name in ('ego', 'other'):
             route = scene[name+'_route_xyz_m']
+            direction = (route[1][0]-route[0][0],route[1][1]-route[0][1])
+            yaw = math.degrees(math.atan2(direction[1],direction[0]))
             waypoint = world.get_map().get_waypoint(carla.Location(x=route[0][0], y=route[0][1], z=route[0][2]), project_to_road=False)
             if waypoint is None or str(waypoint.lane_type).lower().find('driving') < 0:
                 raise ValueError(name+' initial point lacks original driving lane')
@@ -247,6 +275,15 @@ def run_native(scene, road, output, host, port):
             for index in range(count):
                 elapsed = 0 if start_time is None else index*.05
                 controls = controller.controls(elapsed)
+                if scene['case_id'].endswith('__opposite_makes_left'):
+                    actor = named['other']
+                    here = actor.get_transform().location
+                    target = scene['other_route_xyz_m'][1 if math.hypot(
+                        here.x-scene['other_route_xyz_m'][1][0],
+                        here.y-scene['other_route_xyz_m'][1][1]) > 4 else 2]
+                    desired = math.degrees(math.atan2(target[1]-here.y,target[0]-here.x))
+                    error = (desired-actor.get_transform().rotation.yaw+180)%360-180
+                    controls['other']['steer'] = max(-.65,min(.65,error/50))
                 for name in ('ego','other'):
                     named[name].apply_control(carla.VehicleControl(**controls[name]))
                 frame = world.tick()

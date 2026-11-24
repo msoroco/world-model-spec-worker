@@ -84,7 +84,7 @@ class RunnerTests(unittest.TestCase):
         with patch.dict(sys.modules, {"carla": carla, "worker_exchange": exchange,
                                       "worker_exchange.world_restore": restore_module}), \
              patch.dict(os.environ, {"SCENARIO_PIPELINE_OUTPUT_ROOT": str(self.folder)}), \
-             patch.object(runner, "inspect", return_value=({}, {}, b"")), \
+             patch.object(runner, "verify_site", return_value={}) as site_gate, \
              patch.object(runner, "create", return_value=Scene()), \
              patch.object(runner, "CameraRig", Rig), \
              patch.object(runner, "retain_site_sources", return_value=attempt / "site/packet.json"), \
@@ -96,6 +96,7 @@ class RunnerTests(unittest.TestCase):
                 result = runner.capture_original(attempt, self.packet,
                                                  HERE / "case-plan.json", "case")
                 self.assertEqual(result["capture"]["frames"], 900)
+            site_gate.assert_called_once_with(self.packet, HERE / "case-plan.json", "case")
         status = json.loads((attempt / "native-run-status.json").read_text())
         return status
 

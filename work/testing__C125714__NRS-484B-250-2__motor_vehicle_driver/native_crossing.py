@@ -11,7 +11,8 @@ import math
 
 CASE_SUFFIXES = ('timing_below_training', 'timing_inside_training',
                  'timing_above_training', 'yield_wait_for_other_clear',
-                 'advance_at_release')
+                 'advance_at_release', 'official_device_controlled',
+                 'opposite_intends_left', 'opposite_makes_left')
 
 
 def require(ok, message):

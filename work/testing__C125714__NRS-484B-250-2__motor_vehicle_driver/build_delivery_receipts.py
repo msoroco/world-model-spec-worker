@@ -15,6 +15,7 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--scratch', type=Path, required=True)
+    parser.add_argument('--tag', default='')
     args = parser.parse_args()
     folder = Path(__file__).resolve().parent
     manifest_path = folder / 'execution-manifest.json'
@@ -26,7 +27,7 @@ def main():
         case_id = entry['case_id']
         suffix = case_id.split('__')[-1]
         base = [sys.executable, str(folder / 'prove_delivery_audit.py'), case_id,
-                '--scratch', str(args.scratch)]
+                '--scratch', str(args.scratch), '--tag', args.tag]
         logs = []
         for negative in (False, True):
             command = base + (['--negative'] if negative else [])
@@ -39,7 +40,7 @@ def main():
         expected = 'complete original participant/trace/frame count missing'
         assert expected in logs[1][2].read_text()
         entry['delivery_acceptance'] = {
-            'case_id': case_id, 'sets': ['full-test'],
+            'case_id': case_id, 'sets': ['demo-test', 'full-test'],
             'checks': ['native_source', 'all_participants', 'time_join',
                        'full_video_decode', 'actual_pixels', 'physical_completion'],
             'test_exit_code': 0, 'negative_exit_code': logs[1][1],

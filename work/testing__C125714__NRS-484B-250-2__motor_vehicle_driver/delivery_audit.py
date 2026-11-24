@@ -9,12 +9,14 @@ import argparse
 import hashlib
 import json
 import math
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 BASE = 'testing__C125714__NRS-484B-250-2__motor_vehicle_driver'
 CASES = frozenset(BASE+'__'+suffix for suffix in (
     'timing_below_training', 'timing_inside_training', 'timing_above_training',
-    'yield_wait_for_other_clear', 'advance_at_release'))
+    'yield_wait_for_other_clear', 'advance_at_release',
+    'official_device_controlled', 'opposite_intends_left', 'opposite_makes_left'))
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 ORIGINALS = ('road.xodr', 'site-context.json', 'trace.jsonl',
@@ -35,6 +37,24 @@ def read(path):
 def rows(path):
     return [json.loads(line) for line in Path(path).read_text(encoding='utf-8').splitlines()
             if line.strip()]
+
+
+def observed_left_turn(other):
+    centers = []
+    for row in other:
+        vertices = row.get('body_vertices_xy_m', [])
+        if not vertices:
+            raise ValueError('original other vehicle body missing')
+        centers.append((sum(p[0] for p in vertices)/len(vertices),
+                        sum(p[1] for p in vertices)/len(vertices)))
+    start, end = centers[0], centers[-1]
+    pivot = min(centers, key=lambda p: math.hypot(p[0],p[1]))
+    before = (pivot[0]-start[0],pivot[1]-start[1])
+    after = (end[0]-pivot[0],end[1]-pivot[1])
+    if min(math.hypot(*before),math.hypot(*after)) < 4:
+        raise ValueError('original left-turn movement incomplete')
+    return (before[0]*after[1]-before[1]*after[0]) / (
+        math.hypot(*before)*math.hypot(*after)) > .7
 
 
 def verify_frame_join(mapping, trace, ego, other, site, expected_frames, controller=None):
@@ -116,18 +136,33 @@ def audit_sources(attempt, case_id):
     if (not reviewed.is_file() or reviewed.is_symlink() or
             provenance.get('reviewed_context_sha256') != sha(reviewed) or
             site.get('map_sha256') != sha(attempt/'road.xodr') or
-            site.get('ego_highway') == site.get('other_highway') or
-            site.get('ego_side') != 'left' or site.get('other_side') != 'right' or
-            site.get('official_device_controls_intersection') is not False or
-            site.get('other_left_turn_intent') is not False or
             site.get('subsection_4_context_reviewed') is not True):
         raise ValueError('reviewed crossing and statutory exception context not bound')
     from branch_alternatives import observe_context
     branch = observe_context(attempt/'site-context.json', attempt/'road.xodr', reviewed)
-    if (branch['case_id'] != case_id or
-            branch['facts']['different_highways_left_right'] is not True or
-            branch['facts']['official_device_controlled'] is not False or
-            branch['facts']['subsection_4_context'] is not True):
+    suffix = case_id.removeprefix(BASE+'__')
+    facts = branch['facts']
+    if branch['case_id'] != case_id or facts['subsection_4_context'] is not True:
+        raise ValueError('reviewed original crossing facts differ from exact delivery case')
+    if suffix == 'official_device_controlled':
+        signals = ET.fromstring((attempt/'road.xodr').read_bytes()).findall('.//signal')
+        if (facts['different_highways_left_right'] is not True or
+                facts['official_device_controlled'] is not True or
+                not any(s.get('id') == site.get('official_device_id') for s in signals)):
+            raise ValueError('official device governance lacks reviewed original map signal')
+    elif suffix in ('opposite_intends_left','opposite_makes_left'):
+        if (site.get('approach_relation') != 'opposite' or
+                facts['official_device_controlled'] is not False or
+                facts['opposite_intends_left'] is not True or
+                facts['opposite_makes_left'] is not
+                    (suffix == 'opposite_makes_left')):
+            raise ValueError('opposite left-turn facts differ from exact delivery case')
+        if suffix == 'opposite_makes_left' and not observed_left_turn(
+                rows(attempt/'other-body-history.jsonl')):
+            raise ValueError('original other vehicle did not make left turn')
+    elif (facts['different_highways_left_right'] is not True or
+            facts['official_device_controlled'] is not False or
+            site.get('other_left_turn_intent') is not False):
         raise ValueError('reviewed original crossing facts differ from exact delivery case')
     expected = round(config['duration_s']*config['rate_hz'])
     count = verify_frame_join(*(rows(attempt/name) for name in

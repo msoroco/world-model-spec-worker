@@ -76,8 +76,32 @@ bind their exact hashes before independent review:
 ```
 
 The binding rejects changed originals or an altered probe and remains
-`pending_independent_review`. The reviewer must inspect both originals, the
-actual imported device and original rendered pixels, and establish the
-site/gantry/approach/lane association. Only then may a reviewed source packet
-be retained and used through `C147332_REVIEWED_SOURCE_PACKET`. The binding
-itself is neither a reviewed source packet nor a physical receipt.
+`pending_independent_review`. The reviewer must inspect both originals and the
+actual imported device, and establish the site/gantry/approach/lane and design
+association. The later Native attempt needs a separate original-pixel review.
+The binding itself is neither a reviewed source packet nor a physical receipt.
+
+## Convert an independently reviewed binding
+
+The reviewer supplies `review.json` with `format:
+worker-red-x-independent-review-v1`, `status: approved`, a nonempty `reviewer`,
+SHA-256 fields `source_draft_sha256`, `native_probe_sha256`, and
+`probe_binding_sha256`, and true `checks` for `exact_public_highway_and_site`,
+`official_device_original`, `bus_facing_and_governed_lane_join`, and
+`official_design_matches_imported_asset`. Its `citations` name `highway`,
+`official_device`, and `native_display_state`. These are explicit reviewer
+findings, not values inferred by the CPU tool.
+
+```sh
+.venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12b__bus_driver/source-kit/finalize_reviewed_packet.py \
+  "$PWD/.runtime-work/c147332-source-draft/draft-context.json" \
+  "$PWD/.runtime-work/c147332-native-asset-probe.json" \
+  "$PWD/.runtime-work/c147332-source-draft/probe-binding.json" \
+  "$PWD/.runtime-work/c147332-source-draft/review.json" \
+  "$PWD/.runtime-work/c147332-source-draft/reviewed.json"
+```
+
+The finalizer checks original and intermediate hashes and refuses missing
+findings, altered originals, or a repeated output. It cannot establish that
+the findings are true. The output must pass `source_review.validate` before
+Native dispatch; rendered pixels are reviewed after the actual capture.

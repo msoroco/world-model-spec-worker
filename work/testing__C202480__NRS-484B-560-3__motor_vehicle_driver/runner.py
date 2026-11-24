@@ -17,6 +17,7 @@ import shutil
 from native_camera import CameraRig
 from native_capture import capture
 from native_scene import create, inspect
+from reviewed_site_gate import verify as verify_site
 
 
 def check_construction(config_path: Path, plan_path: Path, packet_path: Path | None = None) -> dict:
@@ -40,7 +41,7 @@ def check_construction(config_path: Path, plan_path: Path, packet_path: Path | N
     if config.get("case") != cases[0]:
         raise ValueError("selected case construction differs from case plan")
     if packet_path is not None:
-        inspect(packet_path, plan_path, case_id)
+        verify_site(packet_path, plan_path, case_id)
     return {"case_id": case_id, "construction_checked": True,
             "reviewed_site_checked": packet_path is not None,
             "physical_acceptance_claimed": False}
@@ -85,7 +86,7 @@ def capture_original(attempt: Path, packet_path: Path, plan_path: Path,
         raise ValueError("export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     if not attempt.is_relative_to(Path(output_root).resolve()):
         raise ValueError("Native attempt differs from exported output root")
-    inspect(packet_path, plan_path, case_id)
+    verify_site(packet_path, plan_path, case_id)
     import carla
     from worker_exchange.world_restore import snapshot, restore
 

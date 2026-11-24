@@ -13,6 +13,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('case_id')
     parser.add_argument('--scratch', type=Path, required=True)
+    parser.add_argument('--tag', default='')
     parser.add_argument('--negative', action='store_true')
     args = parser.parse_args()
     folder = Path(__file__).resolve().parent
@@ -22,8 +23,8 @@ def main():
     from scenario_pipeline.worker_exchange.media import audit
 
     case = args.case_id.split('__')[-1]
-    source = args.scratch / ('source-' + case)
-    saved = args.scratch / ('saved-' + case) / 'v0001'
+    source = args.scratch / (args.tag + 'source-' + case)
+    saved = args.scratch / (args.tag + 'saved-' + case) / 'v0001'
     frame_map = rows(source / 'video_frames.jsonl')
     trace = rows(source / 'trace.jsonl')
     ego = rows(source / 'ego-body-history.jsonl')
@@ -56,7 +57,7 @@ def main():
         diagnostic_rejected = True
     assert diagnostic_rejected, 'diagnostic source was accepted as Native'
     check_path = folder / 'pixel_checks.py'
-    receipt = args.scratch / ('pixel-decode-' + case + '.json')
+    receipt = args.scratch / (args.tag + 'pixel-decode-' + case + '.json')
     decoded = audit(saved / 'analysis/event_review.webm', count,
                     checkers={'pixel_presence': (sha(check_path), pixel_presence)},
                     mapping_sha256=sha(source / 'video_frames.jsonl'), receipt=receipt)
