@@ -1289,3 +1289,15 @@ Current-runtime verify and CPU preflight pass. C158208-2 scoped `--complete` pas
 ### 2026-11-24 C158208-2 source-audit checkpoint
 
 All five exact cases pass independent software delivery-source audit diagnostics, with changed/missing-source rejection and four-camera full decode. Three-frame fixtures fail the normal physical path. C158208-2 remains partial; the strict delivery gate is unpassed with 10 incomplete assignments.
+
+### 2026-11-24 C158208-2 physical-source checkpoint
+
+C158208-2 now constructs original-tick interaction and control-context sources required by the current physical-completion classifier. Five refreshed exact offline, compatibility and positive/negative saved-only chains pass; independent comparison and delivery-source diagnostics pass. A three-frame fixture reaches maneuver classification but correctly fails full setup. Assignment status is partial and the strict delivery gate remains unpassed with 10 incomplete assignments.
+
+The no-flags whole-return quick checker was rerun: the former binary archive decode failure is gone. It exits at a retained prior-ready execution manifest bound to the previous runtime (`.runtime-work/worker-quick-20261124-current.log`), which the runtime-refresh instructions say to preserve. The current C158208-2 scoped complete check passes; work-file scan: 10,323 UTF-8 files, zero size, whitespace or conflict-marker violations.
+
+C158208-2 audit and saved-only CPU proof scripts now construct their own current-runtime diagnostic inputs from returned text sources and can build the Lean validator under `.runtime-work/` when absent. All three scripts were rerun successfully and hashes refreshed.
+
+### 2026-11-24 C158208-2 comparison repair
+
+C158208-2 remains partial. Its independent comparison audit now recomputes the source observations and accepts separate camera captures, with source-review hash checks; all three CPU pairing proofs and negatives pass. The scoped complete check passes. Physical sweep, officer source, fallbacks and selected delivery remain. No assignment became ready; the strict batch gate remains unpassed with 10 incomplete assignments.

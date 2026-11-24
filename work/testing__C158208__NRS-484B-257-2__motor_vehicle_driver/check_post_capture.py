@@ -13,6 +13,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+from check_source_fixture import ensure_validator
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = Path(__file__).resolve().parent
@@ -102,8 +103,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--case")
     args = parser.parse_args()
-    if not VALIDATOR.is_file():
-        raise ValueError("Build the validator from the active runtime library first")
+    ensure_validator()
     manifest = read(MANIFEST)
     entries = [e for e in manifest["cases"] if not args.case or e["case_id"] == args.case]
     if not entries or (args.case and len(entries) != 1):

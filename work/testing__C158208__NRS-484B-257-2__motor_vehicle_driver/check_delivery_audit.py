@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = Path(__file__).resolve().parent
 sys.path.insert(0, str(PACKAGE))
 from delivery_audit import CAMERAS, KINDS, PREFIX, audit
+from check_source_fixture import build
 
 
 def expect_rejection(root, case, fragment, *, diagnostic_fixture=True):
@@ -41,7 +42,7 @@ def main():
         temp = Path(directory)
         for kind in sorted(KINDS):
             case = PREFIX + kind
-            source = scratch / ("c158208-compatibility-" + kind + "-v4")
+            source = build(kind, temp / ("source-" + kind))
             target = temp / kind
             copy_fixture(source, target)
             result = audit(target, case, diagnostic_fixture=True)

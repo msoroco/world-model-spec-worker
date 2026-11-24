@@ -757,3 +757,11 @@ Three exact source-bound comparison diagnostics now pass in `work/testing__C1582
 ### C158208-2 delivery audit checkpoint
 
 Independent delivery-source audit code and five CPU diagnostic proof rows pass in `work/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/delivery-check.log`. The physical path requires 600 original Native frames and rejects the three-frame fixtures. C158208-2 stays partial.
+
+### C158208-2 original-tick physical-source checkpoint
+
+The package capture writer now emits `interaction_history.jsonl` and `control_context.json` for the active runtime intersection-clearance classifier. Five refreshed offline/compatibility/saved-only chains pass, the synthetic physical classifier and missing-source proof pass, and the assignment-scoped nonready check passes. It remains partial.
+
+## 2026-11-24 C158208-2 comparison repair
+
+C158208-2 remains partial. Independent comparison CPU checks now permit separate source-bound camera captures and recompute the declared entry/occupancy/device/slowing differences from original rows. The three pairing diagnostics and scoped complete check pass. Next: physical sweep, officer source, fallbacks and selected delivery.
