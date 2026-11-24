@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path
 
 from lane_change_measurements import measure_exact_case
+from late_lane_change_measurements import measure_exact_case as measure_late_case
 
 
 HERE = Path(__file__).resolve().parent
@@ -99,7 +100,10 @@ def audit(attempt, case_id):
                for person in people):
             raise ValueError("Original participant body missing")
         participants.update(ids)
-    measured = measure_exact_case(attempt, case_id, count)
+    measure = measure_late_case if case_id.endswith("__left_signal_late_clear_gap") else measure_exact_case
+    measured = measure(attempt, case_id, count)
+    if not measured["observed_signal_pattern_matches_plan"]:
+        raise ValueError("Original signal pattern differs from selected construction")
     if measured["sources"] != evidence or report.get("legal_verdict_asserted") is not False:
         raise ValueError("Fresh exact measurement or legal scope differs")
     cameras = {item["name"]: item for item in config.get("cameras", [])}

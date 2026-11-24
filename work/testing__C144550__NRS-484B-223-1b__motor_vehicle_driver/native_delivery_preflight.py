@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path, PurePosixPath
 
 from lane_change_measurements import measure_exact_case
+from late_lane_change_measurements import measure_exact_case as measure_late_case
 
 
 HERE = Path(__file__).resolve().parent
@@ -109,7 +110,10 @@ def audit(attempt, case_id, owner_receipt):
     if (config.get("selected_case_id") != case_id or config.get("law_id") != "NRS-484B-223-1b"
             or config.get("cell_id") != "C144550" or config.get("rate_hz") * config.get("duration_s") != 900):
         raise ValueError("Native exact configuration differs")
-    measurements = measure_exact_case(attempt, case_id, 900)
+    measure = measure_late_case if case_id.endswith("__left_signal_late_clear_gap") else measure_exact_case
+    measurements = measure(attempt, case_id, 900)
+    if not measurements["observed_signal_pattern_matches_plan"]:
+        raise ValueError("Native signal pattern differs from selected construction")
     mapping = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines() if line.strip()]
     trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines() if line.strip()]
     capture = [json.loads(line) for line in (attempt / "capture/evidence.jsonl").read_text().splitlines() if line.strip()]
