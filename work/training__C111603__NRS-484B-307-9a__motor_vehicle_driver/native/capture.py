@@ -13,6 +13,7 @@ import subprocess
 import traceback
 
 from build import FRAMES, RATE, check, digest
+from signal_heads import resolve as resolve_signal_heads, sample as sample_signal_heads
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -104,17 +105,7 @@ def capture(bundle, output, host, port):
                 raise RuntimeError("Generated lane readback missing: " + name)
             lanes[name] = {"road_id": waypoint.road_id, "lane_id": waypoint.lane_id,
                            "native_xyz_m": xyz(waypoint.transform.location)}
-        signal_actors = list(world.get_actors().filter("traffic.traffic_light*"))
-        if len(signal_actors) < 2:
-            raise RuntimeError("Two distinct generated Native signal actors required")
-        approach = sorted(signal_actors, key=lambda actor: math.hypot(
-            actor.get_location().x - 4, actor.get_location().y + 13))[:2]
-        if any(math.hypot(actor.get_location().x - 4, actor.get_location().y + 13) > 10
-               for actor in approach):
-            raise RuntimeError("Approach signal actors lack spatial readback")
-        red, arrow = sorted(approach, key=lambda actor: actor.get_location().x)
-        if red.id == arrow.id:
-            raise RuntimeError("Red and arrow heads collapsed into one actor")
+        red, arrow = resolve_signal_heads(world.get_actors())
         red.set_state(carla.TrafficLightState.Red)
         red.freeze(True)
         arrow.set_state(carla.TrafficLightState.Green)
@@ -134,6 +125,7 @@ def capture(bundle, output, host, port):
             "source_kind": "original_native", "road_sha256": digest(bundle / "arrow-intersection.xodr"),
             "native_map_sha256": hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
             "lane_readback": lanes, "red_actor_id": red.id, "arrow_actor_id": arrow.id,
+            "red_opendrive_id": "601", "arrow_opendrive_id": "1603",
             "red_actor_xyz_m": xyz(red.get_location()),
             "arrow_actor_xyz_m": xyz(arrow.get_location()),
             "ego_actor_id": ego.id, "other_actor_id": other.id,
@@ -172,12 +164,14 @@ def capture(bundle, output, host, port):
                 other.apply_control(other_control(other, request["requested_other_vehicle_xyz_m"][0], carla))
                 frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
+                observed_heads = sample_signal_heads(red, arrow)
                 actor_file.write(json.dumps({
                     "frame": index, "native_frame": frame, "time_s": time_s,
                     "source_kind": "original_native", "request_frame": request["frame"],
                     "ego": actor_row(ego), "other_vehicle": actor_row(other),
                     "red_actor_id": red.id, "red_state": str(red.get_state()),
                     "arrow_actor_id": arrow.id, "arrow_state": str(arrow.get_state()),
+                    "observed_signal_heads": observed_heads,
                     "requested_phase": request["requested_phase"],
                     "directional_arrow_pixels_verified": False,
                     "signal_governs_ego_verified": False,

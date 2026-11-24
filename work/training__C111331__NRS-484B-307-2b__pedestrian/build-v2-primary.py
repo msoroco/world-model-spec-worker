@@ -50,6 +50,8 @@ def main():
         row['pedestrian_xy_m'][0] -= 3.0
         row['observed_traffic_signal']['id'] = config['traffic_head_id']
         row['observed_pedestrian_signal']['id'] = config['pedestrian_head_id']
+    for row in mapping:
+        row['carla_frame'] = row['native_frame']
     trace = []
     evidence = []
     graphs = []
@@ -58,17 +60,21 @@ def main():
         frame = mapped['native_frame']
         time_s = mapped['time_s']
         x, y = row['pedestrian_xy_m']
+        speed_mps = 0 if index == 0 else 1.0
         trace.append({'frame': frame, 'time_s': time_s,
                       'position': {'x': x, 'y': y, 'z': .5},
                       'position_m': [x, y, .5], 'heading_deg': 90,
-                      'speed_mps': 0 if index == 0 else 1.0,
+                      'speed_mps': speed_mps, 'speed_mph': speed_mps / .44704,
                       'speed_provenance': 'synthetic_native_sample',
                       'control': {'throttle': 0, 'brake': 0}})
         evidence.append({'original_frame': frame, 'recording_time_s': time_s,
                          'replay_frame': frame, 'replay_simulation_time_s': time_s,
                          'actor_id': 17,
                          'ego': {'position_m': [x, y, .5], 'heading_deg': 90,
-                                 'speed_mps': 1.0,
+                                 'body_vertices_m': [[x+dx, y+dy, z]
+                                   for z in (0, 1.7) for dx in (-.25, .25)
+                                   for dy in (-.25, .25)],
+                                 'speed_mps': speed_mps,
                                  'speed_provenance': 'synthetic_native_sample'},
                          'world': {'weather': {'cloudiness': 0, 'precipitation': 0,
                                                'wetness': 0, 'fog_density': 0}}})

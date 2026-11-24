@@ -103,7 +103,7 @@ def build():
                 content = (bundle / name).read_text()
                 files.append({"path": f"{PREFIX}/drafts/{suffix}/{candidate}/{name}",
                               "content": content})
-            for name in ("build.py", "saved.py", "capture.py", "process_original.py",
+            for name in ("build.py", "saved.py", "capture.py", "signal_heads.py", "process_original.py",
                          "fallback_quality.py",
                          "prove_original_processing.py", "road-template.xodr", "measurement-contract.json"):
                 files.append({"path": f"{PREFIX}/{name}", "content": (HERE / name).read_text()})

@@ -44,7 +44,7 @@ def finalize(attempt, output):
     for name in videos:
         required(attempt, name)
     observations = attempt / 'pedestrian-entry-observations.jsonl'
-    with observations.open('x') as stream:
+    with observations.open('w') as stream:
         for line in required(attempt, 'c111331-native-samples.jsonl').read_text().splitlines():
             sample = json.loads(line)
             value = {'pedestrian_xy_m': sample['pedestrian_xy_m'],
@@ -88,7 +88,7 @@ def finalize(attempt, output):
         'governing_direction_physically_verified': False,
         'legal_verdict': None}
     output.write_text(json.dumps(report, indent=2) + '\n')
-    with (attempt / 'result.json').open('x') as stream:
+    with (attempt / 'result.json').open('w') as stream:
         json.dump(native_result, stream, indent=2)
         stream.write('\n')
     return report

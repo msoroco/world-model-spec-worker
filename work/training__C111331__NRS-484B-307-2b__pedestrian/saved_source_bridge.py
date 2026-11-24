@@ -10,7 +10,10 @@ VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def _rows(path):
-    return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
+    path = Path(path)
+    if not path.is_file():
+        raise ValueError('Missing required source: ' + path.name)
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
 def _decoded(path):
