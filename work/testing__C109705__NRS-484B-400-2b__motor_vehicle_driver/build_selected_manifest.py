@@ -39,7 +39,7 @@ def build():
         log = ROOT / log_name
         if not log.is_file():
             raise ValueError('current exact offline proof log missing')
-        cases.append({
+        entry = {
             'case_id': case, 'kind': 'delivery',
             'construction': row['construction'],
             'construction_sha256': row['construction_sha256'],
@@ -71,7 +71,83 @@ def build():
                                    'method': 'camera_frame',
                                    'evidence': 'four source-hashed original camera PNG streams'},
             },
-        })
+        }
+        proof_dir = ROOT / 'cases' / name
+        receipt = proof_dir / 'compatibility.json'
+        positive = proof_dir / 'analysis-proof.log'
+        negative = proof_dir / 'negative-analysis.log'
+        if receipt.is_file() and positive.is_file() and negative.is_file():
+            proof = json.loads(receipt.read_text())
+            if (proof.get('passed') is True and proof.get('case_id') == case and
+                    proof.get('construction_sha256') == row['construction_sha256'] and
+                    proof.get('log_sha256') == sha(positive) and
+                    proof.get('negative_log_sha256') == sha(negative)):
+                entry['compatibility'] = {
+                    'command': f'.venv-cpu/bin/python runtime.py compatibility --manifest work/{ROOT.name}/execution-manifest.json --case {case} --output .runtime-work/c109705-2b-nov24/compat3-{name} --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck',
+                    'receipt': f'cases/{name}/compatibility.json',
+                    'sha256': sha(receipt),
+                    'log': f'cases/{name}/analysis-proof.log',
+                }
+                contract = json.loads((proof_dir / 'measurement-contract.json').read_text())
+                entry['negative'] = {
+                    'log': f'cases/{name}/negative-analysis.log',
+                    'exit_code': 1,
+                    'error_contains': contract['negative']['error_contains'],
+                    'removed': contract['negative']['remove'][0],
+                }
+        physical = proof_dir / 'physical/receipt.json'
+        if physical.is_file():
+            proof = json.loads(physical.read_text())
+            if proof.get('construction_sha256') == row['construction_sha256']:
+                entry['physical_preparation'] = {
+                    'receipt': f'cases/{name}/physical/receipt.json',
+                    'sha256': sha(physical),
+                }
+        fallback_source = proof_dir / 'fallback1-construction.json'
+        if fallback_source.is_file():
+            fallback = {
+                'id': 'fallback1',
+                'construction': f'cases/{name}/fallback1-construction.json',
+                'construction_sha256': sha(fallback_source),
+                'trigger': {
+                    'source': 'original Native trace and physical_checks.maneuver',
+                    'metric': 'ordered left-turn route and full-body clearance',
+                    'failure_condition': 'maneuver not_met after primary controller or route overshoot',
+                },
+                'changed_knobs': ['waypoint controller target speed 7.0 to 5.0 m/s'],
+            }
+            fallback_log = ROOT / f'cpu-fallback-offline-{name}.log'
+            if fallback_log.is_file():
+                fallback['offline'] = {
+                    'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{ROOT.name}/execution-manifest.json --case {case} --candidate fallback1 --output .runtime-work/c109705-2b-nov24/fallback-offline-{name} --python $PWD/.venv-cpu/bin/python',
+                    'exit_code': 0,
+                    'construction_sha256': sha(fallback_source),
+                    'log': fallback_log.name,
+                    'log_sha256': sha(fallback_log),
+                }
+            fallback_dir = proof_dir / 'fallback1'
+            receipt = fallback_dir / 'compatibility.json'
+            positive = fallback_dir / 'analysis-proof.log'
+            negative = fallback_dir / 'negative-analysis.log'
+            if all(path.is_file() for path in (receipt, positive, negative)):
+                proof = json.loads(receipt.read_text())
+                if (proof.get('passed') is True and proof.get('candidate_id') == 'fallback1' and
+                        proof.get('construction_sha256') == sha(fallback_source) and
+                        proof.get('log_sha256') == sha(positive) and
+                        proof.get('negative_log_sha256') == sha(negative)):
+                    fallback['compatibility'] = {
+                        'command': f'.venv-cpu/bin/python runtime.py compatibility --manifest work/{ROOT.name}/execution-manifest.json --case {case} --candidate fallback1 --output .runtime-work/c109705-2b-nov24/fallback-compat-{name} --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck',
+                        'receipt': f'cases/{name}/fallback1/compatibility.json',
+                        'sha256': sha(receipt),
+                        'log': f'cases/{name}/fallback1/analysis-proof.log',
+                        'negative_log': f'cases/{name}/fallback1/negative-analysis.log',
+                    }
+            entry['candidates'] = [fallback]
+            entry['candidate_risk'] = {
+                'status': 'physical',
+                'reason': 'A surveyed Native route may overshoot or lack sampled full-body departure; retain a slower controller for the same exact case.',
+            }
+        cases.append(entry)
     manifest = {
         'format': 'worker-execution-manifest',
         'assignment_id': ROOT.name,

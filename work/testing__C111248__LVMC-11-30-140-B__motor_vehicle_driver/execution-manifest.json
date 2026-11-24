@@ -43,7 +43,91 @@
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_full_stop_wait-recipe.json"
+      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_full_stop_wait-recipe.json",
+      "compatibility": {
+        "receipt": "compat-white_full_stop_wait-primary-receipt.json",
+        "sha256": "0f5078eab1b74862f21460ff6a9a4d0354b17dbdee5553d241d12943afe7c33a",
+        "log": "compat-white_full_stop_wait-primary-analysis.log",
+        "negative_log": "compat-white_full_stop_wait-primary-negative.log"
+      },
+      "negative": {
+        "log": "compat-white_full_stop_wait-primary-negative.log"
+      },
+      "acquisition": {
+        "driver_speed_mps": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "body_gap_m": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "precaution_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "contact_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "original_camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "blindness_attestation": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "reviewed_map_route": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "carried_cue": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_full_stop_wait --attempt .runtime-work/c111248-nov24/process-attempt-white-full-v1 --output .runtime-work/c111248-nov24/process-saved-white-full-v2 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c111248-nov24/process-saved-white_full_stop_wait-v1/v0001/feedback.json",
+        "test_log": "process-saved-white_full_stop_wait-proof.json",
+        "test_log_sha256": "6f3472539e55071cedd2563f28aab604db364c3158da92b0caa2b2bb66b589bf",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_full_stop_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "31ac5486b47d50bb91d121ef5d7d9d159b47c1b1961d4f528b39e1cd57fc744a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_full_stop_wait --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_full_stop_wait/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_full_stop_wait/result.json --expected-frames 2 --diagnostic-small-profile",
+        "test_exit_code": 0,
+        "test_log": "delivery-white_full_stop_wait-positive.log",
+        "test_log_sha256": "60952216000b818e062b7d8ec857dc35e524e705b5fe8a4e577c90647d5062c8",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_full_stop_wait --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_full_stop_wait/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_full_stop_wait/result.json --expected-frames 2 --diagnostic-small-profile",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source mismatch",
+        "negative_log": "delivery-white_full_stop_wait-negative.log",
+        "negative_log_sha256": "ebb2bdad2ca49c825655ab77226b4e478b2b63eae013f598b64615bb51864c53"
+      }
     },
     {
       "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_roll_through",
@@ -83,7 +167,91 @@
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_roll_through-recipe.json"
+      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_roll_through-recipe.json",
+      "compatibility": {
+        "receipt": "compat-white_roll_through-primary-receipt.json",
+        "sha256": "adc7eb7d42903823fd37810f8cfbcf8197e88683638fdb6f6bde084f058e0214",
+        "log": "compat-white_roll_through-primary-analysis.log",
+        "negative_log": "compat-white_roll_through-primary-negative.log"
+      },
+      "negative": {
+        "log": "compat-white_roll_through-primary-negative.log"
+      },
+      "acquisition": {
+        "driver_speed_mps": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "body_gap_m": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "precaution_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "contact_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "original_camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "blindness_attestation": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "reviewed_map_route": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "carried_cue": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_roll_through --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-attempt-white_roll_through-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-saved-white_roll_through-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c111248-nov24/process-saved-white_roll_through-v1/v0001/feedback.json",
+        "test_log": "process-saved-white_roll_through-proof.json",
+        "test_log_sha256": "886c15432e36462180ad33a4f0c48bae2d0d101ce14915e0792877ca65628ed6",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_roll_through",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "31ac5486b47d50bb91d121ef5d7d9d159b47c1b1961d4f528b39e1cd57fc744a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_roll_through --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_roll_through/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_roll_through/result.json --expected-frames 2 --diagnostic-small-profile",
+        "test_exit_code": 0,
+        "test_log": "delivery-white_roll_through-positive.log",
+        "test_log_sha256": "c8edb65803600c21419fb616028242b38392f576f3484ed9395a3f0a42d3ae03",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_roll_through --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_roll_through/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_roll_through/result.json --expected-frames 2 --diagnostic-small-profile",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source mismatch",
+        "negative_log": "delivery-white_roll_through-negative.log",
+        "negative_log_sha256": "ebb2bdad2ca49c825655ab77226b4e478b2b63eae013f598b64615bb51864c53"
+      }
     },
     {
       "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_early_proceed",
@@ -123,7 +291,91 @@
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_early_proceed-recipe.json"
+      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_early_proceed-recipe.json",
+      "compatibility": {
+        "receipt": "compat-white_early_proceed-primary-receipt.json",
+        "sha256": "5b5a11087ec0569f6097b3187d2efb1846f9d06e6a42dc76fded9a73dc9bf409",
+        "log": "compat-white_early_proceed-primary-analysis.log",
+        "negative_log": "compat-white_early_proceed-primary-negative.log"
+      },
+      "negative": {
+        "log": "compat-white_early_proceed-primary-negative.log"
+      },
+      "acquisition": {
+        "driver_speed_mps": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "body_gap_m": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "precaution_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "contact_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "original_camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "blindness_attestation": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "reviewed_map_route": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "carried_cue": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_early_proceed --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-attempt-white_early_proceed-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-saved-white_early_proceed-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c111248-nov24/process-saved-white_early_proceed-v1/v0001/feedback.json",
+        "test_log": "process-saved-white_early_proceed-proof.json",
+        "test_log_sha256": "032a566500722c6fd61c822480e6496fcef00abfd04b0d1b456ffa8268005366",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_early_proceed",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "31ac5486b47d50bb91d121ef5d7d9d159b47c1b1961d4f528b39e1cd57fc744a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_early_proceed --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_early_proceed/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_early_proceed/result.json --expected-frames 2 --diagnostic-small-profile",
+        "test_exit_code": 0,
+        "test_log": "delivery-white_early_proceed-positive.log",
+        "test_log_sha256": "00e63610c6d8103877f86a96c19cda0de2f525646e17a3c0b3f046a822542f14",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_early_proceed --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_early_proceed/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_early_proceed/result.json --expected-frames 2 --diagnostic-small-profile",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source mismatch",
+        "negative_log": "delivery-white_early_proceed-negative.log",
+        "negative_log_sha256": "ebb2bdad2ca49c825655ab77226b4e478b2b63eae013f598b64615bb51864c53"
+      }
     },
     {
       "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_contact_stop",
@@ -154,6 +406,12 @@
             "log": "cpu-contact-fallback-offline-v8.log",
             "log_sha256": "941bb8947917d1e412869155048835c62f240d106fba38801fab07588d675194",
             "construction_sha256": "b7e24d4bbef4e36cad43e8f6e9cc1cd2837a8fe895e06e5797d8056710eb10d9"
+          },
+          "compatibility": {
+            "receipt": "compat-white_contact_stop-fallback1-receipt.json",
+            "sha256": "c4a9691dceb4c618ad835a92a577146da95ed1ed057439d472e928cf8185aef8",
+            "log": "compat-white_contact_stop-fallback1-analysis.log",
+            "negative_log": "compat-white_contact_stop-fallback1-negative.log"
           }
         }
       ],
@@ -184,7 +442,91 @@
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_contact_stop-recipe.json"
+      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-white_contact_stop-recipe.json",
+      "compatibility": {
+        "receipt": "compat-white_contact_stop-primary-receipt.json",
+        "sha256": "0c882c31864aa1c4c558adcf268d6621cf0930c3cd0f77f9cfdc835d139c513e",
+        "log": "compat-white_contact_stop-primary-analysis.log",
+        "negative_log": "compat-white_contact_stop-primary-negative.log"
+      },
+      "negative": {
+        "log": "compat-white_contact_stop-primary-negative.log"
+      },
+      "acquisition": {
+        "driver_speed_mps": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "body_gap_m": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "precaution_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "contact_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "original_camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "blindness_attestation": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "reviewed_map_route": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "carried_cue": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_contact_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-attempt-white_contact_stop-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-saved-white_contact_stop-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c111248-nov24/process-saved-white_contact_stop-v1/v0001/feedback.json",
+        "test_log": "process-saved-white_contact_stop-proof.json",
+        "test_log_sha256": "c020223f9f0f58b932f12e39674196d07e236be2f7cdb1516982af8db221e576",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_contact_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "31ac5486b47d50bb91d121ef5d7d9d159b47c1b1961d4f528b39e1cd57fc744a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_contact_stop --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_contact_stop/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_contact_stop/result.json --expected-frames 2 --diagnostic-small-profile",
+        "test_exit_code": 0,
+        "test_log": "delivery-white_contact_stop-positive.log",
+        "test_log_sha256": "08a24af4cfcd2ab245191512543ade5958df119964760e0a24e2353ac0d643ae",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__white_contact_stop --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/white_contact_stop/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/white_contact_stop/result.json --expected-frames 2 --diagnostic-small-profile",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source mismatch",
+        "negative_log": "delivery-white_contact_stop-negative.log",
+        "negative_log_sha256": "ebb2bdad2ca49c825655ab77226b4e478b2b63eae013f598b64615bb51864c53"
+      }
     },
     {
       "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__red_tip_full_stop_wait",
@@ -224,7 +566,91 @@
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-red_tip_full_stop_wait-recipe.json"
+      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-red_tip_full_stop_wait-recipe.json",
+      "compatibility": {
+        "receipt": "compat-red_tip_full_stop_wait-primary-receipt.json",
+        "sha256": "6ef9450dc8f26db7a3e51f216381c962225ff81a4f2f34063998560315a851f8",
+        "log": "compat-red_tip_full_stop_wait-primary-analysis.log",
+        "negative_log": "compat-red_tip_full_stop_wait-primary-negative.log"
+      },
+      "negative": {
+        "log": "compat-red_tip_full_stop_wait-primary-negative.log"
+      },
+      "acquisition": {
+        "driver_speed_mps": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "body_gap_m": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "precaution_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "contact_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "original_camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "blindness_attestation": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "reviewed_map_route": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "carried_cue": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__red_tip_full_stop_wait --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-attempt-red_tip_full_stop_wait-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-saved-red_tip_full_stop_wait-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c111248-nov24/process-saved-red_tip_full_stop_wait-v1/v0001/feedback.json",
+        "test_log": "process-saved-red_tip_full_stop_wait-proof.json",
+        "test_log_sha256": "c04178dfe3592e6c5a41b7731c99ef188905e57e81768c74f1f2ebe75b9f2c79",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__red_tip_full_stop_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "31ac5486b47d50bb91d121ef5d7d9d159b47c1b1961d4f528b39e1cd57fc744a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__red_tip_full_stop_wait --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/red_tip_full_stop_wait/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/red_tip_full_stop_wait/result.json --expected-frames 2 --diagnostic-small-profile",
+        "test_exit_code": 0,
+        "test_log": "delivery-red_tip_full_stop_wait-positive.log",
+        "test_log_sha256": "8106faa0050c184c05f024fc558d7224e72fa63806fa54463c4338f3009944c3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__red_tip_full_stop_wait --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/red_tip_full_stop_wait/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/red_tip_full_stop_wait/result.json --expected-frames 2 --diagnostic-small-profile",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source mismatch",
+        "negative_log": "delivery-red_tip_full_stop_wait-negative.log",
+        "negative_log_sha256": "ebb2bdad2ca49c825655ab77226b4e478b2b63eae013f598b64615bb51864c53"
+      }
     },
     {
       "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__assisted_full_stop_wait",
@@ -264,7 +690,91 @@
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-assisted_full_stop_wait-recipe.json"
+      "fixture_recipe": "work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/diagnostic-assisted_full_stop_wait-recipe.json",
+      "compatibility": {
+        "receipt": "compat-assisted_full_stop_wait-primary-receipt.json",
+        "sha256": "8bd7cc64708a6debb30aa7a3a5b54aade4136bcc59418de627f2f0c76ed7a2b7",
+        "log": "compat-assisted_full_stop_wait-primary-analysis.log",
+        "negative_log": "compat-assisted_full_stop_wait-primary-negative.log"
+      },
+      "negative": {
+        "log": "compat-assisted_full_stop_wait-primary-negative.log"
+      },
+      "acquisition": {
+        "driver_speed_mps": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "body_gap_m": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "precaution_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "contact_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "original_camera_frames": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_reviewed",
+          "evidence": "Original 20 Hz actor observations and frame-matched camera PNGs, sealed in the saved manifest; actual pixels require Native review."
+        },
+        "blindness_attestation": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "reviewed_map_route": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        },
+        "carried_cue": {
+          "entrypoint": "reviewed_sources.py",
+          "method": "prepare",
+          "evidence": "Independently reviewed source packet, original bytes and SHA256 custody copied into the Native attempt."
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/execution-manifest.json --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__assisted_full_stop_wait --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-attempt-assisted_full_stop_wait-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111248-nov24/process-saved-assisted_full_stop_wait-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c111248-nov24/process-saved-assisted_full_stop_wait-v1/v0001/feedback.json",
+        "test_log": "process-saved-assisted_full_stop_wait-proof.json",
+        "test_log_sha256": "4e1b92b7773e338604be260b8b092dd03500443f7658f95b6cfd05851248fac6",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__assisted_full_stop_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_acceptance.py",
+        "script_sha256": "31ac5486b47d50bb91d121ef5d7d9d159b47c1b1961d4f528b39e1cd57fc744a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__assisted_full_stop_wait --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/assisted_full_stop_wait/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/assisted_full_stop_wait/result.json --expected-frames 2 --diagnostic-small-profile",
+        "test_exit_code": 0,
+        "test_log": "delivery-assisted_full_stop_wait-positive.log",
+        "test_log_sha256": "f47dddb16b042cb079f098ea67fdc355b17ed5ebcaadd27b9ad1011f6b6542a4",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/delivery_acceptance.py --case testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver__assisted_full_stop_wait --manifest .runtime-work/c111248-nov24/delivery-fixtures-v1/assisted_full_stop_wait/saved-manifest.json --result .runtime-work/c111248-nov24/delivery-fixtures-v1/assisted_full_stop_wait/result.json --expected-frames 2 --diagnostic-small-profile",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source mismatch",
+        "negative_log": "delivery-assisted_full_stop_wait-negative.log",
+        "negative_log_sha256": "ebb2bdad2ca49c825655ab77226b4e478b2b63eae013f598b64615bb51864c53"
+      }
     }
   ]
 }

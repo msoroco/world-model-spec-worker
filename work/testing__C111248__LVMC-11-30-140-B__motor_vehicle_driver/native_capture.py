@@ -44,15 +44,21 @@ def _source_copy(source: Path, dest: Path, label: str) -> dict:
 
 def _control(case, row: dict, approach_speed_cap_mps: float = 2.0) -> dict:
     """Bounded engineering policy; contact is never a commanded action."""
+    if not 0 < approach_speed_cap_mps <= 2.0:
+        raise ValueError("Bounded approach speed cap required")
     if row["person_in_path"] and not row["person_clear"]:
         if case.response == "rolling" and row["body_gap_m"] > 8:
-            return {"throttle": 0.0, "brake": 0.2, "target_speed_mps": 0.5}
+            target = min(0.5, approach_speed_cap_mps)
+            speed = row["driver_speed_mps"]
+            return {"throttle": 0.18 if speed < target - 0.08 else 0.0,
+                    "brake": 0.15 if speed > target + 0.08 else 0.0,
+                    "target_speed_mps": target}
         return {"throttle": 0.0, "brake": 1.0, "target_speed_mps": 0.0}
     if case.precaution == "wait_until_clear" and not row["person_clear"]:
         return {"throttle": 0.0, "brake": 1.0, "target_speed_mps": 0.0}
-    if not 0 < approach_speed_cap_mps <= 2.0:
-        raise ValueError("Bounded approach speed cap required")
-    return {"throttle": 0.0, "brake": 0.0,
+    speed = row["driver_speed_mps"]
+    return {"throttle": 0.25 if speed < approach_speed_cap_mps - 0.1 else 0.0,
+            "brake": 0.15 if speed > approach_speed_cap_mps + 0.1 else 0.0,
             "target_speed_mps": approach_speed_cap_mps}
 
 

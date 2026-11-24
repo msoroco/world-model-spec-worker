@@ -58,9 +58,11 @@ class TestNativeCapture(unittest.TestCase):
         from blind_encounter import CASE_BY_ID
         case = CASE_BY_ID['white_contact_stop']
         clear = {'person_in_path': False, 'person_clear': True,
-                 'body_gap_m': 20.0}
+                 'body_gap_m': 20.0, 'driver_speed_mps': 0.0}
         self.assertEqual(_control(case, clear, 2.0)['target_speed_mps'], 2.0)
         self.assertEqual(_control(case, clear, 1.0)['target_speed_mps'], 1.0)
+        self.assertGreater(_control(case, clear, 1.0)['throttle'], 0.0)
+        self.assertGreater(_control(case, dict(clear, driver_speed_mps=1.3), 1.0)['brake'], 0.0)
         blocked = dict(clear, person_in_path=True, person_clear=False)
         self.assertEqual(_control(case, blocked, 1.0)['brake'], 1.0)
 
