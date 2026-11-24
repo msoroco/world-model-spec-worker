@@ -19,7 +19,14 @@ class GeometryTests(unittest.TestCase):
         report = geometry.validate(self.scene)
         self.assertTrue(report["route_clearance_verified_offline"])
         self.assertTrue(report["access_aisle_adjacent_to_parking"])
+        self.assertEqual(report["route_length_m"], 110.0)
         self.assertFalse(report["native_realization_confirmed"])
+
+    def test_rejects_route_too_short_for_full_capture(self):
+        changed = copy.deepcopy(self.scene)
+        changed["ego_route_xy_m"] = [[-18.0, 0.0], [18.0, 0.0]]
+        with self.assertRaisesRegex(ValueError, "shorter than 45 seconds"):
+            geometry.validate(changed)
 
     def test_rejects_access_aisle_replaced_by_travel_lane(self):
         changed = copy.deepcopy(self.scene)

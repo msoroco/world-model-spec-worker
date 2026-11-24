@@ -2,7 +2,7 @@
   "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
   "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
   "status": "partial",
-  "readiness_kind": "partial_exact_alley_owned_diagnostic_capture",
+  "readiness_kind": "diagnostic_only",
   "applied_update": 0,
   "tests": [
     {
@@ -328,10 +328,46 @@
       "exit_code": 1,
       "log": "cpu-nov24b-runtime-launch-negative.log",
       "sha256": "fbcd103489f848e1d9684d54eae217b14e4b4840718f0560d87c3f11d82c728c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov24b-tests-v3.log",
+      "sha256": "b34e24c992ea6926d0e36cd659427fe43d102ae21c1664c6b1d54c4aba3b7142"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-010-nov24b/offline-steady-v5",
+      "exit_code": 0,
+      "log": "cpu-nov24b-offline-steady-v5.log",
+      "sha256": "43220cb5d3929dc250a0ad4c3d900187d6852c9f1f136343ca351ce43373ee85"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-010-nov24b/offline-variation-v5",
+      "exit_code": 0,
+      "log": "cpu-nov24b-offline-variation-v5.log",
+      "sha256": "e12f9f8d4963dde70bed4f0779f8206e4e956d1c954e068d260c5439e6520f10"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov24b-static-v3.log",
+      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov24b-strict-v3.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "900-frame fake Native publication, FFV1 audit, seal, record_native_exit, source-shaped Core convert",
+      "exit_code": 0,
+      "log": "cpu-nov24b-full900-software-proof.log",
+      "sha256": "9b7df0bcdf2c42b764606c701dca5aafffff8097b3da3e11023edd1b41874258"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Both exact alley diagnostic bundles now accept runtime-style Native launch with environment supplied reviewed site/adapter and one materialized attempt; 28 CPU tests, pinned preflight, and both current-runtime offline checks pass. Canonical semantic proposals/execution manifest, source-shaped positive/negative compatibility, process-saved and independent delivery receipts remain CPU work. A reviewed local Native alley/site and municipal source packet are also required for physical execution. Exterior observations cannot resolve interior full attention or legal judgment."
+  "reason": "32 focused tests, both offline cases, static gate, and full 900-frame fake Native/Core software proof pass. Exact strict gate still rejects partial package. Canonical proposal/manifest, current recording description and source-bound recording evidence, compatibility, saved processing, comparison and delivery proofs remain; reviewed site/municipal/access-aisle source packet and actual Native acquisition remain unverified."
 }

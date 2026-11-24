@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C109705__NRS-484B-400-2b__motor_vehicle_driver",
   "input_sha256": "05e033903ed87c091e011510e5789bb5d9f692dc8f9914c029ce912eb1c70c74",
-  "status": "partial",
-  "readiness_kind": "partial_native_handoff_repair",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -316,6 +316,30 @@
       "exit_code": 0,
       "log": "cpu-current-static.log",
       "sha256": "f0d299bf832c8d5b5ee6d6d81443685e167d1689691b6302ca03ca933643e8b9"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c109705-2b-nov24/pipeline PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime:runtime/scenario_pipeline:work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver .venv-cpu/bin/python work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/proof_native_launch.py --scratch .runtime-work/c109705-2b-nov24/fake-launch-v6",
+      "exit_code": 0,
+      "log": "cpu-fake-native-launch.log",
+      "sha256": "0547f394cc2c3ea0ee4f3dda302a592bc01162d3e66a4a72daea488229e23191"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C109705__NRS-484B-400-2b__motor_vehicle_driver/tests -p test_*.py -q",
+      "exit_code": 0,
+      "log": "cpu-final-native-tests.log",
+      "sha256": "9421b02bc0cdcddb6642f8a0edb5861dd96e47c5f5d71c2578e2eddced4c7ffb"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-final-native-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2b__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-final-native-static.log",
+      "sha256": "f0d299bf832c8d5b5ee6d6d81443685e167d1689691b6302ca03ca933643e8b9"
     }
   ],
   "remaining_gpu_checks": [
@@ -323,7 +347,7 @@
     "Run each exact 45 s CARLA left-turn departure with original body, map, road and four-camera source custody; inspect completion and visibility",
     "Independently judge the right-of-destination-centerline obligation from original evidence without a numeric legal cutoff"
   ],
-  "reason": "Exact static strict gate passed with CPU receipts, but selected Native runner still needs runtime capture CLI/env integration and materialized-directory handling before executable handoff; preserving partial while that concrete implementation is repaired.",
+  "reason": "All selected CPU constructions, original-source Native publication handoff, positive/negative compatibility, saved processing, physical diagnostic fixtures, and delivery audits pass. A full 900-frame fake Native launch passes Core conversion and Lean decoder; original CARLA physical recordings remain queued for GPU review.",
   "historical_nonpassing_checks": [
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C109705__NRS-484B-400-2b__motor_vehicle_driver --complete --require-delivery-ready",

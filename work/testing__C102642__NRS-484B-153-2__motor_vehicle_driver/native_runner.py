@@ -13,6 +13,7 @@ from pathlib import Path
 from carla_adapter import CarlaDoorAdapter
 from native_capture import RATE_HZ, capture
 from native_output_bridge import publish
+from analysis import analyze
 from site_contract import read_packet
 
 
@@ -63,4 +64,5 @@ def run_capture(world, carla_module, *, survey_path: Path, survey_sha256: str,
     if type(source) is not bytes or hashlib.sha256(source).hexdigest() != packet["map_sha256"]:
         raise ValueError("loaded map bytes changed before publication")
     seal = publish(output, map_bytes=source, restoration_verified=True)
+    analyze(output, output / "analysis-report.json")
     return dict(result, capture_seal_sha256=hashlib.sha256(seal.read_bytes()).hexdigest())

@@ -176,6 +176,7 @@ def build() -> None:
                  "native_output_bridge.py": (HERE / "native_output_bridge.py").read_text(),
                  "door_interaction.py": (HERE / "door_interaction.py").read_text(),
                  "delivery_measure.py": (HERE / "delivery_measure.py").read_text(),
+                 "analysis.py": (HERE / "analysis.py").read_text(),
                  "delivery_audit.py": (HERE / "delivery_audit.py").read_text(),
                  "process_saved.py": (HERE / "process_saved.py").read_text(),
                  "compare_saved.py": (HERE / "compare_saved.py").read_text(),

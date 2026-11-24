@@ -57,6 +57,9 @@ class World:
     def get_snapshot(self):
         return type("S", (), {"frame": self.frame, "timestamp": type("T", (), {"elapsed_seconds": self.frame / 20})()})()
 
+    def get_settings(self):
+        return type("Settings", (), {"no_rendering_mode": False})()
+
 
 class AdapterTests(unittest.TestCase):
     def setUp(self):
@@ -87,6 +90,8 @@ class AdapterTests(unittest.TestCase):
         self.parked = self.adapter.spawn_parked({})
         self.passing = self.adapter.spawn_passing({}, "overlap")
         self.driver = self.adapter.spawn_driver({})
+        self.adapter.camera_sensor_ids = {view: number for number, view in
+                                          enumerate(mod.CAMERA_SIZE, start=10)}
 
     def tearDown(self):
         self.adapter.cleanup()
@@ -100,6 +105,7 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual((row["observed_act"], row["passing_speed_mps"]), ("open", 2))
         self.assertEqual(row["parked_position_m"], [4.0, 2.0, 0.1])
         self.assertEqual(len(row["parked_body_vertices_m"]), 4)
+        self.assertEqual(len(row["rgb_sensors"]), 4)
         self.assertEqual(len(row["passing_body_vertices_m"]), 4)
         self.assertEqual(row["passing_blueprint"], "vehicle.test.car")
 

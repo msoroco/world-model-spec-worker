@@ -120,6 +120,14 @@ def capture(adapter, *, survey_path: Path, survey_sha256: str,
             raise ValueError("observed act side differs from selected passing-side relation")
         payload = (json.dumps(trace, sort_keys=True, separators=(",", ":")) + "\n").encode()
         (output / "native-trace.json").write_bytes(payload)
+        (output / "door-source.json").write_text(json.dumps({
+            "case_id": case_id,
+            "selected_act": site["selected_act"],
+            "selected_side": site["selected_door_side"],
+            "source_trace_sha256": hashlib.sha256(payload).hexdigest(),
+            "survey_sha256": survey_sha256,
+            "source_kind": "source_bound_native_door_observation",
+            "diagnostic_fixture": False}, sort_keys=True, separators=(",", ":")) + "\n")
         return {"case_id": case_id, "original_trace_sha256": hashlib.sha256(payload).hexdigest(),
                 "frame_count": len(frames), "camera_frame_count": len(frames) * len(CAMERAS),
                 "survey_sha256": survey_sha256,

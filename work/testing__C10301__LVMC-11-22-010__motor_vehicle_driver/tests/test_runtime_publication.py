@@ -126,3 +126,47 @@ class RuntimePublicationTests(unittest.TestCase):
                     for name, (video, _, _) in PUBLICATION.VIEWS.items()}):
                 with self.assertRaises(Exception):
                     PUBLICATION.publish_original(root, CASE, expected_frames=2)
+
+    def test_recording_channels_are_source_projected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            operation = [{"time_s": i / 20, "person_id": "person", "vehicle_id": "vehicle",
+                          "position_x_m": i, "position_y_m": 0,
+                          "yaw_rate_rad_s": 0.1, "speed_m_s": 2,
+                          "accel_longitudinal_m_s2": 0,
+                          "straddles_marking": False, "hard_deceleration": False,
+                          "time_to_conflict_s": None, "traffic_signal": "none"}
+                         for i in range(2)]
+            _jsonl(root / "operation.jsonl", operation)
+            _jsonl(root / "context.jsonl", [{"native_frame": i} for i in range(2)])
+            description = {"channels": [{"name": name, "unit": "structured record",
+                "sampling_rate_hz": 20, "method": "source projection", "time_window": "full",
+                "reference_frame": "original", "uncertainty": "20 Hz"}
+                for name in PUBLICATION.CHANNEL_FIELDS],
+                "context_inputs": [{"name": name, "unit": "source record", "method": "source hash"}
+                    for name in ("person_vehicle_operation", "municipal_applicability",
+                                 "alley_access_aisle_geometry")], "limitations": []}
+            original = {name: "a" * 64 for name in (
+                "municipal_jurisdiction_source_sha256", "alley_route_source_sha256",
+                "access_aisle_source_sha256", "parking_designation_source_sha256")}
+            receipts = PUBLICATION._recording_evidence(root, description,
+                                                        {"operation": operation}, original)
+            self.assertEqual(len(receipts), 11)
+            ttc = _jsonl_rows(root / "channels/drv_time_to_conflict.jsonl")
+            self.assertEqual(ttc[0]["value"], {"time_to_conflict_s": None,
+                                                "observed_conflict": False})
+            context = json.loads((root / "channels/context.json").read_text())
+            self.assertEqual(context["municipal_applicability"]["jurisdiction_source_sha256"], "a" * 64)
+            broken = [dict(row) for row in operation]
+            del broken[0]["speed_m_s"]
+            with tempfile.TemporaryDirectory() as other:
+                candidate = Path(other)
+                _jsonl(candidate / "operation.jsonl", broken)
+                _jsonl(candidate / "context.jsonl", [{"native_frame": i} for i in range(2)])
+                with self.assertRaises(KeyError):
+                    PUBLICATION._recording_evidence(candidate, description,
+                                                    {"operation": broken}, original)
+
+
+def _jsonl_rows(path):
+    return [json.loads(line) for line in path.read_text().splitlines()]

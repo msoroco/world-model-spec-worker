@@ -8,9 +8,9 @@
       "requirement": "person operating a vehicle during the alley route",
       "source": "LVMC 11.22.010",
       "output_key": "operation_measurement",
-      "method": "saved_finalizer.finalize and attention_measurement.measure",
+      "method": "analyze",
       "value_type": "object",
-      "kind": "measured_exterior",
+      "kind": "measured",
       "inputs": [
         "ego.jsonl",
         "context.jsonl",
@@ -22,9 +22,9 @@
       "requirement": "original exterior observations are source bound",
       "source": "LVMC 11.22.010",
       "output_key": "source_sha256",
-      "method": "saved_delivery.audit",
+      "method": "analyze",
       "value_type": "object",
-      "kind": "source_integrity",
+      "kind": "sourced_context",
       "inputs": [
         "ego.jsonl",
         "context.jsonl",
@@ -37,12 +37,11 @@
       "requirement": "four original camera sources cover the complete operating interval",
       "source": "LVMC 11.22.010",
       "output_key": "decoded_original_pngs",
-      "method": "saved_delivery.audit",
-      "value_type": "integer",
-      "kind": "source_integrity",
+      "method": "analyze",
+      "value_type": "number",
+      "kind": "sourced_context",
       "inputs": [
-        "camera-frame-map.jsonl",
-        "camera-png/"
+        "camera-frame-map.jsonl"
       ]
     },
     {
@@ -50,9 +49,9 @@
       "requirement": "full time and attention is an interior judgment not established by exterior traces",
       "source": "LVMC 11.22.010",
       "output_key": "attention_state",
-      "method": "saved_finalizer.finalize",
-      "value_type": "string",
-      "kind": "unresolved_judgment",
+      "method": "analyze",
+      "value_type": "text",
+      "kind": "sourced_context",
       "inputs": [
         "operation.jsonl",
         "camera-frame-map.jsonl"

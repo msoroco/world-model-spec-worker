@@ -37,6 +37,7 @@ class CarlaDoorAdapter:
         self.passing = None
         self.driver = None
         self.pending_act = None
+        self.camera_sensor_ids = {}
 
     def map_sha256(self):
         # Source reader must hash the loaded original map, not its display name.
@@ -86,6 +87,7 @@ class CarlaDoorAdapter:
             if sensor is None or not sensor.is_alive:
                 raise ValueError("Native camera spawn/readback failed: " + view)
             self.owned.append(sensor)
+            self.camera_sensor_ids[view] = sensor.id
             sensor.listen(lambda image, name=view: self._receive(name, image))
 
     def _receive(self, view, image):
@@ -181,6 +183,12 @@ class CarlaDoorAdapter:
         raw["parked_velocity_mps"] = [float(parked_vel.x), float(parked_vel.y), float(parked_vel.z)]
         raw["parked_body_vertices_m"] = [
             [float(v.x), float(v.y), float(v.z)] for v in body]
+        settings = self.world.get_settings()
+        if settings.no_rendering_mode is not False or set(self.camera_sensor_ids) != set(CAMERA_SIZE):
+            raise ValueError("four live RGB sensors and enabled rendering required")
+        raw["world_settings"] = {"no_rendering_mode": settings.no_rendering_mode}
+        raw["rgb_sensors"] = [{"view": view, "actor_id": self.camera_sensor_ids[view],
+                               "source_frame_id": frame_id} for view in CAMERA_SIZE]
         return raw
 
     def camera_frame(self, view, frame_id):

@@ -140,6 +140,8 @@ def publish(root: Path, *, map_bytes: bytes, restoration_verified: bool,
                         "speed_mps": row["driver_speed_mps"]}
         source_packet = {"frame": frame, "time_s": time_s,
                          "participants": [parked_actor, passing_actor, driver_actor],
+                         "world_settings": row["world_settings"],
+                         "rgb_sensors": row["rgb_sensors"],
                          "door_interaction_observation": {
                              "observed_act": row["observed_act"],
                              "act_side": row.get("act_side"),
@@ -170,7 +172,7 @@ def publish(root: Path, *, map_bytes: bytes, restoration_verified: bool,
                          "ego": {"body_vertices_m": body, "position_m": position,
                                  "heading_deg": row["parked_heading_deg"],
                                  "speed_mps": speed,
-                                 "speed_provenance": "original_native_actor_get_velocity"},
+                                 "speed_provenance": "original_trace_actor_get_velocity"},
                          "original_observations": source_packet,
                          "world": {"weather": {}}})
     write_jsonl(root / "video_frames.jsonl", frame_map)
@@ -182,6 +184,7 @@ def publish(root: Path, *, map_bytes: bytes, restoration_verified: bool,
     write_json(root / "capture/manifest.json", {
         "acquisition": "original_live_run", "diagnostic_fixture": False,
         "extraction_confirmed": True, "frames": len(rows),
+        "observation_contract_version": 2,
         "sources": {"road.xodr": sha(road), "trace.jsonl": sha(root / "trace.jsonl")},
         "scope": "original Native door, actor and four RGB callback sources"})
     for view, target in VIEWS.items():

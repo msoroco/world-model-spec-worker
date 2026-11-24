@@ -140,3 +140,9 @@ The revised runner, adapter and bundle tests pass; all five current-runtime exac
 Core conversion expects original_observations.participants as source-bound actor records. The Native adapter now records original passing and parked actor type, classification attributes, position, heading, velocity and body vertices. The publication bridge writes parked/passing records and the actual parked blueprint in recorder_info; it no longer writes bare IDs or an invented blueprint. The 900-frame fake Native publication and five exact offline materializations pass. This is software compatibility evidence only; no original surveyed hill-crest recording or legal interference verdict exists.
 
 Draft execution manifest SHA256: `7eab617671e87501e2a24b44a29b626100415fed835cb0a681915dc68d8f9749`. Current selected manifest and case-specific compatibility, saved processing and independent audit proofs remain pending.
+
+## 2026-11-24 Three-actor and live RGB provenance update
+
+The original publication now carries parked vehicle, moving vehicle and selected pedestrian driver body, velocity, blueprint and source classification attributes per frame. The Native adapter records four live RGB sensor IDs and the per-frame CARLA rendering setting; capture/manifest.json declares observation contract version 2, and the pinned runtime live RGB source check passed in the 900-frame fake Native test. All five exact offline bundles rematerialized. Physical acceptance, selected delivery compatibility and saved-processing proofs remain pending.
+
+Current draft execution manifest SHA256: `53ca317595daffaff31f669b41e682e99d6c9422b6c6c9753d521ff7a8838de4`.

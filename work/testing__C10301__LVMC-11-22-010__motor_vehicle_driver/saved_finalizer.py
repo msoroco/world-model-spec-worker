@@ -45,17 +45,91 @@ def finalize(attempt: Path, case_id: str, allow_diagnostic: bool = False) -> dic
     return result
 
 
+def analyze(attempt: Path, case_id: str) -> tuple[dict, dict]:
+    """Rebuild current-runtime analysis outputs from a staged original capture."""
+    from runtime_publication import _recording_evidence, _rows
+    from worker_exchange.native_output import physical_result, validate_result
+
+    for name in ("capture.json", "operation.jsonl", "trace.jsonl",
+                 "video_frames.jsonl", "camera-frame-map.jsonl"):
+        if not (attempt / name).is_file():
+            raise ValueError("Missing required source: " + name)
+    capture = json.loads((attempt / "capture.json").read_text())
+    diagnostic = capture.get("diagnostic_fixture") is True
+    measurement = finalize(attempt, case_id, allow_diagnostic=diagnostic)
+    construction = json.loads((attempt / "construction.json").read_text())
+    recording = construction["recording_description"]
+    if (attempt / "channels").exists():
+        raise ValueError("Saved analysis channels must be rebuilt in a fresh stage")
+    evidence = _recording_evidence(attempt, recording,
+                                   {"operation": _rows(attempt / "operation.jsonl")}, capture)
+    original = json.loads((attempt / "acquisition-provenance.json").read_text())
+    if original.get("diagnostic_fixture") != diagnostic:
+        raise ValueError("Original acquisition provenance differs from capture")
+    result = {
+        "case_id": case_id,
+        "measured_values": {"operation_frames": measurement["original_frames"],
+                            "attention_state": "unobserved", "legal_judgment": "unresolved"},
+        "target_checks": [{"target": "source-bound alley operation", "requested": True,
+                           "measured": measurement["original_frames"] == 900,
+                           "method": "saved original same-frame operation join", "tolerance": 0,
+                           "matched": measurement["original_frames"] == 900,
+                           "physical_cause_confirmed": False,
+                           "cause_evidence": measurement["source_sha256"]}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False,
+        "termination_reason": "Saved original analysis; physical and legal review pending",
+        "physical_failure_flags": [], "trace_reference": "trace.jsonl",
+        "video_references": [name + ".mkv" for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": recording, "recording_evidence": evidence,
+        "realized_observables": {},
+    }
+    result = physical_result(attempt, result)
+    validate_result(result)
+    report = {"format": "worker-analysis-report", "case_id": case_id,
+              "measurements": {key: {"method": "analyze", "value": measurement[key],
+                  "sources": {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                              for name in names}}
+                  for key, names in {
+                      "operation_measurement": ["ego.jsonl", "context.jsonl", "operation.jsonl"],
+                      "source_sha256": ["ego.jsonl", "context.jsonl", "operation.jsonl",
+                                        "camera-frame-map.jsonl"],
+                      "decoded_original_pngs": ["camera-frame-map.jsonl"],
+                      "attention_state": ["operation.jsonl", "camera-frame-map.jsonl"],
+                  }.items()},
+              "physical_checks": result["physical_checks"],
+              "realized_observables": result["realized_observables"],
+              "provenance_kind": result["provenance_kind"],
+              "diagnostic_fixture": result["diagnostic_fixture"],
+              "limitations": ["Exterior observation does not establish interior attention or legal status."],
+              "analysis_complete": True}
+    return report, result
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--attempt", type=Path, required=True)
-    parser.add_argument("--case", required=True)
+    parser.add_argument("--case")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--allow-diagnostic", action="store_true")
     args = parser.parse_args(argv)
     if args.output.exists():
         raise ValueError("saved finalizer output already exists")
-    result = finalize(args.attempt, args.case, args.allow_diagnostic)
-    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if args.output.name == "analysis-report.json":
+        case = args.case or json.loads((args.attempt / "config.json").read_text())["selected_case_id"]
+        report, result = analyze(args.attempt, case)
+        result_path = args.attempt / "result.json"
+        if result_path.exists():
+            raise ValueError("Saved analysis result already exists")
+        result_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    else:
+        if not args.case:
+            raise ValueError("--case is required for standalone measurement")
+        result = finalize(args.attempt, args.case, args.allow_diagnostic)
+        args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0
 
 

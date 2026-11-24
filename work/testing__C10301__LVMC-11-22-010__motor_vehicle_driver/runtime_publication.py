@@ -18,6 +18,18 @@ VIEWS = {
     "driver_reference": ("driver_reference", 1280, 720),
 }
 
+CHANNEL_FIELDS = {
+    "kin.position": lambda row: [row["position_x_m"], row["position_y_m"]],
+    "kin.yaw_rate": lambda row: row["yaw_rate_rad_s"],
+    "kin.speed": lambda row: row["speed_m_s"],
+    "kin.accel_longitudinal": lambda row: row["accel_longitudinal_m_s2"],
+    "drv.straddles_marking": lambda row: row["straddles_marking"],
+    "drv.hard_deceleration": lambda row: row["hard_deceleration"],
+    "drv.time_to_conflict": lambda row: {"time_to_conflict_s": row["time_to_conflict_s"],
+                                              "observed_conflict": row["time_to_conflict_s"] is not None},
+    "dev.traffic_signal": lambda row: row["traffic_signal"],
+}
+
 
 def _rows(path: Path) -> list[dict]:
     if not path.is_file() or path.is_symlink():
@@ -27,6 +39,47 @@ def _rows(path: Path) -> list[dict]:
 
 def _hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _recording_evidence(output: Path, recording: dict, sources: dict, original: dict) -> list[dict]:
+    """Project only exact per-tick operation and sourced context fields."""
+    operation = sources["operation"]
+    channels = recording["channels"]
+    if {c["name"] for c in channels} - set(CHANNEL_FIELDS):
+        raise ValueError("Unmapped current-runtime recording channel")
+    folder = output / "channels"
+    folder.mkdir(exist_ok=False)
+    evidence = []
+    for channel in channels:
+        name = channel["name"]
+        path = folder / (name.replace(".", "_") + ".jsonl")
+        with path.open("x") as stream:
+            for row in operation:
+                stream.write(json.dumps({"time_s": row["time_s"],
+                                         "value": CHANNEL_FIELDS[name](row)}, allow_nan=False) + "\n")
+        evidence.append({"name": name, "unit": channel["unit"],
+                         "reference": str(path.relative_to(output))})
+    contexts = {} if not recording["context_inputs"] else {
+        "person_vehicle_operation": {"person_id": operation[0]["person_id"],
+            "vehicle_id": operation[0]["vehicle_id"],
+            "interval_s": [operation[0]["time_s"], operation[-1]["time_s"]],
+            "operation_source_sha256": _hash(output / "operation.jsonl")},
+        "municipal_applicability": {"jurisdiction_source_sha256": original["municipal_jurisdiction_source_sha256"],
+            "review_status": "source-bound; legal applicability unresolved"},
+        "alley_access_aisle_geometry": {
+            "alley_route_source_sha256": original["alley_route_source_sha256"],
+            "access_aisle_source_sha256": original["access_aisle_source_sha256"],
+            "parking_designation_source_sha256": original["parking_designation_source_sha256"],
+            "native_context_sha256": _hash(output / "context.jsonl")},
+    }
+    if {c["name"] for c in recording["context_inputs"]} - set(contexts):
+        raise ValueError("Unmapped current-runtime recording context")
+    context_file = folder / "context.json"
+    context_file.write_text(json.dumps(contexts, sort_keys=True) + "\n")
+    evidence.extend({"name": channel["name"], "unit": channel["unit"],
+                     "reference": str(context_file.relative_to(output))}
+                    for channel in recording["context_inputs"])
+    return evidence
 
 
 def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
@@ -102,6 +155,7 @@ def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
                  "-c:v", "ffv1", str(video)], check=True)
         audit(video, expected_frames, mapping_sha256=_hash(mapping))
     recording = json.loads((output / "construction.json").read_text())["recording_description"]
+    recording_evidence = _recording_evidence(output, recording, sources, original)
     result = {
         "case_id": case_id,
         "measured_values": {"operation_frames": expected_frames,
@@ -119,7 +173,7 @@ def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
         "physical_failure_flags": [], "trace_reference": "trace.jsonl",
         "video_references": [name + ".mkv" for name in ("overview", "approach", "reference_corner", "driver_reference")],
         "video_frame_map_reference": mapping.name,
-        "recording_description": recording, "recording_evidence": [],
+        "recording_description": recording, "recording_evidence": recording_evidence,
         "realized_observables": {},
     }
     (output / "acquisition-provenance.json").write_text(json.dumps({

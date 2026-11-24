@@ -59,6 +59,10 @@ class BridgeTests(unittest.TestCase):
                              "driver_speed_mps": 0.0,
                              "driver_body_vertices_m": [[0, 0, 0], [1, 0, 0],
                                                         [1, 1, 0], [0, 1, 0]],
+                             "world_settings": {"no_rendering_mode": False},
+                             "rgb_sensors": [{"view": view, "actor_id": number,
+                                              "source_frame_id": frame} for number, view in
+                                             enumerate(("front", "rear", "left", "right"), start=10)],
                              "observed_act": "open" if index == 1 else "none",
                              "act_side": "left" if index == 1 else None,
                              "passing_body_xy": [[3, 0], [3, 3]],
@@ -89,6 +93,8 @@ class BridgeTests(unittest.TestCase):
                               first["original_observations"]["participants"]], [1, 2, 3])
             self.assertEqual(first["original_observations"]["participants"][1]["blueprint"],
                              "vehicle.test.car")
+            from batch_pipeline.carla import verify_native_rgb_evidence
+            verify_native_rgb_evidence(root / "capture")
             for target in ("overview", "approach", "reference_corner", "driver_reference"):
                 self.assertTrue((root / (target + ".mkv")).is_file())
             from worker_exchange.saved_processing import record_native_exit

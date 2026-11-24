@@ -5,6 +5,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from build_semantic_draft import recording_description
+
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
@@ -134,7 +136,7 @@ def build() -> None:
                  "alley-scene.json": scene,
                  "config.json": json.dumps(config, indent=2) + "\n",
                  "tests/test_bundle.py": TEST}
-        recording = next(item["recording_description"] for item in plan["cases"] if item["case_id"] == case)
+        recording = recording_description(next(item["recording_description"] for item in plan["cases"] if item["case_id"] == case))
         construction = {"law_id": config["law_id"], "cell_id": config["cell_id"],
                         "actor": config["actor"], "case_id": case,
                         "entrypoint": "runner.py", "diagnostic_only": True,

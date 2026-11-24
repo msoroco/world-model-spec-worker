@@ -48,9 +48,14 @@ def validate(scene):
         if not (alley[0] + margin <= x <= alley[2] - margin and
                 alley[1] + margin <= y <= alley[3] - margin):
             raise ValueError("ego body does not clear alley route")
+    route_length = sum(math.hypot(b[0] - a[0], b[1] - a[1])
+                       for a, b in zip(route, route[1:]))
+    if route_length < 90:
+        raise ValueError("proposed route is shorter than 45 seconds at nominal 2 m/s")
     if scene["surface_role"] != "access_aisle_adjacent_to_designated_handicapped_parking":
         raise ValueError("ordinary travel lane is not the access aisle")
-    return {"route_clearance_verified_offline": True, "stripe_count": len(stripes),
+    return {"route_clearance_verified_offline": True, "route_length_m": route_length,
+            "stripe_count": len(stripes),
             "access_aisle_adjacent_to_parking": True, "native_realization_confirmed": False}
 
 
