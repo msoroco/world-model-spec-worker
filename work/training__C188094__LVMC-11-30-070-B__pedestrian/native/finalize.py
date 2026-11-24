@@ -8,7 +8,8 @@ import subprocess
 
 from measure_crossing import measure
 
-CAMERAS = ('overview', 'pedestrian_front', 'crosswalk_side', 'overpass_context')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+METER_CAMERAS = ('overview', 'pedestrian_front', 'crosswalk_side', 'overpass_context')
 
 
 def sha(path):
@@ -41,7 +42,7 @@ def measure_selected_crossing(folder):
         cameras = pose['camera_native_frames']
         if set(cameras) != set(CAMERAS) or any(cameras[name] != frame['native_frame'] for name in CAMERAS):
             raise ValueError('Original four-camera join differs')
-        normalized.append(dict(pose, source_cameras={name: index for name in CAMERAS}))
+        normalized.append(dict(pose, source_cameras={name: index for name in METER_CAMERAS}))
     return {'method': 'measure_selected_crossing',
             'value': measure(context, normalized),
             'sources': {name: sha(required(folder, name)) for name in

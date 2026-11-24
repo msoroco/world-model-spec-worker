@@ -7,7 +7,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSIGNMENT = HERE.name
 CASES = (('probe_1', 'crosswalk'), ('probe_2', 'outside'))
-CAMERAS = ('overview', 'pedestrian_front', 'crosswalk_side', 'overpass_context')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -41,7 +41,8 @@ def main():
                   'cell_id': 'C188094', 'actor': 'pedestrian',
                   'crossing_case': crossing_case, 'rate_hz': 20, 'duration_s': 30,
                   'required_atoms': [], 'source_packets': [], 'case': {'case_id': case_id},
-                  'cameras': [{'name': name, 'width': 640, 'height': 360} for name in CAMERAS],
+                  'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
+                               'height': 1080 if name == 'overview' else 720} for name in CAMERAS],
                   'recording_description': description, 'status': 'cpu_draft_district_unverified'}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'geometry.py', 'path.py',

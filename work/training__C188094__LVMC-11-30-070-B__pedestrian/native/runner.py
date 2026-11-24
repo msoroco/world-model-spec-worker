@@ -1,5 +1,6 @@
 """Original Native at-grade pedestrian crossing acquisition draft; no legal verdict."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import queue
@@ -8,7 +9,7 @@ import subprocess
 from geometry import check as geometry_check, open_drive
 from path import CROSSING_X_M, FRAMES, RATE_HZ, target
 
-CAMERAS = ('overview', 'pedestrian_front', 'crosswalk_side', 'overpass_context')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CASES = {'probe_1': 'crosswalk', 'probe_2': 'outside'}
 
 
@@ -42,7 +43,8 @@ def survey(carla, mapping):
 
 def execute(config, output_dir, host, port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
 
     check(config)
@@ -57,6 +59,8 @@ def execute(config, output_dir, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in prior_world.get_actors()):
         raise RuntimeError('exclusive idle Native world required')
     owned, encoders, queues = [], {}, {}
+    capture = None
+    succeeded = False
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
@@ -88,8 +92,20 @@ def execute(config, output_dir, host, port):
             'overpass_deck_height_m': 5, 'business_district_evidence': None,
             'unmarked_crosswalk_survey_complete': False,
             'pedestrian_blueprint_id': walker.type_id}, indent=2) + '\n')
-        mounts = {'overview': (3, -18, 18, -35), 'pedestrian_front': (0, 0, 1.7, 0),
-                  'crosswalk_side': (2, 10, 8, -25), 'overpass_context': (32, -12, 16, -30)}
+        (output / 'crossing-context.json').write_text(json.dumps({
+            'source_kind': 'native_pedestrian_crossing_and_district_readback',
+            'native_map_sha256': hashlib.sha256((output / 'road.xodr').read_bytes()).hexdigest(),
+            'crosswalk_survey_sha256': hashlib.sha256((output / 'crossing-survey.json').read_bytes()).hexdigest(),
+            'business_district_evidence_sha256': None,
+            'overpass_geometry_sha256': hashlib.sha256((output / 'road.xodr').read_bytes()).hexdigest(),
+            'pedestrian_identity_sha256': hashlib.sha256(walker.type_id.encode()).hexdigest(),
+            'business_district_review': 'unverified',
+            'roadway_bounds_m': geometry_check()['roadway_bounds_m'],
+            'crosswalks': [{'kind': 'marked', 'bounds_m': geometry_check()['crosswalk_bounds_m']}],
+            'intersection_inventory': [],
+            'complete_crosswalk_inventory': False}, indent=2) + '\n')
+        mounts = {'overview': (3, -18, 18, -35), 'approach': (0, 0, 1.7, 0),
+                  'reference_corner': (2, 10, 8, -25), 'driver_reference': (32, -12, 16, -30)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)
@@ -99,7 +115,7 @@ def execute(config, output_dir, host, port):
             cbp.set_attribute('sensor_tick', str(1 / RATE_HZ))
             camera = world.spawn_actor(cbp, carla.Transform(
                 carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch)),
-                attach_to=walker if name == 'pedestrian_front' else None)
+                attach_to=walker if name == 'approach' else None)
             owned.append(camera)
             q = queue.Queue()
             camera.listen(q.put)
@@ -111,6 +127,9 @@ def execute(config, output_dir, host, port):
                 '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1',
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
+        capture = PipelineCapture(client, walker, output, config['case_id'],
+                                  visibility=False,
+                                  required_observations=config.get('required_atoms', []))
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
                 (output / 'actor-poses.jsonl').open('x') as poses:
             initial_time = None
@@ -128,6 +147,8 @@ def execute(config, output_dir, host, port):
                 if initial_time is None:
                     initial_time = snap.timestamp.elapsed_seconds
                 time_s = snap.timestamp.elapsed_seconds - initial_time
+                capture.capture(native_frame, time_s,
+                                extra={'crossing_request': request})
                 camera_frames = {}
                 for name, q in queues.items():
                     image = q.get(timeout=30)
@@ -149,9 +170,13 @@ def execute(config, output_dir, host, port):
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('source video encoding failed: ' + name + ': ' + stderr.decode()[-300:])
+        capture.close(confirmed=True)
+        succeeded = True
         return {'frames': FRAMES, 'source_cameras': list(CAMERAS),
                 'business_district_sourced': False, 'legal_outcome_claimed': False}
     finally:
+        if capture is not None and not capture.closed:
+            capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -164,7 +189,13 @@ def execute(config, output_dir, host, port):
             except Exception:
                 pass
         if changed:
-            restore(client, saved)
+            restoration = restore(client, saved)
+            if succeeded:
+                seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                             encoder_exit_codes={name: process.returncode
+                                                 for name, process in encoders.items()},
+                             context={'business_district_sourced': False,
+                                      'complete_crosswalk_inventory': False})
 
 
 if __name__ == '__main__':

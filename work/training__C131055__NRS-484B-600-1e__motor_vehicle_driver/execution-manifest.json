@@ -1,0 +1,174 @@
+{
+  "assignment_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Native speed can fall short of the requested rate on the roundabout arc or exit; controller gain is selectable only after measured original-source failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "throttle_proportional_gain_0.35_to_0.55"
+          ],
+          "construction": "selected-candidates/below/fallback1/construction.json",
+          "construction_sha256": "5290c67de9debe69df9a7ee49a435b5a057eb84a3d99dc19643d235a0e8e5b9b",
+          "id": "fallback1",
+          "preparation_status": "fallback_cpu_reproof_pending",
+          "trigger": {
+            "failure_condition": "median_requested_minus_measured_mph > 2.0 for at least 50 consecutive arc frames",
+            "metric": "median_requested_minus_measured_mph",
+            "source": "original Native post-tick velocity and controller request on frames 100..499"
+          }
+        }
+      ],
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1",
+      "compatibility": {
+        "receipt": "selected-below-compatibility-receipt.json",
+        "sha256": "c32adcc981839047a25c797a401c730726264fc27e3daed69742d1bda3f4d2ac"
+      },
+      "construction": "selected-candidates/below/primary/construction.json",
+      "construction_sha256": "27369f4efa51569ff7306539e6cbc14ed83e0d72b96c2524a207dff483bc379e",
+      "delivery_diagnostic": {
+        "negative_log": "selected-1-delivery-negative.log",
+        "negative_log_sha256": "c978345e3b2cf5c29a8c28e0754310f0b7207b300500833a3b982af0de824d68",
+        "physical_completion": false,
+        "receipt": "selected-1-delivery-diagnostic-receipt.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "1ac5588ec27b8d9d5c7fb4cb7ce37229c68a4b6a7d163ae08452d05410cd70c4",
+        "sha256": "26ecfe169713dba78e8bf7f3f19c45276401b4e3739d980867b4ddadb5f2dc5e"
+      },
+      "fixture_recipe": "work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/current-v2-below-fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "current-v2-below-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "negative": {
+        "expected_error": "Missing required source: roundabout-speed-history.jsonl",
+        "log": "selected-below-negative-analysis.log",
+        "log_sha256": "274efb9d6c51008ca136ed593ce4a27dd2077e849b981a3cc81497421caec229",
+        "removed": "roundabout-speed-history.jsonl"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_1 --output .runtime-work/owner199/selected-1-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "27369f4efa51569ff7306539e6cbc14ed83e0d72b96c2524a207dff483bc379e",
+        "exit_code": 0,
+        "log": "selected-below-offline.log",
+        "log_sha256": "4699ce7a0f80a742a0cd8cea048446accd11f3f4eba6fd7c0ac0a3e7e0fc3815"
+      },
+      "preparation_status": "selected_cpu_offline_compat_saved_diagnostic_audited_physical_unverified",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "original_vehicle_velocity_position",
+            "reference_frame": "original frame/time and surveyed arc/exit",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; Native review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic source only; actual Native speed and lane retention unverified"
+        ]
+      },
+      "saved_processing": {
+        "receipt": "selected-below-saved-receipt.json",
+        "sha256": "52ed9ecc6bdbc186ee974a1ffdb31ffe66f91d1933d8696464f356cfc4279857"
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Native speed can fall short of the requested rate on the roundabout arc or exit; controller gain is selectable only after measured original-source failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "throttle_proportional_gain_0.35_to_0.55"
+          ],
+          "construction": "selected-candidates/above/fallback1/construction.json",
+          "construction_sha256": "52f8b3b067c8171372ebcbf01ffe63b37d644db957304581b53c0c8061e97b0c",
+          "id": "fallback1",
+          "preparation_status": "fallback_cpu_reproof_pending",
+          "trigger": {
+            "failure_condition": "median_requested_minus_measured_mph > 2.0 for at least 50 consecutive arc frames",
+            "metric": "median_requested_minus_measured_mph",
+            "source": "original Native post-tick velocity and controller request on frames 100..499"
+          }
+        }
+      ],
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2",
+      "compatibility": {
+        "receipt": "selected-above-compatibility-receipt.json",
+        "sha256": "72c37e5edda4dc8597b855e65883ffc66348dcede0aea3a87fbaeeb889f21832"
+      },
+      "construction": "selected-candidates/above/primary/construction.json",
+      "construction_sha256": "de1b3e7c1c07fa76d18e613303584b890d6d5162520e6880572241a9abdf4d11",
+      "delivery_diagnostic": {
+        "negative_log": "selected-2-delivery-negative.log",
+        "negative_log_sha256": "c978345e3b2cf5c29a8c28e0754310f0b7207b300500833a3b982af0de824d68",
+        "physical_completion": false,
+        "receipt": "selected-2-delivery-diagnostic-receipt.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "1ac5588ec27b8d9d5c7fb4cb7ce37229c68a4b6a7d163ae08452d05410cd70c4",
+        "sha256": "33f518406397f808c0125e37f092b18e5635eac1aa548512f62e768fe76ac45c"
+      },
+      "fixture_recipe": "work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/current-v2-above-fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "current-v2-above-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "negative": {
+        "expected_error": "Missing required source: roundabout-speed-history.jsonl",
+        "log": "selected-above-negative-analysis.log",
+        "log_sha256": "88cc579d9a6d34e835fb9896a0f20cd84188430a408caa4c1065b20eca892b0a",
+        "removed": "roundabout-speed-history.jsonl"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131055__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_2 --output .runtime-work/owner199/selected-2-offline --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "de1b3e7c1c07fa76d18e613303584b890d6d5162520e6880572241a9abdf4d11",
+        "exit_code": 0,
+        "log": "selected-above-offline.log",
+        "log_sha256": "234536b8caf1ac01a56a54957c23cea3283b768e8cde72e67ec9a1496b3cf5af"
+      },
+      "preparation_status": "selected_cpu_offline_compat_saved_diagnostic_audited_physical_unverified",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "original_vehicle_velocity_position",
+            "reference_frame": "original frame/time and surveyed arc/exit",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; Native review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic source only; actual Native speed and lane retention unverified"
+        ]
+      },
+      "saved_processing": {
+        "receipt": "selected-above-saved-receipt.json",
+        "sha256": "fa2ced8c26f741ab6b883ac2e5494a2b640a753f72101aec189334692d6675a9"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "selected_comparison_diagnostic": {
+    "receipt": "selected-comparison-receipt.json",
+    "script": "selected-comparison-audit.py",
+    "script_sha256": "9cdd3fa64047a3b32c9c99e4ab668ded47636fec7ef5b4c53d2b3fd8b4bb79d9",
+    "sha256": "948c79e5d282bd9e1edc0ca0e516f25886ea7f35c989446641b7e22a6cf7992c"
+  },
+  "status": "partial_primary_cpu_proven_fallback_reproof_pending"
+}
