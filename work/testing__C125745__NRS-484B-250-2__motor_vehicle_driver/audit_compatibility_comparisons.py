@@ -19,6 +19,10 @@ EXPECTED = {
 OPPOSITE_CASES = ('stop_ego_left_near_time', 'stop_opposite_left_turn')
 DEVICE_CASES = ('stop_ego_left_near_time', 'stop_ego_right_near_time',
                 'stop_ego_left_separated', 'stop_opposite_left_turn')
+SWEEP_AXES = {
+    'other_release_frame': ('c125745-1-0000', 'c125745-1-0002', 'c125745-1-0001'),
+    'ego_hold_after_clear_frames': ('c125745-2-0000', 'c125745-2-0002', 'c125745-2-0001'),
+}
 
 
 def require(value, message):
@@ -265,6 +269,86 @@ def audit_device_context(receipts):
             'legal_acceptance_claimed': False, 'delivery_ready': False}
 
 
+def compare_exact_sweeps(receipts):
+    """Compare the six exact-case compatibility measurements, never legal cutoffs."""
+    require(set(receipts) == {suffix for group in SWEEP_AXES.values() for suffix in group},
+            'Exact six sweep receipts required')
+    axes = []
+    for axis, suffixes in SWEEP_AXES.items():
+        fixed = None
+        measured = []
+        for suffix in suffixes:
+            receipt = receipts[suffix]
+            examples = receipt['measurement_examples']
+            require(receipt.get('passed') is True and
+                    receipt.get('case_id') == HERE.name + '__' + suffix and
+                    receipt.get('negative_removed') == 'controller_history.jsonl',
+                    'Exact sweep source and negative proof required')
+            for key in ('crossing_identity', 'entry_timing', 'relative_right_side',
+                        'device_qualification_context', 'yield_observation'):
+                sources = examples[key]['sources']
+                require(sources and all(receipt['fixture_manifest'].get(name) == digest
+                                        for name, digest in sources.items()),
+                        'Sweep measurement source hash differs: ' + key)
+            crossing = examples['crossing_identity']['value']
+            device = examples['device_qualification_context']['value']
+            side = examples['relative_right_side']['value']
+            require(crossing['same_statutory_crossing'] is True and
+                    side['other_spatially_right'] is True and
+                    all(device[key] == 'unresolved' for key in
+                        ('official_device_judgment', 'governance_judgment',
+                         'subsection_4_judgment')),
+                    'Fixed crossing, side or unresolved device context differs')
+            context = (crossing['native_map_id'], crossing['intersection_id'],
+                       crossing['ego_highway_id'], crossing['other_highway_id'],
+                       device['native_stop_sign_id'], side['signed_lateral_offset_m'])
+            if fixed is None:
+                fixed = context
+            require(context == fixed, 'Sweep crossing, sign or approach changed')
+            timing = examples['entry_timing']['value']
+            ego = timing['first_body_entry']['ego']['frame']
+            other = timing['first_body_entry']['other']['frame']
+            require(abs(timing['absolute_difference_s'] - abs(ego - other) / 20) < 1e-9 and
+                    timing['approximately_same_time_judgment'] == 'unresolved',
+                    'Measured entry time or unresolved judgment differs')
+            measured.append({'case_id': receipt['case_id'], 'ego_frame': ego,
+                             'other_frame': other})
+        moving = 'other_frame' if axis == 'other_release_frame' else 'ego_frame'
+        stationary = 'ego_frame' if axis == 'other_release_frame' else 'other_frame'
+        require([row[moving] for row in measured] ==
+                sorted({row[moving] for row in measured}) and
+                len({row[stationary] for row in measured}) == 1,
+                'Exact sweep did not isolate the measured moving actor')
+        axes.append({'axis': axis, 'measured_entries': measured,
+                     'fixed_crossing_and_device': True})
+    return {'format': 'worker-c125745-exact-sweep-compatibility-audit',
+            'axes': axes, 'source_integrity_passed': True,
+            'physical_acceptance_claimed': False,
+            'legal_acceptance_claimed': False, 'delivery_ready': False}
+
+
+def audit_exact_sweeps():
+    manifest = read(HERE / 'execution-manifest.json')
+    entries = {entry['case_id']: entry for entry in manifest['cases']}
+    receipts = {}
+    for suffix in (item for group in SWEEP_AXES.values() for item in group):
+        case_id = HERE.name + '__' + suffix
+        entry = entries[case_id]
+        path = HERE / entry['compatibility']['receipt']
+        require(sha(path) == entry['compatibility']['sha256'],
+                'Exact sweep compatibility receipt hash changed')
+        receipt = read(path)
+        require(receipt['candidate_id'] == 'primary' and
+                receipt['construction_sha256'] == entry['construction_sha256'],
+                'Exact sweep construction binding changed')
+        receipts[suffix] = receipt
+    result = compare_exact_sweeps(receipts)
+    result['receipt_sha256'] = {suffix: sha(HERE / entries[HERE.name + '__' + suffix]
+                                              ['compatibility']['receipt'])
+                                for suffix in receipts}
+    return result
+
+
 def audit():
     manifest = read(HERE / 'execution-manifest.json')
     plan = read(HERE / 'case-plan.json')
@@ -347,6 +431,8 @@ def audit():
 if __name__ == '__main__':
     if len(sys.argv) == 3 and sys.argv[1] == '--turn-diagnostic':
         print(json.dumps(audit_turn_diagnostic(Path(sys.argv[2])), indent=2))
+    elif len(sys.argv) == 2 and sys.argv[1] == '--exact-sweeps':
+        print(json.dumps(audit_exact_sweeps(), indent=2))
     else:
-        require(len(sys.argv) == 1, 'Usage: audit_compatibility_comparisons.py [--turn-diagnostic PATH]')
+        require(len(sys.argv) == 1, 'Usage: audit_compatibility_comparisons.py [--turn-diagnostic PATH] [--exact-sweeps]')
         print(json.dumps(audit(), indent=2))

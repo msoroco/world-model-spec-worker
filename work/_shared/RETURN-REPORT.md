@@ -1,3 +1,15 @@
+## 2026-11-23 C125745 exact judgment-sweep comparison audit
+
+`audit_compatibility_comparisons.py --exact-sweeps` now independently verifies all six current primary compatibility receipt hashes against the exact manifest, construction hashes, negative missing-controller-source proof, and each measurement's original-source hashes. The release sweep measures other-body entries at frames 1079, 1087 and 1095 with ego fixed at 1087. The hold sweep measures ego-body entries at 1087, 1095 and 1103 with the other body fixed at 1087. Crossing, sign, relative side and unresolved device judgments remain fixed. Changed source hashes and a changed fixed actor frame fail the new tests. The audit output SHA256 is `07364746980d248da7710da26988600643e93bafa8e766b9858b3df0acb18c2f`; exact output, commands, receipt hashes and scope are bound in `case-plan.json.exact_sweep_compatibility_comparison_audit`.
+
+All 70 package tests passed (`.runtime-work/c125745-exact-sweep-audit/all-tests.log` SHA256 `da712c5ef314a1041df0d363aaef063d28aff5811fcd98f9babafa1d1cdb35d0`); pinned CPU preflight and the assignment-scoped nonready complete check also passed. C125745 remains **partial**. These synthetic source-bound compatibility receipts establish no Native behavior, original camera pixels, official-device status, approximate timing judgment, physical completion or legal conclusion. Independent saved-attempt comparisons and further judgment work remain worker-owned. The full strict batch gate has not passed while 15 of 43 assignments remain partial.
+
+## 2026-11-23 C125745 sweep delivery auditor boundary proofs
+
+All six exact judgment-sweep cases now bind diagnostic positive and tampered-source negative runs of `prove_delivery_acceptance.py` in `execution-manifest.json.delivery_acceptance_cpu_diagnostic`. Each positive run exited 0 and confirmed the six-check auditor inventory against its exact construction; each negative run exited 1 at `Physical completion source changed: crossing_history.jsonl`. Commands, full output, SHA256 and construction hashes are retained inline. The bound manifest SHA256 is `3fd0510b3beedfa505a645ee3fbec62e5b89bed27dd2bf62e16b2d59bc644dcd`. All 40 current exact case/candidate offline checks passed and are indexed in `case-plan.json.latest_canonical_offline_recheck`; 69 package tests, pinned CPU preflight and the assignment-scoped complete check passed.
+
+C125745 remains **partial**. The diagnostic auditor boundary does not establish Native provenance, actual camera pixels, physical completion or independent delivery acceptance. Source-backed judgment-sweep comparison and official-device/opposite-turn proofs remain worker-owned. The full strict batch gate has not passed while 15 of 43 assignments remain partial.
+
 Historical archive index: `c125745-historical-consolidation-20261123.tar.xz` preserves four original files (SHA256 `9ad6564d5d63f4af0e32d7f15dcc634c79ff02071adffc150c79edd71aa05706`, 1769508 bytes); see the C125745 handoff for members.
 
 ## 2026-11-23 C125745 frame40 fallback1 physical CPU diagnostics
@@ -582,3 +594,5 @@ All three exact `c125745-1-0001` fallbacks now have standalone positive compatib
 Nine byte-identical `proposals/relevance-batch.json` duplicates in ready packages C101303/127-1, C125751/250-2, C158196/307-6a, C109705/400-2b, C331230/450-2, C109705/400-2a, C158208/257-1, C412593/413-2 and C378304/413-2 were removed after their semantic indexes were redirected to the retained `proposals/relevance.json` with identical SHA256. Their original files and indexes are backed up under ignored `.runtime-work/dedup-frame24/`; assignment-scoped strict rechecks are retained there. This freed exactly the nine returned-file slots used for the new fallback receipts.
 
 C125745 remains **partial**: independent delivery/comparison audits and official-device/opposite-turn judgment sweeps remain worker-owned. These CPU proofs do not establish Native motion, original pixels, physical or legal acceptance. The full strict batch gate has not passed.
+
+All nine deduplicated ready packages subsequently passed `.venv-cpu/bin/python worker_check.py --assignment ID --complete --require-delivery-ready`; their individual ignored logs are under `.runtime-work/dedup-frame24/`. Statuses remain truthful: 28 ready and 15 partial.

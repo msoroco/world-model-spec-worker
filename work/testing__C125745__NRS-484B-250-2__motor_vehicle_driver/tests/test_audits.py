@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 import sys
 import tempfile
@@ -14,7 +15,7 @@ from finalizer import finalize
 from runner import ASSIGNMENT
 from audit_delivery import audit as audit_delivery
 from audit_comparisons import audit_pair,audit as audit_comparisons
-from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context,audit_turn_trajectory,audit_turn_diagnostic
+from audit_compatibility_comparisons import audit_surrogate_grid,audit_opposite_context,audit_device_context,audit_turn_trajectory,audit_turn_diagnostic,audit_exact_sweeps,compare_exact_sweeps,SWEEP_AXES
 
 
 def _write_rows(path,rows):
@@ -60,6 +61,48 @@ def build_attempt(root,variant='left',map_name=None):
 
 
 class AuditTests(unittest.TestCase):
+    def test_short_saved_diagnostic_requires_explicit_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=build_attempt(Path(tmp)/'short')
+            config=json.loads((root/'config.json').read_text())
+            config['duration_s']=.3
+            (root/'config.json').write_text(json.dumps(config))
+            result=json.loads((root/'result.json').read_text())
+            result['diagnostic_fixture']=True
+            result['provenance_kind']='synthetic_fixture'
+            result['source_evidence_hashes']['config.json']=hashlib.sha256(
+                (root/'config.json').read_bytes()).hexdigest()
+            (root/'result.json').write_text(json.dumps(result))
+            with self.assertRaisesRegex(ValueError,'Incomplete original frame count'):
+                audit_delivery(root)
+            report=audit_delivery(root,diagnostic=True)
+            self.assertTrue(report['diagnostic_fixture'])
+            self.assertFalse(report['delivery_ready'])
+            (root/'approach.mkv').write_bytes(b'changed')
+            with self.assertRaisesRegex(ValueError,'source hash differs'):
+                audit_delivery(root,diagnostic=True)
+
+    def test_exact_sweep_comparison_rejects_changed_source_and_fixed_actor(self):
+        report=audit_exact_sweeps()
+        self.assertTrue(report['source_integrity_passed'])
+        self.assertEqual(len(report['axes']),2)
+        self.assertFalse(report['delivery_ready'])
+        manifest=json.loads((ROOT/'execution-manifest.json').read_text())
+        entries={row['case_id']:row for row in manifest['cases']}
+        receipts={suffix:json.loads((ROOT/entries[ASSIGNMENT+'__'+suffix]
+                                    ['compatibility']['receipt']).read_text())
+                  for group in SWEEP_AXES.values() for suffix in group}
+        changed=copy.deepcopy(receipts)
+        (changed['c125745-1-0002']['measurement_examples']['entry_timing']
+         ['sources']['crossing_history.jsonl'])='0'*64
+        with self.assertRaisesRegex(ValueError,'source hash differs'):
+            compare_exact_sweeps(changed)
+        changed=copy.deepcopy(receipts)
+        (changed['c125745-2-0002']['measurement_examples']['entry_timing']
+         ['value']['first_body_entry']['other']['frame'])=1095
+        with self.assertRaisesRegex(ValueError,'entry time|moving actor'):
+            compare_exact_sweeps(changed)
+
     def test_opposite_turn_trajectory_requires_observed_exit(self):
         diagnostic=json.loads((ROOT/'fourth-diagnostic.json').read_text())
         files=diagnostic['files']

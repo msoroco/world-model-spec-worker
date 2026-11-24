@@ -8,7 +8,16 @@ import json
 from pathlib import Path
 
 from capture_sources import CAMERAS
-from runner import ASSIGNMENT, CASE_IDS
+from runner import ASSIGNMENT
+
+HERE = Path(__file__).resolve().parent
+
+
+def exact_case_ids():
+    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+    require(manifest.get('assignment_id') == ASSIGNMENT,
+            'Audit manifest assignment differs')
+    return {entry['case_id'] for entry in manifest['cases']}
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -18,7 +27,7 @@ def require(ok,message):
     if not ok:raise ValueError(message)
 
 
-def audit(attempt,analysis_name='saved-analysis.json'):
+def audit(attempt,analysis_name='saved-analysis.json',*,diagnostic=False):
     root=Path(attempt)
     required=('config.json','result.json','junction_context.json',
               'crossing_history.jsonl','controller_history.jsonl','video_frames.jsonl',
@@ -30,7 +39,7 @@ def audit(attempt,analysis_name='saved-analysis.json'):
     result=json.loads((root/'result.json').read_text())
     report=json.loads((root/analysis_name).read_text())
     case=cfg.get('selected_case_id')
-    require(cfg.get('assignment_id')==ASSIGNMENT and case in CASE_IDS and
+    require(cfg.get('assignment_id')==ASSIGNMENT and case in exact_case_ids() and
             result.get('case_id')==case and report.get('case_id')==case,
             'Exact C125745 case identity differs')
     require(result.get('physical_acceptance_claimed') is False and
@@ -54,8 +63,15 @@ def audit(attempt,analysis_name='saved-analysis.json'):
             'Measurement source hash differs: '+key)
     frames=[json.loads(line) for line in (root/'video_frames.jsonl').read_text().splitlines()]
     history=[json.loads(line) for line in (root/'crossing_history.jsonl').read_text().splitlines()]
-    require(len(frames)==len(history)==round(cfg['duration_s']*cfg['rate_hz']) and len(frames)>0,
-            'Incomplete original frame count')
+    if diagnostic:
+        require(result.get('diagnostic_fixture') is True and
+                result.get('provenance_kind') == 'synthetic_fixture',
+                'Short diagnostic requires explicit synthetic provenance')
+        require(len(frames)==len(history) and len(frames)>0,
+                'Incomplete diagnostic source join')
+    else:
+        require(len(frames)==len(history)==round(cfg['duration_s']*cfg['rate_hz']) and len(frames)>0,
+                'Incomplete original frame count')
     require(all(frame.get('video_frame')==i and frame.get('carla_frame')==row.get('frame') and
                 frame.get('time_s')==row.get('time_s') for i,(frame,row) in
                 enumerate(zip(frames,history))), 'Original frame identity differs')
@@ -65,6 +81,7 @@ def audit(attempt,analysis_name='saved-analysis.json'):
         'Governing sign ID changed in original frames')
     return {'format':'worker-c125745-software-delivery-audit',
             'case_id':case,'software_source_integrity_passed':True,
+            'diagnostic_fixture':diagnostic,
             'original_frame_count':len(frames),'source_hashes':hashes,
             'measurement_keys':sorted(measurements),
             'physical_acceptance_claimed':False,'legal_acceptance_claimed':False,
@@ -75,4 +92,7 @@ def audit(attempt,analysis_name='saved-analysis.json'):
 if __name__=='__main__':
     import argparse
     parser=argparse.ArgumentParser();parser.add_argument('--attempt',type=Path,required=True)
-    args=parser.parse_args();print(json.dumps(audit(args.attempt),indent=2))
+    parser.add_argument('--analysis-name',default='saved-analysis.json')
+    parser.add_argument('--diagnostic',action='store_true')
+    args=parser.parse_args();print(json.dumps(audit(args.attempt,args.analysis_name,
+                                                  diagnostic=args.diagnostic),indent=2))
