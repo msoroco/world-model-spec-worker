@@ -16,7 +16,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from runner import check, lookahead_index
+from runner import CAPTURE_ATOMS, check, lookahead_index
 
 CONFIG = json.loads(Path('config.json').read_text())
 DISTANCE = CONFIG['distance_m']
@@ -27,6 +27,7 @@ class ExactPassingRequest(unittest.TestCase):
         result = check(Path.cwd(), DISTANCE, CANDIDATE)
         self.assertEqual(result['requested_frames'], 600)
         self.assertFalse(result['original_native_observed'])
+        self.assertEqual(set(CAPTURE_ATOMS), {'st.sight_distance', 'rel.visible'})
 
     def test_last_controller_lookahead(self):
         self.assertEqual(lookahead_index(480,600),495)

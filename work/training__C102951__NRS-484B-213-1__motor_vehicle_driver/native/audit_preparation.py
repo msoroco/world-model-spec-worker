@@ -29,7 +29,7 @@ def write_json(path, data):
 
 
 def replay_negative(raw_folder, config, mutation):
-    with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+    with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
         root = Path(temporary)
         copy = root/'raw'
         shutil.copytree(raw_folder, copy)

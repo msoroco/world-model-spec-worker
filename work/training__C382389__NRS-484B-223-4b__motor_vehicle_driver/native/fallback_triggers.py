@@ -46,6 +46,8 @@ def evaluate(samples_path,geometry_path,map_audit_path,pixel_audit_path,video_pa
     pixel_kind=pixels.get('source_kind')
     if map_kind not in ('native_map_readback','synthetic_map_readback') or type(mapping.get('connected_requested_lane_link')) is not bool:
         raise ValueError('Native lane-link audit missing')
+    if mapping.get('requested_lane_id')!=requested_lane_id:
+        raise ValueError('Native lane-link audit selected another lane')
     if (map_kind,pixel_kind) not in (('native_map_readback','original_camera_pixels'),
                                      ('synthetic_map_readback','synthetic_camera_pixels')):
         raise ValueError('Trigger source provenance mismatch')
@@ -79,9 +81,11 @@ def evaluate(samples_path,geometry_path,map_audit_path,pixel_audit_path,video_pa
             completed=True
     if not errors:raise ValueError('No observed connector-entry tracking window')
     maximum=max(errors);fraction=visible/total
-    return {'fallback1':not mapping['connected_requested_lane_link'] or not completed,
+    expected_link=(requested_lane_id==-1)
+    return {'fallback1':mapping['connected_requested_lane_link']!=expected_link or not completed,
             'fallback2':maximum>.35,'fallback3':fraction<.95,
             'metrics':{'connected_requested_lane_link':mapping['connected_requested_lane_link'],
+                       'expected_requested_lane_link':expected_link,
                        'full_body_requested_exit_observed_by_24s':completed,
                        'maximum_connector_entry_route_error_m':maximum,
                        'approach_pixel_visible_fraction':fraction},

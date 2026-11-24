@@ -36,14 +36,16 @@ def run():
             assert all(row['native_lane_id']==lane for row in saved_rows)
             authored=[[x,-v] for x,v in route(-y)]
 
-            def source_packet(link=True,visible=456):
+            def source_packet(link=None,visible=456):
+                if link is None:link=lane==-1
                 fixture.write_rows(samples,saved_rows)
                 map_data=json.loads(geometry.read_text())
                 mapping.write_text(json.dumps({'source_kind':'synthetic_map_readback',
                     'native_map_sha256':map_data['native_map_sha256'],
                     'native_samples_sha256':sha(samples),
                     'road_geometry_sha256':sha(geometry),
-                    'connected_requested_lane_link':link}))
+                    'connected_requested_lane_link':link,
+                    'requested_lane_id':lane}))
                 pixels.write_text(json.dumps({'source_kind':'synthetic_camera_pixels',
                     'native_samples_sha256':sha(samples),'video_sha256':sha(video),
                     'full_body_and_lane_marking_visible_frames':visible,
@@ -57,7 +59,7 @@ def run():
             assert base['declared_source_kind']=='synthetic_map_readback'
             assert [base[f'fallback{i}'] for i in (1,2,3)]==[False,False,False],base
             base_hashes=base['source_hashes']
-            source_packet(link=False)
+            source_packet(link=lane==-2)
             assert [check()[f'fallback{i}'] for i in (1,2,3)]==[True,False,False]
             source_packet()
             saved_rows[200]['native_center_xy_m'][1]+=.5

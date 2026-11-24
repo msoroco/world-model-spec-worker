@@ -41,7 +41,7 @@ def reaction_fixture():
 
 
 def rejected(folder, alter, wrong_hash=False):
-    with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+    with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
         copy = Path(temporary)/'saved'
         shutil.copytree(folder, copy)
         alter(copy)

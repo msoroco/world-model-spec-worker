@@ -79,7 +79,7 @@ def prove():
     measured, drops = compare(paths)
     negatives = []
     for mutation in ('ego_trajectory', 'sightline', 'unrequested_actor', 'road_readback'):
-        with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
             changed = Path(temporary)/'changed'
             shutil.copytree(paths['oncoming'], changed)
             if mutation == 'road_readback':

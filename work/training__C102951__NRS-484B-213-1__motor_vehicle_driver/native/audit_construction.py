@@ -1,4 +1,5 @@
 """Independent structural audit of all authored C102951 Native requests."""
+import ast
 import hashlib
 import json
 import math
@@ -46,6 +47,19 @@ def audit():
         raise ValueError('Crest profile stations differ')
     if abs(elevation(pieces[1], 450)-1.5) > 1e-6 or abs(elevation(pieces[2], 600)) > 1e-6:
         raise ValueError('Authored crest discontinuity')
+    runner_tree = ast.parse((HERE/'runner.py').read_text())
+    atoms = [node for node in runner_tree.body if isinstance(node, ast.Assign) and
+             any(isinstance(target, ast.Name) and target.id == 'CAPTURE_ATOMS'
+                 for target in node.targets)]
+    if len(atoms) != 1 or set(ast.literal_eval(atoms[0].value)) != {'st.sight_distance', 'rel.visible'}:
+        raise ValueError('Original capture visibility observations absent')
+    capture_calls = [node for node in ast.walk(runner_tree) if isinstance(node, ast.Call) and
+                     isinstance(node.func, ast.Name) and node.func.id == 'PipelineCapture']
+    if len(capture_calls) != 1 or not any(
+            keyword.arg == 'required_observations' and
+            isinstance(keyword.value, ast.Name) and keyword.value.id == 'CAPTURE_ATOMS'
+            for keyword in capture_calls[0].keywords):
+        raise ValueError('Native capture does not request visibility sources')
     entries = manifest['entries']
     if len(entries) != 12 or {(e['case_id'], e['candidate_id']) for e in entries} != {
             (AID+'__'+str(d), c) for d in DISTANCES for c in CANDIDATES}:

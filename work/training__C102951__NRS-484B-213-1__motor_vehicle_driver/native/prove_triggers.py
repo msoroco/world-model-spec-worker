@@ -46,7 +46,7 @@ def prove():
             fixtures.append({'distance_m': distance, 'candidate_id': candidate,
                              'source_hashes': expected, 'triggered': receipt['triggered'],
                              'metric': receipt['metric']})
-    with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+    with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
         folder = Path(temporary)
         source = HERE/'saved-fixtures'/'170'
         shutil.copy2(source/'road-readback.json', folder/'road-readback.json')

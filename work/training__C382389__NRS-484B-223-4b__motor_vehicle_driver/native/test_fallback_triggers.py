@@ -22,14 +22,16 @@ class FallbackTriggerTests(unittest.TestCase):
         self.video=self.root/'overview.mkv';self.video.write_bytes(b'synthetic pixels')
         self.geometry.write_text(json.dumps({'native_map_sha256':'a'*64}))
 
-    def write(self,lane,deviation=0,complete=True,link=True,visible=19):
+    def write(self,lane,deviation=0,complete=True,link=None,visible=19):
+        if link is None:link=lane==-1
         y=5.25 if lane==-2 else 1.75
         route=[[-20,y],[20,y]]
         rows=[row(1,-20,y,1,lane),row(2,-8,y+deviation,1,lane),
               row(3,-5,y,14,lane),row(4,15 if complete else 6,y,2 if complete else 14,lane)]
         self.samples.write_text(''.join(json.dumps(value)+'\n' for value in rows))
         self.mapping.write_text(json.dumps({'source_kind':'synthetic_map_readback',
-            'connected_requested_lane_link':link,'native_map_sha256':'a'*64,
+            'connected_requested_lane_link':link,'requested_lane_id':lane,
+            'native_map_sha256':'a'*64,
             'native_samples_sha256':sha(self.samples),'road_geometry_sha256':sha(self.geometry)}))
         self.pixels.write_text(json.dumps({'source_kind':'synthetic_camera_pixels',
             'native_samples_sha256':sha(self.samples),'video_sha256':sha(self.video),
@@ -46,7 +48,7 @@ class FallbackTriggerTests(unittest.TestCase):
                 route=self.write(lane)
                 self.assertEqual([self.measure(lane,route)[f'fallback{i}'] for i in (1,2,3)],
                                  [False,False,False])
-                route=self.write(lane,link=False)
+                route=self.write(lane,link=lane==-2)
                 self.assertEqual([self.measure(lane,route)[f'fallback{i}'] for i in (1,2,3)],
                                  [True,False,False])
                 route=self.write(lane,complete=False)
@@ -78,6 +80,14 @@ class FallbackTriggerTests(unittest.TestCase):
         packet['source_kind']='original_camera_pixels'
         self.pixels.write_text(json.dumps(packet))
         with self.assertRaisesRegex(ValueError,'Trigger source provenance mismatch'):
+            self.measure(-2,route)
+
+    def test_wrong_lane_audit_rejected(self):
+        route=self.write(-2)
+        packet=json.loads(self.mapping.read_text())
+        packet['requested_lane_id']=-1
+        self.mapping.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError,'selected another lane'):
             self.measure(-2,route)
 
 

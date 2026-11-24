@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 
-CASE=Path(__file__).resolve().parent;NATIVE=CASE/'native';DISTANCES=(70,120,170)
+CASE=Path(__file__).resolve().parent;ROOT=CASE.parents[1];NATIVE=CASE/'native';DISTANCES=(70,120,170)
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -44,7 +44,7 @@ def prove():
     paths=[NATIVE/'saved-fixtures'/str(d)/'native-observed.jsonl' for d in DISTANCES]
     metric=compare(paths);negatives=[]
     for mutation in ('ego_x','overtaken_speed','oncoming_speed','clear_distance'):
-        with tempfile.TemporaryDirectory(dir=CASE) as temporary:
+        with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work') as temporary:
             changed=Path(temporary)/'changed.jsonl';data=rows(paths[1])
             if mutation=='ego_x':data[100]['ego_x_m']+=1
             elif mutation=='overtaken_speed':data[100]['overtaken_speed_mps']+=1

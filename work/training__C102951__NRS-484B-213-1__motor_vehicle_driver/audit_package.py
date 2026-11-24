@@ -101,7 +101,7 @@ def audit():
         if result.returncode != 0 or json.loads(result.stdout)['requested_frames'] != 600:
             raise ValueError('Copied runner CPU check failed')
         checks += 1
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work') as temporary:
             changed = Path(temporary)/'bundle'
             shutil.copytree(folder, changed)
             track = changed/'requested-tracks.jsonl'
@@ -117,7 +117,7 @@ def audit():
             rejections += 1
         if candidate == 'primary':
             raw = CASE/'native'/'raw-fixtures'/str(distance)
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work') as temporary:
                 root = Path(temporary)
                 result = run_preparer(folder, raw, root/'prepared')
                 if result.returncode != 0:

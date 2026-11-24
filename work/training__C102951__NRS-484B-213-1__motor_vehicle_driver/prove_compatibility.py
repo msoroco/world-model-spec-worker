@@ -56,7 +56,7 @@ def prove():
         positives.append({'case_id': entry['case_id'],
                           'candidate_id': entry['candidate_id'],
                           'bundle_sha256': sha(folder/'config.json'), 'passed': True})
-        with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+        with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work') as temporary:
             altered = Path(temporary)/'bundle'
             shutil.copytree(folder, altered)
             track = altered/'requested-tracks.jsonl'
@@ -78,7 +78,7 @@ def prove():
                               'mutation': 'frozen_assignment_bytes', 'rejected': True})
         if entry['candidate_id'] == 'primary':
             raw = CASE/'native'/'raw-fixtures'/str(entry['distance_m'])
-            with tempfile.TemporaryDirectory(dir=CASE/'offline') as temporary:
+            with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work') as temporary:
                 root = Path(temporary)
                 result = invoke_preparer(folder, raw, root/'prepared')
                 if result.returncode != 0:

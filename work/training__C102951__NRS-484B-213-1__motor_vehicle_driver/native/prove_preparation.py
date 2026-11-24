@@ -77,7 +77,7 @@ def fixture(distance):
 
 
 def rejected(raw, review, config, mutate, refresh_hashes=False):
-    with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+    with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
         root = Path(temporary)
         copy = root/'raw'
         shutil.copytree(raw, copy)

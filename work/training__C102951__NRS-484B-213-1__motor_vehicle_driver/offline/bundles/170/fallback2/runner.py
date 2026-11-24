@@ -35,6 +35,7 @@ CAMERA_SPECS = (('overview', 1920, 1080, 80, (70, -25, 35)),
                 ('approach', 1280, 720, 90, (18, -8, 8)),
                 ('reference_corner', 1280, 720, 90, (85, 8, 12)),
                 ('driver_reference', 1280, 720, 90, (0, 0, 0)))
+CAPTURE_ATOMS = ('st.sight_distance', 'rel.visible')
 
 
 def lookahead_index(frame, frame_count, horizon=15):
@@ -220,7 +221,7 @@ def execute(bundle, distance, candidate, output, host, port):
                 str(output/(name+'.mkv'))], stdin=subprocess.PIPE, stderr=logs[name])
             sensor.listen(camera_queues[name].put)
         capture = PipelineCapture(client, ego, output, config['case_id'],
-                                  visibility=False, required_observations=[])
+                                  visibility=True, required_observations=CAPTURE_ATOMS)
         start = world.get_snapshot().timestamp.elapsed_seconds
         from worker_exchange.native_output import FrameMap
         with (output/'native-raw-actors.jsonl').open('x') as observed, \

@@ -78,7 +78,7 @@ def audit():
     reaction = HERE/'response-fixtures'/'reaction-170'
     controls = []
     for mutation in ('source_hash', 'negative_speed', 'missing_frame', 'altered_time'):
-        with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
             copy = Path(temporary)/'saved'
             shutil.copytree(reaction, copy)
             rows_path = copy/'native-observed.jsonl'

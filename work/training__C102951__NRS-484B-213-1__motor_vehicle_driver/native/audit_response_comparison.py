@@ -81,7 +81,7 @@ def audit():
     from prove_response_comparison import compare
     replayed = []
     for mutation in ('ego_trajectory', 'sightline', 'unrequested_actor', 'road_readback'):
-        with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
             copy = Path(temporary)/'changed'
             shutil.copytree(paths['oncoming'], copy)
             if mutation == 'road_readback':

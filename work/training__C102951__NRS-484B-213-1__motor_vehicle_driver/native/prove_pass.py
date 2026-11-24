@@ -61,7 +61,7 @@ def prove():
                 result['legal_verdict'] is not None or result['safe_distance_judgment'] is not None):
             raise AssertionError('Synthetic clear-ahead probe differs')
         positives.append({'requested_clear_oncoming_distance_m':distance,'measurement':result})
-        with tempfile.TemporaryDirectory(dir=HERE) as temporary:
+        with tempfile.TemporaryDirectory(dir=HERE.parents[2]/'.runtime-work') as temporary:
             copy=Path(temporary)/'attempt';shutil.copytree(folder,copy)
             rows=[json.loads(line) for line in (copy/'native-observed.jsonl').read_text().splitlines()]
             negatives.append({'distance_m':distance,'mutation':'source_hash',
