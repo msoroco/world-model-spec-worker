@@ -1,15 +1,11 @@
-# NRS-484B-450-1j at C229410
+# NRS 484B.450(1)(j) at C229410: partial CPU checkpoint
 
-Actor: `motor_vehicle_driver`. Frozen cell: `road` / `park` / `fire_station_entrance`.
+Frozen cell: `road` / `park` / `fire_station_entrance`; actor: `motor_vehicle_driver`. Exact source and hash are retained in `case-plan.json`. The witness selects parking near a fire-station driveway under the 20-foot clause and explicitly requires actual station identity, entrance geometry, road side, activity, traffic conditions and applicable directions. Its 20-foot clause is not restricted to the entrance side. The opposite-side 75-foot clause and the statutory exceptions remain separate unresolved work. There is no accepted recording.
 
-Exact source: NRS 484B.450(1)(j). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: Parking near a fire-station driveway entrance under the 20-foot clause..
+The selected pair now has executable original Native CPU drafts in `native/bundles/controlled_1/construction.json` and `native/bundles/controlled_2/construction.json`. The OpenDRIVE highway, diagnostic driveway outline, 600-frame vehicle motion, four synchronized FFV1 cameras, body extents, speed and FrameMap are authored. The runner restores the Native world. Its diagnostic outline does not prove an actual fire station, official entrance or statutory distance reference point.
 
-Controlled variable: `measured same-side distance from driveway`. Requested pair: park beyond 20 feet from fire-station driveway; park within 20 feet of fire-station driveway. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+Pinned offline checks passed for both cases. Construction SHA-256: `cc429b114f9b1f104b1d35826730f30230c19580926491d393b77d7518834db4` and `1b6bfe2cb376d2c4737f81213d32f4bdfda9bb4b4ec2b0e3d4ba186309664f0f`. Offline log SHA-256: `31da68697986b206fbd616c3b3b59069ba703b2d5921b1bf8edb4729f1346d6f` and `468a00b13d1ad76c730bb6e5106a3714b05eed9de1a3ec6ce8edfadfbdb2f3e2`.
 
-Statutory branch dispositions: 2. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+`native/prove_saved.py` exercised source-bound original-frame measurement shape with synthetic fixtures. It measured raw body-edge gaps of 12 m and 0 m, rejected unreviewed station identity and missing camera, and left both the statutory reference-point choice and legal verdict unresolved. Its log SHA-256 is `963a5590d1197ea1fc535b41920245d5c8083a4fc7cbcabddcd0df6d1b166bdd`. This is diagnostic, not CARLA execution or legal acceptance.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Same-side 20-foot and opposite-side 75-foot fire-station driveway clauses require separate cases; exception directions and traffic conflict remain unproven.
+Scoped `worker_check.py --assignment training__C229410__NRS-484B-450-1j__motor_vehicle_driver --complete` passed. `result.json` stays `partial`. Next CPU work: construct four distinct source-preserving candidates per selected case; prove pinned offline and compatibility paths, exception cases and opposite-side 75-foot branch; establish source-backed station/driveway, parking and direction evidence; perform original measurement and independent audit; prepare execution manifest; then run the assignment-scoped strict ready gate. Physical realization remains unverified.

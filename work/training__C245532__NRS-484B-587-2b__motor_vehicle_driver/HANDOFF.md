@@ -1,15 +1,11 @@
-# NRS-484B-587-2b at C245532
+# NRS 484B.587(2)(b) at C245532: partial CPU checkpoint
 
-Actor: `motor_vehicle_driver`. Frozen cell: `same_direction_multilane` / `change_lane` / `solid_white_line`.
+Frozen cell: `same_direction_multilane` / `change_lane` / `solid_white_line`; actor: `motor_vehicle_driver`. Exact source, including emergency and subsection 3 language, and its hash are retained in `case-plan.json`. The selected branch concerns a solid white line separating an entrance or exit lane from a marked traffic lane on a controlled-access highway. No accepted recording exists.
 
-Exact source: NRS 484B.587(2)(b); with 484B.587(3), NRS 484B.210(4). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: Crossing an entrance or exit separator on a same-direction multilane road.
+The selected pair has executable original Native CPU drafts in `native/bundles/controlled_1/construction.json` and `native/bundles/controlled_2/construction.json`. The authored OpenDRIVE road has two same-direction lanes and a solid white separator. The 600-frame original runner plans staying in the entrance lane or moving into the traffic lane, with four synchronized FFV1 cameras, Native lane readback, full body and velocity source rows, FrameMap and world restoration. OpenDRIVE motorway metadata does not prove legal public-highway or controlled-access status or an official entrance-lane function.
 
-Controlled variable: `footprint crossing of solid separator`. Requested pair: remain on own side of solid white entrance or exit separator; cross solid white entrance or exit separator. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+Pinned offline checks passed for both cases. Construction SHA-256: `5fc27438b178bd48480f85b73b1870a3479edaf9848d5c785dba019a518e04e0` and `b9fc230989f890dff2945d8a5e5192bb02c9f430cb045da16ff24ba6a866ba68`. Offline log SHA-256: `a7ebfdaef0d1f543024d55cdae0df42f9dc7cd829e8360321baee456a6ee9331` and `cf64ba101581d9ebcd471a8f12250ff7b41b605b5435861d046f1f4d704b903b`.
 
-Statutory branch dispositions: 2. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+`native/prove_saved.py` exercised original-source measurement shape with synthetic fixtures. It recorded 0 versus 71 body-straddle frames and first traffic-side center at frame 111, rejected unreviewed controlled-access context and a missing camera, and made no statutory crossing cutoff or verdict. Log SHA-256: `cd9b290f1313c3b3d0222488cb91d0493b2ff4388cfd238800295c7399afef55`. These fixtures do not represent CARLA execution.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Controlled-access highway, entrance/exit separator and solid white line must all physically exist. Emergency and authorized shoulder-use clauses require careful scope separation.
+Scoped `worker_check.py --assignment training__C245532__NRS-484B-587-2b__motor_vehicle_driver --complete` passed. `result.json` stays `partial`. Next CPU work: prepare four distinct source-preserving candidates per selected case; prove pinned offline and compatibility paths; source-review public-authority controlled-access status, official entrance/exit lane and line, driver/vehicle scope and emergency/subsection 3 conditions; measure original source, perform independent audit and prepare execution manifest; then run the scoped strict ready gate. Shoulder authorization is not assumed to permit crossing. Physical realization remains unverified.

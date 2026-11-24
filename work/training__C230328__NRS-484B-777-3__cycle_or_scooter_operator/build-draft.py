@@ -1,0 +1,35 @@
+"""Build selected two-rider source-bound Native CPU proposal."""
+import hashlib
+import json
+from pathlib import Path
+
+HERE=Path(__file__).resolve().parent
+AID=HERE.name
+CASE=AID+'__controlled_1'
+
+
+def write(path,obj):path.write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n')
+
+
+def main():
+    cfg=json.loads((HERE/'native/config.json').read_text())
+    names=('runner.py','config.json','tests/test_native.py')
+    files=[{'path':name,'content':(HERE/'native'/name).read_text()} for name in names]
+    files.append({'path':'measure_abreast.py','content':(HERE/'measure_abreast.py').read_text()})
+    construction={'format':'worker-construction','assignment_id':AID,'case_id':CASE,
+        'cell_id':'C230328','law_id':'NRS-484B-777-3','actor':'cycle_or_scooter_operator',
+        'entrypoint':'runner.py','files':files,'recording_description':cfg['recording_description'],
+        'measurement_plan':{'entrypoint':'measure_abreast.py','sources':[
+            'video_frames.jsonl','rider_poses.jsonl','road_context.json'],
+            'abreast_classification':None,'legal_result':None}}
+    path=HERE/'selected-primary-construction.json';write(path,construction)
+    digest=hashlib.sha256(path.read_bytes()).hexdigest()
+    manifest={'assignment_id':AID,'cases':[{'case_id':CASE,
+        'construction':'selected-primary-construction.json','construction_sha256':digest,
+        'candidate_risk':{'status':'physical','reason':'Native bicycle riders, public roadway boundaries and exclusive-use designation require original source review'},
+        'candidates':[]}]}
+    write(HERE/'selected-offline-manifest.json',manifest)
+    print(json.dumps({'case_id':CASE,'construction_sha256':digest},sort_keys=True))
+
+
+if __name__=='__main__':main()

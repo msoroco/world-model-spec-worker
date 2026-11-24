@@ -1,15 +1,11 @@
-# NRS-484B-113-3 at C230259
+# NRS 484B.113(3) at C230259: partial CPU checkpoint
 
-Actor: `motor_vehicle_driver`. Frozen cell: `road` / `travel` / `other_vehicle`.
+Frozen cell: `road` / `travel` / `other_vehicle`; actor: `motor_vehicle_driver`. Exact clause and hash are retained in `case-plan.json`. The exported text is “The driver of a vehicle: Shall in every case yield the right-of-way to moving traffic and pedestrians.” The parent activation stem remains unresolved. The conditional witness permits a provisional backing phase, and requires a separate moving highway vehicle with supported route, speed and proximity. No accepted recording exists.
 
-Exact source: NRS 484B.113(3). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: moving traffic.
+The selected pair has executable original Native CPU drafts in `native/bundles/controlled_1/construction.json` and `native/bundles/controlled_2/construction.json`. The authored road, ego backing timing, separate moving vehicle, 600 original frames at 20 Hz, four synchronized FFV1 cameras, vehicle body/velocity source rows and FrameMap are bundled. The runner restores the world. It records no legal right-of-way finding and does not infer one from the control label, arrival order, proximity or braking.
 
-Controlled variable: `precedence to moving traffic and pedestrians`. Requested pair: yield to moving traffic before entry; enter ahead of moving traffic. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+Pinned offline checks passed for both cases. Construction SHA-256: `feb998187027fdbf5675c45e64fed472f67cc0e8ae0510c4c5caeaf177c8e797` and `554ea03e550b03b35c7692099cd79e3130c99228dbb0ccfcb282a6e717874492`. Offline log SHA-256: `5c09a0d082f4da286df6ed8385ce94146df313025a0a8970c12dcef7c2a938c5` and `d372a85b771f7bd7f2ff05df2dadb7e817438a884d731e98fa2150199de330a8`.
 
-Statutory branch dispositions: 1. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+`native/prove_saved.py` exercised the saved-frame source shape with synthetic diagnostics: 55 versus 90 frames of simultaneous backing and other-vehicle motion. It rejected unreviewed highway use and a missing camera. The result leaves right-of-way unresolved. Log SHA-256: `d70afc00847ba7e4205802424f8e5fd7c7113414e0eb9730bc294fb52f312da4`. These fixtures do not represent CARLA execution.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: The exported clause lacks its parent activation text. Do not infer the maneuver that triggers the yield duty until source context is recovered.
+Scoped `worker_check.py --assignment training__C230259__NRS-484B-113-3__motor_vehicle_driver --complete` passed. `result.json` stays `partial`. Next CPU work: recover and audit the full parent statutory stem; prepare four distinct candidates per selected case and pedestrian-branch disposition; prove pinned offline and compatibility paths; review original highway use, driver control and pedestrian presence; measure original source, perform independent audit and prepare execution manifest; then run the scoped strict ready gate. Physical realization remains unverified.

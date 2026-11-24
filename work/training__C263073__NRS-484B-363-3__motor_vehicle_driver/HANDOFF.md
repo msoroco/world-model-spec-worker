@@ -1,15 +1,11 @@
-# NRS-484B-363-3 at C263073
+# NRS 484B.363(3) at C263073: partial CPU checkpoint
 
-Actor: `motor_vehicle_driver`. Frozen cell: `school_zone` / `u_turn` / `children`.
+Frozen cell: `school_zone` / `u_turn` / `children`; actor: `motor_vehicle_driver`. Exact source and hash are retained in `case-plan.json`. The selected witness is a U-turn in a school zone containing children. The source lists five distinct exceptions and a speed-limit-beacon definition. There is no accepted recording.
 
-Exact source: NRS 484B.363(3); with 484B.363(9). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: U-turn in a school zone containing children.
+The selected pair has executable original Native CPU drafts in `native/bundles/controlled_1/construction.json` and `native/bundles/controlled_2/construction.json`. The authored two-way road and zone envelope support a straight continuation or a kinematic 180-degree reversal path. The runner plans 600 frames at 20 Hz, four synchronized FFV1 cameras, Native actor and other-person positions, heading, body extents, FrameMap and world restoration. The path is kinematic, not proof of a physically driven U-turn. The generic walker does not establish child age, identity or legal presence, and the diagnostic zone outline does not establish official designation.
 
-Controlled variable: `U-turn occurrence while school-zone prohibition active`. Requested pair: defer U-turn in active school zone with children present; make U-turn in active school zone with children present. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+Pinned offline checks passed for both cases. Construction SHA-256: `19b0f51f7f025f61da8ecd0d6cf76e5df80f75bc239de527d18fbc77d38ff3ad` and `b1f6537f23dc0e5fbeca165e1e3d7117233ffb228c903bf3923f6715e51c32e4`. Offline log SHA-256: `b1c3cdaec0ad4ad1b5a72adb7949ee84a951a1c0e65608a24479d60a39a99a37` and `efb5c116e4b8e2c2c1ae456253f77fa7ce1eccfc7e968468941eec563d99cb11`.
 
-Statutory branch dispositions: 2. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+`native/prove_saved.py` exercised source-bound saved-frame shape with synthetic fixtures: straight heading change 0 degrees, reversal trace 180 degrees, other person inside authored zone for 600 frames. It rejected unreviewed zone context and a missing camera, made no age cutoff, presence radius or legal heading threshold, and left the U-turn verdict unresolved. Log SHA-256: `127b2a21f659ad8ede613ca3e5b905ba8a54285f6492f4a9edf61a4c8fab3242`. These fixtures do not represent CARLA execution.
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
-
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: School zone designation and active period are legal context. Each listed exception has different children/session/time/beacon facts; a generic school sign is insufficient.
+Scoped `worker_check.py --assignment training__C263073__NRS-484B-363-3__motor_vehicle_driver --complete` passed. `result.json` stays `partial`. Next CPU work: physically driven U-turn with four distinct source-preserving candidates per case; pinned offline and compatibility proofs; official zone/child/driver evidence; independent session, operation, class-hour, civil-time, beacon and sign records disposing of all five exceptions; original measurement, independent audit and execution manifest; then scoped strict ready gate. Physical realization and legal status remain unverified.
