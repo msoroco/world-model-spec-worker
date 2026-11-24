@@ -51,7 +51,8 @@ def _velocity(actor) -> tuple[float, float, float]:
 def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                   native_run_id: str, uncertainty_mps: float, *,
                   diagnostic_fixture: bool = False,
-                  camera_frame_reader=None, route_reader=None) -> dict:
+                  camera_frame_reader=None, route_reader=None,
+                  graph_reader=None) -> dict:
     """Tick at 20 Hz, retain original speeds, and stop the actor on every exit.
 
     ``uncertainty_mps`` is supplied by the reviewed acquisition plan. It is not
@@ -72,6 +73,8 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
         reserved.append("camera-frame-readback.json")
     if route_reader is not None:
         reserved.append("route-frame-readback.json")
+    if graph_reader is not None:
+        reserved.append('graph-frame-readback.json')
     reserved.append('native-kinematics.jsonl')
     if any((attempt / name).exists() for name in reserved):
         raise ValueError("original Native attempt artifact already exists")
@@ -82,6 +85,7 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
     rows = []
     camera_rows = []
     route_rows = []
+    graph_rows = []
     kinematic_rows = []
     first_elapsed = None
     first_position = None
@@ -137,6 +141,25 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                     raise ValueError("original four-camera frame readback differs")
                 camera_rows.append({"frame": frame,
                                     "camera_frames": camera_frames})
+            if graph_reader is not None:
+                raw_graph = graph_reader(world, actor, snapshot, frame,
+                                         index / HZ)
+                if not isinstance(raw_graph, bytes) or not raw_graph:
+                    raise ValueError('original Native graph bytes missing')
+                graph = json.loads(raw_graph)
+                metadata = graph.get('metadata', {})
+                if (graph.get('format') != 'native-adapter-graph-v1' or
+                        metadata.get('frame') != frame or
+                        abs(metadata.get('simulation_time_s', -1) -
+                            index / HZ) > 1e-5):
+                    raise ValueError('original Native graph frame/time differs')
+                path = attempt / 'graphs/abstract' / f'{frame:08d}.adapter.json'
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with path.open('xb') as stream:
+                    stream.write(raw_graph)
+                graph_rows.append({'frame': frame, 'time_s': index / HZ,
+                                   'adapter_graph': path.relative_to(attempt).as_posix(),
+                                   'sha256': hashlib.sha256(raw_graph).hexdigest()})
             previous_frame = frame
         travel_m = math.dist(first_position, _position(actor))
         if travel_m < 100:
@@ -165,6 +188,14 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                                       sort_keys=True, separators=(',', ':')) + '\n').encode()
             (attempt / 'route-frame-readback.json').write_bytes(route_bytes)
             route_hash = hashlib.sha256(route_bytes).hexdigest()
+        graph_hash = None
+        if graph_reader is not None:
+            graph_bytes = (json.dumps({'case_id': case_id,
+                                       'native_run_id': native_run_id,
+                                       'frames': graph_rows},
+                                      sort_keys=True, separators=(',', ':')) + '\n').encode()
+            (attempt / 'graph-frame-readback.json').write_bytes(graph_bytes)
+            graph_hash = hashlib.sha256(graph_bytes).hexdigest()
         receipt = {"format": "c10301-native-motion-v1", "case_id": case_id,
                    "native_run_id": native_run_id, "sample_count": FRAMES,
                    "travel_m": travel_m, "speed_source_sha256": descriptor["sha256"],
@@ -175,6 +206,8 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
             receipt["camera_frame_readback_sha256"] = camera_hash
         if route_hash is not None:
             receipt['route_frame_readback_sha256'] = route_hash
+        if graph_hash is not None:
+            receipt['graph_frame_readback_sha256'] = graph_hash
         (attempt / "native-motion-receipt.json").write_text(
             json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return receipt

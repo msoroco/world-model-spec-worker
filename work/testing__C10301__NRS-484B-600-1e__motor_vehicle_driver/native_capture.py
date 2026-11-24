@@ -24,7 +24,7 @@ def _sha_file(path: Path) -> str:
 def capture(world, packet_path: Path, attempt: Path, case_id: str,
             native_run_id: str, uncertainty_mps: float, transform_factory,
             control_factory, *, diagnostic_fixture=False,
-            media_factory=NativeMedia):
+            media_factory=NativeMedia, graph_reader=None):
     """Acquire one 900-tick run; clean up actors and writers on every exit.
 
     The caller owns world synchronous settings, traffic control and the reviewed
@@ -47,6 +47,11 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
             raise ValueError('Native site packet changed after construction')
         with site_source.open('xb') as stream:
             stream.write(source_bytes)
+        road_bytes = world.get_map().to_opendrive().encode('utf-8')
+        if hashlib.sha256(road_bytes).hexdigest() != packet['opendrive_sha256']:
+            raise ValueError('original Native OpenDRIVE source changed')
+        with (attempt / 'road.xodr').open('xb') as stream:
+            stream.write(road_bytes)
         setup = {'case_id': case_id, 'law_id': 'NRS-484B-600-1e',
                  'cell_id': packet['cell_id'], 'actor': packet['actor'],
                  'layout': packet['layout'], 'control': packet['control'],
@@ -57,11 +62,19 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
             stream.write(json.dumps(setup, indent=2, sort_keys=True) + '\n')
         media = media_factory(site.cameras, attempt,
                               diagnostic_fixture=diagnostic_fixture)
+        if graph_reader is None and not diagnostic_fixture:
+            from original_graph import collect
+            def graph_reader(world, actor, snapshot, frame, time_s):
+                return collect(world, actor, snapshot,
+                               expected_frame=frame,
+                               expected_time_s=snapshot.timestamp.elapsed_seconds,
+                               recording_time_s=time_s)
         motion = capture_speed(world, site.actor, control_factory, attempt,
                                case_id, native_run_id, uncertainty_mps,
                                diagnostic_fixture=diagnostic_fixture,
                                camera_frame_reader=media.read,
-                               route_reader=site.observe_route)
+                               route_reader=site.observe_route,
+                               graph_reader=graph_reader)
         frames, paths = media.finish()
         index = finalize_capture(attempt, case_id, frames, paths,
                                  site_source=site_source)

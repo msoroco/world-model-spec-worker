@@ -30,7 +30,7 @@
       },
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__outside_reference",
       "construction": "construction-outside_reference.json",
-      "construction_sha256": "e287ad2d9af54b296c82ab80b23a0b863a407ec591abe84cc4ffed1ec874240d",
+      "construction_sha256": "4b1ecb52ef6f4b7d3261981628c91f113be672227c5c6d4bf89bbec96054f967",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/outside_reference/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outside_reference/measurement-contract.json",
@@ -44,14 +44,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__outside_reference",
-        "construction_sha256": "e287ad2d9af54b296c82ab80b23a0b863a407ec591abe84cc4ffed1ec874240d",
+        "construction_sha256": "4b1ecb52ef6f4b7d3261981628c91f113be672227c5c6d4bf89bbec96054f967",
         "exit_code": 0,
         "log": "cpu-compat-offline-outside_reference.log",
-        "log_sha256": "28f0966475f92a7dc956da1e453f5c7392040fc38fe050cc9c737ef414c57ceb"
+        "log_sha256": "fc531b08a8f1b51c16fcce37dc08f18289d20f5bd63211f33de782ea98982929"
       },
       "physical_preparation": {
         "receipt": "cases/outside_reference/physical-preparation.json",
-        "sha256": "e0cc7927a1174b218698c475f4b68ab2b0f466c51a5dcd4314f8e8aa30d6a2e8"
+        "sha256": "c1d8e92d2bb786c2ec368bfb84c638d80ae3205ed89841dca88fdea49e00d169"
       }
     },
     {
@@ -78,12 +78,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-inside_stop-fallback1.json",
+          "construction_sha256": "874567592494387ad5282ffdcd606e7b7ae63cf01b737347bca2f3118a4575b3",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stop",
+            "construction_sha256": "874567592494387ad5282ffdcd606e7b7ae63cf01b737347bca2f3118a4575b3",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-inside_stop.log",
+            "log_sha256": "08cc307ce6e3207846acc1efbc5f8940473f46834bc4ab331f774bc43f409d86"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stop",
       "construction": "construction-inside_stop.json",
-      "construction_sha256": "7eb043e7c463e11a367e3200538396a6051eb52ce94b1cc4e4c01ed3c2193664",
+      "construction_sha256": "d539d1dc78045362d09f35cc8ffbfdde73fc4add5268904ac23ddaec84145d04",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/inside_stop/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/inside_stop/measurement-contract.json",
@@ -97,14 +119,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stop",
-        "construction_sha256": "7eb043e7c463e11a367e3200538396a6051eb52ce94b1cc4e4c01ed3c2193664",
+        "construction_sha256": "d539d1dc78045362d09f35cc8ffbfdde73fc4add5268904ac23ddaec84145d04",
         "exit_code": 0,
         "log": "cpu-compat-offline-inside_stop.log",
-        "log_sha256": "7b0aaf95b84d0c341b315db21b76297e4ff58d8fe3620e6d9f606123cb3410c0"
+        "log_sha256": "b85512f2fbf378a19ff5923fa888889ced5409780a81be204b49be1e69e66a6a"
       },
       "physical_preparation": {
         "receipt": "cases/inside_stop/physical-preparation.json",
-        "sha256": "7afafe7c988cd4f332d1e0f6b329d5ba66074b55bfbe5e202a4158d8dd9282aa"
+        "sha256": "cbc6e1503eba064b4d2ec56e16e86547daf4ba0a4b9bde6665170a8dfec58f9c"
       }
     },
     {
@@ -131,12 +153,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-inside_stand-fallback1.json",
+          "construction_sha256": "9ec71f9c4e53503923e9806620020bd3983ba1d102d553ae9d9475403a5432ab",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stand",
+            "construction_sha256": "9ec71f9c4e53503923e9806620020bd3983ba1d102d553ae9d9475403a5432ab",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-inside_stand.log",
+            "log_sha256": "f08cb29cfc487717dd9cd7aea5250420a998613f2bc96e487d6aa34914527f9f"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stand",
       "construction": "construction-inside_stand.json",
-      "construction_sha256": "2084d0c94a4f547c5614c5996b5ba8beb7755d2a1ca1769657598921f73bce90",
+      "construction_sha256": "eb5a1f8bc196a5e3960fbde07b510fe5adbc928c72bd023490088348a1a0e100",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/inside_stand/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/inside_stand/measurement-contract.json",
@@ -150,14 +194,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stand",
-        "construction_sha256": "2084d0c94a4f547c5614c5996b5ba8beb7755d2a1ca1769657598921f73bce90",
+        "construction_sha256": "eb5a1f8bc196a5e3960fbde07b510fe5adbc928c72bd023490088348a1a0e100",
         "exit_code": 0,
         "log": "cpu-compat-offline-inside_stand.log",
-        "log_sha256": "a603103f5f21b155a7c051efc217ed3b3867771c98989cdeeaf7e50113b91783"
+        "log_sha256": "cbbb25419ea0b0c927d2761d3af734510bda223fcfe271d57ca7a70ea4ed7fb1"
       },
       "physical_preparation": {
         "receipt": "cases/inside_stand/physical-preparation.json",
-        "sha256": "6b98af14c125aa2f2c7c9cb62baa26797a8dab4f70ab314af2f871940c050321"
+        "sha256": "13e37739ddf0e64c9fd16ed14b5344b20a471a7db7e75d44a64f5d6a79fcc28d"
       }
     },
     {
@@ -184,12 +228,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-inside_park-fallback1.json",
+          "construction_sha256": "8bb7510ce03a1d5a4d6a6159bed6ce2080d46d2be9d96d30ddc76b6d2e22afbb",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_park",
+            "construction_sha256": "8bb7510ce03a1d5a4d6a6159bed6ce2080d46d2be9d96d30ddc76b6d2e22afbb",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-inside_park.log",
+            "log_sha256": "2f7e4bb55e93f2a58e746fbd058ebe81342a271931da11366d8bbfd66820a6e1"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_park",
       "construction": "construction-inside_park.json",
-      "construction_sha256": "be7a0ee679401ea904294f84b112f71c98ae639880debd5443da3794092036f1",
+      "construction_sha256": "a02da90698704569b8a5990c7eead7e14943384013dc5d762867421d043b2513",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/inside_park/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/inside_park/measurement-contract.json",
@@ -203,14 +269,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_park",
-        "construction_sha256": "be7a0ee679401ea904294f84b112f71c98ae639880debd5443da3794092036f1",
+        "construction_sha256": "a02da90698704569b8a5990c7eead7e14943384013dc5d762867421d043b2513",
         "exit_code": 0,
         "log": "cpu-compat-offline-inside_park.log",
-        "log_sha256": "5832b5ee3408b5a52345190d2e190fe8d83dfccc6defaaf544492ffc646f7bda"
+        "log_sha256": "768fd19f33bc07c55679679c3ab1198411488702285f4b8b944bf2af1158cad4"
       },
       "physical_preparation": {
         "receipt": "cases/inside_park/physical-preparation.json",
-        "sha256": "26e392494a0a6c3c3e427146174fe5eba7bb289b22f8457d3c542a33bcb94100"
+        "sha256": "a5372469ae7bcc6ebf796b82a98fbf22747435307302ab5ba032a6e2cc138b1c"
       }
     },
     {
@@ -237,12 +303,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-traffic_conflict-fallback1.json",
+          "construction_sha256": "d832d9da2cfd0743e0db4c2bff554491d93bcc1d373e078c592c0424bb9c2fd2",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__traffic_conflict",
+            "construction_sha256": "d832d9da2cfd0743e0db4c2bff554491d93bcc1d373e078c592c0424bb9c2fd2",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-traffic_conflict.log",
+            "log_sha256": "d16a1c6401642e0a5fa647b0a8317b2032f811d5e89348c9c2a7bc314e6eedd5"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__traffic_conflict",
       "construction": "construction-traffic_conflict.json",
-      "construction_sha256": "cf1f144c8eb7b452898a6e8f83b8438347d7e494c198a6c7ea729a0094ccdaf9",
+      "construction_sha256": "757fd682c625927f3382840014b9aec775ddccca9b8547debd5b12d413bacf3d",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/traffic_conflict/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/traffic_conflict/measurement-contract.json",
@@ -256,14 +344,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__traffic_conflict",
-        "construction_sha256": "cf1f144c8eb7b452898a6e8f83b8438347d7e494c198a6c7ea729a0094ccdaf9",
+        "construction_sha256": "757fd682c625927f3382840014b9aec775ddccca9b8547debd5b12d413bacf3d",
         "exit_code": 0,
         "log": "cpu-compat-offline-traffic_conflict.log",
-        "log_sha256": "56e492d53110a8ecad974a126b6211e51ba86a27cc0a3b82fdcf17cd155d9a4b"
+        "log_sha256": "0a2a54761a2709054b3192498cc54df124b57a99c6d0059582ef8e9d32592372"
       },
       "physical_preparation": {
         "receipt": "cases/traffic_conflict/physical-preparation.json",
-        "sha256": "708ae6aad804a1948a22d0742e7821bc35f40b6bd6d5e01cc435864cad707db5"
+        "sha256": "efc07ee75ec554b31dee7ac4182fad55e40b5d5e2e3239cb135b2e982dd3dfc7"
       }
     },
     {
@@ -290,12 +378,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-law_direction-fallback1.json",
+          "construction_sha256": "49007a60bec91833b65f6ed4c0eefbebce4f71f39274d87d840a5c0d5dbcca13",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__law_direction",
+            "construction_sha256": "49007a60bec91833b65f6ed4c0eefbebce4f71f39274d87d840a5c0d5dbcca13",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-law_direction.log",
+            "log_sha256": "53436691f91834da69964ff677ca0f93cf670ab6e53db068916d9eb8c4245c64"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__law_direction",
       "construction": "construction-law_direction.json",
-      "construction_sha256": "35502b1ebca5647987bf4582435c75e99db6cb3aec84943ac5116f9552ad1a90",
+      "construction_sha256": "a3a8854bd6bc69459266553d79381a882bcdee2fa59a0c1d94af47741225a21e",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/law_direction/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/law_direction/measurement-contract.json",
@@ -309,14 +419,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__law_direction",
-        "construction_sha256": "35502b1ebca5647987bf4582435c75e99db6cb3aec84943ac5116f9552ad1a90",
+        "construction_sha256": "a3a8854bd6bc69459266553d79381a882bcdee2fa59a0c1d94af47741225a21e",
         "exit_code": 0,
         "log": "cpu-compat-offline-law_direction.log",
-        "log_sha256": "b9364a3edf333c860b50a598863e6b8fba84e3be8ab2312f4f49bdd89e8e7212"
+        "log_sha256": "f672f83771b86b3af5caf7d2bc0e550217751b9152633cf426a5cd712c500d22"
       },
       "physical_preparation": {
         "receipt": "cases/law_direction/physical-preparation.json",
-        "sha256": "20b541c4e2fb16ae54ec3cf6b5311d751025db37202fe237f97d274c62012420"
+        "sha256": "81e6a16fd48193491daf3f3981d8736316a4f250b4c9dd8b6da192b98fe49a06"
       }
     },
     {
@@ -343,12 +453,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-officer_direction-fallback1.json",
+          "construction_sha256": "83652fc654b9b57a1d13884573f832ee4958106244897e8e85612c6de27f8459",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__officer_direction",
+            "construction_sha256": "83652fc654b9b57a1d13884573f832ee4958106244897e8e85612c6de27f8459",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-officer_direction.log",
+            "log_sha256": "5f2c922e6c8fc48cf3f9ace555f122caac7047b292d224f89a4767d8a9997248"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__officer_direction",
       "construction": "construction-officer_direction.json",
-      "construction_sha256": "74256556069fc218eb2839d1bf4ded31266aa2e6aa3741c3f2bb60c4ba046be6",
+      "construction_sha256": "1364a9460f699bb0912245dd4cc816dc9a13eb24b3a14dff0f235d8397ded24d",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/officer_direction/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/officer_direction/measurement-contract.json",
@@ -362,14 +494,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__officer_direction",
-        "construction_sha256": "74256556069fc218eb2839d1bf4ded31266aa2e6aa3741c3f2bb60c4ba046be6",
+        "construction_sha256": "1364a9460f699bb0912245dd4cc816dc9a13eb24b3a14dff0f235d8397ded24d",
         "exit_code": 0,
         "log": "cpu-compat-offline-officer_direction.log",
-        "log_sha256": "f2fb34ef5cdc0eafb7a39ef19e14639e024e71f5a6852a6fb51ddeb9a231b861"
+        "log_sha256": "997b41b3462860b0f577e02474ca5abb87180a7eaa6d1c9065fcede0bd5e56a5"
       },
       "physical_preparation": {
         "receipt": "cases/officer_direction/physical-preparation.json",
-        "sha256": "1c7c98e77e0c7c35453e11aa65902e8afeb60b78f615a09b2db1fc5bc41ca665"
+        "sha256": "619a47c843b081a9aa0a7df36dbe2afeb76ff0524addb5c228029586f767045c"
       }
     },
     {
@@ -396,12 +528,34 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original body may overshoot the reviewed inside destination before a stable requested halt; verify final body contact and speed from sealed frames",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.brake_distance_m: 2.0 to 3.5"
+          ],
+          "construction": "construction-device_direction-fallback1.json",
+          "construction_sha256": "f7acae85bb1a4abca1336bf63b38605209c8ca9f27fbe4b8f7f4f95a2e85aec9",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__device_direction",
+            "construction_sha256": "f7acae85bb1a4abca1336bf63b38605209c8ca9f27fbe4b8f7f4f95a2e85aec9",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-device_direction.log",
+            "log_sha256": "e60328ccadc6f6fd3d88a0e1f7613e227f336341066701faa5bda32aeb621f97"
+          },
+          "trigger": {
+            "failure_condition": "body passed the reviewed destination before stable requested halt",
+            "metric": "final body footprint and measured speed relative to reviewed inside destination",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__device_direction",
       "construction": "construction-device_direction.json",
-      "construction_sha256": "0271e7cf4501cfaa0d496399f90ae08a2bfe7c90ebdab5b74ad1d12f1633bf42",
+      "construction_sha256": "fc9512978de7edd7eca699fa165784b0a221617a98146044d6dbf468492bb665",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/device_direction/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/device_direction/measurement-contract.json",
@@ -415,14 +569,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__device_direction",
-        "construction_sha256": "0271e7cf4501cfaa0d496399f90ae08a2bfe7c90ebdab5b74ad1d12f1633bf42",
+        "construction_sha256": "fc9512978de7edd7eca699fa165784b0a221617a98146044d6dbf468492bb665",
         "exit_code": 0,
         "log": "cpu-compat-offline-device_direction.log",
-        "log_sha256": "8386e7e42dbe92ebca4411c76d56e4745f93faa04187cb2dd5b0895ae67e9a13"
+        "log_sha256": "ee1d5895042d8d9f7ecd796a31e02f092c5bfb85c74f4a5e6a787be1aa6a403a"
       },
       "physical_preparation": {
         "receipt": "cases/device_direction/physical-preparation.json",
-        "sha256": "8606a760c5be0d072ba71fe544dc0bc057f9a2660e73a5a802faa86f00ee2890"
+        "sha256": "82ab1a2165159ece5a5b44d10fd26c987ba7fb973b6360f525cda6b0040c3c83"
       }
     },
     {
@@ -449,12 +603,35 @@
         }
       },
       "candidate_risk": {
-        "reason": "Body may not settle wholly within reviewed junction footprint",
+        "reason": "Original route may fail to clear the reviewed intersection footprint during the full recording; verify body clearance from source-sealed frame geometry",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller_profile.throttle_gain: 0.2 to 0.28",
+            "controller_profile.through_speed_floor_mps: 2.0 to 3.0"
+          ],
+          "construction": "construction-through_motion-fallback1.json",
+          "construction_sha256": "eb5b94388818ef5d7d5f22f5938ee41eecb52559519511ea313aa477c46905e6",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --candidate fallback1 --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__through_motion",
+            "construction_sha256": "eb5b94388818ef5d7d5f22f5938ee41eecb52559519511ea313aa477c46905e6",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-through_motion.log",
+            "log_sha256": "f785821a1406d61e9a100b1c8d670e532e2ad82e2454bf8c62cb43a6cd98a694"
+          },
+          "trigger": {
+            "failure_condition": "body not wholly beyond reviewed far-side boundary by final frame",
+            "metric": "final body footprint clearance and longitudinal progress",
+            "source": "source-sealed original trace.jsonl and reviewed intersection boundary"
+          }
+        }
+      ],
       "case_id": "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__through_motion",
       "construction": "construction-through_motion.json",
-      "construction_sha256": "9e88642f2b5f4d3d639310bca76ef5914e1fde52b10bd43a8ac9e61703e29f68",
+      "construction_sha256": "1ac8e981481286433af61e409549c80a2c3794f93e481d1d0fe166de056ec390",
       "fixture_recipe": "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/through_motion/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/through_motion/measurement-contract.json",
@@ -468,14 +645,14 @@
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --case testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__through_motion",
-        "construction_sha256": "9e88642f2b5f4d3d639310bca76ef5914e1fde52b10bd43a8ac9e61703e29f68",
+        "construction_sha256": "1ac8e981481286433af61e409549c80a2c3794f93e481d1d0fe166de056ec390",
         "exit_code": 0,
         "log": "cpu-compat-offline-through_motion.log",
-        "log_sha256": "0ca8bd8107b639bc2f8d15b715e8968b376b0284ba2e625dd6275f1f7c349291"
+        "log_sha256": "643240530e5a85fd9efdb28b75ceab40ab8c1890604f9cc6c0b32da76fc177b5"
       },
       "physical_preparation": {
         "receipt": "cases/through_motion/physical-preparation.json",
-        "sha256": "0013939ccc803199ad286729ff7662b6a4c923064f589af688ea932bcec0a4a1"
+        "sha256": "d8c43319b5b872abe02d8d3adfb5d65467d41a8e1823a64e9aca2b78629fb174"
       }
     }
   ],

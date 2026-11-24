@@ -14,6 +14,10 @@ def sha(path):
 
 def build(*, require_compatibility=True):
     draft = json.loads((ROOT / 'execution-manifest.draft.json').read_text())
+    fallback_manifest = ROOT/'execution-manifest.fallback-offline.json'
+    fallback_entries = ({item['case_id']: item for item in
+                         json.loads(fallback_manifest.read_text())['cases']}
+                        if fallback_manifest.is_file() else {})
     entries = []
     for item in draft['cases']:
         case = item['case_id']
@@ -47,6 +51,35 @@ def build(*, require_compatibility=True):
                 raise ValueError('stale exact physical preparation receipt')
             entry['physical_preparation'] = {
                 'receipt': str(physical.relative_to(ROOT)), 'sha256': sha(physical)}
+        for candidate in fallback_entries.get(case, {}).get('candidates', []):
+            fallback = dict(candidate)
+            source = ROOT/fallback['construction']
+            fallback_log = ROOT/('cpu-fallback-offline-'+suffix+'.log')
+            if sha(source) != fallback['construction_sha256']:
+                raise ValueError('fallback construction changed')
+            if not fallback_log.is_file() or 'offline_passed' not in fallback_log.read_text():
+                raise ValueError('fallback exact offline proof missing')
+            fallback['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --candidate fallback1 --case '+case,
+                                   'construction_sha256': sha(source),
+                                   'exit_code': 0, 'log': fallback_log.name,
+                                   'log_sha256': sha(fallback_log)}
+            if require_compatibility:
+                stem = ROOT/'cases'/suffix
+                compatibility = stem/'fallback-compatibility.json'
+                analysis_log = stem/'fallback-compat-analysis.log'
+                negative_log = stem/'fallback-compat-negative.log'
+                proof = json.loads(compatibility.read_text())
+                if (proof.get('passed') is not True or
+                        proof.get('candidate_id') != 'fallback1' or
+                        proof.get('construction_sha256') != sha(source) or
+                        proof.get('log_sha256') != sha(analysis_log) or
+                        proof.get('negative_log_sha256') != sha(negative_log)):
+                    raise ValueError('fallback positive/negative compatibility proof missing')
+                fallback['compatibility'] = {
+                    'receipt': str(compatibility.relative_to(ROOT)), 'sha256': sha(compatibility),
+                    'log': str(analysis_log.relative_to(ROOT)),
+                    'negative_log': str(negative_log.relative_to(ROOT))}
+            entry.setdefault('candidates', []).append(fallback)
         if require_compatibility:
             compatibility = ROOT / 'cases' / suffix / 'compatibility.json'
             analysis_log = ROOT / 'cases' / suffix / 'compat-analysis.log'

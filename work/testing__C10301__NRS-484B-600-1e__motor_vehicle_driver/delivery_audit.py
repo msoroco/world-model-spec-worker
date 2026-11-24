@@ -73,6 +73,13 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
                 site.get('maneuver') != 'travel' or
                 site.get('diagnostic_fixture') != index['diagnostic_fixture']):
             raise ValueError('Native site and capture index differ')
+        road_path = attempt / 'road.xodr'
+        if (road_path.is_file() and
+                hashlib.sha256(road_path.read_bytes()).hexdigest() !=
+                site.get('opendrive_sha256')):
+            raise ValueError('original Native OpenDRIVE source hash differs')
+        if not allow_diagnostic and not road_path.is_file():
+            raise ValueError('original Native OpenDRIVE source required for delivery')
     speed = measure(attempt, case_id)
     if speed["diagnostic_fixture"] != index["diagnostic_fixture"]:
         raise ValueError("speed and capture provenance differ")
@@ -173,6 +180,34 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
                 readback.get("native_run_id") != speed["native_run_id"] or
                 readback.get("frames") != frames):
             raise ValueError("original camera readback and frame map differ")
+    graph_hash = motion.get('graph_frame_readback_sha256')
+    if graph_hash is None and not allow_diagnostic:
+        raise ValueError('original Native graph readback required for delivery')
+    if graph_hash is not None:
+        graph_path = attempt / 'graph-frame-readback.json'
+        raw = graph_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != graph_hash:
+            raise ValueError('original Native graph inventory hash differs')
+        graph_map = json.loads(raw)
+        graph_frames = graph_map.get('frames')
+        if (graph_map.get('case_id') != case_id or
+                graph_map.get('native_run_id') != speed['native_run_id'] or
+                not isinstance(graph_frames, list) or
+                len(graph_frames) != EXPECTED_FRAMES):
+            raise ValueError('original Native graph frame count differs')
+        for frame, row in zip(frames, graph_frames):
+            if (row.get('frame') != frame['frame'] or
+                    row.get('time_s') !=
+                    (frame['frame'] - origin) / 20):
+                raise ValueError('original Native graph frame join differs')
+            source, _ = _sealed(attempt,
+                {'path': row.get('adapter_graph'), 'sha256': row.get('sha256')},
+                'Native graph')
+            graph = json.loads(source.read_bytes())
+            if (graph.get('format') != 'native-adapter-graph-v1' or
+                    graph.get('metadata', {}).get('frame') != frame['frame'] or
+                    graph.get('metadata', {}).get('simulation_time_s') != row['time_s']):
+                raise ValueError('original Native graph content differs')
     cameras = index.get("cameras")
     if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
         raise ValueError("four camera bindings required")
@@ -184,6 +219,7 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
             "motion_sha256": motion_hash, "frame_map_sha256": map_hash,
             "native_site_sha256": site_hash,
             "route_readback_sha256": route_readback_hash,
+            "graph_frame_readback_sha256": graph_hash,
             "camera_sha256": camera_hashes,
             "diagnostic_fixture": index["diagnostic_fixture"],
             "source_integrity_passed": True, "full_video_decode": False,

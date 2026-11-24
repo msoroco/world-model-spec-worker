@@ -29,17 +29,31 @@ class Blueprint:
 
 
 class Actor:
+    id = 17
+    type_id = 'vehicle.diagnostic'
+    is_alive = True
+
     def __init__(self):
         self.speed = 0.0
         self.x = 0.0
         self.control = SimpleNamespace(throttle=0.0, brake=0.0)
         self.destroyed = False
+        self.bounding_box = SimpleNamespace(
+            location=SimpleNamespace(x=0.0, y=0.0, z=0.0),
+            extent=SimpleNamespace(x=1.0, y=0.5, z=0.5),
+            get_world_vertices=lambda transform: [
+                SimpleNamespace(x=self.x + dx, y=dy, z=dz)
+                for dx in (-1.0, 1.0) for dy in (-0.5, 0.5)
+                for dz in (-0.5, 0.5)])
 
     def get_velocity(self):
         return SimpleNamespace(x=self.speed, y=0.0, z=0.0)
 
     def get_transform(self):
-        return SimpleNamespace(location=SimpleNamespace(x=self.x, y=0.0, z=0.0))
+        return SimpleNamespace(
+            location=SimpleNamespace(x=self.x, y=0.0, z=0.0),
+            rotation=SimpleNamespace(pitch=0.0, yaw=0.0, roll=0.0),
+            get_forward_vector=lambda: SimpleNamespace(x=1.0, y=0.0, z=0.0))
 
     def apply_control(self, control):
         self.control = control
@@ -49,6 +63,10 @@ class Actor:
 
 
 class Sensor:
+    id = 100
+    type_id = 'sensor.camera.rgb'
+    is_alive = False
+
     def __init__(self):
         self.callback = None
         self.stopped = False
@@ -91,6 +109,9 @@ class World:
 
     def get_map(self):
         return self.map
+
+    def get_actors(self):
+        return [self.actor, *self.sensors] if self.actor else list(self.sensors)
 
     def get_blueprint_library(self):
         return SimpleNamespace(find=lambda name: Blueprint(name))
@@ -285,6 +306,30 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(all(sensor.destroyed and sensor.stopped
                             for sensor in self.world.sensors))
         self.assertFalse((self.attempt / 'capture-index.json').exists())
+
+    def test_original_graph_frames_are_bound_to_motion_receipt(self):
+        def graph_reader(world, actor, snapshot, frame, time_s):
+            return (json.dumps({'format': 'native-adapter-graph-v1',
+                                'metadata': {'frame': frame,
+                                             'simulation_time_s': time_s,
+                                             'source': 'diagnostic-live-world'},
+                                'nodes': [{'id': 'ego',
+                                           'attributes': {'actor_id': 1}}],
+                                'edges': []}, sort_keys=True) + '\n').encode()
+        capture(self.world, self.site, self.attempt, CASE, 'graph-run',
+                0.05, transform, control, diagnostic_fixture=True,
+                media_factory=media_factory, graph_reader=graph_reader)
+        from delivery_audit import audit_integrity
+        audited = audit_integrity(self.attempt, CASE,
+                                  allow_diagnostic=True)
+        self.assertEqual(len(list((self.attempt / 'graphs/abstract').glob('*.adapter.json'))), 900)
+        self.assertEqual(audited['graph_frame_readback_sha256'],
+                         json.loads((self.attempt / 'native-motion-receipt.json').read_text())
+                         ['graph_frame_readback_sha256'])
+        graph = self.attempt / 'graphs/abstract/00000140.adapter.json'
+        graph.write_bytes(graph.read_bytes() + b'changed')
+        with self.assertRaisesRegex(ValueError, 'Native graph source hash differs'):
+            audit_integrity(self.attempt, CASE, allow_diagnostic=True)
 
     def test_pinned_analysis_entrypoint_writes_native_result(self):
         capture(self.world, self.site, self.attempt, CASE, 'run-analysis',

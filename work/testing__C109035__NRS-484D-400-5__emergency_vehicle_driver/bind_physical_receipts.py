@@ -53,7 +53,7 @@ def main():
             entry["offline"] = {"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/" +
                                 HERE.name + "/execution-manifest.json --case " + case +
                                 " --output .runtime-work/c109035-canonical-offline/" + suffix +
-                                "-v3 --python $PWD/.venv-cpu/bin/python",
+                                "-v4 --python $PWD/.venv-cpu/bin/python",
                                 "exit_code": 0,
                                 "construction_sha256": entry["construction_sha256"],
                                 "log": log.relative_to(HERE).as_posix(),

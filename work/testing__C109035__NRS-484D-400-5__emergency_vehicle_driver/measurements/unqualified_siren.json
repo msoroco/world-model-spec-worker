@@ -1,0 +1,37 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "Siren use only within qualifying event",
+      "source": "NRS 484D.400(5)",
+      "output_key": "temporal_siren_relation",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "device_trace.jsonl",
+        "dispatch_context.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Authorized vehicle and 500-foot normal-condition audibility of equipped device",
+      "source": "NRS 484D.400(5)",
+      "output_key": "equipment_authorization_record",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "equipment_record.json",
+        "device_trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device_trace.jsonl"
+    ],
+    "error_contains": "Missing required source: device_trace.jsonl"
+  }
+}

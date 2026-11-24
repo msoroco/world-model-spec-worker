@@ -14,6 +14,30 @@ from native_scene_factory import run_native, validate_camera_packet
 class OriginalMotionObserver:
     """Record original controls and motion; leave legal exceptions unresolved."""
 
+    def __init__(self):
+        self.context_actors = {}
+        self.context_specs = {}
+
+    def bind_context(self, actors, specs):
+        self.context_actors = dict(actors)
+        self.context_specs = {spec['role']: spec for spec in specs}
+
+    def _context_samples(self, snapshot):
+        samples = []
+        for role, actor in sorted(self.context_actors.items()):
+            pose = actor.get_transform()
+            velocity = actor.get_velocity()
+            samples.append({
+                'role': role, 'native_frame': snapshot.frame,
+                'source_refs': self.context_specs[role]['source_refs'],
+                'location_xyz_m': [float(pose.location.x), float(pose.location.y),
+                                   float(pose.location.z)],
+                'velocity_xyz_mps': [float(velocity.x), float(velocity.y),
+                                     float(velocity.z)],
+                'physical_presence_observed': True,
+                'official_status_verified': False})
+        return samples
+
     def observe(self, snapshot, actor):
         control = actor.get_control()
         velocity = actor.get_velocity()
@@ -25,6 +49,7 @@ class OriginalMotionObserver:
                 "brake": float(control.brake),
                 "hand_brake": bool(control.hand_brake),
                 "velocity_xyz_mps": [float(velocity.x), float(velocity.y), float(velocity.z)],
+                "context_actors": self._context_samples(snapshot),
                 "stop_stand_park_legal_class": "unresolved",
             },
             "traffic_conflict_observation": None,

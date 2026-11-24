@@ -1,0 +1,51 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Emergency-call response with pedestrian warning recipient",
+      "source": "NRS 484D.400(5) and frozen witness index 483",
+      "output_key": "response_warning_observation",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "device_trace.jsonl",
+        "actor_trace.jsonl",
+        "dispatch_context.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Warning lamps may operate without siren",
+      "source": "NRS 484D.400(5)",
+      "output_key": "lamp_without_siren_observation",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "device_trace.jsonl",
+        "equipment_record.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Authorized vehicle and 500-foot normal-condition audibility of equipped device",
+      "source": "NRS 484D.400(5)",
+      "output_key": "equipment_authorization_record",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "equipment_record.json",
+        "device_trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device_trace.jsonl"
+    ],
+    "error_contains": "Missing required source: device_trace.jsonl"
+  }
+}

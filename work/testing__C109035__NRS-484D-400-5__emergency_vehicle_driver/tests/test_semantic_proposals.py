@@ -22,7 +22,9 @@ class SemanticProposalTests(unittest.TestCase):
         stages = MODULE.prepare(self.assignment, self.plan)
         self.assertEqual(stages["template"]["quote"], self.plan["law_text"])
         cases = stages["cases"]["cases"]
-        self.assertEqual({c["case_id"] for c in cases}, {c["case_id"] for c in self.plan["cases"]})
+        selected = {c["case_id"] for c in cases if c["target_type"] != "baseline"}
+        self.assertEqual(selected, {c["case_id"] for c in self.plan["cases"]})
+        self.assertEqual(sum(c["target_type"] == "baseline" for c in cases), 1)
         self.assertEqual(len(stages["cases"]["comparisons"]), 3)
         self.assertTrue(all(c["status"] == "draft" for c in cases))
         self.assertTrue(all(c["unresolved_judgment_calls"] for c in cases))

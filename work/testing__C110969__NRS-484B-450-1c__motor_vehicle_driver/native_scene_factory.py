@@ -42,12 +42,44 @@ def validate_camera_packet(packet, route, boundary):
     return cameras
 
 
+CONTEXT_ROLE = {'traffic_conflict': 'conflicting_vehicle',
+                'officer_direction': 'police_officer',
+                'device_direction': 'traffic_control_device'}
+
+
+def validate_context_actors(route, case_id):
+    """Require a reviewed physical source for each exception scene prop."""
+    specs = route.get('context_actors', [])
+    _require(isinstance(specs, list), 'reviewed context actor list required')
+    role = CONTEXT_ROLE.get(case_id.rsplit('__', 1)[-1])
+    if role:
+        _require(any(spec.get('role') == role for spec in specs),
+                 'reviewed Native context actor missing: ' + role)
+    names = set()
+    for spec in specs:
+        _require(isinstance(spec, dict) and spec.get('role') in CONTEXT_ROLE.values()
+                 and spec.get('blueprint') and spec.get('spawn') and spec.get('source_refs'),
+                 'reviewed Native context actor source incomplete')
+        _require(spec['role'] not in names, 'duplicate Native context role')
+        names.add(spec['role'])
+        control = spec.get('initial_control')
+        if control is not None:
+            _require(spec['role'] == 'conflicting_vehicle' and
+                     set(control) == {'throttle', 'brake', 'steer'} and
+                     all(isinstance(control[key], (int, float)) for key in control) and
+                     0 <= control['throttle'] <= 1 and 0 <= control['brake'] <= 1 and
+                     -1 <= control['steer'] <= 1,
+                     'reviewed Native context initial control invalid')
+    return specs
+
+
 def run_native(world, carla, route, boundary, camera_packet, observer, case_id,
                run_id, output, sample_count=900, client=None, controller_profile=None):
     """Create the exact scene and retain original camera/trace source packets."""
     _require(route.get("case_id") == case_id, "route case identity differs")
     validate_route(route, boundary, case_id)
     cameras = validate_camera_packet(camera_packet, route, boundary)
+    context_specs = validate_context_actors(route, case_id)
     _require(world.get_map().name == boundary["map_id"], "live Native map differs")
     _require(observer is not None and callable(getattr(observer, "observe", None)),
              "independent original activity observer required")
@@ -67,6 +99,20 @@ def run_native(world, carla, route, boundary, camera_packet, observer, case_id,
         ego = world.spawn_actor(vehicle_blueprint, _pose(carla, route["spawn"]))
         _require(ego is not None, "Native vehicle spawn failed")
         actors.append(ego)
+        context_actors = {}
+        for spec in context_specs:
+            blueprint = library.find(spec['blueprint'])
+            _require(blueprint is not None, 'reviewed context blueprint missing: '+spec['role'])
+            actor = world.spawn_actor(blueprint, _pose(carla, spec['spawn']))
+            _require(actor is not None, 'Native context actor spawn failed: '+spec['role'])
+            actors.append(actor)
+            context_actors[spec['role']] = actor
+            if spec.get('initial_control') is not None:
+                actor.apply_control(carla.VehicleControl(**spec['initial_control']))
+        if context_actors:
+            _require(callable(getattr(observer, 'bind_context', None)),
+                     'independent context observation binding missing')
+            observer.bind_context(context_actors, context_specs)
         sensors = {}
         for name, (width, height) in CAMERAS.items():
             spec = cameras[name]

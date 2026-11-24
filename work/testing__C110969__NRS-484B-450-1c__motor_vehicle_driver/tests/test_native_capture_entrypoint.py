@@ -38,8 +38,14 @@ class EntryTests(unittest.TestCase):
             attempt = base/'attempt'
             attempt.mkdir()
             (attempt/'runner.py').write_text('print("source gated")\n')
+            config_content = json.dumps({'selected_case_id': CASE,
+                'controller_profile': {'brake_distance_m': 3.5,
+                                       'throttle_gain': 0.2,
+                                       'through_speed_floor_mps': 2.0}})+'\n'
+            (attempt/'config.json').write_text(config_content)
             construction = {'case_id': CASE, 'files': [
-                {'path': 'runner.py', 'content': 'print("source gated")\n'}]}
+                {'path': 'runner.py', 'content': 'print("source gated")\n'},
+                {'path': 'config.json', 'content': config_content}]}
             built = attempt/'construction.json'
             built.write_text(json.dumps(construction)+'\n')
             (attempt/'candidate-selection.json').write_text(json.dumps({
@@ -88,6 +94,7 @@ class EntryTests(unittest.TestCase):
                                                     api=object(), client=client)
             self.assertEqual(result['native_capture']['frame_count'], 900)
             self.assertEqual(invoked.call_args.args[0], world)
+            self.assertEqual(invoked.call_args.kwargs['controller_profile']['brake_distance_m'], 3.5)
 
     def test_missing_reviewed_sources_fail_before_client(self):
         with patch.dict(os.environ, {}, clear=True):

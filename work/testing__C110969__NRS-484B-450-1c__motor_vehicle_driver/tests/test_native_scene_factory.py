@@ -72,6 +72,45 @@ def packets(case_id):
 
 
 class FactoryTests(unittest.TestCase):
+    def test_exception_context_actor_requires_reviewed_physical_spec(self):
+        case = "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__traffic_conflict"
+        route, _, _ = packets(case)
+        with self.assertRaisesRegex(ValueError, 'context actor missing'):
+            factory.validate_context_actors(route, case)
+        route['context_actors'] = [{'role': 'conflicting_vehicle',
+            'blueprint': 'vehicle.context', 'spawn': {'x': 0, 'y': 5, 'z': 0,
+                                                     'yaw_deg': 90},
+            'source_refs': ['independent route review'],
+            'initial_control': {'throttle': 0.2, 'brake': 0, 'steer': 0}}]
+        self.assertEqual(len(factory.validate_context_actors(route, case)), 1)
+        route['context_actors'][0]['initial_control']['throttle'] = 2
+        with self.assertRaisesRegex(ValueError, 'initial control invalid'):
+            factory.validate_context_actors(route, case)
+
+    def test_spawns_reviewed_context_before_four_cameras(self):
+        case = "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__officer_direction"
+        route, boundary, cameras = packets(case)
+        route['context_actors'] = [{'role': 'police_officer',
+            'blueprint': 'walker.reviewed', 'spawn': {'x': 1, 'y': 1, 'z': 0,
+                                                     'yaw_deg': 0},
+            'source_refs': ['reviewed officer placement']}]
+        world = World()
+        carla = types.SimpleNamespace(
+            Transform=lambda loc, rot: (loc, rot),
+            Location=lambda **kwargs: kwargs, Rotation=lambda **kwargs: kwargs,
+            VehicleControl=lambda **kwargs: kwargs)
+        observer = types.SimpleNamespace(observe=lambda *_: {}, bind_context=lambda *_: None)
+        with patch.object(factory, "validate_route", return_value={}), \
+             patch.object(factory, "NativeCameraAdapter"), \
+             patch.object(factory, "NativeMediaWriter"), \
+             patch.object(factory, "DestinationController"), \
+             patch.object(factory, "acquire", return_value={"frame_count": 900}):
+            factory.run_native(world, carla, route, boundary, cameras,
+                               observer, case, 'run', Path('/ignored'))
+        self.assertEqual([item[0] for item in world.spawned],
+                         ['vehicle.demo', 'walker.reviewed'] + ['sensor.camera.rgb'] * 4)
+        self.assertTrue(all(item[3].destroyed for item in world.spawned))
+
     def test_refuses_unreviewed_camera_before_spawn(self):
         case = "testing__C110969__NRS-484B-450-1c__motor_vehicle_driver__inside_stop"
         route, boundary, cameras = packets(case)
