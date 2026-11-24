@@ -1804,3 +1804,17 @@ After independent promotion of C110763, its owner retained the next near-ready p
 C201084/LVMC-11-52-130-A2 in partition 00 has eight selected cases and 32 historical candidate chains bound to retired runtime. Current primary offline/public compatibility passes, but active capture requires a 1920×1080 overview and 1280×720 detail views; the historical selected profile uses 640×360. Root config/construction is also absent. The owner stopped exploratory replay and is repairing exact selected constructions and recipes before full reproof. Status partial.
 
 C104393/NRS-484B-413-2 in partition 05 passed 18 current-runtime public compatibility chains, 18 fresh recorded-only saved chains, six delivery and physical diagnostics, two comparisons and direct validators. Its guarded transient ready scoped strict probe passed with `static_checks_passed:true`, and durable result was restored to partial. The owner is promoting and rerunning the durable exact scoped strict gate before lead independent acceptance.
+
+## 2026-11-24 12:01 UTC NRS-484B-413-2 promotion
+
+C104393/NRS-484B-413-2 is ready/delivery_prepared for CPU handoff. Six exact selected cases with three candidate plans each passed all 18 current-runtime public compatibility and 18 recorded-only saved chains, six delivery and physical diagnostics, two comparisons, and direct package validation. Its owner durable exact scoped strict gate passed; the lead independently reran `.venv-cpu/bin/python worker_check.py --assignment training__C104393__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` and received exit 0 with `static_checks_passed:true`. The result remains ready. Original physical CARLA behavior, camera pixels, and legal/source acceptance remain local checks.
+
+The ordered GPU queue was rebuilt and independently audited after the promotion: 755 cases, 354 comparisons, zero dispatchable; queue SHA-256 `7edc95ba8b22fa5c1b08e8cc6a8bebd25b2fe3916814aab53a044d17d68ff120`. Inventory is 24 ready / 229 partial. The complete strict batch gate has not passed while partial assignments remain. C201084/LVMC-11-52-130-A2 is 17/32 current-runtime chains through; C111256/NRS-484B-283-1a is replaying its 16 selected 600-frame chains. Both remain partial.
+
+## 2026-11-24 12:03 UTC next owner
+
+After final freeze of C104393/NRS-484B-413-2, that owner moved to C150142/LVMC-11-52-030-A in partition 01. It retains 30 exact selected cases, 56 proven short candidate plans and 64 current-runtime long offline/saved candidate bundles; the remaining official long recipe-bound compatibility receipts and final source-bound delivery/comparison/semantic integration are CPU work. Status remains partial until its exact scoped strict gate passes.
+
+## 2026-11-24 12:04 UTC returned-file hygiene
+
+A recent 649-file returned-work scan found one blank EOF line in the newly completed C110763/NRS-484B-113-2 HANDOFF.md. The lead removed that terminal blank line and reran its exact scoped strict gate; exit 0, `static_checks_passed:true`. No status or queue selection changed. The other recent files passed the 2 MiB limit, UTF-8, trailing-whitespace, blank-EOF and conflict-marker checks.

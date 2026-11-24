@@ -34,7 +34,7 @@ def audit(case, candidate, attempt, processing, diagnostic):
         raise ValueError('Candidate selection differs')
     receipt = read(processing)
     if not (receipt['passed'] and receipt['recorded_only'] and receipt['originals_preserved']
-            and receipt['timestamp_joins'] == {'frames': 480, 'passed': True, 'missing_original_trace_or_map': False}
+            and receipt['timestamp_joins'] == {'frames': 600, 'passed': True, 'missing_original_trace_or_map': False}
             and receipt['final_video_checks']['passed'] and not receipt['missing_evidence']
             and receipt['case_id'] == case and receipt['candidate_id'] == candidate
             and not receipt['physical_acceptance_claimed'] and not receipt['legal_acceptance_claimed']):
@@ -49,7 +49,7 @@ def audit(case, candidate, attempt, processing, diagnostic):
             raise ValueError('Saved original source changed: ' + name)
     rows = [json.loads(line) for line in (attempt / 'native_samples.jsonl').read_text().splitlines()]
     maps = [json.loads(line) for line in (attempt / 'video_frames.jsonl').read_text().splitlines()]
-    if len(rows) != len(maps) or len(rows) != 480:
+    if len(rows) != len(maps) or len(rows) != 600:
         raise ValueError('Original source frame join differs')
     result_path = Path(receipt['result'])
     if not result_path.is_file() or sha(result_path) != receipt['result_sha256']:

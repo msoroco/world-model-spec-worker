@@ -32,8 +32,8 @@ def audit(comparison, left, right, diagnostic):
         if selection['case_id'] != case or selection['candidate_id'] != 'primary' or selection['construction_sha256'] != entry['construction_sha256']:
             raise ValueError('Comparison source selection differs')
         samples = rows(path / 'native_samples.jsonl')
-        if len(samples) != 480:
-            raise ValueError('Comparison source lacks 480 Native samples')
+        if len(samples) != 600:
+            raise ValueError('Comparison source lacks 600 Native samples')
         sources.append({'path': path, 'samples': samples, 'geometry_sha256': sha(path / 'road_geometry.json'),
                         'selection_sha256': sha(path / 'candidate-selection.json'),
                         'source_kind': read(path / 'capture/manifest.json').get('source_kind')})
@@ -51,7 +51,7 @@ def audit(comparison, left, right, diagnostic):
             raise ValueError('Exception comparison changed ego trajectory')
         if not all(x['white_cane_declared'] is False and y['white_cane_declared'] is True for x, y in zip(a, b)):
             raise ValueError('Exception declaration difference absent')
-        named_difference = {'synthetic_white_cane_declaration_changed_frames': 480}
+        named_difference = {'synthetic_white_cane_declaration_changed_frames': 600}
     else:
         raise ValueError('Unsupported comparison')
     if diagnostic:
