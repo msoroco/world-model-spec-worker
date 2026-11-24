@@ -100,7 +100,7 @@ def main():
         evidence["ego"].update(position_m=[x, y, .3], heading_deg=heading,
                                speed_mps=speed, body_vertices_m=body3)
         if INDEX == 2:
-            for optional in ("world", "timing", "visibility", "supporting_only"):
+            for optional in ("timing", "visibility", "supporting_only"):
                 evidence.pop(optional, None)
         observation = evidence["original_observations"]
         observation.update(frame=frame, time_s=time)
@@ -128,10 +128,10 @@ def main():
         files[name] = lines(rows)
     native_manifest = json.loads(original["capture/manifest.json"])
     native_manifest.update(case_id=case["case_id"], frames=900)
-    native_manifest["required_observations"] = ["kin.position", "kin.heading",
-                                                 "kin.velocity",
-                                                 "st.intersection" if site["alternative"] == "intersection"
-                                                 else "st.street_corner", "rel.occupies"]
+    native_manifest["required_observations"] = (
+        ["kin.position", "kin.heading", "kin.velocity", "st.intersection",
+         "rel.occupies"] if site["alternative"] == "intersection"
+        else config["required_atoms"])
     native_manifest["sources"]["trace.jsonl"] = digest(files["trace.jsonl"])
     files["capture/manifest.json"] = compact(native_manifest) + "\n"
     spec = {"files": files, "graphs": graphs,

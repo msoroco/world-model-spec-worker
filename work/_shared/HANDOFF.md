@@ -832,3 +832,7 @@ C215286 remains partial. The four staged bundles now carry site templates; four 
 ## 2026-11-24 C215286 intersection diagnostic compatibility
 
 One of four staged alternative cases, reverse into intersection, now passes the 900-frame exact diagnostic compatibility path using a current-library Lean decoder. See `work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/intersection-full-compatibility-ledger.json` and assignment HANDOFF. The assignment-scoped complete check passes; C215286 remains partial. Returned work scan: 10,494 files, zero binary/oversize/trailing-whitespace/conflict issues. No prior-ready status changed and no Git was run.
+
+## 2026-11-24 C215286 four alternative compatibility passes
+
+All four staged intersection/street-corner reverse alternatives passed exact 900-frame synthetic compatibility with the current-library Lean decoder. The returned index and proof hashes are at `work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/alternative-full-compatibility-index.json`. Selected-manifest integration and delivery checks remain; C215286 stays partial. No prior-ready package changed and no Git was run.
