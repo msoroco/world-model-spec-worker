@@ -16,13 +16,20 @@ def config():
     cfg=json.loads((Path(__file__).resolve().parent/'config.json').read_text())
     case=AID+'__'+cfg.get('case_suffix','')
     if (cfg.get('assignment_id')!=AID or cfg.get('case_id')!=case or cfg.get('selected_case_id')!=case
-            or cfg.get('case_suffix') not in ('controlled_1','controlled_2') or cfg.get('candidate_id')!='primary'
+            or cfg.get('case_suffix') not in ('controlled_1','controlled_2')
+            or cfg.get('candidate_id') not in ('primary','fallback1','fallback2')
             or cfg.get('law_id')!='NRS-484B-267-2d' or cfg.get('cell_id')!='C404492'
             or cfg.get('actor')!='motor_vehicle_driver' or cfg.get('frames')!=COUNT
             or cfg.get('rate_hz')!=RATE or cfg.get('duration_s')!=30
             or [c.get('name') for c in cfg.get('cameras',[])]!=list(CAMERAS)
-            or cfg.get('physical_acceptance_claimed') is not False):
+            or cfg.get('physical_acceptance_claimed') is not False
+            or cfg.get('engineering_initial_ego_gap_m') not in (-20,-25)
+            or cfg.get('camera_height_offset_m') not in (0,1.0)
+            or cfg.get('camera_fov_deg') not in (90,105)):
         raise ValueError('Exact emergency construction contract differs')
+    expected={'primary':(-20,0,90),'fallback1':(-25,0,90),'fallback2':(-20,1.0,105)}
+    if (cfg['engineering_initial_ego_gap_m'],cfg['camera_height_offset_m'],cfg['camera_fov_deg'])!=expected[cfg['candidate_id']]:
+        raise ValueError('Candidate engineering knobs differ')
     return cfg
 
 
@@ -40,7 +47,7 @@ def survey_check(s):
         raise ValueError('Original vehicle transforms missing')
     gap=s['ego_spawn_xyz_m'][0]-s['emergency_spawn_xyz_m'][0]
     suffix=config()['case_suffix']
-    if gap>-10:
+    if abs(gap-config()['engineering_initial_ego_gap_m'])>0.5:
         raise ValueError('Selected engineering spawn gap differs')
     if abs(s['ego_spawn_xyz_m'][1]-s['emergency_spawn_xyz_m'][1])<2.5:
         raise ValueError('Separate adjacent-lane trajectories required')
@@ -79,8 +86,11 @@ def execute(output,survey,host,port):
         for c in cfg['cameras']:
             bp=lib.find('sensor.camera.rgb');bp.set_attribute('image_size_x',str(c['width']))
             bp.set_attribute('image_size_y',str(c['height']));bp.set_attribute('sensor_tick',str(1/RATE))
+            bp.set_attribute('fov',str(cfg['camera_fov_deg']))
             pose=survey['camera_world_transforms'][c['name']]
-            camera=world.spawn_actor(bp,transform(carla,pose['xyz_m'],pose['rotation_deg']))
+            camera_xyz=list(pose['xyz_m'])
+            camera_xyz[2]+=cfg['camera_height_offset_m']
+            camera=world.spawn_actor(bp,transform(carla,camera_xyz,pose['rotation_deg']))
             actors.append(camera);q=queue.Queue();camera.listen(q.put);queues[c['name']]=q
             encoders[c['name']]=subprocess.Popen(['ffmpeg','-nostdin','-v','error','-y',
                 '-f','rawvideo','-pix_fmt','bgra','-s',f"{c['width']}x{c['height']}",

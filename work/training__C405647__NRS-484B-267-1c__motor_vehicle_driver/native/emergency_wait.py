@@ -4,12 +4,14 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 FRAMES = 600
-VIEWS = ('overview','approach','right_edge','driver_reference')
+VIEWS = ('overview','approach','reference_corner','driver_reference')
 PREFIX = 'training__C405647__NRS-484B-267-1c__motor_vehicle_driver__'
 
 
 def check_config(config, road_text):
-    if (config.get('case_id') not in (PREFIX+'probe_a',PREFIX+'probe_b')
+    if (config.get('case_id') not in tuple(PREFIX + name for name in
+            ('probe_a', 'probe_b', 'exception_1_1', 'exception_1_2',
+             'official_1', 'official_2'))
             or config.get('law_id') != 'NRS-484B-267-1c'
             or config.get('cell_id') != 'C405647'
             or config.get('actor') != 'motor_vehicle_driver'
@@ -18,6 +20,9 @@ def check_config(config, road_text):
             or config.get('physical_completion') is not False
             or config.get('legal_verdict') is not None):
         raise ValueError('C405647 exact scope or timing differs')
+    if (config.get('approach_kind') not in ('authorized_emergency', 'regulatory_official')
+            or config.get('officer_direction_request') not in (False, True)):
+        raise ValueError('Approach authority alternative or officer-direction request missing')
     if tuple(c.get('name') for c in config.get('cameras',())) != VIEWS:
         raise ValueError('Four named source cameras required')
     if any(c.get('fps') != 20 or not all(c.get(k) for k in
@@ -48,6 +53,8 @@ def measure(rows, source_kind):
     passage = []
     whole_body_passage = []
     movement = []
+    requested_kinds = set()
+    requested_directions = set()
     for i,row in enumerate(rows):
         if (row.get('frame') != i or abs(row.get('time_s',-1)-(i+1)/20) > 1e-8
                 or row.get('source_kind') != source_kind):
@@ -62,6 +69,8 @@ def measure(rows, source_kind):
             raise ValueError('Native position or velocity source missing')
         if row.get('requested_flashing_lights') is not True:
             raise ValueError('Flashing-light request missing')
+        requested_kinds.add(row.get('requested_approach_kind'))
+        requested_directions.add(row.get('requested_officer_direction'))
         ego_body = row.get('ego_body_xy_m')
         emergency_body = row.get('emergency_body_xy_m')
         if (not isinstance(ego_body, list) or len(ego_body) < 4 or
@@ -84,12 +93,17 @@ def measure(rows, source_kind):
         raise ValueError('Emergency passage span missing')
     if not movement:
         raise ValueError('Ego release span missing')
+    if requested_kinds not in ({'authorized_emergency'}, {'regulatory_official'}) or \
+            requested_directions not in ({False}, {True}):
+        raise ValueError('Mixed or missing source qualification request')
     cross = next(i for i,d in enumerate(passage) if d > 0)
     full_pass = next(i for i,d in enumerate(whole_body_passage) if d > 0)
     return {'requested_center_passage_frame':cross,
             'requested_whole_body_passage_frame':full_pass,
             'requested_first_ego_motion_frame':movement[0],
             'requested_waits_through_whole_body_passage':movement[0] > full_pass,
+            'requested_approach_kind':next(iter(requested_kinds)),
+            'requested_officer_direction':next(iter(requested_directions)),
             'legal_verdict':None,'original_native_observed':source_kind=='original_native'}
 
 

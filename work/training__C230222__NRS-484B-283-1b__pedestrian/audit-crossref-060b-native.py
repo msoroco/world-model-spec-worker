@@ -42,14 +42,40 @@ def audit():
         proof = HERE / 'crossref-060b-native' / label / 'offline.log'
         if not proof.is_file() or 'Traceback' in proof.read_text():
             raise ValueError('Pinned offline proof missing or failed')
+        measurement_path = HERE / 'crossref-060b-native' / label / 'source-measurement.json'
+        measured = json.loads(measurement_path.read_text())
+        if (measured['frames'] != 600 or measured['case_id'] != case or
+            measured['authored_bridge_type_survey_target_present'] != (label == 'overhead_candidate') or
+            measured['native_rendered_pedestrian_overhead_verified'] or
+            measured['usable_pedestrian_access_verified'] or measured['original_pixels_verified'] or
+            measured['legal_applicability_conclusion'] is not None):
+            raise ValueError('Synthetic infrastructure measurement overclaims or differs')
+        proof_hashes = {}
+        for candidate, location in (('primary', HERE / 'crossref-060b-native' / label / 'proofs'),
+                                    ('fallback1', HERE / 'crossref-060b-fallback1' / label / 'proofs')):
+            hashes = {}
+            for name in ('offline.log', 'compatibility.json', 'positive-analysis.log',
+                         'negative-analysis.log', 'processing.json', 'saved-analysis.log'):
+                receipt = location / name
+                if not receipt.is_file():
+                    raise ValueError('Current-runtime receipt missing: ' + candidate + '/' + name)
+                hashes[name] = digest(receipt)
+            if 'Missing required source: curb-samples.jsonl' not in (location / 'negative-analysis.log').read_text():
+                raise ValueError('Missing-source negative did not reject')
+            proof_hashes[candidate] = hashes
         records.append({'case_id':case,'construction_sha256':digest(path),
                         'road_sha256':hashlib.sha256(files['road.xodr'].encode()).hexdigest(),
                         'offline_log_sha256':digest(proof),
+                        'source_measurement_sha256':digest(measurement_path),
+                        'current_runtime_proof_hashes':proof_hashes,
                         'authored_overhead_candidate':label=='overhead_candidate'})
     if records[0]['road_sha256'] == records[1]['road_sha256']:
         raise ValueError('Context variable unchanged')
     return {'format':'c230222-060b-authored-overhead-cpu-proof-v1',
-            'records':records,'original_native_visibility_verified':False,
+            'records':records,'measurement_script_sha256':digest(HERE / 'measure-crossref-060b.py'),
+            'missing_frame_rejected':True,'public_positive_count':4,
+            'missing_source_negative_count':4,'recorded_only_saved_count':4,
+            'original_native_visibility_verified':False,
             'pedestrian_tunnel_or_overhead_provided_verified':False,
             'legal_applicability_conclusion':None}
 

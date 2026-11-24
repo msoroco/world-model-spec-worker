@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C382389",
   "law_id": "NRS-484B-223-4b",
-  "selected_branch": null,
+  "selected_branch": "Straight traversal from a right-turn-lane approach",
   "scope_branches": [
     "Straight traversal from a right-turn-lane approach"
   ],
@@ -19,14 +19,14 @@
         "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
         "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast"
       ],
-      "evidence_or_gap": "Signed Native adjacent/right-only lane proposals, eight exact offline bundles with 15 tests each, 4/480-frame saved diagnostics, eight synthetic v1 portable positives and negatives, three source-bound fallback triggers and independent audits pass. Strict selected v2, physical right-only design and crossing, original pixels, statutory closure and delivery acceptance remain unverified."
+      "evidence_or_gap": "Both exact right-only lane comparison cases selected with source-bound current-runtime CPU diagnostics; original Native lane designation, physical crossing and legal outcome remain for independent local review."
     }
   ],
   "cases": [
     {
       "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
       "target_law_id": "NRS-484B-223-4b",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_delivery_cpu_prepared",
       "target_type": "attempt",
       "comparison_variable": "right_turn_only_lane_traversal",
       "comparison_unit": "bool",
@@ -45,7 +45,7 @@
     {
       "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast",
       "target_law_id": "NRS-484B-223-4b",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_delivery_cpu_prepared",
       "target_type": "attempt",
       "comparison_variable": "right_turn_only_lane_traversal",
       "comparison_unit": "bool",
@@ -90,63 +90,105 @@
     {
       "name": "ego_pose",
       "unit": "m,deg",
-      "mandatory": true,
+      "mandatory": false,
       "purpose": "Measured position, heading and footprint over time"
     },
     {
       "name": "ego_speed",
       "unit": "m/s",
-      "mandatory": true,
+      "mandatory": false,
       "purpose": "Observed movement and stop intervals"
     },
     {
       "name": "right_turn_only_lane_traversal",
       "unit": "bool",
-      "mandatory": true,
+      "mandatory": false,
       "purpose": "straight traversal versus right turn from signed/designated lane"
+    },
+    {
+      "name": "drv.in_intersection",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Original full body crossing the intersection boundary with Native road/lane identity"
+    },
+    {
+      "name": "st.intersection",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Native map readback and original body/intersection boundary history"
+    },
+    {
+      "name": "st.turn_lane",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Native lane ID and authored right-only cue; design confirmation pending"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Full original Native body footprint across adjacent and right-only lane candidates"
+    },
+    {
+      "name": "kin.heading",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Original Native straight heading across approach, connector and complete exit"
+    },
+    {
+      "name": "native_body_pose_control",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Original Native pose, velocity, applied control and body footprint"
+    },
+    {
+      "name": "camera_frame_join",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Every source camera frame joined to original Native frame and timestamp"
     }
   ],
   "source_observation_mapping": {
     "st.turn_lane": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source channel, surveyed lane and full body crossing; physical designation and legal outcome require independent review",
       "channels": [
-        "right_turn_only_lane_traversal"
+        "st.turn_lane"
       ],
       "source_refs": [
         "inputs/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Original full Native body footprint and road/lane ID in approach and intersection; source-bound saved measurement prototype under native/.",
+      "evidence": "Original Native source channel, surveyed lane and full body crossing; physical designation and legal outcome require independent review",
       "channels": [
-        "right_turn_only_lane_traversal"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source channel, surveyed lane and full body crossing; physical designation and legal outcome require independent review",
       "channels": [
-        "right_turn_only_lane_traversal"
+        "st.intersection"
       ],
       "source_refs": [
         "inputs/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.in_intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source channel, surveyed lane and full body crossing; physical designation and legal outcome require independent review",
       "channels": [
-        "right_turn_only_lane_traversal"
+        "drv.in_intersection"
       ],
       "source_refs": [
         "inputs/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source channel, surveyed lane and full body crossing; physical designation and legal outcome require independent review",
       "channels": [
-        "right_turn_only_lane_traversal"
+        "kin.heading"
       ],
       "source_refs": [
         "inputs/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/assignment.json"
@@ -271,5 +313,32 @@
     "offline_audit_sha256": "5d0e602655ee0c80e3b69a1fec0525bbc812d856a54f069dbbce891dfc513907",
     "selected_delivery_cases": 0,
     "native_executed": false
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "full ego body, turn-only lane arrow and intersection boundary",
+        "interval": "all 480 frames",
+        "view": "overview"
+      },
+      {
+        "subject": "full ego body, turn-only lane arrow and intersection boundary",
+        "interval": "all 480 frames",
+        "view": "approach"
+      },
+      {
+        "subject": "full ego body, turn-only lane arrow and intersection boundary",
+        "interval": "all 480 frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "full ego body, turn-only lane arrow and intersection boundary",
+        "interval": "all 480 frames",
+        "view": "driver_reference"
+      }
+    ]
   }
 }

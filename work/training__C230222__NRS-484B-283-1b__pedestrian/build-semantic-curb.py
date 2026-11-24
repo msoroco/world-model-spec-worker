@@ -71,6 +71,12 @@ def main():
                   'used_by_laws':[LAW]},
                  {'name':'authored_overhead_survey_target_presence','kind':'world_setup',
                   'range_or_domain':'authored bridge-type survey target present or absent; original pedestrian overhead crossing and access unverified',
+                  'used_by_laws':[LAW]},
+                 {'name':'cane_prop_request','kind':'world_setup',
+                  'range_or_domain':'Native prop requested or absent; blueprint availability, original cane pixels, pedestrian blindness and driver precautions unverified',
+                  'used_by_laws':[LAW]},
+                 {'name':'school_warning_target_presence','kind':'world_setup',
+                  'range_or_domain':'authored lane and warning survey objects present or absent; original active warning, children, stop and release unverified',
                   'used_by_laws':[LAW]}]}
     write(folder/'bindings.json',binding)
     plan=json.loads((HERE/'case-plan.json').read_text())
@@ -112,6 +118,38 @@ def main():
                                'target_value_or_branch':label},
                       'variable_assignments':{**assignments(.5),
                           'authored_overhead_survey_target_presence':{'kind':'world_setup','value':label}},
+                      'recording_description':construction['recording_description'],
+                      'unresolved_judgment_calls':[PHRASE]})
+            continue
+        if '__crossref_lvmc_11_30_140_b_' in item['case_id']:
+            label=item['case_id'].split('__crossref_lvmc_11_30_140_b_',1)[1]
+            construction=json.loads((HERE/'crossref-140b-native'/label/'construction.json').read_text())
+            cases.append({'case_id':item['case_id'],'target_law_id':LAW,
+                      'target_type':'exception_context',
+                      'rationale':'Compare a Native cane prop request with its absence; source pixels, pedestrian blindness and driver precautions remain unverified.',
+                      'paired_probe_id':'c230222-crossref-140b-pair',
+                      'deliberate_differences':['cane_prop_request'],
+                      'probe':{'primary_variable':'cane_prop_request',
+                               'comparison_or_standard':'Native prop blueprint and original pixels with independently reviewed pedestrian and driver context',
+                               'target_value_or_branch':label},
+                      'variable_assignments':{**assignments(.5),
+                          'cane_prop_request':{'kind':'world_setup','value':label == 'cane_prop_candidate'}},
+                      'recording_description':construction['recording_description'],
+                      'unresolved_judgment_calls':[PHRASE]})
+            continue
+        if '__crossref_lvmc_11_46_030_' in item['case_id']:
+            label=item['case_id'].split('__crossref_lvmc_11_46_030_',1)[1]
+            construction=json.loads((HERE/'crossref-46-native'/label/'construction.json').read_text())
+            cases.append({'case_id':item['case_id'],'target_law_id':LAW,
+                      'target_type':'exception_context',
+                      'rationale':'Compare authored school lane and warning survey targets with their absence; original warning state, children, 50-foot stop and release remain unverified.',
+                      'paired_probe_id':'c230222-crossref-46-pair',
+                      'deliberate_differences':['school_warning_target_presence'],
+                      'probe':{'primary_variable':'school_warning_target_presence',
+                               'comparison_or_standard':'original road and warning pixels, child context, vehicle stop-distance and release review',
+                               'target_value_or_branch':label},
+                      'variable_assignments':{**assignments(.5),
+                          'school_warning_target_presence':{'kind':'world_setup','value':label == 'school_warning_candidate'}},
                       'recording_description':construction['recording_description'],
                       'unresolved_judgment_calls':[PHRASE]})
             continue

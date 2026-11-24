@@ -65,9 +65,51 @@ def audit():
                 for name, digest in record['fallback1_current_runtime_proof_hashes'].items():
                     if sha(fallback / 'proofs' / name) != digest:
                         raise ValueError('Crosswalk fallback proof differs')
+        elif law_id == 'LVMC-11-30-060-B':
+            if row['same_cell_construction_status'] != 'authored_overhead_survey_target_600_frame_offline_public_positive_negative_saved_unselected':
+                raise ValueError('Overhead survey target construction status differs')
+            if row.get('cpu_construction_summary') != 'crossref-060b-native/proof.json':
+                raise ValueError('Overhead survey target proof path differs')
+            proof = json.loads((HERE / row['cpu_construction_summary']).read_text())
+            if (len(proof['records']) != 2 or proof['original_native_visibility_verified'] or
+                proof['pedestrian_tunnel_or_overhead_provided_verified'] or
+                proof['legal_applicability_conclusion'] is not None):
+                raise ValueError('Overhead survey target physical scope differs')
+            for record in proof['records']:
+                label = record['case_id'].split('__crossref_lvmc_11_30_060_b_', 1)[1]
+                folder = HERE / 'crossref-060b-native' / label
+                if record['construction_sha256'] != sha(folder / 'construction.json') or record['source_measurement_sha256'] != sha(folder / 'source-measurement.json'):
+                    raise ValueError('Overhead construction or source measurement differs')
+                for candidate, hashes in record['current_runtime_proof_hashes'].items():
+                    target = (folder if candidate == 'primary' else HERE / 'crossref-060b-fallback1' / label) / 'proofs'
+                    for name, digest in hashes.items():
+                        if sha(target / name) != digest:
+                            raise ValueError('Overhead current-runtime proof differs')
+        elif law_id == 'LVMC-11-30-140-B':
+            if row['same_cell_construction_status'] != 'cane_prop_survey_600_frame_offline_public_positive_negative_saved_unselected':
+                raise ValueError('Cane prop survey status differs')
+            if row.get('cpu_construction_summary') != 'crossref-140b-native/proof.json':
+                raise ValueError('Cane prop proof path differs')
+            proof = json.loads((HERE / row['cpu_construction_summary']).read_text())
+            if (len(proof['records']) != 2 or proof['original_cane_pixels_verified'] or
+                proof['pedestrian_blindness_verified'] or proof['driver_precautions_reviewed'] or
+                proof['legal_applicability_conclusion'] is not None):
+                raise ValueError('Cane prop proof scope differs')
+            for record in proof['records']:
+                label = record['case_id'].split('__crossref_lvmc_11_30_140_b_', 1)[1]
+                folder = HERE / 'crossref-140b-native' / label
+                if record['construction_sha256'] != sha(folder / 'construction.json'):
+                    raise ValueError('Cane prop construction differs')
+                for candidate, hashes in record['current_runtime_proof_hashes'].items():
+                    target = (folder if candidate == 'primary' else HERE / 'crossref-140b-fallback1' / label) / 'proofs'
+                    for name, digest in hashes.items():
+                        if sha(target / name) != digest:
+                            raise ValueError('Cane prop current-runtime proof differs')
         elif row['same_cell_construction_status'] != 'pending_physical_construction_and_review':
             raise ValueError('Curb cross-reference construction status differs')
-    if result['applicability_resolved'] or result['physical_crossref_cases_constructed'] != 2 or result['selected_crossref_cases']:
+    if (result['applicability_resolved'] or result['physical_crossref_cases_constructed'] != 2 or
+        result.get('authored_overhead_survey_target_cases_constructed') != 2 or
+        result.get('cane_prop_survey_cases_constructed') != 2 or result['selected_crossref_cases']):
         raise ValueError('Curb statutory coverage falsely marked complete')
     return {'independent_audit': 'pass', 'exact_frozen_crossrefs': 7,
             'physical_crossref_cases_constructed': 2,

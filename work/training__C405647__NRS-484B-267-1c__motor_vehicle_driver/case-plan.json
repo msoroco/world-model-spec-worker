@@ -8,36 +8,102 @@
     {
       "requirement": "NRS-484B-267-1c",
       "source": "NRS 484B.267(1)(c)",
-      "branch": "Immediate approach of a moving authorized emergency vehicle using qualifying flashing lights.",
+      "branch": "authorized emergency approach and wait-until-passed",
       "status": "selected_required",
       "case_ids": [
         "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
         "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two exact 600-frame four-camera draft Native requests and pinned CPU offline proofs compare waiting through requested emergency center passage with early ego release. Original authorization, qualifying lights, officer direction and body passage are unproved."
+      "evidence_or_gap": "Six exact authored 600-frame CPU constructions per pair have requested whole-body timing and current pinned offline proof. Original Native body passage, authority, qualifying lamp pixels and actual officer direction remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-267-1c",
+      "source": "NRS 484B.267(1)(c)",
+      "branch": "law-enforcement-officer direction exception",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2"
+      ],
+      "evidence_or_gap": "Six exact authored 600-frame CPU constructions per pair have requested whole-body timing and current pinned offline proof. Original Native body passage, authority, qualifying lamp pixels and actual officer direction remain unverified."
+    },
+    {
+      "requirement": "NRS-484B-267-1c",
+      "source": "NRS 484B.267(1)(c)",
+      "branch": "regulatory-agency official vehicle alternative",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2"
+      ],
+      "evidence_or_gap": "Six exact authored 600-frame CPU constructions per pair have requested whole-body timing and current pinned offline proof. Original Native body passage, authority, qualifying lamp pixels and actual officer direction remain unverified."
     }
   ],
   "cases": [
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-267-1c",
-      "kind": "authored_native_draft_offline_passed",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
-      "physical_target": "remain stopped until emergency vehicle passes",
-      "comparison_variable": "emergency_vehicle_passage_wait"
+      "physical_target": "remain stopped until entire approaching vehicle passes",
+      "comparison_variable": "emergency_vehicle_passage_wait",
+      "approach_kind": "authorized_emergency",
+      "officer_direction_request": false
     },
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-267-1c",
-      "kind": "authored_native_draft_offline_passed",
-      "target_type": "violating_attempt",
-      "physical_target": "move before emergency vehicle passes",
-      "comparison_variable": "emergency_vehicle_passage_wait"
+      "kind": "delivery",
+      "target_type": "controlled_contrast",
+      "physical_target": "requested early release before entire vehicle passes",
+      "comparison_variable": "emergency_vehicle_passage_wait",
+      "approach_kind": "authorized_emergency",
+      "officer_direction_request": false
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
+      "target_law_id": "NRS-484B-267-1c",
+      "kind": "delivery",
+      "target_type": "controlled_contrast",
+      "physical_target": "requested early release before entire vehicle passes",
+      "comparison_variable": "officer_direction_applicability",
+      "approach_kind": "authorized_emergency",
+      "officer_direction_request": false
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2",
+      "target_law_id": "NRS-484B-267-1c",
+      "kind": "delivery",
+      "target_type": "controlled_contrast",
+      "physical_target": "requested early release before entire vehicle passes",
+      "comparison_variable": "officer_direction_applicability",
+      "approach_kind": "authorized_emergency",
+      "officer_direction_request": true
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
+      "target_law_id": "NRS-484B-267-1c",
+      "kind": "delivery",
+      "target_type": "compliant_attempt",
+      "physical_target": "remain stopped until entire approaching vehicle passes",
+      "comparison_variable": "official_vehicle_passage_wait",
+      "approach_kind": "regulatory_official",
+      "officer_direction_request": false
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2",
+      "target_law_id": "NRS-484B-267-1c",
+      "kind": "delivery",
+      "target_type": "controlled_contrast",
+      "physical_target": "requested early release before entire vehicle passes",
+      "comparison_variable": "official_vehicle_passage_wait",
+      "approach_kind": "regulatory_official",
+      "officer_direction_request": false
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__comparison",
+      "comparison_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__emergency_vehicle_passage_wait_comparison",
       "case_ids": [
         "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
         "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b"
@@ -46,7 +112,39 @@
         "emergency_vehicle_passage_wait"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+        "same frozen road/travel/emergency_vehicle cell, actor, law and map",
+        "same approach authority alternative, approach trajectory, qualifying-lamp request, cameras, rate and duration",
+        "original authority, lamp and officer content remain unverified pending Native review"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__officer_direction_applicability_comparison",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2"
+      ],
+      "deliberate_differences": [
+        "officer_direction_applicability"
+      ],
+      "fixed_conditions": [
+        "same frozen road/travel/emergency_vehicle cell, actor, law and map",
+        "same approach authority alternative, approach trajectory, qualifying-lamp request, cameras, rate and duration",
+        "original authority, lamp and officer content remain unverified pending Native review"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_vehicle_passage_wait_comparison",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
+        "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2"
+      ],
+      "deliberate_differences": [
+        "official_vehicle_passage_wait"
+      ],
+      "fixed_conditions": [
+        "same frozen road/travel/emergency_vehicle cell, actor, law and map",
+        "same approach authority alternative, approach trajectory, qualifying-lamp request, cameras, rate and duration",
+        "original authority, lamp and officer content remain unverified pending Native review"
       ]
     }
   ],
@@ -99,8 +197,7 @@
     "native/request-comparison-proof.json: independent paired-request audit"
   ],
   "runtime_uncertainties": [
-    "Draft Native request construction and CPU offline pass. Original emergency authorization, qualifying flashing lights, officer direction, body-footprint passage, selected compatibility, saved processing and independent acceptance audit remain absent.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Six selected branch pairs are currently CPU-authored and offline-proven; original Native pass, authority, qualifying lights, officer direction, saved processing, public compatibility and delivery audit remain open."
   ],
   "statutory_text": "Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed.",
   "activation_conditions_from_unreviewed_summary": [
@@ -118,5 +215,126 @@
     "rel.ahead_behind_in_lane",
     "drv.cleared_line",
     "kin.velocity"
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.responding_emergency": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "drv.responding_emergency"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "drv.stopped"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    },
+    "kin.position": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "rel.ahead_behind_in_lane"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    },
+    "drv.cleared_line": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "drv.cleared_line"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original Native actor body, velocity, map, frame join and qualified context review; current rows are authored diagnostic only",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "NRS 484B.267(1)(c)",
+        "original observed-actors.jsonl",
+        "original video_frames.jsonl"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject and approaching emergency or official vehicle",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "approach identity and original lamp pixels",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "right-edge subject and whole-body passage",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject view and officer direction",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "statutory_branch_review": {
+    "source_path": "inputs/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/assignment.json",
+    "source_sha256": "7d9cdf15e9b720cea7c70d8a1260b6b436d17db6e0fd30e85af12b7675426725",
+    "alternatives": [
+      "authorized emergency vehicle",
+      "official vehicle of regulatory agency"
+    ],
+    "exception": "when otherwise directed by a law enforcement officer",
+    "obligation": "Stop and remain in such position until the authorized emergency or official vehicle has passed",
+    "limitations": [
+      "No numeric legal immediacy or whole-passage cutoff invented",
+      "Qualifying lights under incorporated NRS 484A.480(3) require original source and pixel review",
+      "Original officer identity, communicated content, recipient and time need review"
+    ]
+  }
 }

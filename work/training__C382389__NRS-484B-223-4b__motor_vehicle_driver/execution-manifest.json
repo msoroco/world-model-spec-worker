@@ -1,0 +1,282 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_in_progress",
+  "cases": [
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exclusive right-turn link is authored; original Native execution, lane cue, continuous crossing, tracking, and framing remain to be measured"
+      },
+      "measurement_contract": "current-contracts/reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382389-right-only-lane-crossing-saved-analysis-v1"
+      },
+      "construction": "current-candidates/reference/primary/construction.json",
+      "construction_sha256": "216616f0e35f49f49cdfef36bee58fc8a14f5e0444fa013e79d36842604003dc",
+      "fixture_recipe": "work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-reference-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-diagnostic-manifest.json --case training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference --candidate primary --output .runtime-work/lead-c382389/offline-reference-primary --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "216616f0e35f49f49cdfef36bee58fc8a14f5e0444fa013e79d36842604003dc",
+        "log": "selected-proof/reference/primary/offline.log",
+        "log_sha256": "15c3327a0a98a7ee8996a46487b3288757ebedbdafd4f6134899ec62063f2564"
+      },
+      "compatibility": {
+        "receipt": "selected-proof/reference/primary/compatibility.json",
+        "sha256": "d854b4da1012d969254024524ba7cfe3f5bf398fa8e96f26ba21109254ff984d",
+        "log": "selected-proof/reference/primary/compatibility-analysis.log",
+        "negative_log": "selected-proof/reference/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proof/reference/primary/negative-analysis.log",
+        "log_sha256": "7090d6f34f5cd36c2401e285c46556976c981d9b85462e284a52811c996de07d",
+        "expected_error": "Missing required source: native_samples.jsonl"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.in_intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original full body crossing the intersection boundary with Native road/lane identity",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Native map readback and original body/intersection boundary history",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "st.turn_lane": {
+          "entrypoint": "runner.py",
+          "method": "Native lane ID and authored right-only cue; design confirmation pending",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Full original Native body footprint across adjacent and right-only lane candidates",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Original Native pose and heading readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "Original Native pose, velocity, applied control and body footprint",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "Every source camera frame joined to original Native frame and timestamp",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Original Native pose and heading readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-candidates/reference/fallback1/construction.json",
+          "construction_sha256": "320679ce27caa0896921478d437d5b598e492892c4fa373d64f8af98ad1f12df",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "case-specific lane-link state and full-body straight exit",
+            "failure_condition": "Observed requested-lane link differs from expected state (reference straight link present; contrast straight link absent), or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "straight route start -50 m to -55 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-diagnostic-manifest.json --case training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference --candidate fallback1 --output .runtime-work/lead-c382389/offline-reference-fallback1 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "320679ce27caa0896921478d437d5b598e492892c4fa373d64f8af98ad1f12df",
+            "log": "selected-proof/reference/fallback1/offline.log",
+            "log_sha256": "1c8d271b9e6e6619ab756982ef43db70296cd1355757ea08a8c6e624a68f6685"
+          },
+          "compatibility": {
+            "receipt": "selected-proof/reference/fallback1/compatibility.json",
+            "sha256": "24997ee9b74836ec0159721f0202cd8b794767fd4becadea223c4879e529fb42",
+            "log": "selected-proof/reference/fallback1/compatibility-analysis.log",
+            "negative_log": "selected-proof/reference/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "current-candidates/reference/fallback3/construction.json",
+          "construction_sha256": "424dba68c264e090b04d0240b97d9f4fdfab4597e6327e5e012bbb8f51a80baf",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-only-lane camera framing",
+            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
+          },
+          "changed_knobs": [
+            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-diagnostic-manifest.json --case training__C382389__NRS-484B-223-4b__motor_vehicle_driver__reference --candidate fallback3 --output .runtime-work/lead-c382389/offline-reference-fallback3 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "424dba68c264e090b04d0240b97d9f4fdfab4597e6327e5e012bbb8f51a80baf",
+            "log": "selected-proof/reference/fallback3/offline.log",
+            "log_sha256": "e2c7f3efbbf31c6176864e3a3bb3363d37c14d0030ef5b03be29240ffdf5630c"
+          },
+          "compatibility": {
+            "receipt": "selected-proof/reference/fallback3/compatibility.json",
+            "sha256": "ab69f26cc23c062d2c069be0eeb5d17590a639ed92c1c95c426e9013ac759050",
+            "log": "selected-proof/reference/fallback3/compatibility-analysis.log",
+            "negative_log": "selected-proof/reference/fallback3/negative-analysis.log"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Exclusive right-turn link is authored; original Native execution, lane cue, continuous crossing, tracking, and framing remain to be measured"
+      },
+      "measurement_contract": "current-contracts/contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382389-right-only-lane-crossing-saved-analysis-v1"
+      },
+      "construction": "current-candidates/contrast/primary/construction.json",
+      "construction_sha256": "8d1cdd9af6720d875db68738817645c226cd0b327ddb3913c640bb666897dfc5",
+      "fixture_recipe": "work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-contrast-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-diagnostic-manifest.json --case training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast --candidate primary --output .runtime-work/lead-c382389/offline-contrast-primary --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8d1cdd9af6720d875db68738817645c226cd0b327ddb3913c640bb666897dfc5",
+        "log": "selected-proof/contrast/primary/offline.log",
+        "log_sha256": "fc15c30ebaecddeac60f3d425ac138d2bd70b985140f06073f78642eb571f51e"
+      },
+      "compatibility": {
+        "receipt": "selected-proof/contrast/primary/compatibility.json",
+        "sha256": "14d6bb83012ba1ccc4c834f926448d8c3f03a84c0b94c3ceb6e795c748440528",
+        "log": "selected-proof/contrast/primary/compatibility-analysis.log",
+        "negative_log": "selected-proof/contrast/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proof/contrast/primary/negative-analysis.log",
+        "log_sha256": "237b68868c44866cc47679e95b0182f159661ad8e600f13adb37acd26f5f58f9",
+        "expected_error": "Missing required source: native_samples.jsonl"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.in_intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original full body crossing the intersection boundary with Native road/lane identity",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Native map readback and original body/intersection boundary history",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "st.turn_lane": {
+          "entrypoint": "runner.py",
+          "method": "Native lane ID and authored right-only cue; design confirmation pending",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Full original Native body footprint across adjacent and right-only lane candidates",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Original Native pose and heading readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "method": "Original Native pose, velocity, applied control and body footprint",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "method": "Every source camera frame joined to original Native frame and timestamp",
+          "evidence": "original Native frame, body, lane and synchronized camera timestamp"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Original Native pose and heading readback",
+          "evidence": "original Native frame and 20 Hz timestamp"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-candidates/contrast/fallback1/construction.json",
+          "construction_sha256": "67ee6d603e0108576f3fc5b02288b9f23497903da231e8a983bcab3687608b31",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "case-specific lane-link state and full-body straight exit",
+            "failure_condition": "Observed requested-lane link differs from expected state (reference straight link present; contrast straight link absent), or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "straight route start -50 m to -55 m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-diagnostic-manifest.json --case training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast --candidate fallback1 --output .runtime-work/lead-c382389/offline-contrast-fallback1 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "67ee6d603e0108576f3fc5b02288b9f23497903da231e8a983bcab3687608b31",
+            "log": "selected-proof/contrast/fallback1/offline.log",
+            "log_sha256": "1ced24f4cb883a3c6a54dda7d5f36bd353780268dbb24b5800bafdc239de0c3b"
+          },
+          "compatibility": {
+            "receipt": "selected-proof/contrast/fallback1/compatibility.json",
+            "sha256": "28c3de31d42f38ee908c3f512849438e96f952149e96c07863855bb45fc9667d",
+            "log": "selected-proof/contrast/fallback1/compatibility-analysis.log",
+            "negative_log": "selected-proof/contrast/fallback1/negative-analysis.log"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "current-candidates/contrast/fallback3/construction.json",
+          "construction_sha256": "f514a9d39adda6406017f6c076777eaae88674cb51d72716b0fe880e21ac7a22",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-only-lane camera framing",
+            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
+          },
+          "changed_knobs": [
+            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C382389__NRS-484B-223-4b__motor_vehicle_driver/current-diagnostic-manifest.json --case training__C382389__NRS-484B-223-4b__motor_vehicle_driver__contrast --candidate fallback3 --output .runtime-work/lead-c382389/offline-contrast-fallback3 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "f514a9d39adda6406017f6c076777eaae88674cb51d72716b0fe880e21ac7a22",
+            "log": "selected-proof/contrast/fallback3/offline.log",
+            "log_sha256": "e2c7f3efbbf31c6176864e3a3bb3363d37c14d0030ef5b03be29240ffdf5630c"
+          },
+          "compatibility": {
+            "receipt": "selected-proof/contrast/fallback3/compatibility.json",
+            "sha256": "cade221d36fec8fcf0ee95ac5f1876dd13ed1475630e5816fc6ddedb5e9e1615",
+            "log": "selected-proof/contrast/fallback3/compatibility-analysis.log",
+            "negative_log": "selected-proof/contrast/fallback3/negative-analysis.log"
+          }
+        }
+      ]
+    }
+  ]
+}
