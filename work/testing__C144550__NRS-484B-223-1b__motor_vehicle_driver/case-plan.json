@@ -451,11 +451,28 @@
     "uncovered": "All exact cases; evidence.json contains zero accepted recordings."
   },
   "observations": [
-    "Native and camera evidence of two or more clearly marked same-direction lanes",
-    "actual body departure from source lane boundary, both left and right options",
-    "appropriate indicator state displayed before departure and at departure",
-    "original-frame target-lane actor bodies, longitudinal gap and conflict timing",
-    "driver safety ascertainment context without invented numeric standard"
+    {
+      "name": "source_lane_body_departure",
+      "mandatory": true,
+      "evidence": "actual body departure from source lane boundary, both left and right options",
+      "source_context": "Native and camera evidence of two or more clearly marked same-direction lanes"
+    },
+    {
+      "name": "indicator_before_departure",
+      "mandatory": true,
+      "evidence": "appropriate indicator state displayed before departure and at departure"
+    },
+    {
+      "name": "target_lane_gap",
+      "mandatory": true,
+      "evidence": "original-frame target-lane actor bodies, longitudinal gap and conflict timing"
+    },
+    {
+      "name": "driver_safety_ascertainment_context",
+      "mandatory": false,
+      "evidence": "driver safety ascertainment context without invented numeric standard",
+      "limitation": "Not directly observed; no legal safety verdict or numeric standard is asserted."
+    }
   ],
   "sources": [
     {
@@ -1963,5 +1980,126 @@
       }
     ],
     "physical_review_pending": "Actual actor visibility, legibility and sustained camera coverage require independent Native pixel review"
+  },
+  "source_observation_mapping": {
+    "drv.laned_roadway": {
+      "evidence": "Native lane_context.json inventories two same-direction marked lanes and source polygons; original overview and driver-reference pixels still require independent legibility review.",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        },
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/evidence.json",
+          "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+        },
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/witnesses.json",
+          "sha256": "a50ce754040fd3648afd73c778a1beedcbfab108b0ae518a90d1a3ae28084320"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "st.lane": {
+      "evidence": "Native lane_context.json identifies source and target lanes; original lane_history.jsonl joins the ego lane ID and complete body at each sampled frame.",
+      "channels": [
+        "source_lane_body_departure"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.lane_change": {
+      "evidence": "The first complete ego-body exit from the sourced source-lane polygon is joined to original Native frame/time and synchronized video frame; physical camera review remains pending.",
+      "channels": [
+        "source_lane_body_departure"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "sig.turn_indicator": {
+      "evidence": "Original Native indicator readback is joined to body departure and synchronized video; the visible signal display requires independent pixel review.",
+      "channels": [
+        "indicator_before_departure"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.distance_while": {
+      "evidence": "Indicator onset and body-departure timestamps permit a sampled signal lead-time or path-distance comparison; no statutory minimum is asserted.",
+      "channels": [
+        "indicator_before_departure",
+        "source_lane_body_departure"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.lane_change_feasible": {
+      "evidence": "Target-lane actor body gap is the operational observable for feasibility; actual driver ascertainment of safety remains unresolved.",
+      "channels": [
+        "target_lane_gap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        },
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/evidence.json",
+          "sha256": "e0673877b9b6d5cc1dac09658216b3e834dc00c19e63d0d6a55c0355de648c8f"
+        },
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/witnesses.json",
+          "sha256": "a50ce754040fd3648afd73c778a1beedcbfab108b0ae518a90d1a3ae28084320"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "rel.surface_gap": {
+      "evidence": "Original target-lane actor and ego body extents projected along sourced lane heading give the body-to-body gap at each Native frame.",
+      "channels": [
+        "target_lane_gap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        }
+      ],
+      "status": "planned_unverified"
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original framewise target-lane gap and relative motion can support a prospective conflict-time diagnostic; no independent time-to-conflict capture channel or safety verdict is claimed.",
+      "channels": [
+        "target_lane_gap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/assignment.json",
+          "sha256": "590c903751744bb300f1d22fccdd385535f60d12ad7401c5988f4b814eb8649b"
+        }
+      ],
+      "status": "planned_unverified"
+    }
   }
 }
