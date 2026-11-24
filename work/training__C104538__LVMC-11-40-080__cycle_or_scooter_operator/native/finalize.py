@@ -27,6 +27,62 @@ def video_frames(path):
     return int(result.stdout.strip())
 
 
+def write_rows(path, values):
+    path.parent.mkdir(exist_ok=True)
+    path.write_text("".join(json.dumps(value, allow_nan=False)+"\n" for value in values))
+
+
+def rebuild_channels(root, description, native, mapping, rider, sign):
+    """Derive diagnostic observations from retained rows, never fixture channels."""
+    channels = root/"channels"
+    if channels.exists():
+        raise ValueError("Fixture-supplied derived channels are not accepted")
+    channels.mkdir()
+    for channel in description["channels"]:
+        name = channel["name"]
+        values = []
+        for n, m, r in zip(native, mapping, rider):
+            if name == "ru.bicycle":
+                value = {"actor_id": r["actor_id"], "blueprint": "vehicle.bh.crossbike", "body_xy_m": n["native_body_xy_m"]}
+            elif name == "ru.rider_posture":
+                value = {"mounted_fixture": r["mounted"], "original_pixel_review": "pending"}
+            elif name == "dev.regulatory_sign":
+                value = {"code": sign["code"], "authorization_proven": False}
+            elif name == "dev.governs":
+                value = {"road_id": sign["governs_road"], "lane_id": sign["governs_lane"], "synthetic_fixture": True}
+            elif name == "dev.position":
+                value = {"station_m": sign["station_m"], "synthetic_fixture": True}
+            elif name == "drv.u_turn":
+                value = {"requested": r["u_turn_active"], "measured_from_saved_source": None}
+            elif name == "kin.heading":
+                value = n["native_forward_xy"]
+            elif name == "rel.occupies":
+                value = n["native_body_xy_m"]
+            elif name == "native_body_pose_control":
+                value = n
+            elif name == "camera_frame_join":
+                value = m
+            else:
+                raise ValueError("Unknown channel: "+name)
+            values.append({"time_s": n["time_s"], "value": value})
+        write_rows(channels/(name+".jsonl"), values)
+    context = root/"context.json"
+    if context.exists():
+        raise ValueError("Fixture-supplied derived context is not accepted")
+    context.write_text(json.dumps({"signed_hill_crest": {"scope": "synthetic_native_shaped_diagnostic", "sign_authorization_proven": False}}, allow_nan=False)+"\n")
+
+
+def measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames):
+    sources = ("rider_native_samples.jsonl", "authored-sign.json",
+               "native_samples.jsonl", "reference_corner.mkv")
+    return {"method": "measure_mounted_turn",
+            "value": {"frames": frames, "turn_frames": turn_frames,
+                      "mounted_turn_frames": mounted_turn_frames,
+                      "original_posture_verified": False,
+                      "sign_authorization_proven": False},
+            "sources": {name: sha(root/name) for name in sources}}
+
+
 def finalize(attempt, output):
     root, target = Path(attempt), Path(output)
     if target.exists() or (root/"result.json").exists():
@@ -84,11 +140,12 @@ def finalize(attempt, output):
     capture = json.loads((root/"capture/manifest.json").read_text())
     if capture.get("frames") != frames or not capture.get("extraction_confirmed"):
         raise ValueError("Capture extraction incomplete")
-    names = ("overview", "approach", "sign_reference", "driver_reference")
+    names = ("overview", "approach", "reference_corner", "driver_reference")
     videos = {name+".mkv": video_frames(root/(name+".mkv")) for name in names}
     if any(value != frames for value in videos.values()):
         raise ValueError("Source camera frame count differs")
     description = config["recording_description"]
+    rebuild_channels(root, description, native, mapping, rider, sign)
     recording = []
     for channel in description["channels"]:
         reference = "channels/"+channel["name"]+".jsonl"
@@ -125,7 +182,8 @@ def finalize(attempt, output):
             ("rider_native_samples.jsonl", "authored-sign.json", "native_samples.jsonl",
              "video_frames.jsonl", "capture/manifest.json")},
         "sign_authorization_proven": False, "original_native_capture_executed": False,
-        "legal_verdict_claimed": False, "accepted": False}
+        "legal_verdict_claimed": False, "accepted": False,
+        "measurements": {"mounted_turn_observation": measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames)}}
     target.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
     (root/"result.json").write_text(json.dumps(result, indent=2, allow_nan=False)+"\n")
     return report

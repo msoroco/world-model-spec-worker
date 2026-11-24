@@ -127,7 +127,13 @@ if __name__ == '__main__':
          'target_type': 'attempt', 'rationale': 'Unselected sidewalk reference diagnostic',
          'variable_assignments': {}, 'recording_description': recording}]}
     (HERE/'proposals').mkdir(exist_ok=True)
-    write(HERE/'proposals/cases.json', proposal)
+    proposal_path = HERE/'proposals/cases.json'
+    if proposal_path.exists():
+        existing = json.loads(proposal_path.read_text())
+        others = [item for item in existing.get('cases', [])
+                  if item['case_id'] != CASE_ID]
+        proposal['cases'] = others + proposal['cases']
+    write(proposal_path, proposal)
     return manifest
 
 

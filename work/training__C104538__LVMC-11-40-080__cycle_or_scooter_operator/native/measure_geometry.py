@@ -12,8 +12,8 @@ import subprocess
 def measure(rider, native, mapping, sign):
     if sign.get('code') != 'no_u_turn' or sign.get('station_m') != 72.0:
         raise ValueError('Authored sign code or station differs from road')
-    if not (len(rider) == len(native) == len(mapping) == 480):
-        raise ValueError('Expected 480 joined source frames')
+    if len(rider) not in (480, 600) or not (len(rider) == len(native) == len(mapping)):
+        raise ValueError('Expected 480 or 600 joined source frames')
     actor = rider[0]['actor_id']
     xy = []
     headings = []
@@ -49,7 +49,7 @@ def measure(rider, native, mapping, sign):
     center_frames = sum(abs(y) < 1 and -12 <= x <= 12 for x, y in xy)
     switched = lanes[0] == sign['governs_lane'] and lanes[-1] == -sign['governs_lane']
     geometry_turn = heading_change >= 150 and switched and center_frames >= 5
-    return {'frames': 480, 'actor_id': actor, 'start_lane_id': lanes[0],
+    return {'frames': len(rider), 'actor_id': actor, 'start_lane_id': lanes[0],
             'end_lane_id': lanes[-1], 'heading_change_deg': round(heading_change, 6),
             'center_crossing_frames': center_frames, 'opposing_lane_arrival': switched,
             'u_turn_geometry_observed': geometry_turn,
@@ -103,8 +103,9 @@ def qualify_original(attempt, output):
     if manifest['case_suffix'] != config['case_suffix'] or manifest['candidate_id'] != config['candidate_id']:
         raise ValueError('Original source/candidate differs')
     capture = json.loads((root/'capture/manifest.json').read_text())
-    if capture.get('frames') != 480 or not capture.get('extraction_confirmed'):
-        raise ValueError('Original capture is not sealed for 480 frames')
+    frames = config['rate_hz'] * config['duration_s']
+    if frames not in (480, 600) or capture.get('frames') != frames or not capture.get('extraction_confirmed'):
+        raise ValueError('Original capture is not sealed for the exact frame count')
     sign = json.loads(sign_path.read_text())
     survey = json.loads((root/'road_geometry.json').read_text())
     landmark = survey.get('landmark_readback', [])
@@ -120,7 +121,7 @@ def qualify_original(attempt, output):
     for spec in config['cameras']:
         name = spec['name']+'.mkv'
         stream = video_stream(root/name)
-        expected = (spec['width'], spec['height'], 480, 'ffv1')
+        expected = (spec['width'], spec['height'], frames, 'ffv1')
         observed = (stream.get('width'), stream.get('height'),
                     int(stream.get('nb_read_frames', -1)), stream.get('codec_name'))
         if observed != expected:

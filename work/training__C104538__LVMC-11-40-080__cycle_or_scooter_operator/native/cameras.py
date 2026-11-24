@@ -15,7 +15,7 @@ def camera_plan(candidate_id):
         {'name': 'approach', 'width': 1280, 'height': 720, 'fov_deg': 92,
          'attachment': 'ego', 'xyz_m': [-9, 0, 4], 'pitch_deg': -15,
          'purpose': 'complete ego body and approach lane; original pixel source'},
-        {'name': 'sign_reference', 'width': 1280, 'height': 720, 'fov_deg': 90,
+        {'name': 'reference_corner', 'width': 1280, 'height': 720, 'fov_deg': 90,
          'attachment': 'world', 'xyz_m': sign_xyz, 'pitch_deg': -22,
          'purpose': 'physical prohibition cue and governed approach'},
         {'name': 'driver_reference', 'width': 1280, 'height': 720, 'fov_deg': 105,
