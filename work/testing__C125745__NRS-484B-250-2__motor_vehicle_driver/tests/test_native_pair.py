@@ -146,15 +146,20 @@ class NativePairTests(unittest.TestCase):
         proposal=json.loads((ROOT/'proposals/cases.json').read_text())
         sweeps={item['sweep_id']:item for item in proposal['sweep_specs']+
                 proposal['qualitative_review_specs']}
-        self.assertEqual(len(sweeps),4)
-        for sweep in sweeps.values():
+        self.assertEqual(len(sweeps),6)
+        complete = [sweep for sweep in proposal['sweep_specs']
+                    if sweep['status'] == 'complete']
+        incomplete = [sweep for sweep in proposal['sweep_specs']
+                      if sweep['status'] == 'incomplete']
+        self.assertEqual(len(complete),2)
+        self.assertEqual(len(incomplete),2)
+        for sweep in complete + proposal['qualitative_review_specs']:
             values=sweep['variable_assignments']
             self.assertEqual(values['native_stop_sign_id']['value'],17)
             self.assertEqual(values['official_device_status']['value'],
                              'stop sign commanded; official status unverified')
         self.assertTrue(proposal['sweeps_expanded'])
-        for sweep in proposal['sweep_specs']:
-            self.assertEqual(sweep['status'],'expanded_cpu_pending_native')
+        for sweep in complete:
             self.assertEqual(len(sweep['expanded_case_ids']),3)
         for sweep in proposal['qualitative_review_specs']:
             self.assertEqual(sweep['status'],'source_review_pending_native')

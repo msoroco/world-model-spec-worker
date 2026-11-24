@@ -1074,8 +1074,9 @@ class SweepConstructionTests(unittest.TestCase):
                     if item['case_id'] == plan['case_id'])
         candidate = next(item for item in case['candidates']
                          if item['id'] == 'fallback2')
-        self.assertEqual(plan['manifest_sha256'],
+        self.assertEqual(plan['rebound_from_manifest_sha256'],
                          'b4643eefe440c28408bbd2cf5f0841f0615eb7fbd5006ff73ee6aa3cc7bf4977')
+        self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
         self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
         self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
         self.assertEqual(plan['saved_receipt_sha256'],
@@ -1105,8 +1106,9 @@ class SweepConstructionTests(unittest.TestCase):
                     if item['case_id'] == plan['case_id'])
         candidate = next(item for item in case['candidates']
                          if item['id'] == 'fallback3')
-        self.assertEqual(plan['manifest_sha256'],
+        self.assertEqual(plan['rebound_from_manifest_sha256'],
                          'fbe11390c4880a90bd670154f49721177b67d1b4466952da8775466eb328d2c2')
+        self.assertEqual(plan['manifest_sha256'], digest('execution-manifest.json'))
         self.assertEqual(plan['construction_sha256'], candidate['construction_sha256'])
         self.assertEqual(plan['script_sha256'], digest('physical_motion_fixture.py'))
         self.assertEqual(plan['compatibility_receipt_sha256'],
