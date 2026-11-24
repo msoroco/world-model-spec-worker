@@ -1,0 +1,47 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b",
+  "cell_id": "C385967",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b\",\n  \"selected_case_id\": \"training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b\",\n  \"law_id\": \"NRS-484B-460\",\n  \"cell_id\": \"C385967\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"duration_frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"fps\": 20,\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"parked_heading_request_deg\": 70.0,\n  \"device_indicated_angle_deg\": 45,\n  \"curb_heading_deg\": 0,\n  \"standing_from_s\": 12,\n  \"space_id\": \"angle_space_1\",\n  \"physical_verified\": false,\n  \"legal_verdict\": null\n}\n"
+    },
+    {
+      "path": "runner.py",
+      "content": "import argparse\nimport json\nfrom pathlib import Path\n\ndef check(config):\n    base=\"training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_\"\n    expected={base+\"a\":45.0,base+\"b\":70.0}\n    case=config.get(\"case_id\")\n    if case not in expected or config.get(\"selected_case_id\")!=case:\n        raise ValueError(\"Exact case identity differs\")\n    if (config.get(\"law_id\"),config.get(\"cell_id\"),config.get(\"actor\"))!=(\n            \"NRS-484B-460\",\"C385967\",\"motor_vehicle_driver\"):\n        raise ValueError(\"Law/cell/actor identity differs\")\n    if (config.get(\"rate_hz\"),config.get(\"duration_s\"),config.get(\"duration_frames\"))!=(20,30,600):\n        raise ValueError(\"Full 30-second source window required\")\n    if [c.get(\"name\") for c in config.get(\"cameras\",[])]!=[\n            \"overview\",\"approach\",\"reference_corner\",\"driver_reference\"]:\n        raise ValueError(\"Four source cameras required\")\n    if any(c.get(\"fps\")!=20 or c.get(\"width\",0)<16 or c.get(\"height\",0)<16\n           for c in config[\"cameras\"]):\n        raise ValueError(\"Camera cadence or dimensions differ\")\n    if config.get(\"parked_heading_request_deg\")!=expected[case]:\n        raise ValueError(\"Controlled parked heading differs\")\n    if config.get(\"device_indicated_angle_deg\")!=45 or config.get(\"curb_heading_deg\")!=0:\n        raise ValueError(\"Device/curb reference differs\")\n    if config.get(\"standing_from_s\")!=12 or config.get(\"space_id\")!=\"angle_space_1\":\n        raise ValueError(\"At-rest space contract differs\")\n    if config.get(\"physical_verified\") is not False or config.get(\"legal_verdict\") is not None:\n        raise ValueError(\"Physical or legal result claimed\")\n    return {\"case_id\":case,\"frames\":600,\"simulation_started\":False,\"selected_for_delivery\":False}\n\nif __name__==\"__main__\":\n    parser=argparse.ArgumentParser();parser.add_argument(\"--check\",action=\"store_true\")\n    args=parser.parse_args()\n    if not args.check:raise SystemExit(\"Native capture and saved processing are not implemented\")\n    print(json.dumps(check(json.loads(Path(\"config.json\").read_text())),sort_keys=True))\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\nclass DraftContract(unittest.TestCase):\n    def setUp(self):self.config=json.loads(Path(\"config.json\").read_text())\n    def test_exact_window(self):self.assertEqual(check(self.config)[\"frames\"],600)\n    def test_missing_camera(self):\n        bad=copy.deepcopy(self.config);bad[\"cameras\"].pop()\n        with self.assertRaisesRegex(ValueError,\"Four source cameras\"):check(bad)\n    def test_short_window(self):\n        bad=copy.deepcopy(self.config);bad[\"duration_frames\"]=599\n        with self.assertRaisesRegex(ValueError,\"30-second\"):check(bad)\n    def test_changed_heading(self):\n        bad=copy.deepcopy(self.config);bad[\"parked_heading_request_deg\"]+=1\n        with self.assertRaisesRegex(ValueError,\"parked heading\"):check(bad)\n    def test_missing_device_angle(self):\n        bad=copy.deepcopy(self.config);bad[\"device_indicated_angle_deg\"]=None\n        with self.assertRaisesRegex(ValueError,\"Device/curb\"):check(bad)\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "raw_ego_heading_and_speed",
+        "method": "original actor transform/velocity",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "angle_device_and_curb",
+        "method": "original sign, space and road-edge geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named source streams",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      }
+    ],
+    "limitations": [
+      "Native sign/curb geometry, parking motion and original pixels unverified"
+    ]
+  },
+  "status": "exact_unselected_offline_draft"
+}

@@ -1,0 +1,47 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b",
+  "cell_id": "C394563",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b\",\n  \"selected_case_id\": \"training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b\",\n  \"law_id\": \"LVMC-11-18-020\",\n  \"cell_id\": \"C394563\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"duration_frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"fps\": 20,\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"condition\": \"entry_after_crossing\",\n  \"school_xing_sign_x_m\": -35,\n  \"crosswalk_x_m\": 0,\n  \"crosswalk_width_m\": 3.6576,\n  \"crosswalk_color\": \"yellow\",\n  \"pedestrian_crossing_interval_s\": [\n    10,\n    14\n  ],\n  \"pedestrian_approach_side\": true,\n  \"ego_wait_interval_s\": [\n    10,\n    14\n  ],\n  \"physical_verified\": false,\n  \"legal_verdict\": null\n}\n"
+    },
+    {
+      "path": "runner.py",
+      "content": "import argparse\nimport json\nfrom pathlib import Path\n\ndef check(config):\n    base=\"training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_\"\n    expected={base+\"a\":\"entry_during_crossing\",base+\"b\":\"entry_after_crossing\"}\n    case=config.get(\"case_id\")\n    if case not in expected or config.get(\"selected_case_id\")!=case:\n        raise ValueError(\"Exact case identity differs\")\n    if (config.get(\"law_id\"),config.get(\"cell_id\"),config.get(\"actor\"))!=(\"LVMC-11-18-020\",\"C394563\",\"motor_vehicle_driver\"):\n        raise ValueError(\"Law/cell/actor identity differs\")\n    if (config.get(\"rate_hz\"),config.get(\"duration_s\"),config.get(\"duration_frames\"))!=(20,30,600):\n        raise ValueError(\"Full 30-second source window required\")\n    if [c.get(\"name\") for c in config.get(\"cameras\",[])]!=[\"overview\",\"approach\",\"reference_corner\",\"driver_reference\"]:\n        raise ValueError(\"Four source cameras required\")\n    if any(c.get(\"fps\")!=20 or c.get(\"width\",0)<16 or c.get(\"height\",0)<16 for c in config[\"cameras\"]):\n        raise ValueError(\"Camera cadence or dimensions differ\")\n    if config.get(\"condition\")!=expected[case]:\n        raise ValueError(\"Controlled entry condition differs\")\n    if config.get(\"school_xing_sign_x_m\")!=-35 or config.get(\"crosswalk_x_m\")!=0 or config.get(\"crosswalk_width_m\")!=3.6576:\n        raise ValueError(\"Sign/crosswalk source geometry differs\")\n    if config.get(\"pedestrian_crossing_interval_s\")!=[10,14] or config.get(\"pedestrian_approach_side\") is not True:\n        raise ValueError(\"Same-side person interval differs\")\n    if config.get(\"ego_wait_interval_s\")!=([10,14] if expected[case]==\"entry_after_crossing\" else []):\n        raise ValueError(\"Ego release policy differs\")\n    if config.get(\"physical_verified\") is not False or config.get(\"legal_verdict\") is not None:\n        raise ValueError(\"Physical or legal result claimed\")\n    return {\"case_id\":case,\"frames\":600,\"simulation_started\":False,\"selected_for_delivery\":False}\n\nif __name__==\"__main__\":\n    parser=argparse.ArgumentParser();parser.add_argument(\"--check\",action=\"store_true\")\n    args=parser.parse_args()\n    if not args.check:raise SystemExit(\"Native capture and saved processing are not implemented\")\n    print(json.dumps(check(json.loads(Path(\"config.json\").read_text())),sort_keys=True))\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\nclass DraftContract(unittest.TestCase):\n    def setUp(self):self.config=json.loads(Path(\"config.json\").read_text())\n    def test_exact_window(self):self.assertEqual(check(self.config)[\"frames\"],600)\n    def test_missing_camera(self):\n        bad=copy.deepcopy(self.config);bad[\"cameras\"].pop()\n        with self.assertRaisesRegex(ValueError,\"Four source cameras\"):check(bad)\n    def test_short_window(self):\n        bad=copy.deepcopy(self.config);bad[\"duration_frames\"]=599\n        with self.assertRaisesRegex(ValueError,\"30-second\"):check(bad)\n    def test_changed_sign(self):\n        bad=copy.deepcopy(self.config);bad[\"school_xing_sign_x_m\"]=-20\n        with self.assertRaisesRegex(ValueError,\"Sign/crosswalk\"):check(bad)\n    def test_missing_person(self):\n        bad=copy.deepcopy(self.config);bad[\"pedestrian_approach_side\"]=False\n        with self.assertRaisesRegex(ValueError,\"Same-side\"):check(bad)\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_front_entry",
+        "method": "original actor footprint and transform",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "person_crosswalk_sign",
+        "method": "original person transform and school crossing/sign geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named original source streams",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      }
+    ],
+    "limitations": [
+      "Native marking, sign authority, person intention and original pixels unverified"
+    ]
+  },
+  "status": "exact_unselected_offline_draft"
+}

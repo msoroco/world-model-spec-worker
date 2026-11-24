@@ -1,15 +1,9 @@
 # NRS-484B-227-1 at C80903
 
-Actor: `motor_vehicle_driver`. Frozen cell: `divided_road` / `left_turn` / `median_barrier`.
+Actor: `motor_vehicle_driver`. Frozen cell: `divided_road` / `left_turn` / `median_barrier`. The exact statutory source and selected left-turn witness are in `case-plan.json`. The two accepted recording IDs are membership evidence only; no source-hashed equivalence receipt supports reuse.
 
-Exact statutory source: NRS 484B.227(1). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Attempted left turn over, within and across a traversable dividing section adjoining the retained median barrier..
+Built a 30-second, 600-frame, 20-Hz, four-camera source-bound median crossing meter (`measure_median_turn.py`) and authored two-roadway geometry (`median_turn_scene.py`) with an opening at x=0..10 m, adjoining continuous dividing section at x=10..25 m, and retained barrier segments. The two planned probes change only requested left-turn crossing station, 5 m versus 18 m. `median-turn-measurement-contract.json` maps every mandatory term. CPU proofs `median-turn-proof.json` and `median-scene-proof.json` exercise positive fixtures and source/geometry/frame/camera negatives. Fixture motion and hashes are invented for unit testing.
 
-Controlled planning variable: `median_crossing_location`. Proposed requests: left turn through physically established median opening; left turn across continuous dividing section beside opening. These are scene/controller targets, not observed conduct or legal verdicts.
+The meter reports median footprint overlap, crossing-centre station and right/opposite roadway occupancy; it does not infer legal compliance. The authored geometry has not run in Native. Public-authority establishment of the opening, physical traversability, full vehicle-footprint clearance, saved pixels, compatibility and independent audit are unverified. Right-hand-roadway, crossover/intersection and semicircular/U-turn alternatives need separate disposition. Both selected probes remain planned only.
 
-Statutory alternatives and exceptions still to cover or disposition: right-hand-roadway duty; established crossover or intersection; semicircular/U-turn alternatives.
-
-Accepted membership: 2 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
-
-Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
-
-Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+Next: execute four distinct source-preserving Native candidates per selected case, prove original road geometry and authority source, join four camera streams to all Native frames, measure the vehicle footprint against divider/opening, run pinned offline and compatibility, then actual process-saved positive/negative fixtures and independent audit. Keep partial until the scoped strict gate passes.

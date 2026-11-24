@@ -1,15 +1,9 @@
 # NRS-484B-267-2b at C405647
 
-Actor: `motor_vehicle_driver`. Frozen cell: `road` / `travel` / `emergency_vehicle`.
+Actor: `motor_vehicle_driver`. Frozen cell: `road` / `travel` / `emergency_vehicle`. Exact statutory source and selected already-moving witness are in `case-plan.json`.
 
-Exact statutory source: NRS 484B.267(2)(b); with 484B.267(4). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Approach to an already-moving qualifying vehicle..
+Built a 30-second, 600-frame, 20-Hz, four-camera source-bound approach meter (`measure_emergency.py`) and authored road/emergency actor/controller requests (`emergency_scene.py`) for the two planned probes. The meter requires original map, vehicle, legal role, lamp, visibility and officer-direction source hashes, Native frame/time/camera joins, and observed approach to a moving flashing vehicle. It returns speed, passing surface gap, TTC and deceleration diagnostics. `emergency-measurement-contract.json` maps every mandatory observation. CPU positive/negative proofs are `emergency-proof.json` and `emergency-scene-proof.json`. Fixture motion and hashes are invented for unit testing.
 
-Controlled planning variable: `caution_near_moving_emergency_vehicle`. Proposed requests: slow with safe passing margin near moving flashing-light emergency vehicle; maintain speed and narrow margin near same moving emergency vehicle. These are scene/controller targets, not observed conduct or legal verdicts.
+The statute says “proceed with caution” without a numeric threshold. The meter therefore makes no legal compliance judgment. The authored scene has not executed in Native, and authorization, lamp qualification, original visibility, compatibility, process-saved video and independent audit are unverified. Official regulatory vehicle, preparing-to-move and law-enforcement direction remain separate alternatives. Both selected probes remain planned only; no accepted recording ID or reuse is claimed.
 
-Statutory alternatives and exceptions still to cover or disposition: official regulatory vehicle; preparing-to-move visible indication; law-enforcement direction; proceed-with-caution unresolved.
-
-Accepted membership: 0 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
-
-Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
-
-Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+Next: realize four distinct source-preserving Native candidates per selected case, run pinned CPU offline and compatibility, join all four original camera streams to 600 Native frames, measure original source terms and inspect pixels/actor status, then run actual process-saved positive/negative fixtures and independent audit. Keep partial until scoped strict check passes.

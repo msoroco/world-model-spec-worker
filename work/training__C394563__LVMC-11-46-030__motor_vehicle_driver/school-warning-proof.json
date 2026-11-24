@@ -1,0 +1,138 @@
+{
+  "format": "worker-cpu-school-warning-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "requested_55_ft": {
+      "format": "worker-source-school-warning-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "warning_role": "signal_device",
+      "first_stop_frame": 121,
+      "stop_distance_to_nearest_school_lane_side_ft": {
+        "front": 48.43832020997376,
+        "centre": 55.00000000000001,
+        "rear": 61.56167979002625
+      },
+      "first_release_frame": 250,
+      "first_release_event": "signal_stopped",
+      "first_proceed_frame": 253,
+      "proceeded_before_observed_release": false,
+      "statutory_stop_distance_ft": 50,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Stop detector is an engineering threshold, not a legal minimum duration",
+        "The statute does not select a front, centre, or rear vehicle reference point",
+        "Release and child-warning meaning require original actor and pixel review",
+        "Commanded release cannot substitute for an observed source event"
+      ]
+    },
+    "requested_40_ft": {
+      "format": "worker-source-school-warning-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "warning_role": "signal_device",
+      "first_stop_frame": 121,
+      "stop_distance_to_nearest_school_lane_side_ft": {
+        "front": 33.43832020997375,
+        "centre": 40.0,
+        "rear": 46.56167979002625
+      },
+      "first_release_frame": 250,
+      "first_release_event": "signal_stopped",
+      "first_proceed_frame": 253,
+      "proceeded_before_observed_release": false,
+      "statutory_stop_distance_ft": 50,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Stop detector is an engineering threshold, not a legal minimum duration",
+        "The statute does not select a front, centre, or rear vehicle reference point",
+        "Release and child-warning meaning require original actor and pixel review",
+        "Commanded release cannot substitute for an observed source event"
+      ]
+    },
+    "flagman_release": {
+      "format": "worker-source-school-warning-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "warning_role": "flagman",
+      "first_stop_frame": 121,
+      "stop_distance_to_nearest_school_lane_side_ft": {
+        "front": 48.43832020997376,
+        "centre": 55.00000000000001,
+        "rear": 61.56167979002625
+      },
+      "first_release_frame": 250,
+      "first_release_event": "flagman_go",
+      "first_proceed_frame": 253,
+      "proceeded_before_observed_release": false,
+      "statutory_stop_distance_ft": 50,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Stop detector is an engineering threshold, not a legal minimum duration",
+        "The statute does not select a front, centre, or rear vehicle reference point",
+        "Release and child-warning meaning require original actor and pixel review",
+        "Commanded release cannot substitute for an observed source event"
+      ]
+    },
+    "early_proceed": {
+      "format": "worker-source-school-warning-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "warning_role": "signal_device",
+      "first_stop_frame": 121,
+      "stop_distance_to_nearest_school_lane_side_ft": {
+        "front": 48.43832020997376,
+        "centre": 55.00000000000001,
+        "rear": 61.56167979002625
+      },
+      "first_release_frame": 250,
+      "first_release_event": "signal_stopped",
+      "first_proceed_frame": 203,
+      "proceeded_before_observed_release": true,
+      "statutory_stop_distance_ft": 50,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Stop detector is an engineering threshold, not a legal minimum duration",
+        "The statute does not select a front, centre, or rear vehicle reference point",
+        "Release and child-warning meaning require original actor and pixel review",
+        "Commanded release cannot substitute for an observed source event"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_warning_actor",
+      "rejected": "Missing source hash: warning_actor_sha256"
+    },
+    {
+      "test": "not_school_lane",
+      "rejected": "School pedestrian lane not sourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "role_changed",
+      "rejected": "Warning actor changed within comparison"
+    },
+    {
+      "test": "wrong_release_role",
+      "rejected": "Release event and warning role differ"
+    },
+    {
+      "test": "missing_child_warning",
+      "rejected": "Children warning context missing"
+    }
+  ]
+}

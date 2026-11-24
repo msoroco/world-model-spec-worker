@@ -1,0 +1,47 @@
+{
+  "format": "worker-inline-construction",
+  "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_b",
+  "cell_id": "C405647",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_b\",\n  \"selected_case_id\": \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_b\",\n  \"law_id\": \"NRS-484B-267-2a\",\n  \"cell_id\": \"C405647\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"duration_frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"fps\": 20,\n      \"width\": 1920,\n      \"height\": 1080\n    },\n    {\n      \"name\": \"approach\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"fps\": 20,\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"condition\": \"maintain_speed\",\n  \"other_vehicle_kind\": \"authorized_emergency_vehicle\",\n  \"other_vehicle_speed_mps\": 2,\n  \"warning_lamps\": \"qualifying_flashing_request\",\n  \"officer_direction\": null,\n  \"ego_initial_speed_mps\": 14,\n  \"ego_target_speed_mps\": 14,\n  \"posted_limit_mps\": 15,\n  \"visibility_m\": 200,\n  \"wet_road\": false,\n  \"physical_verified\": false,\n  \"legal_verdict\": null\n}\n"
+    },
+    {
+      "path": "runner.py",
+      "content": "import argparse\nimport json\nfrom pathlib import Path\n\ndef check(c):\n    base=\"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_\"\n    expected={base+\"a\":\"reduce_speed\",base+\"b\":\"maintain_speed\"}\n    case=c.get(\"case_id\")\n    if case not in expected or c.get(\"selected_case_id\")!=case:raise ValueError(\"Exact case differs\")\n    if (c.get(\"law_id\"),c.get(\"cell_id\"),c.get(\"actor\"))!=(\"NRS-484B-267-2a\",\"C405647\",\"motor_vehicle_driver\"):raise ValueError(\"Assignment differs\")\n    if (c.get(\"rate_hz\"),c.get(\"duration_s\"),c.get(\"duration_frames\"))!=(20,30,600):raise ValueError(\"Full window required\")\n    if [x.get(\"name\") for x in c.get(\"cameras\",[])]!=[\"overview\",\"approach\",\"reference_corner\",\"driver_reference\"]:raise ValueError(\"Four cameras required\")\n    if any(x.get(\"fps\")!=20 or x.get(\"width\",0)<16 or x.get(\"height\",0)<16 for x in c[\"cameras\"]):raise ValueError(\"Camera cadence/dimensions differ\")\n    if c.get(\"condition\")!=expected[case]:raise ValueError(\"Controlled speed condition differs\")\n    if c.get(\"other_vehicle_kind\")!=\"authorized_emergency_vehicle\" or c.get(\"other_vehicle_speed_mps\")!=2:raise ValueError(\"Moving emergency vehicle differs\")\n    if c.get(\"warning_lamps\")!=\"qualifying_flashing_request\" or c.get(\"officer_direction\") is not None:raise ValueError(\"Lamp or officer condition differs\")\n    if c.get(\"ego_initial_speed_mps\")!=14 or c.get(\"ego_target_speed_mps\")!=(7 if expected[case]==\"reduce_speed\" else 14):raise ValueError(\"Speed intervention differs\")\n    if c.get(\"posted_limit_mps\")!=15 or c.get(\"visibility_m\")!=200 or c.get(\"wet_road\") is not False:raise ValueError(\"Reasonable-speed context differs\")\n    if c.get(\"physical_verified\") is not False or c.get(\"legal_verdict\") is not None:raise ValueError(\"Physical or legal result claimed\")\n    return {\"case_id\":case,\"frames\":600,\"simulation_started\":False,\"selected_for_delivery\":False}\n\nif __name__==\"__main__\":\n    ap=argparse.ArgumentParser();ap.add_argument(\"--check\",action=\"store_true\");a=ap.parse_args()\n    if not a.check:raise SystemExit(\"Native capture and saved processing not implemented\")\n    print(json.dumps(check(json.loads(Path(\"config.json\").read_text())),sort_keys=True))\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\nclass DraftContract(unittest.TestCase):\n    def setUp(self):self.c=json.loads(Path(\"config.json\").read_text())\n    def test_window(self):self.assertEqual(check(self.c)[\"frames\"],600)\n    def test_missing_camera(self):\n        c=copy.deepcopy(self.c);c[\"cameras\"].pop()\n        with self.assertRaisesRegex(ValueError,\"Four cameras\"):check(c)\n    def test_short_window(self):\n        c=copy.deepcopy(self.c);c[\"duration_frames\"]=599\n        with self.assertRaisesRegex(ValueError,\"Full window\"):check(c)\n    def test_lamps(self):\n        c=copy.deepcopy(self.c);c[\"warning_lamps\"]=None\n        with self.assertRaisesRegex(ValueError,\"Lamp\"):check(c)\n    def test_speed(self):\n        c=copy.deepcopy(self.c);c[\"ego_target_speed_mps\"]+=1\n        with self.assertRaisesRegex(ValueError,\"Speed intervention\"):check(c)\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_speed_and_transform",
+        "method": "original ego actor velocity/transform",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "emergency_actor_and_lamps",
+        "method": "original actor transform and lamp state",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named original camera streams",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames"
+      }
+    ],
+    "limitations": [
+      "Original lamps, vehicle classification, visibility, reasonable-speed judgment and pixels unverified"
+    ]
+  },
+  "status": "exact_unselected_offline_draft"
+}

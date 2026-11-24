@@ -1,0 +1,27 @@
+{
+  "format": "c42417-original-measurement-contract-v1",
+  "law_id": "NRS-484B-413-2",
+  "cell_id": "C42417",
+  "rate_hz": 20,
+  "duration_frames": 600,
+  "selected_delivery_status": "not_built",
+  "camera_streams": ["overview", "approach", "reference_corner", "driver_reference"],
+  "source_bindings_required": {
+    "sig.turn_indicator": "original ego lamp-state readback and synchronized visible lamp frames",
+    "sig.hand_signal": "original arm-signal source if used as alternative",
+    "drv.distance_while": "continuous original signal-state run joined to ego traveled path",
+    "kin.path_length": "integrated original ego transform arc length, not command distance",
+    "drv.turning": "original ego heading/course-change onset",
+    "drv.lane_change": "original course-change geometry if used as alternative",
+    "env.precipitation": "original weather setting and camera-frame review; no weather exception",
+    "kin.speed": "original ego actor velocity and frame joins"
+  },
+  "thresholds_m": {"business_or_residential": 30.48, "other_area": 91.44},
+  "independent_visual_review_required": true,
+  "limits": [
+    "Authored request rows are not Native observations",
+    "Draft offline checks do not start Native simulation or retain original pixels",
+    "A commanded lamp state alone cannot prove an observed continuous signal",
+    "No legal verdict or physical completion is claimed"
+  ]
+}

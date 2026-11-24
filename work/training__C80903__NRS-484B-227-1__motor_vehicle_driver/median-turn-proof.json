@@ -1,0 +1,80 @@
+{
+  "format": "worker-cpu-median-turn-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "opening": {
+      "format": "worker-source-divided-highway-median-crossing-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_median_footprint_frame": 176,
+      "last_median_footprint_frame": 224,
+      "median_crossing_center_x_range_m": [
+        5.0,
+        5.0
+      ],
+      "all_median_overlap_centers_within_authorized_opening": true,
+      "median_overlap_frames_outside_authorized_opening": 0,
+      "wrong_roadway_frame_count": 383,
+      "observed_left_turn": true,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "A centre station inside an opening does not prove the full vehicle footprint cleared the barrier.",
+        "Public-authority establishment and median geometry require original source and independent review.",
+        "The right-hand roadway duty, crossover and U-turn alternatives need separate audit."
+      ]
+    },
+    "continuous_section": {
+      "format": "worker-source-divided-highway-median-crossing-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_median_footprint_frame": 176,
+      "last_median_footprint_frame": 224,
+      "median_crossing_center_x_range_m": [
+        18.0,
+        18.0
+      ],
+      "all_median_overlap_centers_within_authorized_opening": false,
+      "median_overlap_frames_outside_authorized_opening": 49,
+      "wrong_roadway_frame_count": 383,
+      "observed_left_turn": true,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "A centre station inside an opening does not prove the full vehicle footprint cleared the barrier.",
+        "Public-authority establishment and median geometry require original source and independent review.",
+        "The right-hand roadway duty, crossover and U-turn alternatives need separate audit."
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_authority_hash",
+      "rejected": "Missing source hash: public_authority_opening_sha256"
+    },
+    {
+      "test": "unauthorized_opening",
+      "rejected": "Public-authority crossover not sourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "missing_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "no_turn",
+      "rejected": "No observed left turn"
+    },
+    {
+      "test": "no_median_overlap",
+      "rejected": "No observed median footprint overlap"
+    }
+  ]
+}

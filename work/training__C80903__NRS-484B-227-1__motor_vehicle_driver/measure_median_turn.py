@@ -1,0 +1,90 @@
+"""Source-bound divided-highway left-turn and median crossing meter."""
+
+import math
+
+FRAMES = 600
+RATE_HZ = 20
+CAMERAS = {"overview", "ego_front", "median_side", "crossover_side"}
+
+
+def finite(value, name):
+    if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value):
+        raise ValueError("Invalid " + name)
+    return float(value)
+
+
+def source_hash(value, name):
+    if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+        raise ValueError("Missing source hash: " + name)
+
+
+def measure(context, rows):
+    if context.get("source_kind") != "original_native_divided_highway_readback":
+        raise ValueError("Original divided-highway source missing")
+    for name in ("native_map_sha256", "divider_geometry_sha256", "roadway_direction_sha256",
+                 "public_authority_opening_sha256", "vehicle_extent_sha256", "ego_pose_source_sha256"):
+        source_hash(context.get(name), name)
+    if context.get("public_authority_opening_verified") is not True:
+        raise ValueError("Public-authority crossover not sourced")
+    low, high = [finite(x, "authorized opening bound") for x in context.get("opening_x_m", [])]
+    median_low, median_high = [finite(x, "median y bound") for x in context.get("median_y_m", [])]
+    if low >= high or median_low >= median_high:
+        raise ValueError("Invalid opening or median geometry")
+    if len(rows) != FRAMES:
+        raise ValueError("Incomplete 30-second Native trace")
+    previous_native = None
+    median_frames = []
+    crossing_x = []
+    left_turn_frames = []
+    wrong_roadway_frames = []
+    for i, row in enumerate(rows):
+        if row.get("video_frame") != i:
+            raise ValueError("Video frame identity gap")
+        native = row.get("native_frame")
+        if type(native) is not int or (previous_native is not None and native <= previous_native):
+            raise ValueError("Native frame identity gap")
+        previous_native = native
+        if abs(finite(row.get("time_s"), "Native time") - i / RATE_HZ) > 1e-6:
+            raise ValueError("Native time join failed")
+        cameras = row.get("source_cameras")
+        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != i for name in CAMERAS):
+            raise ValueError("Four source camera frame join failed")
+        x = finite(row.get("ego_center_x_m"), "ego x")
+        y = finite(row.get("ego_center_y_m"), "ego y")
+        width = finite(row.get("ego_width_m"), "ego width")
+        if width <= 0:
+            raise ValueError("Invalid ego extent")
+        if row.get("left_turn_active") not in (True, False):
+            raise ValueError("Left turn state missing")
+        if row.get("u_turn_active") not in (True, False):
+            raise ValueError("U-turn state missing")
+        if row.get("roadway_direction") not in {"right_hand", "opposite", "median"}:
+            raise ValueError("Roadway direction source missing")
+        intersects_median = y + width / 2 >= median_low and y - width / 2 <= median_high
+        if intersects_median:
+            median_frames.append(i)
+            crossing_x.append(x)
+        if row["left_turn_active"]:
+            left_turn_frames.append(i)
+        if row["roadway_direction"] == "opposite":
+            wrong_roadway_frames.append(i)
+    if not median_frames:
+        raise ValueError("No observed median footprint overlap")
+    if not left_turn_frames:
+        raise ValueError("No observed left turn")
+    if max(left_turn_frames) < min(median_frames) or min(left_turn_frames) > max(median_frames):
+        raise ValueError("Left turn does not coincide with median crossing")
+    in_opening = [low <= x <= high for x in crossing_x]
+    return {"format": "worker-source-divided-highway-median-crossing-measurement",
+            "frame_count": FRAMES, "rate_hz": RATE_HZ,
+            "first_median_footprint_frame": median_frames[0],
+            "last_median_footprint_frame": median_frames[-1],
+            "median_crossing_center_x_range_m": [min(crossing_x), max(crossing_x)],
+            "all_median_overlap_centers_within_authorized_opening": all(in_opening),
+            "median_overlap_frames_outside_authorized_opening": sum(not value for value in in_opening),
+            "wrong_roadway_frame_count": len(wrong_roadway_frames),
+            "observed_left_turn": True,
+            "legal_compliance": "unassessed",
+            "limitations": ["A centre station inside an opening does not prove the full vehicle footprint cleared the barrier.",
+                            "Public-authority establishment and median geometry require original source and independent review.",
+                            "The right-hand roadway duty, crossover and U-turn alternatives need separate audit."]}

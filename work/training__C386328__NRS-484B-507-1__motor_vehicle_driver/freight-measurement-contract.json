@@ -1,0 +1,41 @@
+{
+  "format": "worker-freight-curb-zone-measurement-contract",
+  "assignment_id": "training__C386328__NRS-484B-507-1__motor_vehicle_driver",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "source_cameras": ["overview", "ego_front", "zone_sign", "loading_side"],
+  "case_modes": {
+    "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_1": "requested_material_loading",
+    "training__C386328__NRS-484B-507-1__motor_vehicle_driver__probe_2": "requested_idle_parking"
+  },
+  "comparison_variable": "original-source observed materials handling while stopped in active freight zone",
+  "fixed_conditions": [
+    "same one-way road, marked freight curb segment and sign hours",
+    "same ego vehicle, parked pose, civil time, camera setup and surrounding traffic",
+    "same source acquisition; only requested material activity differs"
+  ],
+  "native_source_requirements": [
+    "original map and freight curb marking with zone boundary",
+    "original regulatory sign text and effective hours joined to civil time",
+    "original vehicle identity, position, speed and door state",
+    "original material object/person movement and passenger exchange when present",
+    "original material-transport vehicle wait/entry state and spatial interaction",
+    "600 original Native frames joined to all four source cameras"
+  ],
+  "source_observation_terms_mapped": {
+    "st.curb_zone": "source-marked freight curb loading segment and Native map",
+    "dev.regulatory_sign": "source sign text and effective-hours hash",
+    "drv.condition_in_effect": "sign hours joined to original civil local time",
+    "env.civil_time": "original civil clock source for every Native frame",
+    "drv.standing_or_parked": "original position and observed speed in marked zone",
+    "ru.commercial_motor_vehicle": "source class of any materials-transport vehicle waiting or entering",
+    "kin.extent": "source material object extent and movement, not inferred from requested activity",
+    "sig.door_open": "original door state when available; not sufficient to prove material transfer",
+    "ru.occupant_count": "source passenger exchange when present",
+    "drv.approaching": "material-transport vehicle waiting or about-to-enter state and motion"
+  },
+  "expeditious_and_temporary": "independent_judgment_required",
+  "interference": "original_spatial_and_temporal_review_required",
+  "legal_compliance": "unassessed",
+  "physical_result": "unobserved"
+}

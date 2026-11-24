@@ -1,0 +1,45 @@
+{
+  "template_id": "NRS-484B-113-2@motor_vehicle_driver",
+  "phrase": "back into an intersection",
+  "note": "Determine original reverse motion and full vehicle-body intersection-boundary overlap from synchronized Native state and surveyed map; this cell covers only the intersection branch.",
+  "status": "draft",
+  "observable_requirements": {
+    "observables": [
+      {
+        "name": "ego_signed_longitudinal_velocity",
+        "unit": "m/s",
+        "description": "Original frame-joined velocity projected onto original vehicle heading; reverse is negative."
+      },
+      {
+        "name": "ego_body_footprint",
+        "unit": "structured",
+        "description": "Original Native body pose and dimensions at each joined frame."
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "intersection_geometry",
+        "unit": "structured",
+        "description": "original surveyed OpenDRIVE junction boundary and synchronized body footprint"
+      }
+    ],
+    "sweep_dimensions": [],
+    "landmarks": [],
+    "recording_needs": [
+      {
+        "name": "native_body_pose_control",
+        "unit": "structured",
+        "description": "original Native signed longitudinal velocity, body pose and heading; original four-camera frame joins"
+      },
+      {
+        "name": "source_camera_views",
+        "unit": "video",
+        "description": "Original synchronized overview, approach, corner/reference and driver-reference views for source audit."
+      }
+    ],
+    "limitations": [
+      "Synthetic CPU fixtures do not establish original Native motion or map geometry.",
+      "Intersection, crosswalk and corner clauses require separate source-grounded review; no clause is inferred from another."
+    ]
+  }
+}
