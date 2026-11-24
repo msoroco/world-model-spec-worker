@@ -19,6 +19,10 @@ from reverse_route import ReverseTargetController,prepare_reviewed_pair
 ASSIGNMENT='testing__C215286__NRS-484B-113-2__motor_vehicle_driver'
 OVER=ASSIGNMENT+'__reverse_over_crosswalk'
 SHORT=ASSIGNMENT+'__reverse_stops_before_crosswalk'
+INTERSECTION=ASSIGNMENT+'__reverse_into_intersection'
+INTERSECTION_STOP=ASSIGNMENT+'__reverse_stops_before_intersection'
+CORNER=ASSIGNMENT+'__reverse_around_street_corner'
+CORNER_STOP=ASSIGNMENT+'__reverse_stops_before_street_corner'
 CAMERAS=tuple(PROFILE)
 
 
@@ -26,7 +30,9 @@ def validate_config(config):
  if config.get('law_id')!='NRS-484B-113-2' or config.get('cell_id')!='C215286' or config.get('actor')!='motor_vehicle_driver':
   raise ValueError('Exact C215286 law/cell/actor required')
  if config.get('selected_case_id') not in (OVER,SHORT):raise ValueError('Exact reverse case required')
- if set(config.get('supported_case_ids',[]))!={OVER,SHORT}:raise ValueError('Both exact reverse cases required')
+ supported=set(config.get('supported_case_ids',[]))
+ if supported!={OVER,SHORT} and supported!={OVER,SHORT,INTERSECTION,INTERSECTION_STOP,CORNER,CORNER_STOP}:
+  raise ValueError('Exact selected reverse case inventory required')
  if config.get('rate_hz')!=20 or config.get('duration_s')!=45:
   raise ValueError('Pinned 20 Hz and 45-second capture required')
  cameras=config.get('cameras')

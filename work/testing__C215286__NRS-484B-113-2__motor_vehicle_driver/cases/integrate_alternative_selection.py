@@ -32,6 +32,7 @@ def integrate():
     delivery = read(CASES / "alternative-delivery-index.json")
     if len(selected["cases"]) not in (2, 6) or len(staged["cases"]) != 4:
         raise ValueError("Selected or staged case count changed")
+    previous = {row["case_id"]: row for row in selected["cases"]}
     if len(compatibility["cases"]) != len(saved["cases"]) != len(physical["cases"]) != len(delivery["cases"]) != 4:
         raise ValueError("Four alternative proof families required")
     baseline = [e for e in selected["cases"] if "crosswalk" in e["case_id"]]
@@ -58,7 +59,7 @@ def integrate():
             "construction_sha256": draft["construction_sha256"],
             "measurement_procedure": draft["measurement_procedure"],
             "candidate_risk": {"status": "physical", "reason": "Native site, reverse path and four camera views require original-source review"},
-            "candidates": [],
+            "candidates": previous.get(ident, {}).get("candidates", []),
             "measurement_contract": "cases/" + draft["measurement_contract"],
             "fixture_recipe": "work/" + PACKAGE.name + "/cases/" + compatibility["cases"][i]["fixture_recipe"],
             "acquisition": {**template["acquisition"],
