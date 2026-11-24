@@ -31,6 +31,14 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def measure_officer_control_at_entry(measured):
+    return measured["first_ego_entry"]["traffic_control_observed"]
+
+
+def measure_officer_direction_at_entry(measured):
+    return measured["first_ego_entry"]["officer_direction_observed"]
+
+
 def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / "result.json").exists() or (attempt / "channels").exists():
@@ -84,10 +92,14 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
     ]
     channels = attempt / "channels"
     channels.mkdir()
-    for name, key in (("officer_control_observed", "traffic_control_observed"),
-                      ("officer_direction_observed", "direction"),
-                      ("ego_speed_mps", "ego_speed_mps"),
-                      ("ego_body_in_intersection", "ego_body_in_intersection")):
+    channels_to_write = [("officer_control_observed", "traffic_control_observed"),
+                         ("officer_direction_observed", "direction"),
+                         ("ego_speed_mps", "ego_speed_mps"),
+                         ("ego_body_in_intersection", "ego_body_in_intersection")]
+    through_available = measured["samples"][0]["through_speed_mps"] is not None
+    if through_available:
+        channels_to_write.append(("through_speed_mps", "through_speed_mps"))
+    for name, key in channels_to_write:
         with (channels / (name + ".jsonl")).open("x") as stream:
             for row in measured["samples"]:
                 stream.write(json.dumps({"original_frame": row["frame"],
@@ -121,6 +133,9 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
                                      ("officer_direction_observed", "text"),
                                      ("ego_speed_mps", "m/s"),
                                      ("ego_body_in_intersection", "count"))]
+                  + ([{"name": "through_speed_mps", "unit": "m/s",
+                       "reference": "channels/through_speed_mps.jsonl"}]
+                     if through_available else [])
                   + [{"name": "officer_context", "unit": "structured record",
                       "reference": "channels/officer_context.json"}],
               "source_evidence_hashes": sources,
@@ -134,14 +149,14 @@ def finalize(attempt, output, *, physical_assessor=None, result_writer=None):
     analysis = {"format": "worker-c157964-officer-saved-analysis",
                 "case_id": case_id,
                 "measurements": {"officer_control_at_entry": {
-                    "value": entry["traffic_control_observed"],
-                    "method": "original_camera_review_joined_to_ego_entry",
+                    "value": measure_officer_control_at_entry(measured),
+                    "method": "measure_officer_control_at_entry",
                     "sources": {name: sources[name] for name in
                                 ("officer_history.jsonl", "officer_review.json",
                                  "video_frames.jsonl")}},
                     "officer_direction_at_entry": {
-                    "value": entry["officer_direction_observed"],
-                    "method": "original_camera_review_joined_to_ego_entry",
+                    "value": measure_officer_direction_at_entry(measured),
+                    "method": "measure_officer_direction_at_entry",
                     "sources": {name: sources[name] for name in
                                 ("officer_review.json", "video_frames.jsonl")}}},
                 "source_report": measured,

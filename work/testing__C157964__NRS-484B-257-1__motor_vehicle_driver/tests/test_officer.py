@@ -98,7 +98,7 @@ class OfficerTests(unittest.TestCase):
         class Writer:
             def __init__(self,root,context):self.rows=[]
             def __enter__(self):return self
-            def add_tick(self,snapshot,packets,ego,officer,pose):
+            def add_tick(self,snapshot,packets,ego,officer,pose,through=None):
                 self.rows.append((snapshot.frame,pose["programmed_direction"]))
                 return {"time_s":snapshot.timestamp.elapsed_seconds}
             def __exit__(self,*args):pass
@@ -217,6 +217,25 @@ class OfficerTests(unittest.TestCase):
                 finalizer.finalize(root,root/"report.json",physical_assessor=lambda a,r:r,
                                    result_writer=lambda a,r:None)
 
+    def test_through_highway_actor_must_have_original_body_and_motion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.saved_fixture(root)
+            context=json.loads((root/"officer_context.json").read_text())
+            context["through_actor_id"]=77
+            context["through_route_source"]="officer-site.xodr#157964,157965"
+            (root/"officer_context.json").write_text(json.dumps(context))
+            with self.assertRaisesRegex(ValueError,"Original through actor identity missing"):
+                measure.analyze(root)
+            rows=[json.loads(line) for line in (root/"officer_history.jsonl").read_text().splitlines()]
+            for row in rows:
+                row["through"]={"actor_id":77,"speed_mps":3.0,
+                                "body_vertices_xy_m":[[10.0,10.0]]*8}
+            (root/"officer_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            review=json.loads((root/"officer_review.json").read_text())
+            review["officer_history_sha256"]=hashlib.sha256((root/"officer_history.jsonl").read_bytes()).hexdigest()
+            (root/"officer_review.json").write_text(json.dumps(review))
+            self.assertEqual(measure.analyze(root)["samples"][0]["through_speed_mps"],3.0)
+
     def test_capture_writer_retains_raw_pose_and_camera_joins_without_observation_labels(self):
         class Map:
             def __init__(self,path):self.path=path;self.index=0
@@ -229,16 +248,23 @@ class OfficerTests(unittest.TestCase):
         points=[NS(x=x,y=y) for x,y in body(0)]*2
         ego=NS(bounding_box=NS(get_world_vertices=lambda transform:points),
                get_transform=lambda:NS(),get_velocity=lambda:NS(x=2.0,y=0.0,z=0.0))
+        through=NS(id=77,bounding_box=NS(get_world_vertices=lambda transform:points),
+                   get_transform=lambda:NS(),get_velocity=lambda:NS(x=0.0,y=3.0,z=0.0))
         snapshot=NS(frame=101,timestamp=NS(elapsed_seconds=5.05))
         cameras={name:NS(frame=101,timestamp=5.05) for name in capture_sources.CAMERAS}
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
-            ctx={"case_id":measure.PREFIX+"officer_active_hold","officer_actor_id":25}
+            ctx={"case_id":measure.PREFIX+"officer_active_hold","officer_actor_id":25,
+                 "through_actor_id":77}
             pose={"frame_index":0,"officer_actor_id":25,"programmed_direction":"stop",
                   "pose_applied":True,"realized_bones":{"arm":{"pitch":90}}}
             with capture_sources.OfficerSourceWriter(root,ctx,Map) as writer:
-                row=writer.add_tick(snapshot,cameras,ego,NS(id=25),pose)
+                with self.assertRaisesRegex(ValueError,"through actor differs"):
+                    writer.add_tick(snapshot,cameras,ego,NS(id=25),pose,through=NS(id=78))
+                row=writer.add_tick(snapshot,cameras,ego,NS(id=25),pose,through=through)
             self.assertEqual(row["ego"]["speed_mps"],2.0)
+            self.assertEqual(row["through"]["speed_mps"],3.0)
+            self.assertEqual(row["through"]["actor_id"],77)
             self.assertNotIn("officer_direction_observed",row)
             self.assertNotIn("traffic_control_observed",row)
             self.assertEqual(json.loads((root/"video_frames.jsonl").read_text())["camera_frames"]["overview"],101)

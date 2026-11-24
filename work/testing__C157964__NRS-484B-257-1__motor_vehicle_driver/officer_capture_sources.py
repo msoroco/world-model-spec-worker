@@ -51,7 +51,7 @@ class OfficerSourceWriter:
         self.history = (self.root / "officer_history.jsonl").open("x", buffering=1)
         return self
 
-    def add_tick(self, snapshot, cameras, ego, officer, programmed_pose):
+    def add_tick(self, snapshot, cameras, ego, officer, programmed_pose, through=None):
         if self.frame_map is None or self.history is None:
             raise ValueError("Officer source writer is not open")
         frame = snapshot.frame
@@ -84,14 +84,30 @@ class OfficerSourceWriter:
         velocity = ego.get_velocity()
         speed = math.sqrt(sum(_finite(getattr(velocity, axis), "ego velocity") ** 2
                               for axis in ("x", "y", "z")))
-        self.frame_map.append(frame, time_s,
-                              camera_frames={name: cameras[name].frame for name in CAMERAS})
         row = {"frame": frame, "time_s": time_s, "officer_actor_id": expected_id,
                "programmed_direction": command,
                "native_pose_applied": applied,
                "ego": {"speed_mps": speed, "body_vertices_xy_m": body}}
+        through_id = self.context.get("through_actor_id")
+        if through_id is not None:
+            if through is None or getattr(through, "id", None) != through_id:
+                raise ValueError("Original through actor differs from source context")
+            through_vertices = through.bounding_box.get_world_vertices(through.get_transform())
+            if len(through_vertices) < 8:
+                raise ValueError("Complete original through body vertices required")
+            through_velocity = through.get_velocity()
+            row["through"] = {
+                "actor_id": through_id,
+                "speed_mps": math.sqrt(sum(_finite(getattr(through_velocity, axis),
+                                                  "through velocity") ** 2
+                                           for axis in ("x", "y", "z"))),
+                "body_vertices_xy_m": [[_finite(vertex.x, "through body x"),
+                                        _finite(vertex.y, "through body y")]
+                                       for vertex in through_vertices]}
         if programmed_pose.get("realized_bones"):
             row["realized_bones"] = programmed_pose["realized_bones"]
+        self.frame_map.append(frame, time_s,
+                              camera_frames={name: cameras[name].frame for name in CAMERAS})
         self.history.write(json.dumps(row, allow_nan=False) + "\n")
         self.count += 1
         return row

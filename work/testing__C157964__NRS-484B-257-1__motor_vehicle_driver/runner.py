@@ -130,7 +130,8 @@ def capture(config, output_dir, host, port):
                     carla.Location(**config["junction_center_xyz_m"])))
                 actors["officer"] = officer["actor"]
             context = dict(config["officer_context"], case_id=case_id,
-                           officer_actor_id=getattr(actors.get("officer"), "id", None))
+                           officer_actor_id=getattr(actors.get("officer"), "id", None),
+                           through_actor_id=actors["through"].id)
             if "officer" not in actors:
                 context.update(authority_source=None, uniform_video_source=None)
             adapter = native_bone_adapter(carla, config["officer_pose"]["stop"],

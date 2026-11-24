@@ -88,7 +88,8 @@ class NativeOfficerCapture:
         if snapshot.frame != frame:
             raise ValueError("Native snapshot differs from camera frame")
         row = self.writer.add_tick(snapshot, packets, self.actors["ego"],
-                                   self.actors.get("officer"), pose)
+                                   self.actors.get("officer"), pose,
+                                   through=self.actors.get("through"))
         self.encoder.add_packets(packets)
         self.pipeline_capture.capture(frame, row["time_s"])
         self.count += 1

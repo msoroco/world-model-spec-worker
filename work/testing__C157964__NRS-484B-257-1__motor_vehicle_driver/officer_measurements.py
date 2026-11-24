@@ -107,6 +107,21 @@ def analyze(root:Path)->dict:
         if not isinstance(ego,dict):raise ValueError("Missing ego source")
         speed=_number(ego.get("speed_mps"),"ego speed")
         if speed<0:raise ValueError("Negative ego speed")
+        through_id=ctx.get("through_actor_id")
+        through_speed=None
+        if through_id is not None:
+            through=row.get("through")
+            if not isinstance(through,dict) or through.get("actor_id")!=through_id:
+                raise ValueError("Original through actor identity missing")
+            through_speed=_number(through.get("speed_mps"),"through speed")
+            points=through.get("body_vertices_xy_m")
+            if through_speed<0 or not isinstance(points,list) or len(points)<8:
+                raise ValueError("Complete original through body and motion required")
+            for point in points:
+                if not isinstance(point,list) or len(point)!=2:
+                    raise ValueError("Original through body vertex missing")
+                _number(point[0],"through body x")
+                _number(point[1],"through body y")
         vertices=ego.get("body_vertices_xy_m")
         if not isinstance(vertices,list) or len(vertices)<4:raise ValueError("Missing complete ego body")
         body=MultiPoint([(_number(p[0],"body x"),_number(p[1],"body y")) for p in vertices]).convex_hull
@@ -118,11 +133,16 @@ def analyze(root:Path)->dict:
                                                        "officer_visible":observed["officer_visible"]}
         samples.append({"frame":fid,"time_s":time,"direction":instruction,
                         "traffic_control_observed":controlled,"ego_speed_mps":speed,
-                        "ego_body_in_intersection":inside})
+                        "ego_body_in_intersection":inside,
+                        "through_speed_mps":through_speed})
     if first_entry is None:raise ValueError("No observed ego entry")
     fixed={key:ctx[key] for key in ("native_map_id","intersection_id",
                                    "intersection_polygon_xy_m","ego_route_source",
                                    "junction_source","direction_video_source")}
+    if ctx.get("through_actor_id") is not None:
+        if not ctx.get("through_route_source"):
+            raise ValueError("Missing sourced through route")
+        fixed["through_route_source"]=ctx["through_route_source"]
     return {"format":"worker-officer-control-exception-observations","case_id":case_id,
             "sources":hashes,
             "fixed_context":fixed,
