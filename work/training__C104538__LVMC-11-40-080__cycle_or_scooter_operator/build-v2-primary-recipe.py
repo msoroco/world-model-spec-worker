@@ -11,7 +11,8 @@ RAW = ('native_samples.jsonl', 'video_frames.jsonl', 'rider_native_samples.jsonl
        'trace.jsonl', 'capture/evidence.jsonl', 'body_history.jsonl',
        'capture/native/frames.jsonl', 'road.xodr',
        'capture/recorder_info.txt', 'capture/manifest.json',
-       'rider-source-manifest.json', 'authored-sign.json')
+       'rider-source-manifest.json', 'authored-sign.json',
+       'scenario_geometry.json', 'scenario_rule_evidence.jsonl')
 
 
 def sha(path):
@@ -46,12 +47,16 @@ def main():
     frames = [json.loads(line) for line in (source/'capture/native/frames.jsonl').read_text().splitlines()]
     if len(frames) != 600:
         raise ValueError('Expected 600 Native frame identities')
+    generator = HERE/(stem+'-generator.json')
     graphs = []
-    for frame in frames:
-        path = 'capture/native/'+frame['adapter_graph']
-        graph = json.loads((source/path).read_text())
-        graphs.append({'path': path, 'attributes': graph['metadata'],
-                       'nodes': graph['nodes'], 'edges': graph['edges']})
+    if source == destination and generator.is_file():
+        graphs = json.loads(generator.read_text())['graphs']
+    else:
+        for frame in frames:
+            path = 'capture/native/'+frame['adapter_graph']
+            graph = json.loads((source/path).read_text())
+            graphs.append({'path': path, 'attributes': graph['metadata'],
+                           'nodes': graph['nodes'], 'edges': graph['edges']})
     videos = [{'path': name+'.mkv', 'frames': 600, 'width': width,
                'height': height, 'fps': 20, 'color': color}
               for name, width, height, color in
@@ -60,7 +65,6 @@ def main():
                ('reference_corner', 1280, 720, 'white'),
                ('driver_reference', 1280, 720, 'red'))]
     specification = {'files': {}, 'graphs': graphs, 'videos': videos}
-    generator = HERE/(stem+'-generator.json')
     generator.write_text(json.dumps(specification, separators=(',', ':'))+'\n')
     if generator.stat().st_size > 2*1024*1024:
         raise ValueError('Generator exceeds return cap')

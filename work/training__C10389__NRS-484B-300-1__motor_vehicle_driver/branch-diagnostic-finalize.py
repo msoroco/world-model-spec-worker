@@ -49,13 +49,13 @@ def measure_branch_response(root):
 
 
 def source_hash_and_status_readback(root):
-    root=Path(root);record=json.loads(required(root,'placement-record.json').read_text())
+    root=Path(root);record=json.loads(required(root,'placement-source-context.json').read_text())
     config=json.loads(required(root,'config.json').read_text())
-    if sha(root/'placement-record.json')!=config['placement_record_sha256'] or record.get('official_placement_verified') is not False:
+    if sha(root/'placement-source-context.json')!=config['placement_record_sha256'] or record.get('official_placement_verified') is not False:
         raise ValueError('Placement source record changed or claims unverified authority')
     return {'value':{'document_present':record['document_present'],'official_placement_verified':False},
             'method':'source_hash_and_status_readback',
-            'sources':{'placement-record.json':sha(root/'placement-record.json')},
+            'sources':{'placement-source-context.json':sha(root/'placement-source-context.json')},
             'scope':'Authored source-document availability only; administrative authenticity unverified'}
 
 
@@ -101,8 +101,8 @@ def finalize(attempt,output):
     placement=suffix.startswith('placement_')
     if placement:
         placement_measurement=source_hash_and_status_readback(root)
-        record=json.loads(required(root,'placement-record.json').read_text())
-        (channels/'placement_provenance_record.json').write_text(json.dumps(record)+'\n')
+        record=json.loads(required(root,'placement-source-context.json').read_text())
+        (channels/'placement_provenance_record.json').write_text(json.dumps({'placement_provenance_record':record})+'\n')
     requested_stop=suffix.endswith('_stop') or placement
     matched=(values['stopped_before_frames']>=20 if requested_stop else values['body_at_station_frames']>0)
     result={'case_id':config['case_id'],'measured_values':values,

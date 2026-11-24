@@ -33,7 +33,7 @@ def main():
             config['case'] = {'case_id': CASE}
             config['case_suffix'] = 'dismounted_turn'
             config['required_atoms'] = sorted(set(config['required_atoms']) | {
-                'ru.pedestrian', 'kin.speed', 'drv.turning'})
+                'ru.pedestrian', 'kin.speed'})
             config['recording_description']['limitations'].append(
                 'Pedestrian-rule compliance requires original walking route and signal review; synthetic posture rows are not physical proof')
             construction['recording_description'] = config['recording_description']

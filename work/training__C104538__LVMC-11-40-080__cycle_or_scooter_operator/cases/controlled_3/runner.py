@@ -218,6 +218,11 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         survey['native_map_sha256'] = hashlib.sha256(native_xml.encode()).hexdigest()
         _write_json_new(output / 'road_geometry.json', survey)
         _write_json_new(output / 'context.json', {'signed_hill_crest': survey})
+        _write_json_new(output / 'scenario_geometry.json', {
+            'source': 'Original Native map readback and authored sign geometry',
+            'physical_verification': {'status': 'original_device_designation_pending'},
+            'directed_roadways': [], 'direction_sign_objects': [],
+        })
         engineering = parameters(case_suffix, candidate_id)
         blueprint = world.get_blueprint_library().find('vehicle.bh.crossbike')
         blueprint.set_attribute('role_name', 'c104538_lvmc_bicycle')
@@ -272,7 +277,8 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
         with (output / 'native_samples.jsonl').open('x') as native_file, \
              (output / 'video_frames.jsonl').open('x') as frame_file, \
              (output / 'body_history.jsonl').open('x') as body_file, \
-             (output / 'rider_native_samples.jsonl').open('x') as rider_file:
+             (output / 'rider_native_samples.jsonl').open('x') as rider_file, \
+             (output / 'scenario_rule_evidence.jsonl').open('x') as rule_file:
             for index in range(expected_frames):
                 before = ego.get_transform()
                 speed = observed_speed_mps(ego)
@@ -308,6 +314,11 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     'speed_mps': observed_speed, 'controller_request': command}
                 capture.capture(frame, time_s, extra={'c104538_native': sample})
                 native_file.write(json.dumps(sample, allow_nan=False) + '\n')
+                rule_file.write(json.dumps({
+                    'frame': frame, 'time_s': time_s,
+                    'value': {'devices': []},
+                    'review_status': 'original_device_designation_pending',
+                }, allow_nan=False) + '\n')
                 rider_file.write(json.dumps(rider_observation_row(index, sample, sign, ego.id),
                                             allow_nan=False) + '\n')
                 body_file.write(json.dumps({'frame': frame, 'time_s': time_s,

@@ -43,9 +43,9 @@ def evaluate(root, case_id):
             if front >= STATION:
                 crossing += 1
         measured = {'stopped_before_frames': stopped, 'body_at_station_frames': crossing}
-        if case_id.endswith('__probe_1'):
+        if case_id.endswith('__probe_1') or case_id.endswith('_stop') or '__placement_record_' in case_id:
             status = 'met' if stopped >= 20 else 'not_met'
-        elif case_id.endswith('__probe_2'):
+        elif case_id.endswith('__probe_2') or case_id.endswith('_proceed'):
             status = 'met' if crossing > 0 and stopped == 0 else 'not_met'
         else:
             raise ValueError('Unknown device-response case')

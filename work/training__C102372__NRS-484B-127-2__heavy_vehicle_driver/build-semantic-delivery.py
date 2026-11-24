@@ -100,7 +100,8 @@ cases.append({
     'target_type': 'baseline', 'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR,
     'rationale': 'Common hill-crest context; not a selected physical delivery case.',
     'variable_assignments': {'selected_branch_request': {'kind': 'controller', 'value': None}},
-    'recording_description': baseline_description})
+    'recording_description': baseline_description,
+    'unresolved_judgment_calls': [PHRASE]})
 for entry in MANIFEST['cases']:
     suffix = entry['case_id'].rsplit('__', 1)[1]
     description = json.loads((HERE / entry['construction']).read_text())['recording_description']

@@ -71,6 +71,10 @@ def build(suffix,candidate):
     sources.append({'path':'road.xodr','source':(bundle/'alley-stop.xodr').relative_to(ROOT).as_posix(),
                     'sha256':sha(bundle/'alley-stop.xodr')})
     placement=suffix.startswith('placement_')
+    if placement:
+        sources.append({'path':'placement-source-context.json',
+                        'source':(bundle/'placement-record.json').relative_to(ROOT).as_posix(),
+                        'sha256':sha(bundle/'placement-record.json')})
     write(bundle/'recipe.json',{'format':'worker-fixture-recipe','sources':sources,
           'generator':{'source':(bundle/'generator.json').relative_to(ROOT).as_posix(),
                        'sha256':sha(bundle/'generator.json')}})
@@ -81,9 +85,9 @@ def build(suffix,candidate):
               'output_key':'placement_provenance' if placement else 'branch_response',
               'method':'source_hash_and_status_readback' if placement else 'measure_branch_response',
               'value_type':'object','kind':'measured',
-              'inputs':['placement-record.json'] if placement else ['native-raw-actors.jsonl','native-map-readback.json']}],
-          'negative':{'remove':['placement-record.json'] if placement else ['native-raw-actors.jsonl'],
-              'error_contains':'Missing required source: '+('placement-record.json' if placement else 'native-raw-actors.jsonl')},
+              'inputs':['placement-source-context.json'] if placement else ['native-raw-actors.jsonl','native-map-readback.json']}],
+          'negative':{'remove':['placement-source-context.json'] if placement else ['native-raw-actors.jsonl'],
+              'error_contains':'Missing required source: '+('placement-source-context.json' if placement else 'native-raw-actors.jsonl')},
           'status':'unselected_diagnostic'})
     write(bundle/'probe-manifest.json',{'format':'worker-unselected-current-v2-probe-manifest',
           'assignment_id':ASSIGNMENT,'runtime_manifest_sha256':sha(ROOT/'runtime/SOURCE-MANIFEST.json'),

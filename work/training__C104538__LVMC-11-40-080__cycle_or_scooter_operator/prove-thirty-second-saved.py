@@ -96,6 +96,15 @@ def build(destination, kind='mounted_turn', candidate='primary', manifest=None):
                          ('trace.jsonl', trace), ('capture/evidence.jsonl', evidence),
                          ('body_history.jsonl', history)):
         write_rows(destination/name, values)
+    (destination/'scenario_geometry.json').write_text(json.dumps({
+        'source': 'Synthetic rider diagnostic geometry; original Native designation unverified',
+        'physical_verification': {'status': 'synthetic_diagnostic_only'},
+        'directed_roadways': [], 'direction_sign_objects': [],
+    }, allow_nan=False)+'\n')
+    write_rows(destination/'scenario_rule_evidence.jsonl', ({
+        'frame': n['native_frame'], 'time_s': n['time_s'],
+        'value': {'devices': []}, 'provenance_kind': 'synthetic_fixture',
+    } for n in native))
     shutil.copyfile(HERE/'draft-native-sources/authored-sign.json', destination/'authored-sign.json')
     (destination/'road.xodr').write_text(open_drive())
     capture = json.loads((destination/'capture/manifest.json').read_text())

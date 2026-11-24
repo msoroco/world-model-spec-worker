@@ -9,7 +9,8 @@ import subprocess
 import sys
 import tempfile
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'runtime/pipeline/scenario_pipeline'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'runtime/scenario_pipeline'))
+sys.path.insert(1,str(Path(__file__).resolve().parents[2]/'runtime/python'))
 from worker_exchange.measurement_contract import verify_report
 from batch_pipeline.carla import validate_attempt
 
@@ -110,8 +111,8 @@ def make_base(destination,suffix,lateral,frame_count=4,full_resolution=False):
 
 def run(frame_count=4):
     env=dict(os.environ)
-    env['PYTHONPATH']=os.pathsep.join((str(ROOT/'runtime/pipeline/scenario_pipeline'),
-      str(ROOT/'runtime/pipeline/python'),str(ROOT/'runtime/pipeline'),env.get('PYTHONPATH','')))
+    env['PYTHONPATH']=os.pathsep.join((str(ROOT/'runtime/scenario_pipeline'),
+      str(ROOT/'runtime/python'),env.get('PYTHONPATH','')))
     records=[]
     with tempfile.TemporaryDirectory(dir=ROOT/'.runtime-work',prefix='c329610-saved-') as temp:
         scratch=Path(temp)

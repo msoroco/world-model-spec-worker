@@ -1,0 +1,172 @@
+{
+  "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+  "selected_case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+  "supported_case_ids": [
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_2",
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__two_lane_exception",
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_hold",
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__passing_overtake",
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_steady",
+    "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__conditions_lead_brake"
+  ],
+  "case_suffix": "probe_1",
+  "candidate_id": "primary",
+  "law_id": "NRS-484B-127-2",
+  "cell_id": "C102372",
+  "actor": "heavy_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "case": {
+    "case_id": "training__C102372__NRS-484B-127-2__heavy_vehicle_driver__probe_1",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body_pose",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native 80-inch truck body/pose/lane/velocity",
+          "time_window": "full original 30 s / 600-frame attempt",
+          "reference_frame": "Native hill-crest road, actor body and original frame",
+          "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+        },
+        {
+          "name": "lead_body_pose",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Separate original Native lead truck body/pose/lane/velocity",
+          "time_window": "full original 30 s / 600-frame attempt",
+          "reference_frame": "Native hill-crest road, actor body and original frame",
+          "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+        },
+        {
+          "name": "surface_gap_m",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "Original full-body bumper gap sampled before speed request",
+          "time_window": "full original 30 s / 600-frame attempt",
+          "reference_frame": "Native hill-crest road, actor body and original frame",
+          "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+        },
+        {
+          "name": "camera_frame_join",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original four-view video to Native frame join",
+          "time_window": "full original 30 s / 600-frame attempt",
+          "reference_frame": "Native hill-crest road, actor body and original frame",
+          "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "conditions_permit",
+          "unit": "structured",
+          "method": "original conditions review required; synthetic assertion is diagnostic"
+        }
+      ],
+      "limitations": [
+        "Road-arc gap is a measurement, not a legal verdict",
+        "Original truck classification, conditions and camera pixels need physical review"
+      ]
+    }
+  },
+  "knobs": {
+    "ego_target_speed_mps": 8.0,
+    "lead_target_speed_mps": 8.0,
+    "gap_controller_gain_per_s": 0.35,
+    "overview_fov_deg": 90.0,
+    "overview_height_m": 7.0,
+    "rate_hz": 20,
+    "duration_s": 30
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90.0,
+      "pose_strategy": "ego-mounted original camera readback"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85.0,
+      "pose_strategy": "ego-mounted original camera readback"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75.0,
+      "pose_strategy": "ego-mounted original camera readback"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 100.0,
+      "pose_strategy": "ego-mounted original camera readback"
+    }
+  ],
+  "required_atoms": [
+    "ru.truck",
+    "st.lane",
+    "rel.surface_gap",
+    "rel.ahead_behind_in_lane"
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_body_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native 80-inch truck body/pose/lane/velocity",
+        "time_window": "full original 30 s / 600-frame attempt",
+        "reference_frame": "Native hill-crest road, actor body and original frame",
+        "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+      },
+      {
+        "name": "lead_body_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Separate original Native lead truck body/pose/lane/velocity",
+        "time_window": "full original 30 s / 600-frame attempt",
+        "reference_frame": "Native hill-crest road, actor body and original frame",
+        "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+      },
+      {
+        "name": "surface_gap_m",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Original full-body bumper gap sampled before speed request",
+        "time_window": "full original 30 s / 600-frame attempt",
+        "reference_frame": "Native hill-crest road, actor body and original frame",
+        "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original four-view video to Native frame join",
+        "time_window": "full original 30 s / 600-frame attempt",
+        "reference_frame": "Native hill-crest road, actor body and original frame",
+        "uncertainty": "50 ms sampling; physical conditions and pixels require later review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "conditions_permit",
+        "unit": "structured",
+        "method": "original conditions review required; synthetic assertion is diagnostic"
+      }
+    ],
+    "limitations": [
+      "Road-arc gap is a measurement, not a legal verdict",
+      "Original truck classification, conditions and camera pixels need physical review"
+    ]
+  },
+  "source_packets": [],
+  "status": "selected_delivery_root"
+}

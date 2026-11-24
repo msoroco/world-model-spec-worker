@@ -25,7 +25,8 @@ def main():
             config = json.loads(part['content'])
             config['case_id'] = case_id
             config['selected_case_id'] = case_id
-            config['supported_case_ids'] = [case_id]
+            config['supported_case_ids'] = [HERE.name + '__controlled_' + str(i)
+                                            for i in (1, 2, 3)]
             config['case'] = {'case_id': case_id}
             config['case_suffix'] = 'mounted_obey'
             part['content'] = json.dumps(config, indent=2) + '\n'

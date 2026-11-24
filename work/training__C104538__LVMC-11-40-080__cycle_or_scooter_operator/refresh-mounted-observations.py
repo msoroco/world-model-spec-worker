@@ -36,6 +36,9 @@ def main():
         if part['path'] == 'config.json':
             config = json.loads(part['content'])
             config['recording_description'] = description
+            config['source_packets'] = ['scenario_geometry', 'scenario_rule_evidence']
+            config['required_atoms'] = [atom for atom in config['required_atoms']
+                                        if atom not in ('ru.rider_posture', 'drv.u_turn', 'drv.turning')]
             part['content'] = json.dumps(config, indent=2) + '\n'
     path.write_text(json.dumps(construction, indent=2, sort_keys=True) + '\n')
     print(path)
