@@ -9,9 +9,12 @@ unknown until a qualified normal-condition acoustic test is supplied.
 from __future__ import annotations
 
 import hashlib
+import base64
 import json
 import math
 import wave
+import zlib
+from array import array
 from pathlib import Path
 
 FRAMES = 600
@@ -33,33 +36,67 @@ def read_rows(path):
     return rows
 
 
+def validate_pcm_source(source_path):
+    """Validate retained 30 s PCM, either a WAV or lossless textual PCM envelope."""
+    source_path = Path(source_path)
+    if not source_path.is_file():
+        raise ValueError("Missing original microphone recording")
+    if source_path.suffix == ".wav":
+        with wave.open(str(source_path), "rb") as stream:
+            channels, width, rate, samples = (stream.getnchannels(),
+                                               stream.getsampwidth(),
+                                               stream.getframerate(),
+                                               stream.getnframes())
+            raw = stream.readframes(samples)
+        if (channels, width, rate, samples) != (1, 2, 48000, 48000 * WINDOW_S):
+            raise ValueError("Microphone WAV must be 30 s mono PCM16 at 48 kHz")
+        return sha(source_path), raw
+    source = json.loads(source_path.read_text())
+    if (source.get("format") != "c109028-pcm16-zlib-base64-v1" or
+            source.get("rate_hz") != 48000 or source.get("channels") != 1 or
+            source.get("sample_width_bytes") != 2 or
+            source.get("samples") != 48000 * WINDOW_S or
+            source.get("source_kind") != "independent_microphone_pcm"):
+        raise ValueError("Microphone PCM source metadata incomplete")
+    try:
+        compressed = base64.b64decode(source["payload"], validate=True)
+        decoder = zlib.decompressobj()
+        raw = decoder.decompress(compressed, int(48000 * WINDOW_S * 2 + 1))
+    except (KeyError, ValueError, zlib.error) as exc:
+        raise ValueError("Microphone PCM source payload invalid") from exc
+    if (len(raw) != 48000 * WINDOW_S * 2 or not decoder.eof or
+            decoder.unused_data or decoder.unconsumed_tail or
+            hashlib.sha256(raw).hexdigest() != source.get("pcm_sha256")):
+        raise ValueError("Microphone PCM source length/hash differs")
+    return sha(source_path), raw
+
+
 def validate_audio(wav_path, observations_path, frame_map_path):
     """Check original microphone bytes and reviewed observations against Native time."""
     wav_path, observations_path = Path(wav_path), Path(observations_path)
-    if not wav_path.is_file():
-        raise ValueError("Missing original microphone recording")
-    with wave.open(str(wav_path), "rb") as stream:
-        channels, width, rate, samples = (stream.getnchannels(),
-                                           stream.getsampwidth(),
-                                           stream.getframerate(),
-                                           stream.getnframes())
-    if channels != 1 or width != 2 or rate != 48000 or samples != 48000 * WINDOW_S:
-        raise ValueError("Microphone WAV must be 30 s mono PCM16 at 48 kHz")
-    audio_hash = sha(wav_path)
+    audio_hash, pcm = validate_pcm_source(wav_path)
+    samples = array("h")
+    samples.frombytes(pcm)
+    if len(samples) != FRAMES * 2400:
+        raise ValueError("Microphone frame/sample count differs")
     rows, mapping = read_rows(observations_path), read_rows(frame_map_path)
     observed = []
     for index, (row, frame) in enumerate(zip(rows, mapping)):
-        t = (index + 1) / RATE_HZ
+        t = frame.get("time_s")
         if (row.get("source_kind") != "independent_microphone_review" or
                 row.get("audio_sha256") != audio_hash or
                 row.get("native_frame") != frame.get("native_frame") or
                 frame.get("video_frame") != index or
                 type(row.get("siren_audible")) is not bool or
                 not isinstance(row.get("reviewer"), str) or not row["reviewer"].strip() or
-                any(type(value) not in (int, float) or not math.isfinite(value) or
-                    abs(value - t) > 1e-4 for value in
-                    (row.get("time_s"), frame.get("time_s")))):
+                type(t) not in (int, float) or not math.isfinite(t) or
+                type(row.get("time_s")) not in (int, float) or
+                not math.isfinite(row["time_s"]) or
+                abs(row["time_s"] - t) > .003):
             raise ValueError("Independent audio observation/frame join differs")
+        if row["siren_audible"] and max(abs(v) for v in samples[
+                index * 2400:(index + 1) * 2400]) < 100:
+            raise ValueError("Reviewed audible siren lacks microphone signal energy")
         observed.append(row["siren_audible"])
     return {"source_kind": "independent_microphone_review",
             "audio_sha256": audio_hash, "observations_sha256": sha(observations_path),
@@ -78,16 +115,17 @@ def validate_dispatch(record_path, frame_map_path, document_path):
     document_hash = sha(document_path)
     rows, mapping = read_rows(record_path), read_rows(frame_map_path)
     for index, (row, frame) in enumerate(zip(rows, mapping)):
-        t = (index + 1) / RATE_HZ
+        t = frame.get("time_s")
         if (row.get("source_kind") != "original_dispatch_record" or
                 row.get("document_sha256") != document_hash or
                 row.get("native_frame") != frame.get("native_frame") or
                 frame.get("video_frame") != index or
                 type(row.get("emergency_call_documented")) is not bool or
                 type(row.get("immediate_pursuit_documented")) is not bool or
-                any(type(value) not in (int, float) or not math.isfinite(value) or
-                    abs(value - t) > 1e-4 for value in
-                    (row.get("time_s"), frame.get("time_s")))):
+                type(t) not in (int, float) or not math.isfinite(t) or
+                type(row.get("time_s")) not in (int, float) or
+                not math.isfinite(row["time_s"]) or
+                abs(row["time_s"] - t) > .003):
             raise ValueError("Original dispatch record/frame join differs")
     return {"source_kind": "original_dispatch_record",
             "document_sha256": document_hash, "records_sha256": sha(record_path),

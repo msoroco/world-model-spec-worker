@@ -82,3 +82,19 @@ Commands (all exit 0, with `TMPDIR`, `PYTHONDONTWRITEBYTECODE=1`, and `SCENARIO_
 SHA-256: proof script `b98a70ab8f1aef75eedad1a782ab77c35b2833b33c59cb18dd8d518d9d430a14`; eight-construction proof `6950d09d1b29fd71d5c5b913d9e3c5598f026d5c1facfcd70396323f7c4ef9a9`; preflight log `38d35a6e27163fae54b45c3a71666025271deb855ba948259439901135f9d255`; scoped checkpoint log `11b5608fbc27293a226ea53423cb9c90d21e681c93e0546abe201893db2a7ae3`.
 
 Next CPU work: upgrade exact cases to current JSON graph/capture and adapter contract, run current positive and missing-source negative compatibility plus process-saved for both exit-side cases and justified fallbacks, bind semantic proposals and independent delivery/comparison audits, then run the scoped strict gate. Keep the status partial and selected delivery case count zero until these proofs pass.
+
+## 2026-11-24 selected current-runtime delivery preparation
+
+Two exact witness cases are selected with primary and two distinct fallbacks each. The active-runtime synthetic fixture has 480 synchronized frames and four full-resolution video sources per case. All six selected bundles pass current public compatibility, missing-source negative, offline, and recorded-only saved processing. Measured synthetic body exit is right of the destination centerline for witness_1 and left for witness_2; the independent pair audit holds the pre-divergence approach, frame timing, map, non-target context, and capture policy fixed. Synthetic complete, incomplete, missing-evidence, and saved-lifecycle physical checks pass for both cases. These diagnostics do not claim original Native observations, physical acceptance, or a legal verdict. The exact source clause requires exit to the right of the centerline, with any boundary judgment left for original Native review.
+
+Semantic proposal, execution manifest, delivery handoff and all six package compatibility receipts validate. Root executable unit tests: 18 passed. The exact assignment gate `.venv-cpu/bin/python worker_check.py --assignment training__C329610__NRS-484B-400-2b__motor_vehicle_driver --complete --require-delivery-ready` exited 0 on the selected package. Canonical GPU delivery must still run both cases and apply actual Native source, pixels and physical review before recording acceptance.
+
+Proof hashes (SHA-256):
+- execution manifest: `execution-manifest.json` `befeef06bcee9dfa955d4746fc5cbf9452774bf46194a528942cce3090e415b1`
+- case plan: `case-plan.json` `352ed3b962c849b18d694240634563bc4a73d10cba420f09e3af3a8caf4f301b`
+- compatibility summary: `current-public/candidate-compat-summary.json` `05948281324ac15bbceab7cc03de7d3d3b68c5ac441298c44340d3f5267257ef`
+- saved summary: `current-public/candidate-saved-summary.json` `e0bce53a7c49943333676b9554215fe01df9d17356b0b0b5281732de538ed2fb`
+- pair comparison: `current-public/comparison-audit.json` `823a98399c10b14e581fe2148d679d3723f4251b83fb5a6f26c2b758ba9e8d29`
+- physical index: `physical-proof/index.json` `b1b9f60967722e004fa9af5935d654523995a9d5a2280af102a2715d4dffeaf7`
+- root test log: `current-public/root-tests.log` `dc6edbb3fcc60cfd42df68aec2668db84d3ce4c2f7e939c1066b9388c3ee26f9`
+- strict gate log: `current-public/strict-assignment.log` `11b5608fbc27293a226ea53423cb9c90d21e681c93e0546abe201893db2a7ae3`

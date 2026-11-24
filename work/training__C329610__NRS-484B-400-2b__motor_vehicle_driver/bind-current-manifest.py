@@ -23,12 +23,13 @@ def main():
         case['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',
                                   'host_env_var': 'CARLA_HOST', 'port_env_var': 'CARLA_PORT'}
         case['acquisition'] = {
-            name: {'entrypoint': 'runner.py/finalize.py',
+            name: {'entrypoint': 'runner.py',
                    'evidence': 'native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl',
                    'method': 'original 20 Hz Native map/body/frame joins; diagnostic source is synthetic'}
-            for name in ('drv.turning', 'st.intersection', 'st.lane_enters',
+            for name in ('drv.turning', 'drv.in_intersection', 'st.intersection', 'st.lane_enters',
                          'st.centre_line', 'rel.occupies', 'kin.position',
-                         'st.one_way_roadway', 'st.lane_direction')}
+                         'st.one_way_roadway', 'st.lane_direction',
+                         'native_body_pose_control', 'camera_frame_join')}
         for item in [case] + case['candidates']:
             candidate = item['id']
             cproof = compat_by[(suffix, candidate)]

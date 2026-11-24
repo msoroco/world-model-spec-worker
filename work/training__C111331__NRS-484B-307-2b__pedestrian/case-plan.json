@@ -71,7 +71,7 @@
     {
       "case_id": "training__C111331__NRS-484B-307-2b__pedestrian__witness_1",
       "target_law_id": "NRS-484B-307-2b",
-      "kind": "planned_only",
+      "kind": "selected_delivery_preparation",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian enters marked crosswalk on circular green with no contrary pedestrian device",
       "comparison_variable": "contrary_pedestrian_signal",
@@ -104,12 +104,29 @@
       ],
       "gap_ids": [
         "entry-crosswalk-signal"
-      ]
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_entry_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian pose, signal actor readback and camera-frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE head IDs and original frame map",
+            "uncertainty": "Pixel indication and governing direction require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU diagnostic has no original pixels or legal verdict"
+        ]
+      }
     },
     {
       "case_id": "training__C111331__NRS-484B-307-2b__pedestrian__witness_2",
       "target_law_id": "NRS-484B-307-2b",
-      "kind": "planned_only",
+      "kind": "selected_delivery_preparation",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian enters on circular green while governing pedestrian signal directs otherwise",
       "comparison_variable": "contrary_pedestrian_signal",
@@ -142,12 +159,29 @@
       ],
       "gap_ids": [
         "entry-crosswalk-signal"
-      ]
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_entry_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian pose, signal actor readback and camera-frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE head IDs and original frame map",
+            "uncertainty": "Pixel indication and governing direction require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU diagnostic has no original pixels or legal verdict"
+        ]
+      }
     },
     {
       "case_id": "training__C111331__NRS-484B-307-2b__pedestrian__exception_1_1",
       "target_law_id": "NRS-484B-307-2b",
-      "kind": "planned_only",
+      "kind": "selected_delivery_preparation",
       "target_type": "controlled_attempt",
       "physical_target": "hold selected activation with where a pedestrian signal directs otherwise, the pedestrian-signal rules govern absent",
       "comparison_variable": "exception_1_applicability",
@@ -180,12 +214,29 @@
       ],
       "gap_ids": [
         "entry-crosswalk-signal"
-      ]
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_entry_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian pose, signal actor readback and camera-frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE head IDs and original frame map",
+            "uncertainty": "Pixel indication and governing direction require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU diagnostic has no original pixels or legal verdict"
+        ]
+      }
     },
     {
       "case_id": "training__C111331__NRS-484B-307-2b__pedestrian__exception_1_2",
       "target_law_id": "NRS-484B-307-2b",
-      "kind": "planned_only",
+      "kind": "selected_delivery_preparation",
       "target_type": "controlled_attempt",
       "physical_target": "hold selected activation with where a pedestrian signal directs otherwise, the pedestrian-signal rules govern present",
       "comparison_variable": "exception_1_applicability",
@@ -218,7 +269,24 @@
       ],
       "gap_ids": [
         "entry-crosswalk-signal"
-      ]
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_entry_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native pedestrian pose, signal actor readback and camera-frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE head IDs and original frame map",
+            "uncertainty": "Pixel indication and governing direction require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "CPU diagnostic has no original pixels or legal verdict"
+        ]
+      }
     }
   ],
   "comparisons": [
@@ -287,34 +355,9 @@
   ],
   "observations": [
     {
-      "name": "dev.traffic_signal",
+      "name": "pedestrian_entry_signal",
       "mandatory": true,
-      "reason": "state circular_green alone"
-    },
-    {
-      "name": "dev.governs",
-      "mandatory": true,
-      "reason": "the head faces the pedestrian's direction"
-    },
-    {
-      "name": "ru.subject",
-      "mandatory": true,
-      "reason": "the pedestrian judged"
-    },
-    {
-      "name": "st.crosswalk",
-      "mandatory": true,
-      "reason": "any marked or unmarked crosswalk"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the pedestrian in the crossing"
-    },
-    {
-      "name": "dev.pedestrian_signal",
-      "mandatory": true,
-      "reason": "another device that directs otherwise"
+      "source": "joined Native pose, signal actor readback and camera frame map"
     }
   ],
   "candidate_plans": [
@@ -377,7 +420,7 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "Four exact Native crossing drafts and pinned offline checks pass, but their physical signal display and governance are unverified. Saved actual-pixel decoding, process-saved conversion, exact positive/negative compatibility, selected measurement and semantic/audit proposals remain unfinished."
+    "Original Native source pixel and governance review remain for local delivery; CPU semantic and package proofs are recorded separately."
   ],
   "runtime_uncertainties": [
     "Four exact Native crossing drafts and pinned offline checks pass, but their physical signal display and governance are unverified. Saved actual-pixel decoding, process-saved conversion, exact positive/negative compatibility, selected measurement and semantic/audit proposals remain unfinished.",
@@ -389,71 +432,73 @@
       "measurement": "traffic_signal.state at observed entry frame",
       "evidence": "raw per-frame signal packet",
       "channels": [
-        "traffic_signal"
+        "pedestrian_entry_signal"
       ],
       "source_refs": [
-        "saved_entry_measurement.py"
+        "saved_entry_measurement.py",
+        "physical_audit.py"
       ],
-      "status": "cpu_diagnostic_only"
+      "status": "CPU acquisition only; original pixel and governance review pending"
     },
     "dev.governs": {
       "measurement": "traffic head ID matches declared governing traffic head",
       "evidence": "raw packet ID and governing device identity",
       "channels": [
-        "traffic_signal",
-        "governing_devices"
+        "pedestrian_entry_signal"
       ],
       "source_refs": [
-        "saved_entry_measurement.py"
+        "saved_entry_measurement.py",
+        "physical_audit.py"
       ],
-      "status": "cpu_diagnostic_only"
+      "status": "CPU acquisition only; original pixel and governance review pending"
     },
     "ru.subject": {
       "measurement": "pedestrian ID stable over all frames",
       "evidence": "raw per-frame pedestrian ID",
       "channels": [
-        "pedestrian_id"
+        "pedestrian_entry_signal"
       ],
       "source_refs": [
-        "saved_entry_measurement.py"
+        "saved_entry_measurement.py",
+        "physical_audit.py"
       ],
-      "status": "cpu_diagnostic_only"
+      "status": "CPU acquisition only; original pixel and governance review pending"
     },
     "st.crosswalk": {
       "measurement": "pedestrian pose enters declared crosswalk bounds",
       "evidence": "raw per-frame pose and crosswalk geometry",
       "channels": [
-        "pedestrian_xy",
-        "crosswalk"
+        "pedestrian_entry_signal"
       ],
       "source_refs": [
-        "saved_entry_measurement.py"
+        "saved_entry_measurement.py",
+        "physical_audit.py"
       ],
-      "status": "cpu_diagnostic_only"
+      "status": "CPU acquisition only; original pixel and governance review pending"
     },
     "rel.occupies": {
       "measurement": "entry/exit interval from raw pedestrian pose",
       "evidence": "raw per-frame pose and crosswalk geometry",
       "channels": [
-        "pedestrian_xy",
-        "crosswalk"
+        "pedestrian_entry_signal"
       ],
       "source_refs": [
-        "saved_entry_measurement.py"
+        "saved_entry_measurement.py",
+        "physical_audit.py"
       ],
-      "status": "cpu_diagnostic_only"
+      "status": "CPU acquisition only; original pixel and governance review pending"
     },
     "dev.pedestrian_signal": {
       "measurement": "pedestrian device state at entry and governing ID",
       "evidence": "raw per-frame pedestrian signal packet",
       "channels": [
-        "pedestrian_signal",
-        "governing_devices"
+        "pedestrian_entry_signal"
       ],
       "source_refs": [
-        "saved_entry_measurement.py"
+        "saved_entry_measurement.py",
+        "physical_audit.py"
       ],
-      "status": "cpu_diagnostic_only"
+      "status": "CPU acquisition only; original pixel and governance review pending"
     }
   },
   "saved_entry_cpu_diagnostic": {
@@ -484,6 +529,33 @@
         "requirement": "original Native crossing and governing indication at entry",
         "source": "NRS 484B.307(2)(b)",
         "why_existing_insufficient": "No accepted membership or source-bound original recording in frozen evidence."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "whole crossing, both heads and walker",
+        "interval": "entire 30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian entry and circular-green head",
+        "interval": "entry through clearance"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "marked crosswalk and pedestrian signal",
+        "interval": "entire 30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "facing direction and head governance",
+        "interval": "entry through clearance"
       }
     ]
   }

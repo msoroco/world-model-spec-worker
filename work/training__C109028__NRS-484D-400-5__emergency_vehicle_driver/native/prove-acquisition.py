@@ -1,8 +1,10 @@
 """CPU fixture for original-source joins; no physical recording is represented."""
 import copy
 import json
+import math
 import tempfile
 import wave
+from array import array
 from pathlib import Path
 
 from source_acquisition import (sha, validate_acoustic_capability,
@@ -35,7 +37,10 @@ def run():
             stream.setnchannels(1)
             stream.setsampwidth(2)
             stream.setframerate(48000)
-            stream.writeframes(b"\0\0" * 48000 * 30)
+            samples = array("h", [0]) * (48000 * 30)
+            for sample in range(100 * 2400, 300 * 2400):
+                samples[sample] = round(5000 * math.sin(2 * math.pi * 800 * sample / 48000))
+            stream.writeframes(samples.tobytes())
         document = root / "dispatch-source.json"
         document.write_text(json.dumps({"fixture_only": True,
                                         "source": "synthetic CPU contract test"}) + "\n")

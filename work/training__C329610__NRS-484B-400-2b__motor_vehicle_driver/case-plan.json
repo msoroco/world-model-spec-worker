@@ -17,7 +17,7 @@
     "text": "If the driver of a vehicle intends to turn at an intersection and: Both intersecting highways are two-directional: After entering the intersection, the left turn must be made so as to leave the intersection to the right of the centerline of the highway being entered.",
     "sha256": "0d6b3eebdaf3d75a2d77d41c134728e9cad2c08b99ee3172a733172444b4e037"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "source_reviewed_delivery_prepared",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
     "Left-turn exit onto a two-directional destination highway."
@@ -33,7 +33,7 @@
         "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_1",
         "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "Eight unselected source-exact Native construction bundles pass pinned offline. Eight synthetic v1 package positives, missing-source negatives, saved 480-frame processing and independent audits pass. Strict v2 recipe, measured physical triggers, Native behavior/pixels, statutory branch closure and acceptance remain unfinished."
+      "evidence_or_gap": "Exact NRS 484B.400(2)(b) source reviewed. Two selected 480-frame synthetic cases and six selected current-runtime candidate bundles pass positive, missing-source negative and recorded-only saved CPU proofs. Original Native exit placement, pixels and legal judgment remain for delivery."
     }
   ],
   "activation_conditions": [
@@ -47,10 +47,12 @@
     },
     {
       "kind": "ordering",
-      "requirement": "entry, then the turn, then the exit — the exit position is the test"
+      "requirement": "entry, then the turn, then the exit \u2014 the exit position is the test"
     }
   ],
-  "unresolved_judgment_calls": [],
+  "unresolved_judgment_calls": [
+    "The statute requires leaving right of the destination centerline; body footprint, center reference and boundary cases require original Native review. No numeric legal cutoff is inferred."
+  ],
   "neutral_baseline": {
     "kind": "unselected_baseline",
     "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
@@ -59,7 +61,7 @@
     {
       "case_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-400-2b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "driver exits intersection right of destination centerline",
       "comparison_variable": "left_turn_exit_centerline_side",
@@ -88,12 +90,16 @@
         "status": "unobserved"
       },
       "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": []
+      "unresolved_judgment_calls": [
+        "The statute requires leaving right of the destination centerline; body footprint, center reference and boundary cases require original Native review. No numeric legal cutoff is inferred."
+      ],
+      "cpu_selected_draft": "current-execution-manifest.json",
+      "cpu_selected_candidate_count": 3
     },
     {
       "case_id": "training__C329610__NRS-484B-400-2b__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-400-2b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "driver exits intersection left of destination centerline",
       "comparison_variable": "left_turn_exit_centerline_side",
@@ -122,7 +128,11 @@
         "status": "unobserved"
       },
       "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": []
+      "unresolved_judgment_calls": [
+        "The statute requires leaving right of the destination centerline; body footprint, center reference and boundary cases require original Native review. No numeric legal cutoff is inferred."
+      ],
+      "cpu_selected_draft": "current-execution-manifest.json",
+      "cpu_selected_candidate_count": 3
     }
   ],
   "comparisons": [
@@ -292,12 +302,11 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "Strict v2 recipe-backed compatibility, original physical trigger and route/camera measurements, statutory branch closure, independent delivery acceptance and ordered GPU eligibility remain unfinished."
+    "Original Native physical and pixel acceptance require GPU capture; delivery has explicit review gates."
   ],
   "runtime_uncertainties": [
-    "Actual Native route tracking, wrong-side lane traversal and camera pixels remain unverified.",
-    "Strict v2 portable recipe compatibility and original physical fallback triggers remain unfinished.",
-    "Statutory branch applicability and independent delivery acceptance remain unfinished."
+    "Original Native route, full-body exit and actual pixels remain to be reviewed after GPU capture.",
+    "CPU compatibility and recorded-only processing use synthetic source; no legal verdict or physical acceptance is claimed."
   ],
   "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
   "statutory_review": {
@@ -418,5 +427,117 @@
     "offline_audit_sha256": "a60d5c0e189c8670ae90a86a6b98cb2c5124ab43c519210f9da484f797cb4889",
     "selected_delivery_cases": 0,
     "native_executed": false
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    },
+    "drv.in_intersection": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "drv.in_intersection"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "st.centre_line"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "st.lane_direction"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "original 20 Hz Native map/body/frame joins; current CPU fixture is synthetic diagnostic",
+      "channels": [
+        "st.lane_enters"
+      ],
+      "source_refs": [
+        "current-fixture/witness_1/native_samples.jsonl",
+        "current-fixture/witness_1/road_geometry.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "intersection entry, subject body, destination centerline and full-body exit",
+        "interval": "0-24 s"
+      },
+      {
+        "view": "approach",
+        "subject": "intersection entry, subject body, destination centerline and full-body exit",
+        "interval": "0-24 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "intersection entry, subject body, destination centerline and full-body exit",
+        "interval": "0-24 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "intersection entry, subject body, destination centerline and full-body exit",
+        "interval": "0-24 s"
+      }
+    ]
+  },
+  "current_delivery_preparation": {
+    "manifest": "execution-manifest.json",
+    "manifest_sha256": "befeef06bcee9dfa955d4746fc5cbf9452774bf46194a528942cce3090e415b1",
+    "compatibility_summary": "current-public/candidate-compat-summary.json",
+    "compatibility_summary_sha256": "05948281324ac15bbceab7cc03de7d3d3b68c5ac441298c44340d3f5267257ef",
+    "saved_summary": "current-public/candidate-saved-summary.json",
+    "saved_summary_sha256": "e0bce53a7c49943333676b9554215fe01df9d17356b0b0b5281732de538ed2fb",
+    "comparison_audit": "current-public/comparison-audit.json",
+    "comparison_audit_sha256": "823a98399c10b14e581fe2148d679d3723f4251b83fb5a6f26c2b758ba9e8d29",
+    "physical_index": "physical-proof/index.json",
+    "physical_index_sha256": "b1b9f60967722e004fa9af5935d654523995a9d5a2280af102a2715d4dffeaf7",
+    "scope": "six selected candidates; 480-frame synthetic diagnostics only; original Native and legal verdict deferred to delivery"
   }
 }

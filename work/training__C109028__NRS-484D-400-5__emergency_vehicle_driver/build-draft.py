@@ -19,6 +19,7 @@ from source_acquisition import validate_audio, validate_dispatch
 from audit_original import PAIRS
 from geometry import check as check_geometry
 from motion import check as check_motion
+from finalize import siren_source_measurement
 
 class SourceContract(unittest.TestCase):
     def test_exact_plan(self):
@@ -65,6 +66,13 @@ class SourceContract(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Missing original dispatch"):
                 validate_dispatch(files[3], files[2], base / "missing-dispatch.json")
 
+    def test_saved_source_requires_original_capture(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            make_source(base, "probe_a")
+            with self.assertRaisesRegex(ValueError, "Missing required source: capture/manifest.json"):
+                siren_source_measurement(base)
+
     def test_exact_source_comparison_inventory(self):
         self.assertEqual(set(PAIRS), {
             "call_vs_ordinary_siren", "call_vs_pursuit_siren",
@@ -97,6 +105,10 @@ def build():
     for probe, (call, pursuit, siren) in policies.items():
         case_id = HERE.name + "__" + probe
         config = dict(root_config, case_id=case_id,
+                      selected_case_id=case_id,
+                      supported_case_ids=[case_id],
+                      case={"case_id": case_id,
+                            "recording_description": root_config["recording_description"]},
                       emergency_call_requested=call,
                       immediate_pursuit_requested=pursuit,
                       siren_requested=siren)
@@ -104,13 +116,14 @@ def build():
         files.extend({"path": name, "content": (NATIVE / name).read_text()}
                      for name in ("runner.py", "measure.py", "prove.py", "audit.py",
                                   "source_acquisition.py", "audit_original.py",
-                                  "geometry.py", "motion.py"))
+                                  "geometry.py", "motion.py", "capture_native.py",
+                                  "finalize.py"))
         files.append({"path": "tests/test_source.py", "content": TEST})
         construction = {
             "case_id": case_id, "cell_id": "C109028", "law_id": "NRS-484D-400-5",
             "actor": "emergency_vehicle_driver", "entrypoint": "runner.py",
             "status": "unselected_cpu_diagnostic", "files": files,
-            "recording_description": "Thirty-second emergency approach source contract; siren acoustics, authorization and original Native state unverified."}
+            "recording_description": config["recording_description"]}
         path = HERE / "draft-candidates" / probe / "primary" / "construction.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(construction, indent=2) + "\n")
