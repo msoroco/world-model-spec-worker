@@ -60,6 +60,42 @@ def audit_delivery(attempt, case_id):
             'legal_conclusion': 'unresolved'}
 
 
+def audit_native_delivery(attempt, case_id, owner_receipt):
+    """Join a sealed Native acquisition to its saved report without accepting pixels."""
+    attempt = Path(attempt).resolve()
+    source = audit_native_preflight(attempt, case_id, owner_receipt)
+    manifest = json.loads((HERE / 'execution-manifest.json').read_text())
+    entry = next(row for row in manifest['cases'] if row['case_id'] == case_id)
+    contract = json.loads((HERE / entry['measurement_contract']).read_text())
+    report = json.loads((attempt / 'analysis-report.json').read_text())
+    result = json.loads((attempt / 'result.json').read_text())
+    if report.get('case_id') != case_id or result.get('case_id') != case_id:
+        raise ValueError('Native saved report case identity differs')
+    if (result.get('provenance_kind') != 'native' or result.get('diagnostic_fixture') is not False
+            or result.get('physical_acceptance_claimed') is not False):
+        raise ValueError('Native saved report provenance or acceptance claim differs')
+    if report.get('legal_verdict_asserted') is not False or report.get('physical_checks') != result.get('physical_checks'):
+        raise ValueError('Native saved report outcome or legal scope differs')
+    measured = verify_report(contract, report, attempt)
+    original = measure_reverse(attempt)
+    if report.get('source_hashes') != original['sources'] or result.get('source_evidence_hashes') != original['sources']:
+        raise ValueError('Native saved report original reverse sources differ')
+    expected_overlap = case_id.endswith('__reverse_over_crosswalk')
+    if (not original['backward_motion_observed']
+            or original['reverse_body_on_or_over_crosswalk'] is not expected_overlap):
+        raise ValueError('Native saved report reverse outcome differs')
+    checks = result.get('physical_checks', {})
+    if any(checks.get(key, {}).get('status') != 'met'
+           for key in ('setup', 'target', 'maneuver', 'attempt')):
+        raise ValueError('Native saved report completion is incomplete')
+    return {'format': 'worker-c215286-native-delivery-audit', 'case_id': case_id,
+            'native_preflight': source, 'analysis_sha256': sha(attempt / 'analysis-report.json'),
+            'result_sha256': sha(attempt / 'result.json'), 'measurement_keys': sorted(measured),
+            'original_reverse_sources': original['sources'], 'source_audit_passed': True,
+            'actual_pixels_reviewed': False, 'physical_acceptance_claimed': False,
+            'legal_conclusion': 'unresolved'}
+
+
 def audit_native_preflight(attempt, case_id, owner_receipt):
     """Check original Native closure and case sources before operator pixel review."""
     attempt = Path(attempt).resolve()
@@ -143,7 +179,7 @@ def audit_native_preflight(attempt, case_id, owner_receipt):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', required=True)
-    parser.add_argument('--mode', choices=('positive', 'negative', 'native-preflight'), required=True)
+    parser.add_argument('--mode', choices=('positive', 'negative', 'native-preflight', 'native-delivery'), required=True)
     parser.add_argument('--attempt', type=Path)
     parser.add_argument('--owner-receipt', type=Path)
     args = parser.parse_args()
@@ -151,10 +187,11 @@ def main():
     if kind == 'short' and not args.case.endswith('__reverse_stops_before_crosswalk'):
         raise ValueError('Unselected reverse case')
     attempt = REPO / '.runtime-work' / 'c215286-full-stage' / '.runtime-work' / (kind + '-primary')
-    if args.mode == 'native-preflight':
+    if args.mode in ('native-preflight', 'native-delivery'):
         if args.attempt is None or args.owner_receipt is None:
-            raise ValueError('Native preflight requires attempt and owner-release receipt')
-        print(json.dumps(audit_native_preflight(args.attempt, args.case, args.owner_receipt), sort_keys=True))
+            raise ValueError('Native audit requires attempt and owner-release receipt')
+        fn = audit_native_delivery if args.mode == 'native-delivery' else audit_native_preflight
+        print(json.dumps(fn(args.attempt, args.case, args.owner_receipt), sort_keys=True))
     elif args.mode == 'positive':
         print(json.dumps(audit_delivery(attempt, args.case), sort_keys=True))
     else:

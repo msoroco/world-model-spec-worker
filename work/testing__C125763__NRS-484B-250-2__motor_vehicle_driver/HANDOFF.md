@@ -1,3 +1,15 @@
+## 2026-11-23 current exact physical fixture refresh
+
+Reran `physical_fixture_proof.py` against the current execution manifest for all four selected primary cases. Each case produced `complete_motion=met`, `incomplete_motion=not_met`, `missing_evidence=unverified`, and the exact six-event capture lifecycle ending in `saved_processing_started`: 16 of 16 commands exited 0. `case-plan.json.physical_fixture_refresh_20261123` binds the current manifest and script SHA256 values plus every exact command, ignored diagnostic result/log path, hash and observed outcome; case-plan SHA256 is `e415988cfb8dd9b2f9f18aae301b09383bc510fd66348e727f318efd8a7a74f8`. All 40 tests passed (`cpu-tests.log` SHA256 `f11cbd807ee170301f3ca047aead93176f7a03c38d4aa2ecc85a2a66d8faecd0`); pinned preflight and assignment-scoped nonready complete check passed.
+
+Status remains **partial**. The active manifest's four distinct `physical_preparation` receipt paths still have no returned current receipt files. These synthetic classifier/lifecycle diagnostics do not replace those validator-bound receipts or establish Native physical motion. Next worker-owned work is to return current per-case receipt, result and log bindings within the 8,600-file cap, complete canonical saved receipts and qualitative sweep range evidence, then run the scoped strict delivery gate. No physical or legal acceptance is claimed.
+
+## 2026-11-23 current nine-stage semantic index
+
+Restored source-hashed `proposals/template.json` from the byte-exact historical archive and authored `proposals/semantic-index.json` for the current four exact cases. The pinned `worker_exchange.semantic_delivery.validate` passes all nine stages against the frozen assignment and current `execution-manifest.json` (index SHA256 `85aad3ddc6db229bceb7b2079694af44163304293c786fb63654e884eea1f358`). The 40-test package suite includes this full validator and passes. The same-law relevance file serves both relevance stages; no legal outcome or physical acceptance is asserted.
+
+The 8,600-file cap was maintained by nesting three small historical archives in `work/_shared/consolidated-proof-archives-20261123.json` (outer SHA256 `be7a5d19e6b6add635f637fd54c28611f38436dbc694ba444e0d1aad0ead8607`). Original archive bytes and hashes were checked; C125745 case-plan pointers and the C158196 result path were updated. Their scoped nonready complete checks pass. Their full package suites pass (71 and 11 tests). C125763 remains **partial** for current saved/physical receipt bindings, judgment sweep range and final strict proof.
+
 ## 2026-11-23 judgment-observable restoration and stage validation
 
 Restored four C125763 `proposals/judgment-observables-{1,2,3,4}.json` drafts from the current law phrases and retained source channels. They cover measured entry timing without a legal cutoff, yield response, official yield-sign governance and the opposite-direction left-turn exception. Each passes the pinned `batch_pipeline.stages.validate("judgment_observables", ...)` check. This corrects the fresh 39-test suite failure caused by the prior archive removing files still required by `tests/test_semantic_delivery.py`.

@@ -16,6 +16,8 @@ class Tests(unittest.TestCase):
    root=Path(tmp);self.fixture(root)
    with self.assertRaisesRegex(ValueError,'Native non-diagnostic provenance required'):
     delivery.audit_native_preflight(root,case,root/'owner-release.json')
+   with self.assertRaisesRegex(ValueError,'Native non-diagnostic provenance required'):
+    delivery.audit_native_delivery(root,case,root/'owner-release.json')
    (root/'acquisition-provenance.json').write_text(json.dumps({'provenance_kind':'native','diagnostic_fixture':True}))
    with self.assertRaisesRegex(ValueError,'Native non-diagnostic provenance required'):
     delivery.audit_native_preflight(root,case,root/'owner-release.json')

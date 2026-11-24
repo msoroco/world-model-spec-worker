@@ -1,3 +1,7 @@
+## 2026-11-23 historical archive pointer consolidation
+
+The earlier small proof archive is preserved byte-exactly inside `work/_shared/consolidated-proof-archives-20261123.json`, with its original SHA256 recorded there. Current source constructions and receipts are unchanged. The assignment-scoped nonready complete check passes.
+
 ## 2026-11-23 C125745 exact sweep saved-source audit
 
 `audit_delivery.py` now recognizes all ten exact manifest cases and has an explicit short-fixture diagnostic mode. It continues to require the full planned frame count for the ordinary audit. All six sweep primary compatibility attempts passed the 135-frame diagnostic source audit, including original frame joins, source hash checks and six measurement bindings. All six ordinary full-length checks rejected those short attempts at `Incomplete original frame count`. The exact commands, outputs, SHA256 values, compatibility and recorded-only saved receipt hashes are in `case-plan.json.exact_sweep_saved_source_audits`. The compatibility fixture's camera hashes differ from the post-encoded attempt media; the audit records both sets separately and checks the actual attempt bytes against its result. A new test confirms explicit synthetic provenance is required for short diagnostics and that changed camera bytes fail.

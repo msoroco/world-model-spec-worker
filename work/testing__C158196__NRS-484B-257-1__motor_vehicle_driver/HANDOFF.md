@@ -1,3 +1,7 @@
+## 2026-11-23 historical archive pointer consolidation
+
+The earlier small proof archive is preserved byte-exactly inside `work/_shared/consolidated-proof-archives-20261123.json`, with its original SHA256 recorded there. Current source constructions and receipts are unchanged. The assignment-scoped nonready complete check passes.
+
 ## 2026-11-23 historical unbound artifact archival
 
 The unbound historical `officer-draft-archive.json` was retained byte-exactly in `work/_shared/c158196-saved-command-logs-20261123.json` (SHA256 `1c49cff1ce19b5aea3738d5e0dc5cde0482e092503cac019de4f9afcfdd40237`) to free a return-file slot. Its original path, SHA256, and base64 bytes are preserved. The assignment-scoped nonready complete check passed after archival. Status remains partial.

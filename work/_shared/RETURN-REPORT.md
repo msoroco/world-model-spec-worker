@@ -1,3 +1,15 @@
+## 2026-11-23 C125763 current physical fixture refresh
+
+All four exact selected primaries passed their current three-outcome synthetic physical classifier tests and six-event lifecycle checks, 16 commands total. `case-plan.json` now binds every command and ignored diagnostic result/log hash to the current manifest; 40 tests, pinned preflight and the scoped nonready check pass. C125763 remains partial because validator-bound returned physical receipts, canonical saved receipts and qualitative sweep proof remain unfinished. The batch strict gate has not passed; no Native, physical or legal acceptance is claimed.
+
+## 2026-11-23 C215286 Native saved-report audit contract
+
+C215286 now has a `native-delivery` audit mode that checks sealed acquisition and owner release, exact construction, saved measurement source hashes, 900-frame reverse-body outcome and four camera decodes. Both exact synthetic attempts reject at Native provenance. A mocked-preflight CPU contract check passed for the saved-report join and rejected a changed original-source hash; both 900-frame synthetic diagnostic audits, 15 tests, pinned preflight and scoped nonready check pass. C215286 remains partial pending reviewed real site sources, shared GPU queue integration and actual Native evidence. Batch strict delivery remains unpassed; no physical or legal acceptance is claimed.
+
+## 2026-11-23 C125763 current semantic delivery chain
+
+C125763 now has a source-hashed nine-stage semantic index (SHA256 `85aad3ddc6db229bceb7b2079694af44163304293c786fb63654e884eea1f358`) validated against the frozen assignment and four current exact cases. The 40-test suite, pinned CPU preflight and scoped nonready check pass. Three small historical archives were consolidated byte-exactly to preserve the 8,600-file cap; C125745 and C158196 scoped checks also pass. Their full package suites pass (71 and 11 tests). C125763 remains partial while current saved/physical receipts, qualitative judgment sweep and final strict proof are unfinished. No Native or legal acceptance is claimed.
+
 ## 2026-11-23 C125763 semantic repair
 
 C125763: fresh CPU preflight passes. Restored four law-specific judgment-observable drafts and validated each against the pinned canonical stage contract. The 39-test package suite now passes; its earlier missing-proposal error is resolved. Preserved the stale canonical proof index and four receipts byte-exactly in `c125763-stale-canonical-snapshot-20261123.json`; a test verifies archived hashes and stale manifest identity. Current semantic index, saved/physical receipt bindings and qualitative sweep evidence remain unfinished. `result.json` stays partial; no Native or legal acceptance is claimed.

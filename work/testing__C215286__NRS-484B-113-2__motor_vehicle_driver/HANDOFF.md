@@ -1,3 +1,9 @@
+## 2026-11-23 Native saved-report delivery audit contract
+
+`delivery_audit.py --mode native-delivery` now composes the existing sealed Native provenance, owner-release, exact-construction, reverse-body and four-camera preflight with the pinned saved measurement contract. It requires matching exact case IDs, Native result provenance, original-source hashes, the selected over/short reverse outcome, and complete setup/target/maneuver/attempt checks. Its return keeps pixel, physical and legal acceptance unresolved. Both current 900-frame synthetic attempts were rejected at `Native non-diagnostic provenance required`. With preflight explicitly mocked for an isolated saved-report contract check, the over case passed the source/measurement join and a changed `reverse_history.jsonl` report hash was rejected. Both unchanged synthetic diagnostic delivery audits passed at 900 frames. The 15-test suite, pinned CPU preflight and assignment-scoped nonready complete check passed; `cpu-tests.log` SHA256 is `dec2129c68728b6e7440b88391e843708e4e69597aec64e466d443fe314954b2`.
+
+Status remains **partial**. Worker-owned next steps are source-reviewed real residence-district/crosswalk geometry/marking evidence and the shared ordered GPU queue. The Native audit contract still needs a real capture and owner receipt to execute; this checkpoint makes no Native, pixel, physical or legal acceptance claim. Do not mark ready before the scoped strict gate passes.
+
 ## 2026-11-23 historical unbound artifact archival
 
 The two unbound historical over/short-delivery diagnostic JSON files were retained byte-exactly in `work/_shared/c158196-saved-command-logs-20261123.json` (SHA256 `1c49cff1ce19b5aea3738d5e0dc5cde0482e092503cac019de4f9afcfdd40237`) to free return-file slots. Original paths, SHA256 values, and base64 bytes are preserved. The assignment-scoped nonready complete check passed after archival. Status remains partial.
