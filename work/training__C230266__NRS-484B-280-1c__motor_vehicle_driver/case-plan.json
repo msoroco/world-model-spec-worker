@@ -31,7 +31,7 @@
         "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__probe_1",
         "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__probe_2"
       ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+      "evidence_or_gap": "A source-bound 600-frame software meter and exact unselected probe_1 Native bundle pass CPU diagnostics. Actual driver observation, original road/pedestrian survey, selected case compatibility/saved processing and independent audits remain unproven; no legal outcome inferred."
     },
     {
       "requirement": "NRS-484B-280-1c",
@@ -149,7 +149,7 @@
     },
     {
       "term": "rel.centre_distance",
-      "purpose": "'near' — the proximity bound",
+      "purpose": "'near' \u2014 the proximity bound",
       "status": "measurement_mapping_pending"
     },
     {
@@ -177,7 +177,9 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Actual observation by the driver has no original independent source in the current draft; Native line of sight and requested control do not establish it.",
+    "The bus/transit and school/crosswalk alternatives need distinct cases and source surveys.",
+    "Selected exact cases, fallbacks, compatibility, saved processing, independent audits and comparison proofs are unfinished CPU work."
   ],
   "selected_branch": null,
   "observations": [
@@ -224,7 +226,7 @@
     {
       "name": "rel.centre_distance",
       "mandatory": true,
-      "reason": "'near' — the proximity bound"
+      "reason": "'near' \u2014 the proximity bound"
     },
     {
       "name": "kin.speed",
@@ -242,5 +244,156 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "ru.pedestrian",
+      "measurement": "pedestrian actor identity/classification",
+      "evidence": "original Native actor metadata and independent classification",
+      "channels": [
+        "pedestrian_actor_id",
+        "pedestrian_classification_source"
+      ],
+      "source_refs": [
+        "native/measurement-contract.json"
+      ]
+    },
+    {
+      "term": "rel.visible",
+      "measurement": "geometric line-of-sight proxy, distinct from actual observation",
+      "evidence": "original source-camera pixels and occluder survey; unproven in draft",
+      "channels": [
+        "line_of_sight_clear"
+      ],
+      "source_refs": [
+        "native/measurement-contract.json"
+      ]
+    },
+    {
+      "term": "st.highway",
+      "measurement": "pedestrian point within surveyed roadway boundary",
+      "evidence": "original Native road/map boundary source",
+      "channels": [
+        "road_y_bounds_m",
+        "ped_y_m"
+      ],
+      "source_refs": [
+        "native/measurement-contract.json"
+      ]
+    },
+    {
+      "term": "st.transit_stop",
+      "measurement": "transit-stop geometry and authority source",
+      "evidence": "pending alternative",
+      "channels": [
+        "transit_stop_survey"
+      ],
+      "source_refs": [
+        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "ru.bus",
+      "measurement": "bus actor classification and boarding history",
+      "evidence": "pending alternative",
+      "channels": [
+        "bus_actor_id",
+        "boarding_trace"
+      ],
+      "source_refs": [
+        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "dev.zone_sign",
+      "measurement": "original school-zone sign survey",
+      "evidence": "pending alternative",
+      "channels": [
+        "school_zone_sign_source"
+      ],
+      "source_refs": [
+        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "drv.within_signed_zone",
+      "measurement": "ego body position against sourced sign-governed zone",
+      "evidence": "pending alternative",
+      "channels": [
+        "ego_pose",
+        "zone_survey"
+      ],
+      "source_refs": [
+        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "st.crosswalk",
+      "measurement": "marked or unmarked crosswalk map and physical survey",
+      "evidence": "pending alternative",
+      "channels": [
+        "crosswalk_survey"
+      ],
+      "source_refs": [
+        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    {
+      "term": "rel.centre_distance",
+      "measurement": "Euclidean actor centre distance, descriptive only",
+      "evidence": "source-hashed Native poses",
+      "channels": [
+        "ego_x_m",
+        "ego_y_m",
+        "ped_x_m",
+        "ped_y_m"
+      ],
+      "source_refs": [
+        "native/caution_meter.py"
+      ]
+    },
+    {
+      "term": "kin.speed",
+      "measurement": "observed vehicle speed before and after sourced observation",
+      "evidence": "Native velocity trace",
+      "channels": [
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "native/caution_meter.py"
+      ]
+    },
+    {
+      "term": "drv.time_to_conflict",
+      "measurement": "longitudinal closing-time proxy, descriptive only",
+      "evidence": "source-hashed pose and speed trace",
+      "channels": [
+        "ego_x_m",
+        "ped_x_m",
+        "ego_speed_mps"
+      ],
+      "source_refs": [
+        "native/caution_meter.py"
+      ]
+    }
+  ],
+  "diagnostic_proofs": [
+    {
+      "kind": "source_bound_30_second_meter",
+      "path": "native/caution-meter-proof.json",
+      "sha256": "900fd4301787f8b3b99b7d535082c9c57c788216aef4aff8e51d00a55430f433",
+      "positive_cases": 2,
+      "negative_rejections": 6,
+      "source_kind": "synthetic_native_sample"
+    },
+    {
+      "kind": "exact_unselected_native_offline",
+      "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__probe_1",
+      "construction": "native/unselected-road-pedestrian-construction.json",
+      "construction_sha256": "e63abaf07e33e00e0008a7965a9a6710637b2e3a4986fcd3514fd49eddf811a0",
+      "log": "native/draft-primary/offline.log",
+      "log_sha256": "01dd37a493507d798508481a446467b8c4cf7f7ba0c76a0a9549fa044d751ece"
+    }
+  ],
+  "measurement_contract": "native/measurement-contract.json"
 }

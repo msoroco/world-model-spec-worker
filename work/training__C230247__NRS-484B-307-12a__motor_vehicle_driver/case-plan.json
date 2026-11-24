@@ -131,7 +131,7 @@
         ]
       },
       "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "audit_gap": "Unselected source meter and two exact offline drafts exist; selected Native capture, real source packets, saved processing and independent audit remain unfinished."
     }
   ],
   "observations": [
@@ -139,31 +139,31 @@
       "name": "dev.lane_control_signal",
       "mandatory": true,
       "source_note": "state green_down_arrow",
-      "status": "unmapped_to_native_and_core"
+      "status": "draft_source_meter_not_selected"
     },
     {
       "name": "dev.governs",
       "mandatory": true,
       "source_note": "the lane the signal is over",
-      "status": "unmapped_to_native_and_core"
+      "status": "draft_source_meter_not_selected"
     },
     {
       "name": "st.lane",
       "mandatory": true,
       "source_note": "that lane",
-      "status": "unmapped_to_native_and_core"
+      "status": "draft_source_meter_not_selected"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
       "source_note": "the subject's lane",
-      "status": "unmapped_to_native_and_core"
+      "status": "draft_source_meter_not_selected"
     },
     {
       "name": "dev.position",
       "mandatory": true,
       "source_note": "the signal's position over the individual lane",
-      "status": "unmapped_to_native_and_core"
+      "status": "draft_source_meter_not_selected"
     }
   ],
   "sources": [
@@ -184,49 +184,74 @@
   "runtime_uncertainties": [
     "Use a real overhead lane-control signal showing a downward green arrow over the precise governed lane; record lane occupancy and indication over time.",
     "The clause grants permission; it does not by itself prohibit travel in every other lane.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
     "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "No measured saved evidence or independent acceptance audit.",
+    "Unselected OpenDRIVE signal id 100 is a geometry proposal only; official provenance, actual arrow indication, lane-occupancy motion and four-camera pixels remain unverified.",
+    "Exact selected delivery, saved processing, compatibility, fallbacks and independent audit remain unfinished."
   ],
   "source_observation_mapping": {
     "dev.lane_control_signal": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native signal indication state joined to signal inventory and original post-tick frame",
+      "channels": [
+        "signal.indication",
+        "signal.source"
+      ],
       "source_refs": [
-        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json"
+        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "dev.governs": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Map lane-validity binding for signal id 100, compared with proposed and occupied lane ids",
+      "channels": [
+        "signal.lane_id",
+        "signal.mount_lane_id",
+        "vehicle.proposed_lane_id"
+      ],
       "source_refs": [
-        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json"
+        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "st.lane": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Map waypoint projection for original actor pose",
+      "channels": [
+        "vehicle.lane_id"
+      ],
       "source_refs": [
-        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json"
+        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Actor pose and body vertices must be joined to waypoint lane; current meter uses waypoint lane only",
+      "channels": [
+        "vehicle.lane_id",
+        "actor_body_vertices_m"
+      ],
       "source_refs": [
-        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json"
+        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
+        "native/measurement-contract.json"
       ]
     },
     "dev.position": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "OpenDRIVE overhead mount plan plus original map signal transform; physical placement unverified",
+      "channels": [
+        "signal.mount_source",
+        "signal.mount_lane_id"
+      ],
       "source_refs": [
-        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json"
+        "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
+        "native/measurement-contract.json"
       ]
     }
   },
   "legal_analysis_note": "The statutory text-1 clause is required for the selected draft scope. Other source alternatives or exceptions remain pending where listed. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
-  "readiness": "planning_only",
+  "readiness": "unselected_native_drafts_offline_proven",
   "physical_prerequisites": "Use a real overhead lane-control signal showing a downward green arrow over the precise governed lane; record lane occupancy and indication over time.",
-  "legal_interpretation_limit": "The clause grants permission; it does not by itself prohibit travel in every other lane."
+  "legal_interpretation_limit": "The clause grants permission; it does not by itself prohibit travel in every other lane.",
+  "draft_measurement_contract": "native/measurement-contract.json",
+  "draft_source_meter": "native/lane_arrow_meter.py",
+  "draft_proof_log": "native/lane-arrow-proof.log",
+  "draft_manifest": "draft-manifest.json"
 }

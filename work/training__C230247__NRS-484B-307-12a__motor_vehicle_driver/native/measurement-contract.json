@@ -1,0 +1,21 @@
+{
+  "format": "unselected-source-measurement-contract-v1",
+  "assignment_id": "training__C230247__NRS-484B-307-12a__motor_vehicle_driver",
+  "law_source": "NRS 484B.307(12)(a)",
+  "draft_comparison": ["probe_same_lane", "probe_other_lane"],
+  "capture_contract": {"rate_hz": 20, "duration_s": 30, "frames": 600, "cameras": ["overview", "approach", "overhead_signal", "driver_reference"]},
+  "source_rows": {
+    "frame": "original Native post-tick frame and time; canonical consecutive frame identities required",
+    "signal": "Native indication state joined to map inventory authority, map overhead mount, governed lane and facing yaw",
+    "vehicle": "original actor pose and map waypoint lane projection, with proposed route lane",
+    "missing_source_policy": "reject the entire diagnostic; do not infer signal indication or lane governance from desired controller request"
+  },
+  "measurements": [
+    "green_down_arrow state over the proposed lane while driver faces that signal",
+    "green_down_arrow state over the occupied lane while driver faces that signal",
+    "red-X indication tracked separately without a 12(a) legal inference",
+    "framewise signal-to-lane mapping and occupied/proposed lane identity"
+  ],
+  "legal_boundary": "This subsection grants permission for a driver facing a green downward arrow to drive in a lane over which it is shown. A mismatch does not establish prohibition under 12(a); the paired red-X provision is separately assigned.",
+  "limitations": ["diagnostic packets are source-shaped software fixtures, not original CARLA capture", "official authority and actual arrow pixels remain unverified", "Native runner does not yet orchestrate capture"]
+}

@@ -1,17 +1,15 @@
-# training__C230259__NRS-484B-297-2__pedestrian
+# C230259 / NRS 484B.297(2) pedestrian handoff
 
-Status: blocked. This is a source-grounded planning return only, not a deployable delivery package.
+Status: partial CPU implementation checkpoint. No Native observation, accepted recording, legal verdict, or delivery readiness is claimed.
 
-Exact law: Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.
+The frozen text requires a pedestrian walking along a highway without a sidewalk to use the left side facing approaching traffic, subject to the subsection 6 exception. The supplied witness has low confidence and no accepted membership rows. The two planned cases compare a traffic-right, opposing-heading walk (`condition_a`) with a traffic-left, same-heading walk (`condition_b`) on the same proposed highway and other-vehicle route. The geometry labels are diagnostics, not statutory cutoffs or physical findings.
 
-Selected witness scope: Pedestrian highway travel with approaching traffic. The case plan inventories 2 source topics and drafts one controlled comparison on `pedestrian_walking_side_and_direction`. Neither case has a Native realization or legal outcome.
+`native/walking_side.py` measures a 600-frame, 20 Hz pedestrian/vehicle trace using sourced highway centreline, highway half-width, traffic direction, sidewalk inventory, authority and subsection 6 obstruction context. It rejects missing participants, short duration, time-join mismatch, missing sidewalk evidence and an active subsection 6 obstruction. `native/walking-side-proof.json` is a synthetic diagnostic proof (SHA-256 `132de00a69dfe27def1f64212979590ee21bd99dd14eb6c25d7a1a4621561679`): condition A has 600 traffic-right and 600 opposite-heading frames; condition B has 600 traffic-left and zero opposite-heading frames. Five negative probes reject.
 
-The local snapshot lists 0 accepted membership rows. No source-hashed equivalence receipt was available, so no historical recording is claimed reusable.
+`native/runner.py` and `draft-native-manifest.json` define two unselected 30-second Native constructions with four named source cameras, a walker and other vehicle, source frame map, position/heading trace and the shared pipeline capture. The operator must supply a reviewed map/route packet naming highway authority, boundaries, sidewalk absence, subsection 6 context, participant spawns and direction. The runner checks identity and condition before connecting to CARLA. The source packet and physical geometry have not been supplied or executed.
 
-Blocker: Native physical mechanism, four distinct candidate constructions, exact offline/compatibility recipes, measured saved fixtures and independent audit are not yet produced for the selected law branch and source alternatives.
+Pinned offline construction tests passed for condition A (construction SHA-256 `f3a130e7252985aef0d7f7c2969c963e8a8b8309a16c64a65a3b826d601da0e8`; `native/draft-offline-a.log` SHA-256 `bd717f0cba00c3f570ae96ab53a5d3396e40746f1c9af0b954d68f742ba4ad76`) and condition B (construction SHA-256 `96d9385249a106f5ddca10a70f85ed3329091d75454bd8597042ee7757e45207`; `native/draft-offline-b.log` SHA-256 `498bb91672d9e43e138d26df23986f6aea47a0407239d68f7915057015127d73`). These tests materialized the exact inline bundles under `.runtime-work/`, ran `runner.py --check`, and ran positive/negative unit probes. They did not start simulation.
 
-Resume: validate source alternatives and exceptions against the exact law; implement the selected comparison and each additional runnable source branch with semantic proposals, four distinct candidate plans, native and camera configuration, offline and compatibility proofs, saved positive/negative audit, and comparison audit. Reuse a historical original only with an exact source-hashed equivalence receipt. Set ready only after all CPU proofs pass.
+Next CPU work: review the full subsection 6 source and whether it needs a separate compatible assignment; validate a real Native map's highway/sidewalk evidence and route geometry; add selected execution manifest, measurement contract and saved finalizer consuming retained raw sources; prove positive and missing-source compatibility, saved-only processing and independent acceptance/comparison audits; design and test physical-risk fallbacks without changing the comparison variable; run the scoped strict gate before any ready status.
 
-Physical prerequisites: Confirm absence of a sidewalk, pedestrian travel along highway, left-side occupancy and facing approaching traffic.
-
-Legal limit: Subsection 6 obstruction bypass is an express exception and needs separate scope handling.
+The current result is deliberately partial. A passing `worker_check.py --assignment training__C230259__NRS-484B-297-2__pedestrian --complete` is a checkpoint only.

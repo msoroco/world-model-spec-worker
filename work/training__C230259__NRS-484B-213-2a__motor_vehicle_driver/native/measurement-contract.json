@@ -1,0 +1,44 @@
+{
+  "format": "worker-crest-measurement-contract-v1",
+  "assignment_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver",
+  "statutory_source": {
+    "path": "inputs/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/assignment.json",
+    "sha256": "15a998a1247e56967113da596c8f1f66d422143343c233a961063b1392b0c95a"
+  },
+  "source_window": {
+    "frames": 600,
+    "rate_hz": 20,
+    "duration_s": 30,
+    "camera_names": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ]
+  },
+  "required_raw_sources": [
+    "Native ego identity, transform and bounding box per frame",
+    "Native road directionality and centerline",
+    "Native grade profile and crest geometry",
+    "Native ray-cast sightline clear-distance bracket and censor status per frame",
+    "Native other vehicle identity, route direction and transform",
+    "four original synchronized source camera streams"
+  ],
+  "outputs": [
+    "approach frames",
+    "left-of-centre footprint frames",
+    "overlap frames",
+    "raw sight brackets",
+    "oncoming participant frames",
+    "one-way exception flag"
+  ],
+  "legal_boundaries": [
+    "No numeric distance defines a statutory hazard.",
+    "Observed opposite-direction vehicle is useful evidence but the law says one might approach.",
+    "The one-way exception must be sourced from road authority and geometry, not inferred from one observed route.",
+    "Fixture values cannot establish actual driver view, Native motion, legal result, or physical completion."
+  ],
+  "diagnostic_script": "native/measure_crest.py",
+  "diagnostic_proof": "native/crest-source-proof.json",
+  "selection_status": "unselected_cpu_diagnostic"
+}

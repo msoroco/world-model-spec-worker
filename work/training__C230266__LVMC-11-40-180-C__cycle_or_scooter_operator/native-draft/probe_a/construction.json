@@ -1,0 +1,43 @@
+{
+  "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+  "cell_id": "C230266",
+  "law_id": "LVMC-11-40-180-C",
+  "actor": "cycle_or_scooter_operator",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"C230266 sidewalk encounter Native plan and CPU preflight.\n\nNative capture requires a proven bicycle blueprint and a synchronized\nmicrophone at the pedestrian. The CPU check never imports CARLA.\n\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport xml.etree.ElementTree as ET\n\nHERE = Path(__file__).resolve().parent\nCAMERAS = ('overview', 'rider_approach', 'pedestrian_side', 'pass_close')\n\n\ndef check(config):\n    if (config['cell_id'], config['law_id'], config['actor']) != (\n            'C230266', 'LVMC-11-40-180-C', 'cycle_or_scooter_operator'):\n        raise ValueError('Frozen assignment identity differs')\n    if config['duration_s'] != 30 or config['rate_hz'] != 20:\n        raise ValueError('30 second 20 Hz capture contract differs')\n    if tuple(x['name'] for x in config['cameras']) != CAMERAS:\n        raise ValueError('Four original source cameras required')\n    if config['device_blueprint_filter'] != 'vehicle.diamondback.century':\n        raise ValueError('Unreviewed replacement vehicle class')\n    if config['pedestrian_microphone']['location'] != 'pedestrian_actor':\n        raise ValueError('Audio must be measured at pedestrian location')\n    if config['signal_frame'] is not None and not 0 <= config['signal_frame'] < 600:\n        raise ValueError('Signal frame outside original capture')\n    road = ET.parse(HERE/'road.xodr').getroot()\n    sidewalk = road.find('.//lane[@id=\"-2\"]')\n    if sidewalk is None or sidewalk.attrib.get('type') != 'sidewalk':\n        raise ValueError('Authored sidewalk lane absent')\n    return {'case_id': config['case_id'], 'frames': 600,\n            'cameras': list(CAMERAS), 'sidewalk_lane_id': -2,\n            'rider_device_blueprint_filter': config['device_blueprint_filter'],\n            'microphone_required': True, 'native_imported': False,\n            'physical_and_legal_observation': False}\n\n\nclass RiderPolicy:\n    def __init__(self, config):\n        self.signal_frame = config['signal_frame']\n        self.pause_window = tuple(config['pause_window_frames'])\n\n    def request(self, frame):\n        return {'forward_speed_mps': 0.0 if self.pause_window[0] <= frame < self.pause_window[1] else 1.4,\n                'audible_signal_request': self.signal_frame is not None and frame == self.signal_frame}\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--check', action='store_true')\n    args = parser.parse_args()\n    config = json.loads((HERE/'config.json').read_text())\n    summary = check(config)\n    policy = RiderPolicy(config)\n    assert len([policy.request(i) for i in range(600)]) == 600\n    if not args.check:\n        raise RuntimeError('Native capture requires original bicycle motion and synchronized pedestrian-location microphone acquisition; this draft has no source-bound acquisition implementation')\n    print(json.dumps(summary, sort_keys=True))\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "road.xodr",
+      "content": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C230266-sidewalk-draft\" version=\"1\" date=\"2026-11-23\" north=\"20\" south=\"-20\" east=\"60\" west=\"-20\" vendor=\"full-train-worker\"/><road id=\"1\" name=\"C230266_road\" length=\"70\" junction=\"-1\"><link/><planView><geometry s=\"0\" x=\"-15\" y=\"0\" hdg=\"0\" length=\"70\"><line/></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\"/></elevationProfile><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\"/><laneSection s=\"0\"><left><lane id=\"1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></left><center><lane id=\"0\" type=\"none\" level=\"false\"/></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane><lane id=\"-2\" type=\"sidewalk\" level=\"false\"><width sOffset=\"0\" a=\"3.0\" b=\"0\" c=\"0\" d=\"0\"/></lane></right></laneSection></lanes><objects/><signals/></road></OpenDRIVE>\n"
+    },
+    {
+      "path": "tests/test_offline.py",
+      "content": "import json\nimport unittest\nfrom pathlib import Path\nfrom runner import RiderPolicy, check\n\nHERE = Path(__file__).resolve().parent.parent\n\n\nclass SidewalkOffline(unittest.TestCase):\n    def setUp(self):\n        self.config = json.loads((HERE/'config.json').read_text())\n\n    def test_full_duration_and_sidewalk(self):\n        summary = check(self.config)\n        self.assertEqual(summary['frames'], 600)\n        self.assertEqual(summary['sidewalk_lane_id'], -2)\n        self.assertEqual(len(summary['cameras']), 4)\n        self.assertFalse(summary['native_imported'])\n\n    def test_signal_request_timing(self):\n        policy = RiderPolicy(self.config)\n        requested = [i for i in range(600) if policy.request(i)['audible_signal_request']]\n        self.assertEqual(requested, [] if self.config['signal_frame'] is None else [self.config['signal_frame']])\n        self.assertEqual(policy.request(90)['forward_speed_mps'],\n                         0 if self.config['pause_window_frames'] == [80, 110] else 1.4)\n        self.assertEqual(policy.request(120)['forward_speed_mps'], 1.4)\n\n    def test_missing_microphone_rejected(self):\n        modified = dict(self.config)\n        modified['pedestrian_microphone'] = {'location': 'rider_actor'}\n        with self.assertRaisesRegex(ValueError, 'pedestrian location'):\n            check(modified)\n\n    def test_wrong_camera_rejected(self):\n        modified = dict(self.config)\n        modified['cameras'] = self.config['cameras'][:3]\n        with self.assertRaisesRegex(ValueError, 'Four original'):\n            check(modified)\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"case_id\": \"training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a\",\n  \"selected_case_id\": \"training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a\",\n  \"cell_id\": \"C230266\",\n  \"law_id\": \"LVMC-11-40-180-C\",\n  \"actor\": \"cycle_or_scooter_operator\",\n  \"duration_s\": 30,\n  \"rate_hz\": 20,\n  \"device_blueprint_filter\": \"vehicle.diamondback.century\",\n  \"pedestrian_blueprint_filter\": \"walker.pedestrian.*\",\n  \"signal_frame\": 80,\n  \"pause_window_frames\": [\n    80,\n    110\n  ],\n  \"pedestrian_microphone\": {\n    \"location\": \"pedestrian_actor\",\n    \"sampling\": \"synchronized_original_audio_required\"\n  },\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"rider_approach\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"pedestrian_side\",\n      \"width\": 1280,\n      \"height\": 720\n    },\n    {\n      \"name\": \"pass_close\",\n      \"width\": 1280,\n      \"height\": 720\n    }\n  ],\n  \"required_atoms\": [\n    \"ru.pedestrian\",\n    \"kin.position\",\n    \"kin.speed\"\n  ],\n  \"source_packets\": []\n}\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "rider_and_pedestrian_footprints",
+        "sampling_rate_hz": 20,
+        "source": "original Native transforms and bounding boxes"
+      },
+      {
+        "name": "pedestrian_location_audio",
+        "sampling_rate_hz": 20,
+        "source": "synchronized original microphone stream at pedestrian location"
+      }
+    ],
+    "limitations": [
+      "Native rider-device capability and original audio unverified"
+    ]
+  },
+  "status": "unselected_exact_cpu_draft"
+}

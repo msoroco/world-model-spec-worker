@@ -1,17 +1,27 @@
 # NRS-484B-213-2a at C230259
 
-Actor: `motor_vehicle_driver`. Frozen cell: `road` / `travel` / `other_vehicle`.
+Actor `motor_vehicle_driver`; frozen cell `road` / `travel` / `other_vehicle`. Status **partial**.
 
-Witness branch: Approaching a crest; obstructed-view condition..
+## Exact source and branch review
 
-Comparison variable: `left_of_center_at_crest`. Proposed physical probes: stay right while approaching obstructed crest; drive left of center at same crest. These are proposed controller and scene targets, not observed behavior or legal verdicts.
+- Frozen statute and scope: `inputs/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/assignment.json` SHA-256 `15a998a1247e56967113da596c8f1f66d422143343c233a961063b1392b0c95a`. Witness SHA-256 `227ba1dd9dc3474e12069377ff8af55bb4b2a865ede36dc9e16cda9ec2c48d53`.
+- The law bars left-of-highway travel while approaching a crest **or** on a curve where the view is obstructed within a hazard-creating distance if another vehicle might approach opposite. Subsection 3 exempts a one-way highway. Actual oncoming traffic is not a textual prerequisite. No numeric distance is assigned a legal meaning.
+- Frozen accepted membership is empty. The witness is a low-confidence conditional planning match; it is not execution evidence.
+- The current planned comparison holds two-way crest geometry, opposing participant, duration and cameras fixed while varying the requested left-of-centre motion. Curve and one-way alternatives require separate exact branch planning and source evidence before readiness.
 
-Source: `inputs/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/assignment.json`, SHA-256 `8ca809906e7434feb338b4d817d2720982dd71ce2f5a0299189c7cdc15b8c511`. Summary status: `recovered_requires_source_review`; exact law text and witness take precedence.
+## Worker-owned implementation and proof
 
-Accepted membership IDs: none. No source-hashed equivalence receipt or accepted recording contents are available locally, so no reuse is claimed.
+- `native/measure_crest.py` requires 600 ordered source frames, joined four-camera IDs, ego body footprint, centerline, grade/crest source, sight brackets and separate opposing participant identity. It returns overlap frames, sight-bracket bounds and one-way exception observation without a legal hazard threshold.
+- `native/prove_crest.py` constructed four 600-frame, 20 Hz source-shaped packets under ignored `.runtime-work/c230259-213-2a/` and rejected a missing frame, camera misjoin and missing sightline. These are CPU fixtures, not original Native observations.
+- Source meter proof `native/crest-source-proof.json` SHA-256 `907420236a6748f6323081f0978cb172f85a51779240af41ba20f7225686a046`; measurement contract `native/measurement-contract.json` SHA-256 `66e89fee0639b55d86298a714349f380b0fc671905ebae7ba033e8c5cfe80fe3`.
+- `native/build_draft.py` materializes exact **unselected** `probe_a` and `probe_b` OpenDRIVE/route/controller requests. The road has two opposing lanes and an elevation crest; the requests have 600 frames at 20 Hz and four named source cameras. The controller difference is right-side travel throughout versus a left-of-centre target during the crest phase. Original route realization, actual sightline and pixels remain unobserved.
+- Draft manifest `draft-manifest.json` SHA-256 `f682159ce0db7d71e9984f86d987327813d7cb462ce5fd4e41fbd924d00cfc39`; draft offline receipt `native/draft-proof.json` SHA-256 `5c6e6ded97341412554bae338d070c4e61eac91e4857c9bea6c55cef567c8817`.
+- `probe_a` construction SHA-256 `11146ae3b6613d70a5da86d73a691a80b18e037ae04aea13346fa2b7a6cd7253`; pinned offline log `native/pinned-a.log` SHA-256 `b1c6b658f8aa663b716906651fb69e6e56461c992bd9578a284d66fc19152792`.
+- `probe_b` construction SHA-256 `c7da2d9c575df25bb5a516886ff91f499a9ef6e5be1a26c04bdb820f31eab9e5`; pinned offline log `native/pinned-b.log` SHA-256 `81a093c9bb1938fd8aa450423cd8fb1b0275d7fbd14d978b00f479999394dd53`.
+- Each current pinned offline command exited 0 and ran four source/controller negative/positive tests. `.venv-cpu/bin/python worker_check.py --assignment training__C230259__NRS-484B-213-2a__motor_vehicle_driver --complete` exited 0. Neither is a scoped strict ready gate.
 
-Incomplete CPU work: Delivery package incomplete: two controlled branches are planning definitions only; no four distinct CARLA constructions, offline and compatibility proofs, saved measurement fixtures, or independent audit. Physical realization and legal outcome remain unverified.
+## Next CPU construction
 
-Resume by resolving every statutory branch and exception against the law text; construct physical Native routes and controllers in the frozen cell; define measured channels and four distinct plans per selected case; run offline, compatibility, saved-only, comparison and independent audit proofs; set ready only after those proofs pass.
-
-Update 016 status correction: missing case construction, candidate proofs and audits are actionable CPU work under START_HERE.md. This package is partial, with the frozen scope and listed resume actions preserved.
+- Decompose and build the curve alternative and one-way exception comparison without treating a one-way road as a violating case. Source road authority, driver viewpoint and any actual obstruction must be independently verified.
+- Promote reviewed cases to selected delivery with actual Native capture code, synchronous four-camera source streams, source-derived saved finalizer, positive/negative compatibility, `process-saved`, risk candidates and independent delivery/comparison audits. Run the assignment-scoped strict gate before changing `result.json` to ready.
+- Physical Native motion, obstruction, pixels, participant behavior and hazard-distance/legal judgments remain unconfirmed for local execution and source review.

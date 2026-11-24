@@ -1,0 +1,33 @@
+{
+  "format": "worker-pedestrian-caution-measurement-contract-v1",
+  "assignment_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver",
+  "law_source": "NRS 484B.280(1)(c)",
+  "selected_branch": "Pedestrian on or near a highway, street or road",
+  "diagnostic_source_packet": "worker-pedestrian-caution-source-packet-v1",
+  "required_raw_sources": [
+    "original Native 20 Hz vehicle and pedestrian actor poses, velocity, frame identities",
+    "original road boundary survey tied to the Native map",
+    "original pedestrian identity and classification",
+    "driver and motor vehicle control relationship",
+    "independent actual-observation source; geometric line of sight alone is insufficient",
+    "four synchronized source-camera streams"
+  ],
+  "outputs": [
+    "first_actual_observation_frame",
+    "visible_frames",
+    "pedestrian_on_surveyed_road_frames",
+    "speed_at_first_observation_mps",
+    "speed_2s_after_observation_mps",
+    "min_centre_distance_m",
+    "min_nonnegative_time_to_conflict_s"
+  ],
+  "source_hash_rule": "SHA-256 of canonical JSON trace rows is required and rechecked before measurement",
+  "interpretation": "Speed, clearance and time to conflict are context only. They do not define a legal proper-caution threshold or prove actual observation.",
+  "unresolved": [
+    "actual observation by the driver cannot be inferred from requested control or line of sight",
+    "near has no statutory distance; the on-road alternative is used in this draft",
+    "bus stop, transit boarding, school zone and crosswalk alternatives need separate controlled cases"
+  ],
+  "physical_completion": false,
+  "legal_verdict": null
+}

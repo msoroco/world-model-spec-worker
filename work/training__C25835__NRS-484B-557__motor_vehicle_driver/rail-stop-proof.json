@@ -1,0 +1,106 @@
+{
+  "format": "worker-cpu-rail-stop-proof",
+  "passed": true,
+  "diagnostic_only": true,
+  "original_native_observed": false,
+  "positive": {
+    "center_25_ft": {
+      "format": "worker-source-rail-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_stop_frame": 151,
+      "last_stop_frame": 208,
+      "stop_reference_distances_from_nearest_track_ft": {
+        "front_ft": 18.438320209973753,
+        "center_ft": 25.0,
+        "rear_ft": 31.561679790026247
+      },
+      "approach_observed": true,
+      "subsequent_proceeding_observed": true,
+      "visibility_at_stop": "occluded",
+      "visibility_on_proceeding": [
+        "clear",
+        "occluded"
+      ],
+      "train_states_on_proceeding": [
+        "none_observed"
+      ],
+      "sign_governance_source_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+      "designation_source_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "legal_compliance": "unassessed",
+      "due_care": "requires_independent_judgment",
+      "limitations": [
+        "This detector does not decide which vehicle reference point controls the statutory distance",
+        "The speed threshold is an engineering detector, not a legal stop duration",
+        "Visibility and train state are observed contexts, not a numeric due-care rule",
+        "Designation and official sign governance require review of original source records"
+      ]
+    },
+    "center_10_ft": {
+      "format": "worker-source-rail-stop-measurement",
+      "frame_count": 600,
+      "rate_hz": 20,
+      "first_stop_frame": 151,
+      "last_stop_frame": 208,
+      "stop_reference_distances_from_nearest_track_ft": {
+        "front_ft": 3.4383202099737544,
+        "center_ft": 10.0,
+        "rear_ft": 16.561679790026243
+      },
+      "approach_observed": true,
+      "subsequent_proceeding_observed": true,
+      "visibility_at_stop": "occluded",
+      "visibility_on_proceeding": [
+        "clear",
+        "occluded"
+      ],
+      "train_states_on_proceeding": [
+        "none_observed"
+      ],
+      "sign_governance_source_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+      "designation_source_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "legal_compliance": "unassessed",
+      "due_care": "requires_independent_judgment",
+      "limitations": [
+        "This detector does not decide which vehicle reference point controls the statutory distance",
+        "The speed threshold is an engineering detector, not a legal stop duration",
+        "Visibility and train state are observed contexts, not a numeric due-care rule",
+        "Designation and official sign governance require review of original source records"
+      ]
+    }
+  },
+  "negative": [
+    {
+      "test": "missing_designation",
+      "rejected": "Missing source hash: designation_source_sha256"
+    },
+    {
+      "test": "wrong_sign_governance",
+      "rejected": "Stop sign governance not sourced"
+    },
+    {
+      "test": "not_grade_crossing",
+      "rejected": "Highway railroad grade crossing not sourced"
+    },
+    {
+      "test": "short_capture",
+      "rejected": "Incomplete 30-second Native trace"
+    },
+    {
+      "test": "missing_source_camera",
+      "rejected": "Four source camera frame join failed"
+    },
+    {
+      "test": "duplicate_native_frame",
+      "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "missing_visibility",
+      "rejected": "Missing sourced rail visibility"
+    },
+    {
+      "test": "rolling_stop",
+      "rejected": "No observed complete cessation interval"
+    }
+  ]
+}

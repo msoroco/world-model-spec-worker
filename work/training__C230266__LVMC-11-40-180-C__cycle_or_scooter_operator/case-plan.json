@@ -12,7 +12,8 @@
       "status": "selected_required",
       "case_ids": [
         "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
-        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b"
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
       ],
       "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
     }
@@ -23,7 +24,7 @@
       "target_law_id": "LVMC-11-40-180-C",
       "kind": "planned_only",
       "target_type": "compliant_attempt",
-      "physical_target": "yield and give audible signal before passing",
+      "physical_target": "rider pauses for pedestrian and requests pedestrian-location audible signal before measured overtaking",
       "comparison_variable": "sidewalk_pedestrian_pass"
     },
     {
@@ -31,8 +32,19 @@
       "target_law_id": "LVMC-11-40-180-C",
       "kind": "planned_only",
       "target_type": "violating_attempt",
-      "physical_target": "pass without audible signal",
+      "physical_target": "same rider/pedestrian path and pause, but no audible signal request before measured overtaking",
       "comparison_variable": "sidewalk_pedestrian_pass"
+    },
+    {
+      "case_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c",
+      "target_law_id": "LVMC-11-40-180-C",
+      "kind": "planned_only",
+      "target_type": "yield_contrast_attempt",
+      "physical_target": "same device/pedestrian path and early signal request, but no rider pause during encounter",
+      "comparison_variable": "pedestrian_priority_response",
+      "gap_ids": [
+        "actual_native_yield_response_unverified"
+      ]
     }
   ],
   "comparisons": [
@@ -43,10 +55,23 @@
         "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_b"
       ],
       "deliberate_differences": [
-        "sidewalk_pedestrian_pass"
+        "audible signal request at original frame 80 versus none; rider and pedestrian path/pause fixed"
       ],
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+      ]
+    },
+    {
+      "comparison_id": "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__yield_comparison",
+      "case_ids": [
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_a",
+        "training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator__probe_c"
+      ],
+      "deliberate_differences": [
+        "rider pause request during pedestrian encounter versus no pause request"
+      ],
+      "fixed_conditions": [
+        "same frozen cell/law/actor, pedestrian and rider paths, early audible signal request, 600 frames at 20 Hz, four cameras"
       ]
     }
   ],
@@ -111,7 +136,8 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions.",
+    "Unselected exact 30-second four-camera CPU bundles and source-shaped meter pass, but Native capture, pedestrian-location audio, saved processing, compatibility and independent acceptance/comparison audits remain open."
   ],
   "statutory_text": "Whenever any person is riding a bicycle, electric bicycle, or electric scooter upon a sidewalk, such person shall yield the right-of-way to any pedestrian and shall give audible signal before overtaking and passing such pedestrian.",
   "activation_conditions_from_unreviewed_summary": [
@@ -133,5 +159,36 @@
     "sig.horn",
     "rel.ahead_behind_in_lane",
     "rel.surface_gap"
-  ]
+  ],
+  "source_observation_mapping": {
+    "ru.bicycle": "covered device class in original Native blueprint/actor identity; this draft chooses bicycle class only",
+    "ru.electric_bicycle": "alternative device class requiring separate verified source; not claimed by this draft",
+    "ru.electric_scooter": "alternative device class requiring separate verified source; synthetic meter uses a labeled scooter only",
+    "st.sidewalk": "authored OpenDRIVE sidewalk plus original rider and pedestrian full footprints",
+    "ru.pedestrian": "distinct original pedestrian actor identity, transforms and full footprint",
+    "drv.yields_to": "measured rider speed/footprint response and pedestrian trajectory; legal right of way requires independent review",
+    "drv.overtaking": "first longitudinal footprint overlap and first full-ahead event in source frame map",
+    "sig.horn": "synchronized original microphone at pedestrian, separate from controller request; fixture proves detector software only",
+    "rel.ahead_behind_in_lane": "longitudinal full-footprint order on same sidewalk",
+    "rel.surface_gap": "minimum lateral full-footprint gap during overlap"
+  },
+  "evidence_review": {
+    "reviewer": "worker source review",
+    "method": "Read frozen assignment, witness, statutory text and empty full-train memberships; no accepted recording can be reused without source inventory.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "actual_native_yield_response_unverified",
+        "requirement": "Original sidewalk rider/pedestrian paths, priority response and pass",
+        "source": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/assignment.json",
+        "why_existing_insufficient": "No accepted membership or Native source capture supplied."
+      },
+      {
+        "id": "pedestrian_location_audio_unverified",
+        "requirement": "Synchronized audible signal at pedestrian before pass",
+        "source": "inputs/training__C230266__LVMC-11-40-180-C__cycle_or_scooter_operator/witnesses.json",
+        "why_existing_insufficient": "No original pedestrian-location sound recording supplied."
+      }
+    ]
+  }
 }
