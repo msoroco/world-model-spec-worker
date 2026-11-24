@@ -70,6 +70,8 @@ def analyze(root:Path)->dict:
     norm=math.hypot(tx,ty)
     if norm==0:raise ValueError("Zero lane direction")
     tx,ty=tx/norm,ty/norm
+    lane_along=[x*tx+y*ty for x,y in lane.exterior.coords]
+    lane_start,lane_end=min(lane_along),max(lane_along)
     lanes=ctx.get("same_direction_lanes")
     if not isinstance(lanes,list) or len(lanes)!=count:
         raise ValueError("Same-direction lane inventory/count mismatch")
@@ -112,9 +114,11 @@ def analyze(root:Path)->dict:
         if i==0 and not lane.covers(body):raise ValueError("No fully contained original starting frame")
         if state==direction and first_signal is None:first_signal={"frame":fid,"time_s":time}
         contained=lane.covers(body)
-        if not contained and first_leave is None:first_leave={"frame":fid,"time_s":time,
-                                                             "indicator_at_movement":state}
         ego_span=[min(x*tx+y*ty for x,y in points),max(x*tx+y*ty for x,y in points)]
+        if not contained and first_leave is None:
+            if ego_span[0]<lane_start or ego_span[1]>lane_end:
+                raise ValueError("Source-lane longitudinal extent exhausted before lateral departure")
+            first_leave={"frame":fid,"time_s":time,"indicator_at_movement":state}
         gaps=[]
         others=row.get("target_lane_bodies")
         if not isinstance(others,list):raise ValueError("Missing target-lane participant inventory")

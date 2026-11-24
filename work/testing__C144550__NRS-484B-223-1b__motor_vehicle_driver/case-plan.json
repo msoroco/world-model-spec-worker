@@ -102,9 +102,9 @@
   "planning_status": "partial; original-frame signal ordering/gap and Native left/right adjacent marked lanes CPU-tested",
   "native_indicator_policy_cpu_component": {
     "source": "native_lane_construction.py",
-    "source_sha256": "bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7",
+    "source_sha256": "8e4f80c4be67da8ed91c20b2452f2a6bab8a42f691f86198fed460ddef7ce24d",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
     "exact_cases": [
       {
         "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
@@ -137,26 +137,26 @@
   },
   "native_lane_change_control_cpu_component": {
     "source": "native_lane_construction.py",
-    "source_sha256": "bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7",
+    "source_sha256": "8e4f80c4be67da8ed91c20b2452f2a6bab8a42f691f86198fed460ddef7ce24d",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
     "verified": "exact-case direction and indicator, target-lane steering sign, bounded forward Native control, light-state readback",
     "legal_safety_ascertainment": "unresolved",
     "physical_acceptance_claimed": false
   },
   "same_direction_lane_inventory_cpu_component": {
     "source": "lane_change_measurements.py",
-    "source_sha256": "be9bde10955daf002048391ae7ce92f916b22dac41d4e9f38e489a9ac709a8bd",
+    "source_sha256": "4b317a34f68e51b3af32aa0a3b57dd0229b229a574a9c87069f4bf21dc778b57",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
     "verified": "complete original lane inventory count; road and unique Native lane IDs; forward headings; marking source; source and target membership",
     "physical_acceptance_claimed": false
   },
   "native_capture_core_cpu_component": {
     "source": "native_lane_construction.py",
-    "source_sha256": "bb43c797887352717e69fc85b836f57c4aa665f649e7decc59d9f12f4da26fc7",
+    "source_sha256": "8e4f80c4be67da8ed91c20b2452f2a6bab8a42f691f86198fed460ddef7ce24d",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
     "frames": 900,
     "rate_hz": 20,
     "cameras": [
@@ -165,15 +165,17 @@
       "reference_corner",
       "driver_reference"
     ],
-    "verified": "exact-case Native tick, original observation frame join, indicator readback, four camera frame joins, writer closure on success and failure",
-    "scope": "CPU fake Native runner core; actual acquisition and source persistence unfinished",
-    "physical_acceptance_claimed": false
+    "verified": "900 exact Native ticks; original lane and four-camera frame joins; capture-time canonical frame-map and lane-history writes; four writer completion checks; all resource closure even after encoder failure",
+    "scope": "CPU fake Native acquisition core; caller still needs actual FrameMap, sensor setup, source video writers, trace and exact manifest",
+    "physical_acceptance_claimed": false,
+    "canonical_frame_map": "caller-supplied worker_exchange.native_output.FrameMap appended once per complete four-camera Native tick",
+    "actual_frame_map_cpu_test": "Pinned worker_exchange.native_output.FrameMap writes 900 original identities in acquisition order; negative missing-camera join leaves new frame map and lane history empty and closes streams."
   },
   "exact_saved_measurement_cpu_component": {
     "source": "lane_change_measurements.py",
-    "source_sha256": "be9bde10955daf002048391ae7ce92f916b22dac41d4e9f38e489a9ac709a8bd",
+    "source_sha256": "4b317a34f68e51b3af32aa0a3b57dd0229b229a574a9c87069f4bf21dc778b57",
     "test_log": "cpu-tests.log",
-    "test_log_sha256": "30e3c6058458a34f5d910acc141868111e5d3191544731a2f4d80765795d9191",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
     "expected_original_frames": 900,
     "exact_cases": [
       "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
@@ -196,5 +198,218 @@
         "lane_context.json"
       ]
     }
+  },
+  "valid_media_saved_finalizer_diagnostic_20261123": {
+    "status": "passed_cpu_synthetic_diagnostic",
+    "provenance_kind": "synthetic_fixture",
+    "physical_acceptance_claimed": false,
+    "legal_acceptance_claimed": false,
+    "recipe": {
+      "frame_count": 900,
+      "rate_hz": 20,
+      "source_video_generation": "ffmpeg lavfi color, 900 frames, ffv1 yuv420p; blue overview, red approach, green reference_corner, yellow driver_reference",
+      "overview_dimensions": [
+        1920,
+        1080
+      ],
+      "detail_dimensions": [
+        1280,
+        720
+      ],
+      "source_rows": "synthetic marked-lane body, indicator, traffic and Native-lane readback rows; not CARLA observation"
+    },
+    "finalizer_entrypoint": "lane_change_measurements.py",
+    "finalizer_sha256": "4b317a34f68e51b3af32aa0a3b57dd0229b229a574a9c87069f4bf21dc778b57",
+    "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__left_signal_before_clear_gap",
+    "source_hashes": {
+      "lane_context.json": "3b45a3434919bf5918a0e668cd4fe2b975cacb67de6f4fdee7f9b469f6ef53ae",
+      "lane_history.jsonl": "ca4711ca01c414b17602e98bdc47c4f4966a76655289e2c7dff1f6b0b7c3b2ed",
+      "video_frames.jsonl": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49"
+    },
+    "source_video_sha256": {
+      "overview": "f4a7fb8ed55e8be69ead58f2bd3a4018ba604eb012ccf7a4eeeeb499ce7a6256",
+      "approach": "d4f3779f66b7b7c0c682d13b917c8cfeda9021d7daa5476f772c91fc63486c7c",
+      "reference_corner": "ec18452b97ec89d2f4933d9687ae71d288da841b02179f9cbfa15ae6d0de3cce",
+      "driver_reference": "0d97fe0a52576707764bd512842b301283412d54de1378495191d350bad9ede4"
+    },
+    "source_decode_receipts": {
+      "overview": {
+        "format": "source-decode",
+        "passed": true,
+        "video_sha256": "f4a7fb8ed55e8be69ead58f2bd3a4018ba604eb012ccf7a4eeeeb499ce7a6256",
+        "frames": 900,
+        "dimensions": [
+          1920,
+          1080
+        ],
+        "rgb_sequence_sha256": "6d7a3a644650d3dc357e542f5989b41fd32e4665f1c9b0fefed3d08ca5053325",
+        "mapping_sha256": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+        "checks": {
+          "frame_count": "all-decoded-frames"
+        },
+        "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+        "threads": 2,
+        "seconds": 3.6968501589726657,
+        "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+      },
+      "approach": {
+        "format": "source-decode",
+        "passed": true,
+        "video_sha256": "d4f3779f66b7b7c0c682d13b917c8cfeda9021d7daa5476f772c91fc63486c7c",
+        "frames": 900,
+        "dimensions": [
+          1280,
+          720
+        ],
+        "rgb_sequence_sha256": "3ae95489a90fd0a8199f77e239fc6231fedc3c884b2007c15a9c33658c8f9552",
+        "mapping_sha256": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+        "checks": {
+          "frame_count": "all-decoded-frames"
+        },
+        "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+        "threads": 2,
+        "seconds": 1.6177044829819351,
+        "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+      },
+      "reference_corner": {
+        "format": "source-decode",
+        "passed": true,
+        "video_sha256": "ec18452b97ec89d2f4933d9687ae71d288da841b02179f9cbfa15ae6d0de3cce",
+        "frames": 900,
+        "dimensions": [
+          1280,
+          720
+        ],
+        "rgb_sequence_sha256": "59544a08b2aaefaebbedb09d91973b579d95368055c4e10a3aa4b7712bab65e9",
+        "mapping_sha256": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+        "checks": {
+          "frame_count": "all-decoded-frames"
+        },
+        "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+        "threads": 2,
+        "seconds": 1.5868761718738824,
+        "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+      },
+      "driver_reference": {
+        "format": "source-decode",
+        "passed": true,
+        "video_sha256": "0d97fe0a52576707764bd512842b301283412d54de1378495191d350bad9ede4",
+        "frames": 900,
+        "dimensions": [
+          1280,
+          720
+        ],
+        "rgb_sequence_sha256": "d2cddcc11b45a72ea1964568e7cf49feb56d0c1e0bda4b3392310f46c1245046",
+        "mapping_sha256": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+        "checks": {
+          "frame_count": "all-decoded-frames"
+        },
+        "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+        "threads": 2,
+        "seconds": 1.5977285550907254,
+        "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+      }
+    },
+    "source_decode_receipt_sha256": {
+      "overview": "87f8c271b6cdd4f85f339a2004ddabe54db5cc0b1dc7fca8946b4bcd42478bae",
+      "approach": "f378181af4f7295e98e1689864684f3d31ee96e46cf4f3d4eec948d4b812ce17",
+      "reference_corner": "c74c37b89d98afe44c40eb155410a0f13fb7da9ffab30ef12188731f88d02753",
+      "driver_reference": "5ac641400bbad7f3bd8f7fa41905362d22ae0e889a08a2f5b10b56731e0f5689"
+    },
+    "four_view_receipt": {
+      "format": "synchronized-four-view",
+      "sources": {
+        "overview": "f4a7fb8ed55e8be69ead58f2bd3a4018ba604eb012ccf7a4eeeeb499ce7a6256",
+        "approach": "d4f3779f66b7b7c0c682d13b917c8cfeda9021d7daa5476f772c91fc63486c7c",
+        "reference_corner": "ec18452b97ec89d2f4933d9687ae71d288da841b02179f9cbfa15ae6d0de3cce",
+        "driver_reference": "0d97fe0a52576707764bd512842b301283412d54de1378495191d350bad9ede4"
+      },
+      "frame_map_sha256": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+      "primary": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.runtime-work/c144550-valid-media/attempt/raw.mkv",
+      "primary_sha256": "54e69822e112408cd2df7e881b9f30603846c10623612ec97c0988bd2110bd88",
+      "frames": 900,
+      "dimensions": [
+        3840,
+        1800
+      ],
+      "frame_count_verified": false,
+      "pixel_visibility_verified": false
+    },
+    "primary_decode_receipt": {
+      "format": "source-decode",
+      "passed": true,
+      "video_sha256": "54e69822e112408cd2df7e881b9f30603846c10623612ec97c0988bd2110bd88",
+      "frames": 900,
+      "dimensions": [
+        3840,
+        1800
+      ],
+      "rgb_sequence_sha256": "6ce5e2cfb99b501b1a9357e7f9b2f75ba7e0f43102ff656dc481fbb77e62898c",
+      "mapping_sha256": "254cf6a74303de9df9515883afdb319738b1e8e4072bfe35c9bf8d99d0060c49",
+      "checks": {
+        "frame_count": "all-decoded-frames"
+      },
+      "auditor_sha256": "b63af75d3599fc2401518aa9093561928c43e9c460976ea155b09860f5f02df9",
+      "threads": 4,
+      "seconds": 12.941068848129362,
+      "ffmpeg_version": "ffmpeg version n8.0.1-48-g0592be14ff-20260116 Copyright (c) 2000-2025 the FFmpeg developers"
+    },
+    "primary_decode_receipt_sha256": "f11b3df69705548e672533c7fe05a58230618457091cbc4ebbe04d867254123e",
+    "analysis_sha256": "0d1d98c2607dea0a43a1937e122176e39198d00bcc26924769afda578a34fdde",
+    "result_sha256": "1aab17391d5e1ae15e66b878a2964e3982581a58c44a687e7f696e086570bc15",
+    "channel_counts": {
+      "indicator_state": 900,
+      "body_fully_in_source_lane": 900,
+      "nearest_target_body_longitudinal_gap_m": 900
+    },
+    "physical_check_statuses": {
+      "setup": "met",
+      "target": "met",
+      "maneuver": "met",
+      "attempt": "met"
+    },
+    "negative_media_rejection": "Camera source dimensions or rate differ: overview",
+    "limitations": [
+      "synthetic source rows and uniform diagnostic colors do not establish Native acquisition or actual pixels",
+      "this is a direct finalizer and media contract diagnostic, not manifest-bound runtime.py process-saved or delivery readiness"
+    ],
+    "replayed_after_observer_change": true,
+    "replay_original_sources_unchanged": true
+  },
+  "native_source_observer_cpu_component": {
+    "source": "native_lane_construction.py",
+    "source_sha256": "8e4f80c4be67da8ed91c20b2452f2a6bab8a42f691f86198fed460ddef7ce24d",
+    "measurement_source": "lane_change_measurements.py",
+    "measurement_source_sha256": "4b317a34f68e51b3af32aa0a3b57dd0229b229a574a9c87069f4bf21dc778b57",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
+    "verified": "sampled 260 m Native source-lane polygon, two same-direction marked lane context, original actor body/lane/lamp/target traffic observations; forward corridor exit rejected as lateral change",
+    "scope": "CPU fake Native waypoint/actor test; actual map site and CARLA capture unproved",
+    "physical_acceptance_claimed": false
+  },
+  "native_camera_acquisition_cpu_component": {
+    "source": "native_lane_construction.py",
+    "source_sha256": "8e4f80c4be67da8ed91c20b2452f2a6bab8a42f691f86198fed460ddef7ce24d",
+    "test_log": "cpu-tests.log",
+    "test_log_sha256": "6052d7e8479d4adb83274b7098970ba0528dc18775d7ca2eae0cc8407a20ce74",
+    "source_cameras": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "overview_dimensions": [
+      1920,
+      1080
+    ],
+    "detail_dimensions": [
+      1280,
+      720
+    ],
+    "rate_hz": 20,
+    "source_encoding": "FFV1 bgr0 from original Native BGRA",
+    "verified": "CPU fake Native sensor spawn and callback joins; skipped/missing frame rejection; all sensor teardown; two-frame FFV1 encode/decode BGR pixel equality; exact writer frame-count enforcement",
+    "scope": "CPU acquisition/encoder components; actual site camera transforms, full CARLA sensor capture, graph/trace, process-saved and pixel coverage unproved",
+    "physical_acceptance_claimed": false
   }
 }
