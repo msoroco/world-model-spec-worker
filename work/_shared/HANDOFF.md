@@ -828,3 +828,7 @@ C215286 is owned and partial. Four alternative bundles now bind their original r
 ## 2026-11-24 C215286 alternative fixture source separation
 
 C215286 remains partial. The four staged bundles now carry site templates; four returned source-only recipes materialize original site/geometry/camera/topology files without shadowing construction. Four offline, real finalizer and pinned measurement checks pass after the rebind. See assignment HANDOFF and `cases/alternative-site-materialization.log`. Full motion/graph/video compatibility and saved-processing remain worker-owned CPU work; prior-ready packages are untouched.
+
+## 2026-11-24 C215286 intersection diagnostic compatibility
+
+One of four staged alternative cases, reverse into intersection, now passes the 900-frame exact diagnostic compatibility path using a current-library Lean decoder. See `work/testing__C215286__NRS-484B-113-2__motor_vehicle_driver/cases/intersection-full-compatibility-ledger.json` and assignment HANDOFF. The assignment-scoped complete check passes; C215286 remains partial. Returned work scan: 10,494 files, zero binary/oversize/trailing-whitespace/conflict issues. No prior-ready status changed and no Git was run.
