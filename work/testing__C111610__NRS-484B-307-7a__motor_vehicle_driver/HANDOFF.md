@@ -46,3 +46,18 @@ Next CPU work: bind a concrete Native map and official arrow signal source to a 
 `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v` passed 14 tests; `cpu-tests.log` SHA256 is `fca0a38c6da130c0b10d9f51f57fb56c9071892ae890c15830af87fc1b41234d`. New tests check exactly one tick callback per frame, saved replay, tamper rejection, no overwrite, and rejection of a divergent display packet before source files are written. The remaining CPU integration and exact runner/config/manifest, finalizer, per-case proofs, semantic proposals and independent delivery audit remain unfinished; this assignment stays partial.
 
 The exact scoped static check exited 0 (`cpu-static-check.log`, SHA256 `815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27`). The exact scoped strict check exited 1 solely because this package remains partial (`cpu-strict-check.log`, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`). All 15 returned files are UTF-8 text under 2 MiB with no trailing whitespace, conflict markers or caches.
+## 2026-11-23 exact offline arrow bundle checkpoint
+
+`build_offline_draft.py` packages all five exact cases with the existing source-gated construction, turn control, original arrow/actor acquisition and saved audits. Each inline config binds the frozen plan SHA256, exact case construction plan, 900 frames at 20 Hz, four cameras, and required original sources. Its runner validates these bindings and rejects execution without a reviewed original official arrow display, surveyed site and actor sources. `execution-manifest.draft.json` is diagnostic only, not a canonical delivery manifest.
+
+`tests/test_offline_bundle.py` checks all exact case hashes and bundled source copies plus the distinct clear, crosswalk, intersection, vehicle, and concurrent-indication plans. The focused suite passes 16 tests; pinned preflight and scoped static pass. Each `runtime.py offline` exits 0 with `simulation_started: false`:
+
+- `cpu-offline-arrow_clear.log` SHA256 `3d6fb0fc14ef8b20cab8402e0560fcb8cd9bbe71db57508a86f7eb787e69044b`.
+- `cpu-offline-arrow_ped_crosswalk.log` SHA256 `67f1acfbc51da0b2f99e291e6f24f38f3cf215eff13dc638deb81bd7a0eb3cef`.
+- `cpu-offline-arrow_ped_intersection.log` SHA256 `928a6ce8528c91037fad9b8ca830eebef80f414bfa8b8a67a7ca64318d546bd8`.
+- `cpu-offline-arrow_vehicle_intersection.log` SHA256 `a2f7c2b1c48ac96eb76bfcf72fb1702147e1ae27f9419e6dabb3407fc1b98b94`.
+- `cpu-offline-arrow_concurrent_movement.log` SHA256 `7b42fc19f7af210bdba3acccae4d1f09fa9688aff550fb1e1d64d538f87212dd`.
+
+Other proof hashes: `cpu-tests.log` `e56a2f19d078e901fc902268ac308ccdc3108619fe85a400f38b85be9a8160bd`; `cpu-preflight-bundles.log` `9833554d8c5c2afd89f639b30fd27688231748ede39f73f7899b8146dc50c91d`; `cpu-static-check.log` `815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27`; `cpu-strict-check.log` `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1, truthful partial).
+
+Next CPU work: source-bind a reviewed original Native official head and flashing arrow display adapter, turn these into canonical executable runners and manifest entries, author semantic proposals and selected-requirement finalizers, then run positive/negative compatibility, saved-only processing and independent delivery/comparison proofs. Physical realization and legal conclusions remain for later original review.

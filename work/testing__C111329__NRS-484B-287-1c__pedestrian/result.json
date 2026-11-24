@@ -2,18 +2,30 @@
   "assignment_id": "testing__C111329__NRS-484B-287-1c__pedestrian",
   "input_sha256": "2932c84bb38141f8c24e785be11e7b7f14e9ba762f570ef845db2e636939c172",
   "status": "partial",
-  "readiness_kind": "case_plan_source_measurements_and_four_camera_observation",
+  "readiness_kind": "case_plan_source_measurements_four_camera_observation_and_lazy_carla_readback",
   "applied_update": 0,
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1c__pedestrian/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "9caf5bd0833aa492be5815849cdd43e89324ce6feee01b6bd8223bacc021900a"
+      "sha256": "e756aef84bf0b8067efa7dbe42558b926ffb00be2af37186986e2631fd48e6bc"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "71b5e75c8e8b6dfe5d820a79cd7642e5fe17ba3e034cbe8783eb50859177a352"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111329__NRS-484B-287-1c__pedestrian",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "2abf7d9b524b41a18d47ebab23c461e2017332d5c7c46cc8fd1ca5f9c72dfabe"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact cases and two controlled comparisons remain planned. Source-bound site geometry, lazy walker route, 20 Hz original walker/device and four-camera PNG capture, saved-only full pixel decode and crossing/operation validator, and independent source comparison audit pass 27 focused CPU tests including a 900-frame, 3600-image fixture. Ready gate still fails: reviewed real site/device sources, exact delivery manifests, real camera adapter and finalizers, canonical stage proposals, saved-only positive/negative compatibility proofs and independent delivery audit remain CPU work; legal adjacency, official status and NRS 484B.290 exception remain unresolved."
+  "reason": "Three exact cases and two controlled comparisons remain planned. Source-bound site geometry, lazy walker route, 20 Hz original walker/device and four-camera PNG capture, saved-only full pixel decode and crossing/operation validator, independent source comparison audit, and a lazy CARLA BGRA callback/device-actor readback bridge pass 30 focused CPU tests. The new bridge requires separate operation evidence and frame-synchronous callback pixels. Ready gate still fails: reviewed real site/device sources, exact delivery manifests and finalizers, canonical stage proposals, saved-only positive/negative compatibility proofs and independent delivery audit remain CPU work; legal adjacency, official status and NRS 484B.290 exception remain unresolved."
 }

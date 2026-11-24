@@ -70,3 +70,21 @@ class StraightController:
                 "conflict_region_occupied": conflict,
                 "route_completed_request": self.completed,
                 "legal_yield_verdict": None}
+
+
+def for_exact_case(case_id, site, source_root, carla, actors):
+    """Bind the callback's participant count and kind to one planned case."""
+    prefix = "testing__C111125__NRS-484B-307-3a__motor_vehicle_driver__"
+    kinds = {"dual_clear": None, "dual_vehicle_present": "motor_vehicle",
+             "dual_pedestrian_present": "pedestrian",
+             "dual_pedestrian_late": "pedestrian"}
+    require(case_id.startswith(prefix) and case_id[len(prefix):] in kinds,
+            "unplanned exact controller case")
+    kind = kinds[case_id[len(prefix):]]
+    require(len(actors) == (1 if kind is None else 2),
+            "exact case actor count mismatch")
+    if kind is not None:
+        require(site.get("other_user_kind") == kind,
+                "exact case other-user kind mismatch")
+    return StraightController(site, source_root, carla, actors[0],
+                              actors[1] if kind is not None else None)

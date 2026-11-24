@@ -52,6 +52,9 @@ class StandTests(unittest.TestCase):
     def test_reject_frame_gap(self):
         rows=self.rows(); rows[2]['frame']=7
         with self.assertRaisesRegex(stand.SourceError, 'frame gap'): stand.measure_original_history(rows, self.expected())
+    def test_reject_time_gap(self):
+        rows=self.rows(); rows[2]['time_s'] += .04
+        with self.assertRaisesRegex(stand.SourceError, '20 Hz time discontinuity'): stand.measure_original_history(rows, self.expected())
     def test_reject_missing_participant(self):
         rows=self.rows(); rows[2]['entrant_id']='missing'
         with self.assertRaisesRegex(stand.SourceError, 'actor identity'): stand.measure_original_history(rows, self.expected())

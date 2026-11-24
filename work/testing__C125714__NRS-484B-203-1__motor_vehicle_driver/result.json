@@ -6,14 +6,32 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-203-1__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C125714__NRS-484B-203-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "a1045318970b914889ca2375e5add05fbf24d192a3ff243ecaf051deddb04007"
+      "sha256": "ea3ec9189245e97def1acf75167b4072ab249a8874e7ae122a954652b2a3bb2e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "9355e7a2f3696e8ae60a37d7fc71fa3f6936da6d9fbf893628eb215d2729994e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-203-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-check.log",
+      "sha256": "b1f42786e4fe6ab5d09c65e9e58f606a5c0a8a9d3caebaf71227aa8d54107507"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125714__NRS-484B-203-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four exact cases and three controlled comparisons planned; source-gated undivided median-approach route requests, Native pair spawn/readback and cleanup, sealed original-history measurements, saved finalizer and comparison rejection checks pass 11 CPU tests. Canonical stage proposals, capture runner/controllers, exact offline and positive/negative compatibility receipts, saved-only pipeline processing, delivery audit and execution manifest remain CPU work; exact strict gate still rejects partial package."
+  "reason": "Four exact cases and three controlled comparisons remain partial. native_history.py now projects eight original body vertices per actor into the source-defined road frame, checks original 20 Hz frame/time and actor identity, seals a SHA-bound trace, and feeds the existing saved finalizer; 14 CPU tests pass. Pinned preflight and scoped static pass. CARLA world control, four-camera capture, exact inline constructions and manifest, semantic proposals, offline/compatibility/saved delivery and independent audit proofs remain CPU work. No physical or legal acceptance claimed."
 }

@@ -46,7 +46,8 @@ def _reviewed_highways(packet: dict, packet_path: Path, map_digest: str,
 
 def verify_live_map(world, packet_path: Path, case_id: str) -> dict:
     packet_path = Path(packet_path)
-    packet = json.loads(packet_path.read_text())
+    packet_bytes = packet_path.read_bytes()
+    packet = json.loads(packet_bytes)
     map_object = world.get_map()
     opendrive = map_object.to_opendrive()
     if not isinstance(opendrive, str) or not opendrive.strip():
@@ -65,7 +66,8 @@ def verify_live_map(world, packet_path: Path, case_id: str) -> dict:
     return {"format": "worker-400-2a-live-map-binding-v1",
             "case_id": case_id, "map_name": map_object.name,
             "opendrive_sha256": digest,
-            "survey_packet_sha256": hashlib.sha256(packet_path.read_bytes()).hexdigest(),
+            "survey_packet_sha256": hashlib.sha256(packet_bytes).hexdigest(),
+            "intersection_context": context,
             "planned_construction": planned,
             "public_highway_reviewed": reviewed,
             "physical_completion": False}

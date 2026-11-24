@@ -2,24 +2,36 @@
   "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "8296514c6ffd29a78c0e9711f292a5475cbac39a9eb5835e1a51b1a8f3246a1e",
   "status": "partial",
-  "readiness_kind": "accepted_reuse_review_and_source_bound_sight_audit_draft",
+  "readiness_kind": "accepted_reuse_review_and_source_bound_comparison_audit_draft",
   "applied_update": 0,
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-sight-tests.log",
-      "sha256": "7f0d2263ac4476ffcd41142c6484aeed87df9c33f7ade3e4f46a574e4701e846"
+      "sha256": "c9f528388b73e6992db66ded63f07b607c623b0d14c6b706d11499159eaa77ec"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-comparison.log",
+      "sha256": "eaa2eca1cc9d2e0fad482e7d14cab630f9d2f97fa0ad7caa1a29dde8ca3ae320"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "cpu-static-check.log",
       "sha256": "f6d113fe22b0f4b45e4f8e2989aa63145e797a6933508394eb61f31cfa131fbb"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-check.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Ten accepted recordings and seven authored comparisons are retained as source-review candidates, with zero duplicate recordings planned while original traces/videos remain absent from this export. Saved source-bound audit now checks original 900-frame 20 Hz U-turn motion and both approach directions at the statutory 500-foot endpoint using nine body points and an operational 1.4 m observer. Existing accepted source visibility is unproven; Native capture adapters, full original evidence re-review, comparison audit and delivery proofs remain CPU work. Status partial."
+  "reason": "Ten accepted recordings and seven authored comparison pairs remain source-review candidates; zero duplicate recordings are planned. Saved original 500-foot two-direction sight measurement and an independent seven-pair source-bound comparison audit now pass nine focused CPU tests. Pinned preflight and scoped static pass; exact strict remains partial because original accepted traces/videos are absent for reuse review. Native capture adapter, full original evidence re-review, source-bound delivery and canonical acceptance proofs remain CPU work. Physical sight and legal driver visibility are unconfirmed."
 }

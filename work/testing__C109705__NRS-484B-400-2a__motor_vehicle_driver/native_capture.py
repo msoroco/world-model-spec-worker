@@ -45,6 +45,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     root = Path(tempfile.mkdtemp(prefix=destination.name + '.incomplete-',
                                  dir=destination.parent))
     started = False
+    opendrive = None
     history: list[dict] = []
     frame_map: list[dict] = []
     archives = {}
@@ -89,6 +90,10 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                               'time_s': time_s,
                               'camera_frames': {name: frame for name in sorted(CAMERAS)},
                               'camera_times_s': camera_times})
+        opendrive = adapter.world.get_map().to_opendrive()
+        if (not isinstance(opendrive, str) or
+                hashlib.sha256(opendrive.encode()).hexdigest() != binding['opendrive_sha256']):
+            raise ValueError('Native OpenDRIVE changed during capture')
     except BaseException:
         shutil.rmtree(root)
         raise
@@ -105,11 +110,7 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
             shutil.rmtree(root, ignore_errors=True)
             raise
     try:
-        context = json.loads(Path(map_packet_path).read_text())['context']
-        opendrive = adapter.world.get_map().to_opendrive()
-        if (not isinstance(opendrive, str) or
-                hashlib.sha256(opendrive.encode()).hexdigest() != binding['opendrive_sha256']):
-            raise ValueError('Native OpenDRIVE changed during capture')
+        context = binding['intersection_context']
         road_bytes = opendrive.encode()
         (root / 'road.xodr').write_bytes(road_bytes)
         context_bytes = (json.dumps(context, sort_keys=True, separators=(',', ':')) + '\n').encode()

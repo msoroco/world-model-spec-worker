@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C109171__NRS-484B-307-4b__pedestrian",
   "input_sha256": "a4082e592a81342bad302e4274e7d1202d2c700d1718636cf4d30f92bf69a2c4",
-  "status": "partial",
   "readiness_kind": "source_gated_construction_draft",
-  "applied_update": 0,
+  "reason": "Four exact cases and three comparisons remain partial. The CARLA adapter joins world frame, simulation time and walker position to post-tick Native sources. The new saved-only processor joins source-bound exact-case entry/WALK measurement with a full reopened 600-frame, four-camera PNG audit, writes once after both pass and leaves no output after a changed original camera. Forty-four focused CPU tests and pinned preflight pass. Scoped static passes; strict remains partial. Worker-owned CPU work remains: verified original signal/device reader, canonical semantic proposals and four inline bundles, exact manifest, positive/negative compatibility and independent delivery receipts. No physical visibility or statutory permission is claimed.",
+  "remaining_gpu_checks": [
+    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
@@ -28,10 +32,30 @@
       "exit_code": 1,
       "log": "cpu-strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C109171__NRS-484B-307-4b__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-saved-process-tests.log",
+      "sha256": "f8e8fce2a2dc3cabb3c7373aba5e96303d8e2eef57934e3cb8e8d246a86bbcba"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-saved-process-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C109171__NRS-484B-307-4b__pedestrian --complete",
+      "exit_code": 0,
+      "log": "cpu-saved-process-static.log",
+      "sha256": "2c4e093e0f1887e9048e23e9569eb9ef8191c0ef171690075be4dbc5944a4e3b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C109171__NRS-484B-307-4b__pedestrian --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-saved-process-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Four exact cases and three comparisons remain partial. The CARLA adapter now joins event world frame, simulation time and pedestrian position to the actual post-tick snapshot and actor; 42 focused CPU tests pass. Scoped static passes; strict remains partial. Worker-owned CPU work remains: verified original signal/device reader, canonical semantic proposals and four inline bundles, exact manifest, positive/negative compatibility, saved-only and delivery receipts. No physical visibility or statutory permission is claimed."
+  ]
 }

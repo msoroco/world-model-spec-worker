@@ -28,7 +28,7 @@ CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 class FakeAdapter:
     def __init__(self, *, drift_at=None, camera_drift_at=None, omit_camera=None, invalid_png=False,
-                 cleanup_failure=False):
+                 cleanup_failure=False, disconnect_on_cleanup=False):
         self.world = FakeWorld()
         self.count = 0
         self.drift_at = drift_at
@@ -36,6 +36,7 @@ class FakeAdapter:
         self.omit_camera = omit_camera
         self.invalid_png = invalid_png
         self.cleanup_failure = cleanup_failure
+        self.disconnect_on_cleanup = disconnect_on_cleanup
         self.braked = False
         self.cleaned = False
         self.native_attested = False
@@ -67,6 +68,8 @@ class FakeAdapter:
 
     def cleanup(self):
         self.cleaned = True
+        if self.disconnect_on_cleanup:
+            self.world = None
         if self.cleanup_failure:
             raise RuntimeError('adapter cleanup failure')
 
@@ -222,6 +225,48 @@ class NativeCaptureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'changed during capture'):
                 capture(adapter, CASE, survey, root / 'attempt')
             self.assertFalse((root / 'attempt').exists())
+
+    def test_map_is_sealed_before_adapter_disconnects(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            adapter = FakeAdapter(disconnect_on_cleanup=True)
+            capture(adapter, CASE, survey, root / 'attempt')
+            self.assertIsNone(adapter.world)
+            self.assertEqual((root / 'attempt' / 'road.xodr').read_bytes(),
+                             b'<OpenDRIVE>surveyed</OpenDRIVE>')
+
+    def test_survey_context_is_sealed_before_capture_starts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            original = json.loads(survey.read_text())['context']
+
+            class ChangingPacketAdapter(FakeAdapter):
+                def start(self, plan):
+                    super().start(plan)
+                    changed = json.loads(survey.read_text())
+                    changed['context']['camera_plan'] = 'changed after verification'
+                    survey.write_text(json.dumps(changed))
+
+            capture(ChangingPacketAdapter(), CASE, survey, root / 'attempt')
+            saved = json.loads((root / 'attempt' / 'intersection-context.json').read_text())
+            self.assertEqual(saved, original)
+            self.assertNotEqual(saved['camera_plan'],
+                                json.loads(survey.read_text())['context']['camera_plan'])
+
+    def test_saved_audit_rejects_changed_original_map(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            capture(FakeAdapter(), CASE, survey, attempt)
+            (attempt / 'road.xodr').write_text('<OpenDRIVE>changed</OpenDRIVE>')
+            with self.assertRaisesRegex(ValueError, 'stale original Native source'):
+                audit(attempt, CASE, allow_diagnostic=True)
 
     def test_adapter_cleanup_failure_does_not_publish_partial_capture(self):
         with tempfile.TemporaryDirectory() as temp:

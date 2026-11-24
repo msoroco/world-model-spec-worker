@@ -20,9 +20,118 @@
   "topic_inventory": {
     "exact-text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+      "target_law_id": "NRS-484B-250-2",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "purpose": "Measure original footprint entry timing below the frozen training range; no legal cutoff inferred",
+      "scenario_parameters": {
+        "judgment_probe": "below",
+        "entry_time_difference_target_s": -2.860000042617321,
+        "variable": "intersection_entry_time_difference",
+        "fixed_cell": "C125745",
+        "official_stop_sign_status": "requires_source_review"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Median-opening site, distinct-highway approaches and exact arrival order are not source-grounded in the worker export.",
+        "fallback_policy": "Only source-reviewed same-cell approach timing or spawn adjustment may be tried without changing the entry-timing comparison variable."
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+      "target_law_id": "NRS-484B-250-2",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "purpose": "Measure original footprint entry timing inside the frozen training range; no legal cutoff inferred",
+      "scenario_parameters": {
+        "judgment_probe": "inside",
+        "entry_time_difference_target_s": -0.02500000037252903,
+        "variable": "intersection_entry_time_difference",
+        "fixed_cell": "C125745",
+        "official_stop_sign_status": "requires_source_review"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Median-opening site, distinct-highway approaches and exact arrival order are not source-grounded in the worker export.",
+        "fallback_policy": "Only source-reviewed same-cell approach timing or spawn adjustment may be tried without changing the entry-timing comparison variable."
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_above",
+      "target_law_id": "NRS-484B-250-2",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "purpose": "Measure original footprint entry timing above the frozen training range; no legal cutoff inferred",
+      "scenario_parameters": {
+        "judgment_probe": "above",
+        "entry_time_difference_target_s": 2.810000041872263,
+        "variable": "intersection_entry_time_difference",
+        "fixed_cell": "C125745",
+        "official_stop_sign_status": "requires_source_review"
+      },
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "Median-opening site, distinct-highway approaches and exact arrival order are not source-grounded in the worker export.",
+        "fallback_policy": "Only source-reviewed same-cell approach timing or spawn adjustment may be tried without changing the entry-timing comparison variable."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "entry_timing_below_inside",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_inside"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed median-opening intersection and highway approaches",
+        "same actor blueprints, traffic-control source and camera/duration contract",
+        "same route geometry and intersection boundary source"
+      ],
+      "deliberate_differences": [
+        "target ego-minus-other original footprint entry timing"
+      ]
+    },
+    {
+      "comparison_id": "entry_timing_inside_above",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+        "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__entry_above"
+      ],
+      "fixed_conditions": [
+        "same source-reviewed median-opening intersection and highway approaches",
+        "same actor blueprints, traffic-control source and camera/duration contract",
+        "same route geometry and intersection boundary source"
+      ],
+      "deliberate_differences": [
+        "target ego-minus-other original footprint entry timing"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "intersection_entry_time_difference",
+      "source": "source-sealed original 20 Hz ego/other body footprints and intersection polygon",
+      "measurement": "first footprint-polygon transition upper timestamps and consecutive sample brackets; ego minus other without interpolation",
+      "status": "CPU method tested; actual source traces absent"
+    },
+    {
+      "name": "official_control_exception",
+      "source": "source-bound placement, authority and operation record",
+      "measurement": "independent review pending; stop_sign cell does not itself prove official status"
+    },
+    {
+      "name": "different_highways_and_priority",
+      "source": "source-bound roadway identities and approach directions",
+      "measurement": "different-highway readback checked by analyzer; left/right priority requires separate source review"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/assignment.json",
@@ -67,7 +176,8 @@
   ],
   "runtime_uncertainties": [
     "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented.",
+    "Three planned timing probes are unmeasured targets; accepted metadata cannot establish below/inside/above original entry timing or legal applicability at a stop-sign cell."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -129,7 +239,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "three_exact_timing_probe_cases_and_cpu_saved_measurement_method",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/assignment.json",

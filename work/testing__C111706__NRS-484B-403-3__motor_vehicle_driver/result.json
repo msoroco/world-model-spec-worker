@@ -2,23 +2,29 @@
   "assignment_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver",
   "input_sha256": "9fbbfa138edaa7336c22f0f79c2266ed404dda2a4e77789a973d1c2685a4ee74",
   "status": "partial",
-  "readiness_kind": "delivery_construction_checkpoint",
+  "readiness_kind": "delivery_construction_and_owned_lifecycle_checkpoint",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "4d2dd455228d653011c4763a19dfdf57cb080974257fb8aaf1b1e500dfaa9051"
+      "sha256": "d6c51d9565d05ac6ccc7c01dd04d4ce6b63ddc3a0a4f06505ac73561feb41872"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "sha256": "3dee32683f1b58593822384cf7d8c4ade23a9ffd4a5ed12bdc57a0ef8c5a766d"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "assignment-check.log",
       "sha256": "01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "assignment-strict.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
@@ -27,5 +33,5 @@
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact cases and two controlled comparisons remain partial. Source-route pure-pursuit ego control, timed other-vehicle control, synchronized 900-tick four-camera original acquisition, independent full-PNG saved audit, and source-bound pair comparison audits now pass 34 focused CPU tests; scoped static passes. Reviewed map/business-district/intersection site and per-case route source, exact bundles/manifest, semantic proposals, positive/negative compatibility, saved-only delivery lifecycle and independent delivery acceptance proofs remain CPU work. Physical realization and legal classification remain unconfirmed."
+  "reason": "Three exact cases and two controlled comparisons remain partial. Source-route pure-pursuit ego and timed other-vehicle controls, synchronized 900-tick four-camera acquisition, saved full-PNG and source-bound comparison audits, and an exact-case runner with synchronous world setup and guaranteed actor/sensor/world cleanup pass 39 focused CPU tests; pinned preflight and scoped static pass. Reviewed map/business-district/intersection site and per-case route sources, exact bundles/manifest, semantic proposals, positive/negative compatibility, saved-only delivery lifecycle and independent delivery acceptance proofs remain CPU work. Physical realization and legal classification remain unconfirmed."
 }

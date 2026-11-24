@@ -16,7 +16,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from approach import compare_original_attempts, measure
+from approach import _verified, compare_original_attempts, measure
 
 
 PREFIX = "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__"
@@ -49,6 +49,8 @@ def audit(attempt: Path, case_id: str, *, allow_diagnostic: bool = False) -> dic
         raise ValueError("unknown exact approach case")
     attempt = Path(attempt)
     acquisition = json.loads((attempt / "acquisition.json").read_text())
+    if 'road.xodr' in acquisition:
+        _verified(attempt, 'road.xodr', acquisition)
     if acquisition.get("case_id") != case_id:
         raise ValueError("original acquisition case differs")
     if acquisition.get("diagnostic_fixture") is not False and not allow_diagnostic:

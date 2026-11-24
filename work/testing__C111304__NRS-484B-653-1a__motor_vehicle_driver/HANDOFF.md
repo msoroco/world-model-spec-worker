@@ -54,3 +54,21 @@ The acquisition and independent saved audit now additionally bind each original 
 `saved_audit.audit_saved_timing_pair` now reopens and independently rejoins both 900-frame sealed Native attempts for each declared northbound, southbound, or premises early/late timing pair. It checks exact case order, original actor/control/camera packet hashes, common site/map/camera/public-access and speed/fps/duration sources, unchanged actor blueprints, ordered release commands, and a real difference in measured ego-to-occupant center distance. It retains source and receipt hashes and makes no pixel, physical-completion, or legal finding. Positive and negative CPU tests reject reversed cases, modified packets, changed fixed map, identical measured encounter, and unsupported pair IDs. This is a proof of the comparison-audit code using diagnostic fixtures, not original C111304 evidence.
 
 The focused suite passes 23 tests (`cpu-tests.log`); scoped static check exits 0 (`cpu-static-check.log`). The exact scoped strict command exits 1 (`strict-check.log`) because this assignment is still partial. Remaining CPU work includes source-reviewed highway and public-access-premises map packets, CARLA world/camera adapter binding, eight exact runner and manifest bundles, semantic proposals, per-case offline and positive/negative compatibility, full saved delivery, and source-bound property-position and approach-direction comparison audits. Physical motion and camera visibility still require Native execution.
+## 2026-11-23 exact offline diagnostic bundle checkpoint
+
+`build_offline_draft.py` packages each of the eight exact C111304 cases with unchanged encounter, Native acquisition, site binding, saved, and media audit source; its inline `config.json` binds the selected case spec, the plan SHA256, 900 original frames at 20 Hz, four cameras, and required original sources. The runner validates these bindings and refuses unsourced Native capture. `execution-manifest.draft.json` is diagnostic only; it is not a canonical delivery manifest. No physical or legal outcome is inferred.
+
+`tests/test_offline_bundle.py` verifies each construction SHA and source copy, complete exact-case coverage, and the five controlled configuration variations. The focused suite passes 25 tests; pinned runtime preflight and scoped static checks pass. Each exact `runtime.py offline` command exits 0 and reports `simulation_started: false`:
+
+- `cpu-offline-person_north_early.log` SHA256 `904e89f1d03f04432328f39502d404c24b8cdb665f535daba53c970c2e5992e0`.
+- `cpu-offline-person_north_late.log` SHA256 `ba7f5bfcec0874595673340af5c05435a42b08ce78084c6ff0c8982cd0567957`.
+- `cpu-offline-person_south_early.log` SHA256 `be72e0350a7a447d518e68b4cd369933679bdf2173c827c3e3a275fd5039c104`.
+- `cpu-offline-person_south_late.log` SHA256 `c5e678dae3ff5c545090a532432e3b8c5d67957f435d358515a3cec3ed2eeb62`.
+- `cpu-offline-property_near.log` SHA256 `c547691219d759f7649a2876e96c79b2eab54f8391c08a6c3b038218bbbdf6d6`.
+- `cpu-offline-property_far.log` SHA256 `c7c71fce81c1dc54c4698a1373549b7b13bd8121023023caa438cede4b94eaa4`.
+- `cpu-offline-premises_person_early.log` SHA256 `0eba9cedf9ec40a20f379822d0fe5817748b859bc2c56c9897a2bc6ae2ed0833`.
+- `cpu-offline-premises_person_late.log` SHA256 `a18e95b9f9fcac971acf679f929471904321786da87ad73f460f8877c8d010c8`.
+
+Other proof hashes: `cpu-tests.log` `1d41e224a81184e42ea560aada7643f636681f7ab9dec732545864fb6bac0a86`; `cpu-preflight-bundles.log` `8ed8e83e191ef2ee6576c16ff729ef759a58f355a687575729e012a9369c72d4`; `cpu-static-check.log` `474d50a70a3c70eb63d92525483a56f036392efa4cd4bd434fe9f4b3e25ab296`; `strict-check.log` `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1, truthful partial).
+
+Next CPU work: bind reviewed original C111304 highway and public-access-premises site packets and a CARLA world/camera adapter; promote all eight bundles to executable Native delivery runners and canonical manifest; supply exact semantic proposals, selected-requirement finalizers, positive/negative compatibility, saved processing and independent delivery/comparison receipts. Physical motion, original pixels, capture quality, and willful/wanton legal judgment require subsequent original review.

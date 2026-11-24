@@ -80,7 +80,7 @@ def measure_original_history(rows, expected):
         _require(row['subject_id'] == expected['subject_id'] and row['entrant_id'] == expected['entrant_id'] and row['passenger_id'] == expected['passenger_id'], 'actor identity mismatch')
         _require(math.isfinite(float(row['time_s'])), 'nonfinite time')
         if index:
-            _require(row['time_s'] > rows[index-1]['time_s'], 'time discontinuity')
+            _require(0.049 <= row['time_s'] - rows[index-1]['time_s'] <= 0.051, 'original 20 Hz time discontinuity')
         _require(row['subject_speed_mps'] >= 0 and row['entrant_speed_mps'] >= 0, 'invalid speed')
         _require(isinstance(row['passenger_loading_active'], bool), 'loading readback missing')
         _require(isinstance(row['entrant_waiting'], bool) and isinstance(row['entrant_about_to_enter'], bool), 'entrant status missing')

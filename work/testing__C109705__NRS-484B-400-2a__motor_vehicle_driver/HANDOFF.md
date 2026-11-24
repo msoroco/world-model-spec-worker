@@ -173,3 +173,17 @@ Four exact pinned compatibility attempts now pass selected analysis and Native r
 `native_capture.py` now saves the loaded OpenDRIVE bytes as `road.xodr` after the 900-frame capture and binds their SHA256 in `acquisition.json`. A second live map read must match the reviewed survey digest before the attempt is published; changed bytes abort the atomic capture. `cpu-native-map-preservation-tests.log` records nine passing focused tests, including the map drift rejection. This adds a source input needed by Core conversion; canonical capture evidence, recorder data, and a complete source-shaped compatibility fixture are still unfinished CPU work.
 
 All 30 assignment tests also pass after the OpenDRIVE byte-preservation change (`cpu-native-map-preservation-all-tests.log`).
+
+### 2026-11-23 Exact capture bundle integration
+
+All four `cases/*/construction.json` now carry `native_map.py`, `native_capture.py`, `saved_delivery.py`, and the updated `runner.py`. `runner.run_capture` checks the frozen exact case and calls the 900-frame Native capture with an injected adapter and surveyed map packet. `cpu-native-capture-bundle-tests.log` records 31 passing focused tests; `cpu-native-capture-bundle-offline-*.log` records four passing pinned offline materializations. The inline runner CLI still needs production adapter connection and the original Core capture packet, including per-frame evidence, recorder metadata, and source-bound positive/negative compatibility. Status remains partial.
+
+The map is read and verified before adapter cleanup, so disconnection cannot prevent source sealing. `cpu-native-capture-bundle-tests-v2.log` records 32 passing tests, including a disconnecting adapter; four `cpu-native-capture-bundle-offline-v2-*.log` checks pass.
+
+The saved audit now verifies the sealed original OpenDRIVE hash when the source is present. A tampered map is rejected even if the body/camera rows remain unchanged. `cpu-native-capture-bundle-tests-v3.log` records 33 passing tests; four `cpu-native-capture-bundle-offline-v3-*.log` checks pass.
+
+The final 33-test run used `TMPDIR` and the pipeline output root under `.runtime-work/c109705-map-preservation`; see `cpu-native-capture-bundle-tests-v4.log`.
+
+### 2026-11-23 survey context sealing
+
+`native_map.verify_live_map` now parses and hashes the same packet bytes, then returns its validated intersection context. `native_capture.capture` writes those retained bytes after the 900-frame run, so a packet edit during acquisition cannot replace the saved context. The focused mutation test changes the survey packet in `adapter.start` and confirms the original validated context is saved. All 34 focused tests and four exact pinned offline materializations pass. The execution manifest and result hashes were refreshed. Status remains partial pending reviewed Native source and complete Core capture, compatibility, processing and delivery proofs.

@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver",
   "input_sha256": "9ba867d8846ad4a85260601e4de3328304d1fbe45698414624f84f2d0de36e66",
-  "status": "partial",
   "readiness_kind": "construction_and_saved_measurement_draft",
-  "applied_update": 0,
+  "reason": "Six source-grounded cases and five comparisons are planned. The new lazy CARLA adapter joins 20 Hz world ticks and snapshots to distinct driver/person actors, computes original velocity and labeled 2D circle-bound body-gap proxy, joins four BGRA camera callbacks to the same frame, and brakes/stops listeners on exit. Native 900-frame capture, independent full-decode of 3,600 PNG originals and saved measurement remain CPU-tested; 14 focused tests and pinned preflight pass. Canonical exact bundles, semantic proposals, per-case offline and positive/negative compatibility, canonical saved-process integration, comparison proof receipts and verified blindness/cue sources remain CPU work. Exact strict remains partial; no physical or legal acceptance is claimed.",
+  "remaining_gpu_checks": [
+    "Actual Native route/actor/prop motion, cue visibility and original capture quality after CPU readiness"
+  ],
+  "status": "partial",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/tests -v",
@@ -22,10 +26,30 @@
       "exit_code": 1,
       "log": "strict-check.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-carla-adapter-tests.log",
+      "sha256": "fc0faeef63dc481c181b7486857b1beb0317e3f1f28a7b9a26c3ce12a284ddeb"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-carla-adapter-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-carla-adapter-static.log",
+      "sha256": "0a4ff9e3e5d8205601b12039ecd202fc0159418643bff694b18cd0939c6dff4f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111248__LVMC-11-30-140-B__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-carla-adapter-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual Native route/actor/prop motion, cue visibility and original capture quality after CPU readiness"
-  ],
-  "reason": "Six source-grounded cases and five comparisons are planned. Native 900-frame 20 Hz capture now writes source-bound original history and 3,600 camera PNGs with cleanup and control; independent full-decode media audit and saved measurement are CPU-tested (11 tests). Canonical exact case bundles, semantic proposals, per-case offline and positive/negative compatibility receipts, canonical process-saved integration, and comparison proof receipts remain CPU work. Exact strict gate fails because status is partial."
+  ]
 }
