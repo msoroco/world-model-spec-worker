@@ -26,6 +26,15 @@ def bound_json(path, expected_sha256):
     return json.loads(path.read_text())
 
 
+def reviewed_packet(reference, name):
+    if not isinstance(reference, dict) or not reference.get('path') or not reference.get('sha256'):
+        raise ValueError('Native ' + name + ' reviewed source path/hash required')
+    packet = bound_json(reference['path'], reference['sha256'])
+    if packet.get('source_kind') != 'reviewed_original' or not packet.get('reviewed_by'):
+        raise ValueError('Native ' + name + ' source review missing')
+    return packet
+
+
 def source_configuration(env, case_id):
     required = ("C10307_SCENE_SOURCE", "C10307_SCENE_SHA256",
                 "C10307_ASSET_INVENTORY", "C10307_ASSET_SHA256")
@@ -33,17 +42,30 @@ def source_configuration(env, case_id):
         raise ValueError("Native scene and asset inventory paths/hashes required")
     scene = bound_json(env["C10307_SCENE_SOURCE"], env["C10307_SCENE_SHA256"])
     inventory = read_asset_inventory(Path(env["C10307_ASSET_INVENTORY"]), env["C10307_ASSET_SHA256"])
-    if scene.get("case_id") != case_id or scene.get("map_sha256") is None:
+    road_ref = scene.get('road_source')
+    if (scene.get("case_id") != case_id or not isinstance(road_ref, dict) or
+            not road_ref.get('path') or road_ref.get('sha256') != scene.get('map_sha256') or
+            not Path(road_ref['path']).is_file() or sha(road_ref['path']) != road_ref['sha256']):
         raise ValueError("Native scene case/map source mismatch")
     if scene.get("human_powered_bicycle_verified") is not True or scene.get("rack_asset_verified") is not True:
         raise ValueError("Native bicycle/rack physical classification source missing")
     jurisdiction = scene.get("jurisdiction", {})
     if jurisdiction.get("city_of_las_vegas") is not True or not jurisdiction.get("source"):
         raise ValueError("Native municipal jurisdiction source missing")
+    municipal = reviewed_packet(jurisdiction['source'], 'municipal jurisdiction')
+    if municipal.get('city_of_las_vegas') is not True or municipal.get('world_map') != scene.get('world_map'):
+        raise ValueError('Native municipal jurisdiction packet differs from scene')
     if inventory.get("world_map") != scene.get("world_map"):
         raise ValueError("Native asset inventory map differs from scene")
     if not scene.get("bicycle_classification_source") or not scene.get("rack_geometry_source"):
         raise ValueError("Native bicycle/rack geometry source missing")
+    bicycle = reviewed_packet(scene['bicycle_classification_source'], 'bicycle classification')
+    rack = reviewed_packet(scene['rack_geometry_source'], 'rack geometry')
+    if (bicycle.get('human_powered') is not True or bicycle.get('moped') is not False or
+            bicycle.get('blueprint_id') != scene.get('bicycle_blueprint_id') or
+            rack.get('blueprint_id') != scene.get('rack_blueprint_id') or
+            rack.get('rack_type') != 'bicycle_rack'):
+        raise ValueError('Native bicycle/rack reviewed packets differ from scene')
     return scene, inventory
 
 

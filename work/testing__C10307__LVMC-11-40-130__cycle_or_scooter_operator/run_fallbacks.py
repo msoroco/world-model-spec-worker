@@ -31,7 +31,7 @@ def main() -> None:
         short = entry["case_id"].removeprefix(manifest["assignment_id"] + "__")
         candidate = entry["candidates"][0]
         prefix = f"cpu-fallback1-{short}"
-        output = REPO / ".runtime-work" / f"c10307-fallback1-offline-v6-{short}"
+        output = REPO / ".runtime-work" / f"c10307-fallback1-offline-v9-{short}"
         command = [str(PYTHON), str(REPO / "runtime.py"), "offline", "--manifest", str(MANIFEST),
                    "--case", entry["case_id"], "--candidate", "fallback1", "--output", str(output),
                    "--python", str(PYTHON)]
@@ -42,7 +42,7 @@ def main() -> None:
                                 "log": log.name, "log_sha256": sha(log)}
         if exit_code:
             raise RuntimeError(f"offline fallback failed for {short}: {log}")
-        output = REPO / ".runtime-work" / f"c10307-fallback1-compat-v6-{short}"
+        output = REPO / ".runtime-work" / f"c10307-fallback1-compat-v9-{short}"
         command = [str(PYTHON), str(REPO / "runtime.py"), "compatibility", "--manifest", str(MANIFEST),
                    "--case", entry["case_id"], "--candidate", "fallback1", "--output", str(output),
                    "--library", str(REPO / "runtime/library"), "--validator", str(VALIDATOR)]

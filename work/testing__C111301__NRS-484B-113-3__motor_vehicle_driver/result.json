@@ -9,17 +9,29 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-preflight.log",
-      "sha256": "6f72c24d6bc069e10464904b6764ef662eff85099f295c47dfffe2e43250fe04"
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
     },
     {
       "command": "TMPDIR=$PWD/.runtime-work/c111301-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-backing-tests.log",
-      "sha256": "1cdd1f73eed9baf87c3c2197a53a6a41a9da949ae454a8bb1d7fea25e88cac23"
+      "sha256": "10d8d18e36090b29c2bdafddaee95a802a7ffed318f4f62cabcff8b8b55ad7a0"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "assignment-check.log",
+      "sha256": "6f95550e204df71bfd17832f265d6b90b00c340394b06d6de0449007baf6c293"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-gate.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Two exact pedestrian backing cases have source-gated geometry, Native actor setup/controller, 900-frame saved telemetry/four-camera join, full media decode, sealed two-attempt comparison and 20-frame driver-response witnesses. Saved processing now derives corridor occupancy from the sealed reverse route and original pedestrian positions and rejects contradictory telemetry. Twenty-one focused tests and scoped static pass. Canonical runtime bundles, stage proposals, Native capture/finalization, exact offline/compatibility receipts and delivery integration remain CPU work; original Native site unreviewed."
+  "reason": "Two exact pedestrian backing cases have source-gated geometry, Native actor setup/controller, 900-frame saved telemetry/four-camera join, full media decode, sealed two-attempt comparison and original-frame driver-response witnesses. The saved processor now separately seals original map bytes and verifies that their SHA-256 agrees with the map packet claim. Twenty-three focused tests, pinned preflight and scoped static pass. Canonical runtime bundles, semantic proposals, Native capture/finalization, exact offline/compatibility receipts and independent delivery audit remain CPU work; original Native site unreviewed."
 }

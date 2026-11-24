@@ -37,23 +37,49 @@ class NativeAdapterTests(unittest.TestCase):
     def test_hash_bound_native_sources_and_classification(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            scene = {"case_id": CASE, "world_map": "local", "map_sha256": "a" * 64,
+            road = root / 'road.xodr'
+            road.write_text('<OpenDRIVE/>\n')
+            digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+            packets = {
+                'municipal': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
+                              'city_of_las_vegas': True, 'world_map': 'local'},
+                'bicycle': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
+                            'human_powered': True, 'moped': False, 'blueprint_id': 'vehicle.bicycle'},
+                'rack': {'source_kind': 'reviewed_original', 'reviewed_by': 'CPU test reviewer',
+                         'rack_type': 'bicycle_rack', 'blueprint_id': 'static.rack'}}
+            refs = {}
+            for name, packet in packets.items():
+                path = root / (name + '.json')
+                path.write_text(json.dumps(packet))
+                refs[name] = {'path': str(path), 'sha256': digest(path)}
+            scene = {"case_id": CASE, "world_map": "local", "map_sha256": digest(road),
+                     'road_source': {'path': str(road), 'sha256': digest(road)},
+                     'bicycle_blueprint_id': 'vehicle.bicycle', 'rack_blueprint_id': 'static.rack',
                      "human_powered_bicycle_verified": True, "rack_asset_verified": True,
-                     "bicycle_classification_source": "local type audit",
-                     "rack_geometry_source": "local body audit",
-                     "jurisdiction": {"city_of_las_vegas": True, "source": "local map audit"}}
+                     "bicycle_classification_source": refs['bicycle'],
+                     "rack_geometry_source": refs['rack'],
+                     "jurisdiction": {"city_of_las_vegas": True, "source": refs['municipal']}}
             assets = {"source_kind": "original_local_native_blueprint_inventory",
                       "world_map": "local", "blueprint_ids": ["vehicle.bicycle", "static.rack"]}
             sp = root / "scene.json"
             ap = root / "assets.json"
             sp.write_text(json.dumps(scene))
             ap.write_text(json.dumps(assets))
-            digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
             env = {"C10307_SCENE_SOURCE": str(sp), "C10307_SCENE_SHA256": digest(sp),
                    "C10307_ASSET_INVENTORY": str(ap), "C10307_ASSET_SHA256": digest(ap)}
             selected, inventory = source_configuration(env, CASE)
             self.assertEqual(selected, scene)
             self.assertEqual(inventory, assets)
+            packets['municipal']['city_of_las_vegas'] = False
+            (root / 'municipal.json').write_text(json.dumps(packets['municipal']))
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                source_configuration(env, CASE)
+            (root / 'municipal.json').write_text(json.dumps({**packets['municipal'],
+                                                           'city_of_las_vegas': True}))
+            road.write_text('<OpenDRIVE changed="yes"/>\n')
+            with self.assertRaisesRegex(ValueError, 'case/map source mismatch'):
+                source_configuration(env, CASE)
+            road.write_text('<OpenDRIVE/>\n')
             scene["human_powered_bicycle_verified"] = False
             sp.write_text(json.dumps(scene))
             env["C10307_SCENE_SHA256"] = digest(sp)

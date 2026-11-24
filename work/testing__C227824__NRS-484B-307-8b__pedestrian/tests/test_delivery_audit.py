@@ -70,7 +70,9 @@ class DeliveryAuditTests(unittest.TestCase):
             verify_seal(self.root)
 
     def test_audit_keeps_pixel_and_physical_claims_false(self):
-        with patch("delivery_audit.decode_video", return_value={"full_decode_passed": True}):
+        with patch("delivery_audit.decode_video",
+                   side_effect=lambda path, **kwargs: {"full_decode_passed": True,
+                                                        "source_sha256": _sha(path)}):
             result = audit(self.root)
         self.assertEqual(result["synchronized_frame_count"], 3)
         self.assertEqual(set(result["videos"]), set(CAMERAS))
@@ -85,8 +87,19 @@ class DeliveryAuditTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         measured = decode_video(video, frames=3, size=(16, 16))
         self.assertTrue(measured["full_decode_passed"])
+        self.assertEqual(measured["frame_rate"], 20)
+        self.assertEqual(len(measured["framemd5_sha256"]), 64)
         with self.assertRaisesRegex(ValueError, "frame count differs"):
             decode_video(video, frames=4, size=(16, 16))
+
+    def test_wrong_frame_rate_rejected_even_with_correct_count(self):
+        video = self.root / "slow.mkv"
+        completed = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-f", "lavfi",
+                                    "-i", "color=red:size=16x16:rate=10", "-frames:v", "3",
+                                    "-c:v", "ffv1", str(video)], capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        with self.assertRaisesRegex(ValueError, "frame rate differs"):
+            decode_video(video, frames=3, size=(16, 16))
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from fractions import Fraction
 from pathlib import Path, PurePosixPath
 import subprocess
 
@@ -76,8 +77,9 @@ def verify_seal(root):
 
 def decode_video(path, *, frames, size):
     """Probe stream metadata and fully decode the video with installed FFmpeg."""
+    source_before = _sha(path)
     probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-                            "-show_entries", "stream=codec_name,width,height,nb_read_frames",
+                            "-show_entries", "stream=codec_name,width,height,avg_frame_rate,nb_read_frames",
                             "-of", "json", str(path)], capture_output=True, text=True, timeout=1200)
     if probe.returncode:
         raise ValueError("original video probe failed: " + path.name)
@@ -86,18 +88,29 @@ def decode_video(path, *, frames, size):
         stream = streams[0]
         actual = (stream["codec_name"], int(stream["width"]), int(stream["height"]),
                   int(stream["nb_read_frames"]))
+        rate = Fraction(stream["avg_frame_rate"])
     except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
         raise ValueError("original video stream metadata missing: " + path.name) from exc
     if actual != ("ffv1", *size, frames) or len(streams) != 1:
         raise ValueError("original video codec, size or frame count differs: " + path.name)
+    if rate != 20:
+        raise ValueError("original video frame rate differs: " + path.name)
     decoded = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(path),
-                              "-map", "0:v:0", "-f", "null", "-"],
-                             capture_output=True, text=True, timeout=1200)
+                              "-map", "0:v:0", "-an", "-f", "framemd5", "-"],
+                             capture_output=True, timeout=1200)
     if decoded.returncode:
         raise ValueError("full original video decode failed: " + path.name)
+    decoded_lines = [line for line in decoded.stdout.splitlines()
+                     if line and not line.startswith(b"#")]
+    if len(decoded_lines) != frames or any(len(line.split(b",")) != 6 for line in decoded_lines):
+        raise ValueError("full original video decoded frame count differs: " + path.name)
+    source_after = _sha(path)
+    if source_before != source_after:
+        raise ValueError("original video source changed during decode: " + path.name)
     return {"codec": actual[0], "width": actual[1], "height": actual[2],
             "decoded_frames": actual[3], "full_decode_passed": True,
-            "source_sha256": _sha(path)}
+            "frame_rate": 20, "framemd5_sha256": hashlib.sha256(decoded.stdout).hexdigest(),
+            "source_sha256": source_after}
 
 
 def audit(attempt):
@@ -108,6 +121,9 @@ def audit(attempt):
         raise ValueError("saved measurement and Native seal frame count differ")
     videos = {name: decode_video(_source(root, name + ".mkv"), frames=frames,
                                  size=SIZES[name]) for name in CAMERAS}
+    sealed_sources = json.loads(_source(root, "capture-seal.json").read_text())["sources"]
+    if any(videos[name]["source_sha256"] != sealed_sources[name + ".mkv"] for name in CAMERAS):
+        raise ValueError("decoded camera source differs from Native seal")
     return {"format": "worker-independent-delivery-audit", "case_id": report["case_id"],
             "native_seal_verified": True, "source_hashes_verified": True,
             "synchronized_frame_count": frames, "videos": videos,

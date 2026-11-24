@@ -86,3 +86,9 @@ Next CPU work: verified original official head and pedestrian-device reader for 
 - `cpu-bundles-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
 - `cpu-bundles-static.log` SHA256 `2c4e093e0f1887e9048e23e9569eb9ef8191c0ef171690075be4dbc5944a4e3b`.
 - `cpu-bundles-strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`.
+
+## 2026-11-23 pinned four-view timeline continuation
+
+`native_capture.CAMERAS` now uses the pinned `overview`, `approach`, `reference_corner`, and `driver_reference` identities, and its default Original timeline is 900 frames at 20 Hz (45 seconds). `saved_measurement` and `saved_process` share that default. `case-plan.json.camera_plan` and every rebuilt exact diagnostic construction carry the same four-view, 45-second plan. The full-duration CPU capture test now writes and independently reopens 3,600 PNG frame sources under `.runtime-work/`. This is source-join software proof; the 4×4 fixture pixels do not satisfy production dimensions or visibility.
+
+All four exact pinned offline construction checks pass after rebuilding, as do 45 focused tests, pinned preflight and scoped static. Exact scoped strict exits 1 on truthful partial status. `result.json` holds current command, exit and SHA-256 receipts. Production camera placement/dimensions and reviewed official map/head/device sources, semantic proposals, positive/negative compatibility, canonical manifest and independent delivery audit remain worker-owned CPU work. NRS 484B.283 permission remains unresolved and no physical acceptance is claimed.

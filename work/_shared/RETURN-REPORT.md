@@ -2342,3 +2342,49 @@ No status was promoted; batch remains 9 ready and 233 partial. No Git command wa
 Partition 05 C111748 NRS 484B.403(2) added a saved-only complete audit and CLI `--full-decode` path that composes sealed 900-frame Native source integrity with mandatory lossless decode of all four camera streams. Its diagnostic fixture exercises the full path and rejects stale media while leaving physical and legal device status unresolved. Forty-two tests, preflight and scoped static pass. Lead verified four result log hashes and 25 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111125 NRS 484B.307(2)(b) in partition 07 to close the precise missing canonical-result compatibility gap left by an earlier owner. Exact bundles/manifest, proposals, compatibility and authoritative device source remain CPU work for C111748.
 
 No ready promotion; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 23:08 PT 900-frame source joins
+
+Partition 04 C111706 NRS 484B.403(3) added an exact-case saved delivery audit joining site/Native source hashes, measured reversal and whole-body intersection location, 900-frame original cadence and four fully decoded camera PNG streams. Saved camera paths are now confined to the original attempt. Forty-four tests, preflight and scoped static pass. Lead verified four result log hashes and 25 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111610 NRS 484B.307(7)(a) in partition 02. Reviewed physical site, bundles/manifest, compatibility and owner-release proof remain CPU work.
+
+Partition 06 C111125 NRS 484B.307(2)(a) added a source-gated 900-tick/20 Hz Native event recorder for all four straight-green cases. It reads the official facing head, ego and other user, binds site/context hashes, validates saved attempt before releasing a receipt, brakes on failure and preserves original bytes if later validation fails. Nineteen tests, preflight and scoped static pass. Lead verified seven result log hashes and 22 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111301 NRS 484B.113(3) in partition 08. Exact runner/config/constructions/manifest and camera/finalizer compatibility remain CPU work.
+
+No ready promotion; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 23:12 PT canonical analysis and source sealing
+
+Partition 07 C111125 NRS 484B.307(2)(b) now writes a source-joined canonical `result.json` and recording channel/context from its selected analysis; the recording description is synchronized into all five exact constructions/proposals. Twenty-seven tests, preflight, five offline bundles and scoped static pass. All five positive pinned compatibility attempts now pass selected analysis, Native result, recording and video validation, then reach a precise missing synthetic `capture/evidence.jsonl` Core conversion gap. Five missing-head negative tests pass. Lead verified 39 result log hashes and 79 returned files; exact scoped strict exits 1 on truthful partial. The owner continues source-honest Core evidence and compatibility work.
+
+Partition 08 C111301 NRS 484B.113(3) now seals original OpenDRIVE bytes and checks their SHA-256 against the map packet, with positive, changed, stale-hash and missing-source tests. Twenty-three tests, preflight and scoped static pass. Lead verified four result log hashes and 17 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111260 NRS 484B.270(1) in partition 05. Canonical bundles, Native capture, proposals, compatibility and delivery remain CPU work.
+
+Partition 02 C111610 NRS 484B.307(7)(a) added a saved finalizer for five flashing-arrow variants, binding sealed events/aspects to measured participant region and concurrent movement without making a legal judgment. It added an original event hash receipt and embedded the finalizer in all five exact diagnostic bundles. Twenty-one tests, preflight, five pinned offline bundles and scoped static pass. Lead verified ten result log hashes and 32 returned files; exact scoped strict exits 1 on truthful partial. Its owner moved to C111260 NRS 484B.270(5)(a) in partition 06. Reviewed Native site/adapter, canonical runner/manifest, proposals, compatibility and independent delivery remain CPU work.
+
+The complete-batch static check passed (`.runtime-work/nov23-current-wave/full-static-2310.log`). Batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 23:16 PT positive Core compatibility and saved video audits
+
+Partition 07 C111125 NRS 484B.307(2)(b) now includes explicit synthetic `capture/evidence.jsonl`, Native frame/graph packet and authored diagnostic road map. All five pinned positive compatibility runs pass Core conversion, Lean decoder and final video decode; all five missing-head negatives pass. Independent receipt check, 28 tests, preflight, five offline bundles and scoped static pass. Lead verified 53 result log hashes and 110 returned files; exact scoped strict exits 1 on truthful partial. The owner continues canonical semantic/execution delivery proof and reviewed physical source construction.
+
+Partition 05 C111260 NRS 484B.270(1) added `delivery_decode.py`, a full-decode source audit for four sealed camera streams via FFmpeg framemd5, source hash recheck and event-measurement join. Tests reject frame-count mismatch, changed hashes and rehashed invalid video; 14 tests, preflight and scoped static pass. Lead verified four log hashes and 22 returned files; exact scoped strict exits 1 on partial. Its owner moved to C227824 NRS 484B.307(8)(b) in partition 01.
+
+Partition 06 C111260 NRS 484B.270(5)(a) added an independent delivery audit joining an externally SHA256-bound original encounter packet, actor history and 3,600 fully decoded original camera PNGs. It rejects case/adapter/hash mismatch and stale source bytes. Twenty-three tests, preflight and scoped static pass. Lead verified four log hashes and 17 returned files; exact scoped strict exits 1 on partial. Its owner moved to C10301 LVMC 11.22.010 in partition 03.
+
+No status was promoted; batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 23:18 PT transient full-static traversal race
+
+A complete-batch static rerun ended early with `FileNotFoundError` while recursively traversing a short-lived `.runtime-work/tmpojazg5m9` owner scratch directory. This was an in-flight scratch lifetime race during the repository tree scan, not a package proof result. The preceding complete-batch static check passed; assignment-scoped static and exact strict checks continued to run. Lead will rerun full static after the active owner wave finishes. No `work/` temporary directory was observed.
+
+## 2026-11-23 23:24 PT saved audit checkpoints and owner rotation
+
+Partition 01 C227824 NRS 484B.307(8)(b) strengthened its saved FFV1 delivery audit: it verifies frame rate, counts every decoded frame and binds video to the Native capture seal. Sixty-nine focused tests, preflight and scoped static pass. Lead verified all five result log hashes and 55 returned files; the exact scoped strict gate exits 1 because status remains partial. The owner moved to C109171 NRS 484B.307(4)(b) in partition 04. Canonical semantic, execution and delivery acceptance remain CPU work.
+
+Partition 07 C111125 NRS 484B.307(2)(b) added an independent saved compatibility audit for all five diagnostics. It checks source and video fingerprints, frame/trace/recording joins and synthetic provenance, with tampered-source and trace-position negative tests. Twenty-eight focused tests, five positive and negative compatibility proofs and scoped static pass. Lead verified all 56 result log hashes and 120 returned files; exact scoped strict exits 1 on truthful partial. The owner moved to C10307 LVMC 11.40.130 in partition 05. Canonical semantic/execution and reviewed delivery acceptance remain CPU work.
+
+Partition 03 C10301 LVMC 11.22.010 now confines original capture metadata, context, ego/frame-map and every camera PNG to its attempt, rejecting symlink aliases even for byte-identical sources. Twenty-four tests, preflight, two offline checks and scoped static pass. Lead verified all 41 result log hashes and 72 files; exact scoped strict exits 1 on truthful partial. The owner moved to C109749 NRS 484B.253 in partition 08. Canonical proposals/manifest, runtime compatibility and independent delivery acceptance remain CPU work.
+
+A fresh all-work scan covered 13,719 files and found no size, UTF-8, whitespace, blank-EOF, conflict-marker or temporary-directory issue. No assignment was promoted: batch remains 9 ready and 233 partial. No Git command was run.
+
+## 2026-11-23 23:25 PT complete static rerun
+
+The complete-batch static check reran successfully after the transient scratch-directory traversal race. `.venv-cpu/bin/python worker_check.py --complete` exited 0 and reported `static_checks_passed: true`; its output is retained at `.runtime-work/nov23-current-wave/full-static-2320.log`. This confirms static validity only. The strict delivery gate remains open because 233 assignments are partial. No Git command was run.

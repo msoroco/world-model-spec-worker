@@ -1,0 +1,79 @@
+"""Independent saved-source audit for the original motorist/rider encounter.
+
+This checks the acquisition packet and every original camera image. It does not
+substitute for composed-video decode, physical review, or a due-care judgment.
+"""
+
+import argparse
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+
+
+def _module(name):
+    spec = importlib.util.spec_from_file_location(name, ROOT / (name + ".py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False):
+    root = Path(attempt).resolve()
+    packet_path = root / "encounter-packet.json"
+    if not packet_path.is_file() or packet_path.is_symlink():
+        raise ValueError("original encounter packet missing")
+    if hashlib.sha256(packet_path.read_bytes()).hexdigest() != packet_sha256:
+        raise ValueError("externally sealed encounter packet hash drift")
+    packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    if packet.get("case_id") != case_id:
+        raise ValueError("exact delivery case differs from original packet")
+    if require_attested and packet.get("capture_origin") != "native_adapter_attested":
+        raise ValueError("reviewed original Native capture adapter required")
+    if packet.get("physical_review") != "pending" or packet.get("legal_judgment") != "unresolved":
+        raise ValueError("acquisition packet may not assert physical or legal acceptance")
+    saved = _module("saved_encounter").finalize_saved(root)
+    pixels = _module("native_capture").audit_original_pixels(root)
+    if saved["case_id"] != pixels["case_id"] or saved["case_id"] != case_id:
+        raise ValueError("saved actor and pixel case join differs")
+    if saved["original_frames"] != pixels["original_frames_per_camera"]:
+        raise ValueError("saved actor and pixel frame count differs")
+    return {
+        "format": "c111260-saved-source-audit-v1",
+        "case_id": case_id,
+        "packet_sha256": packet_sha256,
+        "original_frames": saved["original_frames"],
+        "decoded_original_images": pixels["decoded_images"],
+        "rider_kind": saved["kind"],
+        "observed_response": saved["response"],
+        "source_hashes": saved["source_hashes"],
+        "media_sha256": pixels["media_sha256"],
+        "full_video_decode": False,
+        "actual_pixels": False,
+        "physical_completion": False,
+        "legal_judgment": "unresolved",
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--case", required=True)
+    parser.add_argument("--packet-sha256", required=True)
+    parser.add_argument("--require-attested", action="store_true")
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    result = audit_saved(args.attempt, case_id=args.case,
+                         packet_sha256=args.packet_sha256,
+                         require_attested=args.require_attested)
+    if args.output.exists():
+        raise ValueError("saved audit output already exists")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

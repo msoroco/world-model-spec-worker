@@ -172,6 +172,23 @@ class NativeCaptureTests(unittest.TestCase):
                 saved_delivery.audit(output, case_id, require_delivery=True)
             capture_path.write_bytes(original_capture)
             image = output / "camera-png" / "0000-overview.png"
+            original_image = image.read_bytes()
+            alias = output / "alias-original.png"
+            alias.write_bytes(original_image)
+            image.unlink()
+            image.symlink_to(alias)
+            with self.assertRaisesRegex(ValueError, "symlinked"):
+                saved_delivery.audit(output, case_id)
+            image.unlink()
+            image.write_bytes(original_image)
+            original_operation = operation_source.read_bytes()
+            missing_source.write_bytes(original_operation)
+            operation_source.unlink()
+            operation_source.symlink_to(missing_source)
+            with self.assertRaisesRegex(ValueError, "symlinked"):
+                saved_delivery.audit(output, case_id)
+            operation_source.unlink()
+            operation_source.write_bytes(original_operation)
             image.write_bytes(b"broken")
             with self.assertRaisesRegex(ValueError, "image hash mismatch"):
                 saved_delivery.audit(output, case_id)

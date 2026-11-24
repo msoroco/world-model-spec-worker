@@ -12,6 +12,7 @@ REPO = ROOT.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 from worker_exchange.fixture_recipe import materialize
 from worker_exchange.measurement_contract import validate, verify_report
+from worker_exchange.native_output import validate_result
 
 
 class DiagnosticMeasurements(unittest.TestCase):
@@ -40,6 +41,13 @@ class DiagnosticMeasurements(unittest.TestCase):
                     self.assertFalse(report['physical_acceptance_claimed'])
                     self.assertFalse(report['legal_verdict_claimed'])
                     self.assertEqual(len(verify_report(contract, report, positive)), 2)
+                    execution = validate_result(json.loads((positive / 'result.json').read_text()))
+                    self.assertEqual(execution['case_id'], entry['case_id'])
+                    self.assertEqual(execution['recording_description'], construction['recording_description'])
+                    self.assertFalse(execution['setup_confirmed'])
+                    self.assertFalse(execution['target_checks'][0]['physical_cause_confirmed'])
+                    self.assertEqual(len((positive / execution['recording_evidence'][0]['reference']).read_text().splitlines()), 3)
+                    self.assertTrue((positive / execution['recording_evidence'][1]['reference']).is_file())
                     negative = base / 'negative'
                     materialize(REPO, REPO / entry['fixture_recipe'], negative)
                     (negative / 'config.json').write_text(files['config.json'])
@@ -49,6 +57,20 @@ class DiagnosticMeasurements(unittest.TestCase):
                     result = subprocess.run(command, capture_output=True, text=True, env=env)
                     self.assertNotEqual(result.returncode, 0)
                     self.assertIn(contract['negative']['error_contains'], result.stderr)
+                    self.assertFalse((negative / 'result.json').exists())
+                    mismatch = base / 'mismatch'
+                    materialize(REPO, REPO / entry['fixture_recipe'], mismatch)
+                    (mismatch / 'config.json').write_text(files['config.json'])
+                    trace_path = mismatch / 'trace.jsonl'
+                    rows = [json.loads(line) for line in trace_path.read_text().splitlines()]
+                    rows[1]['position']['x'] += 1
+                    trace_path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+                    command[command.index(str(negative))] = str(mismatch)
+                    command[-1] = str(mismatch / 'analysis-report.json')
+                    result = subprocess.run(command, capture_output=True, text=True, env=env)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn('Diagnostic frame, trace and video map disagree', result.stderr)
+                    self.assertFalse((mismatch / 'result.json').exists())
 
 
 if __name__ == '__main__':

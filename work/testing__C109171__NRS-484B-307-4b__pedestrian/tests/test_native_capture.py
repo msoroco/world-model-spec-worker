@@ -112,7 +112,7 @@ class NativeCaptureTest(unittest.TestCase):
                                       result['events_ref'], 4)['camera_frames_audited'], 16)
 
     def test_reject_missing_or_drifted_callback_and_close(self):
-        adapter = Adapter(self.rows(), self.png, bad_camera='left')
+        adapter = Adapter(self.rows(), self.png, bad_camera='approach')
         with self.assertRaisesRegex(SourceError, 'camera callback frame drift'):
             capture(self.site, self.site_ref, self.root, adapter, ASSIGNMENT + '__arrow_wait', 4)
         self.assertTrue(adapter.closed)
@@ -125,7 +125,7 @@ class NativeCaptureTest(unittest.TestCase):
 
     def test_reject_tampered_saved_pixel(self):
         result = self.run_case('arrow_wait', False, False)
-        path = self.root / 'camera_png/0001_front.png'
+        path = self.root / 'camera_png/0001_overview.png'
         path.write_bytes(b'corrupt')
         with self.assertRaisesRegex(SourceError, 'camera source hash mismatch'):
             audit_frame_map(self.root, result['frame_map_ref'], result['events_ref'], 4)
@@ -148,7 +148,7 @@ class NativeCaptureTest(unittest.TestCase):
 
     def test_saved_process_rejects_changed_camera_without_output(self):
         captured = self.run_case('arrow_wait', False, False)
-        (self.root / 'camera_png/0001_front.png').write_bytes(b'changed')
+        (self.root / 'camera_png/0001_overview.png').write_bytes(b'changed')
         output = self.root / 'processed.json'
         with self.assertRaisesRegex(SourceError, 'camera source hash mismatch'):
             process(self.root, self.site_ref, captured['events_ref'],
@@ -165,7 +165,7 @@ class NativeCaptureTest(unittest.TestCase):
     def test_full_duration_four_camera_join(self):
         original = self.rows()
         rows = []
-        for i in range(600):
+        for i in range(900):
             row = dict(original[min(i, 3)])
             row['frame'] = i
             row['sim_time_seconds'] = i * 0.05
@@ -174,9 +174,9 @@ class NativeCaptureTest(unittest.TestCase):
         result = capture(self.site, self.site_ref, self.root, adapter,
                          ASSIGNMENT + '__arrow_wait')
         self.assertTrue(adapter.closed)
-        self.assertEqual(result['frame_count'], 600)
+        self.assertEqual(result['frame_count'], 900)
         self.assertEqual(audit_frame_map(self.root, result['frame_map_ref'],
-                                        result['events_ref'])['camera_frames_audited'], 2400)
+                                        result['events_ref'])['camera_frames_audited'], 3600)
 
 
 if __name__ == '__main__':

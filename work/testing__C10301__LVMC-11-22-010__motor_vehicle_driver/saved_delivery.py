@@ -28,10 +28,21 @@ def _read(path: Path, digest: str) -> list[dict]:
     return [json.loads(line) for line in raw.splitlines()]
 
 
+def _original_path(root: Path, relative: str) -> Path:
+    """Confine a saved source to the original attempt without symlink aliases."""
+    path = root / relative
+    if not path.is_file() or path.is_symlink() or path.parent.is_symlink():
+        raise ValueError("original source missing or symlinked: " + relative)
+    if not path.resolve().is_relative_to(root.resolve()):
+        raise ValueError("original source escapes attempt: " + relative)
+    return path
+
+
 def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict:
+    directory = Path(directory).resolve()
     if case_id not in CASE_PROFILES:
         raise ValueError("unknown exact case")
-    meta_path = directory / "capture.json"
+    meta_path = _original_path(directory, "capture.json")
     meta = json.loads(meta_path.read_text())
     if meta.get("format") != "worker-alley-native-capture" or meta.get("case_id") != case_id:
         raise ValueError("capture metadata exact case mismatch")
@@ -42,10 +53,10 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
     if meta.get("camera_ids") != list(CAMERAS):
         raise ValueError("four original cameras required")
     digests = meta.get("source_sha256", {})
-    ego = _read(directory / "ego.jsonl", digests.get("ego"))
-    context = _read(directory / "context.jsonl", digests.get("context"))
-    operation = _read(directory / "operation.jsonl", digests.get("operation"))
-    frame_map = _read(directory / "camera-frame-map.jsonl", digests.get("camera_frame_map"))
+    ego = _read(_original_path(directory, "ego.jsonl"), digests.get("ego"))
+    context = _read(_original_path(directory, "context.jsonl"), digests.get("context"))
+    operation = _read(_original_path(directory, "operation.jsonl"), digests.get("operation"))
+    frame_map = _read(_original_path(directory, "camera-frame-map.jsonl"), digests.get("camera_frame_map"))
     if any(len(rows) != FRAMES for rows in (ego, context, operation, frame_map)):
         raise ValueError("900 original rows required in every source")
     validate_history(ego, case_id)
@@ -67,7 +78,7 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
         if sensors != camera_sensors:
             raise ValueError("original camera sensor identity changed")
         for camera in CAMERAS:
-            image_path = directory / "camera-png" / f"{index:04d}-{camera}.png"
+            image_path = _original_path(directory, f"camera-png/{index:04d}-{camera}.png")
             packet = row["cameras"][camera]
             if not isinstance(packet, dict) or packet.get("native_frame") != original["native_frame"] or not packet.get("sensor_id"):
                 raise ValueError("original camera sensor or frame mismatch")

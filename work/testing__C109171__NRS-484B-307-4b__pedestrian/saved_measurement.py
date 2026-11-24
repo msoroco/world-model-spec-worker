@@ -38,7 +38,7 @@ def _read_ref(root, ref):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
-def measure_saved(root, site_ref, events_ref, case_id, expected_frames=600):
+def measure_saved(root, site_ref, events_ref, case_id, expected_frames=900):
     """Return sourced observations for one exact 20 Hz case, without a verdict."""
     _require(case_id.startswith(ASSIGNMENT + '__'), 'case outside assignment')
     suffix = case_id.removeprefix(ASSIGNMENT + '__')
@@ -99,7 +99,7 @@ def main():
     parser.add_argument('--site-ref', type=Path, required=True)
     parser.add_argument('--events-ref', type=Path, required=True)
     parser.add_argument('--case-id', required=True)
-    parser.add_argument('--expected-frames', type=int, default=600)
+    parser.add_argument('--expected-frames', type=int, default=900)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     site_ref = json.loads(args.site_ref.read_text(encoding='utf-8'))

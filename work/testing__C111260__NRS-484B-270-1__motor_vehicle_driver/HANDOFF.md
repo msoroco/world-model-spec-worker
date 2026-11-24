@@ -50,3 +50,9 @@ Pinned preflight: `.venv-cpu/bin/python runtime.py preflight` exit 0, `cpu-prefl
 Next CPU work: connect this finalizer to exact construction/capture bundles and the pinned saved-processing format; source-seal Native rider classification/rules; implement electric-bicycle and electric-scooter alternatives, semantic proposals, exact offline and positive/negative compatibility, independent saved delivery audit and manifest. Keep current result partial until the exact strict assignment gate passes.
 Scoped static gate exit 0: `cpu-static-nov23.log` SHA256 4cab5a19669cdfd392ef3ae160e2829dab1a655429ad5f87f67077145a4bd365.
 Scoped strict gate exit 1: `cpu-strict-nov23.log` SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.
+
+## 2026-11-23 saved full camera decode checkpoint
+
+`delivery_decode.py` independently reads the four sealed saved camera files, checks distinct source paths and 20 Hz stream frame counts, fully decodes every frame through FFmpeg `framemd5`, hashes each full decode receipt and rechecks source bytes after decoding. `finalize_delivery` joins those receipts to the saved event measurement and rejects metadata disagreement. The small FFmpeg fixture tests all four streams, exact frame count, changed source bytes, and a newly rehashed invalid video. This is software source/decode evidence only: rider pixel visibility, actual encounter, lawful riding, intent and interference remain unverified.
+
+The 14-test focused suite, pinned preflight and scoped static check pass. Exact scoped strict exits 1 on truthful partial status; current commands and SHA-256 log receipts are in `result.json`. Canonical case bundles, remaining modality alternatives, semantic proposals, source-bound offline/compatibility and a complete independent delivery audit remain worker-owned CPU tasks.

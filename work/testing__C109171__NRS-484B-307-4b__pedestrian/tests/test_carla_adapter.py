@@ -52,7 +52,7 @@ class World:
 
 class CarlaAdapterTest(unittest.TestCase):
     def setUp(self):
-        self.sensors = {name: Sensor() for name in ('front', 'left', 'right', 'rear')}
+        self.sensors = {name: Sensor() for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}
         self.walker = Walker()
         self.site = {'pedestrian_route_xy': [[-2, 1], [-1, 1], [1, 1], [3, 1]]}
         self.factory = lambda **kw: SimpleNamespace(**kw)
@@ -87,14 +87,14 @@ class CarlaAdapterTest(unittest.TestCase):
         adapter.close()
 
     def test_reject_missing_camera_callback(self):
-        adapter = self.make(World(self.sensors, omit='rear'))
+        adapter = self.make(World(self.sensors, omit='driver_reference'))
         adapter.start(self.site, 'assignment__arrow_wait')
         with self.assertRaisesRegex(SourceError, 'missing original camera callback'):
             adapter.read(0)
         adapter.close()
 
     def test_reject_mismatched_world_frame(self):
-        adapter = self.make(World(self.sensors, drift='left'))
+        adapter = self.make(World(self.sensors, drift='approach'))
         adapter.start(self.site, 'assignment__arrow_wait')
         with self.assertRaisesRegex(SourceError, 'world-frame drift'):
             adapter.read(0)

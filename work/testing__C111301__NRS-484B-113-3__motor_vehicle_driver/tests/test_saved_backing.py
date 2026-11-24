@@ -25,7 +25,13 @@ def write(root, name, value):
 
 
 def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
-    packet = {"map_sha256": "a" * 64, "map_name": "OriginalTown", "junction_id": 11,
+    original_map = root / "road.xodr"
+    original_map.write_text("<OpenDRIVE><header name='diagnostic-only'/></OpenDRIVE>\n", encoding="utf-8")
+    original_map_ref = {"path": original_map.name,
+                        "sha256": hashlib.sha256(original_map.read_bytes()).hexdigest()}
+    packet = {"map_sha256": original_map_ref["sha256"],
+              "map_source": original_map_ref,
+              "map_name": "OriginalTown", "junction_id": 11,
               "vehicle_blueprint_id": "vehicle.audi.a2", "pedestrian_blueprint_id": "walker.pedestrian.0001",
               "vehicle_reverse_route": [point(5, 0), point(0, 0)],
               "pedestrian_route": [point(2, -3), point(2, 3)],
@@ -50,6 +56,30 @@ def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
 
 
 class SavedBackingTests(unittest.TestCase):
+    def test_original_map_bytes_are_sealed_separately_from_packet(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            receipt = fixture(root)
+            self.assertEqual(process(root, ASSIGNMENT + "__pedestrian_yield")["map_source"]["path"],
+                             "road.xodr")
+            (root / "road.xodr").write_text("<OpenDRIVE changed='yes'/>\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "sealed source hash differs"):
+                process(root, ASSIGNMENT + "__pedestrian_yield")
+            packet = json.loads((root / "map.json").read_text(encoding="utf-8"))
+            packet["map_source"]["sha256"] = hashlib.sha256((root / "road.xodr").read_bytes()).hexdigest()
+            receipt["map_packet"] = write(root, "map.json", packet)
+            write(root, "acquisition.json", receipt)
+            with self.assertRaisesRegex(ValueError, "map bytes differ"):
+                process(root, ASSIGNMENT + "__pedestrian_yield")
+
+    def test_missing_original_map_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixture(root)
+            (root / "road.xodr").unlink()
+            with self.assertRaisesRegex(ValueError, "sealed source must be a file"):
+                process(root, ASSIGNMENT + "__pedestrian_yield")
+
     def test_full_camera_decode_and_frame_count_rejection(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

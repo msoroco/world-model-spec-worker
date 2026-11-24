@@ -45,6 +45,10 @@ def process(attempt, expected_case):
     if receipt.get("source_kind") != "native_original" or receipt.get("diagnostic") is not False:
         raise ValueError("original Native acquisition required")
     packet = _json(root, receipt.get("map_packet"))
+    map_source = packet.get("map_source")
+    map_path = _sealed(root, map_source)
+    if hashlib.sha256(map_path.read_bytes()).hexdigest() != packet.get("map_sha256"):
+        raise ValueError("original map bytes differ from declared map source")
     geometry = validate_geometry(packet)
     telemetry = _json(root, receipt.get("telemetry"))
     frame_map = _json(root, receipt.get("frame_map"))
@@ -86,6 +90,7 @@ def process(attempt, expected_case):
             "case_id": expected_case, "source_id": receipt["source_id"],
             "acquisition_sha256": hashlib.sha256((root / "acquisition.json").read_bytes()).hexdigest(),
             "map_sha256": geometry["map_sha256"], "frame_count": len(telemetry),
+            "map_source": map_source,
             "media_sha256": media_hashes, "measurement": measured,
             "response_witness": witness,
             "corridor_basis": "original_map_reverse_route_and_original_pedestrian_position",

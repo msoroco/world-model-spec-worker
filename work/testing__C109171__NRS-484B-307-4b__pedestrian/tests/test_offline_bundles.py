@@ -31,9 +31,9 @@ class OfflineBundleTests(unittest.TestCase):
             self.assertEqual(config['selected_case_id'], row['case_id'])
             self.assertEqual(config['plan_sha256'], hashlib.sha256(
                 (ROOT / 'case-plan.json').read_bytes()).hexdigest())
-            self.assertEqual(config['frame_count'], 600)
+            self.assertEqual(config['frame_count'], 900)
             self.assertEqual(config['fps'], 20)
-            self.assertEqual(set(config['cameras']), {'front', 'left', 'right', 'rear'})
+            self.assertEqual(set(config['cameras']), {'overview', 'approach', 'reference_corner', 'driver_reference'})
 
 
 if __name__ == '__main__':

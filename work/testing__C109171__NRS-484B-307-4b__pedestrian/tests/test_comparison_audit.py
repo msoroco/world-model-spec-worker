@@ -8,7 +8,7 @@ mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 def result(case,walk,entry):
  return {'case_suffix':case,'map_source_sha256':'a','vehicle_signal_source_sha256':'b',
  'highway_boundary_source_sha256':'c','pedestrian_route_source_sha256':'d',
- 'camera_profile_sha256':'e','duration_frames':600,'sole_green_arrow_frames':600,
+ 'camera_profile_sha256':'e','duration_frames':900,'sole_green_arrow_frames':900,
  'first_highway_entry':{'frame':200,'separate_walk_indication':walk} if entry else None,
  'separate_walk_indication_without_entry':walk}
 class ComparisonTest(unittest.TestCase):

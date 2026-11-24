@@ -16,9 +16,9 @@ from PIL import Image
 from native_scene import SourceError, verify_site
 from saved_measurement import ASSIGNMENT, EXPECTED, measure_saved
 
-CAMERAS = ('front', 'left', 'right', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 FPS = 20
-DEFAULT_FRAMES = 600
+DEFAULT_FRAMES = 900
 
 
 def _require(ok, message):

@@ -2,7 +2,7 @@
   "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
   "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
   "status": "partial",
-  "readiness_kind": "partial_two_exact_offline_bundles_with_checked_measurement_contracts",
+  "readiness_kind": "partial_two_exact_offline_bundles_with_saved_path_confinement",
   "applied_update": 0,
   "tests": [
     {
@@ -208,10 +208,52 @@
       "exit_code": 1,
       "log": "cpu-strict-camera-alignment.log",
       "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-alias-build.log",
+      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-alias-tests.log",
+      "sha256": "fe36e7f7f37ad936421f1ab4a7e88753c2e55986e70cb322dd573583713fcb03"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-alias-preflight.log",
+      "sha256": "2c4d947cc904af5fc81e21e5ae05eb58cb26f3d88af9260e9a03b75f5c719b7f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-alias-output/offline-steady_travel",
+      "exit_code": 0,
+      "log": "cpu-alias-offline-steady_travel.log",
+      "sha256": "a5fc1cedfc43029e7da701d254f75aea9807b38a52b74337ef1e56335e78b4f3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-alias-output/offline-steering_variation",
+      "exit_code": 0,
+      "log": "cpu-alias-offline-steering_variation.log",
+      "sha256": "2eb2b9f6c624ac1257a01f5fda50cfa9600d4d043697f6ee4397ed27ec35f6fb"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-alias-static.log",
+      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-alias-strict.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Two exact diagnostic alley cases now align source camera IDs with the bundled view contract and bind alley scene bytes in bundle preflight. Saved delivery rejects wrong-sized original views; 24 focused tests, both pinned offline constructions and a full 900-frame/3600-PNG-per-case saved comparison replay pass. Strict readiness remains partial: pinned runtime compatibility/process-saved, canonical manifest and proposals, reviewed Native site binding and independent delivery acceptance still need CPU work."
+  "reason": "Two exact alley diagnostic bundles pass pinned offline checks. The independent saved audit rejects symlink aliases to original operation and camera sources even when their bytes match, and 24 focused tests plus preflight pass. Pinned runtime compatibility/process-saved, canonical manifest and proposals, reviewed Native alley/site binding and independent delivery acceptance remain CPU work; physical attention and legal judgment remain unresolved."
 }

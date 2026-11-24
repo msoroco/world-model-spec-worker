@@ -14,6 +14,7 @@ from bicycle_encounter import SourceError, construct_native, measure_attempt, ve
 from encounter_control import command
 from comparison_audit import ComparisonError, audit
 from saved_attempt import finalize, probe_video
+from delivery_decode import audit as audit_decode, finalize_delivery
 
 class Actor:
     def __init__(self,id):self.type_id=id;self.destroyed=False
@@ -136,5 +137,47 @@ class EncounterTests(unittest.TestCase):
                         '-frames:v','3','-c:v','mpeg4',str(path)],check=True)
         self.assertEqual(probe_video(path),
                          {'fps':20.0,'frame_count':3,'width':32,'height':32})
+
+    def test_full_decode_of_four_sealed_original_streams(self):
+        cameras={}
+        for view in ('overview','approach','reference_corner','driver_reference'):
+            path=self.root/(view+'.mp4')
+            subprocess.run(['ffmpeg','-v','error','-f','lavfi','-i',
+                            'color=c=blue:s=32x32:r=20','-frames:v','3',
+                            '-c:v','mpeg4',str(path)],check=True)
+            cameras[view]={'path':path.name,
+                           'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+        receipt=audit_decode(self.root,cameras,3)
+        self.assertTrue(receipt['full_video_decode'])
+        self.assertFalse(receipt['pixel_visibility_verified'])
+        self.assertEqual(set(receipt['camera_decode_receipts']),set(cameras))
+        self.assertTrue(all(len(v['framemd5_sha256'])==64
+                            for v in receipt['camera_decode_receipts'].values()))
+        rows=[]
+        for i in range(3):
+            rows.append({'frame':i,'camera_frame':i,'ego_id':'ego','rider_id':'rider',
+                         'ego_blueprint_id':self.site['ego_blueprint_id'],
+                         'rider_blueprint_id':self.site['bicycle_blueprint_id'],
+                         'mode_command':'cross_rider_path','command_source':'controller_log',
+                         'target_speed_mps':6,'rider_visual_present':False,
+                         'ego_xy':[-3+i,0],'rider_xy':[0,-3+i]})
+        event_path=self.root/'events.json'
+        event_path.write_text(json.dumps(rows),encoding='utf-8')
+        event_ref={'path':event_path.name,
+                   'sha256':hashlib.sha256(event_path.read_bytes()).hexdigest()}
+        joined=finalize_delivery(self.site,self.root,event_ref,cameras,
+                                 'cross_rider_path',3)
+        self.assertEqual(joined['frame_count'],3)
+        self.assertTrue(joined['full_video_decode'])
+        self.assertIsNone(joined['interference_verdict'])
+        with self.assertRaisesRegex(SourceError,'frame rate or duration'):
+            audit_decode(self.root,cameras,4)
+        (self.root/'approach.mp4').write_bytes(b'changed')
+        with self.assertRaisesRegex(SourceError,'hash mismatch'):
+            audit_decode(self.root,cameras,3)
+        cameras['approach']['sha256']=hashlib.sha256(
+            (self.root/'approach.mp4').read_bytes()).hexdigest()
+        with self.assertRaises((subprocess.CalledProcessError,SourceError)):
+            audit_decode(self.root,cameras,3)
 
 if __name__=='__main__':unittest.main()

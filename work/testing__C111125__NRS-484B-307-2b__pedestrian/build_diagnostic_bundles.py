@@ -12,6 +12,17 @@ SOURCES = ('runner.py', 'analysis.py', 'native_crossing.py', 'pedestrian_control
            'delivery_audit.py', 'comparison_audit.py')
 CAMERAS = [('overview', 1920, 1080), ('approach', 1280, 720),
            ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]
+RECORDING = {
+    'channels': [{'name': 'pedestrian_body_center_xy_m', 'unit': 'structured',
+                  'method': 'Timestamp join of sealed diagnostic frames and original trace',
+                  'time_window': 'all saved diagnostic frames',
+                  'reference_frame': 'diagnostic map local XY',
+                  'uncertainty': 'synthetic fixture coordinates; no physical calibration',
+                  'sampling_rate_hz': 20,
+                  'unit_views': [{'unit': 'm', 'fields': {'/value/x': 'm', '/value/y': 'm'}}]}],
+    'context_inputs': [{'name': 'source_provenance', 'unit': 'metadata',
+                        'method': 'SHA-256 hashes of saved diagnostic sources'}],
+    'limitations': ['Synthetic diagnostic source only; no Native physical or legal claim.']}
 TEST_SOURCE = '''import json
 import unittest
 from pathlib import Path
@@ -83,10 +94,50 @@ def diagnostic_sources(suffix):
              for i, point in enumerate(points)]
     texts['video_frames.jsonl'] = ''.join(json.dumps(row) + '\n' for row in mapping)
     texts['trace.jsonl'] = ''.join(json.dumps(row) + '\n' for row in trace)
+    road = (ROOT / 'diagnostic-road.xodr').read_text()
+    texts['road.xodr'] = road
+    evidence = []
+    native = []
+    graphs = []
+    for i, point in enumerate(points):
+        t = i / 20
+        x, y = point
+        vertices = [[vx, vy, z] for vx, vy in
+                    ((x - .2, y - .2), (x + .2, y - .2),
+                     (x + .2, y + .2), (x - .2, y + .2)) for z in (0, 1.8)]
+        original = {'frame': i, 'time_s': t,
+                    'map_context': {'declared_public_way_road_ids': []},
+                    'participants': []}
+        evidence.append({'actor_id': 7,
+                         'ego': {'body_vertices_m': vertices, 'heading_deg': 0,
+                                 'position_m': [x, y, 0], 'speed_mps': trace[i]['speed_mps'],
+                                 'speed_provenance': 'synthetic_native_sample'},
+                         'original_frame': i, 'original_observations': original,
+                         'recording_time_s': t, 'replay_frame': i,
+                         'replay_simulation_time_s': t, 'world': {'weather': {}}})
+        native.append({'adapter_graph': f'graphs/base/{i:08d}.adapter.json',
+                       'frame': i, 'simulation_time': t})
+        graphs.append({'path': f'capture/native/graphs/base/{i:08d}.adapter.json',
+                       'attributes': {'frame': i, 'time_s': t,
+                                      'observed_evidence': original},
+                       'nodes': [], 'edges': []})
+        trace[i].update(actor_id=7, position_m=[x, y, 0],
+                        velocity_mps=[0, trace[i]['speed_mps'], 0],
+                        speed_mph=trace[i]['speed_mps'] / .44704, control={})
+    texts['trace.jsonl'] = ''.join(json.dumps(row) + '\n' for row in trace)
+    texts['capture/evidence.jsonl'] = ''.join(json.dumps(row) + '\n' for row in evidence)
+    texts['capture/native/frames.jsonl'] = ''.join(json.dumps(row) + '\n' for row in native)
+    texts['capture/recorder_info.txt'] = 'Create 7: walker.pedestrian (synthetic diagnostic)\n'
+    texts['capture/manifest.json'] = json.dumps({
+        'acquisition': 'synthetic_diagnostic_fixture', 'diagnostic_fixture': True,
+        'extraction_confirmed': True, 'frames': len(frames),
+        'sources': {'road.xodr': hashlib.sha256(road.encode()).hexdigest(),
+                    'trace.jsonl': hashlib.sha256(texts['trace.jsonl'].encode()).hexdigest()},
+        'status': 'diagnostic_only'}) + '\n'
     videos = [{'path': name + '.mkv', 'frames': len(frames), 'width': width,
                'height': height, 'fps': 20, 'color': 'green'}
               for name, width, height in CAMERAS]
-    return {'files': texts, 'graphs': [], 'videos': videos}
+    return {'files': texts, 'graphs': graphs, 'videos': videos}
 
 
 def measurement_contract(plan, case, suffix):
@@ -133,7 +184,8 @@ def build():
                  'actor': plan['actor'], 'diagnostic_only': True,
                  'source_status': 'reviewed Native site missing',
                  'requested_crossing': suffix != 'other_device_stop',
-                 'scenario_parameters': case['scenario_parameters']}
+                 'scenario_parameters': case['scenario_parameters'],
+                 'recording_description': RECORDING}
         config = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
                   'actor': plan['actor'], 'selected_case_id': case['case_id'],
                   'supported_case_ids': [item['case_id'] for item in cases],
@@ -152,6 +204,7 @@ def build():
                         'files': files,
                         'mechanisms': ['source-bound Native walker and four-camera capture components; reviewed site absent'],
                         'measurement_plan': ['original frame, signal, device, crosswalk and camera source joins'],
+                        'recording_description': RECORDING,
                         'static_checks': ['exact diagnostic identity and capture contract'],
                         'termination_rules': ['no Native dispatch before reviewed site binding']}
         rel = Path('cases') / suffix / 'construction.json'
@@ -188,7 +241,7 @@ def build():
             'unresolved_judgment_calls': [
                 'Native site, official signal and device authority require original source binding',
                 'NRS 484B.283 device applicability and legal permission remain unresolved'],
-            'diagnostic_only': True})
+            'diagnostic_only': True, 'recording_description': RECORDING})
     write(ROOT / 'diagnostic-manifest.json', manifest)
     write(ROOT / 'proposals/cases.json', {
         'cell_id': plan['cell_id'], 'actor': plan['actor'], 'status': 'draft',

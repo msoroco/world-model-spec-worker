@@ -19,7 +19,9 @@ def capture_pair(site, attempt_root, step, *, frames=900, diagnostic=False):
     event_path = root / "arrow-events-original.json"
     aspect_path = root / "arrow-aspect-original.json"
     receipt_path = root / "arrow-aspect-receipt.json"
-    if any(p.exists() for p in (event_path, aspect_path, receipt_path)):
+    event_receipt_path = root / "arrow-event-receipt.json"
+    if any(p.exists() for p in (event_path, aspect_path, receipt_path,
+                                 event_receipt_path)):
         raise AspectError("original arrow source already exists")
     aspects = []
     events = []
@@ -56,6 +58,11 @@ def capture_pair(site, attempt_root, step, *, frames=900, diagnostic=False):
     event_path.write_bytes(encoded)
     ref = {"path": event_path.name, "sha256": hashlib.sha256(encoded).hexdigest()}
     checked = join_event_history(site, root, ref, delivery=not diagnostic)
+    event_receipt_path.write_text(json.dumps({
+        "format": "worker-original-arrow-event-v1", "event_ref": ref,
+        "aspect_sha256": checked["original_aspect_sha256"],
+        "frame_count": checked["frame_count"], "diagnostic": bool(diagnostic),
+    }, sort_keys=True) + "\n")
     return {"event_ref": ref, "aspect_sha256": checked["original_aspect_sha256"],
             "frame_count": checked["frame_count"],
             "event_aspect_join": checked["event_aspect_join"],

@@ -13,7 +13,7 @@ from saved_measurement import ASSIGNMENT, EXPECTED, measure_saved
 
 
 def process(attempt, site_ref, events_ref, frame_map_ref, case_id, output,
-            *, expected_frames=600):
+            *, expected_frames=900):
     if case_id not in {ASSIGNMENT + '__' + suffix for suffix in EXPECTED}:
         raise SourceError('unknown exact pedestrian case')
     output = Path(output)

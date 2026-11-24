@@ -14,7 +14,8 @@ VARIANTS = (
 )
 SOURCES = (
     "native_arrow.py", "turn_control.py", "aspect_capture.py",
-    "event_capture.py", "saved_aspect.py", "comparison_audit.py",
+    "event_capture.py", "saved_aspect.py", "saved_finalizer.py",
+    "comparison_audit.py",
 )
 CAMERAS = ("front", "rear", "left", "right")
 

@@ -46,3 +46,11 @@ Next CPU steps: bind this packet to a canonical sealed Native result, implement 
 Focused proof: `.venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/tests -v` passed 22 tests; `cpu-tests.log` SHA256 ac0e5e65f09ca16edaa864548bbf7a74f1a7e9990636b863577c58690e1f0b32. Scoped static check exited 0; `static-gate.log` SHA256 f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366. Exact scoped strict check exited 1 because this package remains partial; `strict-gate.log` SHA256 3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a.
 
 Next CPU construction: bind this interface to a canonical Native runner and per-case configurations; retain lossless composed video at the required profile; add exact offline and positive/negative compatibility receipts, semantic proposals, execution manifest, saved-only path and independent delivery acceptance audit.
+
+## 2026-11-23 independent saved-source audit checkpoint
+
+`delivery_audit.py` now independently joins the externally SHA256-bound original acquisition packet, exact-case actor history and all 3,600 original camera PNGs. It rejects packet hash drift, case mismatch, unsupported adapter attestation, missing source history and corrupt/stale pixel sources. Its returned observations keep composed-video decode, actual physical pixels, completion and due-care judgment unresolved. It is a saved diagnostic audit, not the canonical delivery acceptance receipt.
+
+Pinned `runtime.py preflight` passed. The focused suite passed 23 tests, including the independent source join and negative hash/case/adapter checks. Scoped static check exited 0. Exact scoped strict delivery check exited 1 on truthful partial status (`Preparation acceptance failed: partial/missing packages remain`). Commands and log hashes are recorded in `result.json`.
+
+Remaining CPU work: source-bind a reviewed Native site and rider adapter to canonical per-case runners/configurations, compose and fully decode the required video, complete exact offline and positive/negative compatibility and saved processing, write semantic proposals and execution manifest, and test canonical independent delivery/comparison audits. Physical CARLA motion, rider visibility and legal assessment require later original review.

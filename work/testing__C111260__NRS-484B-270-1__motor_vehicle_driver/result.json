@@ -6,14 +6,32 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "cpu-tests-nov23.log",
-      "sha256": "39f3963457b3241239d6001b5d530e0f6be659337dd2c5dc7eb81bdb88bc7035"
+      "log": "cpu-preflight-current.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111260-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-current.log",
+      "sha256": "9ca39c12bd176f0ae800cbf60f2a557735a0206462623ced43ce17e31d9594d9"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-current.log",
+      "sha256": "4cab5a19669cdfd392ef3ae160e2829dab1a655429ad5f87f67077145a4bd365"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-strict-current.log",
+      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Saved-only bicycle attempt finalizer now validates 900 continuous 20 Hz Original frames, actor/command/camera-frame joins, four hash-bound decoded camera streams, and observed rider motion; 13 CPU tests and pinned preflight pass. Actual rider pixel visibility and statutory lawful riding, intent, interference remain unresolved. Electric bicycle/scooter alternatives, exact bundles, proposals, offline/compatibility, delivery audit and manifest remain CPU work."
+  "reason": "Saved-only bicycle attempt finalizer validates 900 continuous 20 Hz Original frames, actor/command/camera-frame joins and observed rider motion. A new independent saved delivery decoder fully decodes all four hash-bound streams, hashes per-frame FFmpeg receipts, rechecks source bytes, and joins stream metadata to measured event summaries; 14 CPU tests, pinned preflight and scoped static pass. Actual rider pixel visibility and lawful riding, intent and interference remain unresolved. Electric bicycle/scooter alternatives, canonical bundles, proposals, offline/compatibility, full delivery audit and manifest remain CPU work."
 }
