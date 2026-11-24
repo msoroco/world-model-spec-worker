@@ -25,35 +25,15 @@
     {
       "requirement": "NRS-484B-283-1b",
       "source": "NRS 484B.283(1)(b)",
-      "branch": "Leaving a curb into a vehicle path.",
+      "branch": "Leaving a curb into a vehicle path, conditional inability to yield, and introductory cross-reference applicability",
       "status": "selected_required",
       "case_ids": [
         "training__C230222__NRS-484B-283-1b__pedestrian__probe_1",
-        "training__C230222__NRS-484B-283-1b__pedestrian__probe_2"
+        "training__C230222__NRS-484B-283-1b__pedestrian__probe_2",
+        "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_marked",
+        "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_outside"
       ],
-      "evidence_or_gap": "Two 240-frame synthetic source cases have measured conditional stopping margins, six malformed-source negatives, independent source audit, pinned measurement contracts, two retained synthetic saved positives and six saved negatives, and eight unselected Native construction plans with a common observed-departure braking policy, CPU preflights, exact offline and v1 positive/negative package compatibility plus independent audits. Actual driver capability, suddenness, Native capture, strict v2 recipe, statutory exceptions and legal outcome remain unverified. Three fallback thresholds now have source-bound synthetic positive/negative decisions and frame-join negatives; original pixels and physical triggers remain unobserved."
-    },
-    {
-      "requirement": "NRS-484B-283-1b",
-      "source": "NRS 484B.283(1)(b)",
-      "branch": "484B.287, 484B.290, 484B.350 cross-references",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C230222__NRS-484B-283-1b__pedestrian__probe_1",
-        "training__C230222__NRS-484B-283-1b__pedestrian__probe_2"
-      ],
-      "evidence_or_gap": "Exact cross-reference texts are bound in statutory-crossrefs.json. Both selected cases require original road/device/pedestrian context review to exclude or resolve applicability; the synthetic straight-road pair cannot establish an exception finding."
-    },
-    {
-      "requirement": "NRS-484B-283-1b",
-      "source": "NRS 484B.283(1)(b)",
-      "branch": "impossibility to yield must be measured",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C230222__NRS-484B-283-1b__pedestrian__probe_1",
-        "training__C230222__NRS-484B-283-1b__pedestrian__probe_2"
-      ],
-      "evidence_or_gap": "Both selected cases acquire original pedestrian/vehicle source traces and a conditional stopping range. The original vehicle response and driver capability remain separate physical and judgment review; numeric assumptions do not define statutory impossibility."
+      "evidence_or_gap": "Both cases acquire original pedestrian and vehicle source traces and a conditional stopping range. Exact cross-reference texts are bound in statutory-crossrefs.json; original context review must resolve applicability. Numeric assumptions do not define statutory impossibility or actual driver capability."
     }
   ],
   "neutral_baseline": {
@@ -244,6 +224,192 @@
           "Curb timing and calculated margin alone do not assign a legal verdict"
         ]
       }
+    },
+    {
+      "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_marked",
+      "target_law_id": "NRS-484B-283-1b",
+      "kind": "selected_delivery_preparation",
+      "target_type": "exception_context",
+      "physical_target": "pedestrian crosses within authored marked crossing",
+      "comparison_variable": "marked_crosswalk_relation_at_curb_entry",
+      "source_branch": "Leaving a curb into a vehicle path.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle transforms plus pedestrian footprint",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle velocity magnitudes",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.accel_longitudinal",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "Frame-differenced pedestrian velocity with event bracket",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full pedestrian footprint versus authored curb edge and vehicle path",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "Vehicle distance and speed at pedestrian roadway entry",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.stopping_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Conditional range from source speed and documented driver assumptions",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "curb_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB source frame hashes and Native frame/time joins",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Conditional stopping assumptions are not measured driver capability",
+          "Original vehicle control, curb status and camera pixels require independent saved audit",
+          "Curb timing and calculated margin alone do not assign a legal verdict",
+          "Authored marking geometry is not original painted pixels or right-of-way evidence"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_outside",
+      "target_law_id": "NRS-484B-283-1b",
+      "kind": "selected_delivery_preparation",
+      "target_type": "exception_context",
+      "physical_target": "pedestrian crosses outside authored marked crossing",
+      "comparison_variable": "marked_crosswalk_relation_at_curb_entry",
+      "source_branch": "Leaving a curb into a vehicle path.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle transforms plus pedestrian footprint",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original pedestrian and vehicle velocity magnitudes",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "kin.accel_longitudinal",
+            "unit": "m/s2",
+            "sampling_rate_hz": 20,
+            "method": "Frame-differenced pedestrian velocity with event bracket",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full pedestrian footprint versus authored curb edge and vehicle path",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "s",
+            "sampling_rate_hz": 20,
+            "method": "Vehicle distance and speed at pedestrian roadway entry",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "drv.stopping_distance",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Conditional range from source speed and documented driver assumptions",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          },
+          {
+            "name": "curb_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB source frame hashes and Native frame/time joins",
+            "time_window": "entire 600-frame 30-second approach",
+            "reference_frame": "Native source frame/time and authored road coordinates",
+            "uncertainty": "50 ms event brackets; actual driver capability and legal status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Conditional stopping assumptions are not measured driver capability",
+          "Original vehicle control, curb status and camera pixels require independent saved audit",
+          "Curb timing and calculated margin alone do not assign a legal verdict",
+          "Authored marking geometry is not original painted pixels or right-of-way evidence"
+        ]
+      }
     }
   ],
   "comparisons": [
@@ -259,6 +425,20 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_comparison",
+      "case_ids": [
+        "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_marked",
+        "training__C230222__NRS-484B-283-1b__pedestrian__crossref_lvmc_11_30_060_a_outside"
+      ],
+      "deliberate_differences": [
+        "marked_crosswalk_relation_at_curb_entry"
+      ],
+      "fixed_conditions": [
+        "frozen C230222 cell, actor, curb edge, road width, vehicle path and controller",
+        "pedestrian speed and departure request, camera and duration policy"
       ]
     }
   ],

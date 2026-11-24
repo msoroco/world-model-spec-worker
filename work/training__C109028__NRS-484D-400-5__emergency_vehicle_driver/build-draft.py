@@ -101,7 +101,13 @@ def build():
         "pursuit": (False, True, True),
         "call_lamps_only": (True, False, False),
         "ordinary_lamps_only": (False, False, False),
+        "sweep_0": (False, True, True),
+        "sweep_1": (False, True, True),
+        "sweep_2": (False, True, True),
+        "sweep_3": (False, True, True),
     }
+    sweep = {"sweep_0": (500, 10), "sweep_1": (500, 20),
+             "sweep_2": (600, 10), "sweep_3": (600, 20)}
     for probe, (call, pursuit, siren) in policies.items():
         case_id = HERE.name + "__" + probe
         config = dict(root_config, case_id=case_id,
@@ -112,6 +118,10 @@ def build():
                       emergency_call_requested=call,
                       immediate_pursuit_requested=pursuit,
                       siren_requested=siren)
+        distance, approach = sweep.get(probe, (500, 10))
+        config.update(observer_distance_ft=distance,
+                      other_approach_distance_m=approach,
+                      other_spawn_s_m=15 if approach == 10 else 25)
         files = [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]
         files.extend({"path": name, "content": (NATIVE / name).read_text()}
                      for name in ("runner.py", "measure.py", "prove.py", "audit.py",

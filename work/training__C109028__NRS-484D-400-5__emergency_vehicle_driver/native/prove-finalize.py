@@ -43,13 +43,21 @@ POLICIES = {
     "pursuit": (False, True, True),
     "call_lamps_only": (True, False, False),
     "ordinary_lamps_only": (False, False, False),
+    "sweep_0": (False, True, True),
+    "sweep_1": (False, True, True),
+    "sweep_2": (False, True, True),
+    "sweep_3": (False, True, True),
 }
+
+SWEEP = {"sweep_0": (500, 10), "sweep_1": (500, 20),
+         "sweep_2": (600, 10), "sweep_3": (600, 20)}
 
 
 def run(emit=False, case="probe_a"):
     if case not in POLICIES:
         raise ValueError("Unknown exact branch")
     call, pursuit, siren = POLICIES[case]
+    observer_distance, approach_distance = SWEEP.get(case, (500, 10))
     SCRATCH.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(dir=SCRATCH, prefix="c109028-finalize-") as temp:
         base = Path(temp)
@@ -60,6 +68,9 @@ def run(emit=False, case="probe_a"):
         config["emergency_call_requested"] = call
         config["immediate_pursuit_requested"] = pursuit
         config["siren_requested"] = siren
+        config["observer_distance_ft"] = observer_distance
+        config["other_approach_distance_m"] = approach_distance
+        config["other_spawn_s_m"] = 15 if approach_distance == 10 else 25
         write(base / "config.json", config)
         samples = array("h", [0]) * (48000 * 30)
         if siren:
@@ -80,7 +91,7 @@ def run(emit=False, case="probe_a"):
             "authority_name": "synthetic fixture", "document_identifier": "fixture"})
         write(base / "acoustic-report.json", {
             "method": "synthetic fixture", "normal_conditions": True,
-            "distance_ft": 500, "observer": "synthetic fixture",
+            "distance_ft": observer_distance, "observer": "synthetic fixture",
             "source_audio_sha256": audio_hash, "audibility_assessment": "uncertain",
             "calibration_source": "synthetic fixture"})
         write(base / "capture/manifest.json", {"frames": 600,
@@ -91,6 +102,9 @@ def run(emit=False, case="probe_a"):
             center = [5 + 2 * t, 0.0]
             body = [[center[0] + dx, dy, z] for dx in (-1, 1)
                     for dy in (-1, 1) for z in (0, 1)]
+            other_center = [50 - approach_distance, 0.0]
+            other_body = [[other_center[0] + dx, dy, z] for dx in (-1, 1)
+                          for dy in (-1, 1) for z in (0, 1)]
             native.append({"source_kind": "original_native", "native_frame": frame,
                            "time_s": t, "ego": {"actor_id": 205,
                            "blueprint_id": "vehicle.ford.ambulance",
@@ -98,7 +112,7 @@ def run(emit=False, case="probe_a"):
                            "speed_mps": 2},
                            "other": {"actor_id": 202,
                                      "blueprint_id": "vehicle.lincoln.mkz_2020",
-                                     "body_vertices_m": body},
+                                     "body_vertices_m": other_body},
                            "special1_native_readback": 80 <= i < 330})
             mapping.append({"video_frame": i, "carla_frame": frame,
                             "native_frame": frame, "time_s": t})

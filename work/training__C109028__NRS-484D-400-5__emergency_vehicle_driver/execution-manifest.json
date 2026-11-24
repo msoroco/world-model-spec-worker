@@ -9,7 +9,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/probe_a/primary/construction.json",
-      "construction_sha256": "ef298a457aa6fe0fe84c447cfb1e21556481f240d678b30f39919ba209bbfa85",
+      "construction_sha256": "5e50b30a6736632a94b50ee8f68c42f5cbb3043f4494ed4f1c12ef7b3a25213d",
       "measurement_contract": "selected-fixture/probe_a/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -22,20 +22,62 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-probe_a-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-probe_a-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "ef298a457aa6fe0fe84c447cfb1e21556481f240d678b30f39919ba209bbfa85",
+        "construction_sha256": "5e50b30a6736632a94b50ee8f68c42f5cbb3043f4494ed4f1c12ef7b3a25213d",
         "log": "selected-proof/probe_a/primary/offline.log",
-        "log_sha256": "721b1ea875694df16ebeb59f08b2e90ac8af653911e888ec6606f43e8e50b5df"
+        "log_sha256": "54941e10a2edd8ae8eee73a28fa746684bcb35d9d6273dc47c6ab9071b05ffae"
       },
       "compatibility": {
         "receipt": "selected-proof/probe_a/primary/compatibility.json",
-        "sha256": "91ccdab2a8a195d3e0919a344cd2f8ab212dd751175d2dacd71335b14199452d",
+        "sha256": "258f516b855ccd3e51eca3e62fc68ed357139ca5e49a5d544177891753ab3e27",
         "log": "selected-proof/probe_a/primary/analysis.log",
         "negative_log": "selected-proof/probe_a/primary/negative.log"
       },
       "negative": {
         "log": "selected-proof/probe_a/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_a/proof.json",
+        "sha256": "db796b763abaaaaac76c0567edbf0a9327d0d7a39260174fcbb0bc24d0a84baa"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --negative",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing independent original Native and physical acceptance source",
+        "test_log": "delivery-proof/probe_a/positive.log",
+        "test_log_sha256": "97a4e2dd8d86a337795caded1805ad6293eb57e206797a4300d7413b6851495a",
+        "negative_log": "delivery-proof/probe_a/negative.log",
+        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proof/probe_a/primary/recorded-only.log",
+        "test_log_sha256": "a845db767570ea50228d2c6a0f01fed888501be04237cd9fb99dc6505011538b"
       }
     },
     {
@@ -43,7 +85,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/probe_b/primary/construction.json",
-      "construction_sha256": "a1b2264f19e61f88395fedab8726759e5516faeb330e13e2b3745184ac850817",
+      "construction_sha256": "7123ff8a2ed7d04cf605c4bc2bde3d10c3b049d6f874f2f633ca2a651a37dc29",
       "measurement_contract": "selected-fixture/probe_b/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -56,20 +98,62 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-probe_b-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-probe_b-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "a1b2264f19e61f88395fedab8726759e5516faeb330e13e2b3745184ac850817",
+        "construction_sha256": "7123ff8a2ed7d04cf605c4bc2bde3d10c3b049d6f874f2f633ca2a651a37dc29",
         "log": "selected-proof/probe_b/primary/offline.log",
-        "log_sha256": "9768ca2b464ae16ca45c504153c4f4c0fd02341cccb21c2b475a3dffa3302f0b"
+        "log_sha256": "d5140b163453e8b060f568781ce4354f9a71591db7237f512f74438585743271"
       },
       "compatibility": {
         "receipt": "selected-proof/probe_b/primary/compatibility.json",
-        "sha256": "743055bf2ad0ee86fc81c7a398c081fdbc49fb8936d8d317eee897561d999f6f",
+        "sha256": "eabe5dbd9093d3333ce01b11272ef0cd79c12ed616e8b85e0c556077fbe9ef90",
         "log": "selected-proof/probe_b/primary/analysis.log",
         "negative_log": "selected-proof/probe_b/primary/negative.log"
       },
       "negative": {
         "log": "selected-proof/probe_b/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_b/proof.json",
+        "sha256": "e5b47340fe65c74b70114ffc89b4ceaa69b021a6da0630a630ff2a425181fe38"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --negative",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing independent original Native and physical acceptance source",
+        "test_log": "delivery-proof/probe_b/positive.log",
+        "test_log_sha256": "3a058e2a9d798a07df3362341f9fb7d8c3835652e8b2f13f633c95bc847f1474",
+        "negative_log": "delivery-proof/probe_b/negative.log",
+        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proof/probe_b/primary/recorded-only.log",
+        "test_log_sha256": "422eb1dd0fafe5b320bd5093c7b9da7fdc4fca5998a0bd8bde6d54deebcf110e"
       }
     },
     {
@@ -77,7 +161,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/pursuit/primary/construction.json",
-      "construction_sha256": "174547e3013715f0d188fdfe6307866e52a2347ff2a1c0bd584e220e4146f35c",
+      "construction_sha256": "2db46595fae06a8d8cd4417ec7576fd91a92e93b969ef6cbc6997efc9f49b694",
       "measurement_contract": "selected-fixture/pursuit/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -90,20 +174,62 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-pursuit-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-pursuit-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "174547e3013715f0d188fdfe6307866e52a2347ff2a1c0bd584e220e4146f35c",
+        "construction_sha256": "2db46595fae06a8d8cd4417ec7576fd91a92e93b969ef6cbc6997efc9f49b694",
         "log": "selected-proof/pursuit/primary/offline.log",
-        "log_sha256": "c6641e8afcfd38f29bd27e8c5ae6082d9e807c624279325c4cbb09d7c6166b6a"
+        "log_sha256": "7f581bd52d94ef4af5db9b662bb73c8add57baac9fc6fe825eda78cbbdae314b"
       },
       "compatibility": {
         "receipt": "selected-proof/pursuit/primary/compatibility.json",
-        "sha256": "3f6e2dedb73d2479abfcd2f5109f25773de52713601d57693c6c9d0969d4b3f6",
+        "sha256": "1eb8c1168f9dc4315afed9ab6f41d186cf399790f2efcee7bf90fcd755bfa2f1",
         "log": "selected-proof/pursuit/primary/analysis.log",
         "negative_log": "selected-proof/pursuit/primary/negative.log"
       },
       "negative": {
         "log": "selected-proof/pursuit/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/pursuit/proof.json",
+        "sha256": "023f367733588dde3ec3d7347bdf38ae4026be5cee21fc0281cdd2c4a903ce25"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --negative",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing independent original Native and physical acceptance source",
+        "test_log": "delivery-proof/pursuit/positive.log",
+        "test_log_sha256": "8c38de2a020023ca159e51612357697c84822269391141d933ee47511a2722ed",
+        "negative_log": "delivery-proof/pursuit/negative.log",
+        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proof/pursuit/primary/recorded-only.log",
+        "test_log_sha256": "acaa7b92fb16bb3a54b35fe7b2a211f43d90fbf20ab763085245dbe1c266c41c"
       }
     },
     {
@@ -111,7 +237,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/call_lamps_only/primary/construction.json",
-      "construction_sha256": "ca2471864abcbfd4019c1660a6a7aa37c694e6ba3065350cca415486c89335b2",
+      "construction_sha256": "ae1210f493aa02c91ec8f15abd630d2ef91a26cbe471b25d2a9873c3a723d1b8",
       "measurement_contract": "selected-fixture/call_lamps_only/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -124,20 +250,62 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-call_lamps_only-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-call_lamps_only-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "ca2471864abcbfd4019c1660a6a7aa37c694e6ba3065350cca415486c89335b2",
+        "construction_sha256": "ae1210f493aa02c91ec8f15abd630d2ef91a26cbe471b25d2a9873c3a723d1b8",
         "log": "selected-proof/call_lamps_only/primary/offline.log",
-        "log_sha256": "cd9fea6fc8121c2fc9cad5351515e9878d1f79dbab5ab3acf67dfd22b8490b1f"
+        "log_sha256": "0729d4cecba4158dfd1d324ab9ba8b11bc42fc7583f39aaa36e2575a36a9a939"
       },
       "compatibility": {
         "receipt": "selected-proof/call_lamps_only/primary/compatibility.json",
-        "sha256": "46367418edd012801f7b135d33bcc8fa35b999dde41806c0132140583daf863d",
+        "sha256": "dff42c22313644ce8e309c486c89ad6993780939db51fb274feab58fc2cc41d9",
         "log": "selected-proof/call_lamps_only/primary/analysis.log",
         "negative_log": "selected-proof/call_lamps_only/primary/negative.log"
       },
       "negative": {
         "log": "selected-proof/call_lamps_only/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/call_lamps_only/proof.json",
+        "sha256": "3987af0b154d0423c0f973a87639f6a92dffea279f4ba8a93bca511c8dc12a2c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --negative",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing independent original Native and physical acceptance source",
+        "test_log": "delivery-proof/call_lamps_only/positive.log",
+        "test_log_sha256": "ee2d16f19c8fdbb64038a5f0fd656559432bd07a33c30fee1a1a6ac0cc85e1c2",
+        "negative_log": "delivery-proof/call_lamps_only/negative.log",
+        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proof/call_lamps_only/primary/recorded-only.log",
+        "test_log_sha256": "f033b297d8f71b87b2e78029fed633a3e5f28ec30b0a8db50dd0302106a3c991"
       }
     },
     {
@@ -145,7 +313,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "draft-candidates/ordinary_lamps_only/primary/construction.json",
-      "construction_sha256": "fc416eb92bb24f1e797f1123e9a56a12ef19774a207b2f304057ce8197095b8a",
+      "construction_sha256": "10389a3fc9957ab26b0496cdbd8d44857d53c82f388ce4dc531334d36a568179",
       "measurement_contract": "selected-fixture/ordinary_lamps_only/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -158,20 +326,62 @@
       },
       "candidates": [],
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-ordinary_lamps_only-offline-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c109028-ordinary_lamps_only-offline-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "fc416eb92bb24f1e797f1123e9a56a12ef19774a207b2f304057ce8197095b8a",
+        "construction_sha256": "10389a3fc9957ab26b0496cdbd8d44857d53c82f388ce4dc531334d36a568179",
         "log": "selected-proof/ordinary_lamps_only/primary/offline.log",
-        "log_sha256": "c16d3879eea4facc8035f2b83f7c3d6e41545d099b99e85e03927809aa039825"
+        "log_sha256": "c36ada30a7326bf2da83a4bdb228e6e8b4aa1e98f7da05e31609d77593dc0d4a"
       },
       "compatibility": {
         "receipt": "selected-proof/ordinary_lamps_only/primary/compatibility.json",
-        "sha256": "76a3488b8c72634dd3f16732da7a8fcc8ea1a51173706ecf35ed5d1a5f0a2c85",
+        "sha256": "72547d7ade855ec7d184fcdba2e8706a99cc8a1aeebeca60904022d68c95ec1d",
         "log": "selected-proof/ordinary_lamps_only/primary/analysis.log",
         "negative_log": "selected-proof/ordinary_lamps_only/primary/negative.log"
       },
       "negative": {
         "log": "selected-proof/ordinary_lamps_only/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/ordinary_lamps_only/proof.json",
+        "sha256": "f1b00deec7a3d858585546ea39f3a5ed07c18b198308cb5fe2cc6bf990feb57b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/delivery_acceptance.py --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --negative",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "53ab3c099570e59fff34628059051543d7bf2a959f7411b16d61bba960c1dba9",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing independent original Native and physical acceptance source",
+        "test_log": "delivery-proof/ordinary_lamps_only/positive.log",
+        "test_log_sha256": "dd6cdb7519eb3eca1e8a8ee8695772a0c518a5da3152cb473ede0748e69c2edf",
+        "negative_log": "delivery-proof/ordinary_lamps_only/negative.log",
+        "negative_log_sha256": "54825d9fbd21d1cb99bbcc561781275ebf4941f574fd3120d20485ebcad65fa1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109028__NRS-484D-400-5__emergency_vehicle_driver/execution-manifest.json --case training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "selected-proof/ordinary_lamps_only/primary/recorded-only.log",
+        "test_log_sha256": "3b9737998df8242cc9e86d08051da86e00da1dd566751a8028abb6038688a585"
       }
     }
   ]

@@ -66,12 +66,12 @@ def build(suffix):
         'extraction_confirmed': True, 'frames': 480, 'acquisition': 'synthetic_diagnostic',
         'observation_contract_version': 1,
         'required_observations': ['rel.same_direction', 'rel.surface_gap', 'kin.position', 'rel.occupies'],
-        'sources': {'trace.jsonl': sha(source / 'trace.jsonl')},
+        'sources': {'road.xodr': sha(HERE / 'draft-construction/scene.xodr'), 'trace.jsonl': sha(source / 'trace.jsonl')},
         'synthetic_diagnostic': True}, separators=(',', ':')) + '\n')
     (source / 'acquisition-provenance.json').write_text(json.dumps({
         'provenance_kind': 'synthetic_local_diagnostic', 'diagnostic_fixture': True,
         'native_executed': False}, separators=(',', ':')) + '\n')
-    files = []
+    files = [{'path': 'road.xodr', 'source': (HERE / 'draft-construction/scene.xodr').relative_to(ROOT).as_posix(), 'sha256': sha(HERE / 'draft-construction/scene.xodr')}]
     for path in sorted(source.rglob('*')):
         if path.is_file():
             files.append({'path': path.relative_to(source).as_posix(),

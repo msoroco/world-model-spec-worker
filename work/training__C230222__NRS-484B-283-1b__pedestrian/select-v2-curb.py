@@ -54,13 +54,12 @@ def main():
         term:{'evidence':'Curb source measurement and original source pixel review remain separate; the channel is a CPU acquisition plan.',
               'channels':[channel],'source_refs':['curb-samples.jsonl','curb-context.json','video_frames.jsonl']}
         for term,channel in term_channels.items()}
-    for disposition in plan['requirement_dispositions']:
-        disposition['status']='selected_required'
-        disposition['case_ids']=case_ids
-        if 'cross-references' in disposition['branch']:
-            disposition['evidence_or_gap']='Exact cross-reference texts are bound in statutory-crossrefs.json. Both selected cases require original road/device/pedestrian context review to exclude or resolve applicability; the synthetic straight-road pair cannot establish an exception finding.'
-        elif 'impossibility' in disposition['branch']:
-            disposition['evidence_or_gap']='Both selected cases acquire original pedestrian/vehicle source traces and a conditional stopping range. The original vehicle response and driver capability remain separate physical and judgment review; numeric assumptions do not define statutory impossibility.'
+    plan['requirement_dispositions']=plan['requirement_dispositions'][:1]
+    disposition=plan['requirement_dispositions'][0]
+    disposition['status']='selected_required'
+    disposition['case_ids']=case_ids
+    disposition['branch']='Leaving a curb into a vehicle path, conditional inability to yield, and introductory cross-reference applicability'
+    disposition['evidence_or_gap']='Both cases acquire original pedestrian and vehicle source traces and a conditional stopping range. Exact cross-reference texts are bound in statutory-crossrefs.json; original context review must resolve applicability. Numeric assumptions do not define statutory impossibility or actual driver capability.'
     for case in plan['cases']:
         case['kind']='selected_delivery_preparation'
         case['recording_description']=construction['recording_description']
