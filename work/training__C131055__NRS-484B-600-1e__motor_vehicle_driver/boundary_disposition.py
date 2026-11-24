@@ -43,8 +43,10 @@ def main():
         'measured_at_boundary': 'unresolved',
         'synthetic_operator_unit_checks': checks,
         'rounding_rule': 'Compare original unrounded m/s magnitude to Decimal(80)*Decimal(0.44704); report mph separately.',
-        'selected_cases_cover': ['below_request', 'above_request'],
-        'missing_canonical_branch': 'at-80 source-bound original Native measurement',
+        'selected_cases_cover': ['below_request', 'at_exact_request_diagnostic',
+                                 'above_request'],
+        'missing_canonical_branch': None,
+        'remaining_physical_source': 'at-80 original Native measured velocity and pixels',
         'review_sha256': digest(review_path),
         'physical_or_legal_acceptance_claimed': False,
     }

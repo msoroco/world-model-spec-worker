@@ -8,6 +8,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE / 'native'))
 from geometry import open_drive
+from unmarked_geometry import open_drive as unmarked_open_drive
 from prove_crossing import context as proof_context
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -29,14 +30,16 @@ def lines(path, values):
 
 def main():
     suffix = sys.argv[1] if len(sys.argv) > 1 else 'probe1'
-    if suffix not in ('probe1', 'probe2'):
-        raise ValueError('Exact probe1/probe2 diagnostic only')
-    x_position = 0.0 if suffix == 'probe1' else 12.0
-    case = HERE.name + ('__probe_1' if suffix == 'probe1' else '__probe_2')
+    if suffix not in ('probe1', 'probe2', 'probe3', 'common1', 'common2'):
+        raise ValueError('Exact probe or common-intersection diagnostic only')
+    number = suffix[-1]
+    x_position = {'1': 0.0, '2': 12.0, '3': 21.0}[number]
+    case = HERE.name + '__probe_' + number
     fixture = HERE / ('v2-' + suffix + '-fixture')
     fixture.mkdir(exist_ok=True)
     road = fixture / 'road.xodr'
-    road.write_text(open_drive() + '\n')
+    common_intersection = suffix in ('common1', 'common2', 'probe3')
+    road.write_text((unmarked_open_drive() if common_intersection else open_drive()) + '\n')
     context = proof_context()
     context['native_map_sha256'] = sha(road)
     context['crosswalk_survey_sha256'] = sha(road)
@@ -45,6 +48,22 @@ def main():
     context['business_district_evidence_sha256'] = hashlib.sha256(b'synthetic business district diagnostic only').hexdigest()
     context['intersection_inventory'] = [{'crosswalk_kind': 'marked', 'x_m': 0},
                                          {'crosswalk_kind': 'unmarked', 'x_m': 21}]
+    if common_intersection:
+        sidewalk = fixture / 'sidewalk-edges.json'
+        write(sidewalk, {'source_kind': 'synthetic_native_map_readback_diagnostic',
+                         'native_map_sha256': sha(road),
+                         'samples': [{'road_id': 3, 'lane_id': 2, 'x_m': 21, 'y_m': -6},
+                                     {'road_id': 3, 'lane_id': -2, 'x_m': 21, 'y_m': 6}]})
+        for crossing in context['crosswalks']:
+            if crossing['kind'] == 'unmarked':
+                crossing['id'] = 'unmarked-7'
+                crossing['bounds_m']['min_y'] = -4
+                crossing['bounds_m']['max_y'] = 4
+        context['intersection_inventory'] = [
+            {'unmarked_crosswalk_id': 'unmarked-7', 'native_junction_id': 7,
+             'incoming_road_id': 1, 'connecting_road_id': 3,
+             'sidewalk_edge_source_path': 'sidewalk-edges.json',
+             'sidewalk_edge_source_sha256': sha(sidewalk)}]
     write(fixture / 'crossing-context.json', context)
     poses, trace, mapping, evidence, graph_rows, graphs = [], [], [], [], [], []
     for i in range(600):

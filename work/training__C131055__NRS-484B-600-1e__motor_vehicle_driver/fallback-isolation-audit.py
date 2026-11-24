@@ -1,4 +1,4 @@
-"""Check both exact cases apply one shared gain change and preserve source variables."""
+"""Check three exact cases apply one shared gain change and preserve source variables."""
 import hashlib
 import json
 from pathlib import Path
@@ -48,6 +48,7 @@ for entry in manifest['cases']:
             a = json.loads(primary_files[path])
             b = json.loads(alternate_files[path])
             b['status'] = a['status']
+            b['candidate_id'] = a['candidate_id']
             require(a == b, 'Fallback config changed comparison variable')
         else:
             require(primary_files[path] == alternate_files[path],
@@ -62,6 +63,6 @@ result = {'format': 'worker-fallback-isolation-audit', 'passed': True,
                                          'comparison speed request'],
           'construction_sha256': hashes,
           'physical_or_legal_acceptance': False}
-path = HERE / 'fallback-isolation-receipt.json'
+path = HERE / 'fallback-isolation-v3-receipt.json'
 require(not path.exists(), 'Retain previous isolation receipt')
 path.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')

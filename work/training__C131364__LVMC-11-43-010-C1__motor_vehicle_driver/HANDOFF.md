@@ -1,3 +1,59 @@
+## 2026-11-24 selected CPU delivery checkpoint
+
+Status remains `partial`. The exact selected left-turn pair is in
+`selected-v2-manifest.json` SHA-256 `9a7615d39498c4957ea3eb9b8e6c453ee313d5021380125d576bcb31a0dc60eb`. Each case has a source-hashed 600-frame,
+20-Hz, four-camera primary and symmetric controller fallback. All four exact
+selected paths passed pinned `runtime.py offline`, 11-check public
+`runtime.py compatibility` with missing-source rejection, and recorded-only
+`runtime.py process-saved`. Durable receipts reside under `selected-v2/proofs/`.
+
+The independent CPU source and comparison audit passes:
+`selected-v2/audit.json` SHA-256 `cc541aacc9c5bcd24bd6961b70a9b31e5cf7fd533fd5f2ec3176be9320edca2e`. Canonical semantic stage validation passes:
+`selected-v2/semantic-validation.json` SHA-256 `9ac2b5ef14ef93dd6487f1ed83e624f2e5f2b38421863335c86eac39b9e313ab`, with source-bound stage index
+`proposals/semantic-index.json` SHA-256 `b4026c8835de9c956b1edb59b8b5e69e5b42fd4101afd920c100c85d63b4ec39`. The exact `full-train` delivery contract
+validates both selected cases, including positive and negative audit tests:
+`selected-v2/delivery-contract-validation.json` SHA-256 `62aad87bc063b79136ec861380b6acfc02b71ed8db29a952de9a8a95fc8587bd`.
+
+Original-attempt delivery audit implementation is
+`selected-v2/delivery_audit.py` SHA-256 `130a8658fd2472a679d75015ce40d9376cd81b86e197fefc021ac41cdb61a9df`. Its CPU fixtures pass for both cases;
+each negative rejects a changed driver-reference original camera hash.
+Original-attempt comparison audit implementation is
+`selected-v2/comparison_audit.py` SHA-256 `91a04cb30f3d7c2d34210d1d03b89d45f32ca093c5693c87e170291d846a1b23`; CPU positive passes and altered-road
+negative rejects, as proven by `selected-v2/comparison-positive.log` SHA-256 `477d25423fef94f9dc490fd40755e6f73264e16e8bc63338706fbd6f7e6dcea1` and
+`selected-v2/comparison-negative.log` SHA-256 `4ba9a1e52c5131193e3f82a77de665c30e42561cc3c05c4cd98d572a83b24a70`. Its actual mode requires both
+original Native attempts and independent physical review receipts, checks
+each sealed source and all 600 original frame/camera joins through the delivery
+auditor, verifies common fixed conditions, and demands observed distinct
+circulating lanes. No actual mode was run and no physical or legal finding is
+claimed.
+
+Statutory branch review is `proposals/statutory-branch-review.json` SHA-256 `f75f92375f832fbe1d0bcaa96919547e94222cc35ace72949ffa95d6f49463ec`.
+This assignment's frozen cell supports the left-turn pair. The exact-law
+`training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver` assignment must
+bind the separate U-turn alternative; do not treat this left-turn pair as
+covering it. The branch is still unresolved in this assignment's readiness.
+
+Replay commands from repository root (all scratch must stay under
+`.runtime-work/`):
+
+```sh
+export PYTHONDONTWRITEBYTECODE=1
+export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
+.venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/audit.py
+.venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/validate_semantic.py
+.venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/validate_delivery_contract.py
+.venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/comparison_audit.py --cpu-test positive
+.venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/comparison_audit.py --cpu-test negative
+.venv-cpu/bin/python worker_check.py --assignment training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver --complete
+```
+
+The comparison negative must exit nonzero with `Comparison fixed condition
+differs: road_sha256`. Next CPU work: bind canonical `execution-manifest.json`
+and complete any remaining strict-ready package requirements, then run the
+assignment-scoped strict gate. Local physical work requires two actual Native
+captures, original pixel/roundabout/left-turn/lane-history review receipts,
+and original comparison audit. Historical notes follow.
+
 # LVMC-11-43-010-C1 at C131364
 
 ## 2026-11-24 current v2 Native and fallback CPU checkpoint

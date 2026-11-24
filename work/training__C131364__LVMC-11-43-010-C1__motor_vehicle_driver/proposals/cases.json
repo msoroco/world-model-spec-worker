@@ -1,73 +1,251 @@
 {
-  "cases": [
+  "format": "worker-canonical-cases-draft",
+  "cell_id": "C131364",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
     {
-      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+      "sweep_id": "left_turn_lane_choice",
       "target_law_id": "LVMC-11-43-010-C1",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "left-exiting driver uses left circulating lane",
-      "comparison_variable": "roundabout_exit_lane",
-      "source_branch": "Intended left-turn exit.",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "multilane_roundabout",
-          "maneuver": "left_turn",
-          "control": "lane_allocation"
+      "judgment_refs": [
+        {
+          "phrase": "intends to exit a roundabout",
+          "note": "Intent itself is not directly observed; the original exit route and context provide limited evidence."
         },
-        "activation_conditions_to_verify": [
-          "the subject is in a multi-lane roundabout",
-          "the subject intends to turn left or complete a U-turn"
+        {
+          "phrase": "left lane",
+          "note": "Left lane is relative to the original mapped circulatory lane adjacency and travel direction."
+        }
+      ],
+      "rationale": "Compare two authored circulating lane requests while retaining unresolved intent and left-lane judgments for original-source review.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_circulating_lane",
+          "observable": "requested_circulating_lane",
+          "unit": "lane_id",
+          "min": -2,
+          "max": -1,
+          "spacing": 1,
+          "range_rationale": "The authored two-lane roundabout has exactly the adjacent lane requests -2 and -1; these are engineering setpoints, not legal thresholds.",
+          "spacing_rationale": "One lane-ID step samples both authored circulating lane requests.",
+          "feasibility_evidence": "Source-hashed primary constructions and fake-CARLA CPU state-machine test; original lane occupancy remains unverified.",
+          "measurement": {
+            "method": "original map lane readback joined to actor frame",
+            "time_window": "all 600 frames, with circulating segment isolated",
+            "statistic": "last"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "requested_circulating_lane": {
+          "kind": "controller",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_route",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native actor pose and map lane readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE road and lane identities",
+            "uncertainty": "Physical roundabout, actual exit and lane occupancy require original capture"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored route is not original Native observation"
         ]
       },
-      "controller": {
-        "requested_behavior": "left-exiting driver uses left circulating lane"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": [
-        "'intends to exit' is intention; the exit taken is the observable substitute"
+      "spec_version": "6abb263adb37b56ff60f7c9feafee766d7963ffdae947353a3795673ba4b291d",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2",
+        "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1"
       ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected context reference; no target outcome or recording selected.",
+      "variable_assignments": {
+        "requested_circulating_lane": {
+          "kind": "controller",
+          "value": -1
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_route",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native actor pose and map lane readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE road and lane identities",
+            "uncertainty": "Physical roundabout, actual exit and lane occupancy require original capture"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored route is not original Native observation"
+        ]
+      },
+      "unresolved_judgment_calls": []
     },
     {
       "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2",
       "target_law_id": "LVMC-11-43-010-C1",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "left-exiting driver uses right circulating lane",
-      "comparison_variable": "roundabout_exit_lane",
-      "source_branch": "Intended left-turn exit.",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Requested lane choice; original occupancy, maneuver and source context determine any later interpretation.",
+      "paired_probe_id": "left_turn_lane_choice",
+      "deliberate_differences": [
+        "requested_circulating_lane"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "multilane_roundabout",
-          "maneuver": "left_turn",
-          "control": "lane_allocation"
-        },
-        "activation_conditions_to_verify": [
-          "the subject is in a multi-lane roundabout",
-          "the subject intends to turn left or complete a U-turn"
+      "probe": {
+        "primary_variable": "requested_circulating_lane",
+        "comparison_or_standard": "two-lane physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_circulating_lane": -2
+        }
+      },
+      "sweep_id": "left_turn_lane_choice",
+      "sweep_spec_version": "6abb263adb37b56ff60f7c9feafee766d7963ffdae947353a3795673ba4b291d",
+      "sweep_point": {
+        "requested_circulating_lane": -2.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "requested_circulating_lane": {
+          "kind": "controller",
+          "value": -2.0,
+          "note": "Fixed physical sweep setpoint; actual behavior measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_route",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native actor pose and map lane readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE road and lane identities",
+            "uncertainty": "Physical roundabout, actual exit and lane occupancy require original capture"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored route is not original Native observation"
         ]
       },
-      "controller": {
-        "requested_behavior": "left-exiting driver uses right circulating lane"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
+      "judgment_refs": [
+        {
+          "phrase": "intends to exit a roundabout",
+          "note": "Intent itself is not directly observed; the original exit route and context provide limited evidence."
+        },
+        {
+          "phrase": "left lane",
+          "note": "Left lane is relative to the original mapped circulatory lane adjacency and travel direction."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_circulating_lane",
+          "observable": "requested_circulating_lane",
+          "unit": "lane_id",
+          "measurement": {
+            "method": "original map lane readback joined to actor frame",
+            "time_window": "all 600 frames, with circulating segment isolated",
+            "statistic": "last"
+          }
+        }
+      ],
       "unresolved_judgment_calls": [
-        "'intends to exit' is intention; the exit taken is the observable substitute"
+        "intends to exit a roundabout",
+        "left lane"
+      ]
+    },
+    {
+      "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "target_type": "judgment_sweep",
+      "rationale": "Requested lane choice; original occupancy, maneuver and source context determine any later interpretation.",
+      "paired_probe_id": "left_turn_lane_choice",
+      "deliberate_differences": [
+        "requested_circulating_lane"
+      ],
+      "probe": {
+        "primary_variable": "requested_circulating_lane",
+        "comparison_or_standard": "two-lane physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "requested_circulating_lane": -1
+        }
+      },
+      "sweep_id": "left_turn_lane_choice",
+      "sweep_spec_version": "6abb263adb37b56ff60f7c9feafee766d7963ffdae947353a3795673ba4b291d",
+      "sweep_point": {
+        "requested_circulating_lane": -1.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "requested_circulating_lane": {
+          "kind": "controller",
+          "value": -1.0,
+          "note": "Fixed physical sweep setpoint; actual behavior measured separately"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_route",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native actor pose and map lane readback",
+            "time_window": "full 30 s / 600-frame attempt",
+            "reference_frame": "Native OpenDRIVE road and lane identities",
+            "uncertainty": "Physical roundabout, actual exit and lane occupancy require original capture"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored route is not original Native observation"
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "intends to exit a roundabout",
+          "note": "Intent itself is not directly observed; the original exit route and context provide limited evidence."
+        },
+        {
+          "phrase": "left lane",
+          "note": "Left lane is relative to the original mapped circulatory lane adjacency and travel direction."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "requested_circulating_lane",
+          "observable": "requested_circulating_lane",
+          "unit": "lane_id",
+          "measurement": {
+            "method": "original map lane readback joined to actor frame",
+            "time_window": "all 600 frames, with circulating segment isolated",
+            "statistic": "last"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "intends to exit a roundabout",
+        "left lane"
       ]
     }
   ]

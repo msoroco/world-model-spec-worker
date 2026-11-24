@@ -28,15 +28,18 @@ def measure(history_path, survey_path):
         raise ValueError('original roundabout exit traversal missing')
     speeds = []
     above = []
+    at_limit = []
     for r in rows:
         vec = r.get('velocity_xyz_mps')
         if not isinstance(vec, list) or len(vec) != 3 or not all(type(x) in (int,float) and math.isfinite(x) for x in vec):
             raise ValueError('original velocity vector missing')
         magnitude = math.sqrt(sum(x*x for x in vec))
         speeds.append(magnitude * MPH_PER_MPS)
-        above.append(sum(Decimal(str(x)) ** 2 for x in vec) > LIMIT_MPS_SQUARED)
+        speed_squared = sum(Decimal(str(x)) ** 2 for x in vec)
+        above.append(speed_squared > LIMIT_MPS_SQUARED)
+        at_limit.append(speed_squared == LIMIT_MPS_SQUARED)
     exit_frame = next(i for i, road in enumerate(roads) if road == 2)
-    return {'frames': 600, 'first_exit_road_frame': exit_frame, 'maximum_full_trace_mph': max(speeds), 'maximum_on_arc_mph': max(s for s, road in zip(speeds, roads) if road == 1), 'maximum_on_exit_mph': max(s for s, road in zip(speeds, roads) if road == 2), 'samples_above_80_mph': sum(above), 'speed_samples_mph': speeds, 'boundary_comparison': 'Decimal original velocity magnitude squared > (35.7632 m/s)^2', 'legal_conclusion': None, 'physical_review_required': True}
+    return {'frames': 600, 'first_exit_road_frame': exit_frame, 'maximum_full_trace_mph': max(speeds), 'maximum_on_arc_mph': max(s for s, road in zip(speeds, roads) if road == 1), 'maximum_on_exit_mph': max(s for s, road in zip(speeds, roads) if road == 2), 'samples_above_80_mph': sum(above), 'samples_at_80_mph': sum(at_limit), 'speed_samples_mph': speeds, 'boundary_comparison': 'Decimal original velocity magnitude squared compared with (35.7632 m/s)^2', 'legal_conclusion': None, 'physical_review_required': True}
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()

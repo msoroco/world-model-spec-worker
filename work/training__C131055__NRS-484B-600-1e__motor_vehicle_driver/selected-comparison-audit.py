@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-MPH = 2.2369362921
+LIMIT_MPS = 35.7632
 
 
 def read(path):
@@ -27,7 +27,7 @@ def audit():
     rows = {}
     source_hashes = {}
     construction_hashes = {}
-    for name, number in (('below', 1), ('above', 2)):
+    for name, number in (('below', 1), ('above', 2), ('at', 3)):
         case = HERE.name + f'__controlled_{number}'
         entry = next((item for item in manifest['cases'] if item['case_id'] == case), None)
         require(entry is not None and entry.get('kind') == 'delivery', 'Unselected comparison case')
@@ -43,13 +43,14 @@ def audit():
         source_hashes[name] = source['sha256']
         rows[name] = [json.loads(line) for line in source_path.read_text().splitlines()]
         require(len(rows[name]) == 600, 'Selected source requires 600 frames')
-    a, b = rows['below'], rows['above']
+    a, b, middle = rows['below'], rows['above'], rows['at']
     fixed = ('video_frame', 'native_frame', 'time_s', 'subject_id',
              'position_xyz_m', 'road_id', 'lane_id')
     differences = []
-    for i, (left, right) in enumerate(zip(a, b)):
+    for i, (left, right, exact) in enumerate(zip(a, b, middle)):
         for key in fixed:
-            require(left[key] == right[key], 'Fixed comparison source differs: ' + key)
+            require(left[key] == right[key] == exact[key],
+                    'Fixed comparison source differs: ' + key)
         require(left['video_frame'] == i and abs(left['time_s'] - i / 20) < 1e-6,
                 'Frame/time source join differs')
         require(left['road_id'] == (1 if i < 500 else 2) and left['lane_id'] == -2,
@@ -57,16 +58,19 @@ def audit():
         if left['velocity_xyz_mps'] != right['velocity_xyz_mps']:
             differences.append(i)
     require(differences == list(range(500, 600)), 'Speed contrast window differs')
-    require(all(row['velocity_xyz_mps'][0] * MPH < 80 for row in a) and
-            all(row['velocity_xyz_mps'][0] * MPH > 80 for row in b[500:]),
+    require(all(row['velocity_xyz_mps'][0] < LIMIT_MPS for row in a) and
+            all(row['velocity_xyz_mps'][0] > LIMIT_MPS for row in b[500:]) and
+            all(row['velocity_xyz_mps'] == [LIMIT_MPS, 0, 0] for row in middle),
             'Synthetic speed boundary differs')
     return {'format': 'worker-selected-comparison-diagnostic', 'passed': True,
             'selected': True, 'physical_completion': False,
             'construction_sha256': construction_hashes,
             'source_sha256': source_hashes,
             'fixed_conditions_verified': list(fixed),
-            'deliberate_difference_frames': [500, 599],
-            'deliberate_difference': 'synthetic 29 versus 38 m/s on exit',
+            'deliberate_difference_frames': {'below_vs_above': [500, 599],
+                                             'below_vs_at': [0, 599],
+                                             'at_vs_above': [0, 599]},
+            'deliberate_difference': 'synthetic 29, 35.7632 and 38 m/s requests; original measured outcomes unverified',
             'above_80_mph_is_synthetic': True}
 
 

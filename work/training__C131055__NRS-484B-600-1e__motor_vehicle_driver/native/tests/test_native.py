@@ -43,6 +43,16 @@ class NativeDraft(unittest.TestCase):
             self.assertEqual(m['first_exit_road_frame'],100)
             self.assertEqual(m['samples_above_80_mph'],200)
             self.assertIsNone(m['legal_conclusion'])
+            for row in rows:
+                row['velocity_xyz_mps'] = [35.7632, 0, 0]
+            history.write_text(''.join(json.dumps(r)+'\n' for r in rows))
+            at = measure(history, survey_path)
+            self.assertEqual(at['maximum_full_trace_mph'], 80.0)
+            self.assertEqual(at['samples_above_80_mph'], 0)
+            self.assertEqual(at['samples_at_80_mph'], 600)
+            rows[599]['velocity_xyz_mps'] = [35.763201, 0, 0]
+            history.write_text(''.join(json.dumps(r)+'\n' for r in rows))
+            self.assertEqual(measure(history, survey_path)['samples_above_80_mph'], 1)
             rows[300].pop('velocity_xyz_mps')
             history.write_text(''.join(json.dumps(r)+'\n' for r in rows))
             with self.assertRaisesRegex(ValueError,'velocity vector missing'):

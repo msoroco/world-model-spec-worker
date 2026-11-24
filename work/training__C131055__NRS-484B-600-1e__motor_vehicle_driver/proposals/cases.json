@@ -130,6 +130,56 @@
           "value": 38
         }
       }
+    },
+    {
+      "case_id": "training__C131055__NRS-484B-600-1e__motor_vehicle_driver__controlled_3",
+      "deliberate_differences": [
+        "requested_speed_mps"
+      ],
+      "epsilon_used": {
+        "rationale": "Exact statutory boundary; no legal tolerance or physical attainment claim.",
+        "unit": "mph",
+        "value": 0
+      },
+      "paired_probe_id": "speed_80_mph",
+      "probe": {
+        "comparison_or_standard": "Original measured speed versus strict statutory 80 mph cap",
+        "operator": ">",
+        "primary_variable": "requested_speed_mps",
+        "target_value_or_branch": "at",
+        "test_value": 80.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "mph"
+      },
+      "rationale": "Selected exact 80 mph request diagnostic; measure original velocity and preserve equality uncertainty.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Retained original-frame synthetic source row",
+            "name": "original_vehicle_velocity_position",
+            "reference_frame": "original frame/time and surveyed arc/exit",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "50 ms frame bracket; Native review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic source only; actual Native speed and lane retention unverified"
+        ]
+      },
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "variable_assignments": {
+        "requested_speed_mps": {
+          "kind": "controller",
+          "value": 35.7632
+        }
+      }
     }
   ],
   "cell_id": "C131055",
@@ -152,5 +202,5 @@
       "target_law_id": "NRS-484B-600-1e"
     }
   ],
-  "unresolved_boundary": "Exact 80 mph source-hashed equivalence remains unproven for frozen accepted membership; no original recording replay claimed."
+  "unresolved_boundary": "Exact at-80 request now has selected CPU diagnostic construction; original measured Native equality and accepted membership equivalence remain unproven."
 }

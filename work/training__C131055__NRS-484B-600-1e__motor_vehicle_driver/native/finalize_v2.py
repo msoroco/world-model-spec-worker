@@ -50,7 +50,7 @@ def finalize(attempt,output):
         'source_complete':True,'diagnostic_fixture':True,'physical_or_legal_acceptance':False}
     high=config['case_id'].endswith('__controlled_2')
     at=config['case_id'].endswith('__controlled_3')
-    matched=(metric['maximum_full_trace_mph']==80.0 and metric['samples_above_80_mph']==0) if at else ((metric['samples_above_80_mph']>0)==high)
+    matched=(metric['samples_at_80_mph']>0 and metric['samples_above_80_mph']==0) if at else ((metric['samples_above_80_mph']>0)==high)
     result={'case_id':config['case_id'],'measured_values':metric,
         'target_checks':[{'target':'synthetic saved speed exactly 80 mph' if at else ('synthetic saved speed crosses 80 mph' if high else 'synthetic saved speed remains at or below 80 mph'),
           'requested':True,'measured':matched,'method':'measure_speed',

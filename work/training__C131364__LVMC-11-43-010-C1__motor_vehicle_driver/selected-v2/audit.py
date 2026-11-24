@@ -34,8 +34,20 @@ assert manifest["comparisons"][0]["comparison_id"] == plan["comparisons"][0]["co
 assert manifest["comparisons"][0]["case_ids"] == plan["comparisons"][0]["case_ids"]
 assert manifest["comparisons"][0]["deliberate_differences"] == plan["comparisons"][0]["deliberate_differences"]
 assert manifest["comparisons"][0]["isolation_audit"] == "selected-v2/audit.json"
+comparison_acceptance = manifest["comparisons"][0]["original_comparison_audit"]
+assert sha(ROOT / comparison_acceptance["script"]) == comparison_acceptance["script_sha256"]
+checked_receipt(comparison_acceptance["positive_cpu_test"])
+negative_comparison = checked_receipt(comparison_acceptance["negative_cpu_test"]).read_text()
+assert comparison_acceptance["negative_expected_error"] in negative_comparison
+assert not comparison_acceptance["physical_acceptance_claimed"]
 assert all("pending" not in condition for condition in manifest["comparisons"][0]["fixed_conditions"])
 assert not manifest["physical_acceptance_claimed"] and not manifest["legal_verdict_claimed"]
+semantic_index = json.loads(checked_receipt(manifest["semantic_proposal_index"]).read_text())
+assert semantic_index["format"] == "worker-semantic-delivery"
+assert set(semantic_index["stages"]) == {"relevance_batch", "relevance", "template", "judgment_observables", "bindings", "cases"}
+for reference in semantic_index["stages"].values():
+    for item in reference if isinstance(reference, list) else [reference]:
+        checked_receipt(item)
 
 bundles = []
 configs = []
@@ -43,6 +55,13 @@ routes = []
 results = []
 for index, case in enumerate(manifest["cases"], 1):
     assert case["kind"] == "delivery"
+    acceptance = case["delivery_acceptance"]
+    assert acceptance["case_id"] == case["case_id"] and acceptance["sets"] == ["full-train"]
+    assert acceptance["script_sha256"] == sha(ROOT / acceptance["script"])
+    assert acceptance["test_exit_code"] == 0 and acceptance["negative_exit_code"] != 0
+    assert sha(ROOT / acceptance["test_log"]) == acceptance["test_log_sha256"]
+    assert sha(ROOT / acceptance["negative_log"]) == acceptance["negative_log_sha256"]
+    assert acceptance["negative_expected_error"] in (ROOT / acceptance["negative_log"]).read_text()
     source = ROOT / case["construction"]
     assert sha(source) == case["construction_sha256"]
     bundle = json.loads(source.read_text())

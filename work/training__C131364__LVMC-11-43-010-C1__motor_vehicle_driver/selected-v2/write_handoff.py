@@ -1,0 +1,77 @@
+"""Put the current selected CPU checkpoint ahead of historical notes."""
+
+import hashlib
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+handoff = ROOT / "HANDOFF.md"
+marker = "## 2026-11-24 selected CPU delivery checkpoint"
+old = handoff.read_text()
+if marker in old:
+    old = old[old.index("\n## ", old.index(marker) + len(marker)) + 1:]
+
+
+def show(relative):
+    value = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+    return f"`{relative}` SHA-256 `{value}`"
+
+
+head = f"""{marker}
+
+Status remains `partial`. The exact selected left-turn pair is in
+{show('selected-v2-manifest.json')}. Each case has a source-hashed 600-frame,
+20-Hz, four-camera primary and symmetric controller fallback. All four exact
+selected paths passed pinned `runtime.py offline`, 11-check public
+`runtime.py compatibility` with missing-source rejection, and recorded-only
+`runtime.py process-saved`. Durable receipts reside under `selected-v2/proofs/`.
+
+The independent CPU source and comparison audit passes:
+{show('selected-v2/audit.json')}. Canonical semantic stage validation passes:
+{show('selected-v2/semantic-validation.json')}, with source-bound stage index
+{show('proposals/semantic-index.json')}. The exact `full-train` delivery contract
+validates both selected cases, including positive and negative audit tests:
+{show('selected-v2/delivery-contract-validation.json')}.
+
+Original-attempt delivery audit implementation is
+{show('selected-v2/delivery_audit.py')}. Its CPU fixtures pass for both cases;
+each negative rejects a changed driver-reference original camera hash.
+Original-attempt comparison audit implementation is
+{show('selected-v2/comparison_audit.py')}; CPU positive passes and altered-road
+negative rejects, as proven by {show('selected-v2/comparison-positive.log')} and
+{show('selected-v2/comparison-negative.log')}. Its actual mode requires both
+original Native attempts and independent physical review receipts, checks
+each sealed source and all 600 original frame/camera joins through the delivery
+auditor, verifies common fixed conditions, and demands observed distinct
+circulating lanes. No actual mode was run and no physical or legal finding is
+claimed.
+
+Statutory branch review is {show('proposals/statutory-branch-review.json')}.
+This assignment's frozen cell supports the left-turn pair. The exact-law
+`training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver` assignment must
+bind the separate U-turn alternative; do not treat this left-turn pair as
+covering it. The branch is still unresolved in this assignment's readiness.
+
+Replay commands from repository root (all scratch must stay under
+`.runtime-work/`):
+
+```sh
+export PYTHONDONTWRITEBYTECODE=1
+export SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c131364-selected"
+.venv-cpu/bin/python work/{ROOT.name}/selected-v2/audit.py
+.venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_semantic.py
+.venv-cpu/bin/python work/{ROOT.name}/selected-v2/validate_delivery_contract.py
+.venv-cpu/bin/python work/{ROOT.name}/selected-v2/comparison_audit.py --cpu-test positive
+.venv-cpu/bin/python work/{ROOT.name}/selected-v2/comparison_audit.py --cpu-test negative
+.venv-cpu/bin/python worker_check.py --assignment {ROOT.name} --complete
+```
+
+The comparison negative must exit nonzero with `Comparison fixed condition
+differs: road_sha256`. Next CPU work: bind canonical `execution-manifest.json`
+and complete any remaining strict-ready package requirements, then run the
+assignment-scoped strict gate. Local physical work requires two actual Native
+captures, original pixel/roundabout/left-turn/lane-history review receipts,
+and original comparison audit. Historical notes follow.
+
+"""
+handoff.write_text(head + old)

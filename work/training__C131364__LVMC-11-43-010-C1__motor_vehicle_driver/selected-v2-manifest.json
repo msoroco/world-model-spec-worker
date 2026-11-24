@@ -18,12 +18,33 @@
         "roundabout_exit_lane"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same map geometry except named comparison variable",
-        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
-      ]
+        "same frozen cell, law, actor, authored road and non-target actors",
+        "same 30-second 20-Hz four-camera recording and source-packet contract",
+        "same controller source, requested speed and capture/finalizer implementation",
+        "same original frame/time grid; route position, heading and phase may respond to the requested circulating lane"
+      ],
+      "isolation_audit": "selected-v2/audit.json",
+      "original_comparison_audit": {
+        "script": "selected-v2/comparison_audit.py",
+        "script_sha256": "91a04cb30f3d7c2d34210d1d03b89d45f32ca093c5693c87e170291d846a1b23",
+        "positive_cpu_test": {
+          "path": "selected-v2/comparison-positive.log",
+          "sha256": "477d25423fef94f9dc490fd40755e6f73264e16e8bc63338706fbd6f7e6dcea1"
+        },
+        "negative_cpu_test": {
+          "path": "selected-v2/comparison-negative.log",
+          "sha256": "4ba9a1e52c5131193e3f82a77de665c30e42561cc3c05c4cd98d572a83b24a70"
+        },
+        "negative_expected_error": "Comparison fixed condition differs: road_sha256",
+        "original_command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/comparison_audit.py --attempt1 \"$ATTEMPT_1\" --attempt2 \"$ATTEMPT_2\" --review1 \"$REVIEW_1\" --review2 \"$REVIEW_2\"",
+        "physical_acceptance_claimed": false
+      }
     }
   ],
+  "semantic_proposal_index": {
+    "path": "proposals/semantic-index.json",
+    "sha256": "b4026c8835de9c956b1edb59b8b5e69e5b42fd4101afd920c100c85d63b4ec39"
+  },
   "cases": [
     {
       "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
@@ -60,6 +81,19 @@
               "path": "selected-v2/proofs/witness1-fallback1/processing.json",
               "sha256": "0c988579fc270cd65931a4be9f8f627e662a2f98f321021662881cce22235b3d"
             }
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --candidate fallback1 --output \"$OUTPUT\"",
+            "construction_sha256": "3edee20578209a5641b063c29dc523d839df2e5c85f43df37597230c9d56c298",
+            "exit_code": 0,
+            "log": "selected-v2/proofs/witness1-fallback1/offline.log",
+            "log_sha256": "d745bf2d5e88587d5df61f4b75feb719cf4c90205541507fbf59a0bd75ef0b57"
+          },
+          "compatibility": {
+            "receipt": "selected-v2/proofs/witness1-fallback1/compatibility.json",
+            "sha256": "3d563ce8d46f2500e499e2a516cb4a13f85b6fafd25f41c0350f5cddcfbcf922",
+            "log": "selected-v2/proofs/witness1-fallback1/compatibility-analysis.log",
+            "negative_log": "selected-v2/proofs/witness1-fallback1/negative-analysis.log"
           }
         }
       ],
@@ -92,13 +126,60 @@
           "sha256": "d8005cc405c574eb0fd14563bfedf2b452a32cfff8eeccdc9ece8c065d78cf0f"
         }
       },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --output \"$OUTPUT\"",
+        "construction_sha256": "cfbb9ef4683645ad117b2e39747d1036234e7d4a97c09654987eb80510c20189",
+        "exit_code": 0,
+        "log": "selected-v2/proofs/witness1-primary/offline.log",
+        "log_sha256": "fdfee11cbfc93073a059d9be700bb9be715fc9dfd279bb037e35ecb9d57318d6"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "selected-v2/physical/witness1/proof.json",
+        "sha256": "2336622b4e6ff7e1022e81afe951f3269fe56ae35c4a36369d752ebad043a737"
+      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\"",
+        "test_log": "selected-v2/proofs/witness1-primary/processing.json",
+        "test_log_sha256": "d8005cc405c574eb0fd14563bfedf2b452a32cfff8eeccdc9ece8c065d78cf0f",
+        "test_exit_code": 0,
         "diagnostic_receipt": {
           "path": "selected-v2/proofs/witness1-primary/processing.json",
           "sha256": "d8005cc405c574eb0fd14563bfedf2b452a32cfff8eeccdc9ece8c065d78cf0f"
         }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "selected-v2/delivery_audit.py",
+        "script_sha256": "130a8658fd2472a679d75015ce40d9376cd81b86e197fefc021ac41cdb61a9df",
+        "command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/delivery_audit.py --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --cpu-test positive",
+        "test_exit_code": 0,
+        "test_log": "selected-v2/proofs/witness1-delivery-positive.log",
+        "test_log_sha256": "604a02735287cbea113393d74a50dfb1906acd367f659d9b07f46605d21341e7",
+        "negative_command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/delivery_audit.py --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --cpu-test negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical review references another original camera: driver_reference",
+        "negative_log": "selected-v2/proofs/witness1-delivery-negative.log",
+        "negative_log_sha256": "ec026ff19ef2e909035752def43943b1916873cf8d0fb98ac9e424f10bbb7fa3",
+        "original_command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/delivery_audit.py --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_1 --attempt \"$ATTEMPT\" --review \"$REVIEW_RECEIPT\"",
+        "physical_acceptance_claimed": false
       }
     },
     {
@@ -136,6 +217,19 @@
               "path": "selected-v2/proofs/witness2-fallback1/processing.json",
               "sha256": "69835622629021721e686fb88546e19cf24b874dd13e2f277722d85b7f230e7c"
             }
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --candidate fallback1 --output \"$OUTPUT\"",
+            "construction_sha256": "8e6566d89aba99b887fd1f76c22c146ebf68fc84eff05c620afe0332fa1c1688",
+            "exit_code": 0,
+            "log": "selected-v2/proofs/witness2-fallback1/offline.log",
+            "log_sha256": "c6db678aaf1ac31aa7b5f1d57f6a20d1e448fe27b8474b832f84b4e94a0ddd38"
+          },
+          "compatibility": {
+            "receipt": "selected-v2/proofs/witness2-fallback1/compatibility.json",
+            "sha256": "5e7215a4c5bed2c3c74b399e920c17a3d1d816aa94cbda0dfbcb5f16dd7cde41",
+            "log": "selected-v2/proofs/witness2-fallback1/compatibility-analysis.log",
+            "negative_log": "selected-v2/proofs/witness2-fallback1/negative-analysis.log"
           }
         }
       ],
@@ -168,13 +262,60 @@
           "sha256": "724da88bccb3ac02de7d376c22f9e1b8a150887b769a1f364e59f56bd63804c6"
         }
       },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --output \"$OUTPUT\"",
+        "construction_sha256": "21ed4237685af259655e59d8681141656a3d1de09d1703f8a680e5824d01805c",
+        "exit_code": 0,
+        "log": "selected-v2/proofs/witness2-primary/offline.log",
+        "log_sha256": "501ace81698ea1c864c7c6714d48336235d7fb14f47aea87260cb66df4859c42"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "selected-v2/physical/witness2/proof.json",
+        "sha256": "10b5415d6aa3206081f4349dfec0630f9fada0b1b58181c503c00f93004df44a"
+      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2-manifest.json --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\"",
+        "test_log": "selected-v2/proofs/witness2-primary/processing.json",
+        "test_log_sha256": "724da88bccb3ac02de7d376c22f9e1b8a150887b769a1f364e59f56bd63804c6",
+        "test_exit_code": 0,
         "diagnostic_receipt": {
           "path": "selected-v2/proofs/witness2-primary/processing.json",
           "sha256": "724da88bccb3ac02de7d376c22f9e1b8a150887b769a1f364e59f56bd63804c6"
         }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "selected-v2/delivery_audit.py",
+        "script_sha256": "130a8658fd2472a679d75015ce40d9376cd81b86e197fefc021ac41cdb61a9df",
+        "command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/delivery_audit.py --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --cpu-test positive",
+        "test_exit_code": 0,
+        "test_log": "selected-v2/proofs/witness2-delivery-positive.log",
+        "test_log_sha256": "67ab1019f2613fb17e70dbeb53c7c3ce20eec8b58d1d54dbd083862ddf6fce93",
+        "negative_command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/delivery_audit.py --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --cpu-test negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical review references another original camera: driver_reference",
+        "negative_log": "selected-v2/proofs/witness2-delivery-negative.log",
+        "negative_log_sha256": "ec026ff19ef2e909035752def43943b1916873cf8d0fb98ac9e424f10bbb7fa3",
+        "original_command": ".venv-cpu/bin/python work/training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver/selected-v2/delivery_audit.py --case training__C131364__LVMC-11-43-010-C1__motor_vehicle_driver__witness_2 --attempt \"$ATTEMPT\" --review \"$REVIEW_RECEIPT\"",
+        "physical_acceptance_claimed": false
       }
     }
   ],

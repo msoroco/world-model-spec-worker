@@ -1,6 +1,7 @@
 """Source-shaped unit test for the future Native audit branch; never physical evidence."""
 import hashlib
 import json
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -20,9 +21,11 @@ def require(value, message):
         raise ValueError(message)
 
 
-case = HERE.name + '__controlled_2'
-original = ROOT / '.runtime-work/owner199/selected-2-compat'
-saved = ROOT / '.runtime-work/owner199/selected-2-saved/v0001/processing.json'
+case_index = int(os.environ.get('OWNER199_SOURCE_SHAPE_CASE', '2'))
+require(case_index in (2, 3), 'Source-shape test case must be above or exact at')
+case = HERE.name + f'__controlled_{case_index}'
+original = ROOT / f'.runtime-work/owner199/boundary-v2-{case_index}-primary-compat'
+saved = ROOT / f'.runtime-work/owner199/boundary-v2-{case_index}-primary-saved/v0001/processing.json'
 require(original.is_dir() and saved.is_file(), 'Selected source-shaped test inputs absent')
 with tempfile.TemporaryDirectory(prefix='owner199-physical-audit-test-',
                                  dir=ROOT / '.runtime-work') as temporary:
@@ -79,6 +82,7 @@ with tempfile.TemporaryDirectory(prefix='owner199-physical-audit-test-',
         negative = 'Independent original camera review incomplete' in str(error)
     require(negative, 'Stale pixel review source did not reject')
     print(json.dumps({'format': 'worker-delivery-audit-source-shape-test',
+                      'case_id': case,
                       'passed': True, 'physical_branch_exercised': True,
                       'stale_pixel_review_rejected': True,
                       'synthetic_cpu_fixture': True,
