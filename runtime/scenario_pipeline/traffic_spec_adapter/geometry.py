@@ -1,7 +1,8 @@
 """Observed body geometry and sampled OpenDRIVE regions, in TrafficSpec's frame.
 
-Lane IDs identify full (road, section, lane) regions. Compatible consecutive
-road segments share one roadway; property producers cannot add overlays.
+Unique lane-source bindings identify (road, section, lane) intervals. A proven
+common physical strip may retain several Native parents without selecting a
+route reference. Compatible consecutive road segments share one roadway.
 Sampling is geometric approximation, never a legal interpretation. OpenDRIVE
 is already right-handed; only CARLA observations need y/yaw reflection.
 """
@@ -310,7 +311,12 @@ def _static_map(path, junctions=False, junction_report=None, native_junction_box
                 inner=next((l for l in lanes if int(l.attrib['id'])==lid-(1 if lid>0 else -1)),None)
                 if abs(lid)==1:inner=section.find('./center/lane')
                 marking_intervals={}
+                marking_boundaries={start,end}
                 for side,source_lane in [('left',inner),('right',lane)]:
+                    if source_lane is not None:
+                        marking_boundaries.update(start+float(mark.get('sOffset',0))
+                            for mark in source_lane.findall('roadMark')
+                            if start<=start+float(mark.get('sOffset',0))<=end)
                     value=lane_marking(source_lane,complete=complete_map)
                     if value is not None:info['marking_'+side]=value
                     # Missing map declarations do not disprove an independently
@@ -331,7 +337,7 @@ def _static_map(path, junctions=False, junction_report=None, native_junction_box
                     source_regions[ident]={'road_id':rid,'section':section_index,'lane_id':lid,
                         'samples':[[s,edge(s,lid,False),edge(s,lid,True)] for s in stations],
                         'entry_topology_complete':bool(complete_map and junctions),'entry_junctions':[],
-                        'marking_intervals':marking_intervals}
+                        'marking_intervals':marking_intervals,'marking_boundaries':sorted(marking_boundaries)}
             if include_non_driving:
                 # Native lane type is geometry provenance, not a legal district
                 # or an invented sidewalk/shoulder inferred from a blank area.
@@ -750,7 +756,59 @@ def match_regions(native, current):
     return {key:ident for key,ident in result.items() if counts[ident]==1}
 
 
-def partition_source_roads(native, current, sources, provenance, *, lane_sources=None):
+def _shared_flat_junction_surface(records):
+    """Existing common flat connector-surface qualification, not route identity."""
+    junctions={r.get('junction',-1) for r in records};heights=[r.get('flat_z') for r in records]
+    if (len(junctions)==1 and next(iter(junctions))>=0 and heights and
+            all(z is not None for z in heights) and max(heights)-min(heights)<=1e-9):
+        return {'junction':next(iter(junctions)),'flat_z':heights[0]}
+    return None
+
+
+def _shared_flat_lane_surface(root,region,matches):
+    """Qualify one physical strip, retaining every distinct Native parent.
+
+    This supplies no unique lane/road reference, marking, way or topology facts.
+    """
+    from .roadways import boundary_key
+    if root is None or region.get('kind')!='lane' or len(matches)<2:return None
+    identities={(m['road_id'],m['section'],m['lane_id']) for m in matches}
+    if len(identities)!=len(matches):return None
+    records=[];paths=[];parents=[];shape=boundary_key(clean_boundary([[round(v,6)for v in p]for p in region.get('boundary',[])]))
+    for source in matches:
+        samples=source.get('samples',[])
+        if len(samples)<2 or samples[0][0]>=samples[-1][0]:return None
+        polygon=clean_boundary([[round(v,6)for v in a]for s,a,b in samples]+[[round(v,6)for v in b]for s,a,b in reversed(samples)])
+        if boundary_key(polygon)!=shape:return None
+        centers=[tuple(round((a[j]+b[j])/2,6)for j in range(2))for s,a,b in samples]
+        if source['lane_id']>0:centers.reverse()
+        if centers[0]==centers[-1]:return None
+        paths.append(centers)
+        road=root.find("road[@id='%s']"%source['road_id'])
+        if road is None:return None
+        sections=road.findall('lanes/laneSection')
+        if not 0<=source['section']<len(sections):return None
+        lane=next((l for l in sections[source['section']].findall('./*/*')if l.tag=='lane'and int(l.get('id'))==source['lane_id']),None)
+        if lane is None or lane.get('type')!='driving' or lane.get('level','false')!='false':return None
+        if any(e.tag not in ('superelevation','crossfall')or any(float(e.get(k,'0'))!=0 for k in 'abcd')for e in road.findall('lateralProfile/*')):return None
+        if any(float(e.get(k,'0'))!=0 for e in lane.findall('height')for k in ('inner','outer')):return None
+        elevations=road.findall('elevationProfile/elevation');low,high=samples[0][0],samples[-1][0]
+        active=[e for i,e in enumerate(elevations)if float(e.get('s'))<=high and (i==len(elevations)-1 or float(elevations[i+1].get('s'))>low)]
+        if not active or float(active[0].get('s'))>low or any(float(e.get(k,'0'))!=0 for e in active for k in 'bcd'):return None
+        heights={float(e.get('a'))for e in active}
+        if len(heights)!=1:return None
+        records.append({'junction':int(road.get('junction','-1')),'flat_z':next(iter(heights))})
+        parents.append({'road_id':source['road_id'],'section':source['section'],'lane_id':source['lane_id'],'interval_m':[low,high],'samples':samples})
+    # Equal scalar profiles never select a user reference. These are additional
+    # height conditions on already identical, identically directed polygons.
+    if any(p!=paths[0]for p in paths[1:]) or any(r['flat_z']!=records[0]['flat_z']for r in records[1:]):return None
+    common=_shared_flat_junction_surface(records)
+    if common is None:return None
+    return dict(common,method='shared_flat_junction_surface',native_parents=parents,
+        physical_identity_only=True,unique_native_reference=False)
+
+
+def partition_source_roads(native, current, sources, provenance, *, lane_sources=None, physical_sources=None, source_root=None):
     """Join exact native strip intervals by indexed original cross-sections.
 
     Both ends must be source samples and the whole polygon must equal that
@@ -792,12 +850,21 @@ def partition_source_roads(native, current, sources, provenance, *, lane_sources
                     # station interval must also have one unambiguous identity.
                     observed=copy.deepcopy(source)
                     observed['samples']=copy.deepcopy(samples[a:b+1])
-                    observed.pop('segments',None);observed.pop('native_continuations',None)
+                    observed.pop('segments',None)
+                    full_samples=source.get('samples',[])
+                    terminal=0 if source['lane_id']>0 else -1
+                    if not full_samples or observed['samples'][terminal]!=full_samples[terminal]:
+                        observed.pop('native_continuations',None)
                     matches=lane_matches.setdefault(ident,[])
                     if observed not in matches:matches.append(observed)
     if lane_sources is not None:
         for ident,matches in lane_matches.items():
             if len(matches)==1 and result.get(ident):lane_sources[ident]=matches[0]
+    if physical_sources is not None:
+        for ident,matches in lane_matches.items():
+            if result.get(ident):continue
+            proof=_shared_flat_lane_surface(source_root,regions[ident],matches)
+            if proof is not None:physical_sources[ident]=proof
     return result
 
 
@@ -845,6 +912,100 @@ def bound_junction_source_fields(components, road_sources, bindings, replacement
         fields[ident]=value
     return fields
 
+
+
+def retained_directed_roadway_fields(evidence, regions, native, sources, provenance, inventory):
+    """Bind an original authored role to a complete exact native roadway union."""
+    import json
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+    bindings=(inventory or {}).get('authored_directed_roadway_bindings',[])
+    if not bindings:return {}
+    path=evidence.path('road.xodr');document=evidence.path('scenario_geometry.json')
+    if path is None or document is None:raise ValueError('Missing authored roadway sources')
+    root=ET.parse(path).getroot();declaration=json.loads(document.read_text());current={r['id']:r for r in regions};result={}
+    for binding in bindings:
+        ident=binding.get('region');index=binding.get('declaration_index');roads=binding.get('roads');contract=binding.get('source_contract',{})
+        if (type(ident)is not int or ident in result or type(index)is not int or index<0 or
+                not isinstance(roads,list)or not roads or any(type(r)is not int for r in roads)or len(set(roads))!=len(roads)):
+            raise ValueError('Invalid/ambiguous authored roadway binding')
+        refs=binding.get('evidence',{});producer=contract.get('producer')
+        if (binding.get('map_sha256')!=evidence.used['road.xodr']or contract.get('coordinate_frame')not in('Core','CARLA')or
+                not isinstance(producer,str)or not {'road.xodr','scenario_geometry.json',producer}<=set(refs)):
+            raise ValueError('Authored roadway lacks bound original coordinate/producer contract')
+        for name,digest in refs.items():
+            if ((inventory or {}).get('evidence',{}).get(name)!=digest or evidence.path(name)is None or evidence.used.get(name)!=digest):
+                raise ValueError('Unbound authored roadway source: '+name)
+        declared=declaration.get('directed_roadways',[])
+        if index>=len(declared):raise ValueError('Missing original directed roadway declaration')
+        role=declared[index];region=current.get(ident);kind='one_way_roadway'if role.get('one_way')else 'roadway'
+        if region is None or region.get('kind')!=kind:raise ValueError('Authored roadway role/kind conflict')
+        vertices=role['polygon']if contract['coordinate_frame']=='Core'else[xy(p)for p in role['polygon']]
+        shape=Polygon([[round(v,6)for v in p]for p in vertices]);actual=Polygon(region['boundary'])
+        if not shape.is_valid or shape.is_empty or not shape.equals(actual):raise ValueError('Authored roadway boundary conflict')
+        aliases=[r for r in regions if r.get('kind')==kind and r.get('boundary')and Polygon(r['boundary']).equals(shape)]
+        direction=role.get('direction_xy')
+        if isinstance(direction,list)and len(direction)==2 and contract['coordinate_frame']=='CARLA':direction=xy(direction)
+        length=math.hypot(*direction)if isinstance(direction,list)and len(direction)==2 and all(type(v)in(int,float)and math.isfinite(v)for v in direction)else 0
+        if length<=0:raise ValueError('Invalid authored roadway direction')
+        expected=[round(v/length,6)for v in direction]
+        if region.get('lane',{}).get('direction')!=direction:raise ValueError('Retained authored direction conflict')
+        members=[]
+        for road_id in roads:
+            road=root.find("road[@id='%s']"%road_id)
+            if road is None:raise ValueError('Authored roadway native road missing')
+            parts=[r for r in native if r['kind']=='roadway'and sources.get(r['id'],{}).get('road_id')==road_id]
+            intervals=sorted(sources[r['id']]['interval']for r in parts)
+            if (not parts or any(provenance.get(r['id'])!=[road_id]for r in parts)or intervals[0][0]!=0 or
+                    intervals[-1][1]!=float(road.get('length'))or any(a[1]!=b[0]for a,b in zip(intervals,intervals[1:]))):
+                raise ValueError('Incomplete/ambiguous whole native roadway source')
+            driving=[]
+            for section_index,section in enumerate(road.findall('./lanes/laneSection')):
+                for lane in section.findall('./left/lane')+section.findall('./right/lane'):
+                    if lane.get('type')!='driving':continue
+                    driving.append(lane);sign=source_lane_direction(road,lane)
+                    matches=[r for r in native if r['kind']=='lane'and (s:=sources.get(r['id'],{})).get('road_id')==road_id and s.get('section')==section_index and s.get('lane_id')==int(lane.get('id'))]
+                    if sign is None or len(matches)!=1:raise ValueError('Incomplete native driving direction source')
+                    compiled=matches[0].get('lane',{}).get('direction')
+                    if not isinstance(compiled,list)or len(compiled)!=2:raise ValueError('Native compiled direction unavailable')
+                    compiled=[round(v,6)for v in compiled]
+                    for geometry in road.findall('./planView/geometry'):
+                        heading=float(geometry.get('hdg'));measured=[round(sign*math.cos(heading),6),round(sign*math.sin(heading),6)]
+                        if geometry.find('line')is None or measured!=compiled or compiled!=expected:raise ValueError('Conflicting/variable native driving directions')
+            if not driving:raise ValueError('Authored roadway has no native Driving lanes')
+            members.extend(parts)
+        union=unary_union([Polygon([[round(v,6)for v in p]for p in r['boundary']])for r in members])
+        if not union.is_valid or not union.equals(shape):raise ValueError('Authored roadway differs from exact declared native union')
+        from .roadways import compatible_properties
+        if len(aliases)>1:
+            if len(members)!=1:raise ValueError('Ambiguous composite authored roadway identity')
+            combined=aliases[0]
+            for alias in aliases[1:]:
+                combined=compatible_properties(combined,alias)
+                if combined is None:raise ValueError('Conflicting same-native authored roadway aliases')
+        value={'_source_road_ids':sorted(roads),'_roadway_source':[evidence.used['road.xodr'],sorted(roads),'original_authored_directed_union',index], '_verified_structure_kinds':list(dict.fromkeys(['roadway',kind]))}
+        if len(members)==1:value['_roadway_source']=[evidence.used['road.xodr'],sorted(roads),members[0]['id']]
+        for alias in aliases:
+            result[alias['id']]=dict(value)
+    return result
+
+
+def _is_authored_directed_roadway(region, custom):
+    """Exclude exact authored roles; coordinate ambiguity never earns identity."""
+    if not custom.get('directed_roadways'):return False
+    from shapely.geometry import Polygon
+    shape=Polygon([[round(v,6) for v in p] for p in region['boundary']])
+    for road in custom.get('directed_roadways',[]):
+        kind='one_way_roadway' if road.get('one_way') else 'roadway'
+        if region['kind']!=kind:continue
+        # Old retained declarations used Core coordinates; apply() uses xy().
+        # Protect BOTH exact interpretations, without selecting either as proof.
+        for vertices in (road['polygon'],[xy(p) for p in road['polygon']]):
+            authored=Polygon([[round(v,6) for v in p] for p in vertices])
+            if not authored.is_valid or authored.area<=0:
+                raise ValueError('Invalid authored directed roadway protection')
+            if shape.equals(authored):return True
+    return False
 
 
 def reviewed_intersection_source_fields(evidence, regions, native, sources, road_sources, map_sha256):
@@ -1000,6 +1161,368 @@ def retained_reference_crosswalk_fields(evidence, regions):
         'producer_sha256':digest,'source_kind':record['kind']},'_verified_structure_kinds':['crosswalk']}}
 
 
+def retained_reference_crosswalk_additions(evidence, regions, way_surfaces, lane_ids=None):
+    """Add only a missing original measured footway band, with its source scope."""
+    import json
+    from shapely.geometry import Polygon
+    if retained_reference_crosswalk_fields(evidence, regions):return []
+    path=evidence.path('scenario_geometry.json')
+    if path is None:return []
+    verification=json.loads(path.read_text()).get('physical_verification')
+    if not isinstance(verification,dict):return []
+    name=verification.get('actual_original_reference_geometry')
+    if not name:return []
+    source=evidence.path(name)
+    if source is None:raise ValueError('Declared original reference geometry is not integrity-bound')
+    record=json.loads(source.read_text())
+    if record.get('kind')not in ('original_before_motion_reference_geometry','original_before_motion_line_first_geometry')or record.get('branch')=='no_line_marked_near_side_crosswalk':return []
+    native=record.get('crosswalk_band_native_xy_m')
+    if native is None:return []
+    region={'id':max((r['id']for r in regions),default=0)+1,'kind':'crosswalk',
+            'boundary':normalized_polygon([xy(p)for p in native])}
+    fields=retained_reference_crosswalk_fields(evidence, regions+[region])
+    if region['id']not in fields:return []
+    shape=Polygon(region['boundary'])
+    ways=sorted(ident for ident,surface in way_surfaces.items()if surface.covers(shape))
+    if len(ways)!=1:raise ValueError('Measured crosswalk lacks one complete source highway surface')
+    region['ways']=ways
+    value=fields[region['id']];value['ways']=ways
+    if lane_ids is not None:
+        from .entrance_associations import _crosswalk
+        by_id={r['id']:r for r in regions}
+        polygons={r['id']:Polygon(r['boundary'])for r in regions if r.get('boundary')}
+        incoming={r['id']for r in regions if r['kind']in ('lane','turn_lane','reserved_lane','centre_turn_lane')
+                  and r.get('lane',{}).get('enters_intersection')is not None}
+        selected,_=_crosswalk(region,shape,incoming,polygons,by_id,{core:native for native,core in lane_ids.items()})
+        if selected is not None:region['entrance_of']=selected;value['entrance_of']=selected
+    return [(region,value)]
+
+
+class _UnsupportedAuthoredGround(ValueError):pass
+
+def _authored_native_surface_rows(native,sources,root):
+    from shapely.geometry import Polygon
+    from .adapter import rounded
+    roads={int(r.get('id')):r for r in root.findall('road')};rows=[]
+    for n in native:
+        s=sources.get(n['id'],{})
+        if 'lane_id' not in s or not n.get('boundary'):continue
+        road=roads[s['road_id']];sections=road.findall('./lanes/laneSection')
+        if s['section']>=len(sections):raise ValueError('Missing exact native section')
+        lanes=sections[s['section']].findall('./left/lane')+sections[s['section']].findall('./right/lane')
+        lane=next((l for l in lanes if int(l.get('id'))==s['lane_id']),None)
+        if lane is None:raise ValueError('Missing exact native lane')
+        shape=Polygon(rounded(n['boundary']))
+        if shape.is_empty or not shape.is_valid or shape.area<=0:raise ValueError('Invalid native surface')
+        rows.append({'identity':(s['road_id'],s['section'],s['lane_id']),'shape':shape,'native_kind':n['kind'],'lane_type':lane.get('type'),'road':road,'lane':lane})
+    if len({r['identity'] for r in rows})!=len(rows):raise ValueError('Ambiguous native surface identity')
+    return rows
+
+def _authored_physical_probe(p):
+    from shapely.geometry import Point
+    from .adapter import rounded
+    if p.get('method')!='Original world.cast_ray against rendered/colliding native level geometry before recorded driving':raise _UnsupportedAuthoredGround('Unproved physical probe method')
+    q=p.get('xy_m');hit=p.get('surface_location_m');expected=p.get('expected_height_m');tol=p.get('tolerance_m')
+    if (not isinstance(q,list)or len(q)!=2 or not isinstance(hit,list)or len(hit)!=3 or
+            any(type(x)not in(int,float)or not math.isfinite(x)for x in q+hit)or
+            type(expected)not in(int,float)or not math.isfinite(expected)or
+            type(tol)not in(int,float)or not math.isfinite(tol)or tol<=0 or
+            abs(hit[2]-expected)>=tol or rounded(hit[:2])!=rounded(q)):
+        raise _UnsupportedAuthoredGround('Missing or contradictory original physical surface probe')
+    return Point(hit[0],-hit[1]),hit[2]
+
+def _flat_curbed_authored_ground(rows,root,probes):
+    """One source-generated ground sheet, with every height/overlap family witnessed.
+
+    Uniformity is the declared closed procedural LINE/constant-width/flat-profile
+    ground model, not a new measured height field or SDK default-height guess.
+    """
+    import itertools
+    from shapely.ops import unary_union
+    try:
+        if root.findall('junction')or root.findall('.//object'):raise _UnsupportedAuthoredGround('Junction/object ground model unsupported')
+        if any(l.get('type')not in('driving','sidewalk')for road in root.findall('road')for l in road.findall('./lanes/laneSection/left/lane')+road.findall('./lanes/laneSection/right/lane')):raise _UnsupportedAuthoredGround('Unclassified native ground lane')
+        if {int(r.get('id'))for r in root.findall('road')}!={r['identity'][0]for r in rows}:raise _UnsupportedAuthoredGround('Incomplete native ground surface domain')
+        groups={}
+        for r in rows:
+            road,lane=r['road'],r['lane'];gs=road.findall('./planView/geometry');es=road.findall('./elevationProfile/elevation');ws=lane.findall('width')
+            if (r['lane_type']not in('driving','sidewalk')or len(gs)!=1 or gs[0].find('line')is None or
+                    float(gs[0].get('s'))!=0 or float(gs[0].get('length'))!=float(road.get('length'))or
+                    len(es)!=1 or float(es[0].get('s'))!=0 or any(float(es[0].get(k,'nan'))!=0 for k in 'bcd')or
+                    len(ws)!=1 or float(ws[0].get('sOffset'))!=0 or float(ws[0].get('a'))<=0 or any(float(ws[0].get(k,'nan'))!=0 for k in 'bcd')or
+                    any(float(v.get(k,'0'))!=0 for v in road.findall('./lateralProfile/*')+road.findall('./lanes/laneOffset')for k in 'abcd')or lane.findall('height')):
+                raise _UnsupportedAuthoredGround('Unsupported variable/raised native source profile')
+            z=float(es[0].get('a','nan'))
+            if not math.isfinite(z):raise _UnsupportedAuthoredGround('Nonfinite source profile')
+            r['family']=(r['lane_type'],z);groups.setdefault(r['family'],[]).append(r)
+        observations=[(_authored_physical_probe(p),p)for p in probes];heights={};witnesses={}
+        for index,((point,z),p) in enumerate(observations):
+            covering={r['family']for r in rows if r['shape'].covers(point)}
+            if len(covering)==1:
+                family=next(iter(covering))
+                if family in heights and heights[family]!=z:raise _UnsupportedAuthoredGround('Nonuniform physical height family')
+                heights[family]=z;witnesses.setdefault(family,[]).append(index)
+        if set(heights)!=set(groups):raise _UnsupportedAuthoredGround('Missing original physical height-family witness')
+        overlap=[]
+        for a,b in itertools.combinations(rows,2):
+            common=a['shape'].intersection(b['shape'])
+            if common.area<=0 or a['family']==b['family']:continue
+            expected=max(heights[a['family']],heights[b['family']]);found=[i for i,((point,z),p)in enumerate(observations)if common.covers(point)and z==expected]
+            if not found:raise _UnsupportedAuthoredGround('Missing physical upper-sheet overlap witness')
+            overlap.append({'native_pair':[list(a['identity']),list(b['identity'])],'probe_indices':found,'observed_upper_z_m':expected})
+        surface=unary_union([r['shape']for r in rows])
+        if surface.geom_type!='Polygon'or not surface.is_valid or surface.interiors:raise _UnsupportedAuthoredGround('Unsupported disconnected/holed ground sheet')
+        return surface,{'qualified':True,'method':'closed_authored_flat_curbed_upper_ground_v1','physical_height_families':[{'native_type':k[0],'reference_z_m':k[1],'observed_top_z_m':heights[k],'probe_indices':witnesses[k]}for k in groups],'overlap_witnesses':overlap,'SDK_version':None,'no_reference_to_mesh_height_equality_assumed':True,'no_body_ground_contact_requirement':True}
+    except(_UnsupportedAuthoredGround,KeyError,ValueError,TypeError)as error:
+        return None,{'qualified':False,'reason':str(error),'method':'closed_authored_flat_curbed_upper_ground_v1','SDK_version':None}
+
+def _bind_authored_roles(regions,rows,root,document,bindings,*,closed_ground_verified,driving_surface=None):
+    """Closed-ground flag is ONLY from the existing validated physical inventory.
+
+    Declaration role proves the existing role, never a Native-kind cast.
+    This consumer does not change source kinds, boundaries or masks.
+    """
+    import copy
+    from shapely.geometry import Polygon
+    from .adapter import rounded
+    if not bindings:return {},None,{'qualified':False,'reason':'No authored role bindings'}
+    if not closed_ground_verified:raise ValueError('Missing validated closed source construction/inventory')
+    allowed={'prohibited_median_polygons':'median_or_divider','median_opening_polygons':'median_or_divider'}
+    current={r['id']:r for r in regions};probes=document.get('physical_verification',{}).get('native_median_surface_probes',[]);markers={}
+    for b in bindings:
+        ident=b['region'];field=b['declaration_field'];index=b['declaration_index'];key=tuple(b['native_surface'])
+        if type(ident)is not int or type(index)is not int or any(type(x)is not int for x in key):raise ValueError('Invalid role/native identity')
+        if ident in markers:raise ValueError('Conflicting duplicate authored role')
+        if field not in allowed or b['kind']!=allowed[field]or ident not in current or current[ident]['kind']!=b['kind']:raise ValueError('Authored role/kind conflict')
+        if index<0 or index>=len(document.get(field,[])):raise ValueError('Missing original authored role declaration')
+        shape=Polygon(rounded(document[field][index]));actual=Polygon(current[ident]['boundary']);matches=[r for r in rows if r['identity']==key]
+        if len(matches)!=1 or not shape.is_valid or shape.is_empty or not actual.equals(shape)or not matches[0]['shape'].equals(shape):raise ValueError('Authored/native role boundary conflict')
+        probe_index=b['physical_probe_index']
+        if type(probe_index)is not int or not 0<=probe_index<len(probes):probe=None
+        else:
+            probe=copy.deepcopy(probes[probe_index])
+            try:point,z=_authored_physical_probe(probe)
+            except _UnsupportedAuthoredGround:probe=None
+            else:
+                if not shape.covers(point):raise ValueError('Physical witness lies outside its authored surface')
+        markers[ident]={'kind':b['kind'],'shape':shape,'native_identity':key,'native_kind':matches[0]['native_kind'],'authored_declaration':[field,index],'physical_probe':probe,'no_new_kind_or_boundary':True}
+    surface,proof=_flat_curbed_authored_ground(rows,root,probes)
+    certificate_bindings={};fallback=surface is None
+    for ident,m in markers.items():
+        native=next(r for r in rows if r['identity']==m['native_identity'])
+        if m['physical_probe']is None:continue
+        if fallback and(native['lane_type']!='driving'or driving_surface is None or not driving_surface.covers(m['shape'])):continue
+        certificate_bindings[ident]={'kind':m['kind'],'shape':m['shape']}
+    cert_surface=surface if surface is not None else driving_surface
+    certificate={'surface':cert_surface,'bindings':certificate_bindings,'fields':{},'source_role_proof':proof}if cert_surface is not None and certificate_bindings else None
+    return markers,certificate,proof
+
+def retained_authored_surface_roles(evidence,regions,native,sources,inventory):
+    """Optional offline capsule over ORIGINAL authored/physical source data."""
+    import copy
+    config=(inventory or {}).get('authored_physical_surface_roles')
+    if config is None:return {},None,{'qualified':False,'reason':'No authored physical role capsule'}
+    if config.get('method')!='closed_authored_flat_curbed_upper_ground_v1':raise ValueError('Unsupported authored ground role method')
+    from .inventory_observations import validate_kind_inventory
+    validate_kind_inventory(evidence,inventory,'obstruction',inventory['kinds']['obstruction'])
+    import json,hashlib
+    required=('road.xodr','scenario_geometry.json','instance.json')
+    paths={name:evidence.path(name)for name in required}
+    if not all(paths.values()):raise ValueError('Missing original physical-role evidence')
+    if any(inventory['evidence'].get(name)!=hashlib.sha256(paths[name].read_bytes()).hexdigest()for name in required):raise ValueError('Unbound original physical role evidence')
+    if config.get('map_sha256')!=inventory['map_sha256']or hashlib.sha256(paths['road.xodr'].read_bytes()).hexdigest()!=config['map_sha256']:raise ValueError('Physical role map identity differs')
+    document=json.loads(paths['scenario_geometry.json'].read_text());instance=json.loads(paths['instance.json'].read_text())
+    if instance.get('geometry')!=document:raise ValueError('Original authored/physical geometry differs from its realized instance')
+    root=ET.parse(paths['road.xodr']).getroot();rows=_authored_native_surface_rows(native,sources,root)
+    from .occupancy import native_driving_surface
+    markers,certificate,proof=_bind_authored_roles(regions,rows,root,document,config.get('bindings',[]),closed_ground_verified=True,driving_surface=native_driving_surface(paths['road.xodr']))
+    result={}
+    for ident,marker in markers.items():
+        binding=(certificate or {}).get('bindings',{}).get(ident)
+        metadata={k:copy.deepcopy(v)for k,v in marker.items()if k!='shape'}
+        metadata.update(map_sha256=config['map_sha256'],source_document='scenario_geometry.json',source_document_sha256=inventory['evidence']['scenario_geometry.json'],physical_ground_scope=copy.deepcopy(proof))
+        result[ident]={'_authored_physical_surface_role':{'kind':marker['kind'],'shape':marker['shape'],'surface':certificate['surface']if binding else None},'_authored_surface_role_source':metadata}
+    return result,certificate,proof
+
+def authored_role_way_fields(role_fields, highways, map_sha256):
+    """Join validated authored surface identities to existing public highway IDs."""
+    result={}
+    for ident,value in role_fields.items():
+        marker=value.get('_authored_physical_surface_role');source=value.get('_authored_surface_role_source')
+        if not marker or not source:continue
+        if source.get('map_sha256')!=map_sha256 or source.get('source_document')!='scenario_geometry.json':
+            raise ValueError('Authored surface way source differs from its validated map/document')
+        key=source.get('native_identity')
+        if not isinstance(key,(list,tuple))or len(key)!=3 or any(type(x)is not int for x in key):
+            raise ValueError('Missing exact authored surface native identity')
+        if marker.get('kind')!=source.get('kind'):raise ValueError('Authored surface way kind conflict')
+        ways=highways.get(key[0])
+        if not ways:continue
+        if any(type(x)is not int for x in ways):raise ValueError('Invalid source highway identity')
+        ways=sorted(set(ways))
+        if value.get('ways')is not None and value['ways']!=ways:raise ValueError('Conflicting authored surface ways')
+        result[ident]={'ways':ways}
+    return result
+
+def authored_native_ground_fields(fields, regions, native, sources, provenance, polygons):
+    """Extend a witnessed ground sheet to exact existing native surface identities.
+
+    This adds physical scope, never kinds, road access, heights or boundaries.
+    """
+    from shapely.geometry import Polygon
+    from .adapter import rounded
+    certificate=authored_role_certificate(fields)
+    if certificate is None:return {}
+    qualified=any(v.get('_authored_surface_role_source',{}).get('physical_ground_scope',{}).get('qualified')is True for v in fields.values())
+    if not qualified:return {}
+    surface=certificate['surface'];result={}
+    for region in regions:
+        ident=region['id'];kind=region['kind'];value=fields.get(ident,{})
+        if kind not in ('lane','roadway','highway')or kind not in value.get('_verified_structure_kinds',[]):continue
+        boundary=region.get('boundary')
+        if not boundary:continue
+        actual=Polygon(boundary);shape=Polygon(rounded(boundary))
+        if not actual.is_valid or actual.is_empty or not shape.is_valid or shape.area<=0:continue
+        matches=[]
+        for n in native:
+            if n['kind']!=kind:continue
+            candidate=Polygon(rounded(n['boundary']))if n.get('boundary')else polygons.get(n['id'])
+            if candidate is None or candidate.geom_type!='Polygon':continue
+            candidate=Polygon(rounded(list(candidate.exterior.coords)))
+            if not shape.equals(candidate):continue
+            source=sources.get(n['id'],{});roads=provenance.get(n['id'],[])
+            if kind=='lane':
+                bound=value.get('_lane_source',{})
+                if not all(k in source and bound.get(k)==source[k]for k in ('road_id','section','lane_id')):continue
+            elif kind=='roadway':
+                bound=value.get('_roadway_source')
+                if (not isinstance(bound,list)or len(bound)!=3 or not isinstance(bound[1],list)
+                        or set(bound[1])!=set(roads)or type(bound[2])is not int or bound[2]!=n['id']):continue
+            else:
+                way=value.get('_way_geometry')
+                if (not roads or set(value.get('_source_road_ids',[]))!=set(roads)or way is None
+                        or not shape.equals(Polygon(rounded(list(way.exterior.coords))))):continue
+            matches.append((n['id'],roads,source))
+        if len(matches)!=1:continue
+        native_id,roads,source=matches[0]
+        result[ident]={'_authored_native_ground_scope':{'kind':kind,'shape':actual,'surface':surface},
+            '_authored_native_ground_source':{'method':'existing_witnessed_authored_ground_sheet_native_scope',
+                'native_region':native_id,'source_roads':list(roads),
+                'native_lane':{k:source[k]for k in ('road_id','section','lane_id')if k in source},
+                'whole_native_boundary_equal':True,'no_new_kind_boundary_height_or_access':True}}
+    return result
+
+def authored_role_certificate(fields):
+    bindings={};surface=None
+    for ident,value in fields.items():
+        marker=value.get('_authored_physical_surface_role') or value.get('_authored_native_ground_scope')
+        if not marker or marker['surface']is None:continue
+        if surface is None:surface=marker['surface']
+        elif not surface.equals(marker['surface']):raise ValueError('Conflicting authored physical ground sheets')
+        bindings[ident]={'kind':marker['kind'],'shape':marker['shape']}
+    return {'surface':surface,'bindings':bindings,'fields':{}}if surface is not None and bindings else None
+
+def retained_road_edge_fields(evidence, regions, native, highways):
+    """A disclosed outward numerical band; its inward face stays the curb.
+
+    Native generated walls have zero horizontal width. This is a reference
+    region estimate, never measured curb thickness or a wheel-distance shift.
+    """
+    import ast,hashlib,json,xml.etree.ElementTree as ET
+    from shapely.geometry import Polygon,LineString,Point
+    from shapely.ops import unary_union
+    edges=[r for r in regions if r.get('kind')=='road_edge']
+    if not edges:return {}
+    originals={name:evidence.path(name)for name in ('road.xodr','runner.py','config.json','setup_geometry.json')}
+    if any(path is None for path in originals.values()):return {}
+    setup=json.loads(originals['setup_geometry.json'].read_text())
+    parameters=setup.get('generation_parameters',{});height=parameters.get('wall_height')
+    if type(height)not in(int,float)or not math.isfinite(height)or height<=0:return {}
+    tree=ast.parse(originals['runner.py'].read_text())
+    calls=[n for n in ast.walk(tree)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr=='OpendriveGenerationParameters']
+    if len(calls)!=1:return {}
+    values={k.arg:k.value for k in calls[0].keywords}
+    if len(values)!=len(calls[0].keywords):return {}
+    try:
+        if (ast.literal_eval(values['additional_width'])!=0 or ast.literal_eval(values['smooth_junctions'])is not False
+                or ast.literal_eval(values['enable_mesh_visibility'])is not True
+                or type(ast.literal_eval(values['vertex_distance']))not in(int,float)
+                or not math.isfinite(ast.literal_eval(values['vertex_distance']))or ast.literal_eval(values['vertex_distance'])<=0):return {}
+    except (KeyError,ValueError,TypeError):return {}
+    from .visibility import _source_generated_opaque_ceiling,_source_curb_face_queries
+    separate=evidence.path('curb-native-probe.json')
+    if separate is not None:originals['curb-native-probe.json']=separate
+    certificate={'generation_parameters':{'wall_height':height},'opaque_geometry_global_upper_z_m':height}
+    try:
+        _source_generated_opaque_ceiling(certificate,originals)
+        curb_queries=_source_curb_face_queries(originals,setup)
+    except ValueError:return {}
+    digest=hashlib.sha256(originals['road.xodr'].read_bytes()).hexdigest()
+    if setup.get('map_sha256')!=digest:return {}
+    root=ET.parse(originals['road.xodr']).getroot()
+    if root.findall('.//object')or root.findall('.//signal'):return {}
+    driving=unary_union([Polygon(r['boundary'])for r in native if r.get('kind')=='lane'and r.get('boundary')])
+    def constant(record,start):
+        return (record is not None and all(k in record.attrib for k in(start,'a','b','c','d'))
+                and all(math.isfinite(float(record.get(k)))for k in(start,'a','b','c','d'))
+                and float(record.get(start))==0 and all(float(record.get(k))==0 for k in('b','c','d')))
+    candidates=[]
+    for road in root.findall('road'):
+        rid=int(road.get('id'));geometries=road.findall('./planView/geometry');sections=road.findall('./lanes/laneSection');offset=road.findall('./lanes/laneOffset')
+        if (road.get('junction','-1')!='-1'or len(geometries)!=1 or geometries[0].find('line')is None
+                or len(sections)!=1 or float(sections[0].get('s'))!=0 or len(offset)>1
+                or offset and not constant(offset[0],'s')or len(set(highways.get(rid,[])))!=1):continue
+        if any(not constant(e,'s')or float(e.get('a'))!=0 for e in road.findall('./elevationProfile/elevation'))or road.findall('./lateralProfile/*'):continue
+        sides={side:sections[0].findall('./'+side+'/lane')for side in('left','right')}
+        lanes=sides['left']+sides['right']
+        if not lanes or any(l.get('type')!='driving'or len(l.findall('width'))!=1 or not constant(l.find('width'),'sOffset')or float(l.find('width').get('a'))<=0 for l in lanes):continue
+        if any(sorted(sign*int(l.get('id'))for l in sides[side])!=list(range(1,len(sides[side])+1))
+               for side,sign in [('left',1),('right',-1)]):continue
+        g=geometries[0];length=float(road.get('length'));x=float(g.get('x'));y=float(g.get('y'));h=float(g.get('hdg'))
+        if not all(math.isfinite(v)for v in(length,x,y,h))or length<=0 or float(g.get('s'))!=0 or float(g.get('length'))!=length:continue
+        for side,sign in [('left',1),('right',-1)]:
+            if not sides[side]:continue
+            lateral=(float(offset[0].get('a'))if offset else 0)+sign*sum(float(l.find('width').get('a'))for l in sides[side])
+            a=[x-lateral*math.sin(h),y+lateral*math.cos(h)];b=[a[0]+length*math.cos(h),a[1]+length*math.sin(h)]
+            reference=[[round(v,6)for v in p]for p in(a,b)];normal=[-sign*math.sin(h),sign*math.cos(h)]
+            shifted=[[p[i]+normal[i]*.005 for i in(0,1)]for p in reference]
+            boundary,method=strip_polygon(shifted,.01);shape=Polygon(boundary);line=LineString(reference)
+            if not shape.boundary.covers(line)or shape.intersection(driving).area!=0:continue
+            # Original native wall-face probes corroborate the source edge.
+            probes=set()
+            for query in curb_queries:
+                for hit in query.get('hits',[]):
+                    p=hit.get('position_native_m')
+                    if (isinstance(p,list)and len(p)==3 and all(type(v)in(int,float)and math.isfinite(v)for v in p)
+                            and 0<p[2]<height and line.covers(Point(round(p[0],6),round(-p[1],6)))):
+                        probes.add((round(p[0],6),round(-p[1],6)))
+            if len(probes)<2:continue
+            candidates.append((rid,reference,boundary,method))
+    from .roadways import boundary_key
+    result={};targets={}
+    for region in edges:
+        old=region.get('boundary');matches=[]
+        for rid,reference,boundary,method in candidates:
+            line_match=isinstance(old,list)and len(old)==2 and sorted(map(tuple,old))==sorted(map(tuple,reference))
+            polygon_match=isinstance(old,list)and len(old)>=3 and boundary_key(old)==boundary_key(boundary)
+            if line_match or polygon_match:matches.append((rid,reference,boundary,method))
+        if len(matches)!=1:continue
+        rid,reference,boundary,method=matches[0];position=region.get('position')
+        identity=(rid,tuple(sorted(map(tuple,reference))))
+        if identity in targets:
+            result.pop(targets[identity],None);targets[identity]=None;continue
+        targets[identity]=region['id']
+        if position is not None and not LineString(reference).covers(Point(position)):continue
+        result[region['id']]={'boundary':boundary,'position':position or [(reference[0][i]+reference[1][i])/2 for i in(0,1)],
+            'ways':sorted(set(highways[rid])),'_source_road_ids':[rid],'_verified_structure_kinds':['road_edge'],
+            '_road_edge_geometry_source':{'method':'estimated_source_road_edge_outward_strip_v1','map_sha256':digest,
+                'road_id':rid,'physical_reference_line':reference,'numerical_width_m':.01,'physical_width_claimed':False,
+                'physical_curb_face_preserved':True,'source_wall_height_m':height,'strip':method,
+                'reference_model':'standalone_OpenDRIVE_generator_geometry_estimate',
+                'source_files':{name:evidence.used[name]for name in originals}}}
+    return result
+
+
 def retained_map(evidence, first, cache=None, inventory=None):
     """Join native map fields by source geometry and explicit public-way IDs."""
     import copy
@@ -1072,7 +1595,9 @@ def retained_map(evidence, first, cache=None, inventory=None):
     # Add missing observed surfaces only on roads whose full native lane geometry
     # already joins this trace. A cropped/modified lane cannot establish this scope.
     partition_lanes={}
-    partition_roads=partition_source_roads(native,first.get('structures',[]),region_sources,provenance,lane_sources=partition_lanes)
+    physical_lane_sources={}
+    partition_roads=partition_source_roads(native,first.get('structures',[]),region_sources,provenance,lane_sources=partition_lanes,
+        physical_sources=physical_lane_sources,source_root=ET.parse(path).getroot())
     mapped_roads={road for key,ident in keys.items() if ident in remap for road in [key[0]]}
     next_id=max((r['id'] for r in first.get('structures',[])),default=0)+1
     additions=[]
@@ -1098,16 +1623,15 @@ def retained_map(evidence, first, cache=None, inventory=None):
         if ident in fields and any(k in fields[ident] and fields[ident][k]!=v for k,v in value.items()):
             raise ValueError('Conflicting reviewed intersection source identity')
         fields.setdefault(ident,{}).update(value)
+    for ident,value in metric_curb_intersection_fields(evidence,first.get('structures',[]),native,region_sources,
+            (inventory or {}).get('native_curb_intersection_bindings',[]),evidence.used.get('road.xodr')).items():
+        if ident in fields and any(k in fields[ident]and fields[ident][k]!=v for k,v in value.items()):raise ValueError('Conflicting metric native curb identity')
+        fields.setdefault(ident,{}).update(value)
     from collections import Counter
     native_target_counts=Counter(remap[r['id']] for r in native if r['id'] in remap)
     for r in native:
         if r['id'] not in remap:continue
         target=remap[r['id']];value={}
-        # Preserve source-computed whole-roadway scalars only for one exact
-        # native identity. Variable profiles never become local-frame defaults.
-        if r['kind']=='roadway' and native_target_counts[target]==1:
-            for key in ('curvature','grade'):
-                if key in r:value[key]=r[key]
         if r['kind']=='highway':
             if r['id'] in highway_methods:value['_highway_geometry_source']=highway_methods[r['id']]
             surface_methods=[v for v in region_sources.values()if 'highway_geometry_method'in v and v['road_id']in provenance.get(r['id'],[])]
@@ -1143,11 +1667,21 @@ def retained_map(evidence, first, cache=None, inventory=None):
         value['_verified_structure_kinds']=[r['kind']]
         if value:fields.setdefault(target,{}).update(value)
     for ident,roads in partition_roads.items():
+        if len(roads)==1 and existing[ident]['kind'] in ('roadway','one_way_roadway'):
+            value=fields.setdefault(ident,{})
+            value['_verified_structure_kinds']=sorted(set(value.get('_verified_structure_kinds',[]))|{'roadway'})
+            value['_source_road_ids']=sorted(roads)
         if roads and all(road in highways for road in roads):fields.setdefault(ident,{})['ways']=sorted({way for road in roads for way in highways[road]})
         if ident in partition_lanes and not fields.get(ident,{}).get('_lane_source'):
             value=fields.setdefault(ident,{})
             value['_lane_source']=partition_lanes[ident]
             value['_verified_structure_kinds']=['lane']
+    for ident,proof in physical_lane_sources.items():
+        value=fields.setdefault(ident,{})
+        if value.get('_lane_source')or value.get('_source_road_ids'):continue
+        value.update(_source_road_ids=sorted({p['road_id']for p in proof['native_parents']}),
+            _shared_flat_lane_surface_source=dict(proof,map_sha256=evidence.used.get('road.xodr')),
+            _verified_structure_kinds=sorted(set(value.get('_verified_structure_kinds',[]))|{'lane'}))
     # Native painted-object IDs/positions and measured entrance associations
     # supply source road membership for gates absent from the lane-only mesh.
     gate_candidates={}
@@ -1187,24 +1721,25 @@ def retained_map(evidence, first, cache=None, inventory=None):
             sources.setdefault(key,[]).append(r)
     custom=evidence.path('scenario_geometry.json')
     custom=json.loads(custom.read_text()) if custom else {}
-    if not custom.get('directed_roadways'):
-        for r in first.get('structures',[]):
-            if r['kind'] not in ('roadway','one_way_roadway') or not r.get('boundary'):continue
-            key=(r['kind'],boundary_key([[round(v,6) for v in p] for p in r['boundary']]))
-            matches=sources.get(key,[])
-            if len(matches)==1 and provenance.get(matches[0]['id']):
-                fields.setdefault(r['id'],{})['_verified_structure_kinds']=['roadway']
+    for r in first.get('structures',[]):
+        if r['kind'] not in ('roadway','one_way_roadway') or not r.get('boundary'):continue
+        if _is_authored_directed_roadway(r,custom):continue
+        key=(r['kind'],boundary_key([[round(v,6) for v in p] for p in r['boundary']]))
+        matches=sources.get(key,[])
+        if len(matches)==1 and provenance.get(matches[0]['id']):
+            fields.setdefault(r['id'],{})['_verified_structure_kinds']=['roadway']
+            fields.setdefault(r['id'],{})['_roadway_source']=[evidence.used.get('road.xodr'),
+                provenance[matches[0]['id']],matches[0]['id']]
+            fields[r['id']]['_source_road_ids']=sorted(provenance[matches[0]['id']])
+        elif len(matches)>1:
+            records=[region_sources.get(n['id'],{}) for n in matches]
+            # Several connector routes may reuse one flat entry surface.
+            # This proof requires the same junction, XY boundary and an
+            # explicitly constant, equal elevation over each full interval.
+            common=_shared_flat_junction_surface(records)
+            if common is not None:
                 fields.setdefault(r['id'],{})['_roadway_source']=[evidence.used.get('road.xodr'),
-                    provenance[matches[0]['id']],matches[0]['id']]
-            elif len(matches)>1:
-                records=[region_sources.get(n['id'],{}) for n in matches]
-                junctions={v.get('junction',-1) for v in records};heights=[v.get('flat_z') for v in records]
-                # Several connector routes may reuse one flat entry surface.
-                # This proof requires the same junction, XY boundary and an
-                # explicitly constant, equal elevation over each full interval.
-                if len(junctions)==1 and next(iter(junctions))>=0 and all(z is not None for z in heights) and max(heights)-min(heights)<=1e-9:
-                    fields.setdefault(r['id'],{})['_roadway_source']=[evidence.used.get('road.xodr'),
-                        'shared_flat_junction_surface',next(iter(junctions)),heights[0]]
+                    'shared_flat_junction_surface',common['junction'],common['flat_z']]
     for ident,value in retained_reference_crosswalk_fields(evidence,first.get('structures',[])).items():
         fields.setdefault(ident,{}).update(value)
     for ident,value in entrance_geometry_fields(path,first.get('structures',[]),
@@ -1232,7 +1767,35 @@ def retained_map(evidence, first, cache=None, inventory=None):
             elif key in current and current[key]!=item:
                 raise ValueError('Conflicting authored control-portion source field: '+key)
             else:current[key]=item
+    for ident,value in retained_directed_roadway_fields(evidence,first.get('structures',[]),native,region_sources,provenance,inventory).items():
+        roads=value.get('_source_road_ids',[])
+        if roads and all(road in highways for road in roads):value['ways']=sorted({way for road in roads for way in highways[road]})
+        current=fields.setdefault(ident,{})
+        for key,item in value.items():
+            if key=='_verified_structure_kinds':
+                current[key]=sorted(set(current.get(key,[]))|set(item))
+            elif key in current and current[key]!=item:
+                raise ValueError('Conflicting authored directed roadway source')
+            else:current[key]=item
     for ident,value in retained_obstruction_fields(evidence,first,inventory).items():fields.setdefault(ident,{}).update(value)
+    role_fields,_,role_proof=retained_authored_surface_roles(evidence,first.get('structures',[]),native,region_sources,inventory)
+    for ident,value in authored_role_way_fields(role_fields,highways,evidence.used.get('road.xodr')).items():
+        role_fields[ident].update(value)
+    for ident,value in role_fields.items():
+        if any(k in fields.get(ident,{})and fields[ident][k]!=v for k,v in value.items()):raise ValueError('Conflicting authored physical surface identity')
+        fields.setdefault(ident,{}).update(value)
+    if role_fields and not role_proof.get('qualified'):issues.append('Authored physical ground scope unknown: '+role_proof.get('reason','unsupported source model'))
+    for ident,value in authored_native_ground_fields(fields,first.get('structures',[]),native,region_sources,provenance,polygons).items():
+        fields.setdefault(ident,{}).update(value)
+
+    way_surfaces={ident:value['_way_geometry']for ident,value in fields.items()
+                  if '_way_geometry'in value and any(r['id']==ident and r['kind']=='highway'for r in first['structures']+additions)}
+    for region,value in retained_reference_crosswalk_additions(evidence,first['structures']+additions,way_surfaces,native_lanes):
+        additions.append(region);fields[region['id']]=value
+
+    for ident,value in retained_road_edge_fields(evidence,first['structures'],native,highways).items():
+        if any(k in fields.get(ident,{})and fields[ident][k]!=v for k,v in value.items()):raise ValueError('Conflicting native road-edge source')
+        fields.setdefault(ident,{}).update(value)
     project_bound_intersection_ways(fields,highways)
     for retired,keep in junction_replacements.items():
         fields.setdefault(keep,{}).setdefault('_junction_property_merges',[]).append(retired)
@@ -1413,6 +1976,31 @@ def lane_segments(scene, fields):
         vertices={tuple(round(v,6) for v in p):p for p in original['boundary']}
         samples=[[s,*[vertices.get(tuple(round(v,6) for v in p),p) for p in (inner,outer)]]
                  for s,inner,outer in source['samples']]
+        # Source samples can name the same cross-section at neighbouring
+        # floating-point stations. Numerical duplicates contribute no area.
+        distinct=[]
+        for index,sample in enumerate(samples):
+            if distinct and sample[1:]==distinct[-1][1:]:
+                # Sample grids and source marking cuts can name the same
+                # cross-section at neighbouring floating-point stations.
+                # Genuine nonzero intervals and marking changes stay invalid.
+                u=2.0**-53
+                roundoff=(16*u/(1-16*u))*(abs(sample[0])+abs(distinct[-1][0]))
+                same_marks=index==len(samples)-1 or all(
+                    [v for low,high,v in spans if low<=sample[0]<high]==
+                    [v for low,high,v in spans if low<=distinct[-1][0]<high]
+                    for spans in source.get('marking_intervals',{}).values())
+                if abs(sample[0]-distinct[-1][0])<=roundoff:
+                    if same_marks:continue
+                    # Keep the actual source marking cut rather than the
+                    # coincident regular-grid sample. Both adjacent styles
+                    # remain on their positive-area source intervals.
+                    boundaries=source.get('marking_boundaries',())
+                    if distinct[-1][0] not in boundaries and sample[0] in boundaries:
+                        distinct[-1]=sample
+                        continue
+            distinct.append(sample)
+        samples=distinct
         pairs=list(zip(samples,samples[1:]))
         if source['lane_id']>0:pairs.reverse()
         pieces=[]
@@ -1463,16 +2051,22 @@ def compile_lane_segments(segments, fields=None):
     fields=fields or {}
     entrances={ident:LineString(v['_entrance_geometry']) for ident,v in fields.items() if v.get('_entrance_geometry')}
     sources={ident:v['_lane_source']['road_id'] for ident,v in fields.items() if v.get('_lane_source')}
-    connections={ident:{sources[target] for target in v.get('lane',{}).get('leads_to',[]) if target in sources}
-                 for ident,v in fields.items() if v.get('lane')}
+    links={ident:v.get('lane',{}).get('leads_to',[]) for ident,v in fields.items()}
+    for ident,pieces in segments.items():
+        # Exact partial native fields need not overwrite an existing lane edge.
+        # An explicit source edge list, including [], always takes precedence.
+        if ident in sources and 'leads_to' not in fields.get(ident,{}).get('lane',{}) and pieces:
+            links[ident]=pieces[-1][0].get('lane',{}).get('leads_to',[])
+    connections={ident:{sources[target] for target in targets if target in sources}
+                 for ident,targets in links.items()}
     native_shapes={}
     for ident,field in fields.items():
         samples=field.get('_lane_source',{}).get('samples',[])
         if len(samples)>1:
             polygon=Polygon([a for station,a,b in samples]+[b for station,a,b in reversed(samples)])
             if polygon.is_valid and polygon.area>0:native_shapes[ident]=polygon
-    continuations={ident:[native_shapes[target] for target in field.get('lane',{}).get('leads_to',[])
-        if target in native_shapes]for ident,field in fields.items()}
+    continuations={ident:[native_shapes[target] for target in targets
+        if target in native_shapes]for ident,targets in links.items()}
     for ident,field in fields.items():
         for native in field.get('_lane_source',{}).get('native_continuations',[]):
             samples=native['samples']
@@ -1535,3 +2129,190 @@ def project_lane_segments(scene, segments, compiled=None):
     scene['occupancy_observed']=[]
     scene['occupies']=[pair for pair in scene.get('occupies',[]) if pair[1] not in segments]
     return sum(len(pieces) for pieces in segments.values())
+
+
+def native_curb_boundary(map_path, native, sources, junction_id, incoming):
+    """Prolong exact source driving/sidewalk borders, never a connector box.
+
+    This narrow method accepts two orthogonal, axis-aligned straight roadways
+    at the existing six-decimal export precision. Other layouts stay unknown.
+    """
+    import xml.etree.ElementTree as ET
+    from shapely.geometry import Polygon
+    root=ET.parse(map_path).getroot();roads={int(r.get('id')):r for r in root.findall('road')}
+    if len(incoming)!=4 or len(set(incoming))!=4:raise ValueError('Four distinct incoming curb roads required')
+    linked={i for i,r in roads.items()if r.get('junction')=='-1'and any(l.get('elementType')=='junction'and l.get('elementId')==str(junction_id)for l in r.findall('./link/*'))}
+    if set(incoming)!=linked:raise ValueError('Incoming source road scope differs from native junction links')
+    junctions=[j for j in root.findall('junction')if j.get('id')==str(junction_id)]
+    if len(junctions)!=1:raise ValueError('Unique original native junction required')
+    if {int(c.get('incomingRoad'))for c in junctions[0].findall('connection')}!=set(incoming):raise ValueError('Native junction incoming scope differs')
+    pairs=[];connectors=[]
+    for ident,r in roads.items():
+        if r.get('junction')!=str(junction_id):continue
+        links=[r.find('./link/'+k)for k in ('predecessor','successor')]
+        if any(v is None or v.get('elementType')!='road'for v in links):raise ValueError('Unsupported junction connector topology')
+        pair=tuple(int(v.get('elementId'))for v in links)
+        if not set(pair)<=set(incoming)or len(set(pair))!=2:raise ValueError('Connector does not bind the declared opposing approaches')
+        geometry=r.findall('./planView/geometry')
+        if len(geometry)!=1 or geometry[0].find('line')is None:raise ValueError('Through connector topology is not straight')
+        for link,station in zip(links,(0.,float(r.get('length')))):
+            approach=roads[int(link.get('elementId'))];g=approach.findall('./planView/geometry')
+            contact=link.get('contactPoint')
+            if len(g)!=1 or contact not in ('start','end'):raise ValueError('Source approach contact ambiguous')
+            a=reference(g[0],0. if contact=='start'else float(approach.get('length')))[:2];b=reference(geometry[0],station)[:2]
+            if [round(v,6)for v in a]!=[round(v,6)for v in b]:raise ValueError('Native source approach/connector contact differs')
+        pairs.append(pair);connectors.append(ident)
+    if len(pairs)!=2 or len(set(i for pair in pairs for i in pair))!=4:raise ValueError('Two unambiguous through-road pairs required')
+    records={};kinds={r['id']:r['kind']for r in native}
+    for ident,source in sources.items():
+        if {'road_id','section','lane_id'}<=source.keys():records.setdefault((source['road_id'],source['section'],source['lane_id']),[]).append((kinds.get(ident),source))
+    road_curbs={}
+    for ident in incoming:
+        r=roads[ident];geoms=r.findall('./planView/geometry')
+        if r.get('junction')!='-1'or len(geoms)!=1 or geoms[0].find('line')is None:raise ValueError('Incoming curb is not one native straight approach')
+        sections=r.findall('./lanes/laneSection')
+        if len(sections)!=1:raise ValueError('Incoming curb lane section ambiguous')
+        curbs=[]
+        for sign,side in ((1,'left'),(-1,'right')):
+            lanes=sections[0].findall('./'+side+'/lane');driving=[int(l.get('id'))for l in lanes if l.get('type')=='driving']
+            if not driving:raise ValueError('Both native driving curbs required')
+            lane=max(driving,key=abs);neighbour=lane+sign
+            a=records.get((ident,0,lane),[]);b=records.get((ident,0,neighbour),[])
+            if len(a)!=1 or len(b)!=1 or a[0][0]!='lane'or b[0][0]!='sidewalk':raise ValueError('Driving curb lacks unique adjacent native sidewalk')
+            points=a[0][1].get('samples',[]);outside=b[0][1].get('samples',[])
+            if len(points)<2 or len(points)!=len(outside):raise ValueError('Complete native curb samples required')
+            edge=[]
+            for p,q in zip(points,outside):
+                x=tuple(round(v,6)for v in p[2]);y=tuple(round(v,6)for v in q[1])
+                if p[0]!=q[0]or x!=y:raise ValueError('Native driving/sidewalk borders differ')
+                edge.append(x)
+            xs={p[0]for p in edge};ys={p[1]for p in edge}
+            if len(xs)==1 and len(ys)>1:curbs.append((0,next(iter(xs))))
+            elif len(ys)==1 and len(xs)>1:curbs.append((1,next(iter(ys))))
+            else:raise ValueError('Native curb is not source-axis aligned at export precision')
+        if curbs[0][0]!=curbs[1][0]or curbs[0][1]==curbs[1][1]:raise ValueError('Native roadway curbs do not form one nonzero corridor')
+        road_curbs[ident]=(curbs[0][0],tuple(sorted(c[1]for c in curbs)))
+    dimensions={}
+    for a,b in pairs:
+        if road_curbs[a]!=road_curbs[b]:raise ValueError('Opposing approach curb prolongations conflict')
+        axis,bounds=road_curbs[a]
+        if axis in dimensions:raise ValueError('Two distinct orthogonal roadway corridors required')
+        dimensions[axis]=bounds
+    if set(dimensions)!={0,1}:raise ValueError('Orthogonal source curb axes absent')
+    x,y=dimensions[0],dimensions[1];shape=Polygon([[x[0],y[0]],[x[0],y[1]],[x[1],y[1]],[x[1],y[0]]])
+    return shape,{'incoming_road_ids':sorted(incoming),'topology_only_connector_ids':sorted(connectors),'road_pairs':[list(p)for p in pairs],'native_curbs':{i:{'normal_axis':v[0],'bounds':v[1]}for i,v in road_curbs.items()},'boundary_source':'Incoming driving-to-sidewalk curb prolongations; connectors and coarse junction boxes do not define this boundary','coordinate_precision_decimals':6}
+
+def metric_curb_intersection_fields(evidence, regions, native, sources, bindings, map_sha256):
+    """Verify an offline metric binding; never turn a sidewalk review into a boundary review."""
+    import json
+    from shapely.geometry import Polygon
+    from .occupancy import native_driving_surface
+    fields={}
+    for binding in bindings:
+        proof=binding.get('evidence',{})
+        if binding.get('schema')!='native-curb-prolongation-intersection-v1'or binding.get('map_sha256')!=map_sha256 or proof.get('road.xodr')!=map_sha256:raise ValueError('Metric intersection binding needs its exact original map')
+        if not {'road.xodr','config.json','context.json','capture/manifest.json'}<=proof.keys():raise ValueError('Metric intersection source scope incomplete')
+        for name,digest in proof.items():
+            if evidence.path(name)is None or evidence.used.get(name)!=digest:raise ValueError('Metric intersection source hash mismatch: '+name)
+        config=json.loads(evidence.path('config.json').read_text());context=json.loads(evidence.path('context.json').read_text());capture=json.loads(evidence.path('capture/manifest.json').read_text())
+        if capture.get('acquisition')!='original_live_run'or capture.get('case_id')!=config.get('case_id')or capture.get('sources',{}).get('road.xodr')!=map_sha256:raise ValueError('Metric intersection original capture identity differs')
+        authored=config.get('variable_assignments',{}).get('intersection_geometry')
+        if not isinstance(authored,dict)or authored.get('kind')!='world_setup'or authored!=context.get('intersection_geometry',{}).get('world_setup',{}).get('intersection_geometry'):raise ValueError('Original authored intersection declaration differs')
+        physical,_=native_curb_boundary(evidence.path('road.xodr'),native,sources,binding['junction_id'],binding['incoming_road_ids'])
+        declared=Polygon(normalized_polygon([[p[0],-p[1]]for p in authored['value']['region_polygon_m']]))
+        if not physical.equals(declared):raise ValueError('Authored intersection does not equal metric native curb boundary')
+        matches=[r for r in regions if r.get('kind')=='intersection'and r.get('boundary')and Polygon(normalized_polygon(r['boundary'])).equals(physical)]
+        if len(matches)!=1 or matches[0]['id']!=binding['region']:raise ValueError('Metric curb boundary lacks one exact retained intersection identity')
+        surface=native_driving_surface(evidence.path('road.xodr'))
+        if surface is None or not surface.covers(physical):raise ValueError('Metric junction is not within the verified native Driving plane/surface')
+        ident=matches[0]['id'];value={'_source_road_ids':sorted(binding['incoming_road_ids']),'_verified_structure_kinds':['intersection']}
+        if ident in fields and fields[ident]!=value:raise ValueError('Conflicting metric intersection bindings')
+        fields[ident]=value
+    return fields
+
+
+def native_driving_contact_bands(root, regions, sources):
+    """Join only source-linked flat Driving patches at native shared contacts.
+
+    No body coordinate or exterior sample is rounded. A contact can differ by
+    binary64 evaluation roundoff only when its native float32 endpoint is equal.
+    Both displacement and its source-operation bound are retained as provenance.
+    """
+    import copy,struct
+    from shapely.geometry import Polygon
+    roads={int(road.get('id')):road for road in root.findall('road')}
+    native={region['id']:region for region in regions}
+    result=[]
+    def lane(road,section,lid):
+        sections=road.findall('./lanes/laneSection')
+        if not 0<=section<len(sections):return None
+        return next((x for x in sections[section].findall('./right/lane')if int(x.get('id'))==lid),None)
+    def source_terms(road):
+        geometries=road.findall('./planView/geometry')
+        if len(geometries)!=1:return None
+        g=geometries[0]
+        if float(g.get('s'))!=0 or float(g.get('length'))!=float(road.get('length')):return None
+        terms=[abs(float(g.get(k)))for k in('x','y','hdg','length')]
+        arc=g.find('arc')
+        if arc is not None:
+            curvature=float(arc.get('curvature'))
+            if not math.isfinite(curvature)or curvature==0:return None
+            terms.extend([2/abs(curvature),abs(curvature)*float(g.get('length'))])
+        elif g.find('line')is None:return None
+        for modifier in road.findall('./lanes/laneOffset')+road.findall('./lanes/laneSection/*/lane/width'):
+            if any(float(modifier.get(k,'0'))!=0 for k in('b','c','d')):return None
+            terms.append(abs(float(modifier.get('a','0'))))
+        return sum(terms)
+    for ident,source in sources.items():
+        rid,section,lid=(source.get(k)for k in('road_id','section','lane_id'))
+        if type(lid)is not int or lid>=0 or ident not in native or native[ident]['kind']!='lane':continue
+        road=roads.get(rid)
+        if road is None or section!=len(road.findall('./lanes/laneSection'))-1:continue
+        origin_lane=lane(road,section,lid)
+        if origin_lane is None or origin_lane.get('type')!='driving':continue
+        for target in source.get('native_continuations',[]):
+            tr,ts,tl=(target.get(k)for k in('road_id','section','lane_id'))
+            target_road=roads.get(tr)
+            if target_road is None or tl!=lid or ts!=0:continue
+            target_lane=lane(target_road,ts,tl)
+            if target_lane is None or target_lane.get('type')!='driving':continue
+            # Require the actual original junction laneLink and reciprocal
+            # connector predecessor, not proximity or matching names.
+            link=road.find('./link/successor');back=target_road.find('./link/predecessor')
+            if link is None or link.get('elementType')!='junction' or back is None:continue
+            junction=root.find('./junction[@id="'+link.get('elementId')+'"]')
+            if (junction is None or back.get('elementType')!='road' or int(back.get('elementId'))!=rid
+                    or back.get('contactPoint')!='end' or target_road.get('junction')!=junction.get('id')):continue
+            connections=[c for c in junction.findall('connection')if int(c.get('incomingRoad'))==rid and int(c.get('connectingRoad'))==tr and c.get('contactPoint')=='start'
+                         and any(int(v.get('from'))==lid and int(v.get('to'))==tl for v in c.findall('laneLink'))]
+            if len(connections)!=1:continue
+            a,b=copy.deepcopy(source.get('samples',[])),target.get('samples',[])
+            if len(a)<2 or len(b)<2:continue
+            before,after=a[-1][1:],b[0][1:]
+            if len(before)!=2 or len(after)!=2:continue
+            terms=[source_terms(road),source_terms(target_road)]
+            if any(value is None or not math.isfinite(value)for value in terms):continue
+            # At most32 elementary operations/input quantizations per line/arc
+            # endpoint and constant-width lane edge; include uncancelled source
+            # terms, not merely the possibly small resulting coordinates.
+            u=2.0**-53;scale=sum(terms)+sum(abs(v)for p in before+after for v in p)
+            bound=(32*u/(1-32*u))*scale
+            movement=max(abs(x-y)for p,q in zip(before,after)for x,y in zip(p,q))
+            if movement>bound or not all(struct.pack('f',x)==struct.pack('f',y)for p,q in zip(before,after)for x,y in zip(p,q)):continue
+            def width_at(value,station):
+                rows=[w for w in value.findall('width')if float(w.get('sOffset'))<=station]
+                return float(rows[-1].get('a'))if rows else None
+            origin_width=width_at(origin_lane,float(road.get('length'))-float(road.findall('./lanes/laneSection')[section].get('s')))
+            target_width=width_at(target_lane,0.)
+            if (origin_width is None or target_width is None or abs(origin_width-target_width)>bound
+                    or abs(math.dist(*before)-origin_width)>bound or abs(math.dist(*after)-target_width)>bound):continue
+            a[-1][1:]=copy.deepcopy(after)
+            chain=a+b[1:]
+            boundary=clean_boundary([s[1]for s in chain]+[s[2]for s in reversed(chain)])
+            shape=Polygon(boundary)
+            if not shape.is_valid or shape.is_empty or shape.area<=0:continue
+            result.append({'shape':shape,'source':{'method':'native_linked_driving_contact_band_v1','incoming_native_identity':[rid,section,lid],
+                'connecting_native_identity':[tr,ts,tl],'junction_id':int(junction.get('id')),'contact_before':before,'contact_after':after,
+                'maximum_source_coordinate_movement_m':movement,'binary64_source_evaluation_bound_m':bound,'native_float32_contact_equal':True,
+                'raw_body_unchanged':True,'all_other_outer_source_samples_unchanged':True}})
+    return result

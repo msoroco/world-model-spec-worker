@@ -18,23 +18,13 @@ def selected_proposal_case_ids(proposal):
 
 def runtime_for(repo, batch):
     """Resolve the same source-hashed child runtime for worker and local checks."""
-    import importlib.util
     repo = Path(repo).resolve()
-    baseline = repo / batch['runtime']['root']
-    pinned = batch['runtime'].get('source_manifest_sha256')
-    if pinned and sha(baseline/'SOURCE-MANIFEST.json') != pinned:
+    if batch['runtime']['root'] != 'runtime':
+        raise ValueError('Current worker runtime must use runtime/')
+    runtime = repo / 'runtime'
+    if sha(runtime/'SOURCE-MANIFEST.json') != batch['runtime']['source_manifest_sha256']:
         raise ValueError('Batch pinned runtime mismatch')
-    overlay = repo / 'overlay.py'
-    if not overlay.is_file() or not (repo / 'work/_shared/runtime-overlay/overlay.json').is_file():
-        return baseline
-    if sha(overlay) != batch['frozen_files'].get('overlay.py'):
-        raise ValueError('Worker runtime resolver changed')
-    spec = importlib.util.spec_from_file_location('_source_hashed_worker_overlay', overlay)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    if module.ROOT.resolve() != repo:
-        raise ValueError('Worker runtime resolver points to another repository')
-    return module.effective_runtime()
+    return runtime
 
 
 def check(repo, complete=False, require_ready=False, assignment=None):
@@ -96,9 +86,10 @@ def check(repo, complete=False, require_ready=False, assignment=None):
         parts = Path(rel).parts
         require(len(parts)>2 and parts[0]=='work' and parts[1] in (*all_items, '_shared'), 'Unapproved output: '+rel)
         path = within(repo, rel)
-        require(path.stat().st_size <= 2*1024*1024, 'Oversized return')
+        max_bytes = (5 if rel == 'work/_shared/gpu-queue.json' else 2) * 1024 * 1024
+        require(path.stat().st_size <= max_bytes, 'Oversized return')
         from .portable import inspect_file
-        inspect_file(path)
+        inspect_file(path, max_bytes=max_bytes)
         if path.suffix == '.py':
             ast.parse(path.read_text())
     if assignment is not None:

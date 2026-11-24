@@ -10,15 +10,18 @@ namespace TrafficSpec
 inductive RoadUserClass
   | motorVehicle
   | motorcycle
+  | trimobile
   | moped
   | bus
   | transitBus
   | schoolBus
   | taxicab
-  | tourBusOrLimousine
+  | tourOrShuttleBus
+  | limousine
   | truck
   | commercialMotorVehicle
-  | trailerOrCombination
+  | trailer
+  | vehicleCombination
   | bicycle
   | electricBicycle
   | electricScooter
@@ -28,6 +31,7 @@ inductive RoadUserClass
   | emergencyVehicle
   | fireApparatus
   | officialVehicle
+  | towCar
   | railVehicle
   deriving DecidableEq, Repr, Inhabited
 
@@ -36,15 +40,18 @@ def ofString (s : String) : Option RoadUserClass :=
   match s with
   | "motor_vehicle" => some .motorVehicle
   | "motorcycle" => some .motorcycle
+  | "trimobile" => some .trimobile
   | "moped" => some .moped
   | "bus" => some .bus
   | "transit_bus" => some .transitBus
   | "school_bus" => some .schoolBus
   | "taxicab" => some .taxicab
-  | "tour_bus_or_limousine" => some .tourBusOrLimousine
+  | "tour_or_shuttle_bus" => some .tourOrShuttleBus
+  | "limousine" => some .limousine
   | "truck" => some .truck
   | "commercial_motor_vehicle" => some .commercialMotorVehicle
-  | "trailer_or_combination" => some .trailerOrCombination
+  | "trailer" => some .trailer
+  | "vehicle_combination" => some .vehicleCombination
   | "bicycle" => some .bicycle
   | "electric_bicycle" => some .electricBicycle
   | "electric_scooter" => some .electricScooter
@@ -54,20 +61,24 @@ def ofString (s : String) : Option RoadUserClass :=
   | "emergency_vehicle" => some .emergencyVehicle
   | "fire_apparatus" => some .fireApparatus
   | "official_vehicle" => some .officialVehicle
+  | "tow_car" => some .towCar
   | "rail_vehicle" => some .railVehicle
   | _ => Option.none
 def toString : RoadUserClass → String
   | .motorVehicle => "motor_vehicle"
   | .motorcycle => "motorcycle"
+  | .trimobile => "trimobile"
   | .moped => "moped"
   | .bus => "bus"
   | .transitBus => "transit_bus"
   | .schoolBus => "school_bus"
   | .taxicab => "taxicab"
-  | .tourBusOrLimousine => "tour_bus_or_limousine"
+  | .tourOrShuttleBus => "tour_or_shuttle_bus"
+  | .limousine => "limousine"
   | .truck => "truck"
   | .commercialMotorVehicle => "commercial_motor_vehicle"
-  | .trailerOrCombination => "trailer_or_combination"
+  | .trailer => "trailer"
+  | .vehicleCombination => "vehicle_combination"
   | .bicycle => "bicycle"
   | .electricBicycle => "electric_bicycle"
   | .electricScooter => "electric_scooter"
@@ -77,6 +88,7 @@ def toString : RoadUserClass → String
   | .emergencyVehicle => "emergency_vehicle"
   | .fireApparatus => "fire_apparatus"
   | .officialVehicle => "official_vehicle"
+  | .towCar => "tow_car"
   | .railVehicle => "rail_vehicle"
 instance : ToString RoadUserClass := ⟨toString⟩
 end RoadUserClass
@@ -115,6 +127,7 @@ inductive OfficialKind
   | coroner
   | armoredCar
   | municipal
+  | postal
   | other
   deriving DecidableEq, Repr, Inhabited
 
@@ -129,6 +142,7 @@ def ofString (s : String) : Option OfficialKind :=
   | "coroner" => some .coroner
   | "armored_car" => some .armoredCar
   | "municipal" => some .municipal
+  | "postal" => some .postal
   | "other" => some .other
   | _ => Option.none
 def toString : OfficialKind → String
@@ -140,6 +154,7 @@ def toString : OfficialKind → String
   | .coroner => "coroner"
   | .armoredCar => "armored_car"
   | .municipal => "municipal"
+  | .postal => "postal"
   | .other => "other"
 instance : ToString OfficialKind := ⟨toString⟩
 end OfficialKind

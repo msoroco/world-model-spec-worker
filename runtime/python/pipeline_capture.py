@@ -62,8 +62,14 @@ class PipelineCapture:
         from traffic_spec_adapter import acceleration
         self.meta['acceleration_method'] = acceleration.METHOD
         self.meta['source_components']['acceleration.py'] = sha(acceleration.__file__)
+        from traffic_spec_adapter import yaw_rate
+        self.meta['yaw_rate_method'] = yaw_rate.METHOD
+        self.meta['source_components']['yaw_rate.py'] = sha(yaw_rate.__file__)
         from carla_sgg import law_evidence
         self.meta['source_components']['law_evidence.py'] = sha(law_evidence.__file__)
+        self.visibility_route_topology = law_evidence.modeled_observer_routes(self.map) if visibility else None
+        self.visibility_lane_inventory = law_evidence.discover_driving_lanes(self.map) if visibility else None
+        self.meta['visibility_acquisition'] = law_evidence.visibility_acquisition_contract() if visibility else None
         self.physical_registry=None
         if physical_actor_registry is not None:
             from traffic_spec_adapter.physical_actors import load_registry
@@ -148,7 +154,9 @@ class PipelineCapture:
         visibility = None
         if self.visibility:
             from carla_sgg.law_evidence import actor_visibility
-            visibility = actor_visibility(self.world, self.ego, mapping=self.map)
+            visibility = actor_visibility(self.world, self.ego, mapping=self.map,
+                                          lane_inventory=self.visibility_lane_inventory,
+                                          route_topology=self.visibility_route_topology)
         wp = self.map.get_waypoint(transform.location)
         weather = self.world.get_weather()
         event = {'original_frame': frame, 'replay_frame': frame, 'actor_id': self.ego.id,

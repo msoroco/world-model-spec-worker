@@ -334,13 +334,23 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                     # than an indexed witness list. Bind the exact reviewed
                     # cell and conditional verdict before exporting it.
                     cell_key = 'training_cell' if task['role'] == 'training' else 'testing_cell'
-                    if (not isinstance(data, dict) or
-                            data.get('law_id') != task['law_id'] or
-                            data.get('actor') != task['actor'] or
-                            data.get(cell_key) != task['cell_id'] or
-                            data.get('branch') != row.get('branch') or
-                            data.get('verdict') != row.get('relevance_review') or
-                            data.get('physical_feasibility') != row.get('physical_feasibility')):
+                    if not isinstance(data, dict):
+                        raise ValueError('Direct review identity/status mismatch')
+                    if isinstance(data.get('candidate'), dict):
+                        candidate = data['candidate']
+                        identity = (candidate.get('law'), candidate.get('actor'),
+                                    candidate.get('cell'), candidate.get('branch'),
+                                    data.get('decision'), data.get('physical_feasibility'))
+                        if (candidate.get('covers') != [task['law_id']] or
+                                data.get('fixed_cell_facts', {}).get('cell_id') != task['cell_id']):
+                            raise ValueError('Direct review identity/status mismatch')
+                    else:
+                        identity = (data.get('law_id'), data.get('actor'),
+                                    data.get(cell_key), data.get('branch'),
+                                    data.get('verdict'), data.get('physical_feasibility'))
+                    if identity != (task['law_id'], task['actor'], task['cell_id'],
+                                    row.get('branch'), row.get('relevance_review'),
+                                    row.get('physical_feasibility')):
                         raise ValueError('Direct review identity/status mismatch')
                     witnesses.append({'source': row['source'],
                                       'source_sha256': row['source_sha256'],
@@ -422,7 +432,7 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                       for cell in catalog['cells']]})
         for value in partition_values:
             write(out / 'partitions' / (value['partition_id'] + '.json'), value)
-        runtime = _runtime(project, out)
+        runtime = _runtime(project, out, return_branch='worker/' + batch_id)
         batch = {'format': 'worker-batch', 'mode':'six_step_preparation', 'runtime':runtime,
                  'full_branch_coverage_required': True, 'gpu_ready_required': True,
                  'law_split_version': read(root/'sets/index.json').get('law_split_version') if (root/'sets/index.json').is_file() else None,
@@ -444,6 +454,7 @@ def export(project, root, partition_files, spec_file, destination, batch_id, max
                     target = destination / file.relative_to(out)
                     target.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(file, target)
+                    shutil.copymode(file, target)
         else:
             shutil.move(str(out), str(destination))
     # The trusted export baseline stays local, outside the worker-controlled Git tree.
@@ -778,7 +789,7 @@ def import_return(root, repo, batch_id):
         pass  # shared implementation is materialized by canonical inline construction files
     # Preserve the worker's portable execution layout locally.  The flattened
     # assignment imports above support stage adoption; this complete checkout
-    # supplies runtime.py, overlay.py, inputs and work/_shared without Git or
+    # supplies runtime.py, inputs and work/_shared without Git or
     # access to the remote worker repository.  Runtime scratch stays in state/.
     local_checkout = operation_directory(root, batch_id, package, 'local-checkout')
     if local_checkout.exists():
@@ -810,7 +821,7 @@ def import_return(root, repo, batch_id):
     return receipt
 
 
-def _runtime(project, out):
+def _runtime(project, out, return_branch='worker/unassigned'):
     from .export_runtime import export as export_pipeline_runtime
     runtime = out/'runtime'
     export_pipeline_runtime(project, runtime)
@@ -821,11 +832,17 @@ def _runtime(project, out):
         _copy_text(project/'scenario_pipeline/docs'/doc, runtime/'docs'/doc)
     from batch_pipeline.stages import CONTRACTS
     write(runtime/'stage_contracts.json', CONTRACTS)
-    for filename in ('START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md',
-                     'worker_check.py','runtime_launcher.py','test_portable.py'):
+    for filename in ('README.md','START_HERE.md','FULL_BRANCH_CONTRACT.md','DELIVERY_CONTRACT.md',
+                     'worker_check.py','runtime_launcher.py','test_portable.py',
+                     'run-worker.sh','auto-checkpoint.sh','checkpoint.sh'):
         target = out/('runtime.py' if filename=='runtime_launcher.py' else
-                      'tests/test_portable.py' if filename=='test_portable.py' else filename)
+                      'tests/test_portable.py' if filename=='test_portable.py' else
+                      'scripts/'+filename if filename.endswith('.sh') else filename)
         _copy_text(MODULE/'templates'/filename, target)
+        if filename == 'README.md':
+            target.write_text(target.read_text().replace('__RETURN_BRANCH__', return_branch))
+        if filename.endswith('.sh'):
+            target.chmod(0o755)
     (out/'.gitignore').write_text('__pycache__/\n*.py[cod]\n.pytest_cache/\n.runtime-work/\n.venv*/\n')
     # Skills and contracts are part of the same immutable runtime.
     files = tree(runtime)
@@ -874,5 +891,6 @@ def refresh_scaffold(project, destination):
             target = within(destination, rel)
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(staged / rel, target)
+            shutil.copymode(staged / rel, target)
     check(destination)
     return {'destination': str(destination), 'assignments': [], 'refreshed': True}

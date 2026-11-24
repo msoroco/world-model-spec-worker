@@ -10,6 +10,7 @@ import tempfile
 import time
 import zipfile
 from contextlib import contextmanager
+from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor
 
 from batch_pipeline.store import atomic
@@ -111,22 +112,11 @@ def verified_label(folder, metadata, *, trace_sha256=None, authority_path=None, 
     path=Path(authority_path) if authority_path is not None else folder/'evidence/expected_label.json'
     if not path.is_file():raise ValueError('Source-bound outcome record missing: '+folder.name)
     record=validate_authoritative(json.loads(path.read_text()))
-    import production_verdicts
-    if record['classification_method']['source_sha256']!=sha(Path(production_verdicts.__file__)):
-        raise ValueError('Outcome classification uses superseded implementation; regenerate from frozen sources')
     if record['evidence_status']!='accepted':raise ValueError('Outcome evidence still requires repair')
     if metadata.get('recapture'):
         recorded_identity=record.get('recording_identity',{})
         if recorded_identity.get('recording_id')!=folder.name or recorded_identity.get('parent_recording_id')!=metadata.get('parent_recording_id'):
             raise ValueError('Recapture outcome identity/parent lineage differs')
-    reference=record.get('reference_check')or{}
-    if record.get('evaluation_method')=='recorded_rule_reference' and record['expected_label'] in ('compliant','violation','not applicable'):
-        implementations=reference.get('source_hashes',{})
-        if set(implementations)!={'expected_labels.py','demo_rule_evidence.py'}:
-            raise ValueError('Recorded-rule evaluator source bindings missing')
-        for name,checksum in implementations.items():
-            if sha(Path(__file__).with_name(name))!=checksum:
-                raise ValueError('Recorded-rule evaluator implementation changed: '+name)
     expected=trace_sha256 or metadata.get('trace_sha256')
     if record['source_hashes']['trace_sha256']!=expected:
         raise ValueError('Authoritative outcome is bound to a stale trace')
@@ -160,26 +150,200 @@ def case_csv_row(row):
     return result
 
 
+def verify_approved_source_amendment(local, bridge, parent_id, case_id):
+    """Verify a root-bound normalized approval; historical conversion stays external."""
+    def bound(item):
+        if not isinstance(item,dict) or set(item)!={'path','sha256'}:
+            raise ValueError('Approved amendment artifact binding missing')
+        path=local(item['path'])
+        if not item['sha256'] or sha(path)!=item['sha256']:
+            raise ValueError('Approved amendment artifact changed')
+        return path
+    proof=json.loads(bound(bridge.get('approved_amendment')).read_text())
+    rows=[r for r in proof.get('records',[]) if r.get('parent_recording_id')==parent_id and r.get('case_id')==case_id]
+    if proof.get('format')!='approved-source-amendment-v1' or len(rows)!=1:
+        raise ValueError('Approved amendment identity differs')
+    row=rows[0]
+    if row.get('original_definition_source')!='checksum_bound_parent_config.case':
+        raise ValueError('Approved amendment original definition source differs')
+    artifacts=proof.get('approval_artifacts')
+    if not isinstance(artifacts,list) or not artifacts:
+        raise ValueError('Approved amendment approval artifacts missing')
+    for artifact in artifacts:bound(artifact)
+    original_config=bound(row.get('parent_original_config'))
+    original_definition=bound(row.get('parent_original_definition'))
+    approved_config=bound(row.get('approved_config'))
+    approved_definition=bound(row.get('approved_definition'))
+    approved_map=bound(row.get('approved_map'))
+    approved_construction=bound(row.get('approved_construction'))
+    approved_runner=bound(row.get('approved_runner'))
+    original_runner=bound(row.get('parent_original_runner'))
+    if (original_config!=local('recapture-parent-source/config.json')
+            or original_definition!=local('recapture-parent-source/accepted_case_definition.json')
+            or approved_definition!=local('accepted_case_definition.json')
+            or sha(local('road.xodr'))!=sha(approved_map)
+            or sha(local('runner.py'))!=sha(approved_runner)
+            or original_runner!=local('recapture-parent-source/runner.py')
+            or bridge.get('definition_sha256')!=sha(approved_definition)
+            or bridge.get('executed_config_sha256')!=sha(local('config.json'))):
+        raise ValueError('Approved amendment source bridge differs')
+    old=json.loads(original_definition.read_text());new=json.loads(approved_definition.read_text())
+    if (row.get('parent_definition_canonical_sha256')!=identity(old)
+            or row.get('approved_definition_canonical_sha256')!=identity(new)
+            or old!=json.loads(original_config.read_text()).get('case')
+            or any(old.get(k)!=new.get(k) for k in ('case_id','target_law_id'))
+            or new.get('case_id')!=case_id):
+        raise ValueError('Approved amendment parent semantic identity differs')
+    config=json.loads(approved_config.read_text());executed=json.loads(local('config.json').read_text())
+    if config.get('case')!=new or executed.get('case')!=new:
+        raise ValueError('Approved amendment definition differs')
+    if config.get('capture_helper_sha256')!=executed.get('capture_helper_sha256'):
+        raise ValueError('Approved amendment capture helper differs')
+    before=json.loads(approved_construction.read_text());after=json.loads(local('construction.json').read_text())
+    original_files=before.pop('files',[]);executed_files=after.pop('files',[])
+    old_files={r['path']:r for r in original_files};new_files={r['path']:r for r in executed_files}
+    packaging={'capture_one_original_episode.py','sitecustomize.py','check_lazy_import_closure.py'}
+    if 'config.json' not in old_files or json.loads(old_files['config.json']['content'])!=config:
+        raise ValueError('Approved amendment source construction configuration differs')
+    if (before!=after or len(old_files)!=len(original_files) or len(new_files)!=len(executed_files)
+            or set(new_files)-set(old_files)!=packaging or set(old_files)-set(new_files)):
+        raise ValueError('Approved amendment construction differs')
+    for name,item in new_files.items():
+        if name=='config.json':
+            if json.loads(item['content'])!=executed:
+                raise ValueError('Approved amendment construction configuration differs')
+        elif name in packaging:
+            if set(item)!={'path','content'} or item['content']!=local(name).read_text():
+                raise ValueError('Approved amendment packaging source differs')
+        elif item!=old_files[name]:
+            raise ValueError('Approved amendment construction source differs')
+    # Worker isolation rebases these two paths, never scenario fields or helper code.
+    for key in ('project_root','capture_helper'):
+        config.pop(key,None);executed.pop(key,None)
+    if config!=executed:
+        raise ValueError('Approved amendment executed configuration differs')
+    return row
+
+
+def verify_recapture_source(folder, value):
+    """Verify the explicitly typed immutable recapture source before use."""
+    if not value.get('recapture'):return None
+    folder=Path(folder);evidence=folder/'evidence';lineage=value['recapture'];path=folder/'recapture-source-manifest.json'
+    if sha(path)!=lineage.get('source_manifest_sha256'):raise ValueError('Recapture source manifest changed')
+    receipt=json.loads(path.read_text());physical=lineage.get('physical_acquisition',{})
+    if (physical!=receipt.get('physical_acquisition') or identity(physical)!=folder.name
+            or physical.get('parent_recording_id')!=value.get('parent_recording_id')):
+        raise ValueError('Recapture physical identity or parent lineage changed')
+    original=json.loads((evidence/'result.json').read_text())
+    if sha(evidence/'result.json')!=physical.get('original_result_sha256'):raise ValueError('Recapture original result changed')
+    worker='worker_capture_seal_sha256' in physical
+    if worker:
+        if not (folder/'evidence-checksums.json').is_file():raise ValueError('Worker recapture evidence inventory missing')
+        from worker_exchange.common import digest
+        if 'completion_binding_sha256'in physical or not physical.get('verified_source_identity_sha256'):
+            raise ValueError('Ambiguous recapture acquisition type')
+        seal_path=evidence/'capture-seal.json';seal=json.loads(seal_path.read_text());sources=seal.get('sources',{});codes=seal.get('encoder_exit_codes')
+        if (sha(seal_path)!=physical['worker_capture_seal_sha256'] or seal.get('format')!='worker-sealed-capture'
+                or seal.get('provenance_kind')!='native' or seal.get('diagnostic_fixture')is not False
+                or seal.get('restoration',{}).get('restored')is not True or seal.get('source_digest')!=digest(sources)
+                or not isinstance(codes,dict)or any(code!=0 for code in codes.values())):
+            raise ValueError('Invalid original worker capture seal')
+        def local(name):
+            relative=Path(name);source=(evidence/relative).resolve()
+            if relative.is_absolute()or'..'in relative.parts or evidence.resolve()not in source.parents:
+                raise ValueError('Worker source escapes canonical evidence')
+            return source
+        raw=dict(sources);raw['capture-seal.json']=sha(seal_path);raw['result.json']=sha(evidence/'result.json')
+        if raw!=receipt.get('raw_artifact_sha256')or'expected_label.json'in sources:raise ValueError('Worker raw source inventory differs')
+        for name,checksum in raw.items():
+            if sha(local(name))!=checksum:raise ValueError('Original worker artifact changed: '+name)
+        binding=receipt.get('verified_source_identity_binding',{});keys=('format','parent_recording_id','case_id','capture_seal_sha256','source_digest')
+        expected={'format':'verified-worker-capture-identity-v1','parent_recording_id':value.get('parent_recording_id'),
+                  'case_id':value.get('case_id'),'capture_seal_sha256':sha(seal_path),'source_digest':seal['source_digest']}
+        if {key:binding.get(key)for key in keys}!=expected or identity(expected)!=physical['verified_source_identity_sha256']:
+            raise ValueError('Worker acquisition source identity differs')
+        release_path=evidence/'recapture-identity-release.json';release_hash=receipt.get('root_source_identity_release_sha256')
+        if not release_hash or sha(release_path)!=release_hash or binding.get('root_source_release_sha256')!=release_hash:
+            raise ValueError('Worker root source release changed')
+        release=json.loads(release_path.read_text())
+        if release.get('parent_recording_id')!=value.get('parent_recording_id')or release.get('case_id')!=value.get('case_id'):
+            raise ValueError('Worker root release parent/case differs')
+        parent=folder/'parent-metadata.json'
+        if sha(parent)!=receipt.get('parent_metadata_sha256'):raise ValueError('Worker original parent metadata changed')
+        parent_value=json.loads(parent.read_text())
+        if parent_value.get('recording_id')!=value.get('parent_recording_id')or parent_value.get('case_id')!=value.get('case_id'):
+            raise ValueError('Worker original parent identity differs')
+        definition=evidence/'accepted_case_definition.json';case=json.loads(definition.read_text());config=json.loads((evidence/'config.json').read_text())
+        if (sha(definition)!=physical.get('definition_sha256')or case!=config.get('case')
+                or case.get('case_id')!=value.get('case_id')):raise ValueError('Worker frozen definition differs')
+        bridge=release.get('frozen_definition_binding',{});provenance=bridge.get('source_provenance',{})
+        if bridge.get('semantic_source')=='approved_source_amendment.config.case':
+            verify_approved_source_amendment(local,bridge,value.get('parent_recording_id'),value.get('case_id'))
+        elif (bridge.get('definition_sha256')!=sha(definition)or bridge.get('original_config_sha256')!=sha(evidence/'config.json')
+                or bridge.get('semantic_source')!='checksum_bound_original_config.case'):
+            raise ValueError('Worker frozen definition bridge differs')
+        required_parent={name:release.get('original_source_hashes',{}).get(name)for name in ('config.json','runner.py','construction.json','road.xodr')}
+        if receipt.get('parent_source_provenance_sha256')!=required_parent:raise ValueError('Worker parent proof inventory differs')
+        for name in ('config.json','runner.py','construction.json','road.xodr'):
+            checksum=release.get('original_source_hashes',{}).get(name)
+            if not checksum or provenance.get(name)!=checksum or sha(local('recapture-parent-source/'+name))!=checksum:
+                raise ValueError('Worker parent source provenance changed: '+name)
+        executed=release.get('executed_source_hashes')
+        if not isinstance(executed,dict)or not executed:raise ValueError('Worker approved executed source map missing')
+        for name,checksum in executed.items():
+            if sources.get(name)!=checksum or sha(local(name))!=checksum:raise ValueError('Worker executed source differs: '+name)
+        for name,key in [('trace.jsonl','original_capture_sha256'),('capture/manifest.json','original_capture_manifest_sha256')]:
+            if sha(local(name))!=physical.get(key):raise ValueError('Worker physical source changed: '+name)
+        context=json.loads((evidence/'acquisition-context.json').read_text());capture=json.loads((evidence/'capture/manifest.json').read_text())
+        context_schema=release.get('worker_context_schema')
+        if context_schema=='native-controller-context-v1':
+            source_result=receipt.get('source_result_binding')
+            if (bridge.get('semantic_source')!='approved_source_amendment.config.case'
+                    or not isinstance(source_result,dict)or set(source_result)!={'path','sha256'}
+                    or source_result!=release.get('source_result_binding')
+                    or source_result.get('path')!='native-controller-episode-report.json'
+                    or sources.get(source_result['path'])!=source_result['sha256']
+                    or sha(local(source_result['path']))!=source_result['sha256']
+                    or sha(evidence/'result.json')!=source_result['sha256']):
+                raise ValueError('Worker original controller result alias differs')
+            if (set(context)!={'context'} or context['context']!=json.loads(local('context.json').read_text())
+                    or not sources.get('context.json')
+                    or any(executed.get(name)!=sha(local(name)) for name in ('config.json','runtime-inputs.json'))):
+                raise ValueError('Worker controller context source binding differs')
+        elif context_schema is None:
+            if (context.get('config_sha256')!=sha(evidence/'config.json')or context.get('original_definition_sha256')!=sha(definition)
+                    or context.get('runtime_release_sha256')!=sha(evidence/'runtime-inputs.json')):
+                raise ValueError('Worker wrapper/capture identity differs')
+        else:
+            raise ValueError('Unknown worker context schema')
+        if (capture.get('case_id')!=value.get('case_id')or capture.get('acquisition')!='original_live_run'or capture.get('diagnostic_fixture')):
+            raise ValueError('Worker wrapper/capture identity differs')
+        if seal.get('native_revision')!={'construction_sha256':sha(evidence/'construction.json'),'runner_sha256':sha(evidence/'runner.py')}:
+            raise ValueError('Worker original source revision differs')
+    else:
+        if 'verified_source_identity_sha256'in physical:raise ValueError('Ambiguous recapture acquisition type')
+        from batch_pipeline.completion import verify as verify_completion
+        verify_completion(evidence,original['completion']['binding'])
+    return receipt
+
+
+def verify_recording_source(folder, value):
+    """Keep logical context variants distinct from physical recaptures."""
+    if value.get('recording_kind') == 'legal_context_variant' or 'legal_context_variant' in value:
+        from legal_context_variants import verify_legal_context_variant
+        verify_legal_context_variant(folder, value, Path(folder).parent.parent)
+        return None
+    return verify_recapture_source(folder, value)
+
+
 def accept_recording(directory, record):
     """Called after the existing full case acceptance, never instead of it."""
     folder = Path(directory).parent
     path = folder / 'metadata.json'
     value = json.loads(path.read_text())
     started = time.time()
-    if value.get('recapture'):
-        lineage=value['recapture'];source_manifest=folder/'recapture-source-manifest.json'
-        if sha(source_manifest)!=lineage.get('source_manifest_sha256'):
-            raise ValueError('Recapture source manifest changed before acceptance')
-        physical=lineage.get('physical_acquisition',{})
-        receipt=json.loads(source_manifest.read_text())
-        if (physical!=receipt.get('physical_acquisition') or identity(physical)!=folder.name
-                or physical.get('parent_recording_id')!=value.get('parent_recording_id')):
-            raise ValueError('Recapture physical identity or parent lineage changed')
-        original=json.loads((Path(directory)/'result.json').read_text())
-        if sha(Path(directory)/'result.json')!=physical.get('original_result_sha256'):
-            raise ValueError('Recapture original result changed before acceptance')
-        from batch_pipeline.completion import verify as verify_completion
-        verify_completion(directory,original['completion']['binding'])
+    receipt=verify_recording_source(folder,value)
+    if receipt is not None:
         final=receipt['final_artifacts_sha256']
         if record['trace_sha256']!=final['trace.json'] or record['video_sha256']!=final['video.webm']:
             raise ValueError('Recapture acceptance outputs differ from staged validation')
@@ -206,24 +370,28 @@ def accept_recording(directory, record):
                 raise ValueError('Cannot replace accepted recording output')
         else:
             os.link(source, target)
-    from production_verdicts import presentation,validate_presentation
+    from production_verdicts import presentation,validate_presentation,assessment_reference
     authority=verified_label(folder,dict(value,law_id=record.get('law_id')),trace_sha256=record['trace_sha256'])
     validate_presentation(authority,record.get('label_record',{}))
     value.update(label_record=presentation(authority),expected_label=authority['expected_label'],
-                 judgment_sweep=authority['judgment_sweep'])
+                 judgment_sweep=authority['judgment_sweep'],
+                 reference_check=assessment_reference(authority.get('reference_check')))
     if value.get('recapture'):value['recapture']['pending_explicit_acceptance']=False
     value.update(status='accepted', law_id=record.get('law_id'), frames=record['frames'],
                  video_sha256=record['video_sha256'], trace_sha256=record['trace_sha256'])
     value['acceptance'] = json.loads(json.dumps(record, default=str))
+    value['acceptance']['reference_check'] = assessment_reference(authority.get('reference_check'))
     value.setdefault('phases', {})['registration'] = {'started': started, 'ended': time.time()}
-    from shared_manifest import canonical_path, link as link_manifest, link_sets
+    from shared_manifest import canonical_path, link_bytes as link_manifest_bytes, link_sets
     collection = folder.parent.parent
     if canonical_path(collection).is_file():
         link_sets(collection)
         source_manifest=Path(record['trace_source']).parent/'manifest.json'
-        capability=json.loads(source_manifest.read_text()) if source_manifest.is_file() else None
-        link_manifest(collection, folder, capability)
+        data=source_manifest.read_bytes() if source_manifest.is_file() else None
+        link_manifest_bytes(collection, folder, data)
         value['manifest_sha256'] = sha(folder/'manifest.json')
+    from judgment_measurements import enrich_judgment_metadata
+    value = enrich_judgment_metadata(folder, value, trace_path=folder/'trace.json')
     atomic(path, value)
     return folder.name
 
@@ -233,8 +401,15 @@ def verify_recording(folder, *, require_label=False):
     value = json.loads((folder / 'metadata.json').read_text())
     if value.get('status') != 'accepted':
         raise ValueError('Recording is not accepted: ' + folder.name)
+    if value.get('expected_label') == 'judgment call' or 'judgment_measurements' in value:
+        from judgment_measurements import validate_judgment_metadata
+        validate_judgment_metadata(value, folder/'trace.json')
+    verify_recording_source(folder,value)
     if require_label:
-        verified_label(folder,value)
+        authority=verified_label(folder,value)
+        from production_verdicts import OUTCOMES
+        if authority['expected_label'] not in OUTCOMES:
+            raise ValueError('Final publication requires one of the four supported outcomes')
         if value.get('label_record') is None:raise ValueError('Canonical label projection missing')
     if value.get('manifest_sha256'):
         capability=folder/'manifest.json'
@@ -822,7 +997,9 @@ def reconstruct_collection(root, sets, archive, library, validator, *, workers=8
     """Stage, decode, then publish retained-evidence repairs; never run CARLA.
 
     Final apply requires per-record ``publication_inputs`` paths named
-    ``expected_label`` and ``adapter_report``. The latter is the complete final
+    ``expected_label`` and ``adapter_report``. An optional ``video`` installs
+    validated replacement media in the same backed-up transaction and must be
+    bound by the final profile. The latter is the complete final
     exporter report, including its reconstruction and native source projection;
     this function never rebases a projection or classifies an outcome itself.
     ``refresh_reports(root)`` generates/verifies the current indexed aggregate
@@ -840,7 +1017,7 @@ def reconstruct_collection(root, sets, archive, library, validator, *, workers=8
     archive.mkdir(parents=True,exist_ok=True)
     from traffic_spec_adapter.adapter import manifest
     from shared_manifest import encoded
-    new_manifest=encoded(manifest(library))
+    new_manifest=encoded(manifest(library,acquisition_path='retained'))
     (archive/'manifest.json').write_bytes(new_manifest)
     manifest_changed=new_manifest!=(root/'inputs/shared/manifest.json').read_bytes()
     members=selected_recordings(root,sets)
@@ -922,7 +1099,7 @@ def reconstruct_collection(root, sets, archive, library, validator, *, workers=8
                 raise ValueError('Final publication requires staged authorities and profiles for every selected recording')
             # Freeze the actual supplied bytes before checking any final projection.
             frozen_publication={rid:{name:{'path':str(Path(item[name]).resolve()),'sha256':sha(item[name])}
-                for name in ('expected_label','adapter_report')} for rid,item in publication_inputs.items()}
+                for name in ('expected_label','adapter_report','video') if name in item} for rid,item in publication_inputs.items()}
             for member in members:
                 _verified_publication_inputs(root,member,by_id[member['recording_id']],frozen_publication[member['recording_id']])
             from lean_work import refresh, SETS
@@ -969,7 +1146,7 @@ def validate_review_archive(root, archive, repo=None):
     return archive
 
 
-def publish_review_links(root, member, archive):
+def publish_review_links(root, member, archive, *, replaces_recording_id=None):
     """Publish accepted outputs through complete, canonical-linked work folders."""
     root=Path(root).resolve();archive=validate_review_archive(root,archive)
     rid=safe_name(member['recording_id']);canonical=root/'recordings'/rid
@@ -982,6 +1159,22 @@ def publish_review_links(root, member, archive):
             or value.get('law_id',member['law_id'])!=member['law_id']
             or value.get('cell_id')!=member['cell_id']):
         raise ValueError('Canonical review identity differs: '+rid)
+    replacement=None
+    if replaces_recording_id is not None:
+        parent_id=safe_name(replaces_recording_id)
+        source=verify_recapture_source(canonical,value)
+        if (source is None or parent_id==rid or value.get('parent_recording_id')!=parent_id
+                or source.get('physical_acquisition',{}).get('parent_recording_id')!=parent_id):
+            raise ValueError('Review replacement requires verified recapture parent lineage')
+        parent_path=root/'recordings'/parent_id/'metadata.json'
+        if not parent_path.is_file()or sha(parent_path)!=source.get('parent_metadata_sha256'):
+            raise ValueError('Review replacement canonical parent metadata changed')
+        replacement=json.loads(parent_path.read_text())
+        if replacement.get('recording_id')!=parent_id:
+            raise ValueError('Review replacement canonical parent identity differs')
+        for key in ('case_id','law_id','cell_id','actor'):
+            if (replacement.get(key)!=value.get(key) or key in member and member[key]!=value.get(key)):
+                raise ValueError('Review replacement context differs: '+key)
     names=('video.webm','trace.json','manifest.json','metadata.json')
     if not (canonical/'manifest.json').is_file():raise ValueError('Canonical manifest missing: '+rid)
     directories=[]
@@ -995,7 +1188,11 @@ def publish_review_links(root, member, archive):
                 raise ValueError('Unexpected review folder contents: '+str(case))
             if (case/'metadata.json').is_file():
                 old=json.loads((case/'metadata.json').read_text())
-                if any(old.get(k)!=member[k]for k in ('recording_id','case_id','law_id')):
+                if replacement is not None and old.get('recording_id')==replaces_recording_id:
+                    if (any(old.get(k)!=replacement.get(k)for k in ('recording_id','case_id','law_id'))
+                            or any(k in old and old[k]!=replacement.get(k)for k in ('cell_id','actor'))):
+                        raise ValueError('Existing parent review identity differs: '+str(case))
+                elif any(old.get(k)!=member[k]for k in ('recording_id','case_id','law_id')):
                     raise ValueError('Existing review identity differs: '+str(case))
         directories.append(case)
     if not directories:raise ValueError('No review folders to publish')
@@ -1047,14 +1244,26 @@ def publish_review_links(root, member, archive):
 
 def publish_reconstructed(root, archive, member, report, *, manifest_changed=False, publication=None):
     """Archive superseded derivatives; original evidence and membership stay put."""
-    from shared_manifest import verify as verify_manifest, link as link_manifest
+    from shared_manifest import verify as verify_manifest, link_bytes as link_manifest_bytes
     root,archive=Path(root),Path(archive)
     rid=member['recording_id'];canonical=root/'recordings'/rid;review=Path(member['review'])
     if publication is None and json.loads((canonical/'metadata.json').read_text()).get('delivery_layout')=='canonical-recording-links-v1':
         raise ValueError('Accepted linked outputs require complete final publication inputs')
     authority=_verified_publication_inputs(root,member,report,publication) if publication is not None else None
+    has_context=authority is not None and 'scene_assumptions' in authority
+    authoritative_context=authority.get('scene_assumptions') if has_context else None
+    if has_context and not isinstance(authoritative_context,dict):
+        raise ValueError('Final publication requires an object for authoritative scene context')
+    if authority is not None and not has_context:
+        for directory in (canonical,canonical/'evidence/traffic_spec'):
+            metadata=directory/'metadata.json'
+            if not metadata.is_file():continue
+            prior=json.loads(metadata.read_text())
+            sources=(prior,prior.get('acceptance',{}),prior.get('published_record',{}),prior.get('source_record',{}))
+            if any(isinstance(source,dict) and 'scene_assumptions' in source for source in sources):
+                raise ValueError('Missing authoritative scene context would retain stale metadata claims')
     staged_manifest=archive/'manifest.json'
-    capability=json.loads(staged_manifest.read_text()) if staged_manifest.is_file() else None
+    manifest_data=staged_manifest.read_bytes() if staged_manifest.is_file() else None
     manifest_hash=sha(staged_manifest if staged_manifest.is_file() else root/'inputs/shared/manifest.json')
     if publication is not None:
         profile=json.loads(Path(publication['adapter_report']['path']).read_text())
@@ -1091,16 +1300,22 @@ def publish_reconstructed(root, archive, member, report, *, manifest_changed=Fal
         if previous.get('source_key')==report['source_key']and previous.get('static_inventory_receipt')==report.get('static_inventory_receipt'):return
     stage=archive/'stage'/rid
     if report['changed'] and sha(stage/'trace.json')!=report['output_trace_sha256']:raise ValueError('Staged output changed: '+rid)
+    if publication is not None and 'video' in publication:
+        install(canonical/'video.webm',publication['video']['path'],publication['video']['sha256'])
+    if authority is not None:
+        (canonical/'evidence/traffic_spec').mkdir(parents=True,exist_ok=True)
     output_directories=[canonical,canonical/'evidence/traffic_spec']if authority is not None else [canonical]+reviews+[canonical/'evidence/traffic_spec']
     for directory in dict.fromkeys(output_directories):
         if not directory.exists():continue
         current_manifest=directory/'manifest.json'
-        if sha(current_manifest)!=manifest_hash:
+        if not current_manifest.is_file() or sha(current_manifest)!=manifest_hash:
             preserve(current_manifest)
-            current_manifest.unlink()
-            link_manifest(root,directory,capability)
+            if current_manifest.exists()or current_manifest.is_symlink():current_manifest.unlink()
+            link_manifest_bytes(root,directory,manifest_data)
         verify_manifest(root,directory,manifest_hash)
         if report['changed']:install(directory/'trace.json',stage/'trace.json',report['output_trace_sha256'])
+        elif authority is not None and not(directory/'trace.json').is_file():
+            install(directory/'trace.json',canonical/'trace.json',report['output_trace_sha256'])
         report_path=canonical/'adapter_report.json' if directory in reviews else directory/'adapter_report.json'
         if directory in reviews:
             auxiliary=directory/'adapter_report.json'
@@ -1121,12 +1336,16 @@ def publish_reconstructed(root, archive, member, report, *, manifest_changed=Fal
         if metadata.exists():
             preserve(metadata);value=json.loads(metadata.read_text());value['trace_sha256']=report['output_trace_sha256']
             value['manifest_sha256']=manifest_hash
+            if publication is not None and 'video' in publication:
+                value['video_sha256']=publication['video']['sha256']
             if authority is not None:
-                from production_verdicts import presentation
+                from production_verdicts import presentation,assessment_reference
                 projection=presentation(authority)
                 for source in (value,value.get('acceptance',{}),value.get('published_record',{}),value.get('source_record',{})):
                     if isinstance(source,dict):
-                        source.update(label_record=projection,expected_label=authority['expected_label'],judgment_sweep=authority['judgment_sweep'])
+                        source.update(label_record=projection,expected_label=authority['expected_label'],judgment_sweep=authority['judgment_sweep'],
+                                      reference_check=assessment_reference(authority.get('reference_check')))
+                        if has_context:source['scene_assumptions']=deepcopy(authoritative_context)
             value['reconstruction']={'decoder_passed':True,'source_key':report['source_key'],
                 'report':str(report_path.relative_to(root)),'report_sha256':sha(report_path),
                 'original_trace_sha256':report['input_trace_sha256']}
@@ -1138,11 +1357,19 @@ def publish_reconstructed(root, archive, member, report, *, manifest_changed=Fal
                 if isinstance(nested,dict):
                     if 'trace_sha256' in nested:nested['trace_sha256']=report['output_trace_sha256']
                     if 'manifest_sha256' in nested:nested['manifest_sha256']=manifest_hash
+                    if publication is not None and 'video' in publication and 'video_sha256' in nested:
+                        nested['video_sha256']=publication['video']['sha256']
+                        if 'video_source' in nested:nested['video_source']='video.webm'
                     if isinstance(nested.get('sha256'),dict):
                         for name,digest in (('trace.json',report['output_trace_sha256']),('manifest.json',manifest_hash)):
                             if name in nested['sha256']:nested['sha256'][name]=digest
+                        if publication is not None and 'video' in publication and 'video.webm' in nested['sha256']:
+                            nested['sha256']['video.webm']=publication['video']['sha256']
             # Previously evaluated verdicts describe the old trace, not this one.
             if isinstance(value.get('offline_repair'),dict):value['offline_repair']['verdicts_verified']=False
+            if metadata == canonical/'metadata.json':
+                from judgment_measurements import enrich_judgment_metadata
+                value = enrich_judgment_metadata(canonical, value, trace_path=canonical/'trace.json')
             atomic(metadata,value)
     if authority is not None:
         install(canonical/'evidence/expected_label.json',publication['expected_label']['path'],publication['expected_label']['sha256'])
@@ -1185,12 +1412,15 @@ def _verified_publication_inputs(root, member, report, publication):
         path=canonical/name
         if (sha(path) if path.is_file() else None)!=checksum:
             raise ValueError('Canonical publication input changed: '+name)
-    for name in ('expected_label','adapter_report'):
+    for name in ('expected_label','adapter_report','video'):
+        if name=='video' and name not in publication:continue
         item=publication[name]
         if sha(item['path'])!=item['sha256']:
             raise ValueError('Staged publication input changed: '+name)
     profile_path=Path(publication['adapter_report']['path'])
     profile=json.loads(profile_path.read_text())
+    if 'video' in publication and profile.get('video_sha256')!=publication['video']['sha256']:
+        raise ValueError('Staged profile is bound to a stale video: '+rid)
     if not common_profile_complete(profile):
         raise ValueError('Staged final profile is incomplete: '+rid)
     if profile.get('trace_sha256',profile.get('output_trace_sha256'))!=report['output_trace_sha256']:
@@ -1212,6 +1442,9 @@ def _verified_publication_inputs(root, member, report, publication):
     identity_metadata={key:metadata.get(key) for key in ('case_id','law_id')}
     authority=verified_label(canonical,identity_metadata,trace_sha256=report['output_trace_sha256'],
         authority_path=publication['expected_label']['path'],adapter_report_path=profile_path)
+    from production_verdicts import OUTCOMES
+    if authority['expected_label'] not in OUTCOMES:
+        raise ValueError('Final publication requires one of the four supported outcomes')
     if authority['source_hashes'].get('adapter_report_sha256')!=publication['adapter_report']['sha256']:
         raise ValueError('Final authority must bind the staged profile: '+rid)
     return authority

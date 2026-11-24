@@ -1,44 +1,17 @@
-"""Cheap static-map checks and removal of the retired grade-only overlays.
-
-No all-pairs geometry test: the retired producer has a precise 300-strip
-signature. A strip is removable only under a recorded containing roadway and
-when it has no non-occupancy reference. Physical evidence stays in the archive.
-"""
+"""Source-identity-aware physical roadway geometry; local profiles live on users."""
 import json
 from functools import lru_cache
 
 
 def roadway_intervals(road, geometries, start, end):
-    """Coalesce consecutive native segments with the same recorded properties."""
-    from .geometry import reference
-    result = []
-    elevations = road.findall('./elevationProfile/elevation')
-    for g in geometries:
-        a = max(start, float(g.attrib['s']))
-        b = min(end, float(g.attrib['s']) + float(g.attrib['length']))
-        if b <= a:
-            continue
-        values = {'curvature': abs(reference(g, (a+b)/2)[3])}
-        active = [e for e in elevations if float(e.attrib['s']) <= a]
-        breaks = [e for e in elevations if a < float(e.attrib['s']) < b]
-        profile = ([active[-1]] if active else []) + breaks
-        # Record boundaries alone do not make an identical constant slope vary.
-        # No grade is emitted before the first observed elevation record.
-        if active and all(float(e.attrib.get(k, 0)) == 0 for e in profile for k in 'cd'):
-            slopes = {float(e.attrib.get('b', 0)) for e in profile}
-            # Equal derivatives do not establish a continuous surface: a source
-            # elevation jump cannot become a constant whole-region grade.
-            preceding=active[-2:-1] if len(active)>1 and float(active[-1].get('s'))==a else []
-            chain=preceding+profile
-            continuous=all(float(current.get('a',0))==sum(
-                float(previous.get(key,0))*(float(current.get('s'))-float(previous.get('s')))**power
-                for power,key in enumerate('abcd')) for previous,current in zip(chain,chain[1:]))
-            if len(slopes) == 1 and continuous:
-                values['grade'] = slopes.pop()
-        if result and result[-1][1] == a and result[-1][2] == values:
-            result[-1] = (result[-1][0], b, values)
-        else:
-            result.append((a, b, values))
+    """Physical intervals carry no local per-user profile properties."""
+    result=[]
+    for geometry in geometries:
+        low=max(start,float(geometry.get('s')))
+        high=min(end,float(geometry.get('s'))+float(geometry.get('length')))
+        if high<=low:continue
+        if result and result[-1][1]==low:result[-1]=(result[-1][0],high,{})
+        else:result.append((low,high,{}))
     return result
 
 
@@ -55,28 +28,6 @@ def boundary_key(points):
     return tuple(min(forward, reverse))
 
 
-def grade_strips(regions):
-    result = []
-    for r in regions:
-        if r.get('kind') != 'roadway' or 'grade' not in r:
-            continue
-        if set(r) - {'id', 'kind', 'boundary', 'grade', 'unobserved_kinds', 'sight_distance', 'lane'}:
-            continue
-        if r.get('lane'):
-            continue
-        b = r.get('boundary', [])
-        if len(b) != 4:
-            continue
-        xs, ys = sorted({p[0] for p in b}), sorted({p[1] for p in b})
-        if (len(xs) == len(ys) == 2 and ys == [-12, 12]
-                and xs[1] - xs[0] == 2 and 450 <= xs[0] < 1050
-                and set(map(tuple, b)) == {(x, y) for x in xs for y in ys}):
-            result.append(r)
-    if {min(p[0] for p in r['boundary']) for r in result} != set(range(450, 1050, 2)):
-        return []
-    return result
-
-
 @lru_cache(maxsize=32)
 def _check(encoded):
     roads = json.loads(encoded)
@@ -86,8 +37,6 @@ def _check(encoded):
         if key[1] and key in seen:
             raise ValueError('Duplicate roadway geometry; use one physical roadway')
         seen.add(key)
-    if grade_strips(roads):
-        raise ValueError('Retired 300-strip grade overlay; attach properties to physical roadways')
 
 
 def validate_map(regions):
@@ -149,33 +98,9 @@ def consolidate(scene, identities=None):
     from .compatibility import remap_regions
     from shapely.geometry import Polygon
     regions = scene.get('structures', [])
-    strips = grade_strips(regions)
     replacements = {}
     property_merges=[]
     issues = []
-    if strips:
-        strip_ids = {r['id'] for r in strips}
-        protected = protected_regions(scene) & strip_ids
-        if protected:
-            issues.append('Grade strips have scoped references; reconstruction needed')
-        else:
-            candidates = []
-            extent = Polygon([[450, -12], [1050, -12], [1050, 12], [450, 12]])
-            for r in regions:
-                if r.get('kind') != 'roadway' or r['id'] in strip_ids or not r.get('boundary'):
-                    continue
-                p = Polygon(r['boundary'])
-                if p.is_valid and p.covers(extent):
-                    candidates.append(r)
-            if len(candidates) == 1:
-                parent = candidates[0]
-                # A varying profile cannot supply a constant whole-road grade.
-                if 'grade' not in parent:
-                    replacements.update({r['id']: parent['id'] for r in strips})
-                else:
-                    issues.append('Containing roadway has a grade; preserve pending profile review')
-            else:
-                issues.append('No unique containing physical roadway for grade strips')
     # Exact duplicates are equivalent only when all semantic fields also match.
     seen = {}
     for r in regions:
@@ -185,28 +110,33 @@ def consolidate(scene, identities=None):
         data['boundary'] = boundary_key(data.get('boundary', []))
         key = json.dumps(data, sort_keys=True)
         if identities is not None:
-            key+=json.dumps(identities.get(r['id'],['unknown',r['id']]),sort_keys=True)
+            key+=json.dumps(identities.get(r['id'])or['unknown',r['id']],sort_keys=True)
         if key in seen:
             replacements[r['id']] = seen[key]
         else:
             seen[key] = r['id']
     proven={}
     if identities:
+        from shapely.geometry import Polygon
         for r in regions:
-            if r['id'] in replacements or r['id'] not in identities:continue
-            key=(r['kind'],boundary_key(r.get('boundary',[])),json.dumps(identities[r['id']],sort_keys=True))
-            if key not in proven:proven[key]=r;continue
-            prior=proven[key];merged=compatible_properties(prior,r)
+            if r['id'] in replacements or not identities.get(r['id']):continue
+            try:shape=Polygon(r.get('boundary',[]))
+            except (TypeError,ValueError):continue
+            if not shape.is_valid or shape.is_empty or shape.area<=0:continue
+            key=(r['kind'],json.dumps(identities[r['id']],sort_keys=True))
+            candidates=proven.setdefault(key,[])
+            match=next((i for i,prior in enumerate(candidates)
+                        if Polygon(prior['boundary']).equals(shape)),None)
+            if match is None:candidates.append(r);continue
+            prior=candidates[match];merged=compatible_properties(prior,r)
             if merged is None:
                 issues.append('Same-source coincident roadway has conflicting observations; retained separately')
             else:
-                replacements[r['id']]=prior['id'];property_merges.append(r['id']);proven[key]=merged
+                replacements[r['id']]=prior['id'];property_merges.append(r['id']);candidates[match]=merged
     result = apply_replacements(scene, replacements, property_merges) if replacements else scene
     return result, {'removed': len(replacements), 'replacements': replacements,
                     'property_merges':property_merges,
-                    'issues': issues,
-                    'grade_note': ('Varying measured profile retained in archived trace; '
-                                   'no whole-road constant invented') if strips else None}
+                    'issues': issues}
 
 
 def apply_replacements(scene, replacements, property_merges=()):

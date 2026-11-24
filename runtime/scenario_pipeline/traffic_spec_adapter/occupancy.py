@@ -116,7 +116,7 @@ def native_single_plane(path, *, lane_kinds=None):
     except (OSError,ValueError,TypeError,ET.ParseError):return False
 
 
-def native_driving_surface(path):
+def native_driving_surface(path, *, contact_bands=None):
     """Exact native Driving surface on one explicit source plane, or unknown.
 
     The global proof remains unchanged. Non-driving heights are not certified,
@@ -126,14 +126,22 @@ def native_driving_surface(path):
     from .geometry import static_map
     from shapely.ops import unary_union
     try:
-        regions,_,_=static_map(path,partial=True)
+        sources={}
+        regions,_,_=static_map(path,partial=True,junctions=contact_bands is not None,source_regions=sources)
+        if contact_bands is not None:
+            import hashlib,xml.etree.ElementTree as ET
+            from pathlib import Path
+            from .geometry import native_driving_contact_bands
+            for band in native_driving_contact_bands(ET.parse(path).getroot(),regions,sources):
+                band['source']['map_sha256']=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                contact_bands.append(band)
         shapes=[Polygon(r['boundary'])for r in regions if r['kind']=='lane'and r.get('boundary')]
         if not shapes or any(not p.is_valid or p.is_empty or p.area<=0 for p in shapes):return None
         return unary_union(shapes)
     except (OSError,ValueError,TypeError):return None
 
 
-def unresolved_surface_heights(scene,footprints,source_ids,surface,*,surfaces=None):
+def unresolved_surface_heights(scene,footprints,source_ids,surface,*,surfaces=None,contact_bands=()):
     """Only exact body/surface overlap on native Driving plane is certified.
 
     Source identity is a separate prerequisite. Raised sidewalks/props and any
@@ -144,6 +152,7 @@ def unresolved_surface_heights(scene,footprints,source_ids,surface,*,surfaces=No
     for user in scene.get('users',[]):
         track=user['track'];body=footprints.get(track)
         if body is None or body.is_empty or not body.is_valid:continue
+        whole_body=surface is not None and (surface.covers(body)or any(band['shape'].covers(body)for band in contact_bands))
         for region in scene.get('structures',[]):
             rid=region['id']
             if rid not in source_ids:continue
@@ -152,5 +161,43 @@ def unresolved_surface_heights(scene,footprints,source_ids,surface,*,surfaces=No
             if shape is None or not shape.is_valid or shape.is_empty:continue
             overlap=body.intersection(shape)
             if overlap.is_empty:continue
-            if surface is None or region['kind']not in eligible or not surface.covers(overlap):unresolved.add((track,rid))
+            known=whole_body or (surface is not None and (surface.covers(overlap)or any(band['shape'].covers(overlap)for band in contact_bands)))
+            if surface is None or region['kind']not in eligible or not known:unresolved.add((track,rid))
     return unresolved
+
+
+def certified_surface_scope(scene, packet, certificate):
+    """Validate every final identity and same-frame body before clearing scope.
+
+    Return only certified identities and per-track unresolved pairs. The caller
+    still runs recompute against EVERY final structure; partial pairs cannot
+    make a track occupancy-observed. Changed boundaries invalidate old bindings.
+    """
+    import math
+    from .geometry import body as source_body
+    if certificate is None:return set(),set(),{}
+    ids=set();shapes={};vertical=set();verified={};surface=certificate['surface']
+    for region in scene.get('structures',[]):
+        binding=certificate['bindings'].get(region['id'])
+        if binding is None or binding['kind']!=region['kind']:continue
+        try:shape=Polygon(region['boundary'])
+        except (KeyError,TypeError,ValueError):continue
+        if not shape.is_valid or shape.is_empty or not shape.equals(binding['shape']):continue
+        ids.add(region['id']);shapes[region['id']]=shape
+    stamp=packet.get('native_time')
+    joined=(type(packet.get('native_frame')) is int and type(stamp) in (int,float)
+            and math.isfinite(stamp) and round(stamp*1000)==scene['t'])
+    for user in scene.get('users',[]):
+        track=user['track'];vertices=packet.get('source_body_vertices',{}).get(track)
+        footprint=packet.get('source_footprints',{}).get(track)
+        valid=(joined and isinstance(vertices,list) and len(vertices)==8
+               and all(isinstance(p,list) and len(p)==3 and all(type(v) in (int,float)
+                   and math.isfinite(v) for v in p) for p in vertices)
+               and footprint is not None and not footprint.is_empty and footprint.is_valid
+               and footprint.equals(source_body(vertices,0)[2]))
+        if valid:verified[track]=footprint
+        for ident,shape in shapes.items():
+            if not valid:vertical.add((track,ident));continue
+            overlap=footprint.intersection(shape)
+            if not overlap.is_empty and not surface.covers(overlap):vertical.add((track,ident))
+    return ids,vertical,verified

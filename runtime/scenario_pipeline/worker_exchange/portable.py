@@ -9,8 +9,8 @@ RUNTIME_IMPORTS = {'scenario_pipeline', 'numpy', 'networkx', 'shapely', 'PIL', '
                    'tqdm', 'matplotlib', 'pydot', 'carla_sgg'}
 
 
-def inspect_file(path):
-    if path.suffix.lower() in FORBIDDEN_SUFFIXES or path.stat().st_size > 2 * 1024 * 1024:
+def inspect_file(path, *, max_bytes=2 * 1024 * 1024):
+    if path.suffix.lower() in FORBIDDEN_SUFFIXES or path.stat().st_size > max_bytes:
         raise ValueError('Large/binary evidence is not a worker input: ' + str(path))
     text = path.read_text()  # Binary/invalid UTF-8 must fail, not get silently copied.
     if path.name.startswith('.env') or 'PRIVATE KEY-----' in text:

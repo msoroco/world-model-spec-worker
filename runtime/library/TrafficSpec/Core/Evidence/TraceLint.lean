@@ -10,9 +10,9 @@
   - identity: track, region and device ids unique within a scene; at most one measured relation
     per ordered pair of tracks within a scene; every reference a scene makes (`Scene.references`)
     names an entity of that kind present in the same scene, a sight-along-way entry names a
-    highway, and an `entrance_of` entry names a lane, a roadway, a shoulder or a bicycle lane or
-    path, or a kind refining one (`StructureKind.entranceCarriers`); every track a link names
-    appears in some scene;
+    highway or a railway track (`StructureKind.sightWays`), and an `entrance_of` entry names a
+    lane, a roadway, a shoulder or a bicycle lane or path, or a kind refining one
+    (`StructureKind.entranceCarriers`); every track a link names appears in some scene;
   - a static map: the same structures in every scene, each identical at every appearance; every
     device that does not move (`Device.mobile`) in every scene; a device identical at every
     appearance outside its state (`Device.staticPart`);
@@ -158,8 +158,9 @@ def carrierKinds : List StructureKind :=
 /-- The kinds a region may have at each region argument of an atom or primitive, keyed by its Lean
     name and the argument's index in its full argument list: `some ks` where the field the name reads
     there is carried by, or may name, only a region whose kind is in `ks` (the lists this check and
-    `Scene.references` hold the field to); `none` where a region of any kind may stand there. A class
-    atom `st_<kind>` reads the label every region has and is `none`. -/
+    `Scene.references` hold the field to), or where the atom's contract admits only those kinds;
+    `none` where a region of any kind may stand there. A class atom `st_<kind>` reads the label every
+    region has and is `none`. -/
 def regionArgKinds : List ((String × Nat) × Option (List StructureKind)) :=
   let refining := fun (ks : List StructureKind) => StructureKind.all.filter fun k => ks.any (k.refines ·)
   [(("st_lane_enters", 0), some carrierKinds),
@@ -168,16 +169,20 @@ def regionArgKinds : List ((String × Nat) × Option (List StructureKind)) :=
    (("st_lane_direction", 0), some directionKinds),
    (("dev_governs", 1), some governedKinds),
    (("st_sight_along_way", 1), some (refining StructureKind.sightWays)),
-   (("prim_region_offset_along", 2), some directionKinds)]
+   (("prim_region_offset_along", 2), some directionKinds),
+   (("rel_contact_structure", 1), some contactStructureKinds),
+   (("dev_governs_sidewalk", 1), some (refining [.sidewalk])),
+   (("dev_governs_parking_space", 1), some (refining [.parkingSpace]))]
   ++ ([("st_lane_enters", 1), ("rel_occupies", 1), ("st_road_edge_paved", 0), ("st_shoulder_paved", 0),
        ("st_median_or_divider_opening", 0), ("st_crosswalk_marked", 0), ("st_reserved_lane_class", 0),
-       ("st_turn_lane_side", 0), ("st_parking_space_designation", 0), ("st_curb_zone_kind", 0),
-       ("st_curb_zone_colour", 0), ("st_obstruction_kind", 0), ("st_lane_adjacency", 0), ("st_lane_adjacency", 2),
+       ("st_turn_lane_side", 0), ("st_parking_space_designation", 0), ("st_parking_space_angle_marking", 0), ("st_curb_zone_kind", 0),
+       ("st_curb_zone_colour", 0), ("st_obstruction_kind", 0), ("st_obstruction_protected", 0), ("st_driveway_or_alley_entrance_kind", 0),
+       ("st_driveway_or_alley_entrance_private", 0), ("st_railway_track_kind", 0), ("st_lane_adjacency", 0), ("st_lane_adjacency", 2),
        ("st_lane_adjacency_left", 0), ("st_lane_adjacency_left", 1), ("st_lane_adjacency_right", 0),
        ("st_lane_adjacency_right", 1), ("st_lane_connectivity", 0), ("st_lane_connectivity", 1), ("st_on_way", 0),
        ("st_on_way", 1), ("st_lane_marking", 0), ("st_lane_marking_left", 0), ("st_lane_marking_right", 0),
-       ("st_lane_adjacency_ordinal", 0), ("st_lane_adjacency_count", 0), ("st_lane_width", 0), ("st_curvature", 0),
-       ("st_grade", 0), ("st_sight_distance", 0), ("st_parking_space_angle", 0), ("st_region_geometry", 0),
+       ("st_lane_adjacency_ordinal", 0), ("st_lane_adjacency_count", 0), ("st_lane_width", 0),
+       ("st_sight_distance", 0), ("st_parking_space_angle", 0), ("st_parking_space_axis", 0), ("st_region_geometry", 0),
        ("st_region_geometry_distance", 1), ("prim_region_lateral_offset", 1), ("prim_region_offset_along", 1)]
       ++ StructureKind.all.map fun k => (s!"st_{k}", 0)).map (·, none)
 

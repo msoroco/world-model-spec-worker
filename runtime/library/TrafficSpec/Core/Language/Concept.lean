@@ -124,6 +124,7 @@ mutual
     | .cmp l op r => .cmp (substT σ l) op (substT σ r)
     | .asm id => .asm id
     | .intent id who target => .intent id (σ.arg who) (σ.arg target)
+    | .fact id xs => .fact id (xs.map σ.arg)
     | .same a b => .same (σ.arg a) (σ.arg b)
     | .not φ => .not (substF σ φ)
     | .and φ ψ => .and (substF σ φ) (substF σ ψ)
@@ -138,11 +139,15 @@ mutual
     | .untilWithin m d s φ ψ => .untilWithin m (substT σ d) (σ.name s) (substF σ φ) (substF σ ψ)
     | .atLast m d s ψ φ => .atLast m (substT σ d) (σ.name s) (substF σ ψ) (substF σ φ)
     | .count e s op n => .count (substF σ e) (substF σ s) op n
+    | .durationWithin w g φ op b => .durationWithin (substT σ w) (substT σ g) (substF σ φ) op (substT σ b)
     | .rises φ => .rises (substF σ φ)
     | .definedWhen p φ => .definedWhen (substF σ p) (substF σ φ)
     | .derived c args ps => .derived c (args.map σ.arg) (ps.map (substT σ))
     | .rule id map => .rule id (map.map fun (i, o) => (i, σ.name o))
     | .ruleApplies id map => .ruleApplies id (map.map fun (i, o) => (i, σ.name o))
+    | .requiredBy k who => .requiredBy k (σ.name who)
+    | .lawful sc who => .lawful sc (σ.name who)
+    | .ruleCase id n map => .ruleCase id n (map.map fun (i, o) => (i, σ.name o))
     | .existsUser v φ => let (σ', w) := σ.bind v; .existsUser w (substF σ' φ)
     | .forallUser v φ => let (σ', w) := σ.bind v; .forallUser w (substF σ' φ)
     | .existsRegion k v φ => let (σ', w) := σ.bind v; .existsRegion (σ.arg k) w (substF σ' φ)
@@ -229,6 +234,8 @@ mutual
     | .atLast m d s ψ φ => do
       pure (.atLast m (← expandT cs fuel d) s (← expandF cs fuel ψ) (← expandF cs fuel φ))
     | .count e s op n => do pure (.count (← expandF cs fuel e) (← expandF cs fuel s) op n)
+    | .durationWithin w g φ op b => do
+      pure (.durationWithin (← expandT cs fuel w) (← expandT cs fuel g) (← expandF cs fuel φ) op (← expandT cs fuel b))
     | .rises φ => do pure (.rises (← expandF cs fuel φ))
     | .definedWhen p φ => do pure (.definedWhen (← expandF cs fuel p) (← expandF cs fuel φ))
     | .existsUser v φ => do pure (.existsUser v (← expandF cs fuel φ))
@@ -250,7 +257,8 @@ def expandOnce (cs : List Concept) (φ : Formula) : Formula := (expandF cs 1 φ)
 def expandRule (cs : List Concept) (r : Rule) : Rule :=
   { r with binders := r.binders.map fun b => { b with cls := expand cs b.cls }
            applicability := expand cs r.applicability
-           obligation := expand cs r.obligation }
+           obligation := expand cs r.obligation
+           cases := r.cases.map fun c => { c with shown := expand cs c.shown, when := expand cs c.when } }
 
 /-- The aggregate ids a rule names, its concept calls expanded to any depth: the ids the concepts'
     bodies name, with the actuals of each call substituted. -/

@@ -90,10 +90,18 @@ structure RoadUser where
   officialKind : Option OfficialKind := none
   eBikeClass : Option Nat := none
   occupants : Option Nat := none
+  unladenMass : Option Q := none            -- kg
+  disabled : Option Bool := none            -- cannot move under its own power
   posture : Posture := {}
   kin : Kin := {}
   sig : Signals := {}
   sightAlongWay : Option (List (RegionId × Q)) := none   -- per way, m
+  /-- The roadway's longitudinal slope at the user's position along its heading (ratio, rising
+      positive); `none` where the source gives no value. -/
+  roadGrade : Option Q := none
+  /-- The roadway's horizontal curvature at the user's position (1/m, either sign); `none` where the
+      source gives no value. -/
+  roadCurvature : Option Q := none
   deriving Repr, Inhabited
 
 /-- The kinds that carry an entrance into an intersection (`lane.enters_intersection`, an
@@ -104,7 +112,11 @@ def StructureKind.entranceCarriers : List StructureKind := [.lane, .roadway, .sh
 
 /-- The kinds of a way along which a road user's sight is given (`sight_along_way`): these and every
     kind refining them. -/
-def StructureKind.sightWays : List StructureKind := [.highway]
+def StructureKind.sightWays : List StructureKind := [.highway, .railwayTrack]
+
+/-- The regulatory sign codes that prohibit riding: the signs whose sidewalks `governs_sidewalk`
+    records. -/
+def SignCode.ridingProhibitions : List SignCode := [.bicyclesProhibited, .bicycleEbikeEscooterProhibited]
 
 /-- Lane attributes (ATOMS.md `st.lane_*`). -/
 structure LaneInfo where
@@ -133,8 +145,6 @@ structure Structure where
   paved : Option Bool := none
   opening : Option Bool := none
   marked : Option Bool := none
-  curvature : Option Q := none              -- 1/m
-  grade : Option Q := none                  -- ratio
   sightDistance : Option Q := none          -- m
   ways : Option (List RegionId) := none     -- the highway regions it lies on
   /-- For a stop line or a crosswalk: the carriers whose entrance into an intersection it marks.
@@ -146,9 +156,18 @@ structure Structure where
   turnSide : Option TurnSide := none
   parkingAngle : Option Q := none           -- deg
   designation : Option ParkingDesignation := none
+  /-- A parking space's markings are an official marking indicating the angle of parking. -/
+  angleMarking : Option Bool := none
+  /-- The direction of a parking space's long axis as its stall lines mark it, at any length; either
+      sense may be written (`st_parking_space_axis` reads it undirected). -/
+  parkingAxis : Option Vec := none
   curbKind : Option CurbZoneKind := none
   curbColour : Option CurbColour := none
   obstructionKind : Option ObstructionKind := none
+  entranceKind : Option EntranceKind := none
+  railwayKind : Option RailwayKind := none
+  isProtected : Option Bool := none         -- a hose with a cover or bridge laid over it
+  privateWay : Option Bool := none          -- the way or property an entrance leads into is private
   deriving Repr, Inhabited
 
 /-- Local calendar time of an observation (ATOMS.md `env.civil_time`). -/
@@ -188,6 +207,12 @@ structure Device where
   /-- Whether the source observes which regions the device governs; where it does not, `governs`
       is empty and no region is decidedly governed or not. -/
   governsObserved : Bool := true
+  /-- The sidewalks a riding-prohibition sign governs, as recorded: complete where `some`; `none`
+      where the source does not record them. -/
+  governsSidewalk : Option (List RegionId) := none
+  /-- The parking spaces an `angle_parking` sign governs, as recorded: complete where `some`; `none`
+      where the source does not record them. -/
+  governsParkingSpace : Option (List RegionId) := none
   onTrack : Option TrackId := none                  -- a device carried by a road user (school bus)
   indications : Option (List SignalIndication) := none
   uncovered : Option Bool := none
@@ -200,6 +225,9 @@ structure Device where
   speedValue : Option Q := none                     -- m/s
   speedKind : Option SpeedSignKind := none
   code : Option SignCode := none
+  /-- The angle of parking a sign's legend states (deg): `some (some a)` an angle, `some none` the
+      source confirms the legend states none, `none` not recorded. -/
+  legendAngle : Option (Option Q) := none
   zoneKind : Option ZoneKind := none
   isEnd : Option Bool := none
   conditions : Option Conditions := none
@@ -245,6 +273,17 @@ structure DeclaredIntent where
   values : List (IntId × Bool)
   deriving Repr, Inhabited
 
+/-- A source's declaration at a scene of one fact no atom observes, about its subjects: one or two
+    road users (`users`, in the order the fact's meaning names them), a region (`regions`), or a
+    road user and a region; true or false. A fact the source does not decide for those subjects is
+    left out. -/
+structure DeclaredFact where
+  id : FactId
+  users : List TrackId := []
+  regions : List RegionId := []
+  value : Bool
+  deriving Repr, Inhabited
+
 structure Scene where
   t : Timestamp
   subject : Option TrackId := none
@@ -259,6 +298,7 @@ structure Scene where
   env : Env := {}
   assumptions : List (AsmId × Bool) := []
   intents : List DeclaredIntent := []
+  facts : List DeclaredFact := []
   links : List (TrackId × TrackId) := []
   deriving Repr, Inhabited
 
@@ -308,7 +348,11 @@ def references (s : Scene) : List Reference :=
   ++ (s.occupies.flatMap fun (t, r) => [{ place := "occupies", kind := .track, id := t }, { place := "occupies", kind := .region, id := r }])
   ++ (s.occupancyObserved.map fun t => { place := "occupancy_observed", kind := .track, id := t })
   ++ (s.relations.flatMap fun m => [{ place := "relations[].a", kind := .track, id := m.a }, { place := "relations[].b", kind := .track, id := m.b }])
+  ++ (s.facts.flatMap fun f => f.users.map fun t => { place := s!"facts[{f.id}].users", kind := .track, id := t })
+  ++ (s.facts.flatMap fun f => f.regions.map fun r => { place := s!"facts[{f.id}].regions", kind := .region, id := r })
   ++ (s.devices.flatMap fun d => d.governs.map fun r => { place := s!"device {d.id} governs", kind := .region, id := r })
+  ++ (s.devices.flatMap fun d => (d.governsSidewalk.getD []).map fun r => { place := s!"device {d.id} governs_sidewalk", kind := .region, id := r })
+  ++ (s.devices.flatMap fun d => (d.governsParkingSpace.getD []).map fun r => { place := s!"device {d.id} governs_parking_space", kind := .region, id := r })
   ++ (s.devices.flatMap fun d => d.onTrack.toList.map fun t => { place := s!"device {d.id} on_track", kind := .track, id := t })
   ++ (s.structures.flatMap Structure.references)
   ++ (s.users.flatMap fun u => (u.sightAlongWay.getD []).map fun (w, _) =>

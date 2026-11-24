@@ -25,6 +25,7 @@ inductive StructureKind
   | alley
   | crest
   | railwayCrossing
+  | railwayTrack
   | controlledAccess
   | elevatedStructure
   | bicycleLaneOrPath
@@ -40,6 +41,7 @@ inductive StructureKind
   | fireStationEntrance
   | roundabout
   | obstruction
+  | impassableSection
   deriving DecidableEq, Repr, Inhabited
 
 namespace StructureKind
@@ -62,6 +64,7 @@ def ofString (s : String) : Option StructureKind :=
   | "alley" => some .alley
   | "crest" => some .crest
   | "railway_crossing" => some .railwayCrossing
+  | "railway_track" => some .railwayTrack
   | "controlled_access" => some .controlledAccess
   | "elevated_structure" => some .elevatedStructure
   | "bicycle_lane_or_path" => some .bicycleLaneOrPath
@@ -77,6 +80,7 @@ def ofString (s : String) : Option StructureKind :=
   | "fire_station_entrance" => some .fireStationEntrance
   | "roundabout" => some .roundabout
   | "obstruction" => some .obstruction
+  | "impassable_section" => some .impassableSection
   | _ => Option.none
 def toString : StructureKind → String
   | .highway => "highway"
@@ -96,6 +100,7 @@ def toString : StructureKind → String
   | .alley => "alley"
   | .crest => "crest"
   | .railwayCrossing => "railway_crossing"
+  | .railwayTrack => "railway_track"
   | .controlledAccess => "controlled_access"
   | .elevatedStructure => "elevated_structure"
   | .bicycleLaneOrPath => "bicycle_lane_or_path"
@@ -111,6 +116,7 @@ def toString : StructureKind → String
   | .fireStationEntrance => "fire_station_entrance"
   | .roundabout => "roundabout"
   | .obstruction => "obstruction"
+  | .impassableSection => "impassable_section"
 instance : ToString StructureKind := ⟨toString⟩
 /-- The kind this kind refines (its contract's **Refines:** clause); `none` for a kind that refines none. -/
 def parent? : StructureKind → Option StructureKind
@@ -141,7 +147,7 @@ def isAbstract : StructureKind → Bool
   | .travelRegion => true
   | _ => false
 /-- Every structure kind, in ontology order. -/
-def all : List StructureKind := [.highway, .travelRegion, .roadway, .lane, .centreLine, .roadEdge, .shoulder, .sidewalk, .medianOrDivider, .oneWayRoadway, .intersection, .crosswalk, .stopLine, .drivewayOrAlleyEntrance, .alley, .crest, .railwayCrossing, .controlledAccess, .elevatedStructure, .bicycleLaneOrPath, .reservedLane, .centreTurnLane, .turnLane, .parkingSpace, .curbZone, .transitStop, .safetyZone, .pedestrianGradeSeparation, .fireHydrant, .fireStationEntrance, .roundabout, .obstruction]
+def all : List StructureKind := [.highway, .travelRegion, .roadway, .lane, .centreLine, .roadEdge, .shoulder, .sidewalk, .medianOrDivider, .oneWayRoadway, .intersection, .crosswalk, .stopLine, .drivewayOrAlleyEntrance, .alley, .crest, .railwayCrossing, .railwayTrack, .controlledAccess, .elevatedStructure, .bicycleLaneOrPath, .reservedLane, .centreTurnLane, .turnLane, .parkingSpace, .curbZone, .transitStop, .safetyZone, .pedestrianGradeSeparation, .fireHydrant, .fireStationEntrance, .roundabout, .obstruction, .impassableSection]
 end StructureKind
 
 /-- `st.lane_marking` **type** — generated from ATOMS.md; do not edit. -/
@@ -197,6 +203,48 @@ def toString : MarkingColour → String
   | .other => "other"
 instance : ToString MarkingColour := ⟨toString⟩
 end MarkingColour
+
+/-- `st.driveway_or_alley_entrance` **kind** — generated from ATOMS.md; do not edit. -/
+inductive EntranceKind
+  | driveway
+  | privateRoad
+  | alley
+  | property
+  deriving DecidableEq, Repr, Inhabited
+
+namespace EntranceKind
+def ofString (s : String) : Option EntranceKind :=
+  match s with
+  | "driveway" => some .driveway
+  | "private_road" => some .privateRoad
+  | "alley" => some .alley
+  | "property" => some .property
+  | _ => Option.none
+def toString : EntranceKind → String
+  | .driveway => "driveway"
+  | .privateRoad => "private_road"
+  | .alley => "alley"
+  | .property => "property"
+instance : ToString EntranceKind := ⟨toString⟩
+end EntranceKind
+
+/-- `st.railway_track` **kind** — generated from ATOMS.md; do not edit. -/
+inductive RailwayKind
+  | railroad
+  | streetcar
+  deriving DecidableEq, Repr, Inhabited
+
+namespace RailwayKind
+def ofString (s : String) : Option RailwayKind :=
+  match s with
+  | "railroad" => some .railroad
+  | "streetcar" => some .streetcar
+  | _ => Option.none
+def toString : RailwayKind → String
+  | .railroad => "railroad"
+  | .streetcar => "streetcar"
+instance : ToString RailwayKind := ⟨toString⟩
+end RailwayKind
 
 /-- `st.reserved_lane` **class** — generated from ATOMS.md; do not edit. -/
 inductive ReservedClass
@@ -348,6 +396,7 @@ inductive ObstructionKind
   | stalledVehicleWreckage
   | sidewalkFixture
   | mailDropBox
+  | sidewalkElevatorOrChute
   | other
   deriving DecidableEq, Repr, Inhabited
 
@@ -361,6 +410,7 @@ def ofString (s : String) : Option ObstructionKind :=
   | "stalled_vehicle_wreckage" => some .stalledVehicleWreckage
   | "sidewalk_fixture" => some .sidewalkFixture
   | "mail_drop_box" => some .mailDropBox
+  | "sidewalk_elevator_or_chute" => some .sidewalkElevatorOrChute
   | "other" => some .other
   | _ => Option.none
 def toString : ObstructionKind → String
@@ -371,6 +421,7 @@ def toString : ObstructionKind → String
   | .stalledVehicleWreckage => "stalled_vehicle_wreckage"
   | .sidewalkFixture => "sidewalk_fixture"
   | .mailDropBox => "mail_drop_box"
+  | .sidewalkElevatorOrChute => "sidewalk_elevator_or_chute"
   | .other => "other"
 instance : ToString ObstructionKind := ⟨toString⟩
 end ObstructionKind

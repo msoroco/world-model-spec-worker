@@ -6,7 +6,7 @@
   kilometres per hour; a scene states metres and metres per second. None of these convert
   to a common INTEGER unit exactly (a kilometre per hour is 5/18 of a metre per second), so
   quantities are exact rationals over SI base units: metre, second, metre per second,
-  metre per second squared, degree. No `Float` anywhere; comparison is by cross-multiplication.
+  metre per second squared, degree, kilogram. No `Float` anywhere; comparison is by cross-multiplication.
 
   This is the only file where a unit of law meets a unit of measurement. A rule may write a
   number only as the argument of one of the constructors below (the gate enforces this), so a
@@ -128,6 +128,10 @@ def micrometresPerSecondSq (n : Int) : Q := Q.mk' n 1000000
 -- Angles (degrees) and rates (degrees per second).
 def degrees (n : Int) : Q := Q.ofInt n
 def millidegrees (n : Int) : Q := Q.mk' n 1000
+
+-- Masses (kilograms).
+def kilograms (n : Int) : Q := Q.ofInt n
+def pounds (n : Int) : Q := Q.mk' (n * 45359237) 100000000    -- 0.45359237 kg exactly
 
 -- Dimensionless.
 def ratio (a : Int) (b : Nat) : Q := Q.mk' a b
