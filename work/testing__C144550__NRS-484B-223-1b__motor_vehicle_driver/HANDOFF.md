@@ -1,3 +1,15 @@
+## 2026-11-23 C144550 wrong-direction fallback completion
+
+Wrong-direction fallback3 passed current source-bound positive compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. Its candidate/case identities and receipt SHA-256 values were checked; the scoped nonready complete check passed. All five exact primaries and the first three cases' nine fallbacks now pass current compatibility and saved processing. Six fallback proof sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `2837e5fa30de5c59d931536752eda7d6901e6cce6cf25c23056df4822188e644`. These CPU fixtures are synthetic and establish no Native physical or legal acceptance.
+
+## 2026-11-23 C144550 wrong-direction fallback2 CPU proof
+
+Wrong-direction fallback2 passed current source-bound compatibility, missing-`lane_history.jsonl` negative analysis and recorded-only saved processing. The returned receipt hashes and candidate identities were checked, and the scoped nonready complete check passed. All five primaries and eight of fifteen fallback proof sets now pass. Seven fallback sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current execution-manifest SHA256: `d98de476ef45e5682c6eec61a0d551174de4911bc7a0df5a49506beb93821bf8`. The synthetic software proof makes no Native physical or legal acceptance claim.
+
+## 2026-11-23 C144550 wrong-direction fallback1 CPU proof
+
+Wrong-direction fallback1 passed current source-bound positive compatibility, missing-source negative analysis and recorded-only saved processing. Its returned receipt paths and SHA-256 values are bound in `execution-manifest.json`; manual receipt identity/hash verification and the scoped nonready complete check passed. All five exact primaries and seven of fifteen fallback proof sets now pass. Eight fallback proof sets, canonical semantic stages and independent delivery audits remain worker-owned. C144550 stays partial. Current manifest SHA256: `edd17fcd9ef193ad7b21a64fc77ce0c7e73f86320af2c3c1cf10ef917fa8541b`. These synthetic CPU sources do not establish Native physical or legal acceptance.
+
 ## 2026-11-23 C144550 second-case fallback completion
 
 Pinned static verification passed for all five primary receipts, and identity and SHA-256 verification passed for all six bound fallback compatibility/saved receipt pairs. The scoped nonready check passed.
