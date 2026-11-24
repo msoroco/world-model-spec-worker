@@ -815,3 +815,7 @@ Six historical diagnostic logs, including the sole former result test row for th
 ## 2026-11-23 historical log archive for C125745 return slots
 
 Older result-linked logs from this package were preserved byte-exactly, including their result test rows, in `work/_shared/c125745-primary-restore-cap-20261123.tar.xz` (SHA256 `a0e892a9fda7f424514e15a865c1f3f4914b91ff1ae153afdb618d65f17883eb`). The archive index records original paths, bytes and SHA256 values, and every member was verified before removal. The assignment-scoped complete strict delivery-ready gate passed after archival; this package remains **ready**.
+
+2026-11-24 archive note: four unreferenced historical `opposite-turn-v2-*-saved.json` files are retained by exact path inside `work/_shared/unreferenced-historical-saved-20261124.tar.xz` (SHA-256 `71d858e40a4b538a50f50c2f8560745e89f28a1c51614a4b22f32138b80333c0`). The current active package remained ready; its scoped strict gate passed after the first three were archived.
+
+2026-11-24 verification addendum: C125751 scoped strict gate passed again after all four historical v2 saved JSON files were archived. C125745 scoped nonready check passed; C125745 remains partial.

@@ -155,7 +155,7 @@
       },
       "physical_preparation": {
         "receipt": "physical-proofs/stop_ego_left_near_time/receipt.json",
-        "sha256": "1f7f8a85b86d1bb0f66b6e1d76440775363600cce5bf1d7d5d988c80ecdbf8ad"
+        "sha256": "26bcdea66f49a4aedb5daac4f92b065901dad4e7dedc48f49cf46c8366c38ec3"
       },
       "delivery_acceptance": {
         "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_near_time",
@@ -272,35 +272,49 @@
         {
           "id": "fallback3",
           "construction": "second-fallback3-construction.json",
-          "construction_sha256": "f7f20bab9987312f3df9fd94144379da8631b1bff11048fb052ef9f521d12dec",
+          "construction_sha256": "1ac26fe8e6f31ed018e1481bad6d240e793285e5d772e229a3b085c183a260d0",
           "trigger": {
-            "source": "retained original Native capture and four source-camera streams",
-            "metric": "capture_duration",
-            "failure_condition": "The ego-right complete body does not clear during the planned recording"
+            "source": "retained original crossing and controller histories with four source-camera streams",
+            "metric": "measured body-entry gap",
+            "failure_condition": "The primary does not realize the intended body-entry timing while the capture contract remains fixed"
           },
           "changed_knobs": [
-            "capture_duration"
+            "other_release_frame"
           ],
           "remedy": "Extend synchronized capture to 1100 frames",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time --candidate fallback3 --output .runtime-work/c125745-second-fallback3-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time --candidate fallback3 --output .runtime-work/c125745-second-fallback3-offline-20261124",
             "exit_code": 0,
-            "construction_sha256": "f7f20bab9987312f3df9fd94144379da8631b1bff11048fb052ef9f521d12dec",
-            "log": "primary-offline-v3.log",
-            "log_sha256": "ba6e53dd95f343cf16386d217d1015294c1e46fd65dce94972864e04ff2f9dc7"
+            "construction_sha256": "1ac26fe8e6f31ed018e1481bad6d240e793285e5d772e229a3b085c183a260d0",
+            "log": "second-fallback3-offline-20261124.log",
+            "log_sha256": "7c938295c25dbc7f276fdf55cca012382fb55b69caf112decbdd1c598c3dfbfe"
           },
-          "compatibility": {
+          "prior_compatibility": {
             "receipt": "second-fallback3-compatibility-receipt-v1.json",
             "sha256": "cc7522cec05cf12d46497051907e8a051f35a56e8ca5738ab476717243f7b599",
             "log": "sweep-constructions/proof-hold8-primary-analysis.log",
             "negative_log": "second-fallback3-negative-v1.log"
           },
-          "post_capture": {
+          "prior_post_capture": {
             "recorded_only": true,
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time --attempt .runtime-work/c125745-second-fallback3-compatibility-v1 --output .runtime-work/c125745-second-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "second-fallback3-saved-v1.log",
             "test_log_sha256": null,
             "test_exit_code": null,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          },
+          "compatibility": {
+            "receipt": "second-fallback3-compatibility-receipt-v1.json",
+            "sha256": "5950844fdbcc2c77a12b1fc9e09d79a35485d603329d3b575f7933a4fd005c99",
+            "log": "sweep-constructions/proof-hold8-primary-analysis.log",
+            "negative_log": "second-fallback3-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time --attempt .runtime-work/c125745-second-fallback3-compat-20261124 --output .runtime-work/c125745-second-fallback3-saved-20261124 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "second-fallback3-saved-v1.log",
+            "test_log_sha256": "c16682dcf97d8ff0bddf73968ae66ddafb568d5747df8f1d5fd90e6f9fefc8b4",
+            "test_exit_code": 0,
             "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
           }
         }
@@ -333,15 +347,15 @@
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time --attempt .runtime-work/c125745-second-primary-compatibility-v2 --output .runtime-work/c125745-second-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time --attempt .runtime-work/c125745-second-primary-current-compat-v3 --output .runtime-work/c125745-second-primary-current-saved-v3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "test_log": "second-primary-saved-v1.log",
-        "test_log_sha256": null,
-        "test_exit_code": null,
+        "test_log_sha256": "c9e3db31fa8516152d43091aab4ee62eead2eacb6ff71b5a5e79a7a2f3e4dca5",
+        "test_exit_code": 0,
         "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/stop_ego_right_near_time/receipt.json",
-        "sha256": "fc6671ef5865a0383b5b12dab5ecf63f9f713dbc0712dce40047c555fca01390"
+        "sha256": "3fe01c13f0ae1cf71201c0a86061edfbee5f147100d2f8f682b90b5b7b922f99"
       },
       "delivery_acceptance": {
         "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_right_near_time",
@@ -458,34 +472,48 @@
         {
           "id": "fallback3",
           "construction": "third-fallback3-construction.json",
-          "construction_sha256": "8da6f7c6c438ac929dd1308d74ff9da711417a8ac5d7b6926e07c031bd8de95a",
+          "construction_sha256": "5f21307c4e097931556ba5b84891358c27b8f5b75537dfc38a0852567b2b5b2c",
           "trigger": {
-            "source": "retained original Native capture and four source-camera streams",
-            "metric": "capture_duration",
-            "failure_condition": "The longer held ego has not completely cleared within the source recording"
+            "source": "retained original crossing and controller histories with four source-camera streams",
+            "metric": "measured body-entry gap",
+            "failure_condition": "The primary does not realize the intended body-entry timing while the capture contract remains fixed"
           },
           "changed_knobs": [
-            "capture_duration"
+            "other_release_frame"
           ],
           "remedy": "Extend synchronized capture to 1100 frames",
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --candidate fallback3 --output .runtime-work/c125745-third-fallback3-offline-v1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --candidate fallback3 --output .runtime-work/c125745-third-fallback3-offline-20261124",
             "exit_code": 0,
-            "construction_sha256": "8da6f7c6c438ac929dd1308d74ff9da711417a8ac5d7b6926e07c031bd8de95a",
-            "log": "primary-offline-v3.log",
-            "log_sha256": "ba6e53dd95f343cf16386d217d1015294c1e46fd65dce94972864e04ff2f9dc7"
+            "construction_sha256": "5f21307c4e097931556ba5b84891358c27b8f5b75537dfc38a0852567b2b5b2c",
+            "log": "third-fallback3-offline-20261124.log",
+            "log_sha256": "b0474033f1327334a19f8ff1625313be9387e4b884ccfb6d573023cfa2dbf201"
           },
-          "compatibility": {
+          "prior_compatibility": {
             "receipt": "third-fallback3-compatibility-receipt-v1.json",
             "sha256": "d105ae71e37c93d72f506c834bc31dfd2932384b695b78bb5effca8233e97428",
             "log": "sweep-constructions/proof-hold8-primary-analysis.log",
             "negative_log": "third-fallback3-negative-v1.log"
           },
-          "post_capture": {
+          "prior_post_capture": {
             "recorded_only": true,
             "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-fallback3-compatibility-v1 --output .runtime-work/c125745-third-fallback3-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
             "test_log": "third-fallback3-saved-v1.log",
             "test_log_sha256": "a8d50df3289be132ed6eb091110a63dcae991ffc3bd68467921d55d0563c8dc9",
+            "test_exit_code": 0,
+            "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
+          },
+          "compatibility": {
+            "receipt": "third-fallback3-compatibility-receipt-v1.json",
+            "sha256": "25262eb9a9d519252017b8964a57c08f937b069898d74f6921a6a9d350e9dce1",
+            "log": "sweep-constructions/proof-hold8-primary-analysis.log",
+            "negative_log": "third-fallback3-negative-v1.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-fallback3-compat-20261124 --output .runtime-work/c125745-third-fallback3-saved-20261124 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "test_log": "third-fallback3-saved-v1.log",
+            "test_log_sha256": "ba9da142196936ee9835299d9e666903c27bdec729dc5c2deebb7a202a76bda4",
             "test_exit_code": 0,
             "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
           }
@@ -509,25 +537,25 @@
         "log_sha256": "ba6e53dd95f343cf16386d217d1015294c1e46fd65dce94972864e04ff2f9dc7"
       },
       "compatibility": {
-        "receipt": "third-primary-compatibility-receipt-v2.json",
-        "sha256": "d721c20cd1ebba76d414f9d4afe4a224a95003645faa9770c4248a98ce2f2aaf",
+        "receipt": "third-primary-compatibility-receipt-v1.json",
+        "sha256": "72a3627e3038b323cf397433fd638a7a2082e4409351ed01a8089e8fb4028ab1",
         "log": "sweep-constructions/proof-hold8-primary-analysis.log",
-        "negative_log": "third-primary-negative-v2.log"
+        "negative_log": "third-primary-negative-v1.log"
       },
       "negative": {
         "log": "third-primary-negative-v2.log"
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-primary-compatibility-v2 --output .runtime-work/c125745-third-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated --attempt .runtime-work/c125745-third-primary-compat-20261124 --output .runtime-work/c125745-third-primary-saved-20261124 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "test_log": "third-primary-saved-v1.log",
-        "test_log_sha256": null,
-        "test_exit_code": null,
+        "test_log_sha256": "92eba3e20aa2f73eeaa6939f74c8eec47180325941e8fd8930b247ef8200cfbe",
+        "test_exit_code": 0,
         "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/stop_ego_left_separated/receipt.json",
-        "sha256": "22fff8c568531230065c6640b48cb7ec486aca2c4331cfb2dc098f7e0c01bcc7"
+        "sha256": "60357ef5c4774489fce8fc2c7388731ea8ed42867f788c3de1726cd13e357419"
       },
       "delivery_acceptance": {
         "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_ego_left_separated",
@@ -696,7 +724,7 @@
       },
       "compatibility": {
         "receipt": "fourth-primary-compatibility-receipt-v1.json",
-        "sha256": "f2bb6708b4ccd9dcf72d5e4ecd2085e35600d8abb5fb0ce3c5e19b0d8e620edc",
+        "sha256": "e907281f1d7fa1ddcb7a5083235e175d98a2e0c38c80c04c21982de13010c03b",
         "log": "sweep-constructions/proof-hold8-primary-analysis.log",
         "negative_log": "fourth-primary-negative-v1.log"
       },
@@ -705,15 +733,15 @@
       },
       "post_capture": {
         "recorded_only": true,
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --attempt .runtime-work/c125745-fourth-primary-compatibility-v1 --output .runtime-work/c125745-fourth-primary-saved-v1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn --attempt .runtime-work/c125745-fourth-primary-compat-20261124 --output .runtime-work/c125745-fourth-primary-saved-20261124 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
         "test_log": "fourth-primary-saved-v1.log",
-        "test_log_sha256": null,
-        "test_exit_code": null,
+        "test_log_sha256": "198bb86c05b4b69b4a75125ba87dd14d58ca64af4cfc098c728605c0b22f784a",
+        "test_exit_code": 0,
         "proof_scope": "synthetic original-source recorded-only processing; physical/legal acceptance unclaimed"
       },
       "physical_preparation": {
         "receipt": "physical-proofs/stop_opposite_left_turn/receipt.json",
-        "sha256": "d920cd3e4b86428e60dff2d4fd016f3a6bb9cd34701a8b5d8dcf318dfb24ad4b"
+        "sha256": "ec7526daf702219e85472d6b2da3d3d7632b27573a8e751eb310adc23c6655e4"
       },
       "delivery_acceptance": {
         "case_id": "testing__C125745__NRS-484B-250-2__motor_vehicle_driver__stop_opposite_left_turn",
