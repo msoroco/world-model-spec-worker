@@ -13,7 +13,8 @@ import subprocess
 import traceback
 
 from construction import VIEWS, check_map, proposal
-from signals import resolve as resolve_signal_heads, sample as sample_signal_heads
+from signals import (resolve as resolve_signal_heads, sample as sample_signal_heads,
+                     configure as configure_signal_heads)
 
 HERE = Path(__file__).resolve().parent
 
@@ -80,6 +81,7 @@ def execute(config, output, host, port):
         world.set_weather(carla.WeatherParameters.ClearNoon)
         library = world.get_blueprint_library()
         heads = resolve_signal_heads(world.get_actors())
+        configure_signal_heads(heads, config['requested_pedestrian_indication'], carla)
         walkers = sorted(library.filter('walker.pedestrian.*'), key=lambda bp: bp.id)
         if not walkers:
             raise RuntimeError('No Native pedestrian blueprint available')

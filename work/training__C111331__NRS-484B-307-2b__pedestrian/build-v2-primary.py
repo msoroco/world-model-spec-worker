@@ -19,11 +19,14 @@ def write_rows(path, rows):
     path.write_text(''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows))
 
 
-def main():
-    source = json.loads((HERE / 'draft-native-bundles/witness_1/construction.json').read_text())
+def main(suffix='witness_1'):
+    source = json.loads((HERE / f'draft-native-bundles/{suffix}/construction.json').read_text())
     construction = copy.deepcopy(source)
-    for name in ('finalize.py', 'signals.py'):
-        if not any(item['path'] == name for item in construction['files']):
+    for name in ('runner.py', 'signals.py', 'tests/test_signals.py', 'finalize.py'):
+        matches = [item for item in construction['files'] if item['path'] == name]
+        if matches:
+            matches[0]['content'] = (HERE / 'native' / name).read_text()
+        else:
             construction['files'].append({'path': name, 'content': (HERE / 'native' / name).read_text()})
     for name in ('saved_source_bridge.py', 'saved_entry_measurement.py'):
         construction['files'].append({'path': name, 'content': (HERE / name).read_text()})
@@ -64,6 +67,7 @@ def main():
         trace.append({'frame': frame, 'time_s': time_s,
                       'position': {'x': x, 'y': y, 'z': .5},
                       'position_m': [x, y, .5], 'heading_deg': 90,
+                      'velocity_mps': [0.0, speed_mps, 0.0],
                       'speed_mps': speed_mps, 'speed_mph': speed_mps / .44704,
                       'speed_provenance': 'synthetic_native_sample',
                       'control': {'throttle': 0, 'brake': 0}})
@@ -123,8 +127,9 @@ def main():
         'sources': source_items,
         'generator': {'source': str(generator_path.relative_to(ROOT)),
                       'sha256': sha(generator_path)}}, indent=2) + '\n')
+    disposition_index = 1 if config['case_suffix'].startswith('exception_') else 0
     contract = {'format': 'worker-measurement-contract', 'case_id': config['case_id'],
-        'requirements': [{'disposition_index': 0, 'requirement': 'NRS-484B-307-2b',
+        'requirements': [{'disposition_index': disposition_index, 'requirement': 'NRS-484B-307-2b',
             'source': 'NRS 484B.307(2)(b)', 'output_key': 'pedestrian_entry_signal',
             'method': 'measure', 'value_type': 'object', 'kind': 'measured',
             'inputs': ['c111331-native-samples.jsonl', 'video_frames.jsonl']}],

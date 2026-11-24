@@ -2,6 +2,8 @@
 import argparse
 import json
 from pathlib import Path
+from geometry import check as check_geometry, INTERSECTION_X_M
+from motion import check as check_motion
 
 HERE = Path(__file__).resolve().parent
 
@@ -18,10 +20,14 @@ def check():
         raise ValueError("Four source cameras required")
     if config["vehicle_actor_id"] == config["other_vehicle_actor_id"]:
         raise ValueError("Distinct vehicle identities required")
-    if not 0 < config["intersection_x_m"] < 200:
+    if config["intersection_x_m"] != INTERSECTION_X_M:
         raise ValueError("Approach geometry differs")
+    geometry = check_geometry()
+    motion = check_motion(config)
     return {"case_id": config["case_id"], "frames": 600, "rate_hz": 20,
-            "four_source_cameras_planned": True, "native_executed": False,
+            "four_source_cameras_planned": True,
+            "authored_geometry": geometry, "control_policy": motion,
+            "native_executed": False,
             "siren_output_observed": False, "acoustic_range_verified": False}
 
 

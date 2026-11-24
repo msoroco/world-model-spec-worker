@@ -40,3 +40,22 @@ def sample(heads):
                         'native_actor_id': actor.id, 'raw_state': raw,
                         'state': states[raw], 'source': 'native_readback'}
     return values
+
+
+def configure(heads, requested_pedestrian_indication, carla):
+    """Set both authored heads and verify original Native state readback."""
+    if requested_pedestrian_indication not in ('walk', 'dont_walk'):
+        raise ValueError('Unknown requested pedestrian indication')
+    expected = {'traffic': 'circular_green',
+                'pedestrian': requested_pedestrian_indication}
+    states = {'traffic': carla.TrafficLightState.Green,
+              'pedestrian': (carla.TrafficLightState.Green
+                             if requested_pedestrian_indication == 'walk'
+                             else carla.TrafficLightState.Red)}
+    for role, actor in heads.items():
+        actor.set_state(states[role])
+        actor.freeze(True)
+    observed = sample(heads)
+    if {role: value['state'] for role, value in observed.items()} != expected:
+        raise ValueError('Native signal state readback differs from authored request')
+    return observed

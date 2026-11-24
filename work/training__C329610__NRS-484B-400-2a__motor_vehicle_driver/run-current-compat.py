@@ -62,7 +62,7 @@ def main():
              for candidate in ('primary', 'fallback1', 'fallback2')]
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(run, items))
-    target = PUBLIC / 'compatibility-summary.json'
+    target = PUBLIC / 'candidate-compat-summary.json'
     target.write_text(json.dumps({'format': 'c329610-current-public-compatibility',
                                   'results': results}, indent=2) + '\n')
     for result in results:

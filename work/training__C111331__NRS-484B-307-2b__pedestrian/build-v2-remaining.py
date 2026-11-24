@@ -23,14 +23,7 @@ def build(suffix):
         row['requested_pedestrian_indication'] = 'dont_walk' if contrary else 'walk'
     builder.write_rows(builder.SCRATCH / 'c111331-native-samples.jsonl', native)
     (builder.SCRATCH / 'video_frames.jsonl').write_bytes((reference / 'video_frames.jsonl').read_bytes())
-    original = HERE / 'draft-native-bundles/witness_1/construction.json'
-    alternate = HERE / f'draft-native-bundles/{suffix}/construction.json'
-    backup = original.read_bytes()
-    try:
-        original.write_bytes(alternate.read_bytes())
-        builder.main()
-    finally:
-        original.write_bytes(backup)
+    builder.main(suffix)
     manifest = HERE / 'v2-primary-manifest.json'
     generated = json.loads(manifest.read_text())
     return generated['cases'][0]
@@ -48,6 +41,8 @@ def main():
     baseline['cases'] = cases
     baseline['status'] = 'unselected_current_v2_cpu_four_case_proof'
     (HERE / 'v2-four-case-manifest.json').write_text(json.dumps(baseline, indent=2) + '\n')
+    plan = json.loads((HERE / 'case-plan.json').read_text())
+    (HERE / 'proposals/cases.json').write_text(json.dumps({'cases': plan['cases']}, indent=2) + '\n')
     print(json.dumps({'cases': [case['case_id'] for case in cases]}))
 
 

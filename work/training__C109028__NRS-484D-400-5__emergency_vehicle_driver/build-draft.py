@@ -15,6 +15,10 @@ from prove import make_source
 from measure import measure
 from audit import audit
 from prove import BRANCHES
+from source_acquisition import validate_audio, validate_dispatch
+from audit_original import PAIRS
+from geometry import check as check_geometry
+from motion import check as check_motion
 
 class SourceContract(unittest.TestCase):
     def test_exact_plan(self):
@@ -51,6 +55,28 @@ class SourceContract(unittest.TestCase):
                 self.assertEqual(result["siren_outside_documented_response_frames"],
                                  200 if branch == "probe_b" else 0)
                 self.assertIsNone(result["physical_legal_verdict"])
+
+    def test_source_acquisition_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            files = make_source(base, "probe_a")
+            with self.assertRaisesRegex(ValueError, "Missing original microphone"):
+                validate_audio(base / "missing.wav", base / "audio.jsonl", files[2])
+            with self.assertRaisesRegex(ValueError, "Missing original dispatch"):
+                validate_dispatch(files[3], files[2], base / "missing-dispatch.json")
+
+    def test_exact_source_comparison_inventory(self):
+        self.assertEqual(set(PAIRS), {
+            "call_vs_ordinary_siren", "call_vs_pursuit_siren",
+            "call_siren_vs_lamps_only", "call_vs_ordinary_lamps_only"})
+
+    def test_crossroads_and_shared_control(self):
+        geometry = check_geometry()
+        self.assertEqual(geometry["crossing_xy_m"], [50.0, 0])
+        config = json.loads((Path("config.json")).read_text())
+        motion = check_motion(config)
+        self.assertTrue(motion["ego_crosses_authored_junction"])
+        self.assertFalse(motion["physical_or_audio_success_claimed"])
 '''
 
 
@@ -76,7 +102,9 @@ def build():
                       siren_requested=siren)
         files = [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]
         files.extend({"path": name, "content": (NATIVE / name).read_text()}
-                     for name in ("runner.py", "measure.py", "prove.py", "audit.py"))
+                     for name in ("runner.py", "measure.py", "prove.py", "audit.py",
+                                  "source_acquisition.py", "audit_original.py",
+                                  "geometry.py", "motion.py"))
         files.append({"path": "tests/test_source.py", "content": TEST})
         construction = {
             "case_id": case_id, "cell_id": "C109028", "law_id": "NRS-484D-400-5",

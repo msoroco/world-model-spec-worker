@@ -6,7 +6,7 @@ from pathlib import Path
 FOLDER=Path(__file__).resolve().parent
 ROOT=FOLDER.parents[1]
 ASSIGNMENT=json.loads((ROOT/'inputs'/FOLDER.name/'assignment.json').read_text())
-LAW=ASSIGNMENT['law_record']
+LAW=ASSIGNMENT['law']
 AID=FOLDER.name
 TEMPLATE_ID=LAW['id']+'@'+ASSIGNMENT['actor']
 
@@ -37,6 +37,8 @@ def main():
       {'name':'commanded_turn_path','kind':'controller','range_or_domain':['left_turn','through']},
       {'name':'actual_destination_exit_side','kind':'subject_behavior','range_or_domain':'measured Native full-body exit side, initially unknown'},
       {'name':'actual_turn_completion','kind':'subject_behavior','range_or_domain':[True,False,None]}]
+    judgments=[{'phrase':'leave the intersection to the right of the centerline',
+      'note':'Retain the first full exit body and centerline geometry; legal vehicle reference and a straddling exit remain independent judgment calls.'}]
     template={'template_id':TEMPLATE_ID,'law_id':LAW['id'],'actor':ASSIGNMENT['actor'],
       'quote':LAW['text'],'status':'draft',
       'structure':{'law_id':LAW['id'],
@@ -46,9 +48,23 @@ def main():
                      'type':'must','numeric_conditions':[]},
        'exceptions':[],
        'timing':{'description':'after entry, at first full-body destination exit','numeric_conditions':[]},
-       'judgment_calls_needed':[]},
+       'judgment_calls_needed':judgments},
       'parameter_refs':parameters}
     r3=write(proposal_dir/'template.json',template)
+    observable_refs=[]
+    for index,judgment in enumerate(judgments):
+        observation={'template_id':TEMPLATE_ID,'phrase':judgment['phrase'],
+          'note':judgment['note'],'status':'draft',
+          'observable_requirements':{
+            'observables':[{'name':'native_body_pose_control','unit':'structured',
+              'description':'Original time-indexed full vehicle body at complete exit.'}],
+            'context_inputs':[{'name':'surveyed_two_way_intersection','unit':'structured',
+              'description':'Original destination centerline and traffic directions.'}],
+            'sweep_dimensions':[],'landmarks':[],
+            'recording_needs':[{'name':'native_body_pose_control','unit':'structured',
+              'description':'Retain original body geometry and frame joins.'}],
+            'limitations':[judgment['note'],'No synthetic diagnostic establishes a legal verdict.']}}
+        observable_refs.append(write(proposal_dir/f'judgment_observables_{index}.json',observation))
     bindings={'cell_id':ASSIGNMENT['cell_id'],'actor':ASSIGNMENT['actor'],'status':'draft',
       'established_contexts':['authored two-way-to-two-way intersection; verify actual Native directions before use'],
       'law_refs':[{'template_id':TEMPLATE_ID,'binding_kind':'direct'}],
@@ -66,31 +82,35 @@ def main():
                 'actual_turn_completion':assignment('subject_behavior',None,'boolean')}
     cases=[{'case_id':AID+'__baseline','target_law_id':None,'target_type':'baseline',
        'rationale':'Activation absent because the controller requests straight travel; neutral context only, unselected.',
-       'variable_assignments':values(1.75,'through'),'unresolved_judgment_calls':[],
+       'variable_assignments':values(1.75,'through'),'unresolved_judgment_calls':[j['phrase'] for j in judgments],
        'recording_description':recording}]
-    for suffix,exit_x,target_type in (('witness_1',1.75,'compliant_attempt'),
-                                        ('witness_2',-1.75,'violating_attempt')):
+    for suffix,exit_x,target_type in (('witness_1',1.75,'judgment_sweep'),
+                                        ('witness_2',-1.75,'judgment_sweep')):
         cases.append({'case_id':AID+'__'+suffix,'target_law_id':LAW['id'],
            'target_type':target_type,
            'rationale':'Compare requested full-body destination exit on opposite sides of the centerline; outcome awaits measured Native evidence and independent review.',
            'variable_assignments':values(exit_x,'left_turn'),
-           'unresolved_judgment_calls':[],
+           'unresolved_judgment_calls':[j['phrase'] for j in judgments],
            'paired_probe_id':AID+'__exit_pair',
            'deliberate_differences':['commanded_destination_exit_x_m'],
            'probe':{'primary_variable':'commanded_destination_exit_x_m',
                     'comparison_or_standard':'right versus left of destination centerline at complete exit',
                     'target_value_or_branch':exit_x},
            'recording_description':recording})
+    sweep={'sweep_id':AID+'__raw_exit_geometry','target_law_id':LAW['id'],
+           'status':'incomplete','judgment_refs':judgments,
+           'rationale':'Two raw full-body exit-side constructions are prepared; legal vehicle reference and straddling remain for independent review.',
+           'missing_inputs':['Original Native body and destination centerline readback',
+                             'Independent legal judgment of exit-side reference']}
     case_proposal={'cell_id':ASSIGNMENT['cell_id'],'actor':ASSIGNMENT['actor'],
-                   'status':'draft','cases':cases,'sweep_specs':[]}
+                   'status':'draft','cases':cases,'sweeps_expanded':True,'sweep_specs':[sweep]}
     r5=write(proposal_dir/'cases.json',case_proposal)
-    index={'format':'worker-semantic-delivery-v1','assignment_id':AID,
-           'status':'draft_not_delivery_selected',
+    index={'format':'worker-semantic-delivery','assignment_id':AID,
            'stages':{'relevance_batch':r1,'relevance':r2,'template':r3,
-                     'judgment_observables':[],'bindings':r4,'cases':r5}}
+                     'judgment_observables':observable_refs,'bindings':r4,'cases':r5}}
     write(proposal_dir/'semantic-index.json',index)
-    print(json.dumps({'semantic_stages':5,'selected_case_drafts':2,
-                      'baseline_unselected':1,'judgment_phrases':0}))
+    print(json.dumps({'semantic_stages':5+len(judgments),'selected_case_drafts':2,
+                      'baseline_unselected':1,'judgment_phrases':len(judgments)}))
 
 
 if __name__=='__main__':main()

@@ -21,7 +21,7 @@
   "witness_branches": [
     "Pedestrian travel across a highway"
   ],
-  "selected_branch": null,
+  "selected_branch": "Pedestrian travel across a highway",
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-307-2b",
@@ -38,7 +38,7 @@
       "requirement": "NRS-484B-307-2b",
       "source": "NRS 484B.307(2)(b)",
       "branch": "where a pedestrian signal directs otherwise, the pedestrian-signal rules govern",
-      "status": "exception_pending",
+      "status": "selected_required",
       "case_ids": [
         "training__C111331__NRS-484B-307-2b__pedestrian__exception_1_1",
         "training__C111331__NRS-484B-307-2b__pedestrian__exception_1_2"
@@ -101,6 +101,9 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "this line is a permission, so a violation can only be of the rules it defers to"
+      ],
+      "gap_ids": [
+        "entry-crosswalk-signal"
       ]
     },
     {
@@ -136,6 +139,9 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "this line is a permission, so a violation can only be of the rules it defers to"
+      ],
+      "gap_ids": [
+        "entry-crosswalk-signal"
       ]
     },
     {
@@ -171,6 +177,9 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "this line is a permission, so a violation can only be of the rules it defers to"
+      ],
+      "gap_ids": [
+        "entry-crosswalk-signal"
       ]
     },
     {
@@ -206,6 +215,9 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "this line is a permission, so a violation can only be of the rules it defers to"
+      ],
+      "gap_ids": [
+        "entry-crosswalk-signal"
       ]
     }
   ],
@@ -340,6 +352,22 @@
     {
       "path": "inputs/training__C111331__NRS-484B-307-2b__pedestrian/assignment.json",
       "sha256": "10de43d01e00cacd133499e49324b1f91dbe43f1ce51fbaaf42a94acc9855516"
+    },
+    {
+      "path": "inputs/training__C111256__NRS-484B-283-1d1__bus_driver/assignment.json",
+      "sha256": "69d7a0af1623c7412bbd47317f16aef8806545b0e46200aa5dc408602d9387bb"
+    },
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d2__pedestrian/assignment.json",
+      "sha256": "66e2389dac4d63e9bfea0108080729d5dbbc4bd8886c881b2b42284d7d8b824f"
+    },
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d3__pedestrian/assignment.json",
+      "sha256": "4a831bd3d26e4348cc29c3c044b7cd28fc04cf151e2f31341e74c58d1d8e123e"
+    },
+    {
+      "path": "inputs/training__C10316__NRS-484B-283-1d4__pedestrian/assignment.json",
+      "sha256": "70febd0a13a89cc7bade0ac65f6a0c162b4261e7b5f89545d312289927ba89a7"
     }
   ],
   "unverified_physical_assumptions": [
@@ -356,9 +384,8 @@
     "Native OpenDRIVE signal support and junction connectivity require physical readback."
   ],
   "readiness_limitation": "Unselected CPU construction drafts only; no physical crossing, accepted recording, or legal verdict.",
-  "source_observation_mapping": [
-    {
-      "term": "dev.traffic_signal",
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
       "measurement": "traffic_signal.state at observed entry frame",
       "evidence": "raw per-frame signal packet",
       "channels": [
@@ -369,8 +396,7 @@
       ],
       "status": "cpu_diagnostic_only"
     },
-    {
-      "term": "dev.governs",
+    "dev.governs": {
       "measurement": "traffic head ID matches declared governing traffic head",
       "evidence": "raw packet ID and governing device identity",
       "channels": [
@@ -382,8 +408,7 @@
       ],
       "status": "cpu_diagnostic_only"
     },
-    {
-      "term": "ru.subject",
+    "ru.subject": {
       "measurement": "pedestrian ID stable over all frames",
       "evidence": "raw per-frame pedestrian ID",
       "channels": [
@@ -394,8 +419,7 @@
       ],
       "status": "cpu_diagnostic_only"
     },
-    {
-      "term": "st.crosswalk",
+    "st.crosswalk": {
       "measurement": "pedestrian pose enters declared crosswalk bounds",
       "evidence": "raw per-frame pose and crosswalk geometry",
       "channels": [
@@ -407,8 +431,7 @@
       ],
       "status": "cpu_diagnostic_only"
     },
-    {
-      "term": "rel.occupies",
+    "rel.occupies": {
       "measurement": "entry/exit interval from raw pedestrian pose",
       "evidence": "raw per-frame pose and crosswalk geometry",
       "channels": [
@@ -420,8 +443,7 @@
       ],
       "status": "cpu_diagnostic_only"
     },
-    {
-      "term": "dev.pedestrian_signal",
+    "dev.pedestrian_signal": {
       "measurement": "pedestrian device state at entry and governing ID",
       "evidence": "raw per-frame pedestrian signal packet",
       "channels": [
@@ -433,7 +455,7 @@
       ],
       "status": "cpu_diagnostic_only"
     }
-  ],
+  },
   "saved_entry_cpu_diagnostic": {
     "script": "saved_entry_measurement.py",
     "script_sha256": "3ebd818cf3dd040f63fc74c34a1536ccce8e963ff69383ec3723abb3597a6892",
@@ -450,5 +472,19 @@
     "receipt": "native-cpu-checkpoint.json",
     "receipt_sha256": "68e3844469b9dff48dc8e4e263c7a850da8cb6f2920a1c7da88ca5f9a7534194",
     "scope": "offline construction and structural source join only; no Native or original pixel review"
+  },
+  "legal_analysis_note": "The 307(2)(b) circular-green crosswalk clause grants permission unless another device directs otherwise under 484B.283. It does not itself define a pedestrian violation. A governing pedestrian indication must be source-observed at entry and during the crossing; the authored request is not evidence that the head physically faces or governs the pedestrian. The 484B.283(1)(d) alternatives distinguish Walk, flashing Dont Walk with countdown, flashing Dont Walk without countdown, and steady Dont Walk; their timing and continuation clauses are separate legal questions. These four selected cases contrast Walk and steady Dont Walk at entry under circular green and do not assert complete 484B.283 coverage or legal outcome. Physical pixel/governance review and original Native readback remain required.",
+  "evidence_review": {
+    "reviewer": "assignment owner",
+    "method": "Frozen assignment membership and exact source inventory reviewed; no accepted recording IDs are listed for this assignment.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "entry-crosswalk-signal",
+        "requirement": "original Native crossing and governing indication at entry",
+        "source": "NRS 484B.307(2)(b)",
+        "why_existing_insufficient": "No accepted membership or source-bound original recording in frozen evidence."
+      }
+    ]
   }
 }

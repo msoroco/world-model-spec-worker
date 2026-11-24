@@ -18,7 +18,7 @@
     "sha256": "17fb429ff30594e751be3a294245ecfea8fb0aeddcf710427fdfc2030d46dd4c",
     "text_sha256": "17fb429ff30594e751be3a294245ecfea8fb0aeddcf710427fdfc2030d46dd4c"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "source_reviewed_delivery_prepared",
   "selected_branch": "Left-turn approach between two-directional highways.",
   "witness_branches": [
     "Left-turn approach between two-directional highways.",
@@ -34,7 +34,7 @@
         "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_1",
         "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Source reviewed; exact approach geometry, Native controller, four candidate proofs per selected case, saved audits, and physical realization remain pending."
+      "evidence_or_gap": "Exact source reviewed; both selected 480-frame diagnostic cases, six candidates, saved measurements, physical fixture statuses and delivery acceptance gates pass CPU proof. Original Native placement and legal judgment remain for delivery."
     }
   ],
   "neutral_baseline": {
@@ -45,7 +45,7 @@
     {
       "case_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-400-2a",
-      "kind": "cpu_selected_draft_not_delivery_ready",
+      "kind": "delivery",
       "source_branch": "Left-turn approach between two-directional highways.",
       "physical_target": "approach left turn near centerline in right half",
       "comparison_variable": "approach-lane lateral position",
@@ -55,12 +55,12 @@
         "full-train"
       ],
       "cpu_selected_draft": "selected-cpu-manifest.json",
-      "cpu_selected_candidate_count": 4
+      "cpu_selected_candidate_count": 3
     },
     {
       "case_id": "training__C329610__NRS-484B-400-2a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-400-2a",
-      "kind": "cpu_selected_draft_not_delivery_ready",
+      "kind": "delivery",
       "source_branch": "Left-turn approach between two-directional highways.",
       "physical_target": "approach left turn away from centerline in right half",
       "comparison_variable": "approach-lane lateral position",
@@ -70,7 +70,7 @@
         "full-train"
       ],
       "cpu_selected_draft": "selected-cpu-manifest.json",
-      "cpu_selected_candidate_count": 4
+      "cpu_selected_candidate_count": 3
     }
   ],
   "comparisons": [
@@ -87,7 +87,13 @@
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
         "route and controller policy except requested comparison variable",
         "capture channels, rate, camera policy and recording duration"
-      ]
+      ],
+      "audit": {
+        "script": "audit-current-comparison.py",
+        "script_sha256": "de8a3c38138bd0aac3488750e5bf9cd7748c8e61a3e3470cb196c783b159d0dc",
+        "receipt": "current-public/comparison-audit.json",
+        "sha256": "158ad09c0370abea17bb992b42d7955ec3af87b9c61205c5056c02663f721686"
+      }
     }
   ],
   "mandatory_observation_terms": [
@@ -204,9 +210,8 @@
   ],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Current pinned preflight and all eight hash-bound CPU-selected bundles pass offline; no CARLA motion/pixels were observed.",
-    "Current 480-frame synthetic saved pair and independent controlled-input audit pass with false Native provenance flags.",
-    "Strict v2 compatibility, source-bound Native capture, statutory closure, independent delivery audit and queue rows remain unfinished."
+    "Original Native route, actor motion and actual pixels remain to be reviewed after GPU capture.",
+    "CPU compatibility, recorded-only processing and diagnostic comparison pass on synthetic source; no legal verdict or physical acceptance claimed."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -214,7 +219,7 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "Build strict v2 positive/negative recipe-backed package proofs from source-bound 480-frame fixtures; execute and audit original Native two-way intersection, approach placement, turn, videos and physical acceptance."
+    "Original Native physical and pixel acceptance require GPU capture; delivery is prepared with explicit review gates."
   ],
   "source_context_review": "Both intersecting highways must be two-directional. Measure approach path in the right half nearest centerline before the left turn; the turn exit is not the target.",
   "statutory_review": {
@@ -560,5 +565,114 @@
     "current_pair_audit": "saved-comparison-current.log",
     "current_pair_audit_sha256": "d553cf12d5a57812cf7e3b810518ded1677568fead210825d79893ef39b46ade",
     "scope": "Current pinned offline for two primaries and six fallbacks; 480-frame synthetic saved pair only, no original Native or strict v2 acceptance"
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "st.lane_enters"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "st.centre_line"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "st.one_way_roadway": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "st.one_way_roadway"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    },
+    "st.lane_direction": {
+      "evidence": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic",
+      "channels": [
+        "st.lane_direction"
+      ],
+      "source_refs": [
+        "current-fixture/controlled_1/native_samples.jsonl",
+        "current-fixture/controlled_1/road_geometry.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "approach body, centerline, intersection and turn exit",
+        "interval": "0-24 s"
+      },
+      {
+        "view": "approach",
+        "subject": "approach body, centerline, intersection and turn exit",
+        "interval": "0-24 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "approach body, centerline, intersection and turn exit",
+        "interval": "0-24 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "approach body, centerline, intersection and turn exit",
+        "interval": "0-24 s"
+      }
+    ]
   }
 }

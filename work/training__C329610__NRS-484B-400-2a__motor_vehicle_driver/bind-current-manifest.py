@@ -14,8 +14,8 @@ def sha(path):
 
 def main():
     manifest = json.loads((HERE / 'current-execution-manifest.json').read_text())
-    compat = json.loads((PUBLIC / 'compatibility-summary.json').read_text())
-    saved = json.loads((PUBLIC / 'offline-saved-summary.json').read_text())
+    compat = json.loads((PUBLIC / 'candidate-compat-summary.json').read_text())
+    saved = json.loads((PUBLIC / 'candidate-saved-summary.json').read_text())
     compat_by = {(x['case'], x['candidate']): x for x in compat['results']}
     saved_by = {(x['case'], x['candidate']): x for x in saved['results']}
     for case in manifest['cases']:
