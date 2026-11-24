@@ -58,7 +58,13 @@ def open_drive():
             ET.SubElement(objects,'object',id='right_turn_arrow_1',name='right_turn_arrow',
                           type='roadMark',s='75',t='-5.25',zOffset='0',hdg='0',
                           pitch='0',roll='0',orientation='+',length='3',width='1.5',height='0')
-        ET.SubElement(road,'signals')
+        signals=ET.SubElement(road,'signals')
+        if ident==1:
+            sign=ET.SubElement(signals,'signal',id='right_turn_only_1',s='75',t='-5.25',
+                name='RIGHT TURN ONLY',dynamic='no',orientation='+',zOffset='2',
+                country='USA',type='right_turn_only',subtype='regulatory',value='0',
+                unit='none',hOffset='0',pitch='0',roll='0')
+            ET.SubElement(sign,'validity',fromLane='-2',toLane='-2')
     junction=ET.SubElement(root,'junction',id='100',name='right_turn_lane_connector')
     connection=ET.SubElement(junction,'connection',id='0',incomingRoad='1',connectingRoad='13',contactPoint='start')
     ET.SubElement(connection,'laneLink',**{'from':'-2','to':'-2'})
@@ -101,6 +107,9 @@ def check():
     assert roads[14].find('link/successor').attrib['elementId']=='2'
     arrow=roads[1].find('objects/object')
     assert arrow is not None and arrow.attrib['name']=='right_turn_arrow' and arrow.attrib['t']=='-5.25'
+    sign=roads[1].find('signals/signal')
+    assert sign is not None and sign.attrib['name']=='RIGHT TURN ONLY'
+    assert sign.find('validity').attrib=={'fromLane':'-2','toLane':'-2'}
     links=root.findall('junction/connection/laneLink')
     assert len(links)==2 and all(link.attrib=={'from':'-2','to':'-2'} for link in links)
     surface=unary_union((box(-100,-7,100,7),box(-7,-100,7,100)))
@@ -121,6 +130,7 @@ def check():
                 'requested_movement':'right_turn' if suffix=='controlled_1' else 'straight_through'}
     return {'passed':True,'cases':results,'authored_right_turn_lane_id':-2,
             'right_turn_lane_design_and_signage_native_verified':False,
+            'authored_right_only_signal_id':'right_turn_only_1',
             'lane_link_native_verified':False,'straight_connector_present_for_diagnostic':True,
             'frozen_cell_maneuver_fit_of_straight_probe_unverified':True,
             'legal_outcome_claimed':False}

@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import traceback
+import xml.etree.ElementTree as ET
 
 from cameras import camera_plan
 from controller import EngineeringKnobs, PathController
@@ -102,6 +103,13 @@ def map_survey(carla, mapping, native_hash):
         if sum(a*b for a,b in zip(vector,expected))<.98:
             raise RuntimeError("Native lane direction differs from authored road: "+name)
         observed[name]=vector;waypoints[name]=wp
+    root=ET.fromstring(mapping.to_opendrive())
+    signals=[s for s in root.findall('.//road[@id="1"]/signals/signal')
+             if s.attrib.get('id')=='right_turn_only_1']
+    if len(signals)!=1 or signals[0].attrib.get('name')!='RIGHT TURN ONLY' or \
+            signals[0].find('validity') is None or \
+            signals[0].find('validity').attrib!={'fromLane':'-2','toLane':'-2'}:
+        raise RuntimeError('Native right-only signal and lane validity readback failed')
     right=waypoints['right_only_approach_lane']
     low=right.transform.location.y-right.lane_width/2
     high=right.transform.location.y+right.lane_width/2
@@ -113,6 +121,8 @@ def map_survey(carla, mapping, native_hash):
             "straight_destination_road_id":2,"right_only_lane_id":-2,
             "right_only_lane_native_y_bounds_m":[3.5,7.0],
             "right_only_lane_design_native_verified":False,
+            "right_only_signal_native_readback":dict(signals[0].attrib),
+            "right_only_signal_validity_native_readback":dict(signals[0].find("validity").attrib),
             "intersection_native_xy_bounds_m":[-7,-7,7,7],
             "intersection_polygon_xy_m":[[-7,-7],[7,-7],[7,7],[-7,7]],
             "boundary_provenance":"Native road/lane readback at surveyed points; right-only designation and both connector lanes need independent saved review"}

@@ -75,6 +75,38 @@ def measure_case_sources(attempt, expected_frames):
             'sources':{'native_parking_history.json':sha(source)}}
 
 
+def derive_channels_from_originals(attempt, description, motion, mapping):
+    """Rebuild converter channels after saved processing strips fixture channels."""
+    channel_dir=attempt/'channels'
+    if channel_dir.exists():
+        return
+    geometry=json.loads((attempt/'road_geometry.json').read_text())
+    channel_dir.mkdir()
+    for channel in description['channels']:
+        name=channel['name']
+        values=[]
+        for index,sample in enumerate(motion):
+            if name=='drv.standing_or_parked':
+                value={'native_frame':sample['native_frame'],'speed_m_s':sample['speed_m_s']}
+            elif name=='st.intersection':
+                value=geometry
+            elif name=='rel.occupies':
+                value=sample['native_body_xy_m']
+            elif name=='kin.extent':
+                value={'body_xy_m':sample['native_body_xy_m']}
+            elif name=='rel.centre_distance':
+                value={'nearest_body_x_m':min(p[0] for p in sample['native_body_xy_m']),
+                       'intersection_boundary_x_m':geometry['intersection_parking_boundary_native_x_m']}
+            elif name=='native_body_pose_control':
+                value=sample
+            elif name=='camera_frame_join':
+                value=mapping[index]
+            else:
+                raise ValueError('Unknown channel requested: '+name)
+            values.append(json.dumps({'time_s':sample['time_s'],'value':value},allow_nan=False))
+        (channel_dir/(name+'.jsonl')).write_text('\n'.join(values)+'\n')
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -105,6 +137,7 @@ def finalize(attempt,output):
     requested_stop={'witness_1':25.0,'witness_2':13.5}[config['case_suffix']]
     parked=math.dist(endpoint,[requested_stop,-5.25])<=.8 and saved_motion[-1]['speed_m_s']<=.3
     description=config['recording_description']
+    derive_channels_from_originals(attempt,description,saved_motion,rows(attempt/'video_frames.jsonl'))
     recording_evidence=[]
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'

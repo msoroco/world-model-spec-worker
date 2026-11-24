@@ -6,7 +6,7 @@ from pathlib import Path
 FOLDER=Path(__file__).resolve().parent
 NATIVE=FOLDER/'native'
 ASSIGNMENT=FOLDER.name
-RUNTIME_MANIFEST='391baee19ccece687c5632aa2cc64ba3b958c8b492045b30e4bfc4caa131c235'
+RUNTIME_MANIFEST=json.loads((FOLDER.parents[1]/'batch.json').read_text())['runtime']['source_manifest_sha256']
 NAMES=('primary','fallback1','fallback2','fallback3')
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py',
@@ -59,7 +59,7 @@ def build():
     for suffix in ('controlled_1','controlled_2'):
         case_id=ASSIGNMENT+'__'+suffix
         contract_path=FOLDER/'draft-candidates'/suffix/'measurement-contract.json'
-        write(contract_path,{'format':'worker-measurement-contract-v1','case_id':case_id,
+        write(contract_path,{'format':'worker-measurement-contract','case_id':case_id,
             'requirements':[{'disposition_index':0,'requirement':'NRS-484B-223-4a',
                 'source':'NRS 484B.223(4)(a)','output_key':'right_only_lane_subsequent_movement',
                 'method':'measure_lane_purpose','value_type':'object','kind':'measured',

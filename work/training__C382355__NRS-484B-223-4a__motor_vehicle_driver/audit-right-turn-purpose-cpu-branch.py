@@ -78,7 +78,7 @@ def audit():
                    for row in trigger["records"])
             or package["count"] != 8 or package["ready"] or package["strict_v2_compatibility"]
             or not closure["passed"] or closure["native_executed"]
-            or result["status"] != "blocked" or result["selected_case_count"] != 0
+            or result["status"] != "partial" or result["selected_case_count"] != 0
             or result["accepted_membership_count"] != 0):
         raise ValueError("Exact CPU proof incomplete or physical status overstated")
     return {"passed": True, "law_id": LAW, "branch_id": branch["branch_id"],

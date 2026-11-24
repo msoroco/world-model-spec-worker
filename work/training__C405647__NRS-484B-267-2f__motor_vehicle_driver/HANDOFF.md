@@ -1,15 +1,16 @@
-# NRS-484B-267-2f at C405647
+# C405647 / NRS 484B.267(2)(f) with (4) handoff
 
-Actor: `motor_vehicle_driver`. Frozen cell: `road` / `travel` / `emergency_vehicle`.
+Status: **partial**. The frozen `road/travel/emergency_vehicle` cell, `motor_vehicle_driver`, selected witness, exact law and 0 accepted recordings remain fixed. The paired controlled cases are CPU drafts, not selected delivery packages or Native observations.
 
-Exact source: NRS 484B.267(2)(f); with 484B.267(4). The full text and source hash are retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branch: Emergency vehicle approaches ego; referral to subsection 1.
+## CPU construction and proof
 
-Controlled variable: `approach and subsection 1 response`. Requested pair: respond to approaching flashing-light emergency vehicle under subsection 1; continue without the subsection 1 response. These are construction requests, not measurements or legal verdicts. The baseline is unselected.
+- `draft-approach-manifest.json` (SHA-256 `91f82d17d67c3cb495b1cd04b543ecd64824f740a17b1ee1557e7576031e9167`) binds exact primary constructions: `controlled_1` SHA `c7a21a823263eb4644b1c4b71e1acbd2f5dca0cd1ef823eebf38314bb5e6c6ed`; `controlled_2` SHA `49d9d64ca7b8caadbca3bd56383ac5444157196142cff7204f458abc4f90e801`. Both passed current pinned `runtime.py offline` with `simulation_started=false`; pinned preflight and assignment-scoped `worker_check.py --complete` passed.
+- `native/runner.py` (SHA-256 `8ce7ffc2da6af5a9ec73ac8001fec06507fb27053b9dfc5664ed0b69e11534d6`) authors a two-way OpenDRIVE road, distinct opposing subject and emergency routes, 600 original frames at 20 Hz, four synchronized cameras, observed poses/velocities/extents, and alternating `Special1` light state. Ego initially approaches a stationary emergency vehicle; after frame 100, the emergency vehicle is requested to move toward ego. One case requests ego speed reduction from 3 to 1 m/s, the other maintains 3 m/s. These speeds are engineering requests, not legal thresholds or a resolved subsection 1 response. CARLA execution is unverified.
+- `native/measure_approach.py` (SHA-256 `d4763d468efdab40adb5e08f565448be4abf56faeb50083533136b9b7042ddab`) joins original frame/time and distinct actor IDs; requires independent source review of driver, authorization, qualifying equipment, visible lamps, lane geometry, visibility and officer direction. It checks initial subject closing, subsequent emergency motion/closing, opposing headings and changing light state; reports measured speeds and distances without a legal verdict.
+- Synthetic diagnostics joined both 600-frame trajectories, distinguishing after-phase ego speeds 1 and 3 m/s and rejecting missing emergency authorization, unknown officer direction and missing Native light state. A separate saved-source diagnostic decoded four 600-frame FFV1 camera streams, checked hashes and rejected a changed camera hash. These tests do not establish Native motion, visible lamp pixels or statutory compliance.
 
-Statutory branch dispositions: 2. Review each exception and dependency against the exact text before physical selection. Accepted membership rows: 0; no source-hashed equivalence receipt is available, so reuse is unclaimed.
+## Remaining exact work
 
-Blocker: No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.
+The supplied subsection 1(a)/(b) duties remain unavailable, so the requested response cannot yet be specified or judged. Confirm subsection 1 and NRS 484B.607 references from authoritative source, separate the stopped alternative and officer-directed exception, and distinguish moving from visibly preparing-to-move. Build three distinct tested fallbacks per selected case, current-runtime compatibility and process-saved proofs, an independent delivery audit and comparison audit, then strict scoped gate. Physical authorization, qualifying lamp equipment and pixels, officer direction, original CARLA motion and accepted recording remain for local review. No ready or physical acceptance claim is made.
 
-Resume: build Native geometry, actor control, cameras and mandatory capture for each runnable branch; prepare four distinct source-preserving constructions per selected case; run exact pinned-runtime offline and compatibility checks, saved positive/negative fixtures and an independent audit. Set `ready` only after those CPU proofs pass.
-
-Source-context review: Approaching and stopped official vehicles refer to different external duties. Subsection 1 and NRS 484B.607 must be sourced before their responses are specified; officer direction is an exception.
+All scratch and generated offline bundles are under `.runtime-work/c405647-267-2f/`; no temporary files or directories are under `work/`.

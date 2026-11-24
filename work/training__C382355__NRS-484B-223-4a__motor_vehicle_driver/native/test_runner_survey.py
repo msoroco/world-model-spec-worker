@@ -4,6 +4,7 @@ import types
 import unittest
 
 from engineering import parameters
+from geometry import open_drive
 from runner import map_survey, observed_speed_mps
 
 
@@ -18,13 +19,18 @@ class Waypoint:
 
 
 class Map:
-    def __init__(self):
+    def __init__(self, missing_sign=False):
+        self.missing_sign=missing_sign
         self.queries=[]
         self.lanes={
             (-30,5.25):Waypoint(1,-2,-30,5.25,(1,0)),
             (-5.25,30):Waypoint(4,-2,-5.25,30,(0,1)),
             (30,5.25):Waypoint(2,-2,30,5.25,(1,0)),
         }
+
+    def to_opendrive(self):
+        raw=open_drive()
+        return raw.replace('RIGHT TURN ONLY','UNRELATED') if self.missing_sign else raw
 
     def get_waypoint(self, location, *, project_to_road, lane_type):
         self.queries.append((location.x,location.y,project_to_road,lane_type))
@@ -52,6 +58,10 @@ class RunnerSurveyTest(unittest.TestCase):
         self.assertEqual([(x,y) for x,y,_,_ in mapping.queries],
                          [(-30,5.25),(-5.25,30),(30,5.25)])
         self.assertEqual(survey['right_only_lane_native_y_bounds_m'],[3.5,7.0])
+        self.assertEqual(survey['right_only_signal_native_readback']['name'],'RIGHT TURN ONLY')
+        self.assertEqual(survey['right_only_signal_validity_native_readback'],{'fromLane':'-2','toLane':'-2'})
+        with self.assertRaisesRegex(RuntimeError,'right-only signal'):
+            map_survey(carla,Map(missing_sign=True),'a'*64)
         self.assertEqual(survey['road_directions_native']['right_turn_destination_lane'],[0.0,1.0])
         for suffix in ('controlled_1','controlled_2'):
             for candidate in ('primary','fallback1','fallback2','fallback3'):
