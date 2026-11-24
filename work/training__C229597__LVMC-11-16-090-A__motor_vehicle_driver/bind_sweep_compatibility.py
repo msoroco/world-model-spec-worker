@@ -78,7 +78,7 @@ def main():
              'manifest_sha256': sha(MANIFEST), 'records': sorted(records, key=lambda x: (x['case_id'], x['candidate_id'])),
              'software_compatibility_passed': True, 'native_executed': False,
              'legal_verdict_claimed': False, 'delivery_ready': False}
-    (PACKAGE / 'sweep-cases/compatibility-index.json').write_text(json.dumps(index, indent=2) + '\n')
+    (PACKAGE / 'sweep-cases/sweep-cpu-index.json').write_text(json.dumps(index, indent=2) + '\n')
 
 
 if __name__ == '__main__':

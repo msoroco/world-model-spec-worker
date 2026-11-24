@@ -15,7 +15,7 @@ FRAMES = 600
 CASES = ("controlled_1", "controlled_2")
 POLICIES = {
     "primary": (5.0, "standard", False),
-    "fallback1": (3.0, "standard", False),
+    "fallback1": (4.5, "standard", False),
     "fallback2": (5.0, "elevated_overview", False),
     "fallback3": (5.0, "standard", True),
 }

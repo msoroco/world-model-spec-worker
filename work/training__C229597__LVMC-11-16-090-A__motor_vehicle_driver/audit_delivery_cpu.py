@@ -31,9 +31,10 @@ def audit(case, remove_source=False):
     if entry is None:
         raise ValueError('Unknown selected case')
     suffix = case.rsplit('__', 1)[-1]
-    if suffix not in ('reference', 'contrast'):
+    sweep = suffix.startswith('judgment-')
+    if suffix not in ('reference', 'contrast') and not sweep:
         raise ValueError('Unknown selected case suffix')
-    spec = read(HERE / f'selected-{suffix}-fixture.json')
+    spec = read(HERE / 'sweep-cases' / case / 'synthetic-source.json') if sweep else read(HERE / f'selected-{suffix}-fixture.json')
     files = dict(spec['files'])
     if remove_source:
         files.pop('trace.jsonl', None)
@@ -61,8 +62,15 @@ def audit(case, remove_source=False):
                 or any(abs(a - b) > 1e-5 for a, b in
                        zip(position, observation['ego']['position_m']))):
             raise ValueError('Original pose/evidence join differs')
-    compatibility = read(HERE / 'selected-proofs' / suffix / 'primary' / 'compatibility.json')
-    saved = read(HERE / 'selected-saved-proofs' / suffix / 'processing.json')
+        if sweep and (not math.isfinite(motion.get('route_position_m', float('nan')))
+                      or not isinstance(motion.get('route_road_id'), int)):
+            raise ValueError('Sweep route coordinate source missing')
+    compatibility_path = (HERE / 'sweep-cases' / case / 'primary' / 'compatibility.json'
+                          if sweep else HERE / 'selected-proofs' / suffix / 'primary' / 'compatibility.json')
+    saved_path = (HERE / 'sweep-cases' / case / 'saved' / 'processing.json'
+                  if sweep else HERE / 'selected-saved-proofs' / suffix / 'processing.json')
+    compatibility = read(compatibility_path)
+    saved = read(saved_path)
     if (not compatibility['passed'] or compatibility['case_id'] != case
             or compatibility['construction_sha256'] != entry['construction_sha256']
             or not saved['passed'] or saved['case_id'] != case
