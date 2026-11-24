@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from PIL import Image, UnidentifiedImageError
 
 from measure_gap import measure
 
@@ -16,6 +17,9 @@ PREFIX = "testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__"
 SUFFIXES = {"stop_14ft", "stop_15ft", "stop_16ft", "stand_14ft",
             "traffic_14ft", "police_14ft", "device_14ft"}
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+PROFILE_DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
+                      "reference_corner": (1280, 720),
+                      "driver_reference": (1280, 720)}
 
 
 def _source(root, binding):
@@ -92,19 +96,32 @@ def audit(attempt_path, *, allow_diagnostic=False):
     if set(camera_bindings) != set(CAMERAS):
         raise ValueError("Four named camera sources required")
     camera_hashes = {}
+    decoded_images = 0
     for name in CAMERAS:
         path = _source(root, camera_bindings[name])
         rows = _rows(path)
         _frame_ids(rows, name, world_frames)
+        seen_paths = set()
         for row in rows:
             if row.get("camera") != name or not row.get("original_frame_sha256") or \
                     not row.get("original_frame_path"):
                 raise ValueError(name + " original camera frame receipt missing")
             frame_path = _source(root, {"path": row["original_frame_path"],
                                         "sha256": row["original_frame_sha256"]})
-            with frame_path.open("rb") as stream:
-                if stream.read(8) != b"\x89PNG\r\n\x1a\n":
-                    raise ValueError(name + " original camera frame is not PNG")
+            if frame_path in seen_paths:
+                raise ValueError(name + " reuses an original camera frame path")
+            seen_paths.add(frame_path)
+            try:
+                with Image.open(frame_path) as image:
+                    if image.format != "PNG" or image.mode not in ("RGB", "RGBA"):
+                        raise ValueError(name + " original camera frame is not RGB PNG")
+                    if packet.get("acquisition_kind") == "original_native" and \
+                            image.size != PROFILE_DIMENSIONS[name]:
+                        raise ValueError(name + " original camera resolution mismatch")
+                    image.load()
+            except (UnidentifiedImageError, OSError) as exc:
+                raise ValueError(name + " original camera frame cannot be decoded") from exc
+            decoded_images += 1
         camera_hashes[name] = camera_bindings[name]["sha256"]
     suffix = case_id.removeprefix(PREFIX)
     expected_gap_ft = int(suffix.split("_")[1].removesuffix("ft")) if suffix in SUFFIXES else None
@@ -119,11 +136,13 @@ def audit(attempt_path, *, allow_diagnostic=False):
         "time_join": True,
         "four_camera_receipts": True,
         "original_frame_count": 900,
+        "decoded_original_images": decoded_images,
         "measurement": measurement,
         "frame_map_sha256": packet["frame_map"]["sha256"],
         "context_sha256": packet["context"]["sha256"],
         "camera_receipt_sha256": camera_hashes,
         "full_video_decode": False,
+        "original_pixels_decoded": True,
         "actual_pixels": False,
         "all_participants": False,
         "physical_completion": False,

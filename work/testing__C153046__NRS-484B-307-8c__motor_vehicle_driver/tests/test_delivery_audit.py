@@ -9,12 +9,33 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_case_plan import KINDS
 from independent.delivery_audit import PINNED_MEDIA, CAMERAS, sha, verify
 from saved_measurement import measure
+from native_observation import from_frame, plan
 from tests.test_saved_measurement import protocol
 
 
 def attempt(root, suffix):
     root.mkdir()
     site,trace,case_id,rows=protocol(root,suffix=suffix)
+    packet=json.loads(site.read_text())
+    packet["observation_plan"]={
+        "pedestrian_zone":{"min_xy":[-4,-2],"max_xy":[-2,0],
+                           "source_citation":"synthetic protocol", "reviewer":"CPU test"},
+        "traffic_zone":{"min_xy":[-3,-2],"max_xy":[-1,0],
+                        "source_citation":"synthetic protocol", "reviewer":"CPU test"},
+        "exit_gate":{"point_xy":[-100,-100],
+                     "source_citation":"synthetic protocol", "reviewer":"CPU test"}}
+    site.write_text(json.dumps(packet))
+    scene, observation_plan=plan(site,suffix)
+    for row in rows:
+        observation=from_frame(row["native_frame"],scene,observation_plan)
+        row.update(source_packet_sha256=sha(site),frame=row["native_frame"]["frame"],
+                   time_s=observation.time_s,
+                   distance_to_stop_boundary_m=observation.distance_to_stop_boundary_m,
+                   speed_m_s=observation.speed_m_s,signal=observation.signal,
+                   pedestrian_conflict=observation.pedestrian_conflict,
+                   traffic_conflict=observation.traffic_conflict,
+                   junction_exited=observation.junction_exited)
+    trace.write_text("".join(json.dumps(row)+"\n" for row in rows))
     measurement=root/"measurement.json"
     measurement.write_text(json.dumps(measure(site,trace,case_id)))
     mapping=root/"video_frames.jsonl"
@@ -65,6 +86,7 @@ class DeliveryAuditTests(unittest.TestCase):
                 audit=verify(case_id,root,allow_diagnostic=True)
                 self.assertEqual(audit["format"],"c153046-diagnostic-delivery-protocol")
                 self.assertFalse(audit["physical_acceptance_claimed"])
+                self.assertEqual(audit["observation_replay"]["frames_checked"],13)
                 with self.assertRaisesRegex(ValueError,"diagnostic fixture cannot pass"):
                     verify(case_id,root)
 
@@ -93,6 +115,19 @@ class DeliveryAuditTests(unittest.TestCase):
             seal["source_hashes"]["video_frames.jsonl"]=sha(root/"video_frames.jsonl")
             (root/"source-seal.json").write_text(json.dumps(seal))
             with self.assertRaisesRegex(ValueError,"time join differs"):
+                verify(case_id,root,allow_diagnostic=True)
+
+    def test_sealed_false_controller_observation_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/"case"
+            case_id=attempt(root,"stopped_leftmost_pedestrian_yield")
+            rows=[json.loads(line) for line in (root/"trace.jsonl").read_text().splitlines()]
+            rows[10]["pedestrian_conflict"]=not rows[10]["pedestrian_conflict"]
+            (root/"trace.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            seal=json.loads((root/"source-seal.json").read_text())
+            seal["source_hashes"]["trace.jsonl"]=sha(root/"trace.jsonl")
+            (root/"source-seal.json").write_text(json.dumps(seal))
+            with self.assertRaisesRegex(ValueError,"pedestrian_conflict"):
                 verify(case_id,root,allow_diagnostic=True)
 
 

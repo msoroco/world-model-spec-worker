@@ -27,7 +27,8 @@ def _sealed(value: str, label: str) -> str:
 
 def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
             route_kind: str, authorization: bool, blueprint_id: str,
-            frames: int = 900, fps: int = 20) -> dict:
+            frames: int = 900, fps: int = 20,
+            capture_root: Path | None = None) -> dict:
     """Record original source readbacks while commanding one exact walker route.
 
     ``adapter`` supplies ``tick``, ``walker_xy``, ``walker_id``,
@@ -52,6 +53,8 @@ def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
             raise ValueError("official device and instruction source required")
     actor, plan = construct_walker(adapter, site, route_kind, authorization, blueprint_id)
     rows = []
+    if capture_root is not None:
+        capture_root.mkdir(parents=True, exist_ok=True)
     original_id = adapter.walker_id(actor)
     last_frame = None
     last_time = None
@@ -85,10 +88,21 @@ def acquire(adapter, *, site: dict, site_sha256: str, case_id: str,
             cameras = adapter.camera_frames()
             if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS) or any(cameras[name] != frame for name in CAMERAS):
                 raise ValueError("Native four-camera frame readback mismatch")
+            png_hashes = {}
+            if capture_root is not None:
+                for name in CAMERAS:
+                    raw = adapter.camera_png(name, frame)
+                    if not isinstance(raw, bytes) or not raw.startswith(b"\x89PNG\r\n\x1a\n"):
+                        raise ValueError("Native original camera PNG bytes missing")
+                    path = capture_root / name / f"{frame:06d}.png"
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(raw)
+                    png_hashes[name] = hashlib.sha256(raw).hexdigest()
             rows.append({"original_frame": frame, "elapsed_seconds": time_s,
                          "walker_id": walker_id, "walker_center_xy": xy,
                          "devices": sorted(device_rows, key=lambda d: d["id"]),
-                         "camera_frames": {name: cameras[name] for name in CAMERAS}})
+                         "camera_frames": {name: cameras[name] for name in CAMERAS},
+                         "camera_png_sha256": png_hashes})
             last_frame, last_time = frame, time_s
     finally:
         adapter.stop_walker(actor)

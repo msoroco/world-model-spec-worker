@@ -41,7 +41,8 @@ def main() -> None:
         entry["delivery_acceptance"] = {
             "case_id": case_id, "sets": ["full-test"],
             "checks": ["native_source", "all_participants", "time_join",
-                       "full_video_decode", "actual_pixels", "physical_completion"],
+                       "full_video_decode", "actual_pixels", "physical_completion",
+                       "observation_replay"],
             "script": str(script.relative_to(ROOT)), "script_sha256": sha(script),
             "command": shlex.join(base), "test_exit_code": 0,
             "test_log": str(positive_log.relative_to(ROOT)), "test_log_sha256": sha(positive_log),

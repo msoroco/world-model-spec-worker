@@ -93,6 +93,28 @@ class SavedDeliveryTests(unittest.TestCase):
             self.assertEqual(receipt['decoded_frames'], 3600)
             self.assertFalse(receipt['physical_completion'])
             self.assertEqual(receipt['legal_judgment'], 'unresolved')
+            comparison_output = Path(temp) / 'comparison-audit.json'
+            with self.assertRaisesRegex(ValueError, 'diagnostic'):
+                main(['--near-attempt', str(near), '--far-attempt', str(far),
+                      '--output', str(comparison_output)])
+            self.assertFalse(comparison_output.exists())
+            main(['--near-attempt', str(near), '--far-attempt', str(far),
+                  '--output', str(comparison_output), '--allow-diagnostic'])
+            comparison_receipt = json.loads(comparison_output.read_text())
+            self.assertEqual(comparison_receipt['decoded_frames'], 7200)
+            self.assertEqual(comparison_receipt['case_ids'],
+                             [PREFIX + 'near_centerline', PREFIX + 'farther_from_centerline'])
+            self.assertFalse(comparison_receipt['physical_completion'])
+            acquired = json.loads((near / 'acquisition.json').read_text())
+            acquired['diagnostic_fixture'] = False
+            (near / 'acquisition.json').write_text(json.dumps(acquired))
+            production_output = Path(temp) / 'production-audit.json'
+            with self.assertRaisesRegex(ValueError, 'production camera dimensions'):
+                main(['--attempt', str(near), '--case', PREFIX + 'near_centerline',
+                      '--output', str(production_output)])
+            self.assertFalse(production_output.exists())
+            acquired['diagnostic_fixture'] = True
+            (near / 'acquisition.json').write_text(json.dumps(acquired))
             with self.assertRaisesRegex(ValueError, 'distinct'):
                 audit_comparison(near, near, allow_diagnostic=True)
             acquired = json.loads((far / 'acquisition.json').read_text())

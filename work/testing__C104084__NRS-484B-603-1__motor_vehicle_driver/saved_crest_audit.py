@@ -33,7 +33,11 @@ def _source(root: Path, binding: dict) -> tuple[Path, str]:
     if not isinstance(binding, dict):
         raise ValueError('source binding required')
     path = _inside(root, binding.get('path'))
-    actual = hashlib.sha256(path.read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    with path.open('rb') as source:
+        for block in iter(lambda: source.read(1024 * 1024), b''):
+            digest.update(block)
+    actual = digest.hexdigest()
     if binding.get('sha256') != actual:
         raise ValueError('original source hash differs')
     return path, actual

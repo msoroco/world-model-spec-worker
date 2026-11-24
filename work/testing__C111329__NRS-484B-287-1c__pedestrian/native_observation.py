@@ -10,9 +10,33 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZIP_STORED, ZipFile
+
+from PIL import Image
 
 from site_geometry import assess_site
+
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
+                     "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+
+
+def _image_bytes(reader, frame: int, dimensions: tuple[int, int]) -> bytes:
+    sample = reader(frame)
+    if not isinstance(sample, dict) or sample.get("frame") != frame:
+        raise ValueError("original camera frame identity mismatch")
+    payload = sample.get("png_bytes")
+    if not isinstance(payload, bytes) or not payload.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("original camera PNG missing")
+    with Image.open(BytesIO(payload)) as image:
+        image.verify()
+    with Image.open(BytesIO(payload)) as image:
+        if image.format != "PNG" or image.size != dimensions:
+            raise ValueError("original camera dimensions mismatch")
+        image.load()
+    return payload
 
 
 def _canonical(value: dict) -> bytes:
@@ -20,7 +44,8 @@ def _canonical(value: dict) -> bytes:
 
 
 def capture_observation(world, walker, packet: dict, case_id: str, output: str | Path,
-                        read_device, *, ticks: int = 900) -> dict:
+                        read_device, *, ticks: int = 900, camera_readers=None,
+                        camera_dimensions=None) -> dict:
     """Write original observations; ``ticks`` is injectable for CPU fixtures."""
     site = assess_site(packet, require_operating=False)
     if not isinstance(case_id, str) or not case_id:
@@ -32,9 +57,25 @@ def capture_observation(world, walker, packet: dict, case_id: str, output: str |
     expected = set(site["device_ids"])
     packet_sha = hashlib.sha256(_canonical(packet)).hexdigest()
     frames = []
+    path = Path(output)
+    if path.exists():
+        raise ValueError("original observation output exists")
+    if camera_readers is not None and set(camera_readers) != set(CAMERAS):
+        raise ValueError("four named camera readers required")
+    dimensions = camera_dimensions or CAMERA_DIMENSIONS
+    if set(dimensions) != set(CAMERAS):
+        raise ValueError("four named camera dimensions required")
+    media_paths = {name: path.parent / (path.stem + "." + name + ".png.zip")
+                   for name in CAMERAS} if camera_readers is not None else {}
+    if any(p.exists() for p in media_paths.values()):
+        raise ValueError("original camera output exists")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    archives = {name: ZipFile(p, "w", compression=ZIP_STORED)
+                for name, p in media_paths.items()}
     previous_frame = None
     previous_time = None
-    for _ in range(ticks):
+    try:
+      for _ in range(ticks):
         tick_frame = int(world.tick())
         snapshot = world.get_snapshot()
         frame = int(snapshot.frame)
@@ -57,17 +98,35 @@ def capture_observation(world, walker, packet: dict, case_id: str, output: str |
                 raise ValueError("device state readback missing")
             if type(r.get("is_operating")) is not bool:
                 raise ValueError("device operation readback missing")
-        frames.append({"frame": frame, "time_s": time_s, "walker_xyz_m": xyz,
-                       "devices": readings})
+        row = {"frame": frame, "time_s": time_s, "walker_xyz_m": xyz,
+               "devices": readings}
+        if camera_readers is not None:
+            row["camera_frames"] = {}
+            for name in CAMERAS:
+                payload = _image_bytes(camera_readers[name], frame, tuple(dimensions[name]))
+                member = f"{frame:08d}.png"
+                archives[name].writestr(member, payload)
+                row["camera_frames"][name] = {"member": member,
+                                              "sha256": hashlib.sha256(payload).hexdigest()}
+        frames.append(row)
         previous_frame, previous_time = frame, time_s
+    finally:
+        for archive in archives.values():
+            archive.close()
+        if len(frames) != ticks:
+            for media_path in media_paths.values():
+                media_path.unlink(missing_ok=True)
     document = {"format": "original-pedestrian-site-observation", "case_id": case_id,
                 "packet_sha256": packet_sha, "source_sha256": site["source_sha256"],
-                "frame_count": ticks, "frames": frames}
-    path = Path(output)
-    path.parent.mkdir(parents=True, exist_ok=True)
+                "frame_count": ticks, "frames": frames,
+                "camera_sources": {name: {"path": str(media_path),
+                    "sha256": hashlib.sha256(media_path.read_bytes()).hexdigest(),
+                    "frame_count": ticks, "dimensions": list(dimensions[name])}
+                    for name, media_path in media_paths.items()}}
     path.write_bytes(_canonical(document))
     return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            "frame_count": ticks, "case_id": case_id}
+            "frame_count": ticks, "case_id": case_id,
+            "camera_capture_complete": camera_readers is not None}
 
 
 def analyze_saved(packet: dict, receipt: dict, *, expected_case_id: str,

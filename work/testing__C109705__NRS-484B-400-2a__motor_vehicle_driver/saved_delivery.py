@@ -26,6 +26,12 @@ SUFFIXES = {
 }
 CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 FRAMES = 900
+PRODUCTION_DIMENSIONS = {
+    "overview": [1920, 1080],
+    "approach": [1280, 720],
+    "reference_corner": [1280, 720],
+    "driver_reference": [1280, 720],
+}
 
 
 def _inside(attempt: Path, relative: str) -> Path:
@@ -128,6 +134,8 @@ def audit_original_pixels(attempt: Path, case_id: str, *, allow_diagnostic: bool
                             raise ValueError(camera + ' frame dimensions drift')
                         observed_size = size
                 dimensions[camera] = observed_size
+                if not allow_diagnostic and observed_size != PRODUCTION_DIMENSIONS[camera]:
+                    raise ValueError(camera + ' original production camera dimensions differ')
         except (zipfile.BadZipFile, OSError, EOFError) as exc:
             raise ValueError(camera + ' original frame decode failed') from exc
     return {'format': 'worker-400-2a-original-pixel-audit-v1',
@@ -169,15 +177,29 @@ def audit_comparison(near_attempt: Path, far_attempt: Path, *,
 
 
 def main(argv=None):
-    """Run the source and full-pixel audit using only a retained attempt."""
+    """Replay one retained attempt or an exact near/far pair from saved sources."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('--attempt', required=True, type=Path)
-    parser.add_argument('--case', required=True)
+    parser.add_argument('--attempt', type=Path)
+    parser.add_argument('--case')
+    parser.add_argument('--near-attempt', type=Path)
+    parser.add_argument('--far-attempt', type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--allow-diagnostic', action='store_true')
     args = parser.parse_args(argv)
-    result = audit_original_pixels(args.attempt, args.case,
-                                   allow_diagnostic=args.allow_diagnostic)
+    single = args.attempt is not None or args.case is not None
+    pair = args.near_attempt is not None or args.far_attempt is not None
+    if single == pair:
+        parser.error('provide one exact attempt and case, or a near and far attempt')
+    if single:
+        if args.attempt is None or args.case is None:
+            parser.error('--attempt and --case are required together')
+        result = audit_original_pixels(args.attempt, args.case,
+                                       allow_diagnostic=args.allow_diagnostic)
+    else:
+        if args.near_attempt is None or args.far_attempt is None:
+            parser.error('--near-attempt and --far-attempt are required together')
+        result = audit_comparison(args.near_attempt, args.far_attempt,
+                                  allow_diagnostic=args.allow_diagnostic)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
     return result

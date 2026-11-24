@@ -178,3 +178,57 @@ def finalize_saved_measurements(attempt: Path, case) -> dict:
             'native_receipt_sha256': hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
             'source_audit': source, 'measurements': measured,
             'actual_pixels': False, 'physical_completion': False, 'legal_judgment': None}
+
+
+def audit_saved_timing_pair(left_attempt: Path, right_attempt: Path,
+                            comparison_id: str) -> dict:
+    """Reopen both original attempts before a declared timing comparison.
+
+    Distances describe physical trajectories only. They cannot establish a
+    willful or wanton state or a statutory spacing threshold.
+    """
+    from encounter import CASES
+
+    pairs = {
+        'highway_person_north_timing': ('person_north_early', 'person_north_late'),
+        'highway_person_south_timing': ('person_south_early', 'person_south_late'),
+        'premises_person_timing': ('premises_person_early', 'premises_person_late'),
+    }
+    if comparison_id not in pairs:
+        raise ValueError('unsupported exact timing comparison')
+    by_id = {case.case_id: case for case in CASES}
+    early_id, late_id = pairs[comparison_id]
+    early = finalize_saved_measurements(left_attempt, by_id[early_id])
+    late = finalize_saved_measurements(right_attempt, by_id[late_id])
+    first = json.loads((left_attempt / 'native-receipt.json').read_text(encoding='utf-8'))
+    second = json.loads((right_attempt / 'native-receipt.json').read_text(encoding='utf-8'))
+    fixed = ('site_sha256', 'map_sha256', 'camera_plan_sha256',
+             'public_access_basis', 'ego_target_speed_mps',
+             'crossing_target_speed_mps', 'frame_count', 'original_fps')
+    for key in fixed:
+        if first.get(key) != second.get(key):
+            raise ValueError(f'comparison fixed condition changed: {key}')
+    # The actor blueprints are in the sealed original histories, not receipts.
+    with (left_attempt / 'original-history.jsonl').open(encoding='utf-8') as source:
+        first_row = json.loads(source.readline())
+    with (right_attempt / 'original-history.jsonl').open(encoding='utf-8') as source:
+        second_row = json.loads(source.readline())
+    for key in ('ego_blueprint', 'crossing_blueprint', 'property_blueprint'):
+        if first_row.get(key) != second_row.get(key):
+            raise ValueError(f'comparison fixed condition changed: {key}')
+    if first['crossing_release_s'] >= second['crossing_release_s']:
+        raise ValueError('comparison release order missing')
+    a = early['measurements']['min_ego_occupant_center_distance_m']
+    b = late['measurements']['min_ego_occupant_center_distance_m']
+    if abs(a - b) <= 1e-6:
+        raise ValueError('comparison measured encounter difference missing')
+    return {'comparison_id': comparison_id,
+            'case_ids': [early['case_id'], late['case_id']],
+            'original_history_sha256': [early['original_history_sha256'],
+                                        late['original_history_sha256']],
+            'native_receipt_sha256': [early['native_receipt_sha256'],
+                                      late['native_receipt_sha256']],
+            'crossing_release_s': [first['crossing_release_s'], second['crossing_release_s']],
+            'min_ego_occupant_center_distance_m': [a, b],
+            'actual_pixels': False, 'physical_completion': False,
+            'legal_judgment': None}

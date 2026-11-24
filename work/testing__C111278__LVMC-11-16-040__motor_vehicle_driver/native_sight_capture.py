@@ -7,10 +7,13 @@ No CARLA import occurs until the operator wires those readers in a runtime runne
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from hashlib import sha256
 from math import hypot, isfinite
 from pathlib import Path
 from typing import Any, Callable
+from io import BytesIO
 
 from sight_construction import CASES, FEET_100_M, validate_site
 from sight_measurement import evaluate
@@ -18,6 +21,10 @@ from sight_measurement import evaluate
 
 class CaptureError(ValueError):
     pass
+
+
+CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
+           "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _encoded(value: Any) -> bytes:
@@ -37,6 +44,7 @@ def capture(
     ray_reader: Callable[[int, Any, Any, list[str]], dict],
     brake: Callable[[Any], None],
     output: Path,
+    camera_reader: Callable[[int, Any], dict] | None = None,
 ) -> dict:
     """Record 900 real 20 Hz ticks and seal the exact sight and speed samples.
 
@@ -54,7 +62,11 @@ def capture(
         raise CaptureError("capture output already exists")
     arms = site["entering_arms"]
     frames = []
+    camera_rows = []
+    stage = None
     try:
+        if camera_reader is not None:
+            stage = Path(tempfile.mkdtemp(prefix="sight-cameras-", dir=output.parent))
         for i in range(900):
             frame_id = world.tick()
             snapshot = world.get_snapshot()
@@ -87,6 +99,32 @@ def capture(
             frames.append({"frame": frame_id, "time_s": time_s,
                            "approach_distance_m": distance, "ego_speed_mps": speed,
                            "traversing_intersection": traversing, "rays": rays})
+            if camera_reader is not None:
+                from PIL import Image
+                images = camera_reader(frame_id, snapshot)
+                if not isinstance(images, dict) or set(images) != set(CAMERAS):
+                    raise CaptureError("four original camera sources required")
+                row = {"frame": frame_id, "time_s": time_s, "sources": {}}
+                for name, dimensions in CAMERAS.items():
+                    item = images[name]
+                    if not isinstance(item, tuple) or len(item) != 2 or item[0] != frame_id:
+                        raise CaptureError(f"{name} camera frame identity differs")
+                    raw = item[1]
+                    if not isinstance(raw, bytes):
+                        raise CaptureError(f"{name} original PNG bytes required")
+                    try:
+                        with Image.open(BytesIO(raw)) as image:
+                            if image.format != "PNG" or image.size != dimensions:
+                                raise CaptureError(f"{name} original camera profile differs")
+                            image.load()
+                    except (OSError, ValueError) as exc:
+                        raise CaptureError(f"{name} camera PNG cannot be fully decoded") from exc
+                    path = f"cameras/{name}/{frame_id:08d}.png"
+                    target = stage / path
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(raw)
+                    row["sources"][name] = {"path": path, "sha256": sha256(raw).hexdigest()}
+                camera_rows.append(row)
         packet = {
             "case_id": f"testing__C111278__LVMC-11-16-040__motor_vehicle_driver__{case_key}",
             "map_hash": site["map_hash"], "site_source_sha256": _sha(site),
@@ -102,6 +140,12 @@ def capture(
         }
         measurement = evaluate(packet)
         output.mkdir(parents=True)
+        if stage is not None:
+            shutil.move(str(stage / "cameras"), str(output / "cameras"))
+            stage.rmdir()
+            stage = None
+            camera_bytes = _encoded(camera_rows)
+            (output / "native-camera-map.json").write_bytes(camera_bytes)
         source_bytes = _encoded(packet)
         (output / "native-sight.json").write_bytes(source_bytes)
         receipt = {
@@ -111,10 +155,15 @@ def capture(
             "source_path": "native-sight.json", "source_sha256": sha256(source_bytes).hexdigest(),
             "first_frame": frames[0]["frame"], "last_frame": frames[-1]["frame"],
             "frame_count": 900, "measurement": measurement,
-            "camera_capture": "pending separate original four-camera acquisition",
+            "camera_capture": ("original_four_camera_png" if camera_reader is not None
+                               else "pending separate original four-camera acquisition"),
+            "camera_map_path": "native-camera-map.json" if camera_reader is not None else None,
+            "camera_map_sha256": sha256(camera_bytes).hexdigest() if camera_reader is not None else None,
             "legal_conclusion": None,
         }
         (output / "native-sight-receipt.json").write_bytes(_encoded(receipt))
         return receipt
     finally:
+        if stage is not None:
+            shutil.rmtree(stage)
         brake(ego)

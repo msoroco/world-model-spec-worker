@@ -1,4 +1,6 @@
 import copy
+import hashlib
+from io import BytesIO
 import json
 import sys
 import tempfile
@@ -7,6 +9,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from native_observation import analyze_saved, capture_observation
+from saved_camera_audit import audit_saved
+from PIL import Image
 import test_site_geometry
 
 
@@ -122,6 +126,66 @@ class ObservationTests(unittest.TestCase):
         receipt["sha256"] = hashlib.sha256(self.path.read_bytes()).hexdigest()
         with self.assertRaisesRegex(ValueError, "saved device readback"):
             analyze_saved(self.packet, receipt, expected_case_id="case-one", required_frames=5)
+
+    def _camera_capture(self, ticks=5):
+        buffer = BytesIO()
+        Image.new("RGB", (8, 6), (30, 60, 90)).save(buffer, format="PNG")
+        payload = buffer.getvalue()
+        names = ("overview", "approach", "reference_corner", "driver_reference")
+        readers = {name: lambda frame, payload=payload: {"frame": frame,
+                   "png_bytes": payload} for name in names}
+        dims = {name: (8, 6) for name in names}
+        receipt = capture_observation(self.world, self.walker, self.packet, "case-one",
+                    self.path, self.read_device, ticks=ticks, camera_readers=readers,
+                    camera_dimensions=dims)
+        return receipt, dims
+
+    def test_four_camera_full_decode_and_motion_join(self):
+        receipt, dims = self._camera_capture()
+        result = audit_saved(self.packet, receipt, expected_case_id="case-one",
+                             required_frames=5, camera_dimensions=dims)
+        self.assertEqual(result["decoded_images"], 20)
+        self.assertTrue(result["motion"]["crossed_both_highway_banks"])
+        self.assertFalse(result["physical_acceptance"])
+
+    def test_full_duration_camera_profile_and_decode(self):
+        receipt, dims = self._camera_capture(ticks=900)
+        result = audit_saved(self.packet, receipt, expected_case_id="case-one",
+                             required_frames=900, camera_dimensions=dims)
+        self.assertEqual(result["decoded_images"], 3600)
+        self.assertEqual(result["frame_count"], 900)
+
+    def test_camera_audit_rejects_missing_camera_capture(self):
+        receipt = self.capture()
+        with self.assertRaisesRegex(ValueError, "four-camera capture missing"):
+            audit_saved(self.packet, receipt, expected_case_id="case-one", required_frames=5)
+
+    def test_camera_audit_rejects_archive_tamper_and_frame_binding(self):
+        receipt, dims = self._camera_capture()
+        document = json.loads(self.path.read_text())
+        archive = Path(document["camera_sources"]["overview"]["path"])
+        archive.write_bytes(archive.read_bytes() + b"tamper")
+        with self.assertRaisesRegex(ValueError, "source hash mismatch"):
+            audit_saved(self.packet, receipt, expected_case_id="case-one",
+                        required_frames=5, camera_dimensions=dims)
+        document["camera_sources"]["overview"]["sha256"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+        document["frames"][0]["camera_frames"]["overview"]["sha256"] = "0" * 64
+        self.path.write_text(json.dumps(document))
+        receipt["sha256"] = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(ValueError, "pixel binding mismatch"):
+            audit_saved(self.packet, receipt, expected_case_id="case-one",
+                        required_frames=5, camera_dimensions=dims)
+
+    def test_camera_capture_rejects_unsynchronized_reader(self):
+        names = ("overview", "approach", "reference_corner", "driver_reference")
+        readers = {name: lambda frame: {"frame": frame + 1, "png_bytes": b""}
+                   for name in names}
+        with self.assertRaisesRegex(ValueError, "camera frame identity mismatch"):
+            capture_observation(self.world, self.walker, self.packet, "case-one",
+                self.path, self.read_device, ticks=5, camera_readers=readers,
+                camera_dimensions={name: (8, 6) for name in names})
+        self.assertFalse(self.path.exists())
+        self.assertFalse(list(Path(self.tmp.name).glob("*.zip")))
 
 
 if __name__ == "__main__":

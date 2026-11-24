@@ -60,6 +60,14 @@ class Adapter:
         self.destroyed.append(actor)
 
 
+class TimingAdapter(Adapter):
+    def read_actor(self, actor):
+        packet = super().read_actor(actor)
+        if actor == 'occupant':
+            packet['xy'][1] += self.case.crossing_release_s
+        return packet
+
+
 def site():
     return {'site_sha256': 'a' * 64, 'map_sha256': 'b' * 64,
             'camera_plan_sha256': 'c' * 64, 'public_access_basis': 'highway'}
@@ -72,6 +80,53 @@ def actors(case):
 
 
 class NativeAcquisitionTests(unittest.TestCase):
+    def test_saved_timing_pair_reopens_both_original_attempts(self):
+        early, late = encounter.CASES[0:2]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'early', Path(tmp) / 'late'
+            left.mkdir(); right.mkdir()
+            native.capture(TimingAdapter(case=early), actors(early), early, site(), left)
+            native.capture(TimingAdapter(case=late), actors(late), late, site(), right)
+            result = saved_audit.audit_saved_timing_pair(
+                left, right, 'highway_person_north_timing')
+            self.assertEqual(result['crossing_release_s'], [1.0, 4.0])
+            self.assertNotEqual(*result['min_ego_occupant_center_distance_m'])
+            self.assertFalse(result['actual_pixels'])
+            with self.assertRaisesRegex(ValueError, 'exact case mismatch'):
+                saved_audit.audit_saved_timing_pair(
+                    right, left, 'highway_person_north_timing')
+            with self.assertRaisesRegex(ValueError, 'unsupported exact timing comparison'):
+                saved_audit.audit_saved_timing_pair(left, right, 'approach_direction')
+            source = right / 'original-packets.jsonl'
+            source.write_bytes(source.read_bytes() + b'\n')
+            with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                saved_audit.audit_saved_timing_pair(
+                    left, right, 'highway_person_north_timing')
+
+    def test_saved_timing_pair_rejects_unchanged_encounter(self):
+        early, late = encounter.CASES[0:2]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'early', Path(tmp) / 'late'
+            left.mkdir(); right.mkdir()
+            native.capture(Adapter(case=early), actors(early), early, site(), left)
+            native.capture(Adapter(case=late), actors(late), late, site(), right)
+            with self.assertRaisesRegex(ValueError, 'measured encounter difference missing'):
+                saved_audit.audit_saved_timing_pair(
+                    left, right, 'highway_person_north_timing')
+
+    def test_saved_timing_pair_rejects_changed_fixed_site(self):
+        early, late = encounter.CASES[0:2]
+        with TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'early', Path(tmp) / 'late'
+            left.mkdir(); right.mkdir()
+            native.capture(TimingAdapter(case=early), actors(early), early, site(), left)
+            changed_site = site(); changed_site['map_sha256'] = 'd' * 64
+            native.capture(TimingAdapter(case=late), actors(late), late,
+                           changed_site, right)
+            with self.assertRaisesRegex(ValueError, 'fixed condition changed: map_sha256'):
+                saved_audit.audit_saved_timing_pair(
+                    left, right, 'highway_person_north_timing')
+
     def test_900_frame_original_sources_and_saved_rejoin(self):
         case = encounter.CASES[0]
         adapter = Adapter()

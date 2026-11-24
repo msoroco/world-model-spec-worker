@@ -15,6 +15,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from build_case_plan import AID, KINDS
+from saved_observation_audit import audit as audit_observations
 
 PINNED_MEDIA = next((parent / "runtime" / "scenario_pipeline" / "worker_exchange" / "media.py"
                      for parent in Path(__file__).resolve().parents
@@ -24,7 +25,7 @@ if PINNED_MEDIA is None:
     raise ValueError("pinned media auditor source unavailable")
 
 CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
-          "actual_pixels", "physical_completion")
+          "actual_pixels", "physical_completion", "observation_replay")
 VIEWS = {"overview", "approach", "reference_corner", "driver_reference"}
 CAMERAS = {name + ".mkv" for name in VIEWS}
 SOURCES = {"site.json", "trace.jsonl", "video_frames.jsonl", "raw.mkv", *CAMERAS}
@@ -55,6 +56,8 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
             raise ValueError("sealed original source changed: " + name)
     trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines() if line.strip()]
     mapping = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines() if line.strip()]
+    replay = audit_observations(attempt / "site.json", attempt / "trace.jsonl", case_id,
+                                expected_frames=len(trace) if diagnostic else 600)
     measurement = read(attempt / "measurement.json")
     if (len(trace) < 2 or len(mapping) != len(trace) or
             measurement.get("case_id") != case_id or
@@ -120,6 +123,7 @@ def verify(case_id: str, attempt: Path, *, allow_diagnostic: bool = False) -> di
             "trace": "trace.jsonl", "trace_sha256": sha(attempt / "trace.jsonl"),
             "frame_map_sha256": sha(attempt / "video_frames.jsonl"),
             "source_result_sha256": sha(attempt / "result.json"),
+            "observation_replay": replay,
             "source_decode_receipt_path": str((attempt / "source-decode.json").resolve()),
             "source_decode_receipt_sha256": sha(attempt / "source-decode.json"),
             "source_decode_auditor_sha256": sha(PINNED_MEDIA),

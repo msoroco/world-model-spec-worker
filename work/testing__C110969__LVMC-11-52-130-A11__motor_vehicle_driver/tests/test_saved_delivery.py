@@ -4,6 +4,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from PIL import Image
 
 
 BASE = pathlib.Path(__file__).resolve().parents[1]
@@ -58,11 +59,14 @@ class SavedDeliveryTests(unittest.TestCase):
                                       "participants": [], "directions": {}}) + "\n")
         cameras = {}
         for camera in CAMERAS:
-            frame_path = self.root / (camera + ".png")
-            frame_path.write_bytes(b"\x89PNG\r\n\x1a\n" + camera.encode())
+            frame_template = self.root / (camera + "-template.png")
+            Image.new("RGB", (2, 2), (23, 41, 59)).save(frame_template)
+            png_bytes = frame_template.read_bytes()
             path = self.root / (camera + ".jsonl")
             with path.open("w") as out:
                 for frame in range(900):
+                    frame_path = self.root / f"{camera}-{frame:06d}.png"
+                    frame_path.write_bytes(png_bytes)
                     out.write(json.dumps({"frame": frame, "world_frame": 1200 + frame,
                                           "camera": camera,
                                           "original_frame_path": frame_path.name,
@@ -86,6 +90,8 @@ class SavedDeliveryTests(unittest.TestCase):
         result = audit(self.attempt_path, allow_diagnostic=True)
         self.assertTrue(result["time_join"])
         self.assertEqual(result["original_frame_count"], 900)
+        self.assertEqual(result["decoded_original_images"], 3600)
+        self.assertTrue(result["original_pixels_decoded"])
         self.assertAlmostEqual(result["measurement"]["minimum_halt_body_gap_m"],
                                14 * 0.3048)
         self.assertFalse(result["physical_completion"])
@@ -117,6 +123,29 @@ class SavedDeliveryTests(unittest.TestCase):
         self.packet["cameras"]["overview"]["sha256"] = sha(path)
         self.save()
         with self.assertRaisesRegex(ValueError, "world frame join"):
+            audit(self.attempt_path, allow_diagnostic=True)
+
+    def test_duplicate_frame_path_rejected_even_with_matching_hashes(self):
+        path = self.root / "overview.jsonl"
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        rows[1]["original_frame_path"] = rows[0]["original_frame_path"]
+        rows[1]["original_frame_sha256"] = rows[0]["original_frame_sha256"]
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        self.packet["cameras"]["overview"]["sha256"] = sha(path)
+        self.save()
+        with self.assertRaisesRegex(ValueError, "reuses an original camera frame"):
+            audit(self.attempt_path, allow_diagnostic=True)
+
+    def test_corrupt_png_rejected_after_matching_hash_rebind(self):
+        frame_path = self.root / "overview-000000.png"
+        frame_path.write_bytes(b"\x89PNG\r\n\x1a\nnot an image")
+        path = self.root / "overview.jsonl"
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        rows[0]["original_frame_sha256"] = sha(frame_path)
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        self.packet["cameras"]["overview"]["sha256"] = sha(path)
+        self.save()
+        with self.assertRaisesRegex(ValueError, "cannot be decoded"):
             audit(self.attempt_path, allow_diagnostic=True)
 
 

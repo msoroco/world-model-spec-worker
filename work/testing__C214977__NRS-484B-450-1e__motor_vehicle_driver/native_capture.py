@@ -1,7 +1,7 @@
-"""Record exact original-frame crosswalk observations from an injected Native adapter.
+"""Record exact original-frame crosswalk observations and camera PNGs.
 
-The adapter owns CARLA resources. This module requires readbacks for every tick and
-always calls its brake and cleanup methods. It does not create diagnostic evidence.
+The adapter owns CARLA resources. This module requires readbacks and original PNG
+pixels for every tick and always calls brake and cleanup. It creates no diagnostic evidence.
 """
 from __future__ import annotations
 
@@ -13,6 +13,8 @@ from pathlib import Path
 from crosswalk import SourceError, construct, measure, require, sealed_json
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CAMERA_SIZES = {'overview': (1920, 1080), 'approach': (1280, 720),
+                'reference_corner': (1280, 720), 'driver_reference': (1280, 720)}
 
 
 def _write_sealed(root: Path, name: str, value: object) -> dict:
@@ -56,7 +58,16 @@ def capture(adapter, site_ref: dict, vehicle_ref: dict, case: dict,
             for name in CAMERAS:
                 readback = cameras[name]
                 require(readback['frame'] == frame and readback['source_id'], 'Native camera frame mismatch')
-                camera_map[name].append({'frame': frame, 'source_id': readback['source_id']})
+                png = readback.get('png_bytes')
+                require(isinstance(png, bytes) and png.startswith(b'\x89PNG\r\n\x1a\n'),
+                        'Native camera PNG pixels missing')
+                media_dir = output_root / 'camera-sources' / name
+                media_dir.mkdir(parents=True, exist_ok=True)
+                media_path = media_dir / f'{index:04d}.png'
+                media_path.write_bytes(png)
+                camera_map[name].append({'frame': frame, 'source_id': readback['source_id'],
+                                         'path': str(media_path.relative_to(output_root)),
+                                         'sha256': hashlib.sha256(png).hexdigest()})
         expected = {'case_id': case['case_id'], 'subject_id': subject,
                     'first_frame': rows[0]['frame'], 'frame_count': frame_count,
                     'crosswalk_id': site['crosswalk_id'], 'marking_status': site['marking_status'],
@@ -70,7 +81,8 @@ def capture(adapter, site_ref: dict, vehicle_ref: dict, case: dict,
                    'subject_id': subject, 'fps': 20, 'frame_count': frame_count,
                    'source_format': 'native_original', 'site_source': site_ref,
                    'vehicle_source': vehicle_ref, 'sources': refs, 'measurement': measurement,
-                   'video_decode': 'not_run', 'physical_acceptance': 'unreviewed'}
+                   'camera_source_format': 'png_original', 'video_decode': 'not_run',
+                   'physical_acceptance': 'unreviewed'}
         _write_sealed(output_root, 'native-receipt.json', receipt)
         return receipt
     finally:

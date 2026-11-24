@@ -58,6 +58,9 @@ class SavedTurnTests(unittest.TestCase):
             cameras[camera] = frames
         self.manifest = {'case_suffix': 'yield_pedestrian', 'fps': 20, 'duration_frames': 3,
                          'site': self.save_json('site', site), 'telemetry': self.save_json('telemetry', rows),
+                         'camera_profile': self.save_json('camera_profile',
+                             {'fps': 20, 'duration_frames': 3,
+                              'cameras': ['front', 'left', 'right', 'rear']}),
                          'cameras': cameras}
 
     def save_bytes(self, name, raw):
@@ -78,6 +81,28 @@ class SavedTurnTests(unittest.TestCase):
         self.assertEqual({k: v['frames'] for k, v in result['decoded_cameras'].items()},
                          dict.fromkeys(('front', 'left', 'right', 'rear'), 3))
         self.assertFalse(result['physical_acceptance'])
+        self.assertTrue(result['comparison_row']['held_until_clear'])
+        self.assertEqual(result['comparison_row']['original_signal_frames'], 3)
+
+    def test_production_600_frame_contract(self):
+        rows = json.loads((self.root / 'telemetry.json').read_text())
+        for frame in range(3, 600):
+            row = dict(rows[-1])
+            row['frame'] = frame
+            rows.append(row)
+        self.manifest['telemetry'] = self.save_json('telemetry', rows)
+        self.manifest['duration_frames'] = 600
+        self.manifest['camera_profile'] = self.save_json('camera_profile',
+            {'fps': 20, 'duration_frames': 600,
+             'cameras': ['front', 'left', 'right', 'rear']})
+        for camera, frames in self.manifest['cameras'].items():
+            source_raw = (self.root / frames[-1]['source']['path']).read_bytes()
+            for frame in range(3, 600):
+                frames.append({'frame': frame,
+                               'source': self.save_bytes(camera + str(frame) + '.png', source_raw)})
+        result = saved.audit_saved_attempt(self.root, self.save_json('full_manifest', self.manifest))
+        self.assertEqual(result['original_frames'], 600)
+        self.assertEqual(sum(v['frames'] for v in result['decoded_cameras'].values()), 2400)
 
     def test_missing_changed_or_broken_camera_rejected(self):
         self.manifest['cameras']['rear'].pop()

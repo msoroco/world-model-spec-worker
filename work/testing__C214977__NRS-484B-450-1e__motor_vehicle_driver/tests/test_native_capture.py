@@ -3,7 +3,9 @@ import json
 import sys
 import tempfile
 import unittest
+from io import BytesIO
 from pathlib import Path
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import native_capture as n
@@ -24,6 +26,11 @@ class Adapter(Fake):
         self.fail_at = fail_at
         self.braked = False
         self.cleaned = False
+        self.pngs = {}
+        for name, size in n.CAMERA_SIZES.items():
+            data = BytesIO()
+            Image.new('RGB', size, (40, 80, 120)).save(data, format='PNG')
+            self.pngs[name] = data.getvalue()
     def tick(self):
         i = self.i
         self.i += 1
@@ -38,7 +45,8 @@ class Adapter(Fake):
                 'traffic_conflict': False, 'law_direction': False,
                 'police_direction': False, 'device_direction': False}
     def read_cameras(self, frame):
-        return {name: {'frame': frame, 'source_id': name + '-sensor'} for name in n.CAMERAS}
+        return {name: {'frame': frame, 'source_id': name + '-sensor',
+                       'png_bytes': self.pngs[name]} for name in n.CAMERAS}
     def brake(self, subject): self.braked = True
     def cleanup(self): self.cleaned = True
 
@@ -67,7 +75,23 @@ class TestCapture(unittest.TestCase):
         receipt_ref = {'path':'native-receipt.json', 'sha256':hashlib.sha256((self.root/'out'/'native-receipt.json').read_bytes()).hexdigest()}
         verified = s.verify(receipt_ref,self.root,self.root/'out',self.case)
         self.assertTrue(verified['source_verified'])
-        self.assertFalse(verified['actual_pixels'])
+        self.assertEqual(verified['decoded_original_pngs'],3600)
+        self.assertTrue(verified['actual_pixels'])
+        self.assertFalse(verified['full_video_decode'])
+    def test_camera_png_tamper_rejected(self):
+        a = Adapter()
+        n.capture(a,self.sref,self.vref,self.case,self.root,self.root/'out')
+        receipt_ref = {'path':'native-receipt.json', 'sha256':hashlib.sha256((self.root/'out'/'native-receipt.json').read_bytes()).hexdigest()}
+        (self.root/'out'/'camera-sources'/'overview'/'0000.png').write_bytes(b'bad')
+        with self.assertRaisesRegex(n.SourceError,'camera PNG hash mismatch'):
+            s.verify(receipt_ref,self.root,self.root/'out',self.case)
+    def test_missing_camera_pixels_rejected(self):
+        a = Adapter()
+        a.pngs['overview'] = b''
+        with self.assertRaisesRegex(n.SourceError,'Native camera PNG pixels missing'):
+            n.capture(a,self.sref,self.vref,self.case,self.root,self.root/'out')
+        self.assertTrue(a.braked and a.cleaned)
+        self.assertFalse((self.root/'out'/'native-receipt.json').exists())
     def test_saved_tamper_rejected(self):
         a = Adapter()
         n.capture(a,self.sref,self.vref,self.case,self.root,self.root/'out')

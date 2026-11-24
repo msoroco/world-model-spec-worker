@@ -10,7 +10,7 @@ from recording_description import build as recording_description
 
 ROOT = Path(__file__).resolve().parent
 SOURCES = ["runner.py", "native_capture.py", "native_runner.py", "native_frame.py", "native_observation.py", "native_setup.py", "native_routes.py", "native_camera.py",
-           "native_media.py", "saved_measurement.py",
+           "native_media.py", "saved_measurement.py", "saved_observation_audit.py",
            "comparison_audit.py",
            "red_left_turn_controller.py", "recording_description.py",
            "source_bound_scene.py", "build_case_plan.py", "case-plan.json",
@@ -18,7 +18,7 @@ SOURCES = ["runner.py", "native_capture.py", "native_runner.py", "native_frame.p
            "tests/test_red_left_turn_controller.py", "tests/test_source_bound_scene.py",
            "tests/test_native_runner.py", "tests/test_native_frame.py", "tests/test_runner_capture_closure.py",
            "tests/test_native_camera.py", "tests/test_native_media.py", "tests/test_native_setup.py", "tests/test_native_observation.py", "tests/test_native_capture.py", "tests/test_native_routes.py",
-           "tests/test_saved_measurement.py", "tests/test_saved_finalizer.py", "tests/test_comparison_audit.py",
+           "tests/test_saved_measurement.py", "tests/test_saved_finalizer.py", "tests/test_saved_observation_audit.py", "tests/test_comparison_audit.py",
            "independent/__init__.py", "independent/delivery_audit.py",
            "tests/test_delivery_audit.py"]
 

@@ -32,3 +32,13 @@ Proof: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s w
 Remaining CPU work: implement case-specific finalization into the pinned runtime format; write semantic proposals/index; exact construction/configuration/measurement contracts and execution manifest; offline and positive/negative compatibility receipts for all six cases; saved-only processing, delivery acceptance, and comparison integration proofs. Rerun exact strict gate afterward. Remaining physical checks are original CARLA phase/actors, motion, pixel coverage and duration.
 
 Additional controller and measured-precedence proof: `native_turn.py` now emits occupancy-dependent brake/throttle intents and audits each original-frame case for actual entry, route lane, lawful occupant and clearance order. Eight focused tests pass; current `cpu-tests.log` SHA256 819ce00c7b7cd18a045844bd510a6df9911baeacc50acaca6310acf37be25e57 supersedes the earlier six-test hash.
+
+## 2026-11-23 saved-source audit checkpoint
+
+`saved_turn.py` consumes a SHA256-sealed manifest, site, telemetry, camera profile and each original PNG. Production default enforces 600 consecutive original frames at 20 Hz across front/left/right/rear. It decodes every PNG, rejects missing/repeated/out-of-order/changed/corrupt/escaping sources, binds the existing `native_turn.py` measured turn case, and emits a comparison row from actual approach and entry observations. This is software preparation only; it does not establish official signal status or physical visibility.
+
+Focused proof: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/tests -v` exited 0 with 12 tests; `cpu-tests.log` SHA256 9b18302a48a7d778135a1b378a4ddab9bc8dc63277b3aae0fdedb87251df73d1. The runtime preflight rerun exited 0 and is retained under `.runtime-work/c111610-9a-preflight.log`. Tests use a short source-shaped fixture; the production default remains 600 frames.
+
+Remaining CPU work: canonical semantic proposals/index, exact manifest and six case bundles, positive/negative offline/compatibility proofs, runtime process-saved integration and delivery audit. The saved auditor is not yet wired to `runtime.py process-saved`. Preserve partial status.
+
+The expanded CPU suite includes an exact 600-frame original telemetry and 2,400-image full PNG decode fixture. All 13 tests pass; the superseding `cpu-tests.log` SHA256 is 36e38a62404f7d7d9d619c00727fa709239f79cafe901f6e17a0acffdb2a230c. The assignment-scoped static gate exited 0 (`cpu-static-check.log`); the exact strict gate exited 1 (`cpu-strict-check.log`) because this truthful checkpoint is partial.

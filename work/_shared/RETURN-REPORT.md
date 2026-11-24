@@ -1761,3 +1761,35 @@ C150041 LVMC-11-52-040-A added a source-bound roadway orientation sweep across 0
 ## 2026-11-23 full strict rerun
 
 The corrected full static check passed. The exact full strict command `.venv-cpu/bin/python worker_check.py --complete --require-delivery-ready` exited 1 in `.runtime-work/global-nov23-final-strict-rerun.log` on `Preparation acceptance failed: partial/missing packages remain`. This reflects the truthful partial results; no assignment was promoted without a passing scoped strict gate.
+
+## 2026-11-23 C158196 257-1 closeout
+
+C158196 NRS-484B-257-1 added a source-bound saved comparison audit for the linked yield cases, reopening all declared original source bytes and rejecting tampering, fixed-context drift and missing measured contrast. Twenty focused tests and a positive/negative CLI proof pass; scoped static passes. I independently checked all eight proof hashes and reran exact scoped strict, which rejects truthful partial status pending Native acquisition, compatibility, saved processing and delivery audits. C153046 NRS-484B-307-8c began in partition 01 as replacement owner.
+
+## 2026-11-23 C111610 283-1a closeout
+
+C111610 NRS-484B-283-1a added an independent saved comparison audit that reopens and hashes two sealed 600-frame attempts, checks exact pair/order and fixed site/turn/crosswalk/ego/exception sources, then computes measured differences for all five planned comparison kinds. Twenty focused tests and scoped static pass. I independently checked all three proof hashes and reran exact scoped strict, which rejects truthful partial status pending Native four-camera capture, proposals and offline/compatibility/saved-delivery receipts. C111304 NRS-484B-653-1a began in partition 02 as replacement owner.
+
+## 2026-11-23 C111610 307-9a closeout
+
+C111610 NRS-484B-307-9a added a source-hashed saved-turn auditor for the original 600-frame 20 Hz attempt: manifest/site/telemetry/profile checks, four synchronized camera streams, all 2,400 PNG decodes, Native turn measurement and a source-derived comparison row. Thirteen focused tests, runtime preflight and scoped static pass. I independently checked its proof hash and reran exact scoped strict, which rejects truthful partial status pending proposals, six bundles/manifest, offline/compatibility receipts, process-saved and delivery acceptance. C111278 LVMC-11-16-040 began in partition 07 as replacement owner.
+
+## 2026-11-23 C111304 653-1a closeout
+
+C111304 NRS-484B-653-1a added a source-bound saved audit for three early/late comparisons. It reopens both sealed 900-frame attempts, verifies exact case order/original packet joins and fixed site/map/camera/public-access/speed/rate/duration/actor sources, release order and measured ego-to-occupant distance difference. Twenty-three focused tests and scoped static pass. I independently checked both proof hashes and reran exact scoped strict, which rejects truthful partial status pending reviewed site packets, adapter, eight bundles, proposals, compatibility/delivery and other comparison proofs. C111329 NRS-484B-287-1c began in partition 04 as replacement owner.
+
+## 2026-11-23 C111329 287-1c closeout
+
+C111329 NRS-484B-287-1c added four synchronized PNG camera readers/archives and an independent saved camera audit for 20 Hz frame/hash/dimension/pixel joins. A 900-frame fixture decoded 3,600 images; 27 focused tests and scoped static pass. I independently checked the proof hash and reran exact scoped strict, which rejects truthful partial status pending reviewed site/device source, exact manifests/finalizers, proposals, compatibility and delivery audit. C111329 NRS-484B-287-1d began in partition 05 as replacement owner.
+
+## 2026-11-23 C153046, C111278 and C111329 287-1d closeouts
+
+C153046 NRS-484B-307-8c added independent delivery verification that replays a sealed 600-frame Native trace, checks original observation bindings and rejects a false-claim tamper. Forty focused tests and refreshed exact primary/fallback offline, compatibility, saved-only and delivery diagnostics pass. I independently verified all 50 result proof hashes and reran exact scoped strict; it rejects truthful partial status because physical source and complete delivery remain unresolved. C111278 LVMC-11-16-040 integrated synchronized four-camera PNG capture into a 900-tick Native run and a saved-only audit that hashes and fully decodes all 3,600 images. Twenty focused tests and scoped static pass; I checked its proof hash and exact scoped strict rejects truthful partial. C111329 NRS-484B-287-1d added source-hashed four-camera PNG capture and independent saved frame/hash/pixel audit. Thirteen focused tests and scoped static pass; I checked all three proof hashes and exact scoped strict rejects truthful partial. C147332 NRS-484B-307-12b, C214977 NRS-484B-450-1e and C104084 NRS-484B-603-1 began as replacement owners in partitions 01, 06 and 08.
+
+## 2026-11-23 C109705 saved comparison replay
+
+The root-owned C109705 NRS-484B-400-2a package now exposes a saved-only paired comparison command. It reopens two exact near/far attempts, verifies fixed original context and measured approach difference, fully decodes 7,200 original camera PNGs, and writes a receipt only after success. Diagnostic inputs are rejected by default without output. The 21 focused tests and scoped static pass; all 15 result proof hashes match. Exact scoped strict still rejects truthful partial status because compatibility/process-saved, delivery and reviewed genuine source work remains.
+
+## 2026-11-23 C147332 12b saved media closeout
+
+C147332 NRS-484B-307-12b added a saved four-camera FFV1 media-profile audit requiring exact declared resolution and 20 Hz. A real FFmpeg positive and wrong-rate negative test pass, as do four existing exact diagnostic attempt profile checks and 34 focused tests. Scoped static passes; I independently checked all 159 result proof hashes and reran exact scoped strict, which rejects truthful partial status pending reviewed genuine source, Native capture and nondiagnostic delivery. C110969 LVMC-11-52-130-A11 began in partition 04 as replacement owner.

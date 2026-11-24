@@ -54,6 +54,9 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
                             'wrong_movement', 'yield_other_traffic', 'continue_other_traffic'), 'unknown exact case')
     require(manifest['fps'] == fps and manifest['duration_frames'] == expected_frames, 'manifest timing mismatch')
     site = json.loads(source_bytes(root, manifest['site']))
+    profile = json.loads(source_bytes(root, manifest['camera_profile']))
+    require(profile.get('fps') == fps and profile.get('duration_frames') == expected_frames and
+            profile.get('cameras') == ['front', 'left', 'right', 'rear'], 'camera profile mismatch')
     try:
         measured = _native.measure_attempt(site, root, manifest['telemetry'])
         case_result = _native.audit_case_measurement(case_suffix, measured)
@@ -88,8 +91,30 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
                 width_height = dims
             require(dims == width_height, 'camera dimensions changed: ' + camera)
         decoded[camera] = {'frames': len(frames), 'dimensions': list(width_height)}
+    entry = measured['first_ego_entry']
+    approach = [row for row in rows if row['frame'] <= entry['frame']]
+    pedestrian_at_approach = any(row['pedestrian_inside_adjacent_crosswalk'] and
+                                 row['pedestrian_lawful_context'] for row in approach)
+    traffic_at_approach = any(row['other_traffic_lawfully_in_intersection'] for row in approach)
+    occupied_at_entry = ((entry['pedestrian_inside_adjacent_crosswalk'] and entry['pedestrian_lawful_context']) or
+                         entry['other_traffic_lawfully_in_intersection'])
+    comparison_row = {
+        'case_suffix': case_suffix, 'duration_frames': expected_frames,
+        'original_signal_frames': len(rows), 'first_ego_entry': {'frame': entry['frame']},
+        'actual_route': 'arrow_turn' if entry['ego_route_lane_id'] == site['arrow_destination_lane_id'] else 'straight',
+        'arrow_direction': site['arrow_direction'],
+        'pedestrian_lawfully_inside_at_approach': pedestrian_at_approach,
+        'other_traffic_lawfully_in_intersection_at_approach': traffic_at_approach,
+        'held_until_clear': (pedestrian_at_approach or traffic_at_approach) and not occupied_at_entry,
+        'camera_profile_sha256': manifest['camera_profile']['sha256'],
+        'map_sha256': site['original_sources']['map']['sha256'],
+        'ego_signal_sha256': site['original_sources']['ego_signal']['sha256'],
+        'opposing_signal_sha256': site['original_sources']['opposing_signal']['sha256'],
+        'crosswalk_sha256': site['original_sources']['crosswalk']['sha256'],
+        'pedestrian_permission_sha256': site['original_sources']['pedestrian_permission']['sha256'],
+    }
     return {'case_suffix': case_suffix, 'manifest_sha256': manifest_ref['sha256'],
             'telemetry_sha256': manifest['telemetry']['sha256'],
             'site_sha256': manifest['site']['sha256'], 'original_frames': expected_frames,
             'decoded_cameras': decoded, 'first_ego_entry_frame': case_result['first_entry_frame'],
-            'legal_verdict': None, 'physical_acceptance': False}
+            'comparison_row': comparison_row, 'legal_verdict': None, 'physical_acceptance': False}
