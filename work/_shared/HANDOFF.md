@@ -818,3 +818,9 @@ C215286 2026-11-24: corner continuity and full-duration finalizer guard added; 2
 C215286 no-flags whole-batch quick check after UTF-8 cleanup: exits 1 on retained execution manifest runtime mismatch, not Unicode decoding; log `.runtime-work/worker-check-quick-20261124-latest.log`. Scoped C215286 check passes; partial status retained.
 
 C215286 2026-11-24: four staged exact measurement contracts validate against pinned runtime, and staged six-case/three-comparison plan plus proposals generated. Four refreshed offline proofs and scoped nonready check pass. Status partial; see assignment HANDOFF.md.
+
+C215286 2026-11-24: Native capture now rejects synthetic site before CARLA import; 29 tests, four refreshed offline proofs and scoped nonready check pass. Partial.
+
+## 2026-11-24 C215286 continuation
+
+C215286 is owned and partial. Four alternative bundles now bind their original reverse site context in the pinned physical assessor; four offline proofs, four 900-frame positive/missing-site physical-source proofs, and four real saved-finalizer/measurement-report positive and missing-site-negative proofs pass. See the assignment HANDOFF and `cases/alternative-physical-context-validation.log` and `cases/alternative-finalizer-proof.log`. The selected manifest remains the proven crosswalk pair while alternative compatibility, saved-processing, physical-preparation, delivery and queue work continues. No prior-ready package was changed.

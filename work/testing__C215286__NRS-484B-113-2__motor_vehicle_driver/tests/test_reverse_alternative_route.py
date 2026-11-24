@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 from reverse_alternative_route import ReverseRouteController, review_route
-from reverse_alternative_capture import ASSIGNMENT, CASES, _load_site
+from reverse_alternative_capture import ASSIGNMENT, CASES, _load_site, capture
 
 
 BODY = [[15, -1], [17, -1], [17, 1], [15, 1]]
@@ -74,6 +74,21 @@ class ReverseAlternativeRouteTests(unittest.TestCase):
                                   expected_entry=False)
             self.assertEqual(max(review["planned_body_region_overlap_area_m2"]), 0)
             self.assertFalse(review["expected_entry"])
+
+    def test_native_capture_rejects_synthetic_site_before_carla_import(self):
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            site = json.loads((root / "intersection_site.json").read_text())
+            (target / "construction.json").write_text("{}\n")
+            (target / "intersection_site.json").write_text(json.dumps(site) + "\n")
+            for source in ("geometry_source", "camera_source"):
+                name = site[source]["path"]
+                (target / name).write_bytes((root / name).read_bytes())
+            with self.assertRaisesRegex(ValueError,
+                                        "Original Native site and camera review required"):
+                capture(target, "127.0.0.1", 2000,
+                        ASSIGNMENT + "__reverse_into_intersection")
 
 
 if __name__ == "__main__":

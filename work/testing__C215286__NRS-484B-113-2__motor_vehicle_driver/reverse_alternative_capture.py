@@ -89,6 +89,14 @@ def _load_site(root, case_id):
     return site, review
 
 
+def _require_native_review(site):
+    if (site.get("site_review_status") != "reviewed_native_site"
+            or not site.get("site_reviewer")
+            or not site.get("site_review_basis")
+            or not site.get("camera_review_basis")):
+        raise ValueError("Original Native site and camera review required before capture")
+
+
 def _cameras(carla, site):
     points = site["region_polygon_xy_m"]
     cx = sum(point[0] for point in points) / len(points)
@@ -128,15 +136,16 @@ def _record_alternative(actor, snapshot, site):
 
 
 def capture(output, host, port, case_id):
+    output = Path(output).resolve()
+    if not (output / "construction.json").is_file():
+        raise ValueError("Materialized exact construction required")
+    site, review = _load_site(output, case_id)
+    _require_native_review(site)
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import restore, snapshot as snapshot_world
 
-    output = Path(output).resolve()
-    if not (output / "construction.json").is_file():
-        raise ValueError("Materialized exact construction required")
-    site, review = _load_site(output, case_id)
     config = json.loads((output / "config.json").read_text())
     if config.get("selected_case_id") != case_id or config.get("rate_hz") != 20 or config.get("duration_s") != 45:
         raise ValueError("Exact 20 Hz, 45-second alternative construction required")
