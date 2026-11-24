@@ -24,12 +24,14 @@ CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 class FakeAdapter:
-    def __init__(self, *, drift_at=None, omit_camera=None, invalid_png=False):
+    def __init__(self, *, drift_at=None, omit_camera=None, invalid_png=False,
+                 cleanup_failure=False):
         self.world = FakeWorld()
         self.count = 0
         self.drift_at = drift_at
         self.omit_camera = omit_camera
         self.invalid_png = invalid_png
+        self.cleanup_failure = cleanup_failure
         self.braked = False
         self.cleaned = False
         self.native_attested = False
@@ -60,6 +62,8 @@ class FakeAdapter:
 
     def cleanup(self):
         self.cleaned = True
+        if self.cleanup_failure:
+            raise RuntimeError('adapter cleanup failure')
 
 
 def packet(path):
@@ -103,15 +107,43 @@ class NativeCaptureTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, error):
                     capture(adapter, CASE, survey, root / 'attempt')
                 self.assertTrue(adapter.braked and adapter.cleaned)
+                self.assertFalse((root / 'attempt').exists())
+                self.assertFalse(list(root.glob('attempt.incomplete-*')))
 
-    def test_invalid_image_bytes_fail_full_pixel_decode(self):
+    def test_invalid_image_bytes_never_publish_an_attempt(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             survey = root / 'packet.json'
             packet(survey)
-            capture(FakeAdapter(invalid_png=True), CASE, survey, root / 'attempt')
             with self.assertRaisesRegex(ValueError, 'decode failed'):
-                audit_original_pixels(root / 'attempt', CASE, allow_diagnostic=True)
+                capture(FakeAdapter(invalid_png=True), CASE, survey, root / 'attempt')
+            self.assertFalse((root / 'attempt').exists())
+            self.assertFalse(list(root.glob('attempt.incomplete-*')))
+
+    def test_existing_attempt_cannot_be_overwritten(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            attempt = root / 'attempt'
+            attempt.mkdir()
+            sentinel = attempt / 'sentinel'
+            sentinel.write_text('original')
+            with self.assertRaisesRegex(ValueError, 'already exists'):
+                capture(FakeAdapter(), CASE, survey, attempt)
+            self.assertEqual(sentinel.read_text(), 'original')
+
+    def test_adapter_cleanup_failure_does_not_publish_partial_capture(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            survey = root / 'packet.json'
+            packet(survey)
+            adapter = FakeAdapter(cleanup_failure=True)
+            with self.assertRaisesRegex(RuntimeError, 'cleanup failure'):
+                capture(adapter, CASE, survey, root / 'attempt')
+            self.assertTrue(adapter.braked and adapter.cleaned)
+            self.assertFalse((root / 'attempt').exists())
+            self.assertFalse(list(root.glob('attempt.incomplete-*')))
 
 
 if __name__ == '__main__':

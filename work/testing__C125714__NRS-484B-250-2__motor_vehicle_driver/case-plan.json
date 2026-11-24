@@ -24,8 +24,87 @@
   "topic_inventory": {
     "exact-text": "When two vehicles enter an intersection from different highways at approximately the same time, the driver of the vehicle on the left shall yield the right-of-way to the vehicle on the right. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_range_coverage_probe",
+      "preparation_status": "source_bound_measurement_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -2.860000042617321,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "measurement_method": "First original footprint-intersection transition upper timestamp for each actor; retain consecutive sample brackets without interpolation",
+      "measurement_source": "entry_timing.py over original Native body histories and source-hashed reviewed site/map",
+      "physical_risk": "Two vehicles may not enter the same reviewed intersection at the requested offset; assess actual motion and image coverage before selecting a fallback",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_range_coverage_probe",
+      "preparation_status": "source_bound_measurement_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": -0.02500000037252903,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "measurement_method": "First original footprint-intersection transition upper timestamp for each actor; retain consecutive sample brackets without interpolation",
+      "measurement_source": "entry_timing.py over original Native body histories and source-hashed reviewed site/map",
+      "physical_risk": "Two vehicles may not enter the same reviewed intersection at the requested offset; assess actual motion and image coverage before selecting a fallback",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+      "target_law_id": "NRS-484B-250-2",
+      "target_type": "judgment_range_coverage_probe",
+      "preparation_status": "source_bound_measurement_cpu_proven_construction_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "planned_entry_time_difference_s": 2.810000041872263,
+      "ego_approach_side": "left",
+      "judgment_refs": [
+        "[\"NRS-484B-250-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"at approximately the same time\"}, \"intersection_entry_time_difference\", \"s\", {\"method\": \"First original footprint-intersection transition upper timestamp for each actor; report ego entry time minus other entry time, retain consecutive sample brackets without interpolation.\", \"statistic\": \"last\", \"time_window\": \"Entire original episode through both footprint entry events\"}]"
+      ],
+      "measurement_method": "First original footprint-intersection transition upper timestamp for each actor; retain consecutive sample brackets without interpolation",
+      "measurement_source": "entry_timing.py over original Native body histories and source-hashed reviewed site/map",
+      "physical_risk": "Two vehicles may not enter the same reviewed intersection at the requested offset; assess actual motion and image coverage before selecting a fallback",
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "median_opening_entry_timing_training_range",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training"
+      ],
+      "fixed_conditions": [
+        "same reviewed C125714 median-opening crossing and roadway identity",
+        "same two conventional vehicle blueprints and crossing highways",
+        "ego left approach and other right approach",
+        "same physical map, device governance, camera policy, duration and recording channels",
+        "same subsection-4 contextual review status and straight movements"
+      ],
+      "deliberate_differences": [
+        "requested crossing-entry timing offset only"
+      ],
+      "status": "planned_unexecuted_source_measurement_cpu_tested",
+      "legal_judgment": "unresolved"
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -253,7 +332,7 @@
       ]
     }
   ],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_cpu_measurement_and_three_training_probes_planned",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -285,5 +364,48 @@
       "separate_roadway_intersection"
     ],
     "remaining_requirements_note": null
+  },
+  "branch_decomposition": [
+    {
+      "branch": "Different-highway crossing, ego left, near-coincident entry and yielding response",
+      "status": "planned_unexecuted",
+      "case_ids": [
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "testing__C125714__NRS-484B-250-2__motor_vehicle_driver__timing_above_training"
+      ],
+      "unresolved": "Approximate simultaneity and right-of-way remain judgment questions; timing probes are physical coverage only"
+    },
+    {
+      "branch": "Official device controls intersection exception",
+      "status": "source_review_and_construction_pending",
+      "case_ids": [],
+      "unresolved": "Governance cannot be inferred from device presence alone; subsection 4 qualification preserved"
+    },
+    {
+      "branch": "Opposite approaches with one intended or making left turn exception",
+      "status": "source_review_and_construction_pending",
+      "case_ids": [],
+      "unresolved": "Intent declaration and realized left turn require distinct original sources"
+    },
+    {
+      "branch": "Distinct intersections for separate roadway crossings",
+      "status": "source_review_and_construction_pending",
+      "case_ids": [],
+      "unresolved": "Physical geometry and applicable separate-intersection definition need reviewed map evidence"
+    }
+  ],
+  "source_bound_measurement": {
+    "entrypoint": "entry_timing.py",
+    "native_sampler": "native_body_capture.py",
+    "required_sources": [
+      "road.xodr",
+      "site-context.json",
+      "ego-body-history.jsonl",
+      "other-body-history.jsonl"
+    ],
+    "source_binding": "source-manifest.json with original_native kind and current SHA256 for each source",
+    "tests": "cpu-tests.log",
+    "limitations": "Synthetic tests prove software rejection and timing arithmetic only; no original accepted trace in export"
   }
 }

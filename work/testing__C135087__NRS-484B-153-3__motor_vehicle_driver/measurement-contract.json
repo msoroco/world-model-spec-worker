@@ -1,0 +1,58 @@
+{
+  "format": "worker-selected-requirement-measurement-contract",
+  "assignment_id": "testing__C135087__NRS-484B-153-3__motor_vehicle_driver",
+  "law_id": "NRS-484B-153-3",
+  "selected_requirement": "Original traffic-facing vehicle door is open during immediate passenger or cargo loading; retain activity and inactivity and closure without deciding necessity.",
+  "case_ids": [
+    "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_active",
+    "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__cargo_inactive",
+    "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__passenger_active",
+    "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__passenger_inactive",
+    "testing__C135087__NRS-484B-153-3__motor_vehicle_driver__opposite_side_control"
+  ],
+  "sources": [
+    {
+      "name": "frame_map",
+      "original_packet": "frame_map.json",
+      "method": "Native snapshot 20 Hz frame/time"
+    },
+    {
+      "name": "door",
+      "original_packet": "door.json",
+      "method": "selected-vehicle door articulation and side readback"
+    },
+    {
+      "name": "activity",
+      "original_packet": "activity.json",
+      "method": "original passenger or cargo boarding/loading activity and inactivity"
+    },
+    {
+      "name": "passing_vehicle",
+      "original_packet": "passing_vehicle.json",
+      "method": "separate passing vehicle body and longitudinal/lateral path"
+    },
+    {
+      "name": "geometry",
+      "original_packet": "geometry.json",
+      "method": "original narrow-road, loading position and body geometry"
+    }
+  ],
+  "measured_outputs": [
+    "open_start_frame",
+    "closed_after_frame",
+    "open_duration_s",
+    "inactive_open_duration_s",
+    "activity_kind",
+    "door_side",
+    "passing_traffic_side",
+    "door_closest_to_passing_traffic",
+    "minimum_body_clearance_m"
+  ],
+  "legal_judgment": "necessity and immediacy unresolved; no duration threshold is inferred",
+  "saved_finalizer": "door_measurement.py",
+  "comparison_auditor": "comparison_audit.py",
+  "limitations": [
+    "Source packets must originate from a later local Native capture; worker fixtures test software only.",
+    "Physical door, cargo/passenger and passing body visibility require later independent review."
+  ]
+}

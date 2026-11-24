@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from native_acquisition import seal_original_acquisition
-from saved_delivery import CAMERAS, audit_saved
+from saved_delivery import CAMERAS, CAMERA_DIMENSIONS, audit_saved
 from test_native_acquisition import CASE, source_rows
 
 
@@ -46,8 +46,12 @@ class SavedDeliveryTests(unittest.TestCase):
     def write_manifest(self):
         (self.acquisition / "camera-manifest.json").write_text(json.dumps(self.manifest))
 
+    def audit(self):
+        return audit_saved(self.acquisition, CASE, minimum_frames=25,
+                           expected_dimensions={camera: (64, 48) for camera in CAMERAS})
+
     def test_full_saved_decode_and_source_binding(self):
-        result = audit_saved(self.acquisition, CASE, minimum_frames=25)
+        result = self.audit()
         self.assertEqual(result["frame_count"], 25)
         self.assertEqual(set(result["cameras"]), set(CAMERAS))
         self.assertEqual(result["legal_prudence"], "unresolved")
@@ -59,28 +63,28 @@ class SavedDeliveryTests(unittest.TestCase):
         self.manifest["cameras"]["approach"]["frame_ids"][4] += 1
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "frame join"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25)
+            self.audit()
         self.manifest["cameras"]["approach"]["frame_ids"][4] -= 1
         self.manifest["frame_map_sha256"] = "0" * 64
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "frame map"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25)
+            self.audit()
 
     def test_rejects_diagnostic_and_missing_camera(self):
         self.manifest["diagnostic_fixture"] = True
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "not an original"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25)
+            self.audit()
         self.manifest["diagnostic_fixture"] = False
         del self.manifest["cameras"]["overview"]
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "four original"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25)
+            self.audit()
 
     def test_rejects_tampered_media(self):
         (self.acquisition / "overview.mkv").write_bytes(b"tampered")
         with self.assertRaisesRegex(ValueError, "hash mismatch"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25)
+            self.audit()
 
     def test_rejects_wrong_codec_even_with_updated_hash(self):
         path = self.acquisition / "overview.mkv"
@@ -93,7 +97,12 @@ class SavedDeliveryTests(unittest.TestCase):
         self.manifest["cameras"]["overview"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "codec"):
-            audit_saved(self.acquisition, CASE, minimum_frames=25)
+            self.audit()
+
+    def test_rejects_wrong_dimensions_even_when_source_hash_matches(self):
+        with self.assertRaisesRegex(ValueError, "dimensions differ"):
+            audit_saved(self.acquisition, CASE, minimum_frames=25,
+                        expected_dimensions=CAMERA_DIMENSIONS)
 
 
 if __name__ == "__main__":

@@ -24,9 +24,143 @@
   "topic_inventory": {
     "exact-text": "Whenever any vehicle is stopped at a marked crosswalk or at any unmarked crosswalk at an intersection to permit a pedestrian to cross the roadway, the driver of any other vehicle approaching from the rear shall not overtake and pass such stopped vehicle."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait",
+      "target_law_id": "LVMC-11-30-030",
+      "cell_id": "C229023",
+      "actor": "motor_vehicle_driver",
+      "crosswalk_kind": "unmarked",
+      "stopped_vehicle_purpose_claim": "permit_pedestrian",
+      "ego_maneuver_request": "wait",
+      "recording_description": "20 Hz original ego/lead/pedestrian actor positions and controls, source-hashed map/context/crosswalk geometry, four synchronized original cameras, startup through lead stop and ego clearance; physical crossing purpose and visibility require review",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass",
+      "target_law_id": "LVMC-11-30-030",
+      "cell_id": "C229023",
+      "actor": "motor_vehicle_driver",
+      "crosswalk_kind": "unmarked",
+      "stopped_vehicle_purpose_claim": "permit_pedestrian",
+      "ego_maneuver_request": "pass",
+      "recording_description": "20 Hz original ego/lead/pedestrian actor positions and controls, source-hashed map/context/crosswalk geometry, four synchronized original cameras, startup through lead stop and ego clearance; physical crossing purpose and visibility require review",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait",
+      "target_law_id": "LVMC-11-30-030",
+      "cell_id": "C229023",
+      "actor": "motor_vehicle_driver",
+      "crosswalk_kind": "marked",
+      "stopped_vehicle_purpose_claim": "permit_pedestrian",
+      "ego_maneuver_request": "wait",
+      "recording_description": "20 Hz original ego/lead/pedestrian actor positions and controls, source-hashed map/context/crosswalk geometry, four synchronized original cameras, startup through lead stop and ego clearance; physical crossing purpose and visibility require review",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass",
+      "target_law_id": "LVMC-11-30-030",
+      "cell_id": "C229023",
+      "actor": "motor_vehicle_driver",
+      "crosswalk_kind": "marked",
+      "stopped_vehicle_purpose_claim": "permit_pedestrian",
+      "ego_maneuver_request": "pass",
+      "recording_description": "20 Hz original ego/lead/pedestrian actor positions and controls, source-hashed map/context/crosswalk geometry, four synchronized original cameras, startup through lead stop and ego clearance; physical crossing purpose and visibility require review",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait",
+      "target_law_id": "LVMC-11-30-030",
+      "cell_id": "C229023",
+      "actor": "motor_vehicle_driver",
+      "crosswalk_kind": "unmarked",
+      "stopped_vehicle_purpose_claim": "other",
+      "ego_maneuver_request": "wait",
+      "recording_description": "20 Hz original ego/lead/pedestrian actor positions and controls, source-hashed map/context/crosswalk geometry, four synchronized original cameras, startup through lead stop and ego clearance; physical crossing purpose and visibility require review",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass",
+      "target_law_id": "LVMC-11-30-030",
+      "cell_id": "C229023",
+      "actor": "motor_vehicle_driver",
+      "crosswalk_kind": "unmarked",
+      "stopped_vehicle_purpose_claim": "other",
+      "ego_maneuver_request": "pass",
+      "recording_description": "20 Hz original ego/lead/pedestrian actor positions and controls, source-hashed map/context/crosswalk geometry, four synchronized original cameras, startup through lead stop and ego clearance; physical crossing purpose and visibility require review",
+      "planning_status": "exact_target_unexecuted"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "unmarked_overtake",
+      "case_ids": [
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait",
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass"
+      ],
+      "fixed_conditions": "Original road intersection, two motor vehicles, one pedestrian, map/cameras/20 Hz/45 s and policy identical except the declared difference.",
+      "deliberate_differences": "ego pass versus wait; crosswalk kind, lead stop purpose, pedestrian crossing, geometry and camera policy fixed",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "marked_overtake",
+      "case_ids": [
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait",
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass"
+      ],
+      "fixed_conditions": "Original road intersection, two motor vehicles, one pedestrian, map/cameras/20 Hz/45 s and policy identical except the declared difference.",
+      "deliberate_differences": "ego pass versus wait; marked geometry, lead stop purpose, pedestrian crossing and camera policy fixed",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "crosswalk_kind",
+      "case_ids": [
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass",
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass"
+      ],
+      "fixed_conditions": "Original road intersection, two motor vehicles, one pedestrian, map/cameras/20 Hz/45 s and policy identical except the declared difference.",
+      "deliberate_differences": "marked versus unmarked physical crossing; ego pass, lead stop purpose, pedestrian crossing and camera policy fixed",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "stop_purpose",
+      "case_ids": [
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass",
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass"
+      ],
+      "fixed_conditions": "Original road intersection, two motor vehicles, one pedestrian, map/cameras/20 Hz/45 s and policy identical except the declared difference.",
+      "deliberate_differences": "lead stop purpose permit pedestrian versus other; unmarked geometry and ego pass fixed",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "other_stop_behavior",
+      "case_ids": [
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait",
+        "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass"
+      ],
+      "fixed_conditions": "Original road intersection, two motor vehicles, one pedestrian, map/cameras/20 Hz/45 s and policy identical except the declared difference.",
+      "deliberate_differences": "ego pass versus wait with lead stopped for other purpose; unmarked geometry and camera policy fixed",
+      "status": "planned_unmeasured"
+    }
+  ],
+  "observations": [
+    {
+      "name": "actual intersection and crosswalk geometry",
+      "source": "original map packet and marking/sidewalk/curb source references",
+      "measurement": "crosswalk polygon and road-intersection identity; unmarked sidewalk lateral-line continuity reviewed separately"
+    },
+    {
+      "name": "lead stopped to permit pedestrian",
+      "source": "original 20 Hz lead vehicle speed plus independent stopped-purpose source and pedestrian history",
+      "measurement": "stopped frames and crossing frames kept separate from source claim"
+    },
+    {
+      "name": "ego approaching from rear and overtakes/passes",
+      "source": "original ego/lead body positions, speeds and controls",
+      "measurement": "Original eight-vertex vehicle body longitudinal extents projected onto source-hashed road axis; rear approach requires ego front behind lead rear, sampled full pass requires ego rear ahead of lead front. Lateral passing clearance and physical visibility still require later construction/audit."
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/assignment.json",
@@ -51,17 +185,20 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "The broad road cell needs a reviewed actual road intersection and marked/unmarked crosswalk geometry; the frozen witness marks this conditional.",
+    "Physical passage, pedestrian and lead vehicle visibility, stopped purpose, and camera quality remain unverified.",
+    "Six exact executable constructions, offline/compatibility receipts, case-specific finalization, semantic proposals, independent delivery and comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      "No accepted recording listed in the frozen evidence inventory; all six planned cases need original source and physical review."
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_and_source_bound_measurement_draft",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

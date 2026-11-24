@@ -14,6 +14,10 @@ from speed_measurement import measure
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+CAMERA_DIMENSIONS = {"overview": (1920, 1080),
+                     "approach": (1280, 720),
+                     "reference_corner": (1280, 720),
+                     "driver_reference": (1280, 720)}
 
 
 def _source(root: Path, entry: dict) -> Path:
@@ -28,9 +32,10 @@ def _source(root: Path, entry: dict) -> Path:
     return path
 
 
-def _probe_and_decode(path: Path, expected_frames: int) -> dict:
+def _probe_and_decode(path: Path, expected_frames: int,
+                      expected_dimensions: tuple[int, int]) -> dict:
     probe = subprocess.run(
-        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames",
+        ["ffprobe", "-v", "error", "-select_streams", "v", "-count_frames",
          "-show_entries", "stream=codec_name,width,height,avg_frame_rate,nb_read_frames",
          "-of", "json", str(path)], capture_output=True, text=True, check=True,
     )
@@ -43,8 +48,8 @@ def _probe_and_decode(path: Path, expected_frames: int) -> dict:
             int(stream.get("nb_read_frames", -1)) != expected_frames):
         raise ValueError("original camera codec, rate or frame count mismatch")
     width, height = int(stream["width"]), int(stream["height"])
-    if width <= 0 or height <= 0:
-        raise ValueError("invalid original camera dimensions")
+    if (width, height) != expected_dimensions:
+        raise ValueError("original camera dimensions differ from capture profile")
     decode = subprocess.run(
         ["ffmpeg", "-v", "error", "-xerror", "-i", str(path), "-map", "0:v:0",
          "-f", "null", "-"], capture_output=True, text=True,
@@ -55,7 +60,8 @@ def _probe_and_decode(path: Path, expected_frames: int) -> dict:
             "width": width, "height": height}
 
 
-def audit_saved(root: Path, case_id: str, *, minimum_frames: int = 900) -> dict:
+def audit_saved(root: Path, case_id: str, *, minimum_frames: int = 900,
+                expected_dimensions: dict = CAMERA_DIMENSIONS) -> dict:
     """Reject truncated, rebound or diagnostic episodes before saved processing."""
     root = Path(root)
     inventory = json.loads((root / "inventory.json").read_text())
@@ -73,6 +79,8 @@ def audit_saved(root: Path, case_id: str, *, minimum_frames: int = 900) -> dict:
     cameras = capture.get("cameras")
     if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
         raise ValueError("four original camera sources required")
+    if set(expected_dimensions) != set(CAMERAS):
+        raise ValueError("four camera dimensions required")
     expected = [row["frame"] for row in samples]
     if expected != list(range(expected[0], expected[0] + len(expected))):
         raise ValueError("original frame map is not consecutive")
@@ -89,7 +97,8 @@ def audit_saved(root: Path, case_id: str, *, minimum_frames: int = 900) -> dict:
         if path in paths:
             raise ValueError("camera sources are not distinct")
         paths.add(path)
-        details[camera] = _probe_and_decode(path, len(expected))
+        details[camera] = _probe_and_decode(path, len(expected),
+                                            tuple(expected_dimensions[camera]))
         details[camera]["sha256"] = entry["sha256"]
     return {"format": "c10307-saved-delivery-audit-v1", "case_id": case_id,
             "source_kind": "original_live_native", "frame_count": len(expected),

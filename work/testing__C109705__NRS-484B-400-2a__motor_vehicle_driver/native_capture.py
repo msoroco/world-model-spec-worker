@@ -9,12 +9,15 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
+import shutil
+import tempfile
 import zipfile
 from pathlib import Path
 
 from approach import measure
 from native_map import verify_live_map
-from saved_delivery import CAMERAS, FRAMES, PREFIX, SUFFIXES
+from saved_delivery import CAMERAS, FRAMES, PREFIX, SUFFIXES, audit_original_pixels
 
 
 def _write_jsonl(path: Path, rows: list[dict]) -> str:
@@ -34,8 +37,12 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
     if case_id not in {PREFIX + suffix for suffix in SUFFIXES}:
         raise ValueError('unknown exact approach case')
     binding = verify_live_map(adapter.world, map_packet_path, case_id)
-    root = Path(output_root)
-    root.mkdir(parents=True, exist_ok=True)
+    destination = Path(output_root)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        raise ValueError('Native attempt destination already exists')
+    root = Path(tempfile.mkdtemp(prefix=destination.name + '.incomplete-',
+                                 dir=destination.parent))
     started = False
     history: list[dict] = []
     frame_map: list[dict] = []
@@ -71,31 +78,45 @@ def capture(adapter, case_id: str, map_packet_path: Path, output_root: Path) -> 
                 archives[name].writestr(f'{index:04d}-{frame}.png', raw)
             frame_map.append({'frame': frame, 'time_s': time_s,
                               'camera_frames': {name: frame for name in sorted(CAMERAS)}})
+    except BaseException:
+        shutil.rmtree(root)
+        raise
     finally:
-        for archive in archives.values():
-            archive.close()
         try:
-            if started:
-                adapter.brake()
-        finally:
-            adapter.cleanup()
-    context = json.loads(Path(map_packet_path).read_text())['context']
-    context_bytes = (json.dumps(context, sort_keys=True, separators=(',', ':')) + '\n').encode()
-    (root / 'intersection-context.json').write_bytes(context_bytes)
-    hashes = {'intersection-context.json': hashlib.sha256(context_bytes).hexdigest(),
-              'approach-history.jsonl': _write_jsonl(root / 'approach-history.jsonl', history),
-              'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
-    acquisition = {'case_id': case_id,
-                   'diagnostic_fixture': not (getattr(adapter, 'native_attested', False)
-                                              and binding['public_highway_reviewed'] is True),
-                   'map_binding': binding,
-                   'media': {name: {'kind': 'original_native', 'path': name + '.zip',
-                                    'sha256': hashlib.sha256((root / (name + '.zip')).read_bytes()).hexdigest()}
-                             for name in sorted(CAMERAS)}}
-    acquisition.update({name: {'kind': 'original_native', 'sha256': digest}
-                        for name, digest in hashes.items()})
-    (root / 'acquisition.json').write_text(json.dumps(acquisition, indent=2) + '\n')
-    measured = measure(root)
-    return {'case_id': case_id, 'frame_count': FRAMES, 'source_sha256': hashes,
-            'approach_measurement': measured, 'physical_completion': False,
-            'legal_judgment': 'unresolved'}
+            for archive in archives.values():
+                archive.close()
+            try:
+                if started:
+                    adapter.brake()
+            finally:
+                adapter.cleanup()
+        except BaseException:
+            shutil.rmtree(root, ignore_errors=True)
+            raise
+    try:
+        context = json.loads(Path(map_packet_path).read_text())['context']
+        context_bytes = (json.dumps(context, sort_keys=True, separators=(',', ':')) + '\n').encode()
+        (root / 'intersection-context.json').write_bytes(context_bytes)
+        hashes = {'intersection-context.json': hashlib.sha256(context_bytes).hexdigest(),
+                  'approach-history.jsonl': _write_jsonl(root / 'approach-history.jsonl', history),
+                  'video_frames.jsonl': _write_jsonl(root / 'video_frames.jsonl', frame_map)}
+        acquisition = {'case_id': case_id,
+                       'diagnostic_fixture': not (getattr(adapter, 'native_attested', False)
+                                                  and binding['public_highway_reviewed'] is True),
+                       'map_binding': binding,
+                       'media': {name: {'kind': 'original_native', 'path': name + '.zip',
+                                        'sha256': hashlib.sha256((root / (name + '.zip')).read_bytes()).hexdigest()}
+                                 for name in sorted(CAMERAS)}}
+        acquisition.update({name: {'kind': 'original_native', 'sha256': digest}
+                            for name, digest in hashes.items()})
+        (root / 'acquisition.json').write_text(json.dumps(acquisition, indent=2) + '\n')
+        measured = measure(root)
+        pixels = audit_original_pixels(root, case_id,
+                                       allow_diagnostic=acquisition['diagnostic_fixture'])
+        os.replace(root, destination)
+        return {'case_id': case_id, 'frame_count': FRAMES, 'source_sha256': hashes,
+                'approach_measurement': measured, 'decoded_frames': pixels['decoded_frames'],
+                'physical_completion': False, 'legal_judgment': 'unresolved'}
+    except BaseException:
+        shutil.rmtree(root, ignore_errors=True)
+        raise

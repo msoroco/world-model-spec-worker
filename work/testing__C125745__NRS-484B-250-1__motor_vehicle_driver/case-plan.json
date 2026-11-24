@@ -20,8 +20,59 @@
   "topic_inventory": {
     "exact-text": "The driver of a vehicle approaching an intersection shall yield the right-of-way to a vehicle which has entered the intersection from a different highway. Except as otherwise provided in subsection 4 [NRS-484B-250-4], this section does not apply at intersections controlled by official traffic-control devices or to vehicles approaching each other from opposite directions, when the driver of one of the vehicles is intending to or is making a left turn."
   },
-  "cases": [],
-  "comparisons": [],
+  "cases": [
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "official_stop_device_exception_pair",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "existing_accepted_recording_id": "5a5606693d07c971a1184cb001f1f0f1c7704409fd7e710ed89badbf866be4d1",
+      "preparation_status": "accepted_metadata_only_original_source_review_pending_cpu_checker_proven",
+      "requested_ego_response": "wait_for_other_clearance",
+      "fixed_control": "stop_sign",
+      "measurement_source": "saved_crossing.py over source-hashed original map/site and two body histories",
+      "legal_applicability": "unresolved_official_device_and_subsection_4",
+      "physical_acceptance_claimed": false
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "official_stop_device_exception_pair",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "existing_accepted_recording_id": "86b84a831828ce51da7ff358b7e27d248a963070ab81aef95fbff24cbf2700cc",
+      "preparation_status": "accepted_metadata_only_original_source_review_pending_cpu_checker_proven",
+      "requested_ego_response": "advance_during_other_presence",
+      "fixed_control": "stop_sign",
+      "measurement_source": "saved_crossing.py over source-hashed original map/site and two body histories",
+      "legal_applicability": "unresolved_official_device_and_subsection_4",
+      "physical_acceptance_claimed": false
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "official_stop_precedence",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__advance"
+      ],
+      "fixed_conditions": [
+        "same reviewed median-opening crossing and both different public highways",
+        "same physical official stop sign and reviewed device governance",
+        "same other-vehicle trajectory and entry/exit timing",
+        "same actor identities, approach lanes, map, cameras, duration and source context"
+      ],
+      "deliberate_differences": [
+        "requested ego response: wait for clearance versus advance during other presence"
+      ],
+      "measured_difference": "other_cleared_before_ego_entry and body overlap frames",
+      "status": "accepted_metadata_only_source_bound_comparison_checker_cpu_tested",
+      "legal_judgment": "unresolved"
+    }
+  ],
   "observations": [],
   "sources": [
     {
@@ -117,7 +168,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_pair_and_original_source_checker_cpu_proven",
   "witness_review": [
     {
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
@@ -135,5 +186,50 @@
       "official_stop_precedence"
     ],
     "remaining_requirements_note": null
-  }
+  },
+  "source_bound_measurement": {
+    "entrypoint": "saved_crossing.py",
+    "native_sampler_and_controller": "native_crossing.py",
+    "required_sources": [
+      "road.xodr",
+      "site-context.json",
+      "ego-body-history.jsonl",
+      "other-body-history.jsonl"
+    ],
+    "source_binding": "source-manifest.json original_native kind with current SHA256 for each source",
+    "tests": "cpu-tests.log",
+    "limitations": "Accepted metadata is not original map, original body history or pixel review"
+  },
+  "branch_decomposition": [
+    {
+      "branch": "Other vehicle already entered from a different highway before ego approach",
+      "status": "source_review_pending",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__advance"
+      ],
+      "unresolved": "Same statutory intersection and yielding response need original source review"
+    },
+    {
+      "branch": "Official stop sign controls crossing; subsection-4 qualification",
+      "status": "source_review_pending",
+      "case_ids": [
+        "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__advance"
+      ],
+      "unresolved": "Fixed C125745 control is a stop sign; do not infer subsection-1 applicability from the pair"
+    },
+    {
+      "branch": "Opposite approaches and one intending or making left turn exception",
+      "status": "not_supported_by_fixed_crossing_pair_requires_separate_case_review",
+      "case_ids": [],
+      "unresolved": "Intention and actual turn are different source facts"
+    },
+    {
+      "branch": "Separate roadway intersections at median opening",
+      "status": "source_review_pending",
+      "case_ids": [],
+      "unresolved": "Map geometry must identify same crossing and any 30-foot separated intersections"
+    }
+  ]
 }

@@ -45,7 +45,8 @@ def target_velocity(carla, target_speed_mps: float):
 
 
 def run_bicycle_route(world, carla, bicycle, *, target_speed_mps: float,
-                      max_frames: int = 600, lateral_tolerance_m: float = 0.8):
+                      max_frames: int = 600, minimum_frames: int = 0,
+                      lateral_tolerance_m: float = 0.8, on_tick=None):
     """Apply velocity each synchronous tick and retain actual pose/velocity.
 
     Caller owns world restoration and actor destruction. This function fails if
@@ -53,7 +54,8 @@ def run_bicycle_route(world, carla, bicycle, *, target_speed_mps: float,
     reaches the route endpoint. The result is software readback, not law review.
     """
     command = target_velocity(carla, target_speed_mps)
-    if max_frames < 2 or not math.isfinite(lateral_tolerance_m) or not 0 < lateral_tolerance_m <= 1:
+    if (max_frames < 2 or minimum_frames < 0 or minimum_frames > max_frames or
+            not math.isfinite(lateral_tolerance_m) or not 0 < lateral_tolerance_m <= 1):
         raise ValueError("invalid route controller limits")
     first = bicycle.get_transform().location
     if abs(float(first.x) - ROUTE_START_X_M) > .5 or abs(float(first.y) - ROUTE_Y_M) > .5:
@@ -63,9 +65,11 @@ def run_bicycle_route(world, carla, bicycle, *, target_speed_mps: float,
     previous_x = float(first.x)
     previous_frame = None
     previous_time = None
+    completed = False
     try:
         for index in range(max_frames):
-            bicycle.set_target_velocity(command)
+            bicycle.set_target_velocity(
+                carla.Vector3D(x=0.0, y=0.0, z=0.0) if completed else command)
             frame_id = world.tick()
             snapshot = world.get_snapshot()
             native_frame = int(snapshot.frame)
@@ -85,17 +89,22 @@ def run_bicycle_route(world, carla, bicycle, *, target_speed_mps: float,
                 raise ValueError("Native bicycle left checked alley route")
             if x < previous_x - .05:
                 raise ValueError("Native bicycle reversed on checked route")
-            samples.append({"frame_id": native_frame, "time_s": native_time,
-                            "x_m": x, "y_m": y,
-                            "velocity_mps": [vx, vy, vz]})
+            row = {"frame_id": native_frame, "time_s": native_time,
+                   "x_m": x, "y_m": y, "velocity_mps": [vx, vy, vz],
+                   "route_completed": completed or x >= ROUTE_END_X_M}
+            samples.append(row)
+            if on_tick is not None:
+                on_tick(row)
             previous_x = x
             previous_frame = native_frame
             previous_time = native_time
-            if index >= FPS and x - origin_x < .5:
+            if not completed and index >= FPS and x - origin_x < .5:
                 raise ValueError("Native bicycle failed measured-motion check")
-            if x >= ROUTE_END_X_M:
+            if not completed and x >= ROUTE_END_X_M:
                 if len(samples) < FPS or max(s["x_m"] for s in samples) - samples[0]["x_m"] < 1:
                     raise ValueError("Native bicycle completion lacks motion history")
+                completed = True
+            if completed and len(samples) >= max(1, minimum_frames):
                 return samples
         raise ValueError("Native bicycle did not complete checked alley route")
     finally:

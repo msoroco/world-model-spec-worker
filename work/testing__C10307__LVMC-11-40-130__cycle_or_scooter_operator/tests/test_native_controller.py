@@ -66,6 +66,38 @@ class NativeControllerTests(unittest.TestCase):
         self.assertAlmostEqual(samples[-1]["time_s"], (len(samples)-1)/20)
         self.assertEqual(bike.command.x, 0)
 
+    def test_original_clock_and_observer_continue_through_900_frames(self):
+        bike = Bicycle()
+        observed = []
+        samples = run_bicycle_route(World(bike), CARLA, bike,
+                                    target_speed_mps=3.0, max_frames=900,
+                                    minimum_frames=900,
+                                    on_tick=lambda row: observed.append(dict(row)))
+        self.assertEqual(len(samples), 900)
+        self.assertEqual(observed, samples)
+        self.assertEqual([row["frame_id"] for row in samples], list(range(1, 901)))
+        completed_at = next(i for i, row in enumerate(samples) if row["route_completed"])
+        self.assertLess(completed_at, 899)
+        self.assertGreater(samples[completed_at]["x_m"] - samples[0]["x_m"], 1)
+        self.assertEqual(samples[-1]["velocity_mps"], [0.0, 0.0, 0.0])
+        self.assertEqual(bike.command.x, 0)
+
+    def test_capture_window_must_fit_tick_budget(self):
+        bike = Bicycle()
+        with self.assertRaisesRegex(ValueError, "limits"):
+            run_bicycle_route(World(bike), CARLA, bike,
+                              target_speed_mps=3.0, max_frames=899,
+                              minimum_frames=900)
+
+    def test_observer_failure_stops_bicycle(self):
+        bike = Bicycle()
+        def fail_observer(row):
+            raise ValueError("camera callback failed")
+        with self.assertRaisesRegex(ValueError, "camera callback failed"):
+            run_bicycle_route(World(bike), CARLA, bike,
+                              target_speed_mps=3.0, on_tick=fail_observer)
+        self.assertEqual(bike.command.x, 0)
+
     def test_stalled_static_asset_rejected_and_stopped(self):
         bike = Bicycle(moving=False)
         with self.assertRaisesRegex(ValueError, "failed measured-motion"):

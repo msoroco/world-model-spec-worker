@@ -129,3 +129,7 @@ All four exact construction bundles now embed the current source files; their co
 ## 2026-11-23 production camera-profile rejection
 
 The full-pixel saved auditor now checks 1920x1080 overview and 1280x720 for all three other original views in production mode. A source-hashed 2x2 diagnostic fixture is accepted only with explicit `--allow-diagnostic`; changing its declaration to production causes the CLI to reject it without writing a receipt. All 21 focused tests pass in `cpu-production-profile-tests.log`; scoped static passes and exact strict still rejects truthful partial status. The test, static and strict logs and hashes are recorded in result.json.
+
+## 2026-11-23 transactional original capture
+
+Native capture now writes into a sibling staging directory and publishes the attempt only after source-bound measurement and full original PNG decoding pass. A bad camera payload or frame cadence leaves no published attempt or staging files; an existing attempt cannot be overwritten. All 23 focused tests and scoped static validation pass, including an adapter cleanup failure that leaves no published attempt. Exact scoped strict exits 1 because the assignment remains partial. Logs and hashes are in result.json. Genuine reviewed Native source, pinned compatibility/process-saved receipts, candidate fallback and delivery acceptance remain to be constructed.

@@ -29,9 +29,143 @@
   "topic_inventory": {
     "exact-text": "The following regulations pertain to the operation of vehicles within a roundabout: The operator of a vehicle entering a roundabout shall yield the right-of-way to vehicles already in the roundabout and wait for a gap in traffic before entering."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_wait",
+      "target_law_id": "LVMC-11-43-010-B",
+      "cell_id": "C130864",
+      "actor": "motor_vehicle_driver",
+      "opponent_lane_relation": "connected",
+      "planned_gap_condition": "near",
+      "ego_entry_request": "wait",
+      "recording_description": "20 Hz source-hashed Native map/lane/route packet, original ego and circulating-vehicle eight-vertex body and speed histories, four synchronized original cameras from approach through exit or wait; record source geometry and observed temporal gap without a legal threshold",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter",
+      "target_law_id": "LVMC-11-43-010-B",
+      "cell_id": "C130864",
+      "actor": "motor_vehicle_driver",
+      "opponent_lane_relation": "connected",
+      "planned_gap_condition": "near",
+      "ego_entry_request": "enter",
+      "recording_description": "20 Hz source-hashed Native map/lane/route packet, original ego and circulating-vehicle eight-vertex body and speed histories, four synchronized original cameras from approach through exit or wait; record source geometry and observed temporal gap without a legal threshold",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_wait",
+      "target_law_id": "LVMC-11-43-010-B",
+      "cell_id": "C130864",
+      "actor": "motor_vehicle_driver",
+      "opponent_lane_relation": "adjacent",
+      "planned_gap_condition": "near",
+      "ego_entry_request": "wait",
+      "recording_description": "20 Hz source-hashed Native map/lane/route packet, original ego and circulating-vehicle eight-vertex body and speed histories, four synchronized original cameras from approach through exit or wait; record source geometry and observed temporal gap without a legal threshold",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_enter",
+      "target_law_id": "LVMC-11-43-010-B",
+      "cell_id": "C130864",
+      "actor": "motor_vehicle_driver",
+      "opponent_lane_relation": "adjacent",
+      "planned_gap_condition": "near",
+      "ego_entry_request": "enter",
+      "recording_description": "20 Hz source-hashed Native map/lane/route packet, original ego and circulating-vehicle eight-vertex body and speed histories, four synchronized original cameras from approach through exit or wait; record source geometry and observed temporal gap without a legal threshold",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_wait",
+      "target_law_id": "LVMC-11-43-010-B",
+      "cell_id": "C130864",
+      "actor": "motor_vehicle_driver",
+      "opponent_lane_relation": "connected",
+      "planned_gap_condition": "wider",
+      "ego_entry_request": "wait",
+      "recording_description": "20 Hz source-hashed Native map/lane/route packet, original ego and circulating-vehicle eight-vertex body and speed histories, four synchronized original cameras from approach through exit or wait; record source geometry and observed temporal gap without a legal threshold",
+      "planning_status": "exact_target_unexecuted"
+    },
+    {
+      "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_enter",
+      "target_law_id": "LVMC-11-43-010-B",
+      "cell_id": "C130864",
+      "actor": "motor_vehicle_driver",
+      "opponent_lane_relation": "connected",
+      "planned_gap_condition": "wider",
+      "ego_entry_request": "enter",
+      "recording_description": "20 Hz source-hashed Native map/lane/route packet, original ego and circulating-vehicle eight-vertex body and speed histories, four synchronized original cameras from approach through exit or wait; record source geometry and observed temporal gap without a legal threshold",
+      "planning_status": "exact_target_unexecuted"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "connected_entry",
+      "case_ids": [
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_wait",
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter"
+      ],
+      "fixed_conditions": "Same source-hashed multilane roundabout map, entry lane, actor blueprints, 20 Hz/45 s and four-camera policy; only declared variable differs.",
+      "deliberate_differences": "ego waits versus enters with same connected lane, opponent route and requested initial gap",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "adjacent_entry",
+      "case_ids": [
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_wait",
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_enter"
+      ],
+      "fixed_conditions": "Same source-hashed multilane roundabout map, entry lane, actor blueprints, 20 Hz/45 s and four-camera policy; only declared variable differs.",
+      "deliberate_differences": "ego waits versus enters with opponent in identified adjacent circulating lane and same requested initial gap",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "lane_relation",
+      "case_ids": [
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter",
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_enter"
+      ],
+      "fixed_conditions": "Same source-hashed multilane roundabout map, entry lane, actor blueprints, 20 Hz/45 s and four-camera policy; only declared variable differs.",
+      "deliberate_differences": "opponent circulating lane and route changed while ego entry request and requested initial gap fixed",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "gap_observation",
+      "case_ids": [
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter",
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_enter"
+      ],
+      "fixed_conditions": "Same source-hashed multilane roundabout map, entry lane, actor blueprints, 20 Hz/45 s and four-camera policy; only declared variable differs.",
+      "deliberate_differences": "requested initial opposing-vehicle gap changed while lane, route and ego entry request fixed",
+      "status": "planned_unmeasured"
+    },
+    {
+      "comparison_id": "wider_gap_behavior",
+      "case_ids": [
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_wait",
+        "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_enter"
+      ],
+      "fixed_conditions": "Same source-hashed multilane roundabout map, entry lane, actor blueprints, 20 Hz/45 s and four-camera policy; only declared variable differs.",
+      "deliberate_differences": "ego waits versus enters with same wider requested gap and connected lane",
+      "status": "planned_unmeasured"
+    }
+  ],
+  "observations": [
+    {
+      "name": "multilane roundabout and jurisdiction",
+      "source": "original Native map and jurisdiction source packet",
+      "measurement": "two distinct inventoried circulating lanes, connected ego entry lane, ring and entry-conflict surface polygons"
+    },
+    {
+      "name": "already-present circulating vehicle and potential conflict",
+      "source": "original opponent route/lane and initial world-space body plus 20 Hz actor trace",
+      "measurement": "opponent starts inside ring and occupancy/conflict polygon per frame; lane relation and route source retained"
+    },
+    {
+      "name": "ego waits for gap before entry",
+      "source": "original ego/opponent eight-vertex body, speed and control histories",
+      "measurement": "first sampled ego body entry, opponent occupancy and sampled body separation at entry, pre-entry wait history; no legal gap threshold"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json",
@@ -56,17 +190,20 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "The frozen review is accept_conditional; an actual source-reviewed multilane roundabout, connected entry lane, opponent lane/route, potential conflict and jurisdiction remain to bind.",
+    "No statutory numeric gap cutoff is supplied; saved measurements preserve the separation and timing for later judgment.",
+    "Six executable scene bundles, controller/camera capture, finalizers, proposals, offline/compatibility and independent delivery/comparison audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      "No accepted recordings in frozen evidence inventory; all six planned case targets require original source and physical review."
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_and_source_bound_measurement_draft",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/LVMC-11-43-010-B.json",
