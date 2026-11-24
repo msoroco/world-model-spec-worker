@@ -1,0 +1,103 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
+  "status": "unselected_contract_draft",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "requirements": [
+    {
+      "requirement": "ru.emergency_vehicle",
+      "output_key": "ru_emergency_vehicle",
+      "method": "authorization source plus Native actor identity",
+      "kind": "sourced_context",
+      "source_files": [
+        "authorization.json",
+        "native.jsonl"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "sig.siren",
+      "output_key": "sig_siren",
+      "method": "time-joined original siren output or acoustic recording",
+      "kind": "measured",
+      "source_files": [
+        "native.jsonl",
+        "audio source"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "sig.warning_lamp",
+      "output_key": "sig_warning_lamp",
+      "method": "time-joined original vehicle lamp state",
+      "kind": "measured",
+      "source_files": [
+        "native.jsonl"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "drv.responding_emergency",
+      "output_key": "drv_responding_emergency",
+      "method": "dispatch emergency-call or pursuit source",
+      "kind": "sourced_context",
+      "source_files": [
+        "dispatch.jsonl"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "kin.velocity",
+      "output_key": "kin_velocity",
+      "method": "original Native vehicle motion",
+      "kind": "measured",
+      "source_files": [
+        "native.jsonl"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "ru.pedestrian",
+      "output_key": "ru_pedestrian",
+      "method": "original participant identity and trajectory when present",
+      "kind": "sourced_context",
+      "source_files": [
+        "native participant trace"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "ru.motor_vehicle",
+      "output_key": "ru_motor_vehicle",
+      "method": "original counterpart identity and trajectory",
+      "kind": "sourced_context",
+      "source_files": [
+        "native.jsonl"
+      ],
+      "legal_cutoff_claimed": false
+    },
+    {
+      "requirement": "drv.approaching",
+      "output_key": "drv_approaching",
+      "method": "road geometry and original motion joined to frame map",
+      "kind": "measured",
+      "source_files": [
+        "native.jsonl",
+        "video_frames.jsonl"
+      ],
+      "legal_cutoff_claimed": false
+    }
+  ],
+  "negative": {
+    "remove": [
+      "dispatch.jsonl"
+    ],
+    "error_contains": "Missing retained source"
+  },
+  "original_source_limitations": [
+    "The 600-frame fixture has synthetic Native motion; it is not an original CARLA recording.",
+    "No independently verified siren acoustic output, emergency vehicle authorization or 500-foot audibility source is present.",
+    "A requested siren is not a measured audible siren."
+  ]
+}

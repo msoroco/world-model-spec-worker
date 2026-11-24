@@ -14,6 +14,7 @@ from runner import check
 from prove import make_source
 from measure import measure
 from audit import audit
+from prove import BRANCHES
 
 class SourceContract(unittest.TestCase):
     def test_exact_plan(self):
@@ -38,6 +39,18 @@ class SourceContract(unittest.TestCase):
             result = audit(make_source(a, "probe_a"), make_source(b, "probe_b"))
             self.assertTrue(result["passed"])
             self.assertEqual(result["outside_documented_response_frames"], [0, 200])
+
+    def test_every_statutory_branch(self):
+        with tempfile.TemporaryDirectory() as temp:
+            for branch, policy in BRANCHES.items():
+                base = Path(temp) / branch
+                base.mkdir()
+                result = measure(*make_source(base, branch))
+                self.assertEqual(result["siren_observed_frames"], 200 if policy["siren"] else 0)
+                self.assertEqual(result["warning_lamp_observed_frames"], 250 if policy["lamp"] else 0)
+                self.assertEqual(result["siren_outside_documented_response_frames"],
+                                 200 if branch == "probe_b" else 0)
+                self.assertIsNone(result["physical_legal_verdict"])
 '''
 
 
@@ -48,10 +61,19 @@ def sha(path):
 def build():
     cases = []
     root_config = json.loads((NATIVE / "config.json").read_text())
-    for probe in ("probe_a", "probe_b"):
+    policies = {
+        "probe_a": (True, False, True),
+        "probe_b": (False, False, True),
+        "pursuit": (False, True, True),
+        "call_lamps_only": (True, False, False),
+        "ordinary_lamps_only": (False, False, False),
+    }
+    for probe, (call, pursuit, siren) in policies.items():
         case_id = HERE.name + "__" + probe
         config = dict(root_config, case_id=case_id,
-                      emergency_call_requested=probe == "probe_a")
+                      emergency_call_requested=call,
+                      immediate_pursuit_requested=pursuit,
+                      siren_requested=siren)
         files = [{"path": "config.json", "content": json.dumps(config, indent=2) + "\n"}]
         files.extend({"path": name, "content": (NATIVE / name).read_text()}
                      for name in ("runner.py", "measure.py", "prove.py", "audit.py"))
@@ -66,7 +88,9 @@ def build():
         path.write_text(json.dumps(construction, indent=2) + "\n")
         cases.append({"case_id": case_id, "kind": "draft_not_selected",
                       "construction": str(path.relative_to(HERE)),
-                      "construction_sha256": sha(path), "candidates": []})
+                      "construction_sha256": sha(path),
+                      "measurement_contract": str((path.parent.parent / "measurement-contract.json").relative_to(HERE)),
+                      "candidates": []})
     manifest = {"format": "worker-unselected-draft-construction-manifest-v1",
                 "assignment_id": HERE.name, "status": "draft_not_selected",
                 "cases": cases, "original_native_observed": False,

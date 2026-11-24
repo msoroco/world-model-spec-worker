@@ -17,6 +17,7 @@ CHECK = '''"""Exact copied source and law identity for an unselected diagonal re
 import json
 from pathlib import Path
 from authorization import measure, requested, sha
+from diagonal_motion import camera_plan, command
 
 HERE = Path.cwd()
 
@@ -34,6 +35,11 @@ def check():
     actual = [json.loads(line) for line in (HERE / 'diagonal-source.jsonl').read_text().splitlines()]
     if actual != requested(cfg['case_suffix']):
         raise ValueError('Diagonal authorization request changed')
+    for index, row in enumerate(actual):
+        if tuple(row['pedestrian_xy_m']) != command(index)['target_xy_m']:
+            raise ValueError('Diagonal controller/source route changed')
+    if [item['name'] for item in camera_plan()] != ['overview', 'approach', 'reference_corner', 'driver_reference']:
+        raise ValueError('Four camera acquisition plan changed')
     measured = measure(HERE / 'diagonal-source.jsonl', HERE / 'diagonal-context.json')
     if measured['requested_authorization_at_entry'] != cfg['requested_authorization']:
         raise ValueError('First-entry authorization request changed')
@@ -79,6 +85,8 @@ def build():
             ('diagonal-source.jsonl', source.read_text()),
             ('diagonal-context.json', context.read_text()),
             ('authorization.py', (HERE / 'authorization.py').read_text()),
+            ('diagonal_motion.py', (HERE / 'diagonal_motion.py').read_text()),
+            ('camera_capture.py', (HERE / 'camera_capture.py').read_text()),
             ('check.py', CHECK), ('tests/test_exact.py', TEST),
             ('config.json', json.dumps(config, indent=2) + '\n'))]
         construction = {'case_id': config['case_id'], 'cell_id': 'C109166',

@@ -67,9 +67,12 @@ def rebuild_channels(root, description, native, mapping, rider, sign):
             values.append({"time_s": n["time_s"], "value": value})
         write_rows(channels/(name+".jsonl"), values)
     context = root/"context.json"
+    expected_context = json.dumps({"signed_hill_crest": {"scope": "synthetic_native_shaped_diagnostic", "sign_authorization_proven": False}}, allow_nan=False)+"\n"
     if context.exists():
-        raise ValueError("Fixture-supplied derived context is not accepted")
-    context.write_text(json.dumps({"signed_hill_crest": {"scope": "synthetic_native_shaped_diagnostic", "sign_authorization_proven": False}}, allow_nan=False)+"\n")
+        if context.read_text() != expected_context:
+            raise ValueError("Existing derived context differs from saved sources")
+    else:
+        context.write_text(expected_context)
 
 
 def measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames):

@@ -7,6 +7,13 @@ from measure import measure
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
+BRANCHES = {
+    "probe_a": {"call": True, "pursuit": False, "siren": True, "lamp": True},
+    "probe_b": {"call": False, "pursuit": False, "siren": True, "lamp": True},
+    "pursuit": {"call": False, "pursuit": True, "siren": True, "lamp": True},
+    "call_lamps_only": {"call": True, "pursuit": False, "siren": False, "lamp": True},
+    "ordinary_lamps_only": {"call": False, "pursuit": False, "siren": False, "lamp": True},
+}
 
 
 def write_rows(path, rows):
@@ -14,9 +21,15 @@ def write_rows(path, rows):
 
 
 def make_source(base, case):
+    if case not in BRANCHES:
+        raise ValueError("Unknown exact branch: " + case)
+    branch = BRANCHES[case]
     config = json.loads((HERE / "config.json").read_text())
     config["case_id"] = config["case_id"].rsplit("__", 1)[0] + "__" + case
-    config["emergency_call_requested"] = case == "probe_a"
+    config["emergency_call_requested"] = branch["call"]
+    config["immediate_pursuit_requested"] = branch["pursuit"]
+    config["siren_requested"] = branch["siren"]
+    config["warning_lamps_requested"] = branch["lamp"]
     (base / "config.json").write_text(json.dumps(config, indent=2) + "\n")
     native, mapping, dispatch = [], [], []
     for i in range(600):
@@ -27,12 +40,12 @@ def make_source(base, case):
                        "time_s": time_s, "vehicle_actor_id": 101,
                        "other_vehicle_actor_id": 202, "ego_x_m": x,
                        "ego_speed_mps": 2.0,
-                       "siren_observed": 100 <= i < 300,
-                       "warning_lamp_observed": 80 <= i < 330})
+                       "siren_observed": branch["siren"] and 100 <= i < 300,
+                       "warning_lamp_observed": branch["lamp"] and 80 <= i < 330})
         mapping.append({"video_frame": i, "native_frame": frame, "time_s": time_s})
         dispatch.append({"native_frame": frame, "time_s": time_s,
-                         "emergency_call_documented": case == "probe_a",
-                         "immediate_pursuit_documented": False})
+                         "emergency_call_documented": branch["call"],
+                         "immediate_pursuit_documented": branch["pursuit"]})
     for name, rows in (("native.jsonl", native), ("video_frames.jsonl", mapping),
                        ("dispatch.jsonl", dispatch)):
         write_rows(base / name, rows)

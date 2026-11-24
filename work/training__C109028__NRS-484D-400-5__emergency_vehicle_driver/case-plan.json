@@ -12,9 +12,12 @@
       "status": "selected_required",
       "case_ids": [
         "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
-        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b"
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_b",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Five exact unselected source diagnostics have pinned offline construction and four controlled source comparisons; current v2 compatibility, saved processing and source authority are incomplete."
     }
   ],
   "cases": [
@@ -33,6 +36,30 @@
       "target_type": "violating_attempt",
       "physical_target": "sound siren in ordinary travel",
       "comparison_variable": "siren_use_authority"
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit",
+      "target_law_id": "NRS-484D-400-5",
+      "kind": "planned_only",
+      "target_type": "source_diagnostic",
+      "physical_target": "sound siren during documented immediate pursuit",
+      "comparison_variable": "documented_response_and_observed_siren"
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
+      "target_law_id": "NRS-484D-400-5",
+      "kind": "planned_only",
+      "target_type": "source_diagnostic",
+      "physical_target": "operate warning lamps without sounding siren during documented emergency call",
+      "comparison_variable": "documented_response_and_observed_siren"
+    },
+    {
+      "case_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only",
+      "target_law_id": "NRS-484D-400-5",
+      "kind": "planned_only",
+      "target_type": "source_diagnostic",
+      "physical_target": "operate warning lamps without sounding siren during ordinary travel",
+      "comparison_variable": "documented_response_and_observed_siren"
     }
   ],
   "comparisons": [
@@ -47,6 +74,45 @@
       ],
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+      ]
+    },
+    {
+      "comparison_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_vs_pursuit_siren",
+      "case_ids": [
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__pursuit"
+      ],
+      "deliberate_differences": [
+        "documented emergency call versus documented immediate pursuit"
+      ],
+      "fixed_conditions": [
+        "frozen cell, 600-frame motion, participant identities, approach geometry, four camera names, frame map and any nonvaried observed signal and dispatch source"
+      ]
+    },
+    {
+      "comparison_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_siren_vs_lamps_only",
+      "case_ids": [
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__probe_a",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only"
+      ],
+      "deliberate_differences": [
+        "observed siren while warning lamps remain on"
+      ],
+      "fixed_conditions": [
+        "frozen cell, 600-frame motion, participant identities, approach geometry, four camera names, frame map and any nonvaried observed signal and dispatch source"
+      ]
+    },
+    {
+      "comparison_id": "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_vs_ordinary_lamps_only",
+      "case_ids": [
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__call_lamps_only",
+        "training__C109028__NRS-484D-400-5__emergency_vehicle_driver__ordinary_lamps_only"
+      ],
+      "deliberate_differences": [
+        "documented emergency call with siren off in both"
+      ],
+      "fixed_conditions": [
+        "frozen cell, 600-frame motion, participant identities, approach geometry, four camera names, frame map and any nonvaried observed signal and dispatch source"
       ]
     }
   ],
@@ -100,10 +166,11 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "No original Native capture, independent siren/audio state or dispatch authorization source has been acquired.",
+    "The five source-shaped constructions are unselected diagnostics; they do not establish 500-foot audibility, authorized emergency-vehicle status, physical warning or legal outcome.",
+    "Current public compatibility and actual process-saved paths remain untested for this assignment."
   ],
-  "statutory_text": "An authorized emergency vehicle may be equipped with a siren, whistle or bell, capable of emitting sound audible under normal conditions from a distance of not less than 500 feet, but the siren must not be used except when the vehicle is operated in response to an emergency call or in the immediate pursuit of an actual or suspected violator of the law, in which event the driver of the vehicle may sound the siren to warn pedestrians and other drivers of his or her approach. A driver of an emergency vehicle may operate the vehicle’s warning lamps without sounding the siren.",
+  "statutory_text": "An authorized emergency vehicle may be equipped with a siren, whistle or bell, capable of emitting sound audible under normal conditions from a distance of not less than 500 feet, but the siren must not be used except when the vehicle is operated in response to an emergency call or in the immediate pursuit of an actual or suspected violator of the law, in which event the driver of the vehicle may sound the siren to warn pedestrians and other drivers of his or her approach. A driver of an emergency vehicle may operate the vehicle\u2019s warning lamps without sounding the siren.",
   "activation_conditions_from_unreviewed_summary": [
     "the subject is an authorized emergency vehicle equipped with a siren",
     "the siren is sounded"
