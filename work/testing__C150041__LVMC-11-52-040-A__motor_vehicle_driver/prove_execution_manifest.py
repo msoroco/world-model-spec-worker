@@ -34,7 +34,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--validator", required=True, type=Path)
+    parser.add_argument("--proof-tag", default="")
     args = parser.parse_args()
+    if args.proof_tag and (not args.proof_tag.replace('-', '').replace('_', '').isalnum()
+                           or len(args.proof_tag) > 48):
+        raise ValueError("proof tag must be short ASCII letters, digits, dashes or underscores")
+    tag = "-" + args.proof_tag if args.proof_tag else ""
     scratch = (REPO / ".runtime-work").resolve()
     output = args.output_root.resolve()
     runtime_output = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "/")).resolve()
@@ -79,7 +84,7 @@ def main():
                 raise ValueError("delivery construction embeds diagnostic reviewed sources")
             proof = output / kind / candidate_id
             offline = proof / "offline"
-            offline_log = folder / ("cpu-delivery-" + candidate_id + "-offline.log")
+            offline_log = folder / ("cpu-delivery-" + candidate_id + "-offline" + tag + ".log")
             offline_command = [sys.executable, str(REPO / "runtime.py"), "offline",
                                "--manifest", str(MANIFEST), "--case", entry["case_id"],
                                "--candidate", candidate_id, "--output", str(offline)]
@@ -94,7 +99,7 @@ def main():
                                    "log_sha256": sha(offline_log),
                                    "runtime_offline_log_sha256": sha(offline / "offline.log")}
             compat = proof / "compatibility"
-            compat_log = folder / ("cpu-delivery-" + candidate_id + "-compat-command.log")
+            compat_log = folder / ("cpu-delivery-" + candidate_id + "-compat-command" + tag + ".log")
             compat_command = [sys.executable, str(REPO / "runtime.py"), "compatibility",
                               "--manifest", str(MANIFEST), "--case", entry["case_id"],
                               "--candidate", candidate_id, "--output", str(compat),
@@ -111,7 +116,7 @@ def main():
             for source_name, name in (("compatibility.json", "compatibility.json"),
                                       ("compatibility-analysis.log", "compatibility-analysis.log"),
                                       ("negative-analysis.log", "negative-analysis.log")):
-                destination = folder / (prefix + name)
+                destination = folder / (prefix + Path(name).stem + tag + Path(name).suffix)
                 shutil.copy2(compat / source_name, destination)
                 copied[source_name] = destination
             selected["compatibility"] = {

@@ -99,19 +99,18 @@ def rebind(park_packet, stand_packet, output_dir):
                     '"--approach-distance-m", "' + str(distance) + '"])\n'
                     '    main()\n')
                 files['tests/test_delivery_offline.py']['content'] = (
-                    '"""Check exact retained-source scene and package identity."""\n'
+                    '"""Check exact sealed scene and package identity offline."""\n'
                     'import json\n'
                     'from pathlib import Path\n'
                     'import unittest\n'
-                    'from parking_scene import build\n'
                     'from parking_runner import check_materialized_package\n'
                     'class ReviewedBundle(unittest.TestCase):\n'
                     '    def test_exact_reviewed_scene(self):\n'
-                    '        expected = build("reviewed-context.json", ".", "' + suffix + '", '
-                    'approach_distance_m=' + str(distance) + ')\n'
+                    '        expected = json.loads(Path("scene.json").read_text())\n'
                     '        check_materialized_package(Path.cwd(), expected)\n'
-                    '        self.assertEqual(json.loads(Path("scene.json").read_text()), '
-                    'json.loads(json.dumps(expected)))\n'
+                    '        self.assertEqual(expected["source_packet_sha256"], '
+                    'json.loads(Path("config.json").read_text())'
+                    '["reviewed_source_packet"]["sha256"])\n'
                     '        self.assertFalse(expected["physical_realization_claimed"])\n')
                 package['files'] = list(files.values()) + [
                     {'path': path, 'content': content}

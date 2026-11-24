@@ -178,8 +178,21 @@ def main():
     parser.add_argument("--approach-distance-m", type=float, default=8.0)
     args = parser.parse_args()
     if args.check:
-        print(json.dumps(build(args.packet, args.source_root, args.case,
-                               approach_distance_m=args.approach_distance_m)))
+        if Path(args.packet).is_file():
+            scene = build(args.packet, args.source_root, args.case,
+                          approach_distance_m=args.approach_distance_m)
+        else:
+            # Pinned offline materializes the construction alone. Compatibility
+            # supplies and checks the sealed reviewed source fixture separately.
+            scene = json.loads(Path('scene.json').read_text())
+            if (scene.get('case_id', '').rsplit('__', 1)[-1] != args.case or
+                    scene.get('physical_realization_claimed') is not False):
+                raise ValueError('offline scene identity or scope differs')
+            check_materialized_package(Path.cwd(), scene)
+            packet = json.loads(Path('config.json').read_text()).get('reviewed_source_packet')
+            if not packet or packet.get('sha256') != scene.get('source_packet_sha256'):
+                raise ValueError('offline reviewed packet seal differs')
+        print(json.dumps(scene))
         return
     if not args.output_dir:
         parser.error("use --check or --output-dir")

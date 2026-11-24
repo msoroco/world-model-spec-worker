@@ -202,6 +202,49 @@ class NativeDispatchTests(unittest.TestCase):
                      capture_fn=lambda **k: self.fail('capture started'))
         self.assertEqual(events, ['enter', 'release'])
 
+    def test_capture_exception_releases_owner_without_saved_processing(self):
+        events = []
+        road_source = self.road.read_text()
+
+        class Owner:
+            ego = object()
+            signal_observer = camera_observer = control_applier = object()
+
+            class Map:
+                name = 'site'
+
+                def to_opendrive(self):
+                    return road_source
+
+            class World:
+                def get_map(self):
+                    return Owner.Map()
+
+            world = World()
+
+            def __enter__(self):
+                events.append('enter')
+                return self
+
+            def __exit__(self, *_):
+                events.append('release')
+
+            def release_receipt(self):
+                raise AssertionError('release receipt read after failed capture')
+
+        def failed_capture(**_):
+            events.append('capture')
+            raise RuntimeError('Native sensor failed')
+
+        with self.assertRaisesRegex(RuntimeError, 'Native sensor failed'):
+            dispatch(owner_factory=lambda *_: Owner(),
+                     opendrive=self.road, authority=self.authority,
+                     review_receipt=self.review, property_id='lot',
+                     case_id=self.case, purpose={}, actor_source={},
+                     attempt=self.root / 'attempt', capture_fn=failed_capture,
+                     prepare_fn=lambda *a, **k: self.fail('saved processing started'))
+        self.assertEqual(events, ['enter', 'capture', 'release'])
+
     def test_saved_source_change_fails_before_pixel_audit(self):
         class Owner:
             ego = object()

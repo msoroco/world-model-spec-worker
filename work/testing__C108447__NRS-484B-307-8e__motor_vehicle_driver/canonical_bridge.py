@@ -46,6 +46,27 @@ def bridge(root: Path, original: Path, *, release: dict,
                  abs(body['time_s'] - row['time_s']) < 1e-6 and
                  (index == 0 or body['frame'] == ego[index - 1]['frame'] + 1),
                  'canonical original frame identity differs')
+    native = root / 'capture'
+    _require((native / 'manifest.json').is_file() and
+             (native / 'evidence.jsonl').is_file() and
+             (native / 'native/frames.jsonl').is_file(),
+             'owner must export original Native graph/evidence sources')
+    graph_manifest = json.loads((native / 'manifest.json').read_text())
+    _require(graph_manifest.get('frames') == expected_frames and
+             graph_manifest.get('observation_contract_version', 0) >= 2,
+             'Native graph export frame/profile differs')
+    graph_rows = [json.loads(line) for line in
+                  (native / 'native/frames.jsonl').read_text().splitlines()]
+    evidence_rows = [json.loads(line) for line in
+                     (native / 'evidence.jsonl').read_text().splitlines()]
+    _require(len(graph_rows) == len(evidence_rows) == expected_frames,
+             'Native graph/evidence frame count differs')
+    for body, graph, evidence in zip(ego, graph_rows, evidence_rows):
+        _require(graph.get('frame') == body['frame'] and
+                 evidence.get('original_frame') == body['frame'] and
+                 evidence.get('replay_frame') == body['frame'] and
+                 abs(evidence.get('recording_time_s', -1) - body['time_s']) < 1e-6,
+                 'Native graph/evidence frame identity differs')
     for name in ('trace.json', 'map-packet.json', 'authority.json', 'road.xodr'):
         destination = root / name
         _require(not destination.exists(), 'canonical source destination exists: ' + name)
@@ -92,17 +113,13 @@ def bridge(root: Path, original: Path, *, release: dict,
                 encoder.kill()
                 encoder.wait()
                 raise
+            finally:
+                if encoder.stdin and not encoder.stdin.closed:
+                    encoder.stdin.close()
+                if encoder.stderr:
+                    encoder.stderr.close()
         _require(destination.is_file() and destination.stat().st_size > 0,
                  'canonical video encoding missing')
-    native = root / 'capture'
-    _require((native / 'manifest.json').is_file() and
-             (native / 'evidence.jsonl').is_file() and
-             (native / 'native/frames.jsonl').is_file(),
-             'owner must export original Native graph/evidence sources')
-    graph_manifest = json.loads((native / 'manifest.json').read_text())
-    _require(graph_manifest.get('frames') == expected_frames and
-             graph_manifest.get('observation_contract_version', 0) >= 2,
-             'Native graph export frame/profile differs')
     from worker_exchange.native_output import seal_capture
     (root / 'acquisition-provenance.json').write_text(json.dumps({
         'provenance_kind': 'native', 'diagnostic_fixture': False},
