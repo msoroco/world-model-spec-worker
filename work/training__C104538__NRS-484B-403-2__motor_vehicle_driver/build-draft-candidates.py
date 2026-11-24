@@ -82,7 +82,7 @@ def build():
                 'law_id': 'NRS-484B-403-2', 'actor': 'motor_vehicle_driver',
                 'rate_hz': 20, 'duration_s': 30,
                 'required_atoms': ['dev.regulatory_sign', 'dev.governs', 'dev.position',
-                                   'drv.u_turn', 'kin.heading', 'rel.occupies'],
+                                   'kin.heading', 'rel.occupies'],
                 'source_packets': ['scenario_geometry', 'scenario_rule_evidence'],
                 'mandatory_channels': [],
                 'case': {'case_id': case_id}, 'recording_description': recording,

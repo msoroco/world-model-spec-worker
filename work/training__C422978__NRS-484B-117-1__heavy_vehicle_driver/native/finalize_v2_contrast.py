@@ -35,6 +35,25 @@ def measure_reviewed_scope(metric):
             'city_sidewalk_authority_verified': False}
 
 
+def measure_electric_three_wheel_exception(metric):
+    return {'source_kind': metric['source_kind'], 'solely_electric': None,
+            'designed_three_wheels': None, 'original_review': 'required'}
+
+
+def measure_emergency_role_exception(metric):
+    return {'source_kind': metric['source_kind'], 'authorized_emergency_vehicle': None,
+            'operating_as_emergency_vehicle': None, 'original_review': 'required'}
+
+
+def measure_law_enforcement_duty_exception(metric):
+    return {'source_kind': metric['source_kind'], 'authorized_law_enforcement_operator': None,
+            'official_duty_at_event': None, 'original_review': 'required'}
+
+
+def measure_security_duty_exception(metric):
+    return {'source_kind': metric['source_kind'], 'qualified_security_guard': None,
+            'official_duty_at_event': None, 'original_review': 'required'}
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt/'result.json').exists():
@@ -96,6 +115,10 @@ def finalize(attempt, output):
     values = [
         ('sidewalk_overlap_frames', measure_sidewalk_overlap, 'number'),
         ('misdemeanor_context', measure_misdemeanor_context, 'object'),
+        ('electric_three_wheel_exception', measure_electric_three_wheel_exception, 'object'),
+        ('emergency_role_exception', measure_emergency_role_exception, 'object'),
+        ('law_enforcement_duty_exception', measure_law_enforcement_duty_exception, 'object'),
+        ('security_duty_exception', measure_security_duty_exception, 'object'),
         ('reviewed_scope', measure_reviewed_scope, 'object'),
     ]
     report = {'format': 'worker-analysis-report', 'case_id': case_id,

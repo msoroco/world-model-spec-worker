@@ -18,8 +18,8 @@ def main():
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
         digit = suffix[-1]
-        source = ROOT / f'.runtime-work/c104538-v4-saved-w{digit}-command.log'
-        processing = ROOT / f'.runtime-work/c104538-v4-saved-w{digit}-output/v0001/processing.json'
+        source = ROOT / f'.runtime-work/c104538-v5-saved-w{digit}-command.log'
+        processing = ROOT / f'.runtime-work/c104538-v5-saved-w{digit}-output/v0001/processing.json'
         info = json.loads(processing.read_text())
         if not info['originals_preserved'] or info['missing_evidence'] or info['physical_acceptance_claimed'] or info['legal_acceptance_claimed']:
             raise ValueError('Selected saved processing did not preserve original source or claimed acceptance')
@@ -31,8 +31,8 @@ def main():
                 raise ValueError('Saved proof missing or oversized')
             shutil.copyfile(a, b)
         command = (f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{HERE.name}/execution-manifest.json '
-                   f'--case {entry["case_id"]} --attempt .runtime-work/c104538-v4-saved-w{digit}-attempt '
-                   f'--output .runtime-work/c104538-v4-saved-w{digit}-output '
+                   f'--case {entry["case_id"]} --attempt .runtime-work/c104538-v5-saved-w{digit}-attempt '
+                   f'--output .runtime-work/c104538-v5-saved-w{digit}-output '
                    f'--library runtime/library --validator .runtime-work/c104538-decoder/.lake/build/bin/adapterCheck')
         entry['post_capture'] = {'recorded_only': True, 'command': command, 'feedback_command': command,
                                  'test_log': str(log.relative_to(HERE)), 'test_log_sha256': sha(log),

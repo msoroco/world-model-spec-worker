@@ -23,7 +23,7 @@ manifest = json.loads(MANIFEST.read_text())
 for entry in manifest['cases']:
     suffix = entry['case_id'].rsplit('__', 1)[-1]
     for variant, item in [('primary', entry), *[(c['id'], c) for c in entry['candidates']]]:
-        scratch = REPO / '.runtime-work' / f'c422978-selected-{suffix}-{variant}-compat-v5'
+        scratch = REPO / '.runtime-work' / f'c422978-selected-{suffix}-{variant}-compat-v10'
         proof = json.loads((scratch / 'compatibility.json').read_text())
         assert proof['passed'] and proof['candidate_id'] == variant
         target = HERE / f'selected-{suffix}-{variant}-compatibility.json'

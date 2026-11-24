@@ -28,7 +28,7 @@ def bind():
                      'target': entry}, *entry['candidates']]
         for item in selected:
             variant = item['id']
-            scratch = REPO / '.runtime-work' / f'c422978-selected-{suffix}-{variant}-v4'
+            scratch = REPO / '.runtime-work' / f'c422978-selected-{suffix}-{variant}-v9'
             source = scratch / 'offline.log'
             if not source.is_file() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact materializer log: ' + str(source))
@@ -41,6 +41,8 @@ def bind():
             item['offline'] = {'command': command, 'exit_code': 0,
                                'construction_sha256': item['construction_sha256'],
                                'log': target.name, 'log_sha256': digest(target)}
+            if variant == 'primary':
+                entry['offline'] = item['offline']
     MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
     return digest(MANIFEST)
 

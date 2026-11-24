@@ -12,7 +12,7 @@ import tempfile
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / 'current-v2-probe-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c110919-v2'
+SCRATCH = ROOT / '.runtime-work/c110919-3a-owner/saved-matrix'
 
 
 def sha(path):
@@ -53,8 +53,8 @@ def prove(case, folder, env, candidate):
                 for p in attempt.rglob('*') if p.is_file()}
     receipt = command(['process-saved', '--manifest', str(MANIFEST), '--case', case_id,
                        '--attempt', str(attempt), '--output', str(folder / (case + '-saved')),
-                       '--library', str(ROOT / 'runtime/pipeline/library'),
-                       '--validator', str(ROOT / '.runtime-work/c10316-current-decoder/.lake/build/bin/adapterCheck')], env)
+                       '--library', str(ROOT / 'runtime/library'),
+                       '--validator', str(ROOT / '.runtime-work/c110919-owner104/decoder/.lake/build/bin/adapterCheck')], env)
     if receipt['missing_evidence'] or not receipt['recorded_only'] or not receipt['originals_preserved']:
         raise ValueError('Positive saved processing was incomplete')
     if original != {p.relative_to(attempt).as_posix(): sha(p)
@@ -84,7 +84,7 @@ def prove(case, folder, env, candidate):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--candidate', default='primary', choices=('primary', 'fallback1'))
+    parser.add_argument('--candidate', default='primary', choices=('primary', 'fallback1', 'fallback3'))
     args = parser.parse_args()
     SCRATCH.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ)
@@ -92,14 +92,14 @@ def main():
     env['PYTHONDONTWRITEBYTECODE'] = '1'
     env['TMPDIR'] = str(SCRATCH)
     with tempfile.TemporaryDirectory(dir=SCRATCH, prefix='saved-proof-') as temp:
-        labels = ('witness_1', 'witness_2') if args.candidate == 'primary' else ('witness_1',)
+        labels = ('witness_1', 'witness_2')
         cases = [prove(case, Path(temp), env, args.candidate) for case in labels]
-    if [case['yielded_to_pedestrian'] for case in cases] != ([True, False] if args.candidate == 'primary' else [True]):
+    if [case['yielded_to_pedestrian'] for case in cases] != [True, False]:
         raise ValueError('Controlled witness variable differs')
     result = {'format': 'c110919-current-v2-recorded-only-saved-proof',
               'passed': True, 'cases': cases, 'selected': False,
               'scope': 'Synthetic source-hashed software proof; physical arrow glyph and acceptance unproved'}
-    filename = 'current-v2-saved-proof.json' if args.candidate == 'primary' else 'current-v2-fallback1-saved-proof.json'
+    filename = 'current-runtime-' + args.candidate + '-saved-proof.json'
     (HERE / filename).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
 

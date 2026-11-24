@@ -33,8 +33,8 @@ def main():
         suffix=entry['case_id'].rsplit('__',1)[-1]
         evidence={}
         for candidate in ('primary','fallback1','fallback3'):
-            offline_src=SCRATCH/f'c104538-v4-{suffix}-{candidate}-offline.log'
-            compat_src=SCRATCH/f'c104538-v4-{suffix}-{candidate}-compat'
+            offline_src=SCRATCH/f'c104538-v5-{suffix}-{candidate}-offline.log'
+            compat_src=SCRATCH/f'c104538-v5-{suffix}-{candidate}-compat'
             target=HERE/'selected-proof'/suffix/candidate
             offline=target/'offline.log'
             analysis=target/'analysis.log'
@@ -48,7 +48,7 @@ def main():
             construction=entry if candidate=='primary' else next(c for c in entry['candidates'] if c['id']==candidate)
             if result.get('passed') is not True or result.get('candidate_id')!=candidate or result.get('case_id')!=entry['case_id'] or result.get('construction_sha256')!=construction['construction_sha256']:
                 raise ValueError('Selected compatibility binding differs')
-            offline_output=f'c104538-v4-{suffix}-{candidate}-offline'
+            offline_output=f'c104538-v5-{suffix}-{candidate}-offline'
             offline_command=(f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/execution-manifest.json '
                              f'--case {entry["case_id"]} --candidate {candidate} '
                              f'--output .runtime-work/{offline_output}')

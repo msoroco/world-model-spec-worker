@@ -18,7 +18,8 @@ def build():
     names = ('overview', 'approach', 'reference_corner', 'driver_reference')
     sizes = ((1920, 1080), (1280, 720), (1280, 720), (1280, 720))
     fovs = (80, 80, old['policy']['camera_fov_deg'], 85)
-    old.update(selected_case_id=case_ids[0], case={'case_id': case_ids[0]},
+    old.update(case_plan_sha256=hashlib.sha256((HERE / 'case-plan.json').read_bytes()).hexdigest(),
+               selected_case_id=case_ids[0], case={'case_id': case_ids[0]},
                required_atoms=[], source_packets=[], supported_case_ids=case_ids,
                cameras=[{'name': name, 'width': width, 'height': height,
                          'pose_strategy': 'authored Native sidewalk and heavy body coverage',
