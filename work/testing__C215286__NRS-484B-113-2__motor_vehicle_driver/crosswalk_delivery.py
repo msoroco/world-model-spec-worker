@@ -29,11 +29,25 @@ def _extent(poly, axis):
     return min(values), max(values)
 
 
+def _convex(poly):
+    """SAT below is valid only for a simple, nondegenerate convex polygon."""
+    signs = []
+    for a, b, c in zip(poly, poly[1:] + poly[:1], poly[2:] + poly[:2]):
+        turn = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])
+        if abs(turn) <= 1e-10:
+            raise ValueError("degenerate or collinear original polygon")
+        signs.append(turn > 0)
+    if len(set(signs)) != 1:
+        raise ValueError("original polygon is not convex")
+
+
 def polygon_relation(body, crossing):
     """Return disjoint/contact/overlap using convex source polygons."""
     body, crossing = list(map(_xy, body)), list(map(_xy, crossing))
     if len(body) < 3 or len(crossing) < 3:
         raise ValueError("original convex body and crosswalk polygons required")
+    _convex(body)
+    _convex(crossing)
     contact = False
     for axis in list(_axes(body)) + list(_axes(crossing)):
         a0, a1 = _extent(body, axis)
@@ -61,6 +75,7 @@ def validate_source(packet):
     if len(crossing) < 3:
         raise ValueError("original marked-crosswalk polygon required")
     list(_axes(crossing))
+    _convex(crossing)
     return {"map_sha256": packet["map_sha256"], "map_name": packet["map_name"],
             "vehicle_blueprint_id": packet["vehicle_blueprint_id"],
             "crosswalk_source": packet["crosswalk_source"], "route": route}

@@ -10,12 +10,13 @@ from zipfile import ZipFile
 from PIL import Image
 
 BASE = Path(__file__).resolve().parents[1]
-for name in ('property_route', 'case_observation', 'saved_delivery'):
+for name in ('property_route', 'case_observation', 'saved_delivery', 'physical_completion', 'delivery_audit'):
     spec = importlib.util.spec_from_file_location(name, BASE / (name + '.py'))
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
 audit = sys.modules['saved_delivery']
+original_delivery = sys.modules['delivery_audit']
 
 
 class SavedDeliveryTests(unittest.TestCase):
@@ -86,29 +87,19 @@ class SavedDeliveryTests(unittest.TestCase):
         self.assertEqual(result['decoded_original_images'], {c: 20 for c in audit.CAMERAS})
         self.assertTrue(result['observations']['all_observation_conditions_present'])
         self.assertEqual(result['case_observation_audit']['planned_case'], 'private_bypass')
-        self.assertEqual(result['physical_completion']['status'], 'met')
-        self.assertEqual(result['physical_completion']['observed']['endpoint_error_m'], 0)
         self.assertFalse(result['physical_acceptance_claimed'])
 
-    def test_claimed_entry_without_endpoint_motion_rejected(self):
+    def test_independent_original_route_completion(self):
+        result = original_delivery.audit(self.root, self.bundle, expected_frames=20)
+        self.assertEqual(result['physical_completion']['status'], 'met')
+        self.assertEqual(result['physical_completion']['observed']['endpoint_error_m'], 0)
+
+    def test_independent_audit_rejects_sealed_false_entry(self):
         trace = json.loads((self.root / 'trace.json').read_text())
         trace['ego'][2]['x'] = 5
         self.bundle['trace'] = self.write('trace.json', json.dumps(trace) + '\n')
-        with self.assertRaisesRegex(ValueError, 'original physical route completion required'):
-            audit.audit(self.root, self.bundle, expected_frames=20)
-
-    def test_missing_entry_sample_unverified(self):
-        trace = json.loads((self.root / 'trace.json').read_text())
-        trace['destination_entry_frame'] = None
-        result = audit.physical_completion(json.loads((self.root / 'map.json').read_text()), trace, self.case)
-        self.assertEqual(result['status'], 'unverified')
-
-    def test_stationary_entry_rejected(self):
-        trace = json.loads((self.root / 'trace.json').read_text())
-        for row in trace['ego']:
-            row['x'] = 13
-        result = audit.physical_completion(json.loads((self.root / 'map.json').read_text()), trace, self.case)
-        self.assertEqual(result['status'], 'not_met')
+        with self.assertRaisesRegex(ValueError, 'Original physical route completion required'):
+            original_delivery.audit(self.root, self.bundle, expected_frames=20)
 
     def test_diagnostic_rejected(self):
         self.bundle['diagnostic_fixture'] = True

@@ -75,3 +75,28 @@ def check_world(world, packet):
     if sha256(map_object.to_opendrive().encode("utf-8")) != packet["map_sha256"]:
         raise ValueError("Native OpenDRIVE bytes differ from reviewed site")
     return packet["map_sha256"]
+
+
+def verify_saved(root, context):
+    """Reopen the two original source copies in a promoted saved attempt."""
+    root = Path(root)
+    packet_file = root / "original-site-packet.json"
+    source_file = root / "original-site-source.json"
+    if not packet_file.is_file() or not source_file.is_file():
+        raise ValueError("Missing required source: original site packet/document")
+    packet_raw, source_raw = packet_file.read_bytes(), source_file.read_bytes()
+    if (sha256(packet_raw) != context.get("original_site_packet_sha256") or
+            sha256(source_raw) != context.get("original_site_source_sha256")):
+        raise ValueError("saved original site source hash differs")
+    packet, source = json.loads(packet_raw), json.loads(source_raw)
+    if packet != context.get("map_packet") or sha256(source_raw) != packet.get("site_source_sha256"):
+        raise ValueError("saved original site packet differs")
+    for field in ("map_name", "map_sha256", "crosswalk_source", "crosswalk_polygon_xy",
+                  "vehicle_blueprint_id", "spawn_transform_source", "reverse_route_xy",
+                  "driver_source", "district_source", "highway_boundary_source",
+                  "crosswalk_marking_source", "vehicle_class_source", "camera_transforms",
+                  "spawn_transform"):
+        if packet.get(field) != source.get(field):
+            raise ValueError("saved original site document differs: " + field)
+    validate_source(packet)
+    return packet

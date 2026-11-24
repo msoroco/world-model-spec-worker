@@ -1,6 +1,5 @@
 import hashlib
 import json
-import os
 import sys
 import tempfile
 import unittest
@@ -32,6 +31,9 @@ class Adapter(Fake):
             data = BytesIO()
             Image.new('RGB', size, (40, 80, 120)).save(data, format='PNG')
             self.pngs[name] = data.getvalue()
+    def spawn_vehicle(self, blueprint, pose):
+        self.calls.append('spawn')
+        return {'actor_id':'123','blueprint':blueprint['blueprint']}
     def tick(self):
         i = self.i
         self.i += 1

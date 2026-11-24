@@ -32,6 +32,8 @@ def check() -> dict:
         raise ValueError('four original camera profiles required')
     if config.get('capture_provenance') != 'original Native samples required':
         raise ValueError('original Native capture provenance required')
+    if config.get('target_speed_mps') not in (5.0, 3.5):
+        raise ValueError('selected engineering route speed required')
     return {'case_id': case_id, 'offline_binding_passed': True,
             'physical_acceptance_claimed': False}
 
@@ -49,6 +51,7 @@ def capture_original(*, world, ego, map_packet, property_id, purpose,
                    signal_observer=signal_observer,
                    destination_street_id=destination_street_id,
                    output=output_dir / 'trace.json', ticks=900,
+                   target_speed_mps=json.loads(Path('config.json').read_text())['target_speed_mps'],
                    control_applier=control_applier,
                    camera_observer=camera_observer,
                    media_directory=output_dir)

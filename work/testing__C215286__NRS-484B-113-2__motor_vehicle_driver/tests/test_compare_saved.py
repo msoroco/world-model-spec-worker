@@ -18,14 +18,16 @@ class SavedPairTests(unittest.TestCase):
         attempt = root / name
         channel = attempt / "channels" / "reverse-body-crosswalk.jsonl"
         channel.parent.mkdir(parents=True, exist_ok=True)
-        packet = {"map_name": "Town", "map_sha256": "a" * 64,
-                  "crosswalk_source": "native:marking/1",
-                  "crosswalk_polygon_xy": [[0, 0], [2, 0], [2, 4], [0, 4]],
-                  "vehicle_blueprint_id": "vehicle.car", "spawn_transform_source": "native:waypoint/2",
-                  "reverse_route_xy": [[5, 2], [1, 2]], "driver_source": "native:ego/4",
-                  "district_source": "map:residential/1"}
+        from test_site_packet import site
+        original = site()
         if packet_change:
-            packet.update(packet_change)
+            original.update(packet_change)
+        source_bytes = json.dumps(original, sort_keys=True).encode()
+        packet = dict(original, case_id=name, site_source_path="fixture-only",
+                      site_source_sha256=hashlib.sha256(source_bytes).hexdigest())
+        packet_bytes = json.dumps(packet, sort_keys=True).encode()
+        (attempt / "original-site-packet.json").write_bytes(packet_bytes)
+        (attempt / "original-site-source.json").write_bytes(source_bytes)
         frames = []
         for index in range(2):
             frames.append({"frame": index, "time_s": index * .05 + (time_change if index else 0),
@@ -35,12 +37,14 @@ class SavedPairTests(unittest.TestCase):
                            "velocity_xy": [-1, 0], "forward_xy": [1, 0], "reverse_gear": True})
         channel.write_text("".join(json.dumps(frame) + "\n" for frame in frames))
         source = {"map_packet": packet, "frames_sha256": hashlib.sha256(channel.read_bytes()).hexdigest(),
-                  "source_id": name, "vehicle_actor_id": 4}
+                  "source_id": name, "vehicle_actor_id": 4,
+                  "original_site_packet_sha256": hashlib.sha256(packet_bytes).hexdigest(),
+                  "original_site_source_sha256": hashlib.sha256(source_bytes).hexdigest()}
         (attempt / "reviewed-crosswalk-source.json").write_text(json.dumps(source) + "\n")
         return attempt, channel
 
     def test_exact_pairs(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=pathlib.Path.cwd() / ".runtime-work") as tmp:
             root = pathlib.Path(tmp)
             clear, _ = self.make_attempt(root, "clear", 3)
             tangent, _ = self.make_attempt(root, "tangent", 2)
@@ -53,7 +57,7 @@ class SavedPairTests(unittest.TestCase):
                 self.assertEqual(len(report["original_frame_sha256"]), 2)
 
     def test_reject_missing_distinction_and_reused_attempt(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=pathlib.Path.cwd() / ".runtime-work") as tmp:
             root = pathlib.Path(tmp)
             clear, _ = self.make_attempt(root, "clear", 3)
             also_clear, _ = self.make_attempt(root, "also-clear", 3)
@@ -65,7 +69,7 @@ class SavedPairTests(unittest.TestCase):
                                         comparison_id="reverse_overlap_vs_clear")
 
     def test_reject_changed_fixed_source_and_frame_hash(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=pathlib.Path.cwd() / ".runtime-work") as tmp:
             root = pathlib.Path(tmp)
             clear, _ = self.make_attempt(root, "clear", 3)
             overlap, channel = self.make_attempt(root, "overlap", 1.5,
@@ -80,7 +84,7 @@ class SavedPairTests(unittest.TestCase):
                                         comparison_id="reverse_overlap_vs_clear")
 
     def test_reject_original_time_mismatch(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=pathlib.Path.cwd() / ".runtime-work") as tmp:
             root = pathlib.Path(tmp)
             clear, _ = self.make_attempt(root, "clear", 3)
             overlap, _ = self.make_attempt(root, "overlap", 1.5, time_change=.0005)

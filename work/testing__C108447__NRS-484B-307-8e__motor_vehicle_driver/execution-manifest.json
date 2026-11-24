@@ -1,0 +1,841 @@
+{
+  "assignment_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "approach signal identity, facing and state": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json approach_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "destination street traffic signal": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json destination_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "ego body path and street entry": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json ego and destination_entry_frame",
+          "method": "Native body transform 20 Hz"
+        },
+        "original four-camera frame map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "frame-map.jsonl and four PNG archives",
+          "method": "Native synchronized camera observer 20 Hz"
+        },
+        "original vehicle class": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json actor_source",
+          "method": "actor registry"
+        },
+        "separate avoidance purpose": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json purpose",
+          "method": "authored source context"
+        },
+        "source parcel classification and boundaries": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map-packet.json properties",
+          "method": "reviewed parcel authority joined to OpenDRIVE"
+        }
+      },
+      "candidate_risk": {
+        "reason": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.target_speed_mps: 5.0 to 3.5"
+          ],
+          "compatibility": {
+            "log": "proof-resume-private_bypass-fallback1-compat-analysis.log",
+            "negative_log": "proof-resume-private_bypass-fallback1-compat-negative.log",
+            "receipt": "proof-resume-private_bypass-fallback1-compat-receipt.json",
+            "sha256": "deb983605caaa5f71a7409a51b8a0925fa60782862326f4935fc794553afdd43"
+          },
+          "construction": "constructions/private_bypass-fallback1.json",
+          "construction_sha256": "548e37abd0f0cf6fb26694f3b45108054a0f8099df9ae41c4c873e984d9749e6",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/private_bypass/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "548e37abd0f0cf6fb26694f3b45108054a0f8099df9ae41c4c873e984d9749e6",
+            "exit_code": 0,
+            "log": "proof-resume-private_bypass-fallback1-offline.log",
+            "log_sha256": "a3d49e28fb06b5a7c0c82ce2412d70141b05980fb539263e064623c9dfe4871c"
+          },
+          "trigger": {
+            "failure_condition": "primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid",
+            "metric": "measured lateral path error and endpoint overshoot",
+            "source": "original Native body trace and source route"
+          }
+        }
+      ],
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+      "compatibility": {
+        "log": "proof-resume-private_bypass-primary-compat-analysis.log",
+        "negative_log": "proof-resume-private_bypass-primary-compat-negative.log",
+        "receipt": "proof-resume-private_bypass-primary-compat-receipt.json",
+        "sha256": "88d74d7f27e820dbf277edc6bf61191d3abec6c6b86f6bc78f14af0bb39dc796"
+      },
+      "construction": "constructions/private_bypass.json",
+      "construction_sha256": "bcf31052126c6a0f3cb7f410610824fe4be546ec706988037e97fc61add76860",
+      "delivery_acceptance": {
+        "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/private_bypass",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/private_bypass --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original parcel authority source must be inside original attempt",
+        "negative_log": "proof-resume-private_bypass-delivery-negative.log",
+        "negative_log_sha256": "1eb9230759d38e298a9ea1799b058a6b7a05dc98d6877bb2595206338df680ac",
+        "script": "delivery_audit.py",
+        "script_sha256": "9e67a3fd9b4d3288a523439e817ca8f77ff432d2a4c8afd773a6c5620b66846c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-resume-private_bypass-delivery-positive.log",
+        "test_log_sha256": "eca598b9a05545f2bf652dda1a491834b482ac8f84e1e07516eae94273095ea0"
+      },
+      "fixture_recipe": "work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/diagnostics/private_bypass/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "contracts/private_bypass.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-resume-private_bypass-primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/private_bypass/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "bcf31052126c6a0f3cb7f410610824fe4be546ec706988037e97fc61add76860",
+        "exit_code": 0,
+        "log": "proof-resume-private_bypass-primary-offline.log",
+        "log_sha256": "ad3bc0e6ca05eece3e700a7e6c06887b6346cb65dd56b256f7fb293c736495c2"
+      },
+      "physical_preparation": {
+        "receipt": "proof-private_bypass-physical-receipt.json",
+        "sha256": "002ee7bb4f7bee9610674f127d7af3b0bea2dad4363946e641da3072349aece3"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work/c108447-resume /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__private_bypass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/compat/private_bypass/primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/private_bypass --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/private_bypass -name feedback.json -type f -print",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-resume-private_bypass-saved.log",
+        "test_log_sha256": "58c5a51932e962a1c2eb29e284e01400dde76d0a6f28aa75d8aedc141497c1fc"
+      },
+      "proof_status": "current_runtime_cpu_proved_physical_pending"
+    },
+    {
+      "acquisition": {
+        "approach signal identity, facing and state": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json approach_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "destination street traffic signal": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json destination_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "ego body path and street entry": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json ego and destination_entry_frame",
+          "method": "Native body transform 20 Hz"
+        },
+        "original four-camera frame map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "frame-map.jsonl and four PNG archives",
+          "method": "Native synchronized camera observer 20 Hz"
+        },
+        "original vehicle class": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json actor_source",
+          "method": "actor registry"
+        },
+        "separate avoidance purpose": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json purpose",
+          "method": "authored source context"
+        },
+        "source parcel classification and boundaries": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map-packet.json properties",
+          "method": "reviewed parcel authority joined to OpenDRIVE"
+        }
+      },
+      "candidate_risk": {
+        "reason": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.target_speed_mps: 5.0 to 3.5"
+          ],
+          "compatibility": {
+            "log": "proof-resume-public_bypass-fallback1-compat-analysis.log",
+            "negative_log": "proof-resume-public_bypass-fallback1-compat-negative.log",
+            "receipt": "proof-resume-public_bypass-fallback1-compat-receipt.json",
+            "sha256": "9a455b7a6e52262397fa8993b3339098d379676c3da01b876da4d3240d0dbb7d"
+          },
+          "construction": "constructions/public_bypass-fallback1.json",
+          "construction_sha256": "5bf7b781c09e514125ae094a216f0e2787265824e4eab4d7301065de148da44c",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/public_bypass/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "5bf7b781c09e514125ae094a216f0e2787265824e4eab4d7301065de148da44c",
+            "exit_code": 0,
+            "log": "proof-resume-public_bypass-fallback1-offline.log",
+            "log_sha256": "b60bc04dd434017a8bd2d95b8ab547a7d5c9607bd41539dca575d6015e3b9190"
+          },
+          "trigger": {
+            "failure_condition": "primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid",
+            "metric": "measured lateral path error and endpoint overshoot",
+            "source": "original Native body trace and source route"
+          }
+        }
+      ],
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass",
+      "compatibility": {
+        "log": "proof-resume-public_bypass-primary-compat-analysis.log",
+        "negative_log": "proof-resume-public_bypass-primary-compat-negative.log",
+        "receipt": "proof-resume-public_bypass-primary-compat-receipt.json",
+        "sha256": "69ca44e29cd911bf57ca440b8b8982a449009018ee2b18a8740e6d18570564ae"
+      },
+      "construction": "constructions/public_bypass.json",
+      "construction_sha256": "9f18f116947ef2fa9fdb7185d583a6edef3b712936fdf9488f35b45d9574abed",
+      "delivery_acceptance": {
+        "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/public_bypass",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/public_bypass --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original parcel authority source must be inside original attempt",
+        "negative_log": "proof-resume-public_bypass-delivery-negative.log",
+        "negative_log_sha256": "1eb9230759d38e298a9ea1799b058a6b7a05dc98d6877bb2595206338df680ac",
+        "script": "delivery_audit.py",
+        "script_sha256": "9e67a3fd9b4d3288a523439e817ca8f77ff432d2a4c8afd773a6c5620b66846c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-resume-public_bypass-delivery-positive.log",
+        "test_log_sha256": "8fe35d7944477f14b232b1939d28734d3b2ebcd515b926dffb6cfd073562f907"
+      },
+      "fixture_recipe": "work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/diagnostics/public_bypass/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "contracts/public_bypass.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-resume-public_bypass-primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/public_bypass/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "9f18f116947ef2fa9fdb7185d583a6edef3b712936fdf9488f35b45d9574abed",
+        "exit_code": 0,
+        "log": "proof-resume-public_bypass-primary-offline.log",
+        "log_sha256": "e1a80272722f78b063c4f2a86a26df9d0382737f49291e81e9f1e525075a6f70"
+      },
+      "physical_preparation": {
+        "receipt": "proof-public_bypass-physical-receipt.json",
+        "sha256": "4ca1b1cdbafdf60b9353b0f39ebc35cbda098822301a42665440ff46394f2902"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work/c108447-resume /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__public_bypass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/compat/public_bypass/primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/public_bypass --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/public_bypass -name feedback.json -type f -print",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-resume-public_bypass-saved.log",
+        "test_log_sha256": "18092e4a76e3368dc02b29d78b3a99d15726bf0d756ed46e5e146be8f62d80f1"
+      },
+      "proof_status": "current_runtime_cpu_proved_physical_pending"
+    },
+    {
+      "acquisition": {
+        "approach signal identity, facing and state": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json approach_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "destination street traffic signal": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json destination_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "ego body path and street entry": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json ego and destination_entry_frame",
+          "method": "Native body transform 20 Hz"
+        },
+        "original four-camera frame map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "frame-map.jsonl and four PNG archives",
+          "method": "Native synchronized camera observer 20 Hz"
+        },
+        "original vehicle class": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json actor_source",
+          "method": "actor registry"
+        },
+        "separate avoidance purpose": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json purpose",
+          "method": "authored source context"
+        },
+        "source parcel classification and boundaries": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map-packet.json properties",
+          "method": "reviewed parcel authority joined to OpenDRIVE"
+        }
+      },
+      "candidate_risk": {
+        "reason": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.target_speed_mps: 5.0 to 3.5"
+          ],
+          "compatibility": {
+            "log": "proof-resume-ordinary_crossing-fallback1-compat-analysis.log",
+            "negative_log": "proof-resume-ordinary_crossing-fallback1-compat-negative.log",
+            "receipt": "proof-resume-ordinary_crossing-fallback1-compat-receipt.json",
+            "sha256": "546bf09d5b023a1c0ebc3be28e93cf04684d2f82d025d5cec28aae4691f8d1fb"
+          },
+          "construction": "constructions/ordinary_crossing-fallback1.json",
+          "construction_sha256": "b2896fd7efe92dc43fa7cd2ff585c1b943796d305d3394799612900656d6ec67",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/ordinary_crossing/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "b2896fd7efe92dc43fa7cd2ff585c1b943796d305d3394799612900656d6ec67",
+            "exit_code": 0,
+            "log": "proof-resume-ordinary_crossing-fallback1-offline.log",
+            "log_sha256": "69910565ce9e3ab580f598e20ba5cdf23c133d672b4501d33074af7b7eaa1c6e"
+          },
+          "trigger": {
+            "failure_condition": "primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid",
+            "metric": "measured lateral path error and endpoint overshoot",
+            "source": "original Native body trace and source route"
+          }
+        }
+      ],
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing",
+      "compatibility": {
+        "log": "proof-resume-ordinary_crossing-primary-compat-analysis.log",
+        "negative_log": "proof-resume-ordinary_crossing-primary-compat-negative.log",
+        "receipt": "proof-resume-ordinary_crossing-primary-compat-receipt.json",
+        "sha256": "69a68ba35d9b0e95c5ee2597ef293d51a4b7855aef6327f5161c9056443d7a31"
+      },
+      "construction": "constructions/ordinary_crossing.json",
+      "construction_sha256": "7451341f8d9658e5905c45f0717459ec83c1fade289a41e40e703b009390c43f",
+      "delivery_acceptance": {
+        "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/ordinary_crossing",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/ordinary_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original parcel authority source must be inside original attempt",
+        "negative_log": "proof-resume-ordinary_crossing-delivery-negative.log",
+        "negative_log_sha256": "1eb9230759d38e298a9ea1799b058a6b7a05dc98d6877bb2595206338df680ac",
+        "script": "delivery_audit.py",
+        "script_sha256": "9e67a3fd9b4d3288a523439e817ca8f77ff432d2a4c8afd773a6c5620b66846c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-resume-ordinary_crossing-delivery-positive.log",
+        "test_log_sha256": "0a31605936537f525efbbfed4b4ec1003717d19ff568bab021eb279d95db03ad"
+      },
+      "fixture_recipe": "work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/diagnostics/ordinary_crossing/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "contracts/ordinary_crossing.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-resume-ordinary_crossing-primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/ordinary_crossing/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "7451341f8d9658e5905c45f0717459ec83c1fade289a41e40e703b009390c43f",
+        "exit_code": 0,
+        "log": "proof-resume-ordinary_crossing-primary-offline.log",
+        "log_sha256": "49916373950b68802efbf55e4e9c13b7a90765abf81cf1358abcaa6e4589fdfc"
+      },
+      "physical_preparation": {
+        "receipt": "proof-ordinary_crossing-physical-receipt.json",
+        "sha256": "011c036ed8369c1bb1ea27387ab42a2dc1b208dbf8e3455f16a64260025693a6"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work/c108447-resume /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__ordinary_crossing --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/compat/ordinary_crossing/primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/ordinary_crossing --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/ordinary_crossing -name feedback.json -type f -print",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-resume-ordinary_crossing-saved.log",
+        "test_log_sha256": "6304c8a1750c16911e45c964d7302b9043fdceb23c755153c7e2c5c4513c37bf"
+      },
+      "proof_status": "current_runtime_cpu_proved_physical_pending"
+    },
+    {
+      "acquisition": {
+        "approach signal identity, facing and state": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json approach_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "destination street traffic signal": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json destination_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "ego body path and street entry": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json ego and destination_entry_frame",
+          "method": "Native body transform 20 Hz"
+        },
+        "original four-camera frame map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "frame-map.jsonl and four PNG archives",
+          "method": "Native synchronized camera observer 20 Hz"
+        },
+        "original vehicle class": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json actor_source",
+          "method": "actor registry"
+        },
+        "separate avoidance purpose": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json purpose",
+          "method": "authored source context"
+        },
+        "source parcel classification and boundaries": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map-packet.json properties",
+          "method": "reviewed parcel authority joined to OpenDRIVE"
+        }
+      },
+      "candidate_risk": {
+        "reason": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.target_speed_mps: 5.0 to 3.5"
+          ],
+          "compatibility": {
+            "log": "proof-resume-no_approach_red-fallback1-compat-analysis.log",
+            "negative_log": "proof-resume-no_approach_red-fallback1-compat-negative.log",
+            "receipt": "proof-resume-no_approach_red-fallback1-compat-receipt.json",
+            "sha256": "288b8cd0f2b0ef045632642d3de4ffd934d45897d831b814059f018777d20788"
+          },
+          "construction": "constructions/no_approach_red-fallback1.json",
+          "construction_sha256": "302a1412f9d8aac7a3f571663c2795f9c01538fa3836a5ad1e6200584acaee09",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/no_approach_red/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "302a1412f9d8aac7a3f571663c2795f9c01538fa3836a5ad1e6200584acaee09",
+            "exit_code": 0,
+            "log": "proof-resume-no_approach_red-fallback1-offline.log",
+            "log_sha256": "40c4868b4f8c9e5913aef44d9646bfbcf09d3eee3ae4f7280cc66dfc83822ecd"
+          },
+          "trigger": {
+            "failure_condition": "primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid",
+            "metric": "measured lateral path error and endpoint overshoot",
+            "source": "original Native body trace and source route"
+          }
+        }
+      ],
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red",
+      "compatibility": {
+        "log": "proof-resume-no_approach_red-primary-compat-analysis.log",
+        "negative_log": "proof-resume-no_approach_red-primary-compat-negative.log",
+        "receipt": "proof-resume-no_approach_red-primary-compat-receipt.json",
+        "sha256": "d28d5a0ab02a2124a9d3e3f4d5e9e3e08bc4a00fa4f2547bce93768fb6142543"
+      },
+      "construction": "constructions/no_approach_red.json",
+      "construction_sha256": "6ee3b53ca4d383a629a205e8e53830c2f767bbe57907da50600718a5424aee19",
+      "delivery_acceptance": {
+        "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/no_approach_red",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/no_approach_red --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original parcel authority source must be inside original attempt",
+        "negative_log": "proof-resume-no_approach_red-delivery-negative.log",
+        "negative_log_sha256": "1eb9230759d38e298a9ea1799b058a6b7a05dc98d6877bb2595206338df680ac",
+        "script": "delivery_audit.py",
+        "script_sha256": "9e67a3fd9b4d3288a523439e817ca8f77ff432d2a4c8afd773a6c5620b66846c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-resume-no_approach_red-delivery-positive.log",
+        "test_log_sha256": "cbf8fc881e7f6ab5e5427d4937bf2261b352dff24ce9aa27ff3ae3a0d4c5b6d1"
+      },
+      "fixture_recipe": "work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/diagnostics/no_approach_red/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "contracts/no_approach_red.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-resume-no_approach_red-primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/no_approach_red/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "6ee3b53ca4d383a629a205e8e53830c2f767bbe57907da50600718a5424aee19",
+        "exit_code": 0,
+        "log": "proof-resume-no_approach_red-primary-offline.log",
+        "log_sha256": "b854420b688bdbf5d7d9b6979c21d2d05eb6116f6a28cfde3ed6c3defa7d780e"
+      },
+      "physical_preparation": {
+        "receipt": "proof-no_approach_red-physical-receipt.json",
+        "sha256": "9776ed36dc344efe4169cd888fc655576615a978a84e8bc564e5c6b5fc1f19e9"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work/c108447-resume /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__no_approach_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/compat/no_approach_red/primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/no_approach_red --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/no_approach_red -name feedback.json -type f -print",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-resume-no_approach_red-saved.log",
+        "test_log_sha256": "72f189536b0d7c6f6f6d0f9f1b7398b88fbe7f2d26d96ae1ddb002d29cb28501"
+      },
+      "proof_status": "current_runtime_cpu_proved_physical_pending"
+    },
+    {
+      "acquisition": {
+        "approach signal identity, facing and state": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json approach_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "destination street traffic signal": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json destination_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "ego body path and street entry": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json ego and destination_entry_frame",
+          "method": "Native body transform 20 Hz"
+        },
+        "original four-camera frame map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "frame-map.jsonl and four PNG archives",
+          "method": "Native synchronized camera observer 20 Hz"
+        },
+        "original vehicle class": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json actor_source",
+          "method": "actor registry"
+        },
+        "separate avoidance purpose": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json purpose",
+          "method": "authored source context"
+        },
+        "source parcel classification and boundaries": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map-packet.json properties",
+          "method": "reviewed parcel authority joined to OpenDRIVE"
+        }
+      },
+      "candidate_risk": {
+        "reason": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.target_speed_mps: 5.0 to 3.5"
+          ],
+          "compatibility": {
+            "log": "proof-resume-destination_red-fallback1-compat-analysis.log",
+            "negative_log": "proof-resume-destination_red-fallback1-compat-negative.log",
+            "receipt": "proof-resume-destination_red-fallback1-compat-receipt.json",
+            "sha256": "6c41ccfd7b6d1c54b6e844828058d8f6383757f6f93ada68dc1593e63536da53"
+          },
+          "construction": "constructions/destination_red-fallback1.json",
+          "construction_sha256": "68fca549d61e2e8e2b0e10823e41d5bd10e07f512511745609c5809bfe5bc6ef",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/destination_red/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "68fca549d61e2e8e2b0e10823e41d5bd10e07f512511745609c5809bfe5bc6ef",
+            "exit_code": 0,
+            "log": "proof-resume-destination_red-fallback1-offline.log",
+            "log_sha256": "2c2d78636c41e3ad8616901367b696b69e5d11ae7d06304212faf05866b0b584"
+          },
+          "trigger": {
+            "failure_condition": "primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid",
+            "metric": "measured lateral path error and endpoint overshoot",
+            "source": "original Native body trace and source route"
+          }
+        }
+      ],
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red",
+      "compatibility": {
+        "log": "proof-resume-destination_red-primary-compat-analysis.log",
+        "negative_log": "proof-resume-destination_red-primary-compat-negative.log",
+        "receipt": "proof-resume-destination_red-primary-compat-receipt.json",
+        "sha256": "2f7021fa40c726c65ef9565f4894edde009e34b4f0f2a5ba356f8d34435b2dfa"
+      },
+      "construction": "constructions/destination_red.json",
+      "construction_sha256": "6d780aa4629591b5fdc93d1301d158b4304bb1312fa77ae983326e9303c744d5",
+      "delivery_acceptance": {
+        "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/destination_red",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/destination_red --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original parcel authority source must be inside original attempt",
+        "negative_log": "proof-resume-destination_red-delivery-negative.log",
+        "negative_log_sha256": "1eb9230759d38e298a9ea1799b058a6b7a05dc98d6877bb2595206338df680ac",
+        "script": "delivery_audit.py",
+        "script_sha256": "9e67a3fd9b4d3288a523439e817ca8f77ff432d2a4c8afd773a6c5620b66846c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-resume-destination_red-delivery-positive.log",
+        "test_log_sha256": "3d638783f2ac856f396d780a072aa8c3f7ab4c103f02297e2de39d87716f579b"
+      },
+      "fixture_recipe": "work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/diagnostics/destination_red/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "contracts/destination_red.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-resume-destination_red-primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/destination_red/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "6d780aa4629591b5fdc93d1301d158b4304bb1312fa77ae983326e9303c744d5",
+        "exit_code": 0,
+        "log": "proof-resume-destination_red-primary-offline.log",
+        "log_sha256": "5f3a93c33b55fe27737a532d6694a59809d93491d0f7850dcfd73d2a3e159426"
+      },
+      "physical_preparation": {
+        "receipt": "proof-destination_red-physical-receipt.json",
+        "sha256": "d62744c54cc187f986e39c0f891eccac8cea5902464295c4ce459a3b8fecb40d"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work/c108447-resume /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__destination_red --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/compat/destination_red/primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/destination_red --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/destination_red -name feedback.json -type f -print",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-resume-destination_red-saved.log",
+        "test_log_sha256": "e4e802884dbb1c28e8949f2a4764b43e6ae48a9dc47b2799c233b09b2931a7c5"
+      },
+      "proof_status": "current_runtime_cpu_proved_physical_pending"
+    },
+    {
+      "acquisition": {
+        "approach signal identity, facing and state": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json approach_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "destination street traffic signal": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json destination_signal_history",
+          "method": "Native signal observer 20 Hz"
+        },
+        "ego body path and street entry": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json ego and destination_entry_frame",
+          "method": "Native body transform 20 Hz"
+        },
+        "original four-camera frame map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "frame-map.jsonl and four PNG archives",
+          "method": "Native synchronized camera observer 20 Hz"
+        },
+        "original vehicle class": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json actor_source",
+          "method": "actor registry"
+        },
+        "separate avoidance purpose": {
+          "entrypoint": "native_capture.py",
+          "evidence": "trace.json purpose",
+          "method": "authored source context"
+        },
+        "source parcel classification and boundaries": {
+          "entrypoint": "native_capture.py",
+          "evidence": "map-packet.json properties",
+          "method": "reviewed parcel authority joined to OpenDRIVE"
+        }
+      },
+      "candidate_risk": {
+        "reason": "A Native map may have no traversable original property connector or the selected parcel may have no authoritative public/private classification; the map and parcel packet must pass geometry and authority checks before spawn.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "config.target_speed_mps: 5.0 to 3.5"
+          ],
+          "compatibility": {
+            "log": "proof-resume-other_purpose-fallback1-compat-analysis.log",
+            "negative_log": "proof-resume-other_purpose-fallback1-compat-negative.log",
+            "receipt": "proof-resume-other_purpose-fallback1-compat-receipt.json",
+            "sha256": "b3dbf21f8d1e6c50d40752706cba991aff1778f20f3b9322a29202be7b9452b3"
+          },
+          "construction": "constructions/other_purpose-fallback1.json",
+          "construction_sha256": "6da73a1e68e6d2d9d110caf0faa0c9049a29cbb0bdab34ef1cbaf3114492eb04",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/other_purpose/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "6da73a1e68e6d2d9d110caf0faa0c9049a29cbb0bdab34ef1cbaf3114492eb04",
+            "exit_code": 0,
+            "log": "proof-resume-other_purpose-fallback1-offline.log",
+            "log_sha256": "c55368e7cfca72a84fd3eff09da91de3689a0cdea5f505f0095b6e2820317c90"
+          },
+          "trigger": {
+            "failure_condition": "primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid",
+            "metric": "measured lateral path error and endpoint overshoot",
+            "source": "original Native body trace and source route"
+          }
+        }
+      ],
+      "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose",
+      "compatibility": {
+        "log": "proof-resume-other_purpose-primary-compat-analysis.log",
+        "negative_log": "proof-resume-other_purpose-primary-compat-negative.log",
+        "receipt": "proof-resume-other_purpose-primary-compat-receipt.json",
+        "sha256": "8e43e896058ed036a10cad7a4e78596ff592d625802ed66f7a2de786b0af6513"
+      },
+      "construction": "constructions/other_purpose.json",
+      "construction_sha256": "ca2ec0292783ad9e61d2a6a42898a58a5b18022c003d72306db9b1762eaa1447",
+      "delivery_acceptance": {
+        "case_id": "testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/other_purpose",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/audit_probe.py --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose --scratch /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/probes/other_purpose --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original parcel authority source must be inside original attempt",
+        "negative_log": "proof-resume-other_purpose-delivery-negative.log",
+        "negative_log_sha256": "1eb9230759d38e298a9ea1799b058a6b7a05dc98d6877bb2595206338df680ac",
+        "script": "delivery_audit.py",
+        "script_sha256": "9e67a3fd9b4d3288a523439e817ca8f77ff432d2a4c8afd773a6c5620b66846c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-resume-other_purpose-delivery-positive.log",
+        "test_log_sha256": "9dfd2122abe4f87ce6bd7939e3123a3eba3f7ff598a792188aec3148b333736e"
+      },
+      "fixture_recipe": "work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/diagnostics/other_purpose/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "contracts/other_purpose.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-resume-other_purpose-primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/offline/other_purpose/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "ca2ec0292783ad9e61d2a6a42898a58a5b18022c003d72306db9b1762eaa1447",
+        "exit_code": 0,
+        "log": "proof-resume-other_purpose-primary-offline.log",
+        "log_sha256": "37e7cb5df3fe67262880d2a455afa24ad3446f53734ff92cbb697098f316c345"
+      },
+      "physical_preparation": {
+        "receipt": "proof-other_purpose-physical-receipt.json",
+        "sha256": "5f5bb8ad618de3adf96cf945a1a4d894a5799da907fb0c19f78e63fab82ca26f"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work/c108447-resume /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C108447__NRS-484B-307-8e__motor_vehicle_driver/execution-manifest.draft.json --case testing__C108447__NRS-484B-307-8e__motor_vehicle_driver__other_purpose --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/compat/other_purpose/primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/other_purpose --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "find /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c108447-resume/saved/other_purpose -name feedback.json -type f -print",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-resume-other_purpose-saved.log",
+        "test_log_sha256": "f694bec923684edc5cb7588e56e3d67b0e5a3e60801338cf7a8e06ce688b9258"
+      },
+      "proof_status": "current_runtime_cpu_proved_physical_pending"
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

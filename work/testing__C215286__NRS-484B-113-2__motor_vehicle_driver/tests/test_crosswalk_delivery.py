@@ -49,6 +49,12 @@ class GeometryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.validate_source(packet)
 
+    def test_reject_concave_crosswalk_source(self):
+        packet = source()
+        packet["crosswalk_polygon_xy"] = [(0, 0), (2, 0), (1, 1), (2, 4), (0, 4)]
+        with self.assertRaisesRegex(ValueError, "not convex"):
+            module.validate_source(packet)
+
     def test_missing_original_frame(self):
         f = frame(0, "overlap")
         del f["body_polygon_xy"]

@@ -32,15 +32,14 @@ def crop_bytes(video, frame_index, rectangle):
     return completed.stdout
 
 
-def audit(attempt, review_path, *, diagnostic=False, media_auditor=audit_media,
+def audit(attempt, review_path, case_id, *, diagnostic=False, media_auditor=audit_media,
           crop_decoder=crop_bytes):
     root = Path(attempt).resolve()
     review_path = Path(review_path).resolve()
     saved = read_attempt(root)
     media = media_auditor(root)
     packet = json.loads(review_path.read_text())
-    case_id = saved['case_id']
-    if packet.get('case_id') != case_id or packet.get('reviewer') in (None, ''):
+    if saved['case_id'] != case_id or packet.get('case_id') != case_id or packet.get('reviewer') in (None, ''):
         raise ValueError('independent pixel review identity missing')
     if packet.get('source_sha256') != saved['sources_sha256']:
         raise ValueError('independent pixel review source binding differs')
@@ -119,12 +118,14 @@ def audit(attempt, review_path, *, diagnostic=False, media_auditor=audit_media,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
+    parser.add_argument('--case', required=True)
     parser.add_argument('--review', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--diagnostic', action='store_true')
     args = parser.parse_args()
-    result = audit(args.attempt, args.review, diagnostic=args.diagnostic)
+    result = audit(args.attempt, args.review, args.case, diagnostic=args.diagnostic)
     Path(args.output).write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+    print(json.dumps({'case_id': args.case, 'status': result['status'], 'passed': result['passed']}))
 
 
 if __name__ == '__main__':

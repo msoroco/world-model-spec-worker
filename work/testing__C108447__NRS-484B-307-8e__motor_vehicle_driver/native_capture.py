@@ -55,6 +55,7 @@ def capture(
     signal_observer: Callable[[int, str], dict[str, Any]],
     destination_street_id: str, output: Path, ticks: int = 900,
     waypoint_tolerance_m: float = 1.5,
+    target_speed_mps: float = 5.0,
     control_applier: Callable[[Any, dict[str, float]], None] = apply_carla_control,
     camera_observer: Callable[[int, str], bytes] | None = None,
     media_directory: Path | None = None,
@@ -67,6 +68,7 @@ def capture(
     """
     _require(20 <= ticks <= 2400, 'bounded 20 Hz episode required')
     _require(0 < waypoint_tolerance_m <= 3, 'finite route tolerance required')
+    _require(0 < target_speed_mps <= 8, 'bounded route speed required')
     _require(purpose.get('source') and purpose.get('value') in ('avoid_red', 'other', 'unknown'), 'separate purpose source required')
     _require(actor_source.get('source') and actor_source.get('class') == 'vehicle', 'original vehicle class source required')
     _require(destination_street_id == map_packet.get('intersecting_street_id'), 'destination street source join required')
@@ -142,7 +144,8 @@ def capture(
                 continue
             if math.dist(location, route[waypoint]) <= waypoint_tolerance_m and waypoint < len(route) - 1:
                 waypoint += 1
-            command = steering_command(location, yaw, route[waypoint], speed)
+            command = steering_command(location, yaw, route[waypoint], speed,
+                                       target_speed_mps=target_speed_mps)
             control_applier(ego, command)
         _require(entry_frame is not None, 'destination street entry not observed')
         _require(len(samples) >= 2, 'ordered Native body route required')

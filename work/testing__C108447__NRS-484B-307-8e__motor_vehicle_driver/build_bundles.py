@@ -71,6 +71,7 @@ def build() -> dict:
                                'pose_strategy': pose, 'fov_deg': 90}
                               for name, width, height, pose in CAMERAS],
                   'capture_provenance': 'original Native samples required',
+                  'target_speed_mps': 5.0,
                   'required_atoms': [], 'source_packets': [],
                   'supported_case_ids': expected,
                   'case': {'case_id': case_id, 'purpose': case['purpose'],
@@ -89,6 +90,14 @@ def build() -> dict:
         suffix = case_id.rsplit('__', 1)[1]
         path = FOLDER / 'constructions' / (suffix + '.json')
         write(path, construction)
+        fallback_config = json.loads(json.dumps(config))
+        fallback_config['target_speed_mps'] = 3.5
+        fallback_files = [dict(item) for item in files]
+        fallback_files[0] = {'path': 'config.json',
+                             'content': json.dumps(fallback_config, indent=2, sort_keys=True) + '\n'}
+        fallback_construction = dict(construction, files=fallback_files)
+        fallback_path = FOLDER / 'constructions' / (suffix + '-fallback1.json')
+        write(fallback_path, fallback_construction)
         from analysis import ROWS
         dispositions = plan['requirement_dispositions']
         if len(dispositions) != len(ROWS):
@@ -113,8 +122,17 @@ def build() -> dict:
                                   'measurement_contract': str(contract_path.relative_to(FOLDER)),
                                   'measurement_procedure': {'entrypoint': 'analysis.py'},
                                   'fixture_recipe': str((FOLDER / 'diagnostics' / suffix / 'fixture-recipe.json').relative_to(ROOT)),
-                                  'candidate_risk': case['physical_risk_assessment'],
-                                  'candidates': [],
+                                  'candidate_risk': {'status': 'physical',
+                                                     'reason': case['physical_risk_assessment']['risk']},
+                                  'candidates': [{
+                                      'id': 'fallback1',
+                                      'construction': str(fallback_path.relative_to(FOLDER)),
+                                      'construction_sha256': sha(fallback_path),
+                                      'changed_knobs': ['config.target_speed_mps: 5.0 to 3.5'],
+                                      'trigger': {'source': 'original Native body trace and source route',
+                                                  'metric': 'measured lateral path error and endpoint overshoot',
+                                                  'failure_condition': 'primary route overshoots the source connector endpoint before destination entry while map and signal sources remain valid'}
+                                  }],
                                   'proof_status': 'inline_cpu_draft_physical_pending'})
     write(FOLDER / 'execution-manifest.draft.json', manifest)
     return {'assignment_id': ASSIGNMENT, 'case_count': len(cases),

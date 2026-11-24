@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from crosswalk import footprint_relation, measure, require
@@ -51,6 +52,48 @@ METHODS = {name: globals()[name] for name in (
     'measure_crosswalk_contact', 'measure_stop_activity', 'measure_stand_activity',
     'measure_park_activity', 'measure_traffic_conflict', 'measure_law_direction',
     'measure_police_direction', 'measure_device_direction')}
+
+
+def assess_crosswalk_halt(attempt, context, rows, setup_status):
+    """Assess the authored driven approach and terminal halt from saved geometry.
+
+    The 1 m approach and 20 terminal frames are engineering completion criteria,
+    not statutory definitions or a legal judgment.
+    """
+    source_names = ('crosswalk-context.json', 'crosswalk-rows.jsonl',
+                    'trace.jsonl', 'video_frames.jsonl')
+    sources = {name: hashlib.sha256((attempt/name).read_bytes()).hexdigest()
+               for name in source_names if (attempt/name).is_file()}
+    missing = [name for name in source_names if name not in sources]
+    status = 'unverified'
+    detail = {'planned_frame_count': 900, 'minimum_sampled_path_m': 1.0,
+              'minimum_terminal_halt_frames': 20, 'expected_action': context['action'],
+              'expected_destination': context['destination'], 'legal_threshold': False}
+    intervals = []
+    if not missing:
+        centers = [[sum(p[i] for p in row['body_corners_xy'])/4 for i in (0, 1)]
+                   for row in rows]
+        path = sum(math.dist(a, b) for a, b in zip(centers, centers[1:]))
+        relation = [footprint_relation(row['body_corners_xy'], context['crosswalk_polygon'])['overlap']
+                    for row in rows]
+        wanted = context['destination'] == 'on'
+        terminal = 0
+        for row, overlaps in zip(reversed(rows), reversed(relation)):
+            if row['halt_activity'] == context['action'] and row['speed_mps'] < 0.1 and overlaps == wanted:
+                terminal += 1
+            else:
+                break
+        detail.update(sampled_path_m=path, terminal_halt_frames=terminal,
+                      final_footprint_overlaps=relation[-1], observed_frame_count=len(rows))
+        if rows:
+            intervals = [{'first_frame': rows[0]['frame'], 'last_frame': rows[-1]['frame'],
+                          'first_time_s': rows[0]['time_s'], 'last_time_s': rows[-1]['time_s']}]
+        status = ('met' if setup_status == 'met' and len(rows) == 900 and
+                  path >= 1.0 and terminal >= 20 else 'not_met')
+    return {'status': status, 'method': 'source-bound driven approach and terminal crosswalk halt',
+            'intervals': intervals, 'sources': sources, 'details': detail,
+            'missing_evidence': missing, 'legal_verdict_claimed': False,
+            'physical_causation_claimed': False}
 
 
 def analyze(attempt: Path, output: Path) -> dict:
@@ -128,6 +171,13 @@ def analyze(attempt: Path, output: Path) -> dict:
               'recording_evidence':evidence,'realized_observables':{}}
     from worker_exchange.native_output import physical_result, validate_result
     result = physical_result(attempt,result)
+    halt_check = assess_crosswalk_halt(attempt, context, rows,
+                                       result['physical_checks']['setup']['status'])
+    result['physical_checks']['maneuver'] = halt_check
+    result['maneuver_completed'] = halt_check['status'] == 'met'
+    result['physical_observations']['crosswalk_halt'] = halt_check['details']
+    result['termination_reason'] = ('Saved crosswalk halt '+halt_check['status']+
+                                    '; legal judgments remain separate')
     validate_result(result)
     (attempt/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     if output.exists(): raise ValueError('retain prior measurement report')
