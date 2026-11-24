@@ -2,14 +2,14 @@
   "assignment_id": "testing__C129731__NRS-484B-407__motor_vehicle_driver",
   "input_sha256": "8296514c6ffd29a78c0e9711f292a5475cbac39a9eb5835e1a51b1a8f3246a1e",
   "status": "partial",
-  "readiness_kind": "source_gated_native_constructor_route_and_sight_capture_partial",
+  "readiness_kind": "source_gated_native_and_selected_delivery_draft_partial",
   "applied_update": 0,
   "tests": [
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -v",
+      "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C129731__NRS-484B-407__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-sight-tests.log",
-      "sha256": "887f88672f5c57426945b1b9b76ef3479f5c346780187442df55200175695a35"
+      "sha256": "6d04ea7c06d21f1361331a4e31201242ff7539a21d5896f39c2ce1928e33f465"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
@@ -18,13 +18,13 @@
       "sha256": "9bcc33879f4e2c5dd39d0d1d15168374641a00c70aa008bc2f5d2b17009758a9"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete",
+      "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "cpu-static-check.log",
       "sha256": "f6d113fe22b0f4b45e4f8e2989aa63145e797a6933508394eb61f31cfa131fbb"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready",
+      "command": "TMPDIR=$PWD/.runtime-work/c129731-test-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c129731-output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C129731__NRS-484B-407__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-strict-check.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
@@ -39,5 +39,5 @@
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Four exact planned baseline/499/500/501-foot cases and one comparison retain the original-source gap. Source-gated Native code now checks reviewed site SHA, loaded map, 20 Hz settings, exact distance case setup, lane-valid actor spawns and routes, blueprints, failed-spawn cleanup, bounded route controls before each tick, original actor heading reversal, snapshots, two-direction body rays and reviewed terrain hits. A 900-frame fake-CARLA integration and negative source tests pass. Original accepted media/trace/archive and reviewed map/routes/site packets remain absent; four-view video capture, full canonical exact construction/manifest, positive/negative compatibility, original source review and acceptance are incomplete. Exact strict exits 1 on truthful partial."
+  "reason": "Four planned exact baseline/499/500/501-foot cases and their controlled comparison remain source-gated draft delivery. Native actor construction, reviewed-route control, observed-heading sight capture, frame-joined four-view FFV1 recording, and independent saved audit of sealed frame-map continuity, video hashes/profile/full decode pass 900-frame fake-CARLA and negative CPU tests. Original accepted media/trace/archive and reviewed map/routes/site packets remain absent; canonical exact construction/manifest, positive/negative compatibility, original source review and canonical acceptance are incomplete. Exact strict exits 1 on truthful partial."
 }

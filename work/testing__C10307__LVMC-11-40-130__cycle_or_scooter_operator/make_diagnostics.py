@@ -38,7 +38,9 @@ def build():
                 {"name": "jurisdiction", "unit": "structured", "method": "source-bound context packet"},
                 {"name": "bicycle_classification", "unit": "structured", "method": "source-bound context packet"}],
             "limitations": ["Diagnostic media and context cannot establish physical cause or legal prudence."]}
-        refreshed = {"analysis.py", "runner.py", "native_run.py", "native_capture.py", "comparison_audit.py"}
+        refreshed = {"analysis.py", "runner.py", "native_run.py", "native_capture.py",
+                     "source_packet_acquisition.py", "comparison_audit.py",
+                     "speed_measurement.py", "comparison_source_guard.py"}
         present = {item["path"] for item in construction["files"]}
         for item in construction["files"]:
             if item["path"] in refreshed:

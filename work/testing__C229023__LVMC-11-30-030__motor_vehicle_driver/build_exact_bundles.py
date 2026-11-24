@@ -20,6 +20,7 @@ SOURCES = (
     "native_crosswalk_capture.py", "native_crosswalk_world.py", "saved_capture_audit.py",
     "native_crosswalk_media.py", "saved_video_audit.py", "saved_crosswalk_finalizer.py",
     "saved_comparison_audit.py", "native_crosswalk_actors.py", "native_crosswalk_session.py",
+    "analysis.py",
 )
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 

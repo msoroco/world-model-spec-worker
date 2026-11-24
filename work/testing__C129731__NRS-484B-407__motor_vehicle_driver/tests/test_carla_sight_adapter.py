@@ -1,4 +1,5 @@
 import hashlib
+import os
 import json
 import sys
 import tempfile
@@ -10,6 +11,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from carla_sight_adapter import CarlaSightAdapter, capture_original_carla, load_reviewed_site
 from native_sight_capture import capture
 from sight_measurement import ASSIGNMENT, DIRECTIONS, STATIONS_M
+
+
+class FakeCameras:
+    def __init__(self, world, site, output, carla):
+        self.output = output
+        self.frames = []
+
+    def append(self, frame):
+        self.frames.append(frame)
+
+    def close(self):
+        pass
+
+    def files(self):
+        if self.frames != list(range(1, 901)):
+            raise ValueError("camera frame mismatch")
+        files = {}
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
+            path = self.output / (name + ".mkv")
+            path.write_bytes(name.encode())
+            files[name] = path
+        return files
 
 
 def loc(x, y, z):
@@ -194,20 +217,21 @@ class CarlaSightAdapterTests(unittest.TestCase):
                 load_reviewed_site(path, digest)
 
     def test_one_call_original_capture_uses_observed_heading(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as tmp:
             root = Path(tmp)
             path = root / "site.json"
             path.write_text(json.dumps(site()) + "\n")
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             result = capture_original_carla(
                 self.world, self.ego, self.approach, path, digest, loc,
-                ASSIGNMENT + "__distance_at_500ft", root / "attempt")
+                ASSIGNMENT + "__distance_at_500ft", root / "attempt",
+                camera_factory=FakeCameras)
             self.assertGreater(result["turn_frames"], 60)
             self.assertGreater(result["measured_heading_change_deg"], 150)
             self.assertTrue((root / "attempt" / "inventory.json").is_file())
 
     def test_one_call_capture_applies_both_reviewed_routes_before_ticks(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as tmp:
             root = Path(tmp)
             path = root / "site.json"
             path.write_text(json.dumps(site()) + "\n")
@@ -215,10 +239,22 @@ class CarlaSightAdapterTests(unittest.TestCase):
             capture_original_carla(
                 self.world, self.ego, self.approach, path, digest, loc,
                 ASSIGNMENT + "__distance_at_500ft", root / "attempt",
-                control_factory=lambda **kwargs: kwargs)
+                control_factory=lambda **kwargs: kwargs, camera_factory=FakeCameras)
             self.assertEqual(len(self.ego.controls), 900)
             self.assertEqual(len(self.approach.controls), 900)
             self.assertEqual(self.ego.controls[0]["brake"], 0.0)
+
+    def test_returned_work_tree_is_rejected_as_attempt_scratch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "site.json"
+            path.write_text(json.dumps(site()) + "\n")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, "under pipeline output root"):
+                capture_original_carla(
+                    self.world, self.ego, self.approach, path, digest, loc,
+                    ASSIGNMENT + "__distance_at_500ft",
+                    Path(__file__).resolve().parents[1] / "attempt-tmp")
+            self.assertEqual(self.world.frame, 0)
 
 
 if __name__ == "__main__":

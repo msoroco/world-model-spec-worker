@@ -39,13 +39,24 @@ def build_result(attempt, survey_path, video_relative):
          'physical_cause_confirmed':False, 'cause_evidence':{'status':'physical_review_pending'}}]
     manifest = json.loads((attempt/'source-manifest.json').read_text())
     recording_description,recording_evidence=project(attempt,case_id)
+    export_receipt=attempt/'runtime-export/source-export.json'
+    if export_receipt.is_file():
+        exported=json.loads(export_receipt.read_text())
+        if exported.get('original_source_manifest_sha256') != hashlib.sha256((attempt/'source-manifest.json').read_bytes()).hexdigest():
+            raise ValueError('runtime export differs from original source manifest')
+        trace_reference='runtime-export/trace.jsonl'
+        video_references=['runtime-export/'+role+'.mkv' for role in
+                          ('overview','approach','reference_corner','driver_reference')]
+    else:
+        trace_reference=manifest['trace']['path']
+        video_references=[video_relative]
     return {'case_id':case_id, 'measured_values':observation,
             'target_checks':targets, 'setup_confirmed':False,
             'behavior_attempted':False, 'maneuver_completed':False,
             'termination_reason':'Saved measurement complete; physical and legal review pending',
             'physical_failure_flags':{'physical_review_pending':True},
-            'trace_reference':manifest['trace']['path'],
-            'video_references':[video_relative],
+            'trace_reference':trace_reference,
+            'video_references':video_references,
             'video_frame_map_reference':manifest['frame_map']['path'],
             'recording_description':recording_description,
             'recording_evidence':recording_evidence,

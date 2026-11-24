@@ -12,6 +12,9 @@ from pathlib import Path
 
 REQUIRED_CONTEXT = ("jurisdiction", "bicycle_classification", "alley_route", "rack_geometry")
 REQUIRED_CONDITIONS = ("weather", "surface", "visibility", "pedestrians", "curvature")
+APPROACH_START_X_M = -20.0
+APPROACH_END_X_M = 0.0
+ROUTE_END_X_M = 30.0
 
 
 def _read_source(root: Path, entry: dict) -> dict:
@@ -69,6 +72,7 @@ def measure(root: Path, inventory: dict, expected_case_id: str) -> dict:
         if any(key not in row for key in REQUIRED_CONDITIONS):
             raise ValueError("missing contemporaneous condition")
     output = []
+    approach = []
     previous_position = None
     previous_time = None
     for frame, t, sample in zip(frame_ids, times, samples):
@@ -90,7 +94,23 @@ def measure(root: Path, inventory: dict, expected_case_id: str) -> dict:
                 if math.hypot(observed[0] - velocity[0], observed[1] - velocity[1]) > tolerance:
                     raise ValueError("original bicycle velocity disagrees with position history")
             previous_position, previous_time = position, t
-        output.append({"frame": frame, "time_s": t, "speed_mps": math.sqrt(sum(x * x for x in velocity))})
+        speed = math.sqrt(sum(x * x for x in velocity))
+        if (context.get("source_kind") == "original_local_native_capture" and
+                APPROACH_START_X_M <= position[0] <= APPROACH_END_X_M):
+            approach.append({"frame": frame, "time_s": t, "speed_mps": speed})
+        sample_out = {"frame": frame, "time_s": t, "speed_mps": speed}
+        if context.get("source_kind") == "original_local_native_capture":
+            sample_out["x_m"], sample_out["y_m"] = position
+        output.append(sample_out)
+    episode_mean = sum(row["speed_mps"] for row in output) / len(output)
+    production = context.get("source_kind") == "original_local_native_capture" and len(output) == 900
+    if production:
+        if (len(approach) < 20 or previous_position[0] < ROUTE_END_X_M or
+                any(row["speed_mps"] <= 0 for row in approach)):
+            raise ValueError("original bicycle approach window or route completion missing")
+        mean = sum(row["speed_mps"] for row in approach) / len(approach)
+    else:
+        mean = episode_mean
     return {
         "format": "c10307-bicycle-speed-measurement",
         "case_id": expected_case_id,
@@ -99,7 +119,13 @@ def measure(root: Path, inventory: dict, expected_case_id: str) -> dict:
         "samples": output,
         "context": {key: context[key] for key in REQUIRED_CONTEXT},
         "condition_samples": conditions,
-        "summary": {"sample_count": len(output), "mean_speed_mps": sum(row["speed_mps"] for row in output) / len(output), "maximum_speed_mps": max(row["speed_mps"] for row in output)},
+        "summary": {"sample_count": len(output), "mean_speed_mps": mean,
+                    "episode_mean_speed_mps": episode_mean,
+                    "approach_window": {"start_x_m": APPROACH_START_X_M,
+                                        "end_x_m": APPROACH_END_X_M,
+                                        "sample_count": len(approach),
+                                        "source_verified": production},
+                    "maximum_speed_mps": max(row["speed_mps"] for row in output)},
         "legal_prudence": "unresolved",
     }
 

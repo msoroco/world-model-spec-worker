@@ -15,7 +15,10 @@ SCRIPTS = ("selected_delivery.py", "original_source_acquisition.py",
            "delivery_audit.py", "sight_measurement.py", "comparison_audit.py",
            "selected_pair_review.py", "native_sight_capture.py",
            "carla_sight_adapter.py", "reversal_phase.py",
+           "native_sight_cameras.py",
+           "native_camera_audit.py",
            "native_case_constructor.py", "reversal_route_controller.py",
+           "build_selected_delivery_draft.py",
            "distance_probe_audit.py")
 
 

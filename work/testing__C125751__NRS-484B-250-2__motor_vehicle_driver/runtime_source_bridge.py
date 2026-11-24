@@ -1,12 +1,13 @@
 """Export sealed original C125751 sources to the pinned saved-processing shape.
 
-This builds derived copies outside the acquisition directory. It does not
+This builds derived copies in a distinct directory. It does not
 assert that the authored controls realized a statutory right-of-way outcome.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import math
 import shutil
 import subprocess
 from pathlib import Path
@@ -28,8 +29,8 @@ def export(attempt, survey_path, destination, profile=None):
 
     attempt = Path(attempt).resolve()
     destination = Path(destination).resolve()
-    if destination == attempt or attempt in destination.parents or destination in attempt.parents:
-        raise ValueError('derived source export must be outside original acquisition')
+    if destination == attempt or destination in attempt.parents:
+        raise ValueError('derived source export must not replace original acquisition')
     if destination.exists():
         raise ValueError('retain prior source export; use a fresh destination')
     packet = audit_original(attempt, survey_path, decode_media=True)
@@ -48,15 +49,28 @@ def export(attempt, survey_path, destination, profile=None):
     destination.mkdir(parents=True)
     shutil.copy2(attempt/'video_frames.jsonl', destination/'video_frames.jsonl')
     with (destination/'trace.jsonl').open('w') as target:
+        previous = None
         for row in trace['frames']:
             vertices = row['ego']['body_vertices_xy_m']
             center = [sum(point[axis] for point in vertices)/len(vertices) for axis in (0, 1)]
+            if previous is None:
+                speed = heading = 0.0
+            else:
+                dt = row['native_elapsed_seconds']-previous[2]
+                if dt <= 0:
+                    raise ValueError('original Native clock must increase')
+                dx,dy = center[0]-previous[0],center[1]-previous[1]
+                speed = math.hypot(dx,dy)/dt
+                heading = math.degrees(math.atan2(dy,dx)) if speed else 0.0
             sample = {'frame': row['native_frame_id'], 'time_s': row['native_elapsed_seconds'],
-                      'position_m': center, 'body_vertices_m': vertices,
+                      'position': {'x':center[0], 'y':center[1], 'z':0.0},
+                      'heading_deg':heading, 'speed_mps':speed,
+                      'body_vertices_m': vertices,
                       'road_id': row['ego']['road_id'],
                       'other_body_vertices_m': row['other']['body_vertices_xy_m'],
                       'governing_device_readback': row['governing_device_readback']}
             target.write(json.dumps(sample, separators=(',', ':'))+'\n')
+            previous = (center[0],center[1],row['native_elapsed_seconds'])
     videos = {}
     for role in ROLES:
         channel = mapping[role]

@@ -23,9 +23,26 @@ def check_record(record: dict) -> None:
     if any(isinstance(value, bool) or not isinstance(value, (int, float)) or
            not math.isfinite(value) for value in times) or any(b <= a for a, b in zip(times, times[1:])):
         raise ValueError("original speed time axis invalid")
-    mean = record.get("summary", {}).get("mean_speed_mps")
-    if isinstance(mean, bool) or not isinstance(mean, (int, float)) or not math.isfinite(mean) or abs(mean - sum(speeds) / len(speeds)) > 1e-8:
+    summary = record.get("summary", {})
+    window = summary.get("approach_window", {})
+    selected = speeds
+    if window.get("source_verified") is True:
+        start, end = window.get("start_x_m"), window.get("end_x_m")
+        if (not all(isinstance(value, (int, float)) and math.isfinite(value)
+                    for value in (start, end)) or start >= end):
+            raise ValueError("reported original approach window invalid")
+        selected = [row["speed_mps"] for row in samples
+                    if isinstance(row.get("x_m"), (int, float)) and
+                    start <= row["x_m"] <= end]
+        if len(selected) < 20 or len(selected) != window.get("sample_count"):
+            raise ValueError("reported original approach window differs from source")
+    mean = summary.get("mean_speed_mps")
+    if isinstance(mean, bool) or not isinstance(mean, (int, float)) or not math.isfinite(mean) or abs(mean - sum(selected) / len(selected)) > 1e-8:
         raise ValueError("reported mean differs from original speed history")
+    episode = summary.get("episode_mean_speed_mps")
+    if episode is not None and (not isinstance(episode, (int, float)) or
+            not math.isfinite(episode) or abs(episode - sum(speeds) / len(speeds)) > 1e-8):
+        raise ValueError("reported episode mean differs from original speed history")
     if [row.get("time_s") for row in conditions] != times:
         raise ValueError("condition source time axis differs")
 

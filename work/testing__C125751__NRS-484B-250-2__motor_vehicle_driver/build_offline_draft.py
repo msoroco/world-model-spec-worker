@@ -71,7 +71,14 @@ def main():
     client = carla.Client(args.host,args.port)
     client.set_timeout(20.0)
     adapter = CarlaNativeAdapter(client,carla,survey)
-    capture(adapter,survey_path,args.survey_sha256,map_path,case,Path(args.output_dir).resolve())
+    attempt = Path(args.output_dir).resolve()
+    capture(adapter,survey_path,args.survey_sha256,map_path,case,attempt)
+    from runtime_source_bridge import export
+    from analysis import run as analyze
+    import shutil
+    export(attempt,survey_path,attempt/'runtime-export')
+    shutil.copy2(attempt/'runtime-export/overview.mkv',attempt/'raw.mkv')
+    analyze(attempt,attempt/'analysis-report.json')
 
 
 if __name__ == '__main__':
@@ -128,6 +135,7 @@ def build():
                  'native_capture.py': (HERE/'native_capture.py').read_text(),
                  'saved_delivery.py': (HERE/'saved_delivery.py').read_text(),
                  'saved_finalizer.py': (HERE/'saved_finalizer.py').read_text(),
+                 'canonical_evidence.py': (HERE/'canonical_evidence.py').read_text(),
                  'delivery_audit.py': (HERE/'delivery_audit.py').read_text(),
                  'comparison_audit.py': (HERE/'comparison_audit.py').read_text(),
                  'carla_native_adapter.py': (HERE/'carla_native_adapter.py').read_text(),
@@ -153,7 +161,7 @@ def build():
     (HERE/'execution-manifest.draft.json').write_text(json.dumps({
         'assignment_id': AID, 'status': 'diagnostic_offline_only_original_sources_pending',
         'cases': rows},indent=2)+'\n')
-    print('built five exact entry-timing diagnostic constructions')
+    print('built five exact source-gated entry-timing constructions')
 
 
 if __name__ == '__main__':

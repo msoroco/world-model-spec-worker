@@ -20,6 +20,24 @@ def audit(attempt, survey_path):
     summary = result.get('realized_observables',{}).get('entry_time_difference_s',{})
     if summary.get('value') != observed['ego_minus_other_upper_entry_s'] or summary.get('unit') != 's':
         raise ValueError('realized observables differ from original crossing measurement')
+    from scenario_pipeline.batch_pipeline.validation import recording_evidence
+    recording_evidence(result,result['recording_description'],lambda ref:_source_path(attempt,ref))
+    original=json.loads((attempt/'original-trace.json').read_text())['frames']
+    camera=json.loads((attempt/'original-camera-index.json').read_text())['channels']
+    refs={row['name']:row['reference'] for row in result['recording_evidence']}
+    expected={
+        'ego_body_history':[row['ego'] for row in original],
+        'other_body_history':[row['other'] for row in original],
+        'governing_device_history':[row['governing_device_readback'] for row in original],
+        'original_camera_index':[{name:camera[name][i] for name in ('front','rear','left','right')}
+                                 for i in range(len(original))],
+    }
+    for name,values in expected.items():
+        rows=[json.loads(line) for line in _source_path(attempt,refs[name]).read_text().splitlines()]
+        if len(rows)!=len(original) or any(row.get('time_s')!=source['time_s'] or
+                                           row.get('value')!=value
+                                           for row,source,value in zip(rows,original,values)):
+            raise ValueError('derived recording channel differs from original: '+name)
     targets = {row.get('target'):row for row in result.get('target_checks',[])}
     if set(targets) != {'ego_minus_other_entry_s','ego_response'}:
         raise ValueError('saved crossing target set incomplete')
@@ -27,9 +45,27 @@ def audit(attempt, survey_path):
             targets['ego_response'].get('measured') != observed['observed_ego_response']):
         raise ValueError('saved crossing targets differ from original measurement')
     video_refs = result.get('video_references')
-    if not isinstance(video_refs,list) or len(video_refs) != 1:
+    exported=attempt/'runtime-export/source-export.json'
+    if exported.is_file():
+        receipt=json.loads(exported.read_text())
+        if (receipt.get('original_source_manifest_sha256') !=
+                hashlib.sha256((attempt/'source-manifest.json').read_bytes()).hexdigest()):
+            raise ValueError('runtime export differs from original source manifest')
+        expected=['runtime-export/'+role+'.mkv' for role in
+                  ('overview','approach','reference_corner','driver_reference')]
+        if video_refs != expected or result.get('trace_reference')!='runtime-export/trace.jsonl':
+            raise ValueError('four original runtime video references required')
+        trace=_source_path(attempt,result['trace_reference'])
+        if hashlib.sha256(trace.read_bytes()).hexdigest()!=receipt.get('trace_sha256'):
+            raise ValueError('runtime export trace hash differs')
+        for ref in expected:
+            video=_source_path(attempt,ref)
+            role=Path(ref).stem
+            if (hashlib.sha256(video.read_bytes()).hexdigest()!=receipt['videos'][role]['sha256']):
+                raise ValueError('runtime export video hash differs')
+    elif video_refs != ['raw.mkv']:
         raise ValueError('one original primary video required')
-    video = _source_path(attempt,video_refs[0])
+    video = _source_path(attempt,'raw.mkv')
     from scenario_pipeline.worker_exchange.media import audit as decode_video
     decoded = decode_video(video,900,mapping_sha256=sources['frame_map_sha256'])
     hashes = result.get('source_sha256',{})

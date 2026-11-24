@@ -21,7 +21,7 @@ def main():
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         short = case_id.removeprefix(manifest["assignment_id"] + "__")
-        output = REPO / (".runtime-work/c10307-compat-native-v12-" + short)
+        output = REPO / (".runtime-work/c10307-compat-native-v16-" + short)
         command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"), "compatibility",
                    "--manifest", str(MANIFEST), "--case", case_id, "--output", str(output),
                    "--library", str(REPO / "runtime/library"), "--validator", str(VALIDATOR)]

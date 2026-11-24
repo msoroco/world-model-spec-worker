@@ -62,7 +62,8 @@ class NativeAdapterTests(unittest.TestCase):
                      "rack_geometry_source": refs['rack'],
                      "jurisdiction": {"city_of_las_vegas": True, "source": refs['municipal']}}
             assets = {"source_kind": "original_local_native_blueprint_inventory",
-                      "world_map": "local", "blueprint_ids": ["vehicle.bicycle", "static.rack"]}
+                      "world_map": "local", "blueprint_ids": ["vehicle.bicycle", "static.rack",
+                                                           "walker.pedestrian.0001"]}
             sp = root / "scene.json"
             ap = root / "assets.json"
             sp.write_text(json.dumps(scene))
@@ -77,6 +78,18 @@ class NativeAdapterTests(unittest.TestCase):
             snapshot_sources(attempt, env, selected, CASE)
             receipt = audit_source_provenance(attempt, CASE)
             self.assertEqual(receipt['source_sha256']['road'], digest(road))
+            missing_asset_path = root / 'missing-rack-assets.json'
+            missing_asset_path.write_text(json.dumps({**assets,
+                'blueprint_ids': ['vehicle.bicycle']}))
+            missing_asset_env = {**env, 'C10307_ASSET_INVENTORY': str(missing_asset_path),
+                                 'C10307_ASSET_SHA256': digest(missing_asset_path)}
+            with self.assertRaisesRegex(ValueError, 'blueprint inventory differs'):
+                source_configuration(missing_asset_env, CASE)
+            missing_asset_attempt = root / 'missing-rack-attempt'
+            missing_asset_attempt.mkdir()
+            snapshot_sources(missing_asset_attempt, missing_asset_env, scene, CASE)
+            with self.assertRaisesRegex(ValueError, 'blueprint inventory mismatch'):
+                audit_source_provenance(missing_asset_attempt, CASE)
             wrong_map = {**packets['municipal'], 'map_sha256': '0' * 64}
             wrong_map_path = root / 'wrong-map-municipal.json'
             wrong_map_path.write_text(json.dumps(wrong_map))

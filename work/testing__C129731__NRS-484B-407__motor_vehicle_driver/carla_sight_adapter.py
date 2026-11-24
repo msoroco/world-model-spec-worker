@@ -9,8 +9,10 @@ not a conclusion about what a driver could see.
 from __future__ import annotations
 
 import hashlib
+import os
 import json
 import math
+import tempfile
 from pathlib import Path
 
 from sight_measurement import DIRECTIONS, STATIONS_M
@@ -195,16 +197,25 @@ class CarlaSightAdapter:
 def capture_original_carla(world, ego, approach, site_path: Path,
                            site_sha256: str, location_factory, case_id: str,
                            destination: Path, recording_id: str | None = None,
-                           control_factory=None):
+                           control_factory=None, camera_factory=None):
     """Acquire one attempt from live actors after the caller starts control.
 
-    The caller owns the CARLA world lease, actor spawning, camera sensors and
-    cleanup. Supplying control_factory follows the reviewed case routes before
+    The caller owns the CARLA world lease and vehicle actors. Four reviewed
+    cameras are acquired and cleaned up here. Supplying control_factory follows
+    the reviewed case routes before
     each tick. A recorded turn phase comes from live heading;
     the saved capture independently rejects a missing 150-degree reversal.
     """
     from native_sight_capture import capture
+    from native_sight_cameras import NativeSightCameras
 
+    configured = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
+    if not configured:
+        raise ValueError("pipeline output root required for original Native capture")
+    safe_root = Path(configured).resolve()
+    if not Path(destination).resolve().is_relative_to(safe_root):
+        raise ValueError("original Native attempt must be under pipeline output root")
+    safe_root.mkdir(parents=True, exist_ok=True)
     site = load_reviewed_site(site_path, site_sha256)
     before_tick = None
     if control_factory is not None:
@@ -222,4 +233,15 @@ def capture_original_carla(world, ego, approach, site_path: Path,
 
     adapter = CarlaSightAdapter(world, ego, approach, site, location_factory,
                                 HeadingReversalPhase(), before_tick)
-    return capture(adapter, case_id, destination, recording_id=recording_id)
+    if camera_factory is None:
+        import carla
+        camera_factory = NativeSightCameras
+    else:
+        carla = None
+    with tempfile.TemporaryDirectory(prefix="c129731-cameras-", dir=safe_root) as tmp:
+        cameras = camera_factory(world, site, Path(tmp), carla)
+        try:
+            return capture(adapter, case_id, destination, recording_id=recording_id,
+                           camera_recorder=cameras)
+        finally:
+            cameras.close()

@@ -13,6 +13,39 @@ from queue import Empty, Queue
 
 from native_capture import CAMERAS
 
+CASES = ('precedence', 'advance', 'timing_below', 'timing_inside', 'timing_above')
+FRAME_COUNT = 900
+
+
+def reviewed_schedule(survey, case_id):
+    """Require continuous original-frame controls for both source actors."""
+    suffix = case_id.rsplit('__', 1)[-1]
+    if suffix not in CASES:
+        raise ValueError('foreign exact control case')
+    controls = survey.get('control_schedules')
+    if not isinstance(controls, dict) or set(controls) != {'ego', 'other'}:
+        raise ValueError('reviewed actor control schedules required')
+    for name in ('ego', 'other'):
+        rows = controls[name].get(suffix)
+        if not isinstance(rows, list) or not rows:
+            raise ValueError('reviewed exact actor control schedule missing')
+        next_frame = 0
+        for row in rows:
+            if not isinstance(row, dict) or type(row.get('start_frame')) is not int or type(row.get('end_frame')) is not int:
+                raise ValueError('reviewed control schedule frame bounds required')
+            if row['start_frame'] != next_frame or row['end_frame'] < next_frame or row['end_frame'] >= FRAME_COUNT:
+                raise ValueError('reviewed control schedule gap or overlap')
+            throttle, brake, steer = (row.get(key) for key in ('throttle', 'brake', 'steer'))
+            if (any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in (throttle, brake, steer)) or
+                    not 0 <= throttle <= 1 or not 0 <= brake <= 1 or not -1 <= steer <= 1 or
+                    (throttle > 0 and brake > 0)):
+                raise ValueError('reviewed actor control outside CARLA range')
+            next_frame = row['end_frame'] + 1
+        if next_frame != FRAME_COUNT:
+            raise ValueError('reviewed control schedule incomplete')
+    return suffix
+
 
 class CarlaNativeAdapter:
     def __init__(self, client, carla, survey):
@@ -53,6 +86,7 @@ class CarlaNativeAdapter:
         return self.carla.Transform(self.carla.Location(*xyz),self.carla.Rotation(*angles))
 
     def spawn_actors(self, survey, case_id):
+        reviewed_schedule(survey, case_id)
         spawned = {}
         try:
             for name in ('ego','other'):
@@ -88,9 +122,9 @@ class CarlaNativeAdapter:
             raise
 
     def request_controls(self, handles, case_id, index):
-        suffix = case_id.rsplit('__',1)[-1]
-        if suffix not in ('precedence','advance','timing_below','timing_inside','timing_above'):
-            raise ValueError('foreign exact control case')
+        suffix = reviewed_schedule(self.survey, case_id)
+        if type(index) is not int or not 0 <= index < FRAME_COUNT:
+            raise ValueError('original control frame outside 900-frame plan')
         for name in ('ego','other'):
             schedule = self.survey['control_schedules'][name].get(suffix)
             if not isinstance(schedule,list):

@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "status": "draft_unselected",
+  "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Whenever any vehicle is stopped at a marked crosswalk or at any unmarked crosswalk at an intersection to permit a pedestrian to cross the roadway, the driver of any other vehicle approaching from the rear shall not overtake and pass such stopped vehicle.",
+      "source": {
+        "path": "inputs/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/assignment.json",
+        "sha256": "b075e6be7434d41e57e510466ca622da4f9d68ccdbbc506f3da74f38323a0759",
+        "source_locator": "law.text"
+      },
+      "kind": "measured",
+      "method": "measure_crosswalk_observation",
+      "output_key": "crosswalk_observation",
+      "value_type": "object",
+      "inputs": [
+        "context.json",
+        "trace.jsonl",
+        "frame-map.jsonl",
+        "receipt.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "exact_target": {
+    "crosswalk_kind": "marked",
+    "ego_maneuver_request": "wait",
+    "stopped_vehicle_purpose_claim": "permit_pedestrian"
+  },
+  "measured_keys": [
+    "observed.rear_approach_sampled",
+    "observed.lead_stop_sampled",
+    "observed.pedestrian_in_polygon_sampled",
+    "observed.ego_full_pass_sampled"
+  ],
+  "negative": {
+    "remove": [
+      "context.json"
+    ],
+    "error_contains": "Missing required source: context.json"
+  },
+  "unresolved_judgments": [
+    "original road intersection and crosswalk status",
+    "lead stopped to permit this pedestrian",
+    "rear approach and overtaking under the statutory language",
+    "physical camera visibility and crossing completion"
+  ]
+}

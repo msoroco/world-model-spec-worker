@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from carla_native_adapter import CarlaNativeAdapter
+from carla_native_adapter import CarlaNativeAdapter, reviewed_schedule
 
 
 class Actor:
@@ -58,8 +58,31 @@ class AdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'OpenDRIVE readback differs'):
             adapter.verify_map(survey,b'changed map')
         survey['control_schedules']['ego']['precedence'] = []
-        with self.assertRaisesRegex(ValueError,'schedule gap'):
+        with self.assertRaisesRegex(ValueError,'schedule missing'):
             adapter.request_controls(handles,'exact__precedence',0)
+
+    def test_reviewed_controls_cover_every_original_frame_before_spawn(self):
+        full = [{'start_frame':0,'end_frame':899,'throttle':0,'brake':.5,'steer':0}]
+        survey={'control_schedules':{name:{'timing_below':list(full)} for name in ('ego','other')}}
+        self.assertEqual(reviewed_schedule(survey,'exact__timing_below'),'timing_below')
+        world=World()
+        adapter=CarlaNativeAdapter(SimpleNamespace(get_world=lambda:world),None,survey)
+        cases=(
+            ([{'start_frame':0,'end_frame':898,'throttle':0,'brake':.5,'steer':0}], 'incomplete'),
+            ([{'start_frame':1,'end_frame':899,'throttle':0,'brake':.5,'steer':0}], 'gap or overlap'),
+            ([{'start_frame':0,'end_frame':500,'throttle':0,'brake':.5,'steer':0},
+              {'start_frame':500,'end_frame':899,'throttle':0,'brake':.5,'steer':0}], 'gap or overlap'),
+            ([{'start_frame':0,'end_frame':899,'throttle':.2,'brake':.5,'steer':0}], 'outside CARLA range'),
+        )
+        for rows, expected in cases:
+            with self.subTest(rows=rows):
+                survey['control_schedules']['other']['timing_below']=rows
+                with self.assertRaisesRegex(ValueError,expected):
+                    adapter.spawn_actors(survey,'exact__timing_below')
+                self.assertEqual(world.actors,[])
+        survey['control_schedules']['other']['timing_below']=list(full)
+        with self.assertRaisesRegex(ValueError,'foreign exact control case'):
+            reviewed_schedule(survey,'exact__unassigned')
 
 
 if __name__=='__main__':

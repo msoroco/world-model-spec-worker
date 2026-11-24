@@ -50,6 +50,13 @@ def audit_source_provenance(attempt: Path, case_id: str) -> dict:
             assets.get('world_map') != manifest.get('world_map') or
             scene.get('map_sha256') != sources['road']['sha256']):
         raise ValueError('Native source provenance scene/map mismatch')
+    blueprint_ids = assets.get('blueprint_ids', [])
+    if (not isinstance(blueprint_ids, list) or
+            scene.get('bicycle_blueprint_id') not in blueprint_ids or
+            scene.get('rack_blueprint_id') not in blueprint_ids or
+            scene.get('bicycle_blueprint_id') == scene.get('rack_blueprint_id') or
+            ('pedestrian' in required and scene.get('pedestrian_blueprint_id') not in blueprint_ids)):
+        raise ValueError('Native source provenance blueprint inventory mismatch')
     for name, reference in (('municipal', scene.get('jurisdiction', {}).get('source')),
                             ('bicycle', scene.get('bicycle_classification_source')),
                             ('rack', scene.get('rack_geometry_source')),

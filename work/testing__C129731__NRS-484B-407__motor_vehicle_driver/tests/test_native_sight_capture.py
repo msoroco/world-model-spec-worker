@@ -85,6 +85,37 @@ class NativeCaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "overwrite"):
             capture(NativeAdapter(), CASE, self.out)
 
+    def test_four_original_views_are_frame_joined_and_sealed(self):
+        class Cameras:
+            def __init__(self, root):
+                self.root = root
+                self.frames = []
+
+            def append(self, frame):
+                self.frames.append(frame)
+
+            def close(self):
+                pass
+
+            def files(self):
+                if len(self.frames) != 900 or self.frames != list(range(10, 910)):
+                    raise ValueError("camera frames not joined")
+                files = {}
+                for name in ("overview", "approach", "reference_corner", "driver_reference"):
+                    path = self.root / (name + ".mkv")
+                    path.write_bytes((name + " original frames").encode())
+                    files[name] = path
+                return files
+
+        cameras = Cameras(Path(self.tmp.name))
+        capture(NativeAdapter(), CASE, self.out, camera_recorder=cameras)
+        inventory = json.loads((self.out / "inventory.json").read_text())
+        self.assertEqual(set(inventory["camera_sources"]),
+                         {"overview", "approach", "reference_corner", "driver_reference"})
+        for entry in inventory["camera_sources"].values():
+            source = self.out / entry["path"]
+            self.assertEqual(hashlib.sha256(source.read_bytes()).hexdigest(), entry["sha256"])
+
     def test_changed_map_rejected_before_ticks(self):
         adapter = NativeAdapter()
         adapter.loaded_map = "0" * 64

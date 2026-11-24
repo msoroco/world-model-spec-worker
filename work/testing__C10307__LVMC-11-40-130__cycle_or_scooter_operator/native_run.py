@@ -76,6 +76,10 @@ def source_configuration(env, case_id):
         raise ValueError('Native municipal jurisdiction packet differs from scene')
     if inventory.get("world_map") != scene.get("world_map"):
         raise ValueError("Native asset inventory map differs from scene")
+    required_blueprints = {scene.get('bicycle_blueprint_id'), scene.get('rack_blueprint_id')}
+    if (None in required_blueprints or len(required_blueprints) != 2 or
+            not required_blueprints <= set(inventory.get('blueprint_ids', []))):
+        raise ValueError('Native bicycle/rack blueprint inventory differs from scene')
     if not scene.get("bicycle_classification_source") or not scene.get("rack_geometry_source"):
         raise ValueError("Native bicycle/rack geometry source missing")
     bicycle = reviewed_packet(scene['bicycle_classification_source'], 'bicycle classification')
@@ -87,6 +91,8 @@ def source_configuration(env, case_id):
         raise ValueError('Native bicycle/rack reviewed packets differ from scene')
     if case_id.endswith('__pedestrian_near_rack'):
         pedestrian_source(scene, case_id)
+        if scene.get('pedestrian_blueprint_id') not in inventory.get('blueprint_ids', []):
+            raise ValueError('Native pedestrian blueprint inventory differs from scene')
     return scene, inventory
 
 

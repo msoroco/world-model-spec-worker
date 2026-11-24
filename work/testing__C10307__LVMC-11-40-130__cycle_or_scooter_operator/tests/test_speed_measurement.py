@@ -85,6 +85,33 @@ class SpeedMeasurementTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing finite original bicycle position"):
             measure(self.root, self.inventory, CASE)
 
+    def test_full_episode_uses_original_approach_window(self):
+        frames = [{"frame": i, "time_s": i * .05} for i in range(900)]
+        self.docs["frame_map"] = {"frames": frames}
+        self.docs["bicycle_motion"] = {
+            "case_id": CASE,
+            "samples": [{"frame": i, "time_s": i * .05,
+                         "velocity_mps": [3.0 if i <= 400 else 0.0, 0, 0],
+                         "x_m": -30.0 + min(i, 400) * .15, "y_m": -.75}
+                        for i in range(900)]}
+        context = self.docs["context"]
+        context["source_kind"] = "original_local_native_capture"
+        context["samples"] = [{"frame": i, "time_s": i * .05,
+                               "weather": "clear", "surface": "dry",
+                               "visibility": "clear", "pedestrians": "none",
+                               "curvature": "straight"} for i in range(900)]
+        for key in self.docs:
+            self.save(key)
+        summary = measure(self.root, self.inventory, CASE)["summary"]
+        self.assertAlmostEqual(summary["mean_speed_mps"], 3.0)
+        self.assertLess(summary["episode_mean_speed_mps"], 1.4)
+        self.assertTrue(summary["approach_window"]["source_verified"])
+        self.assertGreater(summary["approach_window"]["sample_count"], 100)
+        self.docs["bicycle_motion"]["samples"][-1]["x_m"] = 29.0
+        self.save("bicycle_motion")
+        with self.assertRaisesRegex(ValueError, "velocity disagrees with position"):
+            measure(self.root, self.inventory, CASE)
+
     def test_outside_path_rejected(self):
         self.inventory["sources"]["context"]["path"] = "../context.json"
         with self.assertRaisesRegex(ValueError, "source path"):

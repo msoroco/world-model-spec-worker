@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT.parents[1]/'runtime'))
 from entry_timing import ASSIGNMENT
 from native_capture import capture
 from analysis import run as run_analysis
@@ -67,9 +68,19 @@ class SavedFinalizerTests(unittest.TestCase):
             self.assertEqual(result['case_id'],case)
             self.assertFalse(result['setup_confirmed'])
             self.assertFalse(result['target_checks'][0]['matched'])
+            from scenario_pipeline.batch_pipeline.validation import recording_evidence
+            recording_evidence(result,result['recording_description'],lambda ref: attempt/ref)
+            self.assertEqual(len(result['recording_evidence']),6)
+            self.assertEqual(len((attempt/'channels/ego_body_history.jsonl').read_text().splitlines()),900)
             receipt = audit(attempt,survey_path)
             self.assertEqual(receipt['primary_video_decoded_frames'],900)
             self.assertFalse(receipt['physical_acceptance_claimed'])
+            channel_path=attempt/'channels/governing_device_history.jsonl'
+            original_channel=channel_path.read_text()
+            channel_path.write_text(original_channel.replace('inoperative','green',1))
+            with self.assertRaisesRegex(ValueError,'derived recording channel differs'):
+                audit(attempt,survey_path)
+            channel_path.write_text(original_channel)
             result['measured_values']['ego_minus_other_upper_entry_s'] = 99
             result_path.write_text(json.dumps(result)+'\n')
             with self.assertRaisesRegex(ValueError,'saved result differs'):

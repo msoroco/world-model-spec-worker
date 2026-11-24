@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -20,8 +21,16 @@ def _require_native(packet: dict, label: str) -> dict:
     return packet
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
-            recording_id: str | None = None) -> dict:
+            recording_id: str | None = None, camera_recorder=None) -> dict:
     """Collect 20 Hz frame, motion and turn-ray records from a Native adapter.
 
     Adapter methods: geometry(), tick(), ego(frame), ray(frame, direction,
@@ -54,6 +63,8 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
         frame = _require_native(adapter.tick(), "frame")
         frame_row = {"frame": frame.get("frame"), "time_s": frame.get("time_s")}
         frames.append(frame_row)
+        if camera_recorder is not None:
+            camera_recorder.append(frame_row["frame"])
         ego = _require_native(adapter.ego(frame), "ego motion")
         if ego.get("vehicle_id") != geometry["ego_vehicle_id"]:
             raise ValueError("subject vehicle identity changed")
@@ -90,6 +101,8 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
                                  ("frame", "time_s", "direction", "station_distance_m",
                                   "observer_height_m", "observer_lane_source",
                                   "target_vehicle_id", "body_point_clear", "terrain_hit_id")})
+    if camera_recorder is not None:
+        camera_recorder.close()
     packets = {
         "frame_map": {"frames": frames},
         "ego_motion": {"case_id": case_id, "source_kind": "original_native", "samples": motion},
@@ -124,6 +137,14 @@ def capture(adapter, case_id: str, destination: Path, frame_count: int = 900,
             inventory["sources"][name] = {"path": path.name,
                                           "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
         measured = measure(root, inventory, case_id)
+        if camera_recorder is not None:
+            inventory["camera_sources"] = {}
+            for name, source_path in camera_recorder.files().items():
+                target = root / (name + ".mkv")
+                shutil.move(source_path, target)
+                inventory["camera_sources"][name] = {
+                    "path": target.name, "sha256": _file_sha256(target),
+                    "source_kind": "original_native"}
         if probe_target is not None:
             approach_path = root / "approach_motion.json"
             approach_path.write_text(json.dumps(approach_packet, sort_keys=True,

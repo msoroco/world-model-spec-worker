@@ -89,11 +89,14 @@ def write_native_result(attempt: Path, report: dict) -> None:
         {"name": "commanded_approach_speed", "unit": "m/s", "reference": commanded_path.name},
     ]
     measured = report["summary"]["mean_speed_mps"]
+    source_approach = report["summary"].get("approach_window", {}).get("source_verified") is True
     requested = config["requested_speed_mps"]
     tolerance = 0.25
     result = {"case_id": report["case_id"], "measured_values": report["summary"],
               "target_checks": [{"target": "bicycle_speed_mps", "requested": requested,
-                                 "measured": measured, "method": "saved original velocity magnitude mean",
+                                 "measured": measured,
+                                 "method": ("saved original approach-window velocity magnitude mean"
+                                            if source_approach else "saved diagnostic velocity magnitude mean"),
                                  "tolerance": tolerance, "matched": abs(requested - measured) <= tolerance,
                                  "physical_cause_confirmed": False,
                                  "cause_evidence": "Synthetic diagnostic shape only; original physical cause unreviewed"}],
