@@ -35,7 +35,7 @@ def audit():
         selection = json.loads((destination / "candidate-selection.json").read_text())
         if selection["construction_sha256"] != item["construction_sha256"] or \
                 row["log_sha256"] != sha(destination / "offline.log") or \
-                row["tests"] != 3 or row["exit_code"] != 0 or \
+                row["tests"] != 4 or row["exit_code"] != 0 or \
                 row["simulation_started"] is not False:
             raise ValueError("Pinned selection or log mismatch")
         for file in construction["files"]:

@@ -32,9 +32,12 @@ def source_digest(folder):
 
 def make_base(destination,suffix,frame_count=480,full_resolution=False):
     destination.mkdir();(destination/'capture').mkdir()
-    construction=json.loads((FOLDER/'draft-candidates'/suffix/'primary/construction.json').read_text())
+    construction_path=(FOLDER/'draft-30s-primaries'/suffix/'construction.json'
+                       if frame_count==600 else
+                       FOLDER/'draft-candidates'/suffix/'primary/construction.json')
+    construction=json.loads(construction_path.read_text())
     config=json.loads(next(f['content'] for f in construction['files'] if f['path']=='config.json'))
-    if frame_count!=480:raise ValueError('Full 480-frame parking interval required')
+    if frame_count not in (480,600):raise ValueError('Full parking interval required')
     config['duration_s']=frame_count/20;config['rate_hz']=20
     (destination/'config.json').write_text(json.dumps(config))
     directions={'approach_forward':[1,0],'approach_opposing':[-1,0],
@@ -51,7 +54,8 @@ def make_base(destination,suffix,frame_count=480,full_resolution=False):
     (destination/'context.json').write_text(json.dumps({'surveyed_two_way_intersection':geometry}))
     trace=[];evidence=[];mapping=[];motion=[];history=[]
     route=json.loads((FOLDER/'native/routes'/f'{suffix}.json').read_text())
-    states=[(*route[min(round(i*(len(route)-1)/399),len(route)-1)],(1,0))
+    parked_start=frame_count-80
+    states=[(*route[min(round(i*(len(route)-1)/(parked_start-1)),len(route)-1)],(1,0))
             for i in range(frame_count)]
     for i,(x,y,forward) in enumerate(states):
         frame=100+i;t=.05*(i+1)
@@ -63,13 +67,16 @@ def make_base(destination,suffix,frame_count=480,full_resolution=False):
         trace.append({'frame':frame,'time_s':t,
                       'position':{'x':x,'y':y,'z':0.5},
                       'heading_deg':math.degrees(math.atan2(fy,fx)),
-                      'speed_mps':0.0 if i>=400 else 5.0})
-        evidence.append({'original_frame':frame,'recording_time_s':t,'ego':{'body_vertices_m':body}})
+                      'speed_mps':0.0 if i>=parked_start else 5.0,
+                      'speed_provenance':'synthetic_native_sample'})
+        evidence.append({'original_frame':frame,'recording_time_s':t,
+                         'synthetic_diagnostic':True,'ego':{'body_vertices_m':body}})
         mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':t})
         motion.append({'native_frame':frame,'time_s':t,'native_center_xy_m':[x,y],
                        'native_forward_xy':list(forward),'native_body_xy_m':corners,
                        'video_frame':i,'body_xy_m':corners,
-                       'speed_m_s':0.0 if i>=400 else 5.0,
+                       'speed_m_s':0.0 if i>=parked_start else 5.0,
+                       'speed_source_kind':'synthetic_native_sample',
                        'two_way_native_survey':True})
         history.append({'frame':frame,'time_s':t,'body_vertices_m':body})
     for name,rows in [('trace.jsonl',trace),('capture/evidence.jsonl',evidence),
@@ -77,6 +84,7 @@ def make_base(destination,suffix,frame_count=480,full_resolution=False):
                       ('body_history.jsonl',history)]:write_rows(destination/name,rows)
     (destination/'native_parking_history.json').write_text(json.dumps({
         'source_kind':'native_frame_schema',
+        'diagnostic_speed_source_kind':'synthetic_native_sample',
         'intersection_boundary_source':'native_map_readback',
         'native_map_sha256':geometry['native_map_sha256'],
         'intersection_entry_boundary_x_m':7,
@@ -119,6 +127,9 @@ def run(frame_count=480):
             base=scratch/(suffix+'-base');make_base(base,suffix,frame_count)
             positive=scratch/(suffix+'-positive');negative=scratch/(suffix+'-negative')
             shutil.copytree(base,positive);shutil.copytree(base,negative)
+            join_negative=scratch/(suffix+'-join-negative')
+            camera_negative=scratch/(suffix+'-camera-negative')
+            shutil.copytree(base,join_negative);shutil.copytree(base,camera_negative)
             before=source_digest(positive)
             command=[sys.executable,str(FINALIZER),'--attempt',str(positive),
                      '--output',str(positive/'analysis-report.json')]
@@ -131,7 +142,10 @@ def run(frame_count=480):
             result=json.loads((positive/'result.json').read_text())
             contract=json.loads((FOLDER/'draft-measurement-contracts'/suffix/'measurement-contract.json').read_text())
             verify_report(contract,report,positive)
-            construction=json.loads((FOLDER/'draft-candidates'/suffix/'primary/construction.json').read_text())
+            construction_path=(FOLDER/'draft-30s-primaries'/suffix/'construction.json'
+                               if frame_count==600 else
+                               FOLDER/'draft-candidates'/suffix/'primary/construction.json')
+            construction=json.loads(construction_path.read_text())
             proposal=json.loads((FOLDER/'proposals/cases.json').read_text())
             case=next(c for c in proposal['cases'] if c['case_id']==result['case_id'])
             validated=validate_attempt(positive,{'case':case,'cell':{'cell_id':'C110454'},
@@ -149,8 +163,26 @@ def run(frame_count=480):
             expected='Missing required source: native_parking_history.json'
             if failure.returncode==0 or expected not in failure.stdout:
                 raise RuntimeError('Missing-source negative did not reject: '+failure.stdout)
+            rows=[json.loads(line) for line in (join_negative/'video_frames.jsonl').read_text().splitlines()]
+            rows[250]['native_frame']+=1
+            write_rows(join_negative/'video_frames.jsonl',rows)
+            join_failure=subprocess.run([sys.executable,str(FINALIZER),'--attempt',str(join_negative),
+                '--output',str(join_negative/'analysis-report.json')],text=True,
+                stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env)
+            if join_failure.returncode==0 or 'Original Native frame join differs' not in join_failure.stdout:
+                raise RuntimeError('Changed-frame negative did not reject: '+join_failure.stdout)
+            (camera_negative/'parking.mkv').unlink()
+            camera_failure=subprocess.run([sys.executable,str(FINALIZER),'--attempt',str(camera_negative),
+                '--output',str(camera_negative/'analysis-report.json')],text=True,
+                stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env)
+            if camera_failure.returncode==0 or 'Missing required source: parking.mkv' not in camera_failure.stdout:
+                raise RuntimeError('Missing-camera negative did not reject: '+camera_failure.stdout)
             records.append({'case_suffix':suffix,'case_id':result['case_id'],
                 'positive_exit_code':success.returncode,'negative_exit_code':failure.returncode,
+                'join_negative_exit_code':join_failure.returncode,
+                'camera_negative_exit_code':camera_failure.returncode,
+                'join_negative_expected_error':'Original Native frame join differs',
+                'camera_negative_expected_error':'Missing required source: parking.mkv',
                 'negative_expected_error':expected,'positive_log':success.stdout.strip(),
                 'negative_log_tail':failure.stdout.strip().splitlines()[-1],
                 'source_unchanged':True,'video_sources_decoded':4,'frames':frame_count,
@@ -163,6 +195,6 @@ def run(frame_count=480):
 
 if __name__=='__main__':
     import argparse
-    parser=argparse.ArgumentParser();parser.add_argument('--frames',type=int,choices=(480,),default=480)
+    parser=argparse.ArgumentParser();parser.add_argument('--frames',type=int,choices=(480,600),default=480)
     args=parser.parse_args()
     print(json.dumps({'format':'c110454-lvmc-synthetic-saved-fixture-v1','results':run(args.frames)},indent=2))

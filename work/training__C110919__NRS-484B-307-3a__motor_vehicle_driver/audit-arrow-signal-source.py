@@ -18,17 +18,17 @@ def sha(path):
 def main():
     cases = {}
     for suffix in ('witness_1', 'witness_2'):
-        source = HERE / 'native/fixtures' / (suffix + '-480.json')
+        source = HERE / 'native/fixtures' / (suffix + '-600.json')
         data = json.loads(source.read_text())
         frames = data['frames']
-        assert data['source_kind'] == 'synthetic_cpu' and len(frames) == 480
+        assert data['source_kind'] == 'synthetic_cpu' and len(frames) == 600
         measured = measure.measure(source, sha(source))
         entry = measured['turn_entry_frame']
-        assert measured['circular_green_with_right_arrow_frames'] == 480
-        assert measured['opposing_steady_red_frames'] == 480
+        assert measured['circular_green_with_right_arrow_frames'] == 600
+        assert measured['opposing_steady_red_frames'] == 600
         assert measured['physical_behavior_observed'] is False
         assert measured['legal_verdict'] is None
-        assert 0 <= entry < 480
+        assert 0 <= entry < 600
         rejected = []
         for field, value in (
             ('signal_state', 'circular_green'),
@@ -50,7 +50,7 @@ def main():
                     raise AssertionError('altered source accepted: ' + field)
         assert len(rejected) == 5
         cases[suffix] = {'source_sha256': sha(source), 'turn_entry_frame': entry,
-                         'positive_frames': 480, 'rejected_mutations': rejected}
+                         'positive_frames': 600, 'rejected_mutations': rejected}
     receipt = {'format': 'c110919-arrow-signal-source-proof-v1', 'passed': True,
                'source_kind': 'synthetic_cpu', 'cases': cases,
                'original_native_or_pixel_observation': False, 'legal_verdict': None}

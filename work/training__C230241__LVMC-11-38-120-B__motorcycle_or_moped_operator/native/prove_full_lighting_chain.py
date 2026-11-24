@@ -47,8 +47,9 @@ def main():
                         '-frames:v', str(FRAMES), '-c:v', 'ffv1',
                         str(SCRATCH / (view + '.mkv'))], check=True, timeout=180)
     inputs = [part for view in VIEWS for part in ('-i', str(SCRATCH / (view + '.mkv')))]
+    scale = ''.join(f'[{index}:v]scale=960:540[v{index}];' for index in range(4))
     subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', *inputs,
-                    '-filter_complex', '[0:v][1:v][2:v][3:v]xstack=inputs=4:layout=0_0|64_0|0_64|64_64[out]',
+                    '-filter_complex', scale + '[v0][v1][v2][v3]xstack=inputs=4:layout=0_0|960_0|0_540|960_540[out]',
                     '-map', '[out]', '-frames:v', str(FRAMES), '-c:v', 'ffv1',
                     str(SCRATCH / 'raw.mkv')], check=True, timeout=180)
     native = [{'source_kind': 'synthetic_native_sample',
@@ -176,6 +177,21 @@ def main():
     context_path.write_text(json.dumps(context, indent=2) + '\n')
     checks.append(reject('damaged-composed-video', lambda: bind(SCRATCH),
                          'source video'))
+    damaged_raw.write_bytes(original_raw)
+    context['source_sha256']['raw'] = sha(damaged_raw)
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+
+    changed_raw = SCRATCH / 'changed-raw.mkv'
+    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', *inputs,
+                    '-filter_complex',
+                    scale + '[v1][v0][v2][v3]xstack=inputs=4:layout=0_0|960_0|0_540|960_540[out]',
+                    '-map', '[out]', '-frames:v', str(FRAMES), '-c:v', 'ffv1',
+                    str(changed_raw)], check=True, timeout=180)
+    shutil.copy2(changed_raw, damaged_raw)
+    context['source_sha256']['raw'] = sha(damaged_raw)
+    context_path.write_text(json.dumps(context, indent=2) + '\n')
+    checks.append(reject('reordered-composed-video', lambda: bind(SCRATCH),
+                         'Composed video tile differs from source camera'))
     damaged_raw.write_bytes(original_raw)
     context['source_sha256']['raw'] = sha(damaged_raw)
     context_path.write_text(json.dumps(context, indent=2) + '\n')

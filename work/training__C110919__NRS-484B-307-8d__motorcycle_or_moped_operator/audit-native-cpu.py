@@ -26,8 +26,8 @@ def audit() -> dict:
     assert assignment['cell']['layout']=='intersection'
     assert assignment['cell']['maneuver']=='right_turn'
     assert assignment['cell']['control']=='traffic_light'
-    assert assignment['law_record']['id']=='NRS-484B-307-8d'
-    assert 'After complying with the requirement to stop' in assignment['law_record']['text']
+    assert assignment['law']['id']=='NRS-484B-307-8d'
+    assert 'After complying with the requirement to stop' in assignment['law']['text']
     assert contract['assignment_id']==assignment['assignment_id']
     assert contract['frame_contract']['frames']==600 and contract['frame_contract']['rate_hz']==20
     assert plan['assignment_id']==assignment['assignment_id']

@@ -42,13 +42,17 @@ def main():
         positives.append({'case': case, 'measurement': measure(path, context_path)})
     a, b = (rows_by_case[case] for case in ('controlled_1', 'controlled_2'))
     changed = [i for i, (x, y) in enumerate(zip(a, b)) if x != y]
-    if changed != list(range(180, 240)) or any(
+    if changed != list(range(100, 160)) or any(
         {k: v for k, v in a[i].items() if k != 'device_state'} !=
         {k: v for k, v in b[i].items() if k != 'device_state'} for i in changed
     ):
         raise AssertionError('Controlled comparison changed path or other source field')
     if [p['measurement']['denied_during_crossing_frames'] for p in positives] != [0, 60]:
         raise AssertionError('Diagonal device-state contrast differs')
+    if [p['measurement']['first_entry_device_state'] for p in positives] != [
+        'diagonal_walk', 'diagonal_dont_walk'
+    ]:
+        raise AssertionError('First-entry device distinction differs')
     negative_path = folder / 'negative.jsonl'
     negatives = {}
     variants = {

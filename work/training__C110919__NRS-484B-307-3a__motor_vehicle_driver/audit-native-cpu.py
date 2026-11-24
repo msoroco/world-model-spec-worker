@@ -32,9 +32,9 @@ def audit():
         assert len({json.dumps(x['knobs'],sort_keys=True) for x in candidates})==4
         for x in candidates[1:]:
             assert sum(x['knobs'][k]!=candidates[0]['knobs'][k] for k in candidates[0]['knobs'])==1
-        path=NATIVE/'fixtures'/(case+'-480.json')
+        path=NATIVE/'fixtures'/(case+'-600.json')
         result=meas.measure(path,meas.sha256(path))
-        assert result['circular_green_with_right_arrow_frames']==480 and result['opposing_steady_red_frames']==480
+        assert result['circular_green_with_right_arrow_frames']==600 and result['opposing_steady_red_frames']==600
         assert not result['physical_behavior_observed'] and result['legal_verdict'] is None
         pair.append(result)
     assert [x['yielded_to_pedestrian'] for x in pair]==[True,False]
@@ -42,8 +42,8 @@ def audit():
     assert [x['last_pedestrian_conflict_frame'] for x in pair]==[160,160]
     assert [x['last_cross_traffic_conflict_frame'] for x in pair]==[130,130]
     assert [x['yielded_to_other_traffic'] for x in pair]==[True,True]
-    a=json.loads((NATIVE/'fixtures/witness_1-480.json').read_text())['frames']
-    b=json.loads((NATIVE/'fixtures/witness_2-480.json').read_text())['frames']
+    a=json.loads((NATIVE/'fixtures/witness_1-600.json').read_text())['frames']
+    b=json.loads((NATIVE/'fixtures/witness_2-600.json').read_text())['frames']
     for x,y in zip(a,b):
         for k in ('frame','time_s','signal_state','signal_governs_ego','right_turn_arrow_state',
                   'arrow_governs_right_turn','opposing_signal_state','turn_prohibition_present',
@@ -51,7 +51,7 @@ def audit():
                   'cross_traffic_conflict_occupied'):
             assert x[k]==y[k]
     with tempfile.TemporaryDirectory() as temp:
-        bad=Path(temp)/'bad.json';modified=json.loads((NATIVE/'fixtures/witness_1-480.json').read_text())
+        bad=Path(temp)/'bad.json';modified=json.loads((NATIVE/'fixtures/witness_1-600.json').read_text())
         modified['frames'][0]['signal_state']='steady_red';bad.write_text(json.dumps(modified))
         try:meas.measure(bad,meas.sha256(bad))
         except ValueError as exc:assert 'green' in str(exc)

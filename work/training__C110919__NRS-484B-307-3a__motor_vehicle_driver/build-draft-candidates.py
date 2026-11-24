@@ -9,7 +9,7 @@ FOLDER=Path(__file__).resolve().parent
 NATIVE=FOLDER/'native'
 SOURCES={'runner.py':'runner.py','geometry.py':'geometry.py','controller.py':'controller.py',
          'engineering.py':'engineering.py','measure.py':'measure.py','cameras.py':'cameras.py',
-         'finalize.py':'finalize.py',
+         'finalize.py':'finalize.py','derive_channels.py':'derive_channels.py',
          'tests/test_native.py':'test_native.py'}
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -24,7 +24,7 @@ def build():
     shared={target:(NATIVE/source).read_text() for target,source in SOURCES.items()}
     recording={'channels':[{'name':name,'unit':'structured','sampling_rate_hz':20,
                 'method':'Original Native actor/signal/map readback and full-frame join; authored intent separate',
-                'time_window':'entire 24 s / 480-frame attempt',
+                'time_window':'entire 30 s / 600-frame attempt',
                 'reference_frame':'surveyed Native map and original frame identity',
                 'uncertainty':'50 ms sampling; physical signal and pixel evidence required'}
                for name in json.loads((NATIVE/'config.json').read_text())['mandatory_channels']],
@@ -78,7 +78,7 @@ def build():
                           'mechanisms':['authored circular-green, right-arrow and opposing-red OpenDRIVE signal proposals',
                                         'observed-pose vehicle controller with controlled pedestrian yield timing',
                                         'pedestrian and cross-traffic actors with four synchronized lossless cameras'],
-                          'termination_rules':['exact 480 original frames','capture and restoration errors retained'],
+                          'termination_rules':['exact 600 original frames','capture and restoration errors retained'],
                           'status':'unselected_cpu_draft'}
             path=FOLDER/'draft-candidates'/case/candidate/'construction.json'
             write(path,construction)

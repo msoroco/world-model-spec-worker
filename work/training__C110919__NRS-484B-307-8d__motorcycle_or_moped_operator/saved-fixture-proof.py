@@ -24,7 +24,8 @@ def write_rows(path,values):
     path.write_text(''.join(json.dumps(value,allow_nan=False)+'\n' for value in values))
 def digest(path):
     return {str(p.relative_to(path)):sha(p) for p in path.rglob('*')
-            if p.is_file() and p.name not in ('analysis-report.json','result.json')}
+            if p.is_file() and p.name not in ('analysis-report.json','result.json','context.json')
+            and 'channels' not in p.relative_to(path).parts}
 
 def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     destination.mkdir();(destination/'capture').mkdir()
@@ -41,7 +42,6 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
                        'destination_left':{'road_id':2,'lane_id':1,'forward_xy':[-1,0]}},
               'synthetic_diagnostic':True}
     (destination/'road_geometry.json').write_text(json.dumps(geometry))
-    (destination/'context.json').write_text(json.dumps({'surveyed_right_turn':geometry}))
     frames=synthetic(case)['frames']
     trace=[];evidence=[];mapping=[];native=[];body=[]
     for i,row in enumerate(frames):
@@ -91,28 +91,6 @@ def make_attempt(destination: Path,case: str,full_resolution: bool=False):
     (destination/'capture/manifest.json').write_text(json.dumps({'extraction_confirmed':True,'frames':600,
                                                                    'synthetic_diagnostic':True}))
     (destination/'capture/recorder_info.txt').write_text('Create 107: vehicle.kawasaki.ninja\n')
-    (destination/'channels').mkdir()
-    for channel in config['recording_description']['channels']:
-        name=channel['name'];values=[]
-        for i,sample in enumerate(native):
-            if name=='dev.traffic_signal':value={'observed_state':'Red','native_actor_id':601,
-                'cross_signal_state':sample['cross_signal_state_observed'],
-                'complete_cross_signal_cycles':sample['complete_cross_signal_cycles']}
-            elif name=='st.stop_line':value=-14.0
-            elif name=='st.crosswalk':value=-11.0
-            elif name=='drv.stopped':value=sample['speed_mps']<.05
-            elif name=='kin.velocity':value=sample['speed_mps']
-            elif name=='drv.extreme_lane':value=geometry['lanes']['approach_right']
-            elif name=='st.one_way_roadway':value=geometry['lanes']
-            elif name=='drv.yields_to':value={'walker_conflict_occupied':sample['walker_conflict_occupied']}
-            elif name=='native_body_pose_control':value=sample
-            elif name=='camera_frame_join':value=mapping[i]
-            elif name=='motorcycle_detector_request':value={
-                'command':'withhold_motorcycle_detector_request',
-                'physical_detector_nonresponse_proven':False}
-            else:raise ValueError('Unknown channel: '+name)
-            values.append({'time_s':sample['time_s'],'value':value})
-        write_rows(destination/'channels'/(name+'.jsonl'),values)
     sizes={camera['name']:f"{camera['width']}x{camera['height']}" for camera in config['cameras']}
     for name in ('overview','approach','signal','destination'):
         size=sizes[name] if full_resolution else '32x32'
@@ -169,6 +147,8 @@ def run():
             contract=json.loads((FOLDER/'draft-candidates'/case/'measurement-contract.json').read_text())
             verify_report(contract,report,positive)
             assert report['original_joins']['frames']==600
+            assert len(report['derived_recording_evidence']['channels'])==11
+            assert not result['setup_confirmed']
             assert result['target_checks'][0]['matched']
             assert result['maneuver_completed']
             (negative/'road_geometry.json').unlink()
@@ -178,8 +158,18 @@ def run():
                                    stderr=subprocess.STDOUT,timeout=300)
             if failure.returncode==0 or 'Missing required source: road_geometry.json' not in failure.stdout:
                 raise RuntimeError('Negative missing-source diagnostic accepted: '+failure.stdout)
+            missing_evidence=Path(tmp)/(case+'-missing-evidence')
+            shutil.copytree(base,missing_evidence)
+            (missing_evidence/'capture/evidence.jsonl').unlink()
+            evidence_failure=subprocess.run([sys.executable,str(NATIVE/'finalize.py'),
+                '--attempt',str(missing_evidence),
+                '--output',str(missing_evidence/'analysis-report.json')],
+                env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
+            if evidence_failure.returncode==0 or 'Missing required source: capture/evidence.jsonl' not in evidence_failure.stdout:
+                raise RuntimeError('Missing capture evidence diagnostic accepted: '+evidence_failure.stdout)
             records.append({'case':case,'positive_exit_code':success.returncode,
                             'negative_exit_code':failure.returncode,
+                            'missing_capture_evidence_exit_code':evidence_failure.returncode,
                             'analysis_sha256':sha(positive/'analysis-report.json'),
                             'result_sha256':sha(positive/'result.json'),
                             'source_unchanged':True,'video_decoded':4,'frames':600,

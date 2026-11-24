@@ -214,7 +214,8 @@ def finalize(attempt: Path,output: Path):
             'requested':expected,'measured':observed,'method':'saved original actor conflict occupancy and ego turn entry',
             'tolerance':0,'matched':observed==expected,'physical_cause_confirmed':False,
             'cause_evidence':['native_samples.jsonl','road_geometry.json']}],
-        'setup_confirmed':True,'behavior_attempted':True,
+        'setup_confirmed':not json.loads(source(attempt,'capture/manifest.json').read_text()).get('synthetic_diagnostic',False),
+        'behavior_attempted':True,
         'maneuver_completed':turn['value']['destination_exit_observed'],
         'termination_reason':'full original duration retained',
         'physical_failure_flags':['original_signal_direction_and_pixels_require_independent_review']+

@@ -33,7 +33,7 @@ def rows(path):
 def probe(path):
     process = subprocess.run(
         ['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
-         '-show_entries', 'stream=codec_name,avg_frame_rate,nb_read_frames',
+         '-show_entries', 'stream=codec_name,avg_frame_rate,nb_read_frames,width,height',
          '-of', 'json', str(path)], capture_output=True, text=True, timeout=180)
     require(process.returncode == 0, 'Source video decode failed: ' + str(path))
     streams = json.loads(process.stdout).get('streams', [])
@@ -48,7 +48,20 @@ def probe(path):
     require(len(frame_lines) == int(streams[0].get('nb_read_frames', '-1')),
             'Source video decode count differs: ' + str(path))
     return dict(streams[0], decoded_frames=len(frame_lines),
-                decoded_framemd5_sha256=hashlib.sha256(decoded.stdout).hexdigest())
+                decoded_framemd5_sha256=hashlib.sha256(decoded.stdout).hexdigest(),
+                _frame_hashes=[line.rsplit(b',', 1)[-1].strip() for line in frame_lines])
+
+
+def filtered_hashes(path, video_filter, expected_frames):
+    decoded = subprocess.run(
+        ['ffmpeg', '-nostdin', '-v', 'error', '-xerror', '-i', str(path),
+         '-map', '0:v:0', '-vf', video_filter,
+         '-f', 'framemd5', '-'], capture_output=True, timeout=300)
+    require(decoded.returncode == 0 and decoded.stdout.startswith(b'#format: frame checksums'),
+            'Composed video tile full decode failed: ' + str(path))
+    lines = [line for line in decoded.stdout.splitlines() if line and not line.startswith(b'#')]
+    require(len(lines) == expected_frames, 'Composed video tile frame count differs')
+    return [line.rsplit(b',', 1)[-1].strip() for line in lines]
 
 
 def bind(directory, expected_frames=600):
@@ -81,6 +94,20 @@ def bind(directory, expected_frames=600):
                 item.get('decoded_frames') == expected_frames
                 for item in media.values()),
             'Original source video count, rate or codec differs')
+    width, height = 960, 540
+    require(media['raw']['width'] == 2 * width and
+            media['raw']['height'] == 2 * height,
+            'Composed video dimensions differ from 1920x1080 source layout')
+    for index, view in enumerate(VIEWS):
+        tile = filtered_hashes(files['raw'],
+                               f'crop={width}:{height}:{(index % 2) * width}:{(index // 2) * height}',
+                               expected_frames)
+        source = filtered_hashes(files[view], f'scale={width}:{height}',
+                                 expected_frames)
+        require(tile == source,
+                'Composed video tile differs from source camera: ' + view)
+    for item in media.values():
+        item.pop('_frame_hashes')
     native, mapping, observed = rows(trace), rows(frame_map), rows(review)
     require(len(native) == len(mapping) == len(observed) == expected_frames,
             'Trace, map and review frame counts differ')

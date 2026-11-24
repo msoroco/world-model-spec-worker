@@ -33,14 +33,14 @@ def prove():
             response = json.loads(run.stdout)
             log = output / "offline.log"
             if not (response["offline_passed"] and response["simulation_started"] is False
-                    and "Ran 3 tests" in log.read_text() and "\nOK\n" in log.read_text()):
+                    and "Ran 4 tests" in log.read_text() and "\nOK\n" in log.read_text()):
                 raise ValueError("Pinned offline receipt incomplete")
             selection = json.loads((output / "candidate-selection.json").read_text())
             entries.append({
                 "case_id": case_id, "candidate_id": candidate,
                 "construction_sha256": selection["construction_sha256"],
                 "materialized_dir": str(output.relative_to(ROOT)),
-                "log_sha256": sha(log), "tests": 3,
+                "log_sha256": sha(log), "tests": 4,
                 "simulation_started": False, "exit_code": 0})
     receipt = {
         "format": "c10365-officer-pinned-offline-v1",

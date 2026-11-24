@@ -23,7 +23,7 @@ def synthetic_rows(case):
         fraction = max(0, min(1, (frame - 100) / 240))
         x = START[0] + (END[0] - START[0]) * fraction
         y = START[1] + (END[1] - START[1]) * fraction
-        state = ('diagonal_dont_walk' if case == 'controlled_2' and 180 <= frame < 240
+        state = ('diagonal_dont_walk' if case == 'controlled_2' and 100 <= frame < 160
                  else 'diagonal_walk')
         result.append({'frame': frame, 'time_s': frame / RATE_HZ,
                        'pedestrian_xy_m': [x, y],
@@ -82,6 +82,7 @@ def measure(source_path, context_path):
     return {'format': 'c109166-diagonal-timing-measurement-v1',
             'frames': FRAMES, 'duration_s': FRAMES / RATE_HZ,
             'crossing_frames': [100, 340], 'crossing_path_length_m': round(path, 6),
+            'first_entry_device_state': source[100]['device_state'],
             'denied_during_crossing_frames': len(denied),
             'first_denied_frame': denied[0] if denied else None,
             'source_sha256': {source_path.name: sha(source_path), context_path.name: sha(context_path)},

@@ -178,6 +178,51 @@ def video_frames(path: Path):
         raise ValueError('Source video decode failed: '+path.name)
     return int(completed.stdout.strip())
 
+def derive_channels(attempt: Path,config: dict,native: list[dict],mapping: list[dict],geometry: dict):
+    """Create observations from retained source rows, never fixture-authored channels."""
+    names={item['name'] for item in config['recording_description']['channels']}
+    required={'dev.traffic_signal','st.stop_line','st.crosswalk','drv.stopped',
+              'kin.velocity','drv.extreme_lane','st.one_way_roadway','drv.yields_to',
+              'native_body_pose_control','camera_frame_join','motorcycle_detector_request'}
+    if names!=required:raise ValueError('Recording channel declaration differs')
+    hashes={name:sha(source(attempt,name)) for name in
+            ('native_samples.jsonl','video_frames.jsonl','road_geometry.json',
+             'trace.jsonl','capture/evidence.jsonl','capture/manifest.json')}
+    channel_dir=attempt/'channels';channel_dir.mkdir(exist_ok=True)
+    streams={name:[] for name in required}
+    for index,(sample,frame_map) in enumerate(zip(native,mapping)):
+        frame=sample['native_frame'];time=sample['time_s']
+        if frame_map['native_frame']!=frame or frame_map['video_frame']!=index:
+            raise ValueError('Channel source frame join differs')
+        values={
+            'dev.traffic_signal':{'observed_state':sample['signal_state_observed'],
+                'native_actor_id':geometry['signal_actor_id'],
+                'cross_signal_state':sample['cross_signal_state_observed'],
+                'complete_cross_signal_cycles':sample['complete_cross_signal_cycles']},
+            'st.stop_line':geometry['stop_line_y_m'],
+            'st.crosswalk':geometry['nearest_crosswalk_y_m'],
+            'drv.stopped':sample['speed_mps']<=.05,
+            'kin.velocity':sample['speed_mps'],
+            'drv.extreme_lane':geometry['lanes']['approach_right'],
+            'st.one_way_roadway':geometry['lanes'],
+            'drv.yields_to':{'walker_conflict_occupied':sample['walker_conflict_occupied'],
+                'cross_traffic_conflict_occupied':sample['cross_traffic_conflict_occupied'],
+                'ego_turn_entered':sample['ego_turn_entered']},
+            'native_body_pose_control':sample,
+            'camera_frame_join':frame_map,
+            'motorcycle_detector_request':{'command':sample['fault_injection_command'],
+                'physical_detector_nonresponse_proven':False}}
+        for name,value in values.items():
+            streams[name].append({'time_s':time,'native_frame':frame,
+                                  'value':value,'source_sha256':hashes})
+    for name,items in streams.items():
+        with (channel_dir/(name+'.jsonl')).open('w') as stream:
+            for item in items:stream.write(json.dumps(item,allow_nan=False)+'\n')
+    (attempt/'context.json').write_text(json.dumps({'surveyed_right_turn':geometry,
+        'source_sha256':hashes},indent=2,allow_nan=False)+'\n')
+    return {'channels':{name:sha(channel_dir/(name+'.jsonl')) for name in sorted(required)},
+            'context_sha256':sha(attempt/'context.json'),'source_hashes':hashes}
+
 def finalize(attempt: Path,output: Path):
     attempt=attempt.resolve();output=output.resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -198,6 +243,7 @@ def finalize(attempt: Path,output: Path):
     counts={name:video_frames(attempt/name) for name in videos}
     if any(value!=count for value in counts.values()):
         raise ValueError('Original source video frame count differs')
+    derived=derive_channels(attempt,config,native,mapping,geometry)
     expected=config['case_suffix']=='condition_a'
     observed=cycle['value']['two_complete_cycles_waited']
     recording=[]
@@ -213,7 +259,8 @@ def finalize(attempt: Path,output: Path):
             'requested':expected,'measured':observed,'method':'saved original cross-signal phase transitions before turn entry',
             'tolerance':0,'matched':observed==expected,'physical_cause_confirmed':False,
             'cause_evidence':['native_samples.jsonl','road_geometry.json']}],
-        'setup_confirmed':True,'behavior_attempted':True,
+        'setup_confirmed':not json.loads(source(attempt,'capture/manifest.json').read_text()).get('synthetic_diagnostic',False),
+        'behavior_attempted':True,
         'maneuver_completed':turn['value']['destination_exit_observed'],
         'termination_reason':'full original duration retained',
         'physical_failure_flags':['original_signal_direction_pixels_and_detector_cause_require_independent_review']+
@@ -238,6 +285,7 @@ def finalize(attempt: Path,output: Path):
                             'no_turn_prohibition':prohibition,'pedestrian_and_traffic_yield':turn,
                             'failed_detection_witness':witness},
             'original_joins':original,'video_frames':counts,
+            'derived_recording_evidence':derived,
             'scope':'saved original Native sources and decoded original video; not independent acceptance or legal verdict'}
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     with (attempt/'result.json').open('x') as stream:

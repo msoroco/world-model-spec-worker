@@ -7,7 +7,8 @@ HERE = Path(__file__).resolve().parent
 CASE = HERE.parent.parent
 NAMES = ("assignment-source.json", "case-plan.json", "alley-stop.xodr",
          "config.json", "requested-tracks.jsonl", "build.py", "check.py",
-         "capture.py", "measurement-contract.json", "saved.py", "prove_saved.py")
+         "capture.py", "measurement-contract.json", "saved.py", "prove_saved.py",
+         "derive_channels.py")
 
 TEST = '''import json
 import tempfile
@@ -16,6 +17,7 @@ from pathlib import Path
 from check import check
 from prove_saved import fixture
 from saved import process
+from derive_channels import derive
 
 class ExactOfficer(unittest.TestCase):
     def test_source_and_unverified_status(self):
@@ -40,6 +42,16 @@ class ExactOfficer(unittest.TestCase):
             self.assertEqual(row["frames"], 600)
             self.assertFalse(row["delivery_ready"])
             self.assertIsNone(row["physical_legal_verdict"])
+
+    def test_source_derived_channels(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base = Path(folder)
+            raw, video, review = fixture(Path.cwd(), base)
+            receipt = derive(Path.cwd(), raw, video, review, base / "derived",
+                             synthetic=True)
+            self.assertEqual(receipt["frames"], 600)
+            self.assertEqual(len(receipt["channel_hashes"]), 9)
+            self.assertFalse(receipt["physical_legal_verdict"])
 '''
 
 
