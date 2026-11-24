@@ -1,0 +1,179 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver",
+  "status": "selected_short_exception_cpu_proofs_pending",
+  "runtime_manifest_sha256": "5b4738624542c97f321a302bd49b9ec154cb2cf63778acf64ba6042f8d5b4fd3",
+  "cases": [
+    {
+      "case_id": "training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below",
+      "kind": "delivery",
+      "construction": "selected-primary/tour_bus_below/construction.json",
+      "construction_sha256": "4b847ea3e82659e816839b49282d5fc7fb6e59c90fffccb358c2203d5fa64e40",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long capture may miss passenger proximity or stop timing in Native"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-fallbacks/tour_bus_below/fallback1/construction.json",
+          "construction_sha256": "7b2c94bc5e602aba732683d90ff76b413a4b5e5baea18da8358bb3637b1d4c81",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop overshoot in meters",
+            "failure_condition": "Observed bus body overshoots the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback1 --output .runtime-work/c150142-merged-tour_bus_below-fallback1-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "7b2c94bc5e602aba732683d90ff76b413a4b5e5baea18da8358bb3637b1d4c81",
+            "log": "selected-offline/tour_bus_below/fallback1.log",
+            "log_sha256": "8b79ce13b82d515775972ed7735cd1ba6e00f88e71dd9263cb8036a2f85659e9"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-fallbacks/tour_bus_below/fallback2/construction.json",
+          "construction_sha256": "6a60eef52759bcd2040320c59a61a319ce118370fa05088fb1cb33f8f714a5b8",
+          "trigger": {
+            "source": "decoded overview and retained Native signal readback",
+            "metric": "visible signed curb and complete bus body",
+            "failure_condition": "Overview obscures sign, red paint or complete bus body"
+          },
+          "changed_knobs": [
+            "camera_policy",
+            "overview camera elevation"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback2 --output .runtime-work/c150142-merged-tour_bus_below-fallback2-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "6a60eef52759bcd2040320c59a61a319ce118370fa05088fb1cb33f8f714a5b8",
+            "log": "selected-offline/tour_bus_below/fallback2.log",
+            "log_sha256": "76464af100da381c57a292cb6ac675fc2b4cee4444f2ab815b61745bbded4603"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "selected-fallbacks/tour_bus_below/fallback3/construction.json",
+          "construction_sha256": "2e87751dd9fa682c0cbe4ab5005b4c63ac1754643f6f703fb0e9cbc3e47c3d6a",
+          "trigger": {
+            "source": "retained Native bus body and red paint extent",
+            "metric": "longitudinal stop undershoot in meters",
+            "failure_condition": "Observed bus body stops short of the painted red curb target"
+          },
+          "changed_knobs": [
+            "requested_target_x_m",
+            "authored approach target"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate fallback3 --output .runtime-work/c150142-merged-tour_bus_below-fallback3-offline-canonical-v3",
+            "exit_code": 0,
+            "construction_sha256": "2e87751dd9fa682c0cbe4ab5005b4c63ac1754643f6f703fb0e9cbc3e47c3d6a",
+            "log": "selected-offline/tour_bus_below/fallback3.log",
+            "log_sha256": "6895e064bc8e117c8bc4cb32077de58353c83c8d23f22f59e6c102f404c2575d"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case training__C150142__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_below --candidate primary --output .runtime-work/c150142-merged-tour_bus_below-primary-offline-canonical-v3",
+        "exit_code": 0,
+        "construction_sha256": "4b847ea3e82659e816839b49282d5fc7fb6e59c90fffccb358c2203d5fa64e40",
+        "log": "selected-offline/tour_bus_below/primary.log",
+        "log_sha256": "e24540942945696268d917840e4891d019beaa018d699135c1cd04792a13f510"
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize_selected.py",
+        "output_schema": "c150142-red-curb-saved-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C150142__LVMC-11-52-030-A__motor_vehicle_driver/current-long-isolated-recipe.json",
+      "measurement_contract": "selected-measurement-contracts/tour_bus_below.json"
+    }
+  ],
+  "source_manifests": [
+    {
+      "path": "execution-manifest-diagnostic-armored_car_signed_business-draft.json",
+      "sha256": "64339e0ae23e4bba8d229398975e2d5a7a02249645e80150c3f2c0df2cb314bb"
+    },
+    {
+      "path": "execution-manifest-diagnostic-armored_car_signed_no_business-draft.json",
+      "sha256": "66c246e509405f333251fedd4810d249e78f20ed4f7221c9e9a9f0a7b2d0bf65"
+    },
+    {
+      "path": "execution-manifest-diagnostic-armored_car_unsigned_business-draft.json",
+      "sha256": "1d852935ae8f5fe30841540529254d8a7c6f25dccfd70fa1a53813b37b3a52ab"
+    },
+    {
+      "path": "execution-manifest-diagnostic-armored_car_unsigned_no_business-draft.json",
+      "sha256": "98e15de611f3744f355c9c06217142eed85fc4a45b231cdcb0af56c4690f01cf"
+    },
+    {
+      "path": "execution-manifest-diagnostic-contrast.json",
+      "sha256": "9c3e99bae745c179e6e8606b6f0dc29935563e0b1b3d10d131c5f5ee56d85ccf"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-business-draft.json",
+      "sha256": "32b25c5275dea4f04b5d04cb5c9a404aa21a1d83be1510ac3f404e17f1cb2dc2"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-no-business-draft.json",
+      "sha256": "f8616659040747dfc2cc6a72f64b31a5d606bae175f0a41b2f2fc9f80b1b3b96"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-signed-business-draft.json",
+      "sha256": "4b1eee2562618aa7247e723d1d49ab4f2e1f1f0b35a91efcd5d0990440b238b3"
+    },
+    {
+      "path": "execution-manifest-diagnostic-emergency-signed-no-business-draft.json",
+      "sha256": "07469e14e23b2ddb8553ff85fd9d0e8c6549c5061bc48b0b0909def4163165c3"
+    },
+    {
+      "path": "execution-manifest-diagnostic-limo_below-draft-v2.json",
+      "sha256": "cddf614c6972752f268c78d44f53b86e1eedba2edca732533d1c9a01e78c6aba"
+    },
+    {
+      "path": "execution-manifest-diagnostic-mail-adjacent-deposit-draft.json",
+      "sha256": "e65e82e6f52e55fd9661f3b48e91dcfd90feda31ee5894809fa424004ce47be2"
+    },
+    {
+      "path": "execution-manifest-diagnostic-mail-adjacent-no-deposit-draft.json",
+      "sha256": "da12f4d03579f63d728eb2b8781b8f3bdbcfc38a47673f1f38da1fa21a628b82"
+    },
+    {
+      "path": "execution-manifest-diagnostic-mail-no-box-deposit-draft.json",
+      "sha256": "e7d1e882f0131bbc1fb809b72e835b9608849e89a782a35820b8353396b16c8b"
+    },
+    {
+      "path": "execution-manifest-diagnostic-ordinary_red_signed.json",
+      "sha256": "7e3f564bf8e1afa28602fba07b5f057a4bef3671ba281328cc274efb0b5c772b"
+    },
+    {
+      "path": "execution-manifest-diagnostic-reference.json",
+      "sha256": "413aa029263164a0e0f8834130c9c4dc9891212e205df4d2160eb8a30f3900af"
+    },
+    {
+      "path": "execution-manifest-diagnostic-rtc_bus_below-draft.json",
+      "sha256": "f17b7c6073af205f5d04f774f9be3118cc91eaa86678839b54f645700e655190"
+    },
+    {
+      "path": "execution-manifest-diagnostic-shuttle_bus_below-draft.json",
+      "sha256": "504246d8c01be4ceb6755d86d515e321b5d148f5ff02f4c0bac5a678d98b9004"
+    },
+    {
+      "path": "execution-manifest-diagnostic-tour_bus_below-draft.json",
+      "sha256": "feeee31c12830c62aab07adf210ce50181645b6c734c30dd74d60741650b5a88"
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "selected_branch": "Parking beside a red-painted curb, subject to the complete subsection.",
+  "case_plan_sha256": "0c7225228bfd7a2daa2fa1a8ddbc725a7e149b6c44b6f4e6e99d76e7cb3489ea",
+  "selection_source_sha256": {
+    "assignment": "77d784bf5bcc3cb6dcbff251676557136ead407afc80850b4e5cd49fb4afb682",
+    "witnesses": "9b079839398f3b3d6922105f774db0acc7c48ee08ed20874b545709c5ddf2e5d"
+  },
+  "selection_kind": "conditional_witness_full_subsection_cpu_plan"
+}

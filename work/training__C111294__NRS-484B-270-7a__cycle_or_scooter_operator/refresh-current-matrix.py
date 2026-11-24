@@ -10,7 +10,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / '.runtime-work/c111294-current'
+SCRATCH = ROOT / '.runtime-work/c111294-current-v3'
 CHECKS = {'actual_analysis', 'native_validation', 'mandatory_observations',
           'lean_decoder', 'render', 'final_decode', 'acquisition_unchanged',
           'derived_outputs_rebuilt', 'four_camera_sources',
@@ -36,12 +36,12 @@ def run(case, candidate):
         ('compatibility', [sys.executable, str(ROOT / 'runtime.py'), 'compatibility', *common,
                            '--output', str(root / 'compat'), '--library',
                            str(ROOT / 'runtime/library'), '--validator',
-                           str(ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck')]),
+                           str(ROOT / '.runtime-work/c111294-current/decoder/.lake/build/bin/adapterCheck')]),
         ('process-saved', [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
                            '--manifest', str(manifest), '--case', case_id,
                            '--attempt', str(root / 'compat'), '--output', str(root / 'saved'),
                            '--library', str(ROOT / 'runtime/library'), '--validator',
-                           str(ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck')]),
+                           str(ROOT / '.runtime-work/c111294-current/decoder/.lake/build/bin/adapterCheck')]),
     ]
     for stage, command in commands:
         log = root / (stage + '.log')
