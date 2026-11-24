@@ -38,10 +38,10 @@ def compare(root, scratch, compat_prefix='compat-v4-'):
                 raise ValueError('saved attempt differs from exact case scene')
             if sha(case / 'config.json') != sha(attempt / 'config.json'):
                 raise ValueError('saved attempt differs from exact case config')
-        fixed_scene = ['starting_curb_xy_m', 'opposite_curb_xy_m', 'map_source_sha256']
+        fixed_scene = ['starting_curb_xy_m', 'opposite_curb_xy_m']
         fixed_config = ['law_id', 'cell_id', 'actor', 'rate_hz', 'duration_s', 'cameras']
         if any(scenes[0][key] != scenes[1][key] for key in fixed_scene):
-            raise ValueError('comparison fixed curb/map changed')
+            raise ValueError('comparison fixed curb changed')
         if any(configs[0][key] != configs[1][key] for key in fixed_config):
             raise ValueError('comparison fixed capture condition changed')
         if any(r['status'] != 'software_diagnostic_complete' for r in receipts):
@@ -52,11 +52,15 @@ def compare(root, scratch, compat_prefix='compat-v4-'):
         routes = [s['route_xy_m'] for s in scenes]
         polygons = [s['crosswalk_boundaries_xy_m'] for s in scenes]
         if cid == 'right_angle_vs_neither':
-            condition = routes[0] != routes[1] and polygons[0] == polygons[1]
+            condition = (routes[0] != routes[1] and polygons[0] == polygons[1] and
+                         scenes[0]['map_source_sha256'] == scenes[1]['map_source_sha256'])
         elif cid == 'shortest_vs_neither':
-            condition = routes[0] != routes[1] and routes[0][0] == routes[1][0] and polygons[0] == polygons[1]
+            condition = (routes[0] != routes[1] and routes[0][0] == routes[1][0] and
+                         polygons[0] == polygons[1] and
+                         scenes[0]['map_source_sha256'] == scenes[1]['map_source_sha256'])
         elif cid == 'outside_vs_crosswalk_exception':
-            condition = routes[0] == routes[1] and polygons[0] != polygons[1]
+            condition = (routes[0] == routes[1] and polygons[0] != polygons[1] and
+                         scenes[0]['map_source_sha256'] != scenes[1]['map_source_sha256'])
         else:
             raise ValueError('unreviewed comparison ID')
         if not condition:
@@ -65,7 +69,9 @@ def compare(root, scratch, compat_prefix='compat-v4-'):
                         'case_construction_sha256': [sha(root / 'cases' / n / 'construction.json') for n in names],
                         'saved_processing_sha256': [r['processing_sha256'] for r in receipts],
                         'saved_result_sha256': [r['result_sha256'] for r in receipts],
-                        'fixed_curbs_map_capture': True, 'declared_difference_isolated': True,
+                        'fixed_curbs_capture': True,
+                        'map_change_declared': cid == 'outside_vs_crosswalk_exception',
+                        'declared_difference_isolated': True,
                         'provenance': 'synthetic_fixture', 'physical_acceptance': False,
                         'legal_verdict': 'unresolved'})
     if len(outputs) != 3:

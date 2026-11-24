@@ -173,6 +173,20 @@ def stage(rebound_dir, output_dir):
                              'post_capture', 'delivery_acceptance', 'acquisition', 'native_handoff'):
                 if obsolete in entry:
                     raise ValueError('rebound manifest carries stale proof: ' + obsolete)
+            entry['acquisition'] = {
+                name: {
+                    'entrypoint': 'parking_native_capture.py',
+                    'method': 'capture_frame',
+                    'evidence': 'Original vehicle bounding-box vertices, forward vector, velocity and applied control at each Native world tick in parking-history.jsonl',
+                }
+                for name in ('body_vertices_xy_m', 'vehicle_forward_xy',
+                             'speed_m_s', 'control')
+            }
+            entry['acquisition']['camera_frame_map'] = {
+                'entrypoint': 'parking_tick_capture.py',
+                'method': 'capture_ticks',
+                'evidence': 'Original world frame and timestamp joined to all four camera source names in camera-frame-map.jsonl',
+            }
             for obsolete in ('offline', 'compatibility'):
                 if obsolete in entry['candidates'][0]:
                     raise ValueError('rebound candidate carries stale proof: ' + obsolete)

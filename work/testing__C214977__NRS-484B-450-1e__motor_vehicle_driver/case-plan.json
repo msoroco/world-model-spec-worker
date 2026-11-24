@@ -320,12 +320,31 @@
     }
   ],
   "observations": [
-    "Native crosswalk polygon and markings",
-    "vehicle body footprint on original 20 Hz frames",
-    "actual stop/stand/park activity",
-    "traffic conflict and applicable direction source",
-    "residence-district frontage and highway facts",
-    "four synchronized camera files"
+    {
+      "name": "crosswalk_geometry",
+      "mandatory": true,
+      "description": "native map polygon and markings"
+    },
+    {
+      "name": "ego_body_footprint",
+      "mandatory": true,
+      "description": "original body corners"
+    },
+    {
+      "name": "actual_halt_activity",
+      "mandatory": true,
+      "description": "speed and stop/stand/park activity"
+    },
+    {
+      "name": "exception_sources",
+      "mandatory": true,
+      "description": "traffic conflict/law/police/device original context"
+    },
+    {
+      "name": "camera_sources",
+      "mandatory": true,
+      "description": "four synchronized source videos"
+    }
   ],
   "sources": [
     {
@@ -393,37 +412,7 @@
       "reason": "A residence-district parking destination can be constructed on an established crosswalk without changing the fixed task."
     }
   ],
-  "source_observation_mapping": {
-    "vehicle_on_crosswalk": {
-      "measurement": "original body corners against source crosswalk polygon",
-      "channels": [
-        "native_actor_rows",
-        "native_crosswalk_map"
-      ],
-      "source_refs": [
-        "inputs/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "halt_action": {
-      "measurement": "actual halt activity and speed over source frames",
-      "channels": [
-        "native_actor_rows"
-      ],
-      "source_refs": [
-        "inputs/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "exception_circumstances": {
-      "measurement": "actual traffic conflict, law, police, and official device directions with provenance",
-      "channels": [
-        "native_actor_rows",
-        "native_device_state"
-      ],
-      "source_refs": [
-        "inputs/testing__C214977__NRS-484B-450-1e__motor_vehicle_driver/assignment.json"
-      ]
-    }
-  },
+  "source_observation_mapping": {},
   "requirement_dispositions": [
     {
       "disposition_index": 0,
@@ -541,5 +530,32 @@
         "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_device"
       ]
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "reviewed crosswalk, parking destination and full vehicle footprint",
+        "interval": "all 900 original ticks"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach and crosswalk marking visibility",
+        "interval": "all 900 original ticks"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "full vehicle body, crosswalk edge and traffic conflict context",
+        "interval": "all 900 original ticks"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "original driver view and governing device or officer directions",
+        "interval": "all 900 original ticks"
+      }
+    ]
+  }
 }

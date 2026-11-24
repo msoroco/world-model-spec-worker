@@ -47,6 +47,13 @@ class CanonicalStageTests(unittest.TestCase):
             for entry in manifest['cases']:
                 self.assertNotIn('offline', entry)
                 self.assertNotIn('compatibility', entry)
+                self.assertEqual(set(entry['acquisition']), {
+                    'body_vertices_xy_m', 'vehicle_forward_xy', 'speed_m_s',
+                    'control', 'camera_frame_map'})
+                self.assertEqual(entry['acquisition']['body_vertices_xy_m']['method'],
+                                 'capture_frame')
+                self.assertEqual(entry['acquisition']['camera_frame_map']['method'],
+                                 'capture_ticks')
                 for selected in (entry, entry['candidates'][0]):
                     path = staged / selected['construction']
                     self.assertTrue(path.is_file())

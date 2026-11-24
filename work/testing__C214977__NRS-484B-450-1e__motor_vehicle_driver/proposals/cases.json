@@ -4,17 +4,72 @@
   "cell_id": "C214977",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c214977-judgment-1",
+      "target_law_id": "NRS-484B-450-1e",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "necessary to avoid conflict with other traffic",
+          "note": "Traffic trajectories and causal necessity remain unresolved by a boolean flag."
+        }
+      ],
+      "rationale": "Qualitative legal judgment needs original physical footage and independent source review before calibrated sweep axes can be frozen.",
+      "missing_inputs": [
+        "original Native physical run and independent reviewed authority/context"
+      ]
+    },
+    {
+      "sweep_id": "c214977-judgment-2",
+      "target_law_id": "NRS-484B-450-1e",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "in compliance with law",
+          "note": "Independent legal authority and scope are required."
+        }
+      ],
+      "rationale": "Qualitative legal judgment needs original physical footage and independent source review before calibrated sweep axes can be frozen.",
+      "missing_inputs": [
+        "original Native physical run and independent reviewed authority/context"
+      ]
+    },
+    {
+      "sweep_id": "c214977-judgment-3",
+      "target_law_id": "NRS-484B-450-1e",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "directions of a police officer or official traffic-control device",
+          "note": "Authority, applicability and timing require independent review."
+        }
+      ],
+      "rationale": "Qualitative legal judgment needs original physical footage and independent source review before calibrated sweep axes can be frozen.",
+      "missing_inputs": [
+        "original Native physical run and independent reviewed authority/context"
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_on",
+      "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__shared_baseline",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Parking on mapped crosswalk",
+      "target_type": "baseline",
+      "rationale": "Shared off-crosswalk parking setup for source-bound contrasts.",
       "variable_assignments": {
-        "halt_action": "park",
-        "destination": "on",
-        "exception_ground": "none"
+        "halt_action": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "off"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "none"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -77,17 +132,120 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "deliberate_differences": []
+    },
+    {
+      "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_on",
+      "target_law_id": "NRS-484B-450-1e",
+      "target_type": "boundary_probe",
+      "rationale": "Parking on mapped crosswalk",
+      "variable_assignments": {
+        "halt_action": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "none"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "crosswalk_geometry",
+            "sampling_rate_hz": 20,
+            "method": "native map polygon and markings",
+            "unit": "structured",
+            "reference_frame": "original CARLA world frame",
+            "time_window": "full original 900-frame interval",
+            "uncertainty": "original source and legal review pending"
+          },
+          {
+            "name": "ego_body_footprint",
+            "sampling_rate_hz": 20,
+            "method": "original body corners",
+            "unit": "structured",
+            "reference_frame": "original CARLA world frame",
+            "time_window": "full original 900-frame interval",
+            "uncertainty": "original source and legal review pending"
+          },
+          {
+            "name": "actual_halt_activity",
+            "sampling_rate_hz": 20,
+            "method": "speed and stop/stand/park activity",
+            "unit": "structured",
+            "reference_frame": "original CARLA world frame",
+            "time_window": "full original 900-frame interval",
+            "uncertainty": "original source and legal review pending"
+          },
+          {
+            "name": "exception_sources",
+            "sampling_rate_hz": 20,
+            "method": "traffic conflict/law/police/device original context",
+            "unit": "structured",
+            "reference_frame": "original CARLA world frame",
+            "time_window": "full original 900-frame interval",
+            "uncertainty": "original source and legal review pending"
+          },
+          {
+            "name": "camera_sources",
+            "sampling_rate_hz": 20,
+            "method": "four synchronized source videos",
+            "unit": "structured",
+            "reference_frame": "original CARLA world frame",
+            "time_window": "full original 900-frame interval",
+            "uncertainty": "original source and legal review pending"
+          }
+        ],
+        "limitations": [
+          "Real body visibility and crosswalk marking status remain for original physical review."
+        ],
+        "context_inputs": [
+          {
+            "name": "crosswalk_site",
+            "unit": "structured",
+            "method": "source-sealed reviewed site packet"
+          }
+        ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "destination",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "on"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_off",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Matched parking wholly outside crosswalk",
       "variable_assignments": {
-        "halt_action": "park",
-        "destination": "off",
-        "exception_ground": "none"
+        "halt_action": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "off"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "none"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -150,17 +308,37 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "destination",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "off"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_on",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Separate stopping action on crosswalk",
       "variable_assignments": {
-        "halt_action": "stop",
-        "destination": "on",
-        "exception_ground": "none"
+        "halt_action": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "none"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -223,17 +401,37 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "halt_action",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "stop"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stand_on",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Separate standing action on crosswalk",
       "variable_assignments": {
-        "halt_action": "stand",
-        "destination": "on",
-        "exception_ground": "none"
+        "halt_action": {
+          "kind": "controller",
+          "value": "stand"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "none"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -296,17 +494,37 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "halt_action",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "stand"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__stop_conflict",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Stop made necessary by actual traffic conflict",
       "variable_assignments": {
-        "halt_action": "stop",
-        "destination": "on",
-        "exception_ground": "traffic_conflict"
+        "halt_action": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "traffic_conflict"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -369,17 +587,37 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "exception_ground",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "traffic_conflict"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_law",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Parking in compliance with separately sourced law",
       "variable_assignments": {
-        "halt_action": "park",
-        "destination": "on",
-        "exception_ground": "law"
+        "halt_action": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "law"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -442,17 +680,37 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "exception_ground",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "law"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_police",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Parking under sourced police direction",
       "variable_assignments": {
-        "halt_action": "park",
-        "destination": "on",
-        "exception_ground": "police_direction"
+        "halt_action": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "police_direction"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -515,17 +773,37 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "exception_ground",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "police_direction"
       }
     },
     {
       "case_id": "testing__C214977__NRS-484B-450-1e__motor_vehicle_driver__park_device",
       "target_law_id": "NRS-484B-450-1e",
-      "target_type": "qualitative_controlled_comparison",
+      "target_type": "boundary_probe",
       "rationale": "Parking under applicable official device direction",
       "variable_assignments": {
-        "halt_action": "park",
-        "destination": "on",
-        "exception_ground": "device_direction"
+        "halt_action": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "destination": {
+          "kind": "world_setup",
+          "value": "on"
+        },
+        "exception_ground": {
+          "kind": "world_setup",
+          "value": "device_direction"
+        }
       },
       "unresolved_judgment_calls": [
         "Actual need for traffic-conflict halt or applicability of a law/police/device direction requires original source review."
@@ -588,7 +866,19 @@
             "method": "source-sealed reviewed site packet"
           }
         ]
+      },
+      "paired_probe_id": "crosswalk-halt-contrast",
+      "deliberate_differences": [
+        "halt_action",
+        "destination",
+        "exception_ground"
+      ],
+      "probe": {
+        "primary_variable": "exception_ground",
+        "comparison_or_standard": "source-bound crosswalk stop, stand, or park rule with independently reviewed exception context",
+        "target_value_or_branch": "device_direction"
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

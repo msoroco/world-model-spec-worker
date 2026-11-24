@@ -15,7 +15,8 @@ ASSIGNMENT = FOLDER.name
 SOURCES = ('runner.py', 'native_capture.py', 'route_controller.py',
            'property_route.py', 'case_observation.py', 'map_binding.py',
            'saved_delivery.py', 'physical_completion.py', 'delivery_audit.py',
-           'prepare_delivery.py', 'comparison_audit.py',
+           'prepare_delivery.py', 'site_review.py', 'native_dispatch.py',
+           'canonical_bridge.py', 'comparison_audit.py',
            'comparison_delivery.py', 'analysis.py')
 CAMERAS = [('overview', 1920, 1080, 'fixed whole intersection'),
            ('approach', 1280, 720, 'fixed approach signal and body path'),

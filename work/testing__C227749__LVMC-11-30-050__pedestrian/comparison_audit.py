@@ -6,7 +6,7 @@ ALLOWED = {
     'right_angle_vs_neither': {'route_xy_m', 'construction_intent', 'case_id'},
     'shortest_vs_neither': {'route_xy_m', 'construction_intent', 'case_id'},
     'outside_vs_crosswalk_exception': {'crosswalk_boundaries_xy_m', 'crosswalk_context',
-                                       'construction_intent', 'case_id'},
+                                       'construction_intent', 'case_id', 'map_source_sha256'},
 }
 
 

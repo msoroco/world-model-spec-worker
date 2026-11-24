@@ -39,7 +39,10 @@ def build():
                            'limitations':['Authored scene is an engineering target; original map and site context pending.']}}}
         dump(directory/'config.json',config)
         files=[{'path':name,'source':str((ROOT/name).relative_to(ROOT.parents[1])),'content':(ROOT/name).read_text()} for name in COMMON]
-        files += [{'path':'candidate-crossing.xodr','source':str((ROOT/'candidate-crossing.xodr').relative_to(ROOT.parents[1])),'content':(ROOT/'candidate-crossing.xodr').read_text()},
+        map_name = ('candidate-crossing-inside.xodr' if
+                    json.loads((directory/'scene.json').read_text())['crosswalk_context']=='inside'
+                    else 'candidate-crossing.xodr')
+        files += [{'path':'candidate-crossing.xodr','source':str((ROOT/map_name).relative_to(ROOT.parents[1])),'content':(ROOT/map_name).read_text()},
                   {'path':'scene.json','source':str((directory/'scene.json').relative_to(ROOT.parents[1])),'content':(directory/'scene.json').read_text()},
                   {'path':'config.json','source':str((directory/'config.json').relative_to(ROOT.parents[1])),'content':(directory/'config.json').read_text()},
                   {'path':'tests/test_offline.py','source':str((ROOT/'offline_test.py').relative_to(ROOT.parents[1])),'content':(ROOT/'offline_test.py').read_text()}]

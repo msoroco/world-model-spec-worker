@@ -27,6 +27,22 @@ def check_scene(scene_path,map_path):
     xml=ElementTree.parse(map_path).getroot()
     if xml.tag!='OpenDRIVE' or not xml.findall('./road/planView/geometry/line'):
         raise ValueError('candidate OpenDRIVE road line missing')
+    roads=xml.findall('./road')
+    if len(roads)!=1:
+        raise ValueError('single authored crossing road required')
+    geometry=roads[0].find('./planView/geometry')
+    if geometry is None or any(abs(float(geometry.attrib.get(key,'nan'))-value)>1e-9
+                               for key,value in (('x',0),('y',3),('hdg',0))):
+        raise ValueError('authored crossing road reference differs')
+    crosswalks=roads[0].findall('./objects/object[@type="crosswalk"]')
+    if len(crosswalks)!=1:
+        raise ValueError('one authored OpenDRIVE crosswalk object required')
+    object_vertices=[]
+    for corner in crosswalks[0].findall('./outline/cornerRoad'):
+        object_vertices.append([float(corner.attrib['s']),3+float(corner.attrib['t'])])
+    expected=scene['crosswalk_boundaries_xy_m']
+    if len(expected)!=1 or len(object_vertices)!=len(expected[0]) or sorted(object_vertices)!=sorted(expected[0]):
+        raise ValueError('authored OpenDRIVE crosswalk differs from exact scene')
     return scene
 
 def _trace(actor,sample):

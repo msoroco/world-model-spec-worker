@@ -1,7 +1,8 @@
 """Generate source-hashed synthetic diagnostics for each exact crossing case.
 
-The candidate OpenDRIVE has road lanes only; curb/crosswalk physical readback and
-municipal applicability remain unverified. These fixtures prove software shape.
+The authored OpenDRIVE has a case-matched crosswalk object; physical readback,
+paint visibility and municipal applicability remain unverified. These fixtures
+prove software shape only.
 """
 from __future__ import annotations
 import hashlib
@@ -62,7 +63,8 @@ def build_one(case):
            'video_frames.jsonl':lines(mapping),'camera-frame-joins.jsonl':lines(joins),
            'capture/evidence.jsonl':lines(evidence),'capture/native/frames.jsonl':lines(native),
            'capture/recorder_info.txt':'Create 7: walker.pedestrian (synthetic diagnostic)\n'}
-    road=ROOT/'candidate-crossing.xodr'
+    road=ROOT/('candidate-crossing-inside.xodr' if scene['crosswalk_context']=='inside'
+               else 'candidate-crossing.xodr')
     files['capture/manifest.json']=json.dumps({'acquisition':'original_live_run','case_id':case_id,
            'complete_driving_lanes':False,'extraction_confirmed':True,'frames':5,
            'sources':{'road.xodr':sha(road),'trace.jsonl':hashlib.sha256(files['trace.jsonl'].encode()).hexdigest()},
@@ -76,7 +78,7 @@ def build_one(case):
     spec={'files':files,'graphs':graphs,'videos':videos}
     dump(folder/'diagnostic.json',spec)
     note={'case_id':case_id,'provenance':'synthetic_fixture','physical_realization':'unconfirmed',
-          'road_source':'authored candidate OpenDRIVE lanes only; curb and crosswalk physical surfaces unconfirmed',
+          'road_source':'authored candidate OpenDRIVE lane/crosswalk object; curb and crosswalk physical surfaces unconfirmed',
           'jurisdiction':'unverified','purpose':'source-shaped software compatibility'}
     dump(folder/'diagnostic-source-note.json',note)
     recipe={'format':'worker-fixture-recipe','sources':[{'path':'road.xodr','source':str(road.relative_to(REPO)),'sha256':sha(road)},

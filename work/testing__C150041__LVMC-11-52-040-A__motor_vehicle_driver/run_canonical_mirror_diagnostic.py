@@ -43,14 +43,15 @@ def main():
         (mirror / 'work').mkdir(parents=True)
         target = mirror / 'work' / ROOT.name
         shutil.copytree(ROOT, target, ignore=shutil.ignore_patterns('__pycache__'))
-        for name in ('runtime', 'batch.json', 'inputs'):
+        for name in ('runtime', 'runtime.py', 'batch.json', 'inputs'):
             (mirror / name).symlink_to(REPO / name,
-                                      target_is_directory=name != 'batch.json')
+                                      target_is_directory=name in ('runtime', 'inputs'))
         (mirror / '.runtime-work').mkdir()
         install(staged, packets['park'], packets['stand'], target)
         manifest = target / 'execution-manifest.json'
         env = dict(os.environ,
                    SCENARIO_PIPELINE_OUTPUT_ROOT=str(mirror / '.runtime-work' / 'pipeline'),
+                   TMPDIR=str(mirror / '.runtime-work'),
                    PYTHONDONTWRITEBYTECODE='1')
         passed = []
         for kind in REQUESTS:
@@ -75,9 +76,24 @@ def main():
                     raise ValueError('exact compatibility receipt differs: ' + case + ' ' + candidate)
                 passed.append({'case_id': case, 'candidate_id': candidate,
                                'construction_sha256': receipt['construction_sha256']})
+        proof_command = [sys.executable, str(target / 'prove_execution_manifest.py'),
+                         '--output-root', str(mirror / '.runtime-work' / 'exact-proofs'),
+                         '--validator', str(validator)]
+        proof = subprocess.run(proof_command, cwd=mirror, env=env,
+                               capture_output=True, text=True, timeout=1800)
+        if proof.returncode:
+            raise ValueError('installed exact offline/compatibility proof failed: '
+                             + proof.stdout[-1400:] + proof.stderr[-1400:])
+        os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'] = env['SCENARIO_PIPELINE_OUTPUT_ROOT']
+        os.environ['TMPDIR'] = env['TMPDIR']
+        sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
+        from worker_exchange.package_compatibility import check_receipts
+        check_receipts(mirror, target, json.loads(manifest.read_text()))
         print(json.dumps({'format': 'c150041-canonical-mirror-diagnostic-v1',
                           'passed': True, 'cases': len(REQUESTS),
                           'bundles': len(passed), 'receipts': passed,
+                          'installed_exact_proofs_passed': True,
+                          'receipt_validation_passed': True,
                           'source_kind': 'synthetic_site_protocol_fixture',
                           'original_review_claimed': False,
                           'delivery_ready_claimed': False}, indent=2))
