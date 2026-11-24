@@ -40,7 +40,7 @@ def observed_speed_mps(actor):
     return speed
 
 
-def check(case_suffix, candidate_id):
+def check(case_suffix, candidate_id, duration_s=24):
     geometry = geometry_check()
     engineering = parameters(case_suffix, candidate_id)
     cameras = camera_plan(candidate_id)
@@ -52,6 +52,8 @@ def check(case_suffix, candidate_id):
         raise ValueError('Sign camera differs from candidate engineering')
     if engineering['rate_hz'] != RATE_HZ or engineering['duration_s'] != 24:
         raise ValueError('Native timebase differs from measured contract')
+    if duration_s not in (24, 30):
+        raise ValueError('Native duration must be a reviewed 24 or 30 seconds')
     PathController(engineering['native_route_xy_m'], 2.8, 35,
                    target_speed_mps=engineering['target_speed_mps'],
                    lookahead_m=engineering['lookahead_m'])
@@ -60,6 +62,7 @@ def check(case_suffix, candidate_id):
             'native_route_points': len(engineering['native_route_xy_m']),
             'authored_geometry': geometry, 'map_readback_pending': True,
             'physical_sign_review_pending': True, 'native_capture_pending': True,
+            'duration_s': duration_s, 'expected_frames': RATE_HZ * duration_s,
             'selected': False, 'native_imported': False}
 
 
@@ -166,13 +169,17 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
     from worker_exchange.native_output import seal_capture
     from pipeline_capture import PipelineCapture
 
-    preflight = check(case_suffix, candidate_id)
     output = Path(output_dir).resolve()
     if not output.is_dir() or not (output / 'config.json').is_file():
         raise ValueError('Use a newly materialized exact-case output directory')
     config = json.loads((output / 'config.json').read_text())
     if config.get('case_suffix') != case_suffix or config.get('candidate_id') != candidate_id:
         raise ValueError('Materialized exact case/candidate differs from runner request')
+    duration_s = config.get('duration_s')
+    preflight = check(case_suffix, candidate_id, duration_s)
+    expected_frames = preflight['expected_frames']
+    if config.get('rate_hz') != RATE_HZ:
+        raise ValueError('Materialized exact case timebase differs from Native runner')
     client = carla.Client(host, int(port))
     client.set_timeout(180)
     saved = snapshot(client)
@@ -266,7 +273,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
              (output / 'video_frames.jsonl').open('x') as frame_file, \
              (output / 'body_history.jsonl').open('x') as body_file, \
              (output / 'rider_native_samples.jsonl').open('x') as rider_file:
-            for index in range(480):
+            for index in range(expected_frames):
                 before = ego.get_transform()
                 speed = observed_speed_mps(ego)
                 command = controller.step(position_xy_m=(before.location.x, before.location.y),
@@ -338,7 +345,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                     encoders[spec['name']].stdin.write(rgb.tobytes())
                 frame_file.write(json.dumps(frame_identity) + '\n')
                 frames += 1
-        if frames != 480:
+        if frames != expected_frames:
             raise RuntimeError('Original capture frame count incomplete')
     except BaseException as exc:
         error = {'type': type(exc).__name__, 'message': str(exc),
@@ -378,7 +385,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 restored = restore(client, saved)
             except BaseException as exc:
                 error = error or {'world_restore_error': str(exc)}
-        if error is None and frames == 480:
+        if error is None and frames == expected_frames:
             try:
                 sources = {name: output / (name + '.mkv') for name in
                     ('overview','approach','sign_reference','driver_reference')}
@@ -387,7 +394,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 _write_json_new(output / 'four-view-receipt.json', composed)
             except BaseException as exc:
                 error = {'four_view_composition_error': str(exc)}
-        if error is None and frames == 480:
+        if error is None and frames == expected_frames:
             try:
                 seal_capture(output, frames=frames, restoration=restored, errors=[],
                     encoder_exit_codes=encoder_exit_codes,
@@ -395,7 +402,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                              'physical_acceptance_claimed': False})
             except BaseException as exc:
                 error = {'capture_seal_error': str(exc)}
-        if error is None and frames == 480:
+        if error is None and frames == expected_frames:
             try:
                 _write_json_new(output / 'rider-source-manifest.json', {
                     'source_kind': 'original_native_capture_unreviewed',
@@ -412,7 +419,7 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
                 error = {'rider_source_manifest_error': str(exc)}
         _write_json_new(output / 'native-capture-report.json', {
             'case_suffix': case_suffix, 'candidate_id': candidate_id,
-            'frames': frames, 'expected_frames': 480,
+            'frames': frames, 'expected_frames': expected_frames,
             'encoder_exit_codes': encoder_exit_codes, 'restoration': restored,
             'error': error, 'accepted': False,
             'original_pixel_review': 'pending', 'official_sign_review': 'pending',
@@ -427,6 +434,8 @@ def main():
     parser.add_argument('--case', choices=('mounted_obey', 'mounted_turn'))
     parser.add_argument('--candidate', choices=('primary', 'fallback1', 'fallback2', 'fallback3'))
     parser.add_argument('--output-dir')
+    parser.add_argument('--duration-s', type=int, default=24,
+                        choices=(24, 30), help='Preflight capture duration')
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
@@ -437,7 +446,7 @@ def main():
     if not case_suffix or not candidate_id:
         parser.error('Supply --case and --candidate or a materialized config.json')
     if args.check:
-        print(json.dumps(check(case_suffix, candidate_id), sort_keys=True))
+        print(json.dumps(check(case_suffix, candidate_id, args.duration_s), sort_keys=True))
     else:
         if not args.output_dir or not args.host or not args.port:
             parser.error('Supply output directory, host and port for an owned Native attempt')

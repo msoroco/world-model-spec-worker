@@ -33,7 +33,8 @@ def finalize(attempt, output):
         raise ValueError("Retain prior saved result; use a fresh attempt")
     config = json.loads((root/"config.json").read_text())
     kind = config["case_suffix"]
-    if kind not in ("mounted_obey", "mounted_turn") or config["rate_hz"]*config["duration_s"] != 480:
+    frames = config["rate_hz"]*config["duration_s"]
+    if kind not in ("mounted_obey", "mounted_turn") or config["rate_hz"] != 20 or frames not in (480, 600):
         raise ValueError("Exact mounted case/timebase differs")
     native = rows(root/"native_samples.jsonl")
     mapping = rows(root/"video_frames.jsonl")
@@ -41,8 +42,8 @@ def finalize(attempt, output):
     trace = rows(root/"trace.jsonl")
     evidence = rows(root/"capture/evidence.jsonl")
     body = rows(root/"body_history.jsonl")
-    if any(len(data) != 480 for data in (native, mapping, rider, trace, evidence, body)):
-        raise ValueError("Original-style 480-frame join incomplete")
+    if any(len(data) != frames for data in (native, mapping, rider, trace, evidence, body)):
+        raise ValueError("Original-style frame join incomplete")
     manifest_path = root/"rider-source-manifest.json"
     if not manifest_path.is_file():
         raise ValueError("Missing required source: rider-source-manifest.json")
@@ -81,11 +82,11 @@ def finalize(attempt, output):
     if measured != expected or (kind == "mounted_obey" and turn_frames):
         raise ValueError("Controlled mounted-turn source differs")
     capture = json.loads((root/"capture/manifest.json").read_text())
-    if capture.get("frames") != 480 or not capture.get("extraction_confirmed"):
+    if capture.get("frames") != frames or not capture.get("extraction_confirmed"):
         raise ValueError("Capture extraction incomplete")
     names = ("overview", "approach", "sign_reference", "driver_reference")
     videos = {name+".mkv": video_frames(root/(name+".mkv")) for name in names}
-    if any(value != 480 for value in videos.values()):
+    if any(value != frames for value in videos.values()):
         raise ValueError("Source camera frame count differs")
     description = config["recording_description"]
     recording = []
@@ -118,7 +119,7 @@ def finalize(attempt, output):
     validate_result(result)
     report = {"format": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1",
         "case_id": config["case_id"], "candidate_id": config["candidate_id"],
-        "source_kind": manifest["source_kind"], "frames": 480, "video_frames": videos,
+        "source_kind": manifest["source_kind"], "frames": frames, "video_frames": videos,
         "turn_frames": turn_frames, "mounted_turn_frames": mounted_turn_frames,
         "source_hashes": {name: sha(root/name) for name in
             ("rider_native_samples.jsonl", "authored-sign.json", "native_samples.jsonl",

@@ -40,13 +40,16 @@
     {
       "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
       "target_law_id": "LVMC-11-48-060",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "travel between two truck routes through non-truck street without enroute need",
       "comparison_variable": "enroute essential use",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_primary_offline_passed",
+      "construction_path": "native/selected-primary-construction.json",
+      "construction_sha256": "235b85071124e0b6867601bca045c86f5cae83ffcda791820fd61885e705b66d",
+      "selection_reason": "Exact source and witness require a complete passage over a non-truck street between two truck routes. No accepted full-train membership exists. Select no-enroute-purpose through-trip probe with truck blueprint explicitly surveyed despite the frozen generic motor-vehicle role."
     },
     {
       "case_id": "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02",
@@ -88,7 +91,7 @@
   "source_observation_terms": [
     {
       "term": "dev.regulatory_sign",
-      "note": "code truck_route — which streets are truck routes"
+      "note": "code truck_route \u2014 which streets are truck routes"
     },
     {
       "term": "ru.truck",
@@ -104,7 +107,7 @@
     },
     {
       "term": "drv.standing_or_parked",
-      "note": "a stop for pick-up or delivery — the evidence the trip had a purpose en route"
+      "note": "a stop for pick-up or delivery \u2014 the evidence the trip had a purpose en route"
     },
     {
       "term": "st.roadway",
@@ -129,16 +132,16 @@
     "Rule may target truck-route through traffic; selected generic motor-vehicle actor and road cell require compatible qualifying route and purpose."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Selected through-trip primary passes pinned offline, but full manifest compatibility, saved processing, semantic proposal, audit, and comparison CPU proofs remain.",
+    "Probe_02 requires documented pickup, delivery or essential enroute purpose and distinct Native construction with controlled comparison.",
+    "Local map must physically support two designated truck routes joined by a non-truck street and a truck blueprint in the generic motor-vehicle actor role.",
+    "No CARLA capture, original route designation/purpose review, accepted recording, or legal verdict is claimed."
   ],
   "observations": [
     {
       "name": "dev.regulatory_sign",
       "mandatory": true,
-      "reason": "code truck_route — which streets are truck routes"
+      "reason": "code truck_route \u2014 which streets are truck routes"
     },
     {
       "name": "ru.truck",
@@ -158,7 +161,7 @@
     {
       "name": "drv.standing_or_parked",
       "mandatory": true,
-      "reason": "a stop for pick-up or delivery — the evidence the trip had a purpose en route"
+      "reason": "a stop for pick-up or delivery \u2014 the evidence the trip had a purpose en route"
     },
     {
       "name": "st.roadway",
@@ -200,7 +203,43 @@
         "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_01",
         "training__C394566__LVMC-11-48-060__motor_vehicle_driver__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Probe_01 selected with inline Native primary and pinned offline plus synthetic route/purpose source proof; complete CPU delivery and comparison remain open."
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "dev.regulatory_sign / st.roadway",
+      "measurement": "reviewed entry/exit truck-route designations and intervening non-truck street IDs",
+      "source_refs": [
+        "route_context.json:truck_route_designation_source",
+        "route_context.json:nontruck_street_designation_source"
+      ]
+    },
+    {
+      "term": "ru.truck",
+      "measurement": "reviewed truck blueprint/vehicle class and original ego actor identity",
+      "source_refs": [
+        "route_context.json:truck_blueprint_source",
+        "native_route_trace.jsonl:ego_actor_id"
+      ]
+    },
+    {
+      "term": "kin.path_length / kin.position",
+      "measurement": "original Native road sequence and summed adjacent pose distance across complete passage",
+      "source_refs": [
+        "native_route_trace.jsonl:road_id",
+        "native_route_trace.jsonl:ego_x_m",
+        "native_route_trace.jsonl:ego_y_m"
+      ]
+    },
+    {
+      "term": "drv.standing_or_parked / st.driveway_or_alley_entrance",
+      "measurement": "stationary-frame count and independently reviewed enroute pickup/delivery/essential purpose and premises; no purpose inferred from stop",
+      "source_refs": [
+        "native_route_trace.jsonl:ego_speed_mps",
+        "route_context.json:enroute_purpose_source",
+        "route_context.json:served_premises_source"
+      ]
     }
   ]
 }

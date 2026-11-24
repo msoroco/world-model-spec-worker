@@ -3,7 +3,7 @@
   "law_id": "NRS-484B-363-1",
   "cell_id": "C262666",
   "actor": "heavy_vehicle_driver",
-  "source_law_text": "A person shall not drive a motor vehicle at a speed in excess of 15 miles per hour in an area designated as a school zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "source_law_text": "A person shall not drive a motor vehicle at a speed in excess of 15 miles per hour in an area designated as a school zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, \u201cspeed limit beacon\u201d means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
   "source_law_citation": "NRS 484B.363(1); with 484B.363(9)",
   "summary_status": "recovered_requires_source_review",
   "selected_branch": "school-zone 15 mph limit and exceptions",
@@ -62,13 +62,16 @@
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-363-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "active school zone above 15 mph",
       "comparison_variable": "zone speed with active-period status",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_primary_offline_passed",
+      "construction_path": "native/selected-primary-construction.json",
+      "construction_sha256": "04b8e57e961d6b57858b90de06838a92c158ee52d02e907102894b2e1a495617",
+      "selection_reason": "Exact source sets 15 mph in a designated school zone subject to four exceptions; witness calls for a heavy motor vehicle traversal. No accepted full-train membership exists. Select active above-15 probe with designation, calendar, civil time and beacon/sign state required for independent review."
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04",
@@ -154,10 +157,10 @@
     "School calendar and legal zone designation require authoritative inputs; do not infer from visible crosswalk or beacon alone."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Selected active above-15 primary passes pinned offline, but full manifest compatibility, saved processing, semantic proposal, audit, and comparison CPU proofs remain.",
+    "Probes 01, 02 and 04 need distinct constructions for active below/near limit and exception contrast, with controlled comparison.",
+    "Authoritative school calendar, half-hour schedule, zone designation and beacon/sign state must be independently sourced; Native pixels alone are insufficient.",
+    "No CARLA capture, original source review, accepted recording, or legal verdict is claimed."
   ],
   "observations": [
     {
@@ -227,7 +230,52 @@
         "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
         "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Probe_03 selected with inline Native primary and pinned offline plus synthetic speed/exception source proof; remaining cases and full CPU delivery proofs are open."
+    }
+  ],
+  "source_observation_mapping": [
+    {
+      "term": "dev.zone_sign / drv.within_signed_zone",
+      "measurement": "reviewed designation and zone station bounds joined to Native road/position history",
+      "source_refs": [
+        "school_zone_context.json:zone_designation_source",
+        "school_zone_context.json:zone_sign_source",
+        "native_motion.jsonl:ego_x_m"
+      ]
+    },
+    {
+      "term": "kin.speed",
+      "measurement": "three-component original Native velocity converted to mph during zone frames",
+      "source_refs": [
+        "native_motion.jsonl:velocity_x_mps",
+        "native_motion.jsonl:velocity_y_mps",
+        "native_motion.jsonl:velocity_z_mps"
+      ]
+    },
+    {
+      "term": "dev.speed_limit_beacon / drv.condition_in_effect",
+      "measurement": "reviewed operational beacon and flash or non-beacon sign state, with all four statutory exception facts",
+      "source_refs": [
+        "school_zone_context.json:beacon_source",
+        "school_zone_context.json:beacon_phase_source",
+        "school_zone_context.json:nonbeacon_sign_schedule_source"
+      ]
+    },
+    {
+      "term": "env.civil_time",
+      "measurement": "source-reviewed timezone-aware civil start and stable 30-second condition interval",
+      "source_refs": [
+        "school_zone_context.json:civil_time_source",
+        "school_zone_context.json:condition_stability_source"
+      ]
+    },
+    {
+      "term": "ru.motor_vehicle",
+      "measurement": "reviewed heavy motor vehicle blueprint and original ego actor identity",
+      "source_refs": [
+        "school_zone_context.json:vehicle_class_source",
+        "native_motion.jsonl:ego_actor_id"
+      ]
     }
   ]
 }
