@@ -17,8 +17,13 @@ def check(config):
         raise ValueError("wrong frozen law/cell/actor")
     if config.get("rate_hz") != 20 or config.get("duration_s") != 45:
         raise ValueError("wrong timing contract")
-    if config.get("cameras") != ["overview", "approach", "reference_corner", "driver_reference"]:
+    cameras = config.get("cameras")
+    if not isinstance(cameras, list) or [c.get("name") for c in cameras if isinstance(c, dict)] != ["overview", "approach", "reference_corner", "driver_reference"]:
         raise ValueError("four camera plan missing")
+    if [(c.get("width"), c.get("height")) for c in cameras] != [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)]:
+        raise ValueError("four camera dimensions differ")
+    if any(not c.get("pose_strategy") or not c.get("fov_deg") for c in cameras):
+        raise ValueError("four camera geometry missing")
     kind = "imaginary_equidistant" if suffix.startswith("imaginary_") else "marked"
     if config.get("centerline_kind") != kind:
         raise ValueError("centerline construction mismatch")

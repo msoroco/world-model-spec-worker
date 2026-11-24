@@ -64,10 +64,52 @@
       "exit_code": 1,
       "log": "cpu-v18-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "build_diag_graph_capture.py --source .runtime-work/c125751-compat-v18/attempt --seed .runtime-work/c125751-seed2 --destination .runtime-work/c125751-compat-graph-v19",
+      "exit_code": 0,
+      "log": "cpu-compat-v19-graph.log",
+      "sha256": "ed7b530d7dc5868d786f440e8670a62e362be6fe8ae3348e5bea5f1f884a1285"
+    },
+    {
+      "command": "pinned traffic_spec_adapter.convert on .runtime-work/c125751-compat-graph-v19",
+      "exit_code": 0,
+      "log": "cpu-compat-v19-convert.log",
+      "sha256": "3e7053740de3342c5b6087eed6d732c5eeb4b3b4871c912449db7a559a106b32"
+    },
+    {
+      "command": "pinned runtime.py process-saved on .runtime-work/c125751-compat-graph-v19 to .runtime-work/c125751-compat-graph-v19-saved",
+      "exit_code": 0,
+      "log": "cpu-compat-v19-process-saved.log",
+      "sha256": "8941f1755fccab66a6b03273d29411ff71f453935d10e89ea669a324041a6716"
+    },
+    {
+      "command": "delivery_audit.py --attempt .runtime-work/c125751-compat-graph-v19-saved/v0001/analysis --survey .runtime-work/c125751-compat-v18/survey.json --case testing__C125751__NRS-484B-250-2__motor_vehicle_driver__precedence --output .runtime-work/c125751-compat-graph-v19-delivery-audit.json",
+      "exit_code": 0,
+      "log": "cpu-compat-v19-delivery-audit.log",
+      "sha256": "36907fe3ff97d13031af110abe2fb868313b9ec90c48b479bed0993ab9a0d96e"
+    },
+    {
+      "command": "Pinned Core negative diagnostic: delete capture/evidence.jsonl from compact v19 capture, then call convert",
+      "exit_code": 0,
+      "log": "cpu-compat-v19-negative.log",
+      "sha256": "2853f81dc5bfafcc5206252a7c53ad4d6bf08c0e09bb7a67017949c6352b167b"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-2__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-v19-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-v19-static.log",
+      "sha256": "8244803fd8269ad64d953202d9630524364b5450727d14291cee007a08700006"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact selected v18 constructions pass pinned offline. The 26-test source suite verifies per-original-tick PipelineCapture handoff and failure closure; selected manifest binding passes. Full-profile diagnostic source analysis and independent delivery source audit pass. Pinned process-saved reaches traffic-spec conversion but diagnostic fixture lacks independent capture/evidence.jsonl Native graph bundle. Production CARLA adapter now records that bundle, but source-shaped positive/negative compatibility and full saved-only conversion have not passed. Canonical comparison receipt and reviewed production source packet are outstanding. Official-device exclusion and subsection-4 qualification remain unresolved. No physical or legal readiness claimed."
+  "reason": "Five exact selected v18 constructions and 26 source tests pass. Compact synthetic 900-frame Native-shaped capture passed pinned Core conversion with all required measurements and zero missing atoms, then full pinned recorded-only process-saved with video decode, timestamp joins and source preservation. Independent saved delivery source audit passed. These are synthetic diagnostic software proofs, not physical or legal acceptance. Selected positive/negative package compatibility receipts for all five cases, independent canonical comparison, and reviewed production source packet remain unfinished. Official-device exclusion and subsection-4 qualification remain unresolved."
 }

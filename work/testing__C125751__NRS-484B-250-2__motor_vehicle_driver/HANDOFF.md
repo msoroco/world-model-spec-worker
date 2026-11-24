@@ -163,3 +163,15 @@ The exact `delivery_audit.py` CLI passed on the full-profile synthetic diagnosti
 
 All five v18 selected offline checks, 26 source-module tests and three manifest-binding tests pass. Their current hashes are in `result.json`. Synthetic diagnostic `process-saved` still cannot convert because it lacks the pinned graph/evidence bundle; no positive compatibility or full saved-only receipt is claimed. Next work: exercise complete source-shaped graph capture through process-saved and compatibility, then comparison and canonical acceptance. Keep status partial.
 Scoped v18 static check passed; exact v18 scoped strict exited 1 solely on truthful partial status. Current logs are `cpu-v18-static.log` and `cpu-v18-strict.log`, SHA-bound in `result.json`.
+
+## 2026-11-24 compact graph and pinned saved-only proof checkpoint
+
+`build_diag_graph_capture.py` derives a 900-frame synthetic diagnostic graph/evidence bundle from pinned fixture shapes and the original-shaped timing trace. It preserves frame, time, ego pose, speed and graph/event equality; optional sensor and participant metadata was removed so `capture/evidence.jsonl` is 1,694,084 bytes, below the per-file return cap. This is a software compatibility fixture, not a CARLA acquisition or physical observation.
+
+Pinned Core conversion passed all 900 frames with `required_measurements_complete=true` and no missing atoms. Full pinned `runtime.py process-saved` on this compact bundle passed with `recorded_only=true`, 900 timestamp joins, 900-frame final video decode, and preserved original source hashes; its receipt explicitly has `physical_acceptance_claimed=false` and `legal_acceptance_claimed=false`. The independent `delivery_audit.py` then passed against the saved analysis directory, checking source hashes, 3,600 decoded camera pixels and the 900-frame primary video. Current proof logs are SHA-bound in `result.json`; detailed receipts remain in `.runtime-work/c125751-compat-graph-v19-saved/v0001/processing.json` and `.runtime-work/c125751-compat-graph-v19-delivery-audit.json`.
+
+Next: source-shaped positive/negative package compatibility for each selected case, canonical comparison audit and production source packet. The synthetic fixture cannot establish real motion, physical visibility, statutory applicability or a right-of-way judgment. Keep status partial until the exact scoped strict gate passes.
+
+The compact negative Core diagnostic removes only `capture/evidence.jsonl` from a scratch copy; conversion rejects the missing source, as recorded in `cpu-compat-v19-negative.log`. The exact scoped strict gate was rerun after binding these proofs and still exits 1 because `result.json` truthfully remains partial (`cpu-v19-strict.log`). Positive and negative package compatibility receipts for all selected cases and canonical comparison are still needed.
+
+Scoped v19 static check passed (`cpu-v19-static.log`), bound in `result.json`.

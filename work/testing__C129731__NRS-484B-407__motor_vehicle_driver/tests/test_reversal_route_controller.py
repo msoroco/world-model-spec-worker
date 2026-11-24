@@ -5,6 +5,7 @@ from types import SimpleNamespace as Obj
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from reversal_route_controller import RouteFollower
+from reversal_route_controller_fallback1 import RouteFollower as ConservativeRouteFollower
 
 
 def location(x, y, z):
@@ -80,6 +81,22 @@ class RouteFollowerTests(unittest.TestCase):
         wrong["waypoints"][1]["x"] = 0.1
         with self.assertRaisesRegex(ValueError, "near-zero"):
             RouteFollower(self.map, wrong, location, self.control_factory)
+
+    def test_fallback_reduces_initial_throttle_and_steer(self):
+        primary = RouteFollower(self.map, route(), location,
+                                self.control_factory)
+        conservative = ConservativeRouteFollower(self.map, route(), location,
+                                                 self.control_factory)
+        actor = Actor()
+        actor.yaw = 90.0
+        primary.apply(actor)
+        primary_control = actor.controls[-1]
+        conservative.apply(actor)
+        fallback_control = actor.controls[-1]
+        self.assertLess(fallback_control["throttle"],
+                        primary_control["throttle"])
+        self.assertLess(abs(fallback_control["steer"]),
+                        abs(primary_control["steer"]))
 
 
 if __name__ == "__main__":
