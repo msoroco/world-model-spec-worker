@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import base64
 import json
 from pathlib import Path
 import shutil
@@ -49,7 +50,21 @@ def main() -> None:
 
         for source in sorted(capture.iterdir()):
             if source.is_file():
+                if source.suffix == ".zip":
+                    continue
                 add_source(source.name, source.read_bytes())
+        diagnostic_archives = {source.name: {"sha256": sha(source),
+                                             "base64": base64.b64encode(source.read_bytes()).decode("ascii")}
+                               for source in sorted(capture.glob("*.zip"))}
+        if set(diagnostic_archives) != {name + ".zip" for name, _, _ in VIEWS}:
+            raise ValueError("Four synthetic diagnostic camera archives required")
+        add_source("diagnostic-archives.json",
+                   (json.dumps({"format": "c109035-diagnostic-archives-v1",
+                                "archives": diagnostic_archives}, separators=(",", ":")) + "\n").encode())
+        add_source("acquisition-provenance.json",
+                   b'{"provenance_kind":"synthetic_fixture","diagnostic_fixture":true,"physical_acceptance_claimed":false}\n')
+        for old in root.glob("*.zip"):
+            old.unlink()
         actors = [json.loads(line) for line in (capture / "actor_trace.jsonl").read_text().splitlines()]
         devices = [json.loads(line) for line in (capture / "device_trace.jsonl").read_text().splitlines()]
         if len(actors) != 900 or len(devices) != 900:

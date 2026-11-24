@@ -25,6 +25,9 @@ class BundleTests(unittest.TestCase):
                 files = {item['path']: item for item in construction['files']}
                 self.assertIn('saved_media_audit.py', files)
                 self.assertIn('finalizer.py', files)
+                self.assertIn('native_carla_adapter.py', files)
+                self.assertIn('native_camera_writer.py', files)
+                self.assertIn('native_capture.py', files)
                 self.assertIn('audit_media(attempt, capture_root', files['finalizer.py']['content'])
                 for item in files.values():
                     if 'source' in item:

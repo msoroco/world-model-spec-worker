@@ -24,7 +24,7 @@ def _sha_file(path: Path) -> str:
 def capture(world, packet_path: Path, attempt: Path, case_id: str,
             native_run_id: str, uncertainty_mps: float, transform_factory,
             control_factory, *, diagnostic_fixture=False,
-            media_factory=NativeMedia, graph_reader=None):
+            media_factory=NativeMedia, graph_reader=None, client=None):
     """Acquire one 900-tick run; clean up actors and writers on every exit.
 
     The caller owns world synchronous settings, traffic control and the reviewed
@@ -38,6 +38,7 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
         raise ValueError('unknown exact speed case')
     site = construct(world, packet_path, case_id, transform_factory)
     media = None
+    recorder_started = False
     try:
         attempt = Path(attempt)
         attempt.mkdir(parents=True, exist_ok=True)
@@ -62,13 +63,22 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
             stream.write(json.dumps(setup, indent=2, sort_keys=True) + '\n')
         media = media_factory(site.cameras, attempt,
                               diagnostic_fixture=diagnostic_fixture)
+        recorder_path = attempt / 'carla_recorder.log'
+        if not diagnostic_fixture:
+            if client is None:
+                raise ValueError('original Native CARLA client required for recorder')
+            if recorder_path.exists() or client.start_recorder(str(recorder_path), True) is False:
+                raise ValueError('original Native recorder refused to start')
+            recorder_started = True
         if graph_reader is None and not diagnostic_fixture:
             from original_graph import collect
-            def graph_reader(world, actor, snapshot, frame, time_s):
+            def graph_reader(world, actor, snapshot, frame, time_s,
+                             observed_packet):
                 return collect(world, actor, snapshot,
                                expected_frame=frame,
                                expected_time_s=snapshot.timestamp.elapsed_seconds,
-                               recording_time_s=time_s)
+                               recording_time_s=time_s,
+                               observed_evidence=observed_packet)
         motion = capture_speed(world, site.actor, control_factory, attempt,
                                case_id, native_run_id, uncertainty_mps,
                                diagnostic_fixture=diagnostic_fixture,
@@ -76,6 +86,17 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
                                route_reader=site.observe_route,
                                graph_reader=graph_reader)
         frames, paths = media.finish()
+        if recorder_started:
+            client.stop_recorder()
+            recorder_started = False
+            if not recorder_path.is_file() or not recorder_path.stat().st_size:
+                raise ValueError('original Native recorder source missing')
+            info = client.show_recorder_file_info(str(recorder_path), False)
+            if (not isinstance(info, str) or
+                    f'Create {site.actor.id}: ' not in info):
+                raise ValueError('original Native recorder subject census missing')
+            with (attempt / 'recorder_info.txt').open('x', encoding='utf-8') as stream:
+                stream.write(info)
         index = finalize_capture(attempt, case_id, frames, paths,
                                  site_source=site_source)
         aliases = {'overview': 'front', 'approach': 'front_left',
@@ -91,6 +112,8 @@ def capture(world, packet_path: Path, attempt: Path, case_id: str,
         return {'motion': motion, 'capture_index': index,
                 'site_packet_sha256': site.packet_sha256}
     finally:
+        if recorder_started:
+            client.stop_recorder()
         if media is not None:
             media.abort()
         site.close()

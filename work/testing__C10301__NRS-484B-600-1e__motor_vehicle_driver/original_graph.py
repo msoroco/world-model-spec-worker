@@ -86,7 +86,7 @@ def collect(world, ego_actor, snapshot, *, expected_frame: int,
     if observed_evidence is not None:
         if (not isinstance(observed_evidence, dict) or
                 observed_evidence.get('frame') != expected_frame or
-                observed_evidence.get('time_s') != expected_time_s):
+                observed_evidence.get('time_s') != recording_time_s):
             raise ValueError('CARLA graph original observation frame differs')
         metadata['observed_evidence'] = observed_evidence
         source_devices = {device['actor_id']: device for device in

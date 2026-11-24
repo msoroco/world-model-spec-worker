@@ -48,12 +48,12 @@ def main():
         target.write_text(json.dumps(proof, indent=2) + "\n")
         entry["physical_preparation"] = {"receipt": target.relative_to(HERE).as_posix(),
                                          "sha256": sha(target)}
-        log = HERE / f"cpu-canonical-offline-{suffix}.log"
+        log = HERE / f"cpu-offline-{suffix}-v7.log"
         if log.is_file() and '"offline_passed": true' in log.read_text():
             entry["offline"] = {"command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/" +
                                 HERE.name + "/execution-manifest.json --case " + case +
-                                " --output .runtime-work/c109035-canonical-offline/" + suffix +
-                                "-v4 --python $PWD/.venv-cpu/bin/python",
+                                " --output .runtime-work/c109035-offline-" + suffix +
+                                "-v7 --python $PWD/.venv-cpu/bin/python",
                                 "exit_code": 0,
                                 "construction_sha256": entry["construction_sha256"],
                                 "log": log.relative_to(HERE).as_posix(),

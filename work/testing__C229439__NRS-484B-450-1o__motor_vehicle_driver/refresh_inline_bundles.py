@@ -8,9 +8,15 @@ from pathlib import Path
 FOLDER = Path(__file__).resolve().parent
 ROOT = FOLDER.parents[1]
 SOURCES = {'runner.py': 'runner.py', 'parking.py': 'parking.py',
+           'native_carla_adapter.py': 'native_carla_adapter.py',
+           'native_camera_writer.py': 'native_camera_writer.py',
+           'native_capture.py': 'native_capture.py',
            'finalizer.py': 'finalizer.py',
            'saved_media_audit.py': 'saved_media_audit.py',
-           'tests/test_parking.py': 'tests/test_parking.py'}
+           'tests/test_parking.py': 'tests/test_parking.py',
+           'tests/test_native_carla_adapter.py': 'tests/test_native_carla_adapter.py',
+           'tests/test_native_camera_writer.py': 'tests/test_native_camera_writer.py'}
+SOURCES['tests/test_native_capture.py'] = 'tests/test_native_capture.py'
 
 
 def sha(path):
@@ -34,7 +40,7 @@ def build():
         entry['construction_sha256'] = sha(path)
         entry['offline']['construction_sha256'] = sha(path)
         entry['offline']['exit_code'] = -1
-        entry['offline']['scope'] = 'CPU materialization pending refreshed full-media finalizer'
+        entry['offline']['scope'] = 'CPU materialization pending reviewed Native adapter and camera writer'
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
     return len(manifest['cases'])
 

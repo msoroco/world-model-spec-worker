@@ -45,7 +45,11 @@ class FakeWorld:
         self.gap_at = gap_at
 
     def get_settings(self):
-        return SimpleNamespace(synchronous_mode=True, fixed_delta_seconds=0.05)
+        return SimpleNamespace(synchronous_mode=True, fixed_delta_seconds=0.05,
+                               no_rendering_mode=False)
+
+    def get_actors(self):
+        return [self.actor]
 
     def tick(self):
         if self.actor.moving:

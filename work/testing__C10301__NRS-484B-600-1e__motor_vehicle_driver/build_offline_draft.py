@@ -9,7 +9,8 @@ ROOT = Path(__file__).resolve().parent
 AID = ROOT.name
 MODULES = (
     "analysis.py", "capture_finalizer.py", "core_projection.py", "delivery_audit.py", "native_capture.py",
-    "native_media.py", "native_motion.py", "native_site.py", "original_graph.py", "owned_capture.py",
+    "native_control.py", "native_media.py", "native_motion.py", "native_site.py",
+    "native_participants.py", "original_graph.py", "owned_capture.py",
     "saved_speed.py", "speed_boundary.py", "speed_capture.py",
     "source_binding.py",
 )

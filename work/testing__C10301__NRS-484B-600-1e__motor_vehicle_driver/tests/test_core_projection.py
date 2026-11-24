@@ -38,10 +38,12 @@ class CoreProjectionTests(unittest.TestCase):
                                          'roll_deg': 0} for name in CAMERAS}}
             site = folder / 'site.json'
             site.write_text(json.dumps(packet) + '\n')
-            def graph_reader(world, actor, snapshot, frame, time_s):
+            def graph_reader(world, actor, snapshot, frame, time_s,
+                             observed_packet):
                 return collect(world, actor, snapshot, expected_frame=frame,
                                expected_time_s=snapshot.timestamp.elapsed_seconds,
-                               recording_time_s=time_s)
+                               recording_time_s=time_s,
+                               observed_evidence=observed_packet)
             attempt = folder / 'attempt'
             capture(world, site, attempt, case_id, 'core-fixture', 0.05,
                     transform, control, diagnostic_fixture=True,

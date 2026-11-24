@@ -13,6 +13,7 @@ SOURCES = (
     "native_camera_adapter.py", "native_scene_factory.py",
     "native_capture_entrypoint.py", "native_export.py",
     "finalize_delivery.py", "analysis.py", "audit_finalized.py", "comparison_audit.py",
+    "delivery_audit.py",
 )
 
 RUNNER = '''"""Exact case identity and source-profile preflight."""

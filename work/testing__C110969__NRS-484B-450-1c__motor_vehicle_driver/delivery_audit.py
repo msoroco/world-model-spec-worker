@@ -11,6 +11,7 @@ def sha(path):
 
 
 def audit_live_sources(attempt, case_id, frames, videos, mapping):
+    attempt = Path(attempt).resolve()
     provenance = json.loads((attempt/'acquisition-provenance.json').read_text())
     if provenance.get('provenance_kind') != 'native' or provenance.get('diagnostic_fixture') is not False:
         raise ValueError('original Native provenance missing')
@@ -80,6 +81,7 @@ def audit_live_sources(attempt, case_id, frames, videos, mapping):
 
 def audit(attempt, case_id, *, allow_diagnostic=False):
     from worker_exchange.media import audit as audit_video
+    from native_media import CAMERAS
 
     attempt = Path(attempt).resolve()
     source = attempt / 'diagnostic-manifest.json'
@@ -109,7 +111,7 @@ def audit(attempt, case_id, *, allow_diagnostic=False):
     for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
         path = attempt/(name+'.mkv')
         decoded = audit_video(path, len(frames), mapping_sha256=sha(attempt/'video_frames.jsonl'))
-        if decoded.get('passed') is not True:
+        if decoded.get('passed') is not True or tuple(decoded.get('dimensions', ())) != tuple(CAMERAS[name]):
             raise ValueError('original video decode incomplete: '+name)
         videos[name] = {'sha256': sha(path), 'decoded_frames': decoded['frames'],
                         'rgb_sequence_sha256': decoded['rgb_sequence_sha256']}

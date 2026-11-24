@@ -82,7 +82,11 @@ def prepare(assignment: dict, plan: dict) -> dict[str, dict]:
     }
     observed = [("siren_active", "categorical"), ("warning_lamp_active", "categorical"),
                 ("ego_position", "native world m"), ("pedestrian_position", "native world m"),
-                ("camera_frame_identity", "native frame")]
+                ("camera_frame_identity", "native frame"),
+                ("original_siren_and_warning_lamp_state", "structured record"),
+                ("qualifying_event_and_temporal_relation", "structured record"),
+                ("pedestrian_approach_relation", "structured record"),
+                ("equipment_and_authorization", "structured record")]
     contexts = [("dispatch_context", "source record"),
                 ("equipment_record", "source record"),
                 ("site_packet", "source record")]

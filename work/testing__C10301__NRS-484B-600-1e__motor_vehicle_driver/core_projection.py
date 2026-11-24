@@ -53,17 +53,33 @@ def project(attempt: Path, destination: Path, case_id: str, *,
     if any(not path.is_file() or path.is_symlink() for path in
            (road, recorder, graph_map)):
         raise ValueError('original Native Core source missing')
+    recorder_log = attempt / 'carla_recorder.log'
+    if (not integrity['diagnostic_fixture'] and
+            (not recorder_log.is_file() or recorder_log.is_symlink() or
+             not recorder_log.stat().st_size)):
+        raise ValueError('original Native CARLA recorder log missing')
     trace = project_trace(attempt, case_id)
     graph_rows = json.loads(graph_map.read_text())['frames']
-    if len(trace) != len(graph_rows) or len(trace) != 900:
+    camera_rows = json.loads((attempt / 'camera-frame-readback.json').read_text())['frames']
+    world_rows = json.loads((attempt / 'world-frame-readback.json').read_text())['frames']
+    control_rows = json.loads((attempt / 'control-frame-readback.json').read_text())['frames']
+    if (len(trace) != len(graph_rows) or len(trace) != 900 or
+            len(camera_rows) != len(trace) or len(world_rows) != len(trace) or
+            len(control_rows) != len(trace)):
         raise ValueError('original Native Core frame coverage differs')
     actor_id = None
     evidence = []
     frame_index = []
     graphs = []
-    for point, record in zip(trace, graph_rows):
+    for point, record, camera, world, control in zip(trace, graph_rows,
+                                                     camera_rows, world_rows,
+                                                     control_rows):
         frame, time_s = point['frame'], point['time_s']
-        if record.get('frame') != frame or record.get('time_s') != time_s:
+        if (record.get('frame') != frame or record.get('time_s') != time_s or
+                camera.get('frame') != frame or world.get('frame') != frame or
+                control.get('frame') != frame or
+                world.get('time_s') != time_s or
+                world.get('no_rendering_mode') is not False):
             raise ValueError('original Native graph and motion clock differ')
         relative = record['adapter_graph']
         source = (attempt / relative).resolve()
@@ -71,6 +87,21 @@ def project(attempt: Path, destination: Path, case_id: str, *,
                 sha(source) != record['sha256']):
             raise ValueError('original Native graph source changed')
         graph = json.loads(source.read_bytes())
+        observed = graph.get('metadata', {}).get('observed_evidence')
+        expected_rgb = [{'camera': name, 'frame': value,
+                         'source': 'original_native_camera_readback'}
+                        for name, value in camera['camera_frames'].items()]
+        if (not isinstance(observed, dict) or
+                observed.get('frame') != frame or
+                observed.get('time_s') != time_s or
+                observed.get('devices') != control.get('devices') or
+                observed.get('control_actor_inventory') !=
+                control.get('control_actor_inventory') or
+                observed.get('world_settings') !=
+                {'no_rendering_mode': False} or
+                observed.get('rgb_sensors') != expected_rgb or
+                not isinstance(observed.get('participants'), list)):
+            raise ValueError('original Native graph observation packet differs')
         matches = [node for node in graph['nodes']
                    if node['attributes'].get('actor_id') is not None]
         if len(matches) != 1:
@@ -84,6 +115,11 @@ def project(attempt: Path, destination: Path, case_id: str, *,
             raise ValueError('original Native graph actor changed')
         attributes = matches[0]['attributes']
         position = point['position_m']
+        vertices = attributes.get('threedbbox')
+        if (not isinstance(vertices, list) or len(vertices) != 8 or
+                any(not isinstance(vertex, list) or len(vertex) != 3
+                    for vertex in vertices)):
+            raise ValueError('original Native graph body vertices missing')
         if ('vertex' in attributes and any(abs(a - b) > 1e-4
             for a, b in zip(attributes['vertex'], position))):
             raise ValueError('original Native graph and kinematics pose differ')
@@ -93,8 +129,10 @@ def project(attempt: Path, destination: Path, case_id: str, *,
             'replay_simulation_time_s': time_s,
             'ego': {'position_m': position, 'speed_mps': point['speed_mps'],
                     'speed_provenance': 'original_trace_actor_get_velocity',
-                    'heading_deg': point['heading_deg']},
-            'original_observations': {}, 'world': {'weather': {}}})
+                    'heading_deg': point['heading_deg'],
+                    'body_vertices_m': vertices},
+            'original_observations': observed,
+            'world': {'weather': {}}})
         graph_relative = 'graphs/abstract/' + f'{frame:08d}.adapter.json'
         frame_index.append({'frame': frame, 'simulation_time': time_s,
                             'adapter_graph': graph_relative})
@@ -112,6 +150,8 @@ def project(attempt: Path, destination: Path, case_id: str, *,
             shutil.copyfile(source, target)
         shutil.copyfile(road, stage / 'road.xodr')
         shutil.copyfile(recorder, stage / 'capture/recorder_info.txt')
+        if recorder_log.is_file():
+            shutil.copyfile(recorder_log, stage / 'carla_recorder.log')
         manifest = {
             'status': 'diagnostic' if integrity['diagnostic_fixture'] else 'original',
             'acquisition': 'original_live_run', 'case_id': case_id,

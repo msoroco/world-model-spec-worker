@@ -135,6 +135,52 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
                             math.isfinite(controls[key]) and 0 <= controls[key] <= 1
                             for key in ('throttle', 'brake'))):
                 raise ValueError('original Native kinematics frame join differs')
+    world_hash = motion.get('world_frame_readback_sha256')
+    if world_hash is None and not allow_diagnostic:
+        raise ValueError('original Native rendering readback required for delivery')
+    if world_hash is not None:
+        world_path = attempt / 'world-frame-readback.json'
+        raw = world_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != world_hash:
+            raise ValueError('original Native rendering readback hash differs')
+        world = json.loads(raw)
+        settings = world.get('frames')
+        if (world.get('case_id') != case_id or
+                world.get('native_run_id') != speed['native_run_id'] or
+                not isinstance(settings, list) or len(settings) != EXPECTED_FRAMES or
+                any(row.get('frame') != origin + i or
+                    row.get('time_s') != i / 20 or
+                    row.get('no_rendering_mode') is not False
+                    for i, row in enumerate(settings))):
+            raise ValueError('original Native RGB rendering readback differs')
+    control_hash = motion.get('control_frame_readback_sha256')
+    if control_hash is None and not allow_diagnostic:
+        raise ValueError('original Native control inventory required for delivery')
+    if control_hash is not None:
+        control_path = attempt / 'control-frame-readback.json'
+        raw = control_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != control_hash:
+            raise ValueError('original Native control inventory hash differs')
+        control = json.loads(raw)
+        control_frames = control.get('frames')
+        if (control.get('case_id') != case_id or
+                control.get('native_run_id') != speed['native_run_id'] or
+                not isinstance(control_frames, list) or
+                len(control_frames) != EXPECTED_FRAMES):
+            raise ValueError('original Native control inventory coverage differs')
+        for i, row in enumerate(control_frames):
+            census = row.get('control_actor_inventory', {})
+            devices = row.get('devices')
+            ids = [device.get('actor_id') for device in devices] if isinstance(devices, list) else []
+            if (row.get('frame') != origin + i or row.get('time_s') != i / 20 or
+                    not isinstance(devices, list) or
+                    census.get('frame') != origin + i or
+                    census.get('time_s') != i / 20 or
+                    census.get('method') != 'World.get_actors' or
+                    census.get('prefix') != 'traffic.' or
+                    census.get('complete') is not True or
+                    census.get('actor_ids') != sorted(ids)):
+                raise ValueError('original Native control inventory frame join differs')
     camera_readback_hash = motion.get("camera_frame_readback_sha256")
     if camera_readback_hash is None and not allow_diagnostic:
         raise ValueError("original camera readback required for delivery")
@@ -220,6 +266,8 @@ def audit_integrity(attempt: Path, case_id: str, *, allow_diagnostic: bool = Fal
             "native_site_sha256": site_hash,
             "route_readback_sha256": route_readback_hash,
             "graph_frame_readback_sha256": graph_hash,
+            "world_frame_readback_sha256": world_hash,
+            "control_frame_readback_sha256": control_hash,
             "camera_sha256": camera_hashes,
             "diagnostic_fixture": index["diagnostic_fixture"],
             "source_integrity_passed": True, "full_video_decode": False,

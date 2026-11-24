@@ -46,17 +46,18 @@ def build(suffix: str, scratch: Path) -> None:
                            'x_m': 0, 'y_m': 0, 'z_m': 1.5,
                            'pitch_deg': 0, 'yaw_deg': 0, 'roll_deg': 0}
                     for name in CAMERAS}}
-    seed = scratch / ('fixture-seed-' + suffix + '-v12')
+    seed = scratch / ('fixture-seed-' + suffix + '-v16')
     if seed.exists():
         raise ValueError('retain prior diagnostic seed; choose fresh scratch')
     seed.mkdir(parents=True)
     site_path = seed / 'site.json'
     site_path.write_text(json.dumps(site, sort_keys=True) + '\n')
     attempt = seed / 'attempt'
-    def graph_reader(world, actor, snapshot, frame, time_s):
+    def graph_reader(world, actor, snapshot, frame, time_s, observed_packet):
         return collect(world, actor, snapshot, expected_frame=frame,
                        expected_time_s=snapshot.timestamp.elapsed_seconds,
-                       recording_time_s=time_s)
+                       recording_time_s=time_s,
+                       observed_evidence=observed_packet)
     capture(world, site_path, attempt, case_id, 'fixture-' + suffix, 0.05,
             transform, control, diagnostic_fixture=True,
             media_factory=media_factory, graph_reader=graph_reader)
@@ -73,7 +74,22 @@ def build(suffix: str, scratch: Path) -> None:
     for source in (core / 'capture').rglob('*'):
         if source.is_file():
             files[str(source.relative_to(core))] = source.read_text()
+    # Diagnostic fixture inventories one copy of each graph under the pinned
+    # Core path. Rebind only the synthetic readback inventory to those exact
+    # unchanged graph bytes; production acquisition retains its original paths.
+    graph_map = json.loads(files['graph-frame-readback.json'])
+    for row in graph_map['frames']:
+        row['adapter_graph'] = 'capture/native/' + row['adapter_graph']
+    files['graph-frame-readback.json'] = json.dumps(
+        graph_map, sort_keys=True, separators=(',', ':')) + '\n'
+    motion = json.loads(files['native-motion-receipt.json'])
+    motion['graph_frame_readback_sha256'] = hashlib.sha256(
+        files['graph-frame-readback.json'].encode()).hexdigest()
+    files['native-motion-receipt.json'] = json.dumps(
+        motion, sort_keys=True, indent=2) + '\n'
     index = json.loads(files['capture-index.json'])
+    index['native_motion']['sha256'] = hashlib.sha256(
+        files['native-motion-receipt.json'].encode()).hexdigest()
     for camera in CAMERAS:
         source = media / ('overview.mkv' if camera == 'front' else 'detail.mkv')
         index['cameras'][camera]['sha256'] = sha(source)
@@ -86,8 +102,19 @@ def build(suffix: str, scratch: Path) -> None:
                   ('overview', 1920, 1080), ('approach', 1280, 720),
                   ('reference_corner', 1280, 720),
                   ('driver_reference', 1280, 720), ('raw', 3840, 1800))]
-    spec = {'files': files, 'graphs': [], 'videos': videos}
     case = ROOT / 'cases' / suffix
+    generated_graphs = {name: content for name, content in files.items()
+                        if name.startswith('capture/native/graphs/')}
+    explicit = {name: content for name, content in files.items()
+                if name not in generated_graphs}
+    sources = []
+    for name, content in sorted(explicit.items()):
+        source = case / 'fixture-sources' / name
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text(content)
+        sources.append({'path': name, 'source': str(source.relative_to(REPO)),
+                        'sha256': sha(source)})
+    spec = {'files': generated_graphs, 'graphs': [], 'videos': videos}
     diagnostic = case / 'diagnostic.json'
     diagnostic.write_text(json.dumps(spec, separators=(',', ':'),
                                      ensure_ascii=False) + '\n')
@@ -96,7 +123,7 @@ def build(suffix: str, scratch: Path) -> None:
         'format': 'worker-fixture-recipe',
         'sources': [{'path': 'diagnostic-contract-source.json',
                      'source': str(contract.relative_to(REPO)),
-                     'sha256': sha(contract)}],
+                     'sha256': sha(contract)}, *sources],
         'generator': {'source': str(diagnostic.relative_to(REPO)),
                       'sha256': sha(diagnostic)}}
     (case / 'fixture-recipe.json').write_text(json.dumps(recipe, indent=2) + '\n')

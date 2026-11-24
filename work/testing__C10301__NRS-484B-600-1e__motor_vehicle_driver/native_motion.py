@@ -13,6 +13,8 @@ from pathlib import Path
 
 from speed_capture import write_original_speed
 from delivery_audit import CAMERAS
+from native_control import observe as observe_controls
+from native_participants import observe as observe_participants
 
 FRAMES = 900
 HZ = 20
@@ -76,6 +78,8 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
     if graph_reader is not None:
         reserved.append('graph-frame-readback.json')
     reserved.append('native-kinematics.jsonl')
+    reserved.append('world-frame-readback.json')
+    reserved.append('control-frame-readback.json')
     if any((attempt / name).exists() for name in reserved):
         raise ValueError("original Native attempt artifact already exists")
     settings = world.get_settings()
@@ -86,6 +90,8 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
     camera_rows = []
     route_rows = []
     graph_rows = []
+    world_rows = []
+    control_rows = []
     kinematic_rows = []
     first_elapsed = None
     first_position = None
@@ -111,6 +117,12 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                 first_position = _position(actor)
             if abs((elapsed - first_elapsed) - index / HZ) > 1e-5:
                 raise ValueError("Native 20 Hz clock differs")
+            rendering = getattr(world.get_settings(), 'no_rendering_mode', None)
+            if rendering is not False:
+                raise ValueError('original Native RGB rendering disabled or unknown')
+            world_rows.append({'frame': frame, 'time_s': index / HZ,
+                               'no_rendering_mode': False})
+            control_rows.append(observe_controls(world, frame, index / HZ))
             rows.append({"frame": frame, "time_s": index / HZ,
                          "speed_mps": _speed(actor),
                          "speed_uncertainty_mps": float(uncertainty_mps)})
@@ -142,8 +154,17 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                 camera_rows.append({"frame": frame,
                                     "camera_frames": camera_frames})
             if graph_reader is not None:
+                if camera_frame_reader is None:
+                    raise ValueError('original Native graph requires camera readback')
+                observed_packet = {
+                    **control_rows[-1],
+                    'participants': observe_participants(world, actor),
+                    'world_settings': {'no_rendering_mode': False},
+                    'rgb_sensors': [{'camera': name, 'frame': camera_frames[name],
+                                     'source': 'original_native_camera_readback'}
+                                    for name in CAMERAS]}
                 raw_graph = graph_reader(world, actor, snapshot, frame,
-                                         index / HZ)
+                                         index / HZ, observed_packet)
                 if not isinstance(raw_graph, bytes) or not raw_graph:
                     raise ValueError('original Native graph bytes missing')
                 graph = json.loads(raw_graph)
@@ -196,10 +217,22 @@ def capture_speed(world, actor, control_factory, attempt: Path, case_id: str,
                                       sort_keys=True, separators=(',', ':')) + '\n').encode()
             (attempt / 'graph-frame-readback.json').write_bytes(graph_bytes)
             graph_hash = hashlib.sha256(graph_bytes).hexdigest()
+        world_bytes = (json.dumps({'case_id': case_id,
+                                   'native_run_id': native_run_id,
+                                   'frames': world_rows},
+                                  sort_keys=True, separators=(',', ':')) + '\n').encode()
+        (attempt / 'world-frame-readback.json').write_bytes(world_bytes)
+        control_bytes = (json.dumps({'case_id': case_id,
+                                     'native_run_id': native_run_id,
+                                     'frames': control_rows},
+                                    sort_keys=True, separators=(',', ':')) + '\n').encode()
+        (attempt / 'control-frame-readback.json').write_bytes(control_bytes)
         receipt = {"format": "c10301-native-motion-v1", "case_id": case_id,
                    "native_run_id": native_run_id, "sample_count": FRAMES,
                    "travel_m": travel_m, "speed_source_sha256": descriptor["sha256"],
                    "kinematics_source_sha256": kinematic_hash,
+                   "world_frame_readback_sha256": hashlib.sha256(world_bytes).hexdigest(),
+                   "control_frame_readback_sha256": hashlib.sha256(control_bytes).hexdigest(),
                    "diagnostic_fixture": diagnostic_fixture,
                    "physical_acceptance_claimed": False}
         if camera_hash is not None:

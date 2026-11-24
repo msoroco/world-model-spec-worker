@@ -20,7 +20,8 @@ class OwnedWorld(World):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.settings = SimpleNamespace(synchronous_mode=False,
-                                        fixed_delta_seconds=0.1)
+                                        fixed_delta_seconds=0.1,
+                                        no_rendering_mode=False)
         self.weather = SimpleNamespace(cloudiness=17.0)
 
     def get_settings(self):

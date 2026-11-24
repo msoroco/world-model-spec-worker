@@ -28,6 +28,8 @@ def capture_owned(client, packet_path, attempt, case_id, native_run_id,
                 abs(current.fixed_delta_seconds - 0.05) > 1e-9):
             raise ValueError('Native world 20 Hz settings readback differs')
         kwargs = {'diagnostic_fixture': diagnostic_fixture}
+        if not diagnostic_fixture:
+            kwargs['client'] = client
         if media_factory is not None:
             kwargs['media_factory'] = media_factory
         return capture(world, packet_path, attempt, case_id, native_run_id,

@@ -155,6 +155,25 @@ class EntryTests(unittest.TestCase):
                          'unresolved')
         self.assertIsNone(observed['officer_direction_observation'])
 
+    def test_original_context_actor_motion_is_observed_without_official_claim(self):
+        ego = types.SimpleNamespace(
+            get_control=lambda: types.SimpleNamespace(throttle=0.0, brake=1.0,
+                                                      hand_brake=False),
+            get_velocity=lambda: types.SimpleNamespace(x=0.0, y=0.0, z=0.0))
+        context = types.SimpleNamespace(
+            get_transform=lambda: types.SimpleNamespace(location=types.SimpleNamespace(
+                x=5.0, y=2.0, z=0.0)),
+            get_velocity=lambda: types.SimpleNamespace(x=1.0, y=0.0, z=0.0))
+        observer = entry.OriginalMotionObserver()
+        observer.bind_context({'conflicting_vehicle': context}, [
+            {'role': 'conflicting_vehicle', 'source_refs': ['reviewed placement']}])
+        observed = observer.observe(types.SimpleNamespace(frame=73), ego)
+        sample = observed['activity_observation']['context_actors'][0]
+        self.assertEqual(sample['native_frame'], 73)
+        self.assertEqual(sample['velocity_xyz_mps'], [1.0, 0.0, 0.0])
+        self.assertFalse(sample['official_status_verified'])
+        self.assertIsNone(observed['traffic_conflict_observation'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -125,7 +125,8 @@ class World:
         return sensor
 
     def get_settings(self):
-        return SimpleNamespace(synchronous_mode=True, fixed_delta_seconds=0.05)
+        return SimpleNamespace(synchronous_mode=True, fixed_delta_seconds=0.05,
+                               no_rendering_mode=False)
 
     def tick(self):
         self.actor.speed = max(0.0, self.actor.speed +
@@ -308,7 +309,8 @@ class CaptureTests(unittest.TestCase):
         self.assertFalse((self.attempt / 'capture-index.json').exists())
 
     def test_original_graph_frames_are_bound_to_motion_receipt(self):
-        def graph_reader(world, actor, snapshot, frame, time_s):
+        def graph_reader(world, actor, snapshot, frame, time_s,
+                         observed_packet):
             return (json.dumps({'format': 'native-adapter-graph-v1',
                                 'metadata': {'frame': frame,
                                              'simulation_time_s': time_s,
