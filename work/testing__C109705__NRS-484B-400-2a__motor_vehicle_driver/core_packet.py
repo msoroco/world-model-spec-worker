@@ -135,7 +135,9 @@ def project(attempt: Path, output: Path, actor_id: int = 7) -> dict:
             'required_observations': [],
             'extraction_confirmed': True,
             'sources': {'road.xodr': road_sha, 'trace.jsonl': hashes['trace.jsonl']},
-            'observation_contract_version': 2,
+            # This bridge has synthetic color videos, not live RGB sensor
+            # attestations. Version 2 is reserved for actual Native capture.
+            'observation_contract_version': 1,
             'road_user_visibility_observed': False,
             'speed_source': 'synthetic_native_sample',
             'frame_join': 'same saved diagnostic Native frame',

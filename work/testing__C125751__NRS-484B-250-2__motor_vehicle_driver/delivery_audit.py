@@ -86,10 +86,19 @@ def audit(attempt, survey_path):
             raise ValueError('runtime export differs from original source manifest')
         expected=['runtime-export/'+role+'.mkv' for role in
                   ('overview','approach','reference_corner','driver_reference')]
-        if video_refs != expected or result.get('trace_reference')!='runtime-export/trace.jsonl':
+        native_graph=(attempt/'capture/evidence.jsonl').is_file()
+        expected_trace='trace.jsonl' if native_graph else 'runtime-export/trace.jsonl'
+        if video_refs != expected or result.get('trace_reference')!=expected_trace:
             raise ValueError('four original runtime video references required')
         trace=_source_path(attempt,result['trace_reference'])
-        if hashlib.sha256(trace.read_bytes()).hexdigest()!=receipt.get('trace_sha256'):
+        if native_graph:
+            capture_manifest=json.loads((attempt/'capture/manifest.json').read_text())
+            if hashlib.sha256(trace.read_bytes()).hexdigest()!=capture_manifest.get('sources',{}).get('trace.jsonl'):
+                raise ValueError('original Native telemetry hash differs')
+            derived=_source_path(attempt,'runtime-export/trace.jsonl')
+            if hashlib.sha256(derived.read_bytes()).hexdigest()!=receipt.get('trace_sha256'):
+                raise ValueError('runtime export trace hash differs')
+        elif hashlib.sha256(trace.read_bytes()).hexdigest()!=receipt.get('trace_sha256'):
             raise ValueError('runtime export trace hash differs')
         for ref in expected:
             video=_source_path(attempt,ref)

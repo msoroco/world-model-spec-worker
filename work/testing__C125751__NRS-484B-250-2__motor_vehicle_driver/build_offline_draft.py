@@ -86,11 +86,14 @@ def main():
     restoration = None
     try:
         capture(adapter,survey_path,survey_sha256,map_path,case,attempt)
+        acquisition = attempt/'acquisition'
+        acquisition.mkdir()
+        shutil.copy2(attempt/'source-manifest.json',acquisition/'source-manifest.json')
         (attempt/'acquisition-provenance.json').write_text(json.dumps({
             'provenance_kind':'native','diagnostic_fixture':False},indent=2)+'\\n')
         export(attempt,survey_path,attempt/'runtime-export')
         for name in ('overview.mkv','approach.mkv','reference_corner.mkv',
-                     'driver_reference.mkv','trace.jsonl'):
+                     'driver_reference.mkv'):
             shutil.copy2(attempt/'runtime-export'/name,attempt/name)
         shutil.copy2(attempt/'overview.mkv',attempt/'raw.mkv')
         analyze(attempt,attempt/'analysis-report.json')
@@ -168,11 +171,14 @@ class BundleTests(unittest.TestCase):
                 events.append('export')
                 destination.mkdir()
                 for name in ('overview.mkv','approach.mkv','reference_corner.mkv',
-                             'driver_reference.mkv','trace.jsonl'):
+                             'driver_reference.mkv'):
                     (destination/name).write_bytes(b'source')
             def fake_restore(_client,_saved):
                 events.append('restore')
                 return {'restored':True}
+            def fake_capture(_adapter,_survey,_sha,_map,_case,destination):
+                events.append('capture')
+                (destination/'source-manifest.json').write_text('{}\\n')
             def fake_seal(_attempt,**kwargs):
                 events.append('seal')
                 self.assertTrue(kwargs['restoration']['restored'])
@@ -181,7 +187,7 @@ class BundleTests(unittest.TestCase):
                     '--map-source',str(source_map)]
             with patch('sys.argv',argv), patch.dict(sys.modules,{'carla':SimpleNamespace(Client=lambda *_:client)}), \\
                  patch('carla_native_adapter.CarlaNativeAdapter',return_value=object()), \\
-                 patch('native_capture.capture',side_effect=lambda *_:events.append('capture')), \\
+                 patch('native_capture.capture',side_effect=fake_capture), \\
                  patch('runtime_source_bridge.export',side_effect=fake_export), \\
                  patch('analysis.run',side_effect=lambda *_:events.append('analysis')), \\
                  patch('scenario_pipeline.worker_exchange.world_restore.snapshot',return_value=object()), \\

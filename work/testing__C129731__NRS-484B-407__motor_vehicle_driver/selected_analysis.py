@@ -24,6 +24,58 @@ def _jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def _recording_evidence(attempt: Path, report: dict, core_supplied: bool) -> list[dict]:
+    """Write derived channel views while retaining the sealed source packets."""
+    frame_map = json.loads((attempt / "frame_map.json").read_text())["frames"]
+    motion = json.loads((attempt / "ego_motion.json").read_text())["samples"]
+    rays = json.loads((attempt / "sight_rays.json").read_text())["samples"]
+    if len(frame_map) != len(motion) or len(frame_map) != 900:
+        raise ValueError("Original recording frame stream incomplete")
+    grouped = {}
+    for ray in rays:
+        grouped.setdefault(ray["frame"], []).append(ray)
+    times = {row["frame"]: row["time_s"] for row in frame_map}
+    channels = {
+        "ego_motion": [{"time_s": row["time_s"], "value": row}
+                       for row in motion],
+        "sight_rays": [{"time_s": times[number], "value": grouped[number]}
+                       for number in sorted(grouped)],
+        "frame_join": [{"time_s": row["time_s"], "value": row}
+                       for row in frame_map],
+        "original_camera_index": [
+            {"time_s": row["time_s"],
+             "value": {"video_frame": index, "native_frame": row["frame"],
+                       "source_videos_verified": core_supplied}}
+            for index, row in enumerate(frame_map)],
+    }
+    if not all(channels.values()):
+        raise ValueError("Original recording channel missing")
+    folder = attempt / "channels"
+    folder.mkdir(exist_ok=True)
+    evidence = []
+    for name, rows in channels.items():
+        destination = folder / (name + ".jsonl")
+        if destination.exists():
+            raise ValueError("Refusing to overwrite derived recording channel")
+        destination.write_text("".join(json.dumps(row, separators=(",", ":"),
+                                          allow_nan=False) + "\n" for row in rows))
+        evidence.append({"name": name, "unit": "source record",
+                         "reference": str(destination.relative_to(attempt))})
+    contexts = {
+        "road_geometry": json.loads((attempt / "road_geometry.json").read_text()),
+        "case_setup": {"selected_case_id": report["case_id"],
+                       "source_inventory_sha256": _sha(attempt / "inventory.json")},
+    }
+    for name, value in contexts.items():
+        destination = folder / (name + ".json")
+        if destination.exists():
+            raise ValueError("Refusing to overwrite derived recording context")
+        destination.write_text(json.dumps({name: value}, allow_nan=False) + "\n")
+        evidence.append({"name": name, "unit": "source record",
+                         "reference": str(destination.relative_to(attempt))})
+    return evidence
+
+
 def _check_core_alignment(attempt: Path) -> bool:
     """Join any supplied Core timeline to every original sight frame and time."""
     mapping_path = attempt / "video_frames.jsonl"
@@ -143,14 +195,7 @@ def build_canonical_result(attempt: Path, report: dict) -> dict:
     description = construction["recording_description"]
     if not isinstance(description.get("channels"), list) or len(description["channels"]) != 4:
         raise ValueError("Four declared Native recording channels required")
-    evidence = [{"name": "ego_motion", "unit": "source record",
-                 "reference": "ego_motion.json"},
-                {"name": "sight_rays", "unit": "source record",
-                 "reference": "sight_rays.json"},
-                {"name": "approach_motion", "unit": "source record",
-                 "reference": "approach_motion.json" if suffix != "distance_reference" else "road_geometry.json"},
-                {"name": "original_camera_index", "unit": "source record",
-                 "reference": "inventory.json"}]
+    evidence = _recording_evidence(attempt, report, core_supplied)
     result = {"case_id": report["case_id"],
               "measured_values": {key: item["value"] for key, item in values.items()},
               "target_checks": checks, "setup_confirmed": False,

@@ -28,7 +28,8 @@ def _write_jsonl(path: Path, rows: list[dict]) -> None:
             stream.write(json.dumps(row, sort_keys=True, allow_nan=False) + "\n")
 
 
-def project(attempt: str | Path, case_id: str, media: dict | None = None) -> tuple[dict, list[dict], dict]:
+def project(attempt: str | Path, case_id: str, media: dict | None = None,
+            fixture_mode: bool = False) -> tuple[dict, list[dict], dict]:
     """Return the frozen channel plan, references and source-bound derived files."""
     root = Path(attempt).resolve()
     source_names = ("context.json", "trace.jsonl", "frame-map.jsonl", "receipt.json")
@@ -41,7 +42,7 @@ def project(attempt: str | Path, case_id: str, media: dict | None = None) -> tup
     trace = _rows(sources["trace.jsonl"])
     mapping = _rows(sources["frame-map.jsonl"])
     if (case_id != context.get("case_id") or case_id != receipt.get("case_id") or
-            receipt.get("assignment_id") != ASSIGNMENT_ID or receipt.get("diagnostic_fixture") or
+            receipt.get("assignment_id") != ASSIGNMENT_ID or receipt.get("diagnostic_fixture") is not fixture_mode or
             len(trace) != len(mapping) or len(trace) != 900 or receipt.get("frame_count") != 900 or
             receipt.get("fps") != 20 or before["context.json"] != receipt.get("context_sha256") or
             before["trace.jsonl"] != receipt.get("trace_sha256") or
@@ -131,7 +132,8 @@ def project(attempt: str | Path, case_id: str, media: dict | None = None) -> tup
     return planned, evidence, before
 
 
-def build_result(attempt: str | Path, case_id: str, finalized: dict) -> dict:
+def build_result(attempt: str | Path, case_id: str, finalized: dict,
+                 fixture_mode: bool = False) -> dict:
     """Build a native result from original sources and saved measurements.
 
     Source presence and sampled target matching are reported separately from
@@ -143,7 +145,9 @@ def build_result(attempt: str | Path, case_id: str, finalized: dict) -> dict:
     media = finalized.get("media")
     if not isinstance(media, dict):
         raise ValueError("saved four-view decode audit required")
-    planned, evidence, hashes = project(root, case_id, media)
+    if finalized.get("diagnostic_fixture", False) is not fixture_mode:
+        raise ValueError("saved measurement source scope differs")
+    planned, evidence, hashes = project(root, case_id, media, fixture_mode=fixture_mode)
     context = json.loads((root / "context.json").read_text())
     trace = _rows(root / "trace.jsonl")
     axis = context["road_axis"]["forward"]
@@ -176,7 +180,8 @@ def build_result(attempt: str | Path, case_id: str, finalized: dict) -> dict:
     return {"case_id": case_id, "measured_values": finalized["measured_values"],
             "target_checks": checked, "setup_confirmed": False,
             "behavior_attempted": False, "maneuver_completed": False,
-            "termination_reason": "Original capture measured; independent physical review pending",
+            "termination_reason": ("Diagnostic software fixture measured; original physical capture pending"
+                                   if fixture_mode else "Original capture measured; independent physical review pending"),
             "physical_failure_flags": {"physical_review_pending": True},
             "trace_reference": str(native_trace.relative_to(root)),
             "video_references": videos, "video_frame_map_reference": "frame-map.jsonl",

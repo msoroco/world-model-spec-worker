@@ -79,6 +79,8 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
     adapter.verify_map(survey, raw_map)
     handles = {}
     camera_bound = False
+    runtime_capture_bound = False
+    completed = False
     rows = []
     media = {name: [] for name in CAMERAS}
     first_frame = first_time = None
@@ -90,6 +92,9 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
             raise ValueError('two original crossing actors required')
         adapter.configure_cameras(handles['ego'], CAMERAS, fps=20, output=output)
         camera_bound = True
+        if hasattr(adapter, 'start_runtime_capture'):
+            adapter.start_runtime_capture(handles['ego'], case_id)
+            runtime_capture_bound = True
         with FrameMap(output/'video_frames.jsonl') as frame_map:
             for index in range(900):
                 adapter.request_controls(handles, case_id, index)
@@ -100,6 +105,8 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
                     first_frame, first_time = frame, elapsed
                 if frame != first_frame+index or not math.isclose(elapsed-first_time,index/20,abs_tol=.002):
                     raise ValueError('original Native frame/clock discontinuity')
+                if runtime_capture_bound:
+                    adapter.record_runtime_capture(frame, elapsed)
                 actors = {name: adapter.actor_snapshot(handle, frame) for name,handle in handles.items()}
                 row = {'frame': index, 'time_s': index/20,
                        'native_frame_id': frame, 'native_elapsed_seconds': elapsed,
@@ -133,12 +140,17 @@ def capture(adapter, survey_path, survey_sha256, map_source_path, case_id, outpu
                     'camera_index':{'path':index_path.name,'sha256':hashlib.sha256(index_path.read_bytes()).hexdigest()},
                     'frame_map':{'path':'video_frames.jsonl','sha256':hashlib.sha256((output/'video_frames.jsonl').read_bytes()).hexdigest()}}
         (output/'source-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+        completed = True
         return {'source_manifest':manifest,'observation':observation,
                 'physical_acceptance_claimed':False}
     finally:
         try:
-            if camera_bound:
-                adapter.close_cameras()
+            try:
+                if runtime_capture_bound:
+                    adapter.close_runtime_capture(confirmed=completed)
+            finally:
+                if camera_bound:
+                    adapter.close_cameras()
         finally:
             for name in ('other','ego'):
                 if name in handles:

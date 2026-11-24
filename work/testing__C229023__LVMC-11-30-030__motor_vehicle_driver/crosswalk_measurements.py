@@ -62,14 +62,17 @@ def _body_extents(vertices, origin, axis):
     return min(stations), max(stations)
 
 
-def measure(*, case_id, context_path, trace_path, receipt_path):
+def measure(*, case_id, context_path, trace_path, receipt_path, fixture_mode=False):
     """Reopen original bytes and report observed crosswalk approach/pass sequence."""
     if case_id not in {ASSIGNMENT_ID + "__" + suffix for suffix in CASE_SUFFIXES}:
         raise ValueError("unknown exact case ID")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if receipt.get("case_id") != case_id or receipt.get("assignment_id") != ASSIGNMENT_ID:
         raise ValueError("source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture"):
+    if fixture_mode:
+        if receipt.get("diagnostic_fixture") is not True:
+            raise ValueError("diagnostic mode requires a marked fixture receipt")
+    elif receipt.get("diagnostic_fixture") is not False:
         raise ValueError("diagnostic fixture is not original delivery evidence")
     if _sha(context_path) != receipt.get("context_sha256") or _sha(trace_path) != receipt.get("trace_sha256"):
         raise ValueError("source bytes changed")

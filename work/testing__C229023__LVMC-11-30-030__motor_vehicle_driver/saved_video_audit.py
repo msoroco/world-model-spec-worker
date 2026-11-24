@@ -79,13 +79,13 @@ def _decode(path: Path, width: int, height: int, expected_frames: int) -> dict:
 
 def audit(*, directory: str | Path, case_id: str,
           sizes: dict[str, tuple[int, int]] | None = None,
-          expected_frames: int = FRAME_COUNT) -> dict:
+          expected_frames: int = FRAME_COUNT, fixture_mode: bool = False) -> dict:
     root = Path(directory)
     if sizes is None:
         sizes = DEFAULT_SIZES
     if set(sizes) != set(CAMERAS) or expected_frames < 2:
         raise ValueError("four exact camera views and at least two frames required")
-    capture = audit_capture(directory=root, case_id=case_id)
+    capture = audit_capture(directory=root, case_id=case_id, fixture_mode=fixture_mode)
     if capture["frame_count"] != expected_frames:
         raise ValueError("saved video and original frame map counts differ")
     videos = {}

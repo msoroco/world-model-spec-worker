@@ -78,6 +78,23 @@ class Adapter:
         self.destroyed.append(actor.id)
 
 
+class RuntimeRecordingAdapter(Adapter):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.runtime_frames = []
+        self.runtime_closed = None
+
+    def start_runtime_capture(self, ego, case_id):
+        self.runtime_case = case_id
+        self.runtime_actor = ego.id
+
+    def record_runtime_capture(self, frame, elapsed):
+        self.runtime_frames.append((frame, elapsed))
+
+    def close_runtime_capture(self, confirmed):
+        self.runtime_closed = confirmed
+
+
 class NativeCaptureTests(unittest.TestCase):
     def setUp(self):
         scratch = Path(__file__).resolve().parents[3]/'.runtime-work'/'c125751-native-tests'
@@ -140,6 +157,23 @@ class NativeCaptureTests(unittest.TestCase):
             audit(self.root/'attempt', self.survey_path)
         self.assertTrue(adapter.closed)
         self.assertEqual(adapter.destroyed,[11,10])
+
+    def test_runtime_graph_capture_uses_exact_original_ticks(self):
+        adapter = RuntimeRecordingAdapter()
+        self.run_capture(adapter)
+        self.assertEqual(adapter.runtime_case,self.case)
+        self.assertEqual(adapter.runtime_actor,10)
+        self.assertEqual(len(adapter.runtime_frames),900)
+        self.assertEqual(adapter.runtime_frames[0],(1000,50.0))
+        self.assertEqual(adapter.runtime_frames[-1],(1899,94.95))
+        self.assertIs(adapter.runtime_closed,True)
+
+    def test_runtime_graph_capture_closes_failed_original(self):
+        adapter = RuntimeRecordingAdapter(missing_camera=True)
+        with self.assertRaisesRegex(ValueError,'camera missing'):
+            self.run_capture(adapter)
+        self.assertIs(adapter.runtime_closed,False)
+        self.assertEqual(len(adapter.runtime_frames),11)
 
     def test_clock_or_camera_failure_closes_owned_resources(self):
         for adapter,error in ((Adapter(drift=True),'clock discontinuity'),

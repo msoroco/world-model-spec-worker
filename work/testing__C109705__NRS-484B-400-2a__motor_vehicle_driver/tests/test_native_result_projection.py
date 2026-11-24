@@ -22,7 +22,9 @@ class NativeResultProjectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=scratch) as directory:
             attempt = Path(directory)
             for name, content in diagnostic['files'].items():
-                (attempt / name).write_text(content)
+                target = attempt / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(content)
             (attempt / 'construction.json').write_text(json.dumps(construction) + '\n')
             (attempt / 'config.json').write_text(json.dumps(config) + '\n')
             env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
@@ -36,7 +38,7 @@ class NativeResultProjectionTests(unittest.TestCase):
             self.assertTrue(result['diagnostic_fixture'])
             self.assertFalse(result['physical_acceptance_claimed'])
             self.assertEqual(len(result['recording_evidence']), 4)
-            self.assertEqual(len((attempt / 'trace.jsonl').read_text().splitlines()), 5)
+            self.assertEqual(len((attempt / 'trace.jsonl').read_text().splitlines()), 900)
             self.assertEqual(result['video_frame_map_reference'], 'video_frames.jsonl')
             (attempt / 'result.json').unlink()
             (attempt / 'analysis-report.json').unlink()

@@ -44,7 +44,7 @@ def build_result(attempt, survey_path, video_relative):
         exported=json.loads(export_receipt.read_text())
         if exported.get('original_source_manifest_sha256') != hashlib.sha256((attempt/'source-manifest.json').read_bytes()).hexdigest():
             raise ValueError('runtime export differs from original source manifest')
-        trace_reference='runtime-export/trace.jsonl'
+        trace_reference='trace.jsonl' if (attempt/'capture/evidence.jsonl').is_file() else 'runtime-export/trace.jsonl'
         video_references=['runtime-export/'+role+'.mkv' for role in
                           ('overview','approach','reference_corner','driver_reference')]
     else:

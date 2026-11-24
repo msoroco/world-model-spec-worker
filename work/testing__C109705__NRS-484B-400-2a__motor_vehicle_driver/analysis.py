@@ -97,11 +97,22 @@ def write_native_result(attempt: Path, report: dict) -> dict:
             raise ValueError('original body/camera frame join differs')
         vertices = body['ego_body_vertices_xy_m']
         center = [sum(vertex[axis] for vertex in vertices) / len(vertices) for axis in (0, 1)]
-        speed = 0.0 if previous is None else math.dist(center, previous[0]) / (body['time_s'] - previous[1])
+        if previous is None:
+            velocity = [0.0, 0.0, 0.0]
+        else:
+            dt = body['time_s'] - previous[1]
+            if dt <= 0:
+                raise ValueError('original body sample time did not advance')
+            velocity = [(center[0] - previous[0][0]) / dt,
+                        (center[1] - previous[0][1]) / dt, 0.0]
+        speed = math.hypot(*velocity[:2])
         previous = (center, body['time_s'])
         trace.append({'frame': body['frame'], 'time_s': body['time_s'],
                       'position': {'x': center[0], 'y': center[1], 'z': 0.0},
-                      'heading_deg': math.degrees(body['ego_heading_rad']), 'speed_mps': speed})
+                      'position_m': [*center, 0.0],
+                      'heading_deg': math.degrees(body['ego_heading_rad']),
+                      'speed_mps': speed, 'speed_mph': speed / .44704,
+                      'velocity_mps': velocity, 'control': {}})
         values = (vertices,
                   {'centerline_xy_m': context['approach_centerline_xy_m'],
                    'half_width_m': context['approach_half_width_m'], 'road_id': body['road_id']},

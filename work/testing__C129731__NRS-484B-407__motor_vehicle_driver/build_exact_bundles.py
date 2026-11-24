@@ -144,7 +144,7 @@ def recording_description() -> dict:
         for name, method in (
             ("ego_motion", "Observed ego heading and turn phase"),
             ("sight_rays", "Nine-point rays from both approach directions to 500 feet"),
-            ("approach_motion", "Observed approaching vehicle position and distance"),
+            ("frame_join", "Original Native frame and elapsed-time join"),
             ("original_camera_index", "Four frame-joined original RGB views"),
         )]
     return {"channels": channels,
@@ -200,10 +200,15 @@ def build() -> list[dict]:
                      "construction_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                      "candidate_risk": case["physical_risk"],
                      "measurement_contract_draft": "selected-measurement-contract.draft.json",
+                     "measurement_contract": "selected-measurement-contract.draft.json",
                      "measurement_procedure": {"entrypoint": "analysis.py"},
                      "fixture_recipe_draft": "fixtures/" + suffix + "/fixture-recipe.json",
-                     "compatibility_status": "source_shaped_measurement_positive_negative_passed_full_core_pending"})
-    manifest = {"assignment_id": ASSIGNMENT,
+                     "fixture_recipe": "work/" + ASSIGNMENT + "/fixtures/" + suffix + "/core-fixture-recipe.json",
+                     "compatibility_status": "reference_full_core_lean_video_passed_other_cases_pending"})
+    manifest = {"format": "worker-execution-manifest",
+                "runtime_manifest_sha256": hashlib.sha256(
+                    (HERE.parents[1] / "runtime/SOURCE-MANIFEST.json").read_bytes()).hexdigest(),
+                "assignment_id": ASSIGNMENT,
                 "status": "diagnostic_offline_only_original_source_and_delivery_proofs_pending",
                 "cases": rows}
     (HERE / "execution-manifest.draft.json").write_text(json.dumps(manifest, indent=2) + "\n")

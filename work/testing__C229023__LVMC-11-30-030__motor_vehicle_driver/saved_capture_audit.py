@@ -15,10 +15,10 @@ def _rows(path):
     return [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines() if line]
 
 
-def audit(*, directory: str | Path, case_id: str) -> dict:
+def audit(*, directory: str | Path, case_id: str, fixture_mode: bool = False) -> dict:
     root = Path(directory)
     receipt = json.loads((root / "receipt.json").read_text(encoding="utf-8"))
-    if receipt.get("assignment_id") != ASSIGNMENT_ID or receipt.get("case_id") != case_id or receipt.get("diagnostic_fixture") is not False:
+    if receipt.get("assignment_id") != ASSIGNMENT_ID or receipt.get("case_id") != case_id or receipt.get("diagnostic_fixture") is not fixture_mode:
         raise ValueError("original exact-case receipt required")
     if receipt.get("fps") != 20 or receipt.get("frame_count") != FRAME_COUNT:
         raise ValueError("complete original capture profile required")

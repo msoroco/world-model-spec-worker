@@ -164,6 +164,7 @@ class NativeCaptureTests(unittest.TestCase):
             manifest = json.loads((root / 'core-packet/capture/manifest.json').read_text())
             self.assertEqual(manifest['status'], 'diagnostic')
             self.assertEqual(manifest['frames'], 900)
+            self.assertEqual(manifest['observation_contract_version'], 1)
             self.assertFalse(manifest['physical_completion'])
             self.assertEqual(manifest['sources']['road.xodr'],
                              hashlib.sha256((root / 'core-packet/road.xodr').read_bytes()).hexdigest())

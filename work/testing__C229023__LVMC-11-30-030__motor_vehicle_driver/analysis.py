@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 from canonical_evidence import build_result
@@ -24,7 +25,8 @@ def measure_crosswalk_observation(finalized: dict) -> dict:
             "legal_judgment": "unresolved"}
 
 
-def run(attempt: str | Path, output: str | Path, case_id: str) -> dict:
+def run(attempt: str | Path, output: str | Path, case_id: str,
+        fixture_mode: bool = False) -> dict:
     root = Path(attempt).resolve()
     target = Path(output).resolve()
     if not root.is_dir() or target.parent != root or target.name != "analysis-report.json":
@@ -37,19 +39,20 @@ def run(attempt: str | Path, output: str | Path, case_id: str) -> dict:
         if not path.is_file() or path.is_symlink():
             raise ValueError("Missing required source: " + name)
         hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
-    finalized = finalize(directory=root, case_id=case_id)
+    finalized = finalize(directory=root, case_id=case_id, fixture_mode=fixture_mode)
     if finalized.get("case_id") != case_id:
         raise ValueError("saved finalizer returned another exact case")
     if any(hashlib.sha256((root / name).read_bytes()).hexdigest() != digest
            for name, digest in hashes.items()):
         raise ValueError("saved analysis changed original source")
-    native_result = build_result(root, case_id, finalized)
+    native_result = build_result(root, case_id, finalized, fixture_mode=fixture_mode)
     report = {"format": "worker-analysis-report", "case_id": case_id,
               "measurements": {"crosswalk_observation": {
                   "value": measure_crosswalk_observation(finalized),
                   "method": "measure_crosswalk_observation", "sources": hashes}},
               "analysis_complete": True, "source_hashes": hashes,
-              "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}
+              "physical_acceptance_claimed": False, "legal_acceptance_claimed": False,
+              "source_scope": "diagnostic_software_fixture" if fixture_mode else "original_native_capture"}
     with (root / "result.json").open("x", encoding="utf-8") as stream:
         json.dump(native_result, stream, indent=2, allow_nan=False)
         stream.write("\n")
@@ -71,7 +74,8 @@ def main() -> None:
         if not config.is_file():
             raise ValueError("exact materialized case config required")
         case_id = json.loads(config.read_text())["selected_case_id"]
-    print(json.dumps(run(args.attempt, args.output, case_id), sort_keys=True))
+    fixture_mode = os.environ.get("SCENARIO_WORKER_DIAGNOSTIC_COMPATIBILITY") == "1"
+    print(json.dumps(run(args.attempt, args.output, case_id, fixture_mode=fixture_mode), sort_keys=True))
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 from saved_finalizer import finalize
@@ -47,6 +48,14 @@ def run(attempt, output):
         raise ValueError('analysis report must be inside the saved attempt')
     if output.exists():
         raise ValueError('retain prior analysis report')
+    # Saved processing omits root source-* files. Restore the byte-identical
+    # original manifest from the acquisition archive that it copies.
+    manifest = attempt/'source-manifest.json'
+    archived = attempt/'acquisition'/'source-manifest.json'
+    if not manifest.exists() and archived.is_file():
+        shutil.copy2(archived, manifest)
+    if manifest.is_file() and archived.is_file() and checksum(manifest) != checksum(archived):
+        raise ValueError('Original source manifest differs from acquisition archive')
     names = ('crossing-survey.json', 'source-manifest.json',
              'original-trace.json', 'original-camera-index.json',
              'video_frames.jsonl', 'raw.mkv')

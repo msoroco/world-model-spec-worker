@@ -54,6 +54,7 @@ class CarlaNativeAdapter:
         self.sensors = {}
         self.queues = {}
         self.output = None
+        self.pipeline_capture = None
 
     def verify_map(self, survey, raw_map):
         if survey != self.survey:
@@ -120,6 +121,27 @@ class CarlaNativeAdapter:
         except Exception:
             self.close_cameras()
             raise
+
+    def start_runtime_capture(self, ego, case_id):
+        """Start the pinned graph/evidence recorder on the original CARLA run."""
+        if self.pipeline_capture is not None or self.output is None:
+            raise ValueError('runtime capture already started or cameras unbound')
+        from pipeline_capture import PipelineCapture
+        self.pipeline_capture = PipelineCapture(
+            self.client, ego, self.output, case_id,
+            required_observations=self.survey.get('required_capture_atoms', ()))
+
+    def record_runtime_capture(self, frame, elapsed):
+        if self.pipeline_capture is None:
+            raise ValueError('runtime capture was not started')
+        self.pipeline_capture.capture(frame, elapsed)
+
+    def close_runtime_capture(self, confirmed):
+        if self.pipeline_capture is not None:
+            try:
+                self.pipeline_capture.close(confirmed=confirmed)
+            finally:
+                self.pipeline_capture = None
 
     def request_controls(self, handles, case_id, index):
         suffix = reviewed_schedule(self.survey, case_id)

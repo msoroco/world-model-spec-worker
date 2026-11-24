@@ -74,6 +74,9 @@ def build(root, stage):
         receipt = capture(FullProfileAdapter(), survey_path,
                           hashlib.sha256(survey_path.read_bytes()).hexdigest(),
                           map_path, CASE, attempt)
+        acquisition = attempt/'acquisition'
+        acquisition.mkdir()
+        shutil.copy2(attempt/'source-manifest.json', acquisition/'source-manifest.json')
         (attempt/'acquisition-provenance.json').write_text(json.dumps({
             'provenance_kind':'synthetic_fixture', 'diagnostic_fixture':True,
             'physical_acceptance_claimed':False},indent=2)+'\n')

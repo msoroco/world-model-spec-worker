@@ -66,7 +66,7 @@ def build(suffix: str) -> dict:
                          "replay_simulation_time_s": time,
                          "ego": {"position_m": [0, 0, 0],
                                  "heading_deg": heading, "speed_mps": 0,
-                                 "speed_provenance": "diagnostic synthetic sample",
+                                 "speed_provenance": "synthetic_native_sample",
                                  "body_vertices_m": vertices},
                          "original_observations": observed,
                          "world": {"weather": {}}})
