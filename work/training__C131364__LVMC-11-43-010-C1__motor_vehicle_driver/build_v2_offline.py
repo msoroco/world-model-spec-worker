@@ -67,7 +67,7 @@ def main():
             'road_sha256': sha(road), 'track_sha256': sha(track)}
         files = [{'path': name, 'content': source.read_text()}
             for name, source in [('v2_runner.py', NATIVE / 'v2_runner.py'),
-                ('source-track.jsonl', track), ('road.xodr', road),
+                ('authored-route.jsonl', track), ('road.xodr', road),
                 ('assignment-source.json', assignment), ('case-plan.json', plan)]]
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         test = '''import hashlib
@@ -87,7 +87,7 @@ class Route(unittest.TestCase):
     def copy(self):
         temporary = tempfile.TemporaryDirectory()
         root = Path(temporary.name)
-        for name in ('config.json', 'source-track.jsonl', 'road.xodr',
+        for name in ('config.json', 'authored-route.jsonl', 'road.xodr',
                      'assignment-source.json', 'case-plan.json'):
             shutil.copy2(name, root / name)
         return temporary, root
@@ -95,7 +95,7 @@ class Route(unittest.TestCase):
     def test_changed_track_hash_rejected(self):
         temporary, root = self.copy()
         with temporary:
-            (root / 'source-track.jsonl').write_text((root / 'source-track.jsonl').read_text() + '\\n')
+            (root / 'authored-route.jsonl').write_text((root / 'authored-route.jsonl').read_text() + '\\n')
             with self.assertRaisesRegex(ValueError, 'source hash differs'):
                 check(root)
 
@@ -109,7 +109,7 @@ class Route(unittest.TestCase):
     def test_rebound_route_change_rejected(self):
         temporary, root = self.copy()
         with temporary:
-            path = root / 'source-track.jsonl'
+            path = root / 'authored-route.jsonl'
             lines = path.read_text().splitlines()
             item = json.loads(lines[300]); item['lane_id'] = -99
             lines[300] = json.dumps(item)

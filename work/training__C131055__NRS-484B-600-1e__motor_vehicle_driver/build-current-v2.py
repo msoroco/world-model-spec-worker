@@ -53,7 +53,7 @@ def build(label,index,high):
           'position_xyz_m':[x,y,.5],'velocity_xyz_mps':[speed,0,0],'road_id':road,'lane_id':-2,
           'synthetic_diagnostic':True})
         trace.append({'frame':i,'time_s':t,'position':{'x':x,'y':y,'z':.5},'position_m':[x,y,.5],
-          'heading_deg':0,'speed_mps':speed,'speed_mph':speed*2.2369362920544,
+          'heading_deg':0,'velocity_mps':[speed,0,0],'speed_mps':speed,'speed_mph':speed*2.2369362920544,
           'control':{'throttle':0,'brake':0,'hand_brake':False}})
         mapping.append({'carla_frame':i,'native_frame':i,'time_s':t,'video_frame':i})
         evidence.append({'original_frame':i,'recording_time_s':t,'ego':{'body_vertices_m':body,
@@ -76,7 +76,7 @@ def build(label,index,high):
                                             'trace.jsonl':sha(source/'trace.jsonl')}})
     spec={'files':{'capture/native/frames.jsonl':''.join(json.dumps(r,separators=(',',':'))+'\n' for r in native),
                    'capture/recorder_info.txt':'synthetic CPU diagnostic; no CARLA recorder\nCreate 10: vehicle.tesla.model3 (0)\n'},
-          'graphs':graphs,'videos':[{'path':n+'.mkv','frames':600,'width':1280,'height':720,
+          'graphs':graphs,'videos':[{'path':n+'.mkv','frames':600,'width':1920 if n=='overview' else 1280,'height':1080 if n=='overview' else 720,
                                     'fps':20,'color':'black'} for n in
                                    ('overview','approach','reference_corner','driver_reference')]}
     specp=HERE/f'current-v2-{label}-fixture-spec.json';write(specp,spec)

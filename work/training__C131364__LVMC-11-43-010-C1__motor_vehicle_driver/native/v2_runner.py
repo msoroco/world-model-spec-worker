@@ -21,7 +21,7 @@ def check(root):
     if [c['name'] for c in config['cameras']] != [
             'overview', 'approach', 'reference_corner', 'driver_reference']:
         raise ValueError('Four source cameras required')
-    track_path = root / 'source-track.jsonl'
+    track_path = root / 'authored-route.jsonl'
     road_path = root / 'road.xodr'
     if sha(track_path) != config['track_sha256'] or sha(road_path) != config['road_sha256']:
         raise ValueError('Exact roundabout source hash differs')
