@@ -1,51 +1,41 @@
 {
   "template_id": "NRS-484B-400-2a@motor_vehicle_driver",
-  "phrase": "portion of the right half of the highway nearest the centerline",
-  "note": "No fixed numerical legal cutoff is supplied. Planned offsets and measured full-body positions remain observations only.",
+  "phrase": "both intersecting highways are two-directional",
+  "note": "Both highway status and permitted opposing directions require independently sourced map and access review.",
   "status": "draft",
   "observable_requirements": {
     "observables": [
       {
-        "name": "nearest_full_body_edge_to_centerline",
-        "unit": "m",
-        "description": "original 20 Hz signed body-edge distances throughout pre-entry approach"
-      },
-      {
-        "name": "approach_right_half_geometry",
-        "unit": "m",
-        "description": "sourced centerline, highway edges and opposing permitted lane directions"
+        "name": "both_intersecting_road_directions",
+        "unit": "road and lane identities",
+        "description": "source-bound permitted opposing lane directions on both intersecting roads"
       }
     ],
-    "context_inputs": [
-      {
-        "name": "public_highway_and_intersection_review",
-        "unit": "source citation",
-        "description": "public access, non-alley status and each two-directional highway"
-      }
-    ],
-    "sweep_dimensions": [
-      {
-        "name": "approach_lateral_position",
-        "unit": "m",
-        "description": "near/far paired source-bound approaches without a legal threshold"
-      }
-    ],
+    "context_inputs": [],
+    "sweep_dimensions": [],
     "landmarks": [
       {
-        "name": "centerline",
+        "name": "intersection_and_road_network",
         "unit": "map geometry",
-        "description": "marked or imaginary equidistant source packet"
+        "description": "loaded OpenDRIVE and source-hashed surveyed road IDs",
+        "source": "original road.xodr and intersection-context.json in each retained Native attempt",
+        "verification_evidence": "acquisition.json SHA-256, loaded OpenDRIVE hash and exact road identity join; external highway review remains pending"
       }
     ],
     "recording_needs": [
       {
-        "name": "original_approach_trace_and_four_cameras",
-        "unit": "20 Hz, 45 s",
-        "description": "independently sealed original observation and synchronized media"
+        "name": "centerline_and_right_half",
+        "unit": "structured record",
+        "description": "exact-case source-sealed original measurement; legal interpretation remains unresolved"
+      },
+      {
+        "name": "camera_sources",
+        "unit": "structured record",
+        "description": "exact-case source-sealed original measurement; legal interpretation remains unresolved"
       }
     ],
     "limitations": [
-      "Observed position does not itself decide the legal meaning of nearest portion."
+      "A synthetic map survey does not establish public-highway legal status."
     ]
   }
 }

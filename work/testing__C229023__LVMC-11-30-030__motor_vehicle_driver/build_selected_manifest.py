@@ -104,10 +104,64 @@ def build(seal_offline: bool = False) -> dict:
             "offline": offline,
             "compatibility": _compatibility(suffix, case_id, "primary", row["construction_sha256"]),
             "negative": {"log": str(Path("cases") / suffix / "primary-compatibility-negative.log")},
+            "acquisition": {
+                "ego_body_history": {"entrypoint": "native_crosswalk_capture.py",
+                                     "method": "NativeCrosswalkRecorder.append",
+                                     "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"},
+                "lead_body_history": {"entrypoint": "native_crosswalk_capture.py",
+                                      "method": "NativeCrosswalkRecorder.append",
+                                      "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"},
+                "original_actor_body_sequence": {"entrypoint": "native_crosswalk_capture.py",
+                                                 "method": "NativeCrosswalkRecorder.append",
+                                                 "evidence": "same-tick ego, lead and pedestrian actor identities"},
+                "pedestrian_history": {"entrypoint": "native_crosswalk_capture.py",
+                                       "method": "NativeCrosswalkRecorder.append",
+                                       "evidence": "same-tick pedestrian center and actor source"},
+                "four_camera_frame_map": {"entrypoint": "native_crosswalk_media.py",
+                                          "method": "NativeCrosswalkCameras.append",
+                                          "evidence": "four FFV1 frame records joined to world frame"},
+                "complete_native_source_and_pixels": {"entrypoint": "native_crosswalk_media.py",
+                                                      "method": "NativeCrosswalkCameras.close",
+                                                      "evidence": "four completed FFV1 files and sealed camera frame map"},
+            },
             "missing_proofs": [
                 "independent selected delivery acceptance and canonical local dispatch",
                 "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation",
             ],
+        }
+        physical_receipt = Path("cases") / suffix / "physical-preparation.json"
+        physical_proof = json.loads((HERE / physical_receipt).read_text())
+        if (physical_proof.get("case_id") != case_id or
+                physical_proof.get("construction_sha256") != row["construction_sha256"] or
+                {item.get("kind") for item in physical_proof.get("fixtures", [])} !=
+                {"complete_motion", "incomplete_motion", "missing_evidence"}):
+            raise ValueError("selected physical preparation proof differs: " + suffix)
+        selected["physical_preparation"] = {"receipt": str(physical_receipt),
+                                            "sha256": _sha(HERE / physical_receipt)}
+        attempt = ("unmarked-pass-v4" if suffix == "unmarked_pass" else "compat-" + suffix)
+        command = ("PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/" + ASSIGNMENT_ID +
+                   "/delivery_audit.py --case " + case_id +
+                   " --attempt .runtime-work/lead-nov24-converter/" + attempt + " --diagnostic-test")
+        positive_log = Path("cases") / suffix / "delivery-positive.log"
+        negative_log = Path("cases") / suffix / "delivery-negative.log"
+        positive = json.loads((HERE / positive_log).read_text())
+        if (positive.get("case_id") != case_id or positive.get("status") != "cpu_source_audit_passed" or
+                positive.get("diagnostic_audit_test_passed") is not True or
+                len(positive.get("videos_fully_decoded", {})) != 4 or
+                any(count != 900 for count in positive["videos_fully_decoded"].values()) or
+                "missing original context source" not in (HERE / negative_log).read_text()):
+            raise ValueError("selected delivery auditor CPU proof differs: " + suffix)
+        selected["delivery_acceptance"] = {
+            "case_id": case_id, "sets": ["full-test"],
+            "checks": ["native_source", "all_participants", "time_join", "full_video_decode",
+                       "actual_pixels", "physical_completion"],
+            "script": "delivery_audit.py", "script_sha256": _sha(HERE / "delivery_audit.py"),
+            "command": command, "test_exit_code": 0,
+            "test_log": str(positive_log), "test_log_sha256": _sha(HERE / positive_log),
+            "negative_command": command + " --negative", "negative_exit_code": 1,
+            "negative_expected_error": "missing original context source",
+            "negative_log": str(negative_log), "negative_log_sha256": _sha(HERE / negative_log),
+            "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified",
         }
         recipe = HERE / ("fixture-recipe-" + suffix + ".json")
         if not recipe.is_file():

@@ -34,6 +34,20 @@ def build() -> None:
         entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON",
                                    "host_env_var": "CARLA_HOST",
                                    "port_env_var": "CARLA_PORT"}
+        entry["acquisition"].update({
+            "road_geometry": {
+                "entrypoint": "native_sight_capture.py", "method": "capture",
+                "evidence": "Original road_geometry.json and derived channels/road_geometry.json",
+            },
+            "approaching_vehicle_routes": {
+                "entrypoint": "native_sight_capture.py", "method": "capture",
+                "evidence": "Original approach_motion.json and derived channels/approaching_vehicle_routes.json",
+            },
+            "frame_map": {
+                "entrypoint": "native_sight_capture.py", "method": "capture",
+                "evidence": "Original 900-frame frame_map.json and derived channels/frame_map.json",
+            },
+        })
         physical = entry.get("physical_preparation", {})
         if sha(HERE / physical["receipt"]) != physical["sha256"]:
             raise ValueError("Physical preparation changed: " + suffix)
@@ -47,7 +61,7 @@ def build() -> None:
                 raise ValueError("Fallback compatibility proof missing: " + suffix)
     (HERE / "execution-manifest.json").write_text(
         json.dumps(manifest, indent=2) + "\n")
-    print("Canonical four-case manifest", sha(HERE / "execution-manifest.json"))
+    print("Canonical three-case manifest", sha(HERE / "execution-manifest.json"))
 
 
 if __name__ == "__main__":

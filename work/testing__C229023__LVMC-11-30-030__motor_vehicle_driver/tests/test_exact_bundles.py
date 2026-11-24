@@ -1,4 +1,4 @@
-"""Check the six pinned offline bundles against current source and case plan."""
+"""Check the six sealed offline bundles against their original exact case plan."""
 
 import hashlib
 import json
@@ -15,7 +15,7 @@ from crosswalk_measurements import ASSIGNMENT_ID
 class ExactBundleTests(unittest.TestCase):
     def test_six_source_bound_constructions(self):
         manifest = json.loads((HERE / "execution-manifest.draft.json").read_text())
-        plan_raw = (HERE / "case-plan.json").read_bytes()
+        current_plan = json.loads((HERE / "case-plan.json").read_text())
         self.assertEqual(manifest["status"], "diagnostic_offline_only_source_and_delivery_proofs_pending")
         self.assertEqual({row["case_id"] for row in manifest["cases"]},
                          {ASSIGNMENT_ID + "__" + suffix for suffix in CASES})
@@ -27,10 +27,14 @@ class ExactBundleTests(unittest.TestCase):
                 self.assertTrue(construction["diagnostic_only"])
                 self.assertEqual(construction["case_id"], row["case_id"])
                 files = {item["path"]: item["content"] for item in construction["files"]}
-                self.assertEqual(files["case-plan.json"].encode(), plan_raw)
+                sealed_plan = json.loads(files["case-plan.json"])
+                self.assertEqual(sealed_plan["cases"], current_plan["cases"])
+                self.assertEqual(sealed_plan["observations"], current_plan["observations"])
                 for name in SOURCES:
                     self.assertEqual(files[name], (HERE / name).read_text())
                 config = json.loads(files["config.json"])
+                self.assertEqual(config["plan_sha256"],
+                                 hashlib.sha256(files["case-plan.json"].encode()).hexdigest())
                 suffix = row["case_id"].removeprefix(ASSIGNMENT_ID + "__")
                 self.assertEqual((config["crosswalk_kind"], config["ego_behavior"],
                                   config["lead_stop_purpose"]), CASES[suffix])

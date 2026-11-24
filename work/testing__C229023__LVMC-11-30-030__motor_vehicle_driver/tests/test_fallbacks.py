@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 from pathlib import Path
 import sys
@@ -20,7 +21,12 @@ class ExactFallbackTests(unittest.TestCase):
             candidate = entry["candidates"][0]
             self.assertEqual(candidate["offline"]["exit_code"], 0)
             self.assertEqual(candidate["offline"]["construction_sha256"], candidate["construction_sha256"])
-            self.assertEqual(candidate["compatibility"]["status"], "pending source-shaped positive and missing-source negative")
+            compatibility = candidate["compatibility"]
+            receipt = HERE / compatibility["receipt"]
+            self.assertEqual(compatibility["exit_code"], 0)
+            self.assertEqual(hashlib.sha256(receipt.read_bytes()).hexdigest(), compatibility["sha256"])
+            self.assertTrue(json.loads(receipt.read_text())["passed"])
+            self.assertTrue((HERE / compatibility["negative_log"]).is_file())
 
 
 if __name__ == "__main__":

@@ -11,9 +11,38 @@
       "construction_sha256": "1a14e031c4baa04db93a9d6b5de7990d13b2e6ae9a0d9c0500f04919dc56c80a",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Original map lane orientation and centerline geometry may not realize target body offset until surveyed"
+        "reason": "A surveyed map may expose a high-speed left-turn overshoot or insufficient pre-entry body sampling; retain a slower, earlier approach alternative for the same exact case."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/near_centerline/fallback1-construction.json",
+          "construction_sha256": "e31bf03404f74a56d70196de6ee91bab741057095faba3a65f70aeb540e20353",
+          "trigger": {
+            "source": "original Native approach-history.jsonl and physical_checks.maneuver",
+            "metric": "pre-entry body coverage or ordered route completion",
+            "failure_condition": "missing pre-entry body samples or maneuver status not_met after the primary candidate"
+          },
+          "changed_knobs": [
+            "spawn along oriented approach centerline from 8 m to 6 m",
+            "waypoint controller target speed from 7.0 m/s to 5.0 m/s"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-offline-near_centerline",
+            "exit_code": 0,
+            "construction_sha256": "e31bf03404f74a56d70196de6ee91bab741057095faba3a65f70aeb540e20353",
+            "log": "cpu-fallback-offline-near_centerline.log",
+            "log_sha256": "3a8f58d36eb09712e689fb1f2cd1c2a8fa9f1c1eba863eb3250cb36710ca5260"
+          },
+          "compatibility": {
+            "receipt": "cases/near_centerline/fallback1/compatibility.json",
+            "sha256": "eed55ec7d0ef2526636dc080eb82070cb5da81507d064f2b47c45e03597e2498",
+            "log": "cases/near_centerline/fallback1/analysis-proof.log",
+            "negative_log": "cases/near_centerline/fallback1/negative-analysis.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-compat-near_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "preparation_status": "offline_only_partial",
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline --output .runtime-work/c109705-current-runtime/offline-near_centerline",
@@ -73,6 +102,10 @@
         "test_exit_code": 0,
         "test_log": "cpu-saved-config-near-positive.log",
         "test_log_sha256": "5351afb12a10e2c1aa071d7abd6bd8620ec2c4f37e5e54bd34bb6319cd488648"
+      },
+      "physical_preparation": {
+        "receipt": "cases/near_centerline/physical/receipt.json",
+        "sha256": "e02d20766ee0698364d76a04788f6c674d63e07325505165f9ac0b00a986cccd"
       }
     },
     {
@@ -82,9 +115,38 @@
       "construction_sha256": "25d66537ab5fa0b574d9648a1c2e8eebc689734013d31ce88e4b061d64f50c20",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Original map lane orientation and centerline geometry may not realize target body offset until surveyed"
+        "reason": "A surveyed map may expose a high-speed left-turn overshoot or insufficient pre-entry body sampling; retain a slower, earlier approach alternative for the same exact case."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/farther_from_centerline/fallback1-construction.json",
+          "construction_sha256": "d5c1d386f8ebf76e2f0960803a063cbc4ad41299059b92416bcda8cc62c2e431",
+          "trigger": {
+            "source": "original Native approach-history.jsonl and physical_checks.maneuver",
+            "metric": "pre-entry body coverage or ordered route completion",
+            "failure_condition": "missing pre-entry body samples or maneuver status not_met after the primary candidate"
+          },
+          "changed_knobs": [
+            "spawn along oriented approach centerline from 8 m to 6 m",
+            "waypoint controller target speed from 7.0 m/s to 5.0 m/s"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-offline-farther_from_centerline",
+            "exit_code": 0,
+            "construction_sha256": "d5c1d386f8ebf76e2f0960803a063cbc4ad41299059b92416bcda8cc62c2e431",
+            "log": "cpu-fallback-offline-farther_from_centerline.log",
+            "log_sha256": "8490b6cd2a68e133cd422c82e91972f08addfc6714206c7f91b0974d2bd60bbd"
+          },
+          "compatibility": {
+            "receipt": "cases/farther_from_centerline/fallback1/compatibility.json",
+            "sha256": "e6084d2a59f47efdc43fb821ddeae4091bf4b41634126ed8285023b3cc2c4272",
+            "log": "cases/farther_from_centerline/fallback1/analysis-proof.log",
+            "negative_log": "cases/farther_from_centerline/fallback1/negative-analysis.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-compat-farther_from_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "preparation_status": "offline_only_partial",
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline --output .runtime-work/c109705-current-runtime/offline-farther_from_centerline",
@@ -144,6 +206,10 @@
         "test_exit_code": 0,
         "test_log": "cpu-saved-farther_from_centerline-v1.log",
         "test_log_sha256": "9bfb5262b8594f73e856932841723628c403076d872a39f76e236cae015d2edb"
+      },
+      "physical_preparation": {
+        "receipt": "cases/farther_from_centerline/physical/receipt.json",
+        "sha256": "7e8394e07309dface1ea4d582541dea05f16384b8682a2812f01ab20fa95de65"
       }
     },
     {
@@ -153,9 +219,38 @@
       "construction_sha256": "c8de9a013a0b6aa27244a4f7ba9404762d4a93bc5ede3dfc0420cb88ad42c090",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Original map lane orientation and centerline geometry may not realize target body offset until surveyed"
+        "reason": "A surveyed map may expose a high-speed left-turn overshoot or insufficient pre-entry body sampling; retain a slower, earlier approach alternative for the same exact case."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/imaginary_near_centerline/fallback1-construction.json",
+          "construction_sha256": "58e8067ec2801c5c0d1bcd52e11a41558f924b92f4e51a405adc2c862c435391",
+          "trigger": {
+            "source": "original Native approach-history.jsonl and physical_checks.maneuver",
+            "metric": "pre-entry body coverage or ordered route completion",
+            "failure_condition": "missing pre-entry body samples or maneuver status not_met after the primary candidate"
+          },
+          "changed_knobs": [
+            "spawn along oriented approach centerline from 8 m to 6 m",
+            "waypoint controller target speed from 7.0 m/s to 5.0 m/s"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-offline-imaginary_near_centerline",
+            "exit_code": 0,
+            "construction_sha256": "58e8067ec2801c5c0d1bcd52e11a41558f924b92f4e51a405adc2c862c435391",
+            "log": "cpu-fallback-offline-imaginary_near_centerline.log",
+            "log_sha256": "ca9fe39c9615e296a7e63693ad1b5fa5bb26b42a23ad997b1ed68eb0ea24380b"
+          },
+          "compatibility": {
+            "receipt": "cases/imaginary_near_centerline/fallback1/compatibility.json",
+            "sha256": "76f5e62b1155e250fd04ad555095ae95206228e29bd7c77189d9617683849d52",
+            "log": "cases/imaginary_near_centerline/fallback1/analysis-proof.log",
+            "negative_log": "cases/imaginary_near_centerline/fallback1/negative-analysis.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-compat-imaginary_near_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "preparation_status": "offline_only_partial",
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline --output .runtime-work/c109705-current-runtime/offline-imaginary_near_centerline",
@@ -215,6 +310,10 @@
         "test_exit_code": 0,
         "test_log": "cpu-saved-imaginary_near_centerline-v1.log",
         "test_log_sha256": "6ce16578ce3782112a59d05a05cc4cbad2009f2403a3d47eece5bff2783ad106"
+      },
+      "physical_preparation": {
+        "receipt": "cases/imaginary_near_centerline/physical/receipt.json",
+        "sha256": "e5dfaae0da985ef16c8111e51d5383c8af61edd2340af2fddb74230e64ed5bc7"
       }
     },
     {
@@ -224,9 +323,38 @@
       "construction_sha256": "953ccd8d8e03c733e14c0b34396ca0d683f9518ebdc6d8afac20f956958a891c",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Original map lane orientation and centerline geometry may not realize target body offset until surveyed"
+        "reason": "A surveyed map may expose a high-speed left-turn overshoot or insufficient pre-entry body sampling; retain a slower, earlier approach alternative for the same exact case."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/imaginary_farther_from_centerline/fallback1-construction.json",
+          "construction_sha256": "65b9b786fdce2d55fb02d1a48b40a1c1949991dc3b28fbbba413ec23b3d9aeac",
+          "trigger": {
+            "source": "original Native approach-history.jsonl and physical_checks.maneuver",
+            "metric": "pre-entry body coverage or ordered route completion",
+            "failure_condition": "missing pre-entry body samples or maneuver status not_met after the primary candidate"
+          },
+          "changed_knobs": [
+            "spawn along oriented approach centerline from 8 m to 6 m",
+            "waypoint controller target speed from 7.0 m/s to 5.0 m/s"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-offline-imaginary_farther_from_centerline",
+            "exit_code": 0,
+            "construction_sha256": "65b9b786fdce2d55fb02d1a48b40a1c1949991dc3b28fbbba413ec23b3d9aeac",
+            "log": "cpu-fallback-offline-imaginary_farther_from_centerline.log",
+            "log_sha256": "ff3ea32787582d49bce1fa9637422ee8d0a7a03c895ae365dcb21b8dca990e70"
+          },
+          "compatibility": {
+            "receipt": "cases/imaginary_farther_from_centerline/fallback1/compatibility.json",
+            "sha256": "cb6e9081d0311580d8cedd5cca4b7f8baf9a4eb05fbd3c46cf46b1fa19076436",
+            "log": "cases/imaginary_farther_from_centerline/fallback1/analysis-proof.log",
+            "negative_log": "cases/imaginary_farther_from_centerline/fallback1/negative-analysis.log",
+            "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --candidate fallback1 --output .runtime-work/c109705-current-runtime/fallback-compat-imaginary_farther_from_centerline --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "preparation_status": "offline_only_partial",
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/execution-manifest.json --case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline --output .runtime-work/c109705-current-runtime/offline-imaginary_farther_from_centerline",
@@ -286,6 +414,10 @@
         "test_exit_code": 0,
         "test_log": "cpu-saved-imaginary_farther_from_centerline-v1.log",
         "test_log_sha256": "1a90a9408f6ec6233a413421f09350c5ad3ccedb96ea1caae6f36903e12ab1f0"
+      },
+      "physical_preparation": {
+        "receipt": "cases/imaginary_farther_from_centerline/physical/receipt.json",
+        "sha256": "fbd3e08e5f41cfe8de4d261f6c6c68ca71ceeedbdb63e0fbd43aa707c2581cca"
       }
     }
   ]

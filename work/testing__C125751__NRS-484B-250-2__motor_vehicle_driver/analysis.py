@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import shutil
@@ -41,6 +42,28 @@ def measure_crossing_context(survey):
             'governing_device': survey['governing_device']}
 
 
+def materialize_diagnostic_camera_pixels(attempt):
+    """Decode explicit synthetic PNG bytes only for the CPU fixture."""
+    specification = attempt/'diagnostic-camera-png.json'
+    if not specification.is_file():
+        return
+    provenance = json.loads(source(attempt, 'acquisition-provenance.json').read_text())
+    if provenance.get('provenance_kind') != 'synthetic_fixture' or not provenance.get('diagnostic_fixture'):
+        raise ValueError('Diagnostic camera bytes require synthetic fixture provenance')
+    payload = json.loads(specification.read_text())
+    if payload.get('format') != 'synthetic-camera-png-v1' or set(payload.get('channels', {})) != {'front', 'rear', 'left', 'right'}:
+        raise ValueError('Invalid diagnostic camera pixel specification')
+    for name, item in payload['channels'].items():
+        data = base64.b64decode(item['png_base64'], validate=True)
+        if hashlib.sha256(data).hexdigest() != item['sha256']:
+            raise ValueError('Diagnostic camera pixel digest differs')
+        target = attempt/'media'/f'{name}.png'
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            raise ValueError('Diagnostic camera output shadows source')
+        target.write_bytes(data)
+
+
 def run(attempt, output):
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
@@ -60,6 +83,7 @@ def run(attempt, output):
              'original-trace.json', 'original-camera-index.json',
              'video_frames.jsonl', 'raw.mkv')
     evidence = {name: checksum(source(attempt, name)) for name in names}
+    materialize_diagnostic_camera_pixels(attempt)
     result_path = finalize(attempt, attempt/'crossing-survey.json', 'raw.mkv')
     result = json.loads(result_path.read_text())
     survey = json.loads((attempt/'crossing-survey.json').read_text())

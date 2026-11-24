@@ -1,6 +1,7 @@
 """CPU check that selected delivery binds every exact crosswalk construction."""
 
 import json
+import hashlib
 from pathlib import Path
 import sys
 import unittest
@@ -24,7 +25,13 @@ class SelectedManifestTests(unittest.TestCase):
             self.assertTrue((HERE / row["construction"]).is_file())
             self.assertTrue((HERE / row["measurement_contract"]).is_file())
             self.assertEqual(row["offline"]["exit_code"], 0)
-            self.assertEqual(len(row["missing_proofs"]), 4)
+            self.assertEqual(len(row["missing_proofs"]), 2)
+            compatibility = row["compatibility"]
+            receipt = HERE / compatibility["receipt"]
+            self.assertEqual(compatibility["exit_code"], 0)
+            self.assertEqual(hashlib.sha256(receipt.read_bytes()).hexdigest(), compatibility["sha256"])
+            self.assertTrue(json.loads(receipt.read_text())["passed"])
+            self.assertTrue((HERE / row["negative"]["log"]).is_file())
         self.assertEqual(json.loads((HERE / "execution-manifest.json").read_text()), manifest)
 
 

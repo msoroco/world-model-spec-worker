@@ -106,5 +106,29 @@
     "20 Hz 45 s four-camera plan",
     "source-bound surveyed map required before Native capture"
   ],
-  "source_kind": "native_map_survey_required"
+  "source_kind": "native_map_survey_required",
+  "termination_rules": [
+    {
+      "condition": "900 synchronized 20 Hz frames collected",
+      "action": "brake ego, close camera encoders and release Native owner before saved processing"
+    },
+    {
+      "condition": "missing map survey, camera callback, graph, ego body or frame identity",
+      "action": "abort incomplete attempt without claiming completion"
+    }
+  ],
+  "mechanisms": [
+    {
+      "name": "survey-bound right-half approach",
+      "implementation": "construction.py build and native_map.py verify_live_map"
+    },
+    {
+      "name": "source-hashed original capture",
+      "implementation": "native_capture.py capture"
+    },
+    {
+      "name": "saved original-body and camera audit",
+      "implementation": "analysis.py and saved_delivery.py"
+    }
+  ]
 }

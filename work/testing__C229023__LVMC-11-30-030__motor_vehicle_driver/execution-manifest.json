@@ -75,10 +75,72 @@
       "negative": {
         "log": "cases/unmarked_wait/primary-compatibility-negative.log"
       },
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"
+        },
+        "lead_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"
+        },
+        "original_actor_body_sequence": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick ego, lead and pedestrian actor identities"
+        },
+        "pedestrian_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick pedestrian center and actor source"
+        },
+        "four_camera_frame_map": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.append",
+          "evidence": "four FFV1 frame records joined to world frame"
+        },
+        "complete_native_source_and_pixels": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.close",
+          "evidence": "four completed FFV1 files and sealed camera frame map"
+        }
+      },
       "missing_proofs": [
         "independent selected delivery acceptance and canonical local dispatch",
         "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation"
       ],
+      "physical_preparation": {
+        "receipt": "cases/unmarked_wait/physical-preparation.json",
+        "sha256": "fb5409521c953b34f6c8238901bce4e81bcf0bfb15130b2da1a7d8e8fb35e71a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "774afddb6d3e0ce9a961027b4c039a462c38ab9506c0b2a08e1f6412236e637b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --attempt .runtime-work/lead-nov24-converter/compat-unmarked_wait --diagnostic-test",
+        "test_exit_code": 0,
+        "test_log": "cases/unmarked_wait/delivery-positive.log",
+        "test_log_sha256": "7929845a5e9d036052efcdd417dc810c54b8f50bb1db6adff8031858a08d531d",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --attempt .runtime-work/lead-nov24-converter/compat-unmarked_wait --diagnostic-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing original context source",
+        "negative_log": "cases/unmarked_wait/delivery-negative.log",
+        "negative_log_sha256": "b812fa791d94de1d1bde9d2f7fb9c7badfc8dd7a56ddb8460f1999aa05fdc0c8",
+        "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified"
+      },
       "fixture_recipe": "work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/fixture-recipe-unmarked_wait.json",
       "fixture_recipe_sha256": "bf7f7f5e78c81514899705760147564ae72c9b29ffb5082530206ade124d1f27"
     },
@@ -153,10 +215,72 @@
       "negative": {
         "log": "cases/unmarked_pass/primary-compatibility-negative.log"
       },
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"
+        },
+        "lead_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"
+        },
+        "original_actor_body_sequence": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick ego, lead and pedestrian actor identities"
+        },
+        "pedestrian_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick pedestrian center and actor source"
+        },
+        "four_camera_frame_map": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.append",
+          "evidence": "four FFV1 frame records joined to world frame"
+        },
+        "complete_native_source_and_pixels": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.close",
+          "evidence": "four completed FFV1 files and sealed camera frame map"
+        }
+      },
       "missing_proofs": [
         "independent selected delivery acceptance and canonical local dispatch",
         "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation"
       ],
+      "physical_preparation": {
+        "receipt": "cases/unmarked_pass/physical-preparation.json",
+        "sha256": "d2b9e6a2658da281e7b365227b1da57d5bf7b94cc3cd1c82b33ec4c2d2c4cb44"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "774afddb6d3e0ce9a961027b4c039a462c38ab9506c0b2a08e1f6412236e637b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --attempt .runtime-work/lead-nov24-converter/unmarked-pass-v4 --diagnostic-test",
+        "test_exit_code": 0,
+        "test_log": "cases/unmarked_pass/delivery-positive.log",
+        "test_log_sha256": "d55e555bd61677587802bf54c7d678e6dc4c2c9a66b6f12433cc4dad4aa8f5b4",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_pass --attempt .runtime-work/lead-nov24-converter/unmarked-pass-v4 --diagnostic-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing original context source",
+        "negative_log": "cases/unmarked_pass/delivery-negative.log",
+        "negative_log_sha256": "b812fa791d94de1d1bde9d2f7fb9c7badfc8dd7a56ddb8460f1999aa05fdc0c8",
+        "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified"
+      },
       "fixture_recipe": "work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/fixture-recipe-unmarked_pass.json",
       "fixture_recipe_sha256": "6e4d86714c33fc1235f855e234ef13ac40c5270e58711bb954f32fb713a6a4c5"
     },
@@ -231,10 +355,72 @@
       "negative": {
         "log": "cases/marked_wait/primary-compatibility-negative.log"
       },
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"
+        },
+        "lead_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"
+        },
+        "original_actor_body_sequence": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick ego, lead and pedestrian actor identities"
+        },
+        "pedestrian_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick pedestrian center and actor source"
+        },
+        "four_camera_frame_map": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.append",
+          "evidence": "four FFV1 frame records joined to world frame"
+        },
+        "complete_native_source_and_pixels": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.close",
+          "evidence": "four completed FFV1 files and sealed camera frame map"
+        }
+      },
       "missing_proofs": [
         "independent selected delivery acceptance and canonical local dispatch",
         "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation"
       ],
+      "physical_preparation": {
+        "receipt": "cases/marked_wait/physical-preparation.json",
+        "sha256": "1770337a652c36c2a819d1465931f825192e86b1995a8f11165c44b315b07e54"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "774afddb6d3e0ce9a961027b4c039a462c38ab9506c0b2a08e1f6412236e637b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --attempt .runtime-work/lead-nov24-converter/compat-marked_wait --diagnostic-test",
+        "test_exit_code": 0,
+        "test_log": "cases/marked_wait/delivery-positive.log",
+        "test_log_sha256": "f076b3f321bf13091b2ef8aaedadf29a871a7838374907f9877b1c81ac5d4342",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_wait --attempt .runtime-work/lead-nov24-converter/compat-marked_wait --diagnostic-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing original context source",
+        "negative_log": "cases/marked_wait/delivery-negative.log",
+        "negative_log_sha256": "b812fa791d94de1d1bde9d2f7fb9c7badfc8dd7a56ddb8460f1999aa05fdc0c8",
+        "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified"
+      },
       "fixture_recipe": "work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/fixture-recipe-marked_wait.json",
       "fixture_recipe_sha256": "b012ea60326c028798544ff94731ad5ef57c56ad45e03b0c68f31bb8ed418d5f"
     },
@@ -309,10 +495,72 @@
       "negative": {
         "log": "cases/marked_pass/primary-compatibility-negative.log"
       },
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"
+        },
+        "lead_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"
+        },
+        "original_actor_body_sequence": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick ego, lead and pedestrian actor identities"
+        },
+        "pedestrian_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick pedestrian center and actor source"
+        },
+        "four_camera_frame_map": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.append",
+          "evidence": "four FFV1 frame records joined to world frame"
+        },
+        "complete_native_source_and_pixels": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.close",
+          "evidence": "four completed FFV1 files and sealed camera frame map"
+        }
+      },
       "missing_proofs": [
         "independent selected delivery acceptance and canonical local dispatch",
         "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation"
       ],
+      "physical_preparation": {
+        "receipt": "cases/marked_pass/physical-preparation.json",
+        "sha256": "ede38bd348558125a957da9525a7b26019a9b55c4f7ccda54fb249293b8b0a85"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "774afddb6d3e0ce9a961027b4c039a462c38ab9506c0b2a08e1f6412236e637b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --attempt .runtime-work/lead-nov24-converter/compat-marked_pass --diagnostic-test",
+        "test_exit_code": 0,
+        "test_log": "cases/marked_pass/delivery-positive.log",
+        "test_log_sha256": "504295a516546d3ea0baf99cc0f3cead97a8062c00eb1132bbda02f63599c7b8",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__marked_pass --attempt .runtime-work/lead-nov24-converter/compat-marked_pass --diagnostic-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing original context source",
+        "negative_log": "cases/marked_pass/delivery-negative.log",
+        "negative_log_sha256": "b812fa791d94de1d1bde9d2f7fb9c7badfc8dd7a56ddb8460f1999aa05fdc0c8",
+        "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified"
+      },
       "fixture_recipe": "work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/fixture-recipe-marked_pass.json",
       "fixture_recipe_sha256": "028b885a4e9d608ae945aa068e560013bc85041bb3592d47a98685a231815ed4"
     },
@@ -387,10 +635,72 @@
       "negative": {
         "log": "cases/unmarked_other_stop_wait/primary-compatibility-negative.log"
       },
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"
+        },
+        "lead_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"
+        },
+        "original_actor_body_sequence": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick ego, lead and pedestrian actor identities"
+        },
+        "pedestrian_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick pedestrian center and actor source"
+        },
+        "four_camera_frame_map": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.append",
+          "evidence": "four FFV1 frame records joined to world frame"
+        },
+        "complete_native_source_and_pixels": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.close",
+          "evidence": "four completed FFV1 files and sealed camera frame map"
+        }
+      },
       "missing_proofs": [
         "independent selected delivery acceptance and canonical local dispatch",
         "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation"
       ],
+      "physical_preparation": {
+        "receipt": "cases/unmarked_other_stop_wait/physical-preparation.json",
+        "sha256": "95c4d661e9a0e95e7716e34165e86592ae8a34e332f1a68173490ac4c8b19230"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "774afddb6d3e0ce9a961027b4c039a462c38ab9506c0b2a08e1f6412236e637b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --attempt .runtime-work/lead-nov24-converter/compat-unmarked_other_stop_wait --diagnostic-test",
+        "test_exit_code": 0,
+        "test_log": "cases/unmarked_other_stop_wait/delivery-positive.log",
+        "test_log_sha256": "4d1951dd6c3d7e036ee3dc88c90c6a56fe7babf65b97db84f0c7d2c7d81bcfe0",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_wait --attempt .runtime-work/lead-nov24-converter/compat-unmarked_other_stop_wait --diagnostic-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing original context source",
+        "negative_log": "cases/unmarked_other_stop_wait/delivery-negative.log",
+        "negative_log_sha256": "b812fa791d94de1d1bde9d2f7fb9c7badfc8dd7a56ddb8460f1999aa05fdc0c8",
+        "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified"
+      },
       "fixture_recipe": "work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/fixture-recipe-unmarked_other_stop_wait.json",
       "fixture_recipe_sha256": "1b456a7a5c5982dce24760d691c2270e445d8c7a7a5b18b046f3780f1bdb5f6c"
     },
@@ -465,10 +775,72 @@
       "negative": {
         "log": "cases/unmarked_other_stop_pass/primary-compatibility-negative.log"
       },
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz ego center, vertices, speed, actor source and frame identity"
+        },
+        "lead_body_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "sealed 20 Hz lead center, vertices, speed, actor source and frame identity"
+        },
+        "original_actor_body_sequence": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick ego, lead and pedestrian actor identities"
+        },
+        "pedestrian_history": {
+          "entrypoint": "native_crosswalk_capture.py",
+          "method": "NativeCrosswalkRecorder.append",
+          "evidence": "same-tick pedestrian center and actor source"
+        },
+        "four_camera_frame_map": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.append",
+          "evidence": "four FFV1 frame records joined to world frame"
+        },
+        "complete_native_source_and_pixels": {
+          "entrypoint": "native_crosswalk_media.py",
+          "method": "NativeCrosswalkCameras.close",
+          "evidence": "four completed FFV1 files and sealed camera frame map"
+        }
+      },
       "missing_proofs": [
         "independent selected delivery acceptance and canonical local dispatch",
         "reviewed original road intersection, stopped-purpose and Native camera source packets after CPU preparation"
       ],
+      "physical_preparation": {
+        "receipt": "cases/unmarked_other_stop_pass/physical-preparation.json",
+        "sha256": "0a835136ef8a2a0c23f45563ed8d4f32ec4f15d6599461d96d9c56d84cc64ce3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "774afddb6d3e0ce9a961027b4c039a462c38ab9506c0b2a08e1f6412236e637b",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --attempt .runtime-work/lead-nov24-converter/compat-unmarked_other_stop_pass --diagnostic-test",
+        "test_exit_code": 0,
+        "test_log": "cases/unmarked_other_stop_pass/delivery-positive.log",
+        "test_log_sha256": "8b628e2f1fcc38aed7e25952e57a77f1376c3a21398bb5c71160d3f9842cb425",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/delivery_audit.py --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_other_stop_pass --attempt .runtime-work/lead-nov24-converter/compat-unmarked_other_stop_pass --diagnostic-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing original context source",
+        "negative_log": "cases/unmarked_other_stop_pass/delivery-negative.log",
+        "negative_log_sha256": "b812fa791d94de1d1bde9d2f7fb9c7badfc8dd7a56ddb8460f1999aa05fdc0c8",
+        "scope": "diagnostic CPU source and four-video audit; physical/legal acceptance unverified"
+      },
       "fixture_recipe": "work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/fixture-recipe-unmarked_other_stop_pass.json",
       "fixture_recipe_sha256": "5e6766eb8869d4921924d463202e27dc60d102d0b5ae037edef109f00cb71c2f"
     }
