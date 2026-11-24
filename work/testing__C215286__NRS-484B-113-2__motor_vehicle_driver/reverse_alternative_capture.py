@@ -62,7 +62,10 @@ def _load_site(root, case_id):
     if case_id not in CASES:
         raise ValueError("Unknown exact backing alternative case")
     alternative, expected_entry = CASES[case_id]
-    path = root / _site_name(alternative, expected_entry)
+    name = _site_name(alternative, expected_entry)
+    path = root / name
+    if not path.is_file():
+        path = root / "site_templates" / name
     site = json.loads(path.read_text())
     if site.get("alternative") != alternative or site.get("expected_entry") is not expected_entry:
         raise ValueError("Alternative site identity differs")
@@ -81,7 +84,10 @@ def _load_site(root, case_id):
         rel = Path(ref["path"])
         if rel.is_absolute() or ".." in rel.parts:
             raise ValueError("Unsafe original source path")
-        if hashlib.sha256((root / rel).read_bytes()).hexdigest() != ref["sha256"]:
+        source = root / rel
+        if not source.is_file():
+            source = root / "site_templates" / rel
+        if hashlib.sha256(source.read_bytes()).hexdigest() != ref["sha256"]:
             raise ValueError("Changed original site source: " + key)
     review = review_route(site["route_xy_m"], site["start_body_vertices_xy_m"],
                           site["region_polygon_xy_m"], alternative=alternative,
@@ -95,6 +101,29 @@ def _require_native_review(site):
             or not site.get("site_review_basis")
             or not site.get("camera_review_basis")):
         raise ValueError("Original Native site and camera review required before capture")
+
+
+def _publish_site_sources(output, site, case_id):
+    """Copy reviewed bundled templates into the original capture namespace."""
+    alternative, expected_entry = CASES[case_id]
+    names = [_site_name(alternative, expected_entry)]
+    for key in ("geometry_source", "camera_source", "road_topology_source"):
+        ref = site.get(key)
+        if ref:
+            names.append(ref["path"])
+    for name in names:
+        target = output / name
+        template = output / "site_templates" / name
+        if not template.is_file():
+            if not target.is_file():
+                raise ValueError("Missing reviewed site template: " + name)
+            continue
+        if target.is_file():
+            if target.read_bytes() != template.read_bytes():
+                raise ValueError("Original site differs from reviewed template: " + name)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(template.read_bytes())
 
 
 def _cameras(carla, site):
@@ -141,6 +170,7 @@ def capture(output, host, port, case_id):
         raise ValueError("Materialized exact construction required")
     site, review = _load_site(output, case_id)
     _require_native_review(site)
+    _publish_site_sources(output, site, case_id)
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture

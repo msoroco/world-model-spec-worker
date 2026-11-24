@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import uuid
 
 
 ROOT = Path(__file__).resolve().parent
@@ -16,7 +17,7 @@ MANIFEST = ROOT / "alternative-offline-manifest.json"
 def main():
     manifest = json.loads(MANIFEST.read_text())
     for index, entry in enumerate(manifest["cases"]):
-        output = REPO / ".runtime-work" / f"c215286-alt-{index}-physical-context-20261124"
+        output = REPO / ".runtime-work" / f"c215286-alt-{index}-site-template-{uuid.uuid4().hex[:8]}"
         command = [sys.executable, str(REPO / "runtime.py"), "offline",
                    "--manifest", str(MANIFEST), "--case", entry["case_id"],
                    "--output", str(output)]

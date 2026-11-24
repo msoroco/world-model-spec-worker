@@ -26,6 +26,20 @@ def main():
             "context_sources": ["reverse_site_context.json"],
         }
         config_file["content"] = json.dumps(config, indent=2) + "\n"
+        site_name = config["site_packet"]
+        site_file = next(item for item in bundle["files"]
+                         if item["path"] in (site_name, "site_templates/" + site_name))
+        site = json.loads(site_file["content"])
+        source_names = {site_name}
+        source_names.update(site[key]["path"] for key in
+                            ("geometry_source", "camera_source", "road_topology_source")
+                            if site.get(key))
+        for item in bundle["files"]:
+            original = item["path"]
+            if original in source_names:
+                item["path"] = "site_templates/" + original
+            if original == "runner.py":
+                item["content"] = (ROOT.parent / "reverse_alternative_capture.py").read_text()
         path.write_text(json.dumps(bundle, indent=2) + "\n")
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         entry["construction_sha256"] = digest

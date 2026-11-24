@@ -23,6 +23,7 @@ if not output_root.is_relative_to((REPO / ".runtime-work").resolve()):
 sys.path.insert(0, str(ASSIGNMENT))
 sys.path.insert(0, str(REPO / "runtime" / "scenario_pipeline"))
 from reverse_alternative_finalizer import finalize  # noqa: E402
+from reverse_alternative_capture import _publish_site_sources  # noqa: E402
 from worker_exchange.measurement_contract import verify_report  # noqa: E402
 
 
@@ -42,7 +43,8 @@ def prove(index):
                        stdout=subprocess.DEVNULL)
         config = json.loads((attempt / "config.json").read_text())
         site_name = config["site_packet"]
-        site = json.loads((attempt / site_name).read_text())
+        site = json.loads((attempt / "site_templates" / site_name).read_text())
+        _publish_site_sources(attempt, site, entry["case_id"])
         alternative = site["alternative"]
         context = {"alternative": alternative,
                    "expected_entry": site["expected_entry"],

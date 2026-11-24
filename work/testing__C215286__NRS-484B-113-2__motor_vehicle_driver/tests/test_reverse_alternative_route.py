@@ -5,7 +5,8 @@ import unittest
 from pathlib import Path
 
 from reverse_alternative_route import ReverseRouteController, review_route
-from reverse_alternative_capture import ASSIGNMENT, CASES, _load_site, capture
+from reverse_alternative_capture import (ASSIGNMENT, CASES, _load_site,
+                                         _publish_site_sources, capture)
 
 
 BODY = [[15, -1], [17, -1], [17, 1], [15, 1]]
@@ -89,6 +90,28 @@ class ReverseAlternativeRouteTests(unittest.TestCase):
                                         "Original Native site and camera review required"):
                 capture(target, "127.0.0.1", 2000,
                         ASSIGNMENT + "__reverse_into_intersection")
+
+    def test_reviewed_template_publication_keeps_original_bytes(self):
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            templates = target / "site_templates"
+            templates.mkdir()
+            case = ASSIGNMENT + "__reverse_into_intersection"
+            site = json.loads((root / "intersection_site.json").read_text())
+            for name in ("intersection_site.json", site["geometry_source"]["path"],
+                         site["camera_source"]["path"]):
+                (templates / name).write_bytes((root / name).read_bytes())
+            loaded, _ = _load_site(target, case)
+            self.assertEqual(loaded, site)
+            _publish_site_sources(target, site, case)
+            for name in ("intersection_site.json", site["geometry_source"]["path"],
+                         site["camera_source"]["path"]):
+                self.assertEqual((target / name).read_bytes(),
+                                 (templates / name).read_bytes())
+            (target / "intersection_site.json").write_text("changed\n")
+            with self.assertRaisesRegex(ValueError, "differs from reviewed template"):
+                _publish_site_sources(target, site, case)
 
 
 if __name__ == "__main__":

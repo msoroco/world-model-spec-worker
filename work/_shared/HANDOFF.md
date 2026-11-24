@@ -824,3 +824,7 @@ C215286 2026-11-24: Native capture now rejects synthetic site before CARLA impor
 ## 2026-11-24 C215286 continuation
 
 C215286 is owned and partial. Four alternative bundles now bind their original reverse site context in the pinned physical assessor; four offline proofs, four 900-frame positive/missing-site physical-source proofs, and four real saved-finalizer/measurement-report positive and missing-site-negative proofs pass. See the assignment HANDOFF and `cases/alternative-physical-context-validation.log` and `cases/alternative-finalizer-proof.log`. The selected manifest remains the proven crosswalk pair while alternative compatibility, saved-processing, physical-preparation, delivery and queue work continues. No prior-ready package was changed.
+
+## 2026-11-24 C215286 alternative fixture source separation
+
+C215286 remains partial. The four staged bundles now carry site templates; four returned source-only recipes materialize original site/geometry/camera/topology files without shadowing construction. Four offline, real finalizer and pinned measurement checks pass after the rebind. See assignment HANDOFF and `cases/alternative-site-materialization.log`. Full motion/graph/video compatibility and saved-processing remain worker-owned CPU work; prior-ready packages are untouched.
