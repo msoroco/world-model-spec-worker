@@ -120,34 +120,39 @@
   ],
   "observations": [
     {
-      "name": "two_directional_intersecting_highways",
+      "name": "centerline_and_right_half",
       "mandatory": true,
-      "source": "intersection-context.json"
+      "source": "intersection-context.json, road.xodr and reviewed map packet",
+      "covers": [
+        "two_directional_intersecting_highways",
+        "public_highway_and_non_alley_context",
+        "approach_centerline_kind_and_right_half"
+      ],
+      "limit": "public-highway/non-alley status requires independently reviewed packet; no diagnostic inference"
     },
     {
-      "name": "public_highway_and_non_alley_context",
+      "name": "full_body_approach_xy",
       "mandatory": true,
-      "source": "intersection-context.json"
+      "source": "approach-history.jsonl and body_history.jsonl",
+      "covers": [
+        "ego_full_body_preentry_history"
+      ]
     },
     {
-      "name": "approach_centerline_kind_and_right_half",
+      "name": "departure_heading",
       "mandatory": true,
-      "source": "intersection-context.json"
+      "source": "approach-history.jsonl and construction route",
+      "covers": [
+        "left_turn_intent_and_road_transition"
+      ]
     },
     {
-      "name": "ego_full_body_preentry_history",
+      "name": "camera_sources",
       "mandatory": true,
-      "source": "approach-history.jsonl"
-    },
-    {
-      "name": "left_turn_intent_and_road_transition",
-      "mandatory": true,
-      "source": "intersection-context.json and approach-history.jsonl"
-    },
-    {
-      "name": "four_camera_frame_join",
-      "mandatory": true,
-      "source": "original video_frames.jsonl and streams"
+      "source": "video_frames.jsonl and source-hashed four camera PNG archives",
+      "covers": [
+        "four_camera_frame_join"
+      ]
     }
   ],
   "sources": [
@@ -213,61 +218,45 @@
     "facts": [
       {
         "recording_id": "be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline, and decoder_passed=True. Frozen review context describes the authored setting as: Near-centerline left-turn approach; Native 45-second recording, 900 frames, closest sampled full-body edge 0.586 m from authored approach centerline. Ego traveled about 108 m and ended on departure road 4.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "demonstrated_fact": "Frozen accepted-recording metadata reports the exact recording ID be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827 and its membership, case identity, frame count and decoder status. This is an inventory fact only.",
+        "limitations": "The frozen original trace, video and independent audit assets are absent from this export. Metadata and authored review context cannot establish law-specific physical observations, comparison isolation, public-highway status or a nearest-portion legal judgment.",
         "sources": [
           {
             "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/be08a5430356379c8432d0cd78486db8fac49c131afb33f69ce2620388512827/metadata.json",
             "sha256": "37d1de4818fa45b6c6f5829222300aad6f88f7b8f08bc95b3a4bf1b6f04a8618"
-          },
-          {
-            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ff28df9369316a0c85fb9e12603ae28d8a3f25e0adebf7914be3d7fd4b7978b0"
           }
         ]
       },
       {
         "recording_id": "7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__farther_from_centerline, and decoder_passed=True. Frozen review context describes the authored setting as: Farther-right left-turn approach; Native 45-second recording, 900 frames. Full-body closest approach offset 0.804 m from authored centerline, versus 0.586 m for near branch; mid and final approach offsets were 2.455 m and 2.299 m. Ego completes turn and ends on departure road 4.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "demonstrated_fact": "Frozen accepted-recording metadata reports the exact recording ID 7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd and its membership, case identity, frame count and decoder status. This is an inventory fact only.",
+        "limitations": "The frozen original trace, video and independent audit assets are absent from this export. Metadata and authored review context cannot establish law-specific physical observations, comparison isolation, public-highway status or a nearest-portion legal judgment.",
         "sources": [
           {
             "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/7b7f8556f9973fd45c7d880535b06a6f57a9c24c05363a141777e4904985a7cd/metadata.json",
             "sha256": "c141288fff151bdba40aba004d83f301afc39a6e94f7b9e1b89ac804edbd710c"
-          },
-          {
-            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ff28df9369316a0c85fb9e12603ae28d8a3f25e0adebf7914be3d7fd4b7978b0"
           }
         ]
       },
       {
         "recording_id": "c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_near_centerline, and decoder_passed=True. Frozen review context describes the authored setting as: Imaginary equidistant centerline near approach; Native 45-second recording, 900 frames, closest sampled full-body edge 0.579 m from authored centerline. Ego traveled about 142 m and ended on departure road 4.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "demonstrated_fact": "Frozen accepted-recording metadata reports the exact recording ID c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18 and its membership, case identity, frame count and decoder status. This is an inventory fact only.",
+        "limitations": "The frozen original trace, video and independent audit assets are absent from this export. Metadata and authored review context cannot establish law-specific physical observations, comparison isolation, public-highway status or a nearest-portion legal judgment.",
         "sources": [
           {
             "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/c895e566d28995a5bf903e8c4c13c07a008ee4ce0606aa2ba55bc3113e492f18/metadata.json",
             "sha256": "37e7824688581126174dee365589d483c809c1b3f8c5bce34d1dceb0afee049f"
-          },
-          {
-            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ff28df9369316a0c85fb9e12603ae28d8a3f25e0adebf7914be3d7fd4b7978b0"
           }
         ]
       },
       {
         "recording_id": "d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__imaginary_farther_from_centerline, and decoder_passed=True. Frozen review context describes the authored setting as: Imaginary equidistant centerline farther-right approach; Native 45-second recording, 900 frames. Full-body closest approach offset 0.804 m from authored centerline versus 0.579 m for near case; mid and final approach offsets 2.450 m and 2.299 m. Ego completes turn onto departure road 4.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "demonstrated_fact": "Frozen accepted-recording metadata reports the exact recording ID d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9 and its membership, case identity, frame count and decoder status. This is an inventory fact only.",
+        "limitations": "The frozen original trace, video and independent audit assets are absent from this export. Metadata and authored review context cannot establish law-specific physical observations, comparison isolation, public-highway status or a nearest-portion legal judgment.",
         "sources": [
           {
             "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/accepted/d93cd6cb5b5e229977d329ad544e1dfe4fd091263a8118fade06ad4ca169e7b9/metadata.json",
             "sha256": "0a05cfed180bc92473eea95d394ea7889ff1fadcbc671455e26639146f8b32f6"
-          },
-          {
-            "path": "inputs/testing__C109705__NRS-484B-400-2a__motor_vehicle_driver/review-context/review.json",
-            "sha256": "ff28df9369316a0c85fb9e12603ae28d8a3f25e0adebf7914be3d7fd4b7978b0"
           }
         ]
       }
@@ -353,7 +342,7 @@
       ]
     }
   ],
-  "source_observation_mapping": [],
+  "source_observation_mapping": {},
   "selected_requirement_measurement_contracts": [
     {
       "case_id": "testing__C109705__NRS-484B-400-2a__motor_vehicle_driver__near_centerline",

@@ -181,3 +181,54 @@ Assignment-scoped `worker_check.py --complete` passes (`cpu-current-static.log`)
 `saved_finalizer.measure()` reopens sealed original sources and returns case-specific observational measurement objects with exact file hashes; pinned `measurement_contract.validate` and `verify_report` pass all seven (`cpu-measurement-validation.log`). `prove_physical_cases.py` generated complete, incomplete and missing-evidence outcomes per case from the sealed synthetic actor trace. `prove_lifecycle.py` checks saved processing after diagnostic capture return and restoration. Seven `physical_preparation` receipts now pass the pinned validator (`cpu-physical-validation.log`). All 21 physical results and seven lifecycle logs are synthetic diagnostics and explicitly deny physical acceptance. `proofs-current.json` lists current log hashes.
 
 The next worker-owned steps are source-shaped fixture recipes and pinned positive/negative compatibility, saved-only lifecycle receipts, per-case independent delivery/comparison receipt binding, candidate fallback construction for the physical-risk case, and production reviewed site/dispatch/equipment/device/camera packets. Keep status partial until exact scoped strict exit 0.
+
+## 2026-11-24 exact CPU delivery gate passed
+
+Seven current-byte selected cases, one source-gated four-camera fallback for the pedestrian case, nine observation channels, eight pinned offline results, eight full positive/negative compatibility results, seven sealed recorded-only processing receipts, seven independent delivery positive/negative audits, 21 synthetic physical fixtures, and three source-only comparison audits are bound in `execution-manifest.json`. The exact scoped strict command exited 0. The 74 focused tests and pinned semantic delivery validator passed. This is CPU delivery preparation; no CARLA physical acceptance, 500-foot audibility, recipient hearing, warning purpose or legal conclusion is claimed.
+
+The three comparison receipts have `physical_status=source_join_only`; synthetic weather is unrecorded and is explicitly not a physical weather control. The fallback activates only when reviewed original frames reveal occlusion or unsafe near-field framing and requires a separately reviewed, source-hashed alternate four-camera pose list at Native capture. Production still requires actual reviewed site, dispatch, equipment, independent device instrument and physical-control adapter bytes.
+
+Exact cases:
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_siren_pedestrian`
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_lamps_only`
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__response_silent`
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_actual_siren`
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__pursuit_suspected_siren`
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_siren`
+- `testing__C109035__NRS-484D-400-5__emergency_vehicle_driver__unqualified_lamps_only`
+
+Comparison IDs: `response_device_choice`, `qualifying_event_for_siren`, `lamps_without_siren`.
+
+Exact gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C109035__NRS-484D-400-5__emergency_vehicle_driver --complete --require-delivery-ready` (exit 0). First Native delivery command is in `result.json`; its reviewed-source environment requires `SCENARIO_NATIVE_HANDOFF` and `SCENARIO_NATIVE_DEVICE_CONTROL_PY`.
+
+Current proof SHA-256:
+- `cpu-tests-v9.log`: `357133bb86723798ce81a9e61966cfbff9daa3e764ec8a5aaf88043ee20d1737`
+- `cpu-current-static-v9.log`: `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d`
+- `cpu-ready-validators-v9.log`: `143930aedbd97932a08b72ee771056f92935bf0c2492d6e16f070acaf06ae65f`
+- `cpu-comparisons-v9.log`: `26c14c43014107c89b4c53d8999afaa5a8f7eebbd9157ab0c7953f245d4f7ef3`
+- `cpu-strict-v9.log`: `32e62cb6e91814924f616a183d2853a36a45e94373b9a42a674a6c5529226c0d`
+- `cpu-offline-response_siren_pedestrian-v9.log`: `455915175548b1d2368ef245c456e0f395daa6e26b04a244a4aa92e5dcc17305`
+- `cpu-compat-response_siren_pedestrian-v9.log`: `83065add6277f9b52615593712342039c46a672970fc13c5052e4c1618311198`
+- `cpu-saved-response_siren_pedestrian-v9.log`: `55cef2b4da841be11bc685c8999eee7d173883e3a6fab64ca434a7c6b14c1495`
+- `cpu-offline-response_lamps_only-v9.log`: `f64f0ef5f9f492a7a606ddf218aa7b0bc7c606954541a612610f3643b3713432`
+- `cpu-compat-response_lamps_only-v9.log`: `4fa64e1a984e434c97fec6f1d6301c4ec76eb08212959a4f334c9074e42253b2`
+- `cpu-saved-response_lamps_only-v9.log`: `12515eb59f42c5cbfd5200917c27bc9664de1989cb4aee560385e47c1be618d7`
+- `cpu-offline-response_silent-v9.log`: `54c23bcb4a7c409e3a2081ec25f0b9683385d7007a7f7b7081e6297d362be179`
+- `cpu-compat-response_silent-v9.log`: `859fda868296aa3779a1b6bd7087d1ce6042db8b0c819f4136648cb119efbd7e`
+- `cpu-saved-response_silent-v9.log`: `ebdcbe672ec34e969cc4493c5d0d19b8f76f7768030291c01403f53167f26b8b`
+- `cpu-offline-pursuit_actual_siren-v9.log`: `888f9b2cc18f4466858b7efa472ca4014bfe80a97ca73b3b3eba2324135f99f8`
+- `cpu-compat-pursuit_actual_siren-v9.log`: `ce65d4752fdd67a0fefc1856ca3f1c2a5c9c3f9bbeb4e06492de550ea0f167e6`
+- `cpu-saved-pursuit_actual_siren-v9.log`: `9d64b13c69b456f9e733ddd33280e29515510530b030e4174874f6d14003b1fc`
+- `cpu-offline-pursuit_suspected_siren-v9.log`: `7e2b08ed8bdfa7829d79bca51f4179faafe4a6da60facc83639e44a70c32ff2a`
+- `cpu-compat-pursuit_suspected_siren-v9.log`: `f18974d5ad4250632cbe0294062a5f4095517410f57de81e82c6de6366da7770`
+- `cpu-saved-pursuit_suspected_siren-v9.log`: `f932aae4d4d75df27f3fff869a80010bc17761455f19dd1035c16493e2c6de3b`
+- `cpu-offline-unqualified_siren-v9.log`: `ca243727317098b6b39b1c8c79b6a5afdf3bb4b6ca94e2ed10b31248447b7e4d`
+- `cpu-compat-unqualified_siren-v9.log`: `41a7c16e11bd29611930d7bb25e7d000f741a008c938bd616d3767cb4bf8e382`
+- `cpu-saved-unqualified_siren-v9.log`: `056100ec262790b96bdb9aac556f54d37f3a75efc510a7a362c6f8fc89cf2c87`
+- `cpu-offline-unqualified_lamps_only-v9.log`: `421a7bacd130a07118c3028b907eefc3b407db7fb58be059ed2dcb7529cb5796`
+- `cpu-compat-unqualified_lamps_only-v9.log`: `60636e2468053d81c8bdeb34bd667d985159033d2e0c7c057611e6e963d7c42f`
+- `cpu-saved-unqualified_lamps_only-v9.log`: `1ecf865dd9a232edfa3049c22b367b9cbe87b3fe37b5a8e0f35609c5a7f1e5f4`
+- `cpu-offline-response_siren_pedestrian-fallback1-v9.log`: `cef5fdb523b8ef1ca94f02d156fc3d6376469f863e2b9c63412036a6078e3fed`
+- `cpu-compat-response_siren_pedestrian-fallback1-v9.log`: `4aeeff790d341689afe345cb3900e15ccc9b242fdc41137675ca18b480854991`
+
+Canonical manifest SHA-256: `266744d4de8e96682e99c94004272bbd697216ad463a3c5f99f817ea59cc4ce2`. Result SHA-256 at handoff: `deba021fafa14ea7e8f5ae52d1a474c388e54c9660c775ab34acf62a28d782b8`. All generated camera archives and videos remain under `.runtime-work/`; no ZIP/MKV/media or temporary directories are returned under this assignment.

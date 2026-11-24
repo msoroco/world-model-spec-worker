@@ -18,32 +18,29 @@ def main():
     repo = folder.parents[1]
     manifest_path = folder / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    scratch = repo / '.runtime-work/c229439-compat-v2'
-    scratch.mkdir(exist_ok=True)
+    scratch = next(repo / '.runtime-work' / f'c229439-compat-v{index}'
+                   for index in range(3, 100)
+                   if not (repo / '.runtime-work' / f'c229439-compat-v{index}').exists())
+    scratch.mkdir()
     validator = repo / '.runtime-work/c229439-validator/.lake/build/bin/adapterCheck'
     if not validator.is_file():
         raise ValueError('pinned CPU decoder missing')
 
     def run(entry):
         short = entry['case_id'].rsplit('__', 1)[-1]
-        if short == 'park_effective':
-            output = repo / '.runtime-work/c229439-compat-park-v1'
-            if not (output / 'compatibility.json').is_file():
-                raise ValueError('first exact compatibility receipt missing')
-        else:
-            output = scratch / short
-            if output.exists():
-                raise ValueError('fresh compatibility output required: ' + short)
-            command = [sys.executable, str(repo / 'runtime.py'), 'compatibility',
-                       '--manifest', str(manifest_path), '--case', entry['case_id'],
-                       '--output', str(output), '--library', str(repo / 'runtime/library'),
-                       '--validator', str(validator)]
-            driver_log = scratch / (short + '-driver.log')
-            with driver_log.open('x') as log:
-                completed = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT,
-                                           env=os.environ.copy(), timeout=1200)
-            if completed.returncode:
-                raise ValueError(short + ': compatibility failed: ' + driver_log.read_text()[-1800:])
+        output = scratch / short
+        if output.exists():
+            raise ValueError('fresh compatibility output required: ' + short)
+        command = [sys.executable, str(repo / 'runtime.py'), 'compatibility',
+                   '--manifest', str(manifest_path), '--case', entry['case_id'],
+                   '--output', str(output), '--library', str(repo / 'runtime/library'),
+                   '--validator', str(validator)]
+        driver_log = scratch / (short + '-driver.log')
+        with driver_log.open('x') as log:
+            completed = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT,
+                                       env=os.environ.copy(), timeout=1200)
+        if completed.returncode:
+            raise ValueError(short + ': compatibility failed: ' + driver_log.read_text()[-1800:])
         receipt = json.loads((output / 'compatibility.json').read_text())
         if (receipt['case_id'] != entry['case_id'] or
                 receipt['construction_sha256'] != entry['construction_sha256'] or
@@ -51,7 +48,7 @@ def main():
             raise ValueError(short + ': stale or incomplete exact compatibility receipt')
         return short, output
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         outputs = dict(pool.map(run, manifest['cases']))
 
     for entry in manifest['cases']:

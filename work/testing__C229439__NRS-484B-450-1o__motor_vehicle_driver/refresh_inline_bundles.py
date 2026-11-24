@@ -34,6 +34,9 @@ def build():
         path = FOLDER / entry['construction']
         construction = json.loads(path.read_text())
         files = {item['path']: item for item in construction['files']}
+        config = json.loads(files['config.json']['content'])
+        config['case']['recording_description'] = construction['recording_description']
+        files['config.json']['content'] = json.dumps(config, indent=2) + '\n'
         for package_path, local_path in SOURCES.items():
             source = FOLDER / local_path
             files[package_path] = {'path': package_path,

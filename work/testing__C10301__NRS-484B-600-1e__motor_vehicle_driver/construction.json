@@ -1,0 +1,107 @@
+{
+  "law_id": "NRS-484B-600-1e",
+  "cell_id": "C10301",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Canonical exact-case index for C10301 speed-boundary delivery.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\n\n\ndef select(case_id):\n    root = Path(__file__).resolve().parent\n    manifest = json.loads((root / 'execution-manifest.json').read_text())\n    matches = [entry for entry in manifest['cases'] if entry['case_id'] == case_id]\n    if len(matches) != 1:\n        raise ValueError('Select one exact speed-boundary case')\n    return root / matches[0]['construction']\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--case', required=True)\n    args = parser.parse_args()\n    print(select(args.case))\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"assignment_id\": \"testing__C10301__NRS-484B-600-1e__motor_vehicle_driver\",\n  \"law_id\": \"NRS-484B-600-1e\",\n  \"cell_id\": \"C10301\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"supported_case_ids\": [\n    \"testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below\",\n    \"testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal\",\n    \"testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above\"\n  ],\n  \"duration_s\": 45,\n  \"rate_hz\": 20,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"source-bound Native four-camera route and ego framing\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source-bound Native four-camera route and ego framing\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source-bound Native four-camera route and ego framing\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source-bound Native four-camera route and ego framing\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"source_provenance\": \"reviewed site packet required at Native dispatch; current fixtures are synthetic diagnostics\",\n  \"physical_acceptance_claimed\": false\n}\n"
+    }
+  ],
+  "measurement_plan": {
+    "cases": [
+      "below",
+      "equal",
+      "above"
+    ],
+    "selected_requirements": [
+      "personal vehicle operation",
+      "sampled speed relation to 80 mph"
+    ],
+    "legal_judgment": "unresolved"
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "sampled_speed_mps",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "original actor velocity magnitude",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "ego_position_m",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "original actor location vector",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "route_readback",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "original map waypoint and route station",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "camera_frame_sources",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "original four-camera frame readback",
+        "time_window": "complete original 45-second capture",
+        "reference_frame": "original Native CARLA frame and time",
+        "uncertainty": "20 Hz sampled source; physical and site review pending"
+      },
+      {
+        "name": "original_speed_mps",
+        "unit": "m/s",
+        "sampling_rate_hz": 20,
+        "method": "source-bound original actor velocity magnitude",
+        "time_window": "complete 45-second capture",
+        "reference_frame": "Native CARLA frame/time",
+        "uncertainty": "20 Hz samples; between-sample peak unknown"
+      },
+      {
+        "name": "qualifying_vehicle_and_personal_operation",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "source-bound actor, vehicle and control readback",
+        "time_window": "complete 45-second capture",
+        "reference_frame": "Native CARLA frame/time",
+        "uncertainty": "territorial applicability unresolved"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Actual route and access-aisle authority are source-gated; current diagnostics are synthetic."
+    ]
+  },
+  "static_checks": [
+    "exact case identity",
+    "source-bound Native packet",
+    "20 Hz 900-frame four-camera acquisition",
+    "source-preserving saved processing",
+    "Core/Lean and final decode"
+  ],
+  "termination_rules": [
+    "45-second planned capture",
+    "failed source or Native readback",
+    "restoration and encoder closure before saved processing"
+  ],
+  "mechanisms": [
+    "exact-case Native source-gated capture",
+    "pinned source-bound saved projection",
+    "independent positive and missing-source audits"
+  ]
+}

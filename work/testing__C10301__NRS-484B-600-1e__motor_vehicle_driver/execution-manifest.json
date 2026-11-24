@@ -8,16 +8,44 @@
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
       "kind": "delivery",
       "construction": "construction-below.json",
-      "construction_sha256": "fd252c272c94163e8b2eff9dddb2700e53b17ab53eff8111fbc62c62fd179704",
+      "construction_sha256": "7d45e805fa5a7b6555a56f73e0eb5a852d8c2030ee6a4c4699dc43f1e7944fc7",
       "preparation_status": "source_bound_diagnostic_partial",
       "candidate_risk": {
         "status": "physical",
         "reason": "High-speed 45-second motion requires surveyed route length, clearance and successful speed readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-below.json",
+          "construction_sha256": "92f60aa38698c53282540b99d403c2cdadd41a30a673379e5eb689197ff2d28d",
+          "trigger": {
+            "source": "Native site spawn error in owner capture log",
+            "metric": "first reviewed route waypoint spawn result",
+            "failure_condition": "primary first waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "native_site: spawn at second independently verified route waypoint after primary first-waypoint spawn failure"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate fallback1 --output .runtime-work/c10301-next/offline-fallback1-below",
+            "construction_sha256": "92f60aa38698c53282540b99d403c2cdadd41a30a673379e5eb689197ff2d28d",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-below.log",
+            "log_sha256": "0508e9c006e1c9197943fca1dc81e09b72a4a77ad53ec37b4c0bf0668b2c4c3c"
+          },
+          "compatibility": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --candidate fallback1 --output .runtime-work/c10301-next/compat-fallback1-below --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "log": "cpu-compat-fallback1-below-analysis.log",
+            "negative_log": "cpu-compat-fallback1-below-negative.log",
+            "receipt": "cpu-compat-fallback1-below-receipt.json",
+            "sha256": "afcc5f82a181e4e75a700c12356ae6e370f38c25c2c8295203e32c80531c987f"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "fd252c272c94163e8b2eff9dddb2700e53b17ab53eff8111fbc62c62fd179704",
+        "construction_sha256": "7d45e805fa5a7b6555a56f73e0eb5a852d8c2030ee6a4c4699dc43f1e7944fc7",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below --output .runtime-work/c10301-next/offline-below-v16",
         "log": "cpu-full-offline-below.log",
         "log_sha256": "982db78269f3631a5bab538154423bc75e9ce7e19084a96c06dac548d6ac8d3b"
@@ -93,22 +121,55 @@
         "negative_log": "cpu-delivery-audit-negative-below.log",
         "negative_log_sha256": "35769d1d8ea0650feee2eacd6f327565e246354ad4667a662b5507a951ab477e",
         "scope": "Source-bound diagnostic fixture audit; actual Native and legal acceptance remain future checks"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
       "kind": "delivery",
       "construction": "construction-equal.json",
-      "construction_sha256": "d2628e4dfad722579c8ff438e3ca12ad4a845ff67f026aa8af6fc96b7a03db9b",
+      "construction_sha256": "a9da520573d868129326f593477b86c67779984fe4e65638a2d5cc28969376aa",
       "preparation_status": "source_bound_diagnostic_partial",
       "candidate_risk": {
         "status": "physical",
         "reason": "High-speed 45-second motion requires surveyed route length, clearance and successful speed readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-equal.json",
+          "construction_sha256": "44c33e1990cdc16c01f97bb1858b941a371e24cd9dbc58022068a6fafe1838f0",
+          "trigger": {
+            "source": "Native site spawn error in owner capture log",
+            "metric": "first reviewed route waypoint spawn result",
+            "failure_condition": "primary first waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "native_site: spawn at second independently verified route waypoint after primary first-waypoint spawn failure"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate fallback1 --output .runtime-work/c10301-next/offline-fallback1-equal",
+            "construction_sha256": "44c33e1990cdc16c01f97bb1858b941a371e24cd9dbc58022068a6fafe1838f0",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-equal.log",
+            "log_sha256": "56290d4e681032162ab21fafc4131375ff46c20adb2a3fd802117d1a5d54ce68"
+          },
+          "compatibility": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --candidate fallback1 --output .runtime-work/c10301-next/compat-fallback1-equal --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "log": "cpu-compat-fallback1-equal-analysis.log",
+            "negative_log": "cpu-compat-fallback1-equal-negative.log",
+            "receipt": "cpu-compat-fallback1-equal-receipt.json",
+            "sha256": "901fd143ff6946c523f1ffc353dadfdddb10446ec12f42081ff9ececd1dff253"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "d2628e4dfad722579c8ff438e3ca12ad4a845ff67f026aa8af6fc96b7a03db9b",
+        "construction_sha256": "a9da520573d868129326f593477b86c67779984fe4e65638a2d5cc28969376aa",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal --output .runtime-work/c10301-next/offline-equal-v16",
         "log": "cpu-full-offline-equal.log",
         "log_sha256": "c95b08b46ed47cd7f05562073331f09b24f718775d35fee32619fee2a26cb451"
@@ -184,22 +245,55 @@
         "negative_log": "cpu-delivery-audit-negative-equal.log",
         "negative_log_sha256": "0c9dd47572e1360490e513cb86a7471cf5a746adf4c08abde11fae144c49bbce",
         "scope": "Source-bound diagnostic fixture audit; actual Native and legal acceptance remain future checks"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     },
     {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above",
       "kind": "delivery",
       "construction": "construction-above.json",
-      "construction_sha256": "735e8bb9286e37545536964136f542eadbac9d56f93036ec2c4b51a5fbc165f4",
+      "construction_sha256": "0d44356daaf0569820644b7105fee7675bf4aba0d5df2d3a47766348c2c0e23e",
       "preparation_status": "source_bound_diagnostic_partial",
       "candidate_risk": {
         "status": "physical",
         "reason": "High-speed 45-second motion requires surveyed route length, clearance and successful speed readback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-above.json",
+          "construction_sha256": "8486b705f97e383b4d689dec1acc53e98d3f23040b4328fa589eea94395b4a24",
+          "trigger": {
+            "source": "Native site spawn error in owner capture log",
+            "metric": "first reviewed route waypoint spawn result",
+            "failure_condition": "primary first waypoint spawn returns no actor"
+          },
+          "changed_knobs": [
+            "native_site: spawn at second independently verified route waypoint after primary first-waypoint spawn failure"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate fallback1 --output .runtime-work/c10301-next/offline-fallback1-above",
+            "construction_sha256": "8486b705f97e383b4d689dec1acc53e98d3f23040b4328fa589eea94395b4a24",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback1-above.log",
+            "log_sha256": "e2ba8d9ff7423445285b504622ccc13d0dac72e250de8ad5f171059cba6ed87b"
+          },
+          "compatibility": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --candidate fallback1 --output .runtime-work/c10301-next/compat-fallback1-above --library runtime/library --validator .runtime-work/c10301-next/decoder-v1/.lake/build/bin/adapterCheck",
+            "log": "cpu-compat-fallback1-above-analysis.log",
+            "negative_log": "cpu-compat-fallback1-above-negative.log",
+            "receipt": "cpu-compat-fallback1-above-receipt.json",
+            "sha256": "f75cffb80a4b1d8e9463c9fa7ebb84489f61719b3451ee4a5cdd5644a9f07c00"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "735e8bb9286e37545536964136f542eadbac9d56f93036ec2c4b51a5fbc165f4",
+        "construction_sha256": "0d44356daaf0569820644b7105fee7675bf4aba0d5df2d3a47766348c2c0e23e",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above --output .runtime-work/c10301-next/offline-above-v16",
         "log": "cpu-full-offline-above.log",
         "log_sha256": "b6a8206d770897b6ad192ca5ca94d9ea0f74d28f847c65c9b55c460166049385"
@@ -275,6 +369,11 @@
         "negative_log": "cpu-delivery-audit-negative-above.log",
         "negative_log_sha256": "e09aa99dc3a52f12a8d8f1cb01870151f97bf30dde2d496ffa4444d987d47a97",
         "scope": "Source-bound diagnostic fixture audit; actual Native and legal acceptance remain future checks"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]

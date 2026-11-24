@@ -2,6 +2,69 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "rationale": "Neutral shared 75 mph authored setup for source review; no physical or legal judgment.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sampled_speed_mps",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity magnitude",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "ego_position_m",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original actor location vector",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "route_readback",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint and route station",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "camera_frame_sources",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame readback",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment."
+        ]
+      },
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "Whether the original trace establishes the sampled relation to 80 mph and any between-sample peak.",
+        "Whether the original site and operation satisfy statutory territorial and actor conditions."
+      ],
+      "variable_assignments": {
+        "requested_speed_mph": {
+          "kind": "world_setup",
+          "value": 75
+        }
+      }
+    },
+    {
       "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
       "deliberate_differences": [
         "requested_speed_mph"
@@ -10,79 +73,79 @@
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native ego velocity readback written once to original-speed.jsonl",
-            "name": "original_speed_mps",
-            "reference_frame": "Native world velocity vector",
+            "name": "sampled_speed_mps",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
-            "time_window": "All 900 original frames",
-            "uncertainty": "Supplied reviewed acquisition uncertainty; between-sample peaks unobserved",
-            "unit": "m/s"
+            "method": "original actor velocity magnitude",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
           },
           {
-            "method": "Original actor blueprint, control and reviewed site/source packet",
-            "name": "qualifying_vehicle_and_personal_operation",
-            "reference_frame": "Original Native actor and source packet",
+            "name": "ego_position_m",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
-            "time_window": "All 900 original frames",
-            "uncertainty": "Territorial and statutory definitions require independent source review",
-            "unit": "source-bound context"
+            "method": "original actor location vector",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "route_readback",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint and route station",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "camera_frame_sources",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame readback",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
           }
         ],
-        "duration_s": 45,
-        "sample_rate_hz": 20
+        "context_inputs": [],
+        "limitations": [
+          "Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment."
+        ]
       },
       "target_law_id": "NRS-484B-600-1e",
       "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "Whether the original trace establishes the sampled relation to 80 mph and any between-sample peak.",
-        "Whether the original site and operation satisfy statutory territorial and actor conditions."
+        "drive or operate a vehicle of any kind or character",
+        "In any event",
+        "a rate of speed greater than 80 miles per hour"
       ],
       "variable_assignments": {
-        "boundary_probe": "below",
-        "existing_recording_id": "d40367aa09c6a2317bc0d75bdd79f4a2cb0987e2c2950f84153cea1445172370",
-        "requested_speed_mph": 75
-      }
-    },
-    {
-      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
-      "deliberate_differences": [
-        "requested_speed_mph"
-      ],
-      "rationale": "Preserve the exact 80 mph statutory boundary with below, requested-equal and above targets. Frozen accepted metadata is retained for source review; observed equality, public-way status and legal judgment remain unresolved.",
-      "recording_description": {
-        "channels": [
-          {
-            "method": "Original Native ego velocity readback written once to original-speed.jsonl",
-            "name": "original_speed_mps",
-            "reference_frame": "Native world velocity vector",
-            "sampling_rate_hz": 20,
-            "time_window": "All 900 original frames",
-            "uncertainty": "Supplied reviewed acquisition uncertainty; between-sample peaks unobserved",
-            "unit": "m/s"
-          },
-          {
-            "method": "Original actor blueprint, control and reviewed site/source packet",
-            "name": "qualifying_vehicle_and_personal_operation",
-            "reference_frame": "Original Native actor and source packet",
-            "sampling_rate_hz": 20,
-            "time_window": "All 900 original frames",
-            "uncertainty": "Territorial and statutory definitions require independent source review",
-            "unit": "source-bound context"
-          }
-        ],
-        "duration_s": 45,
-        "sample_rate_hz": 20
+        "requested_speed_mph": {
+          "kind": "world_setup",
+          "value": 75
+        }
       },
-      "target_law_id": "NRS-484B-600-1e",
-      "target_type": "boundary_probe",
-      "unresolved_judgment_calls": [
-        "Whether the original trace establishes the sampled relation to 80 mph and any between-sample peak.",
-        "Whether the original site and operation satisfy statutory territorial and actor conditions."
-      ],
-      "variable_assignments": {
-        "boundary_probe": "equal",
-        "existing_recording_id": "c76134bfaae4877b8b4b022dec93e217dd3cf840319a3c1b69ecd6cb09f33197",
-        "requested_speed_mph": 80
+      "paired_probe_id": "strict_rate_boundary",
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "80 mph strict upper boundary",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "greater_than",
+        "unit": "mph",
+        "test_value": 75
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Engineering probe spacing, not legal tolerance"
+      },
+      "sweep_id": "strict_rate_boundary_sweep",
+      "sweep_spec_version": "ea68decee50ed8bd7315537486f41d5cb53f76bff5ca418845045e00c7a3d19b",
+      "sweep_point": {
+        "requested_speed_mph": 75.0
       }
     },
     {
@@ -94,37 +157,163 @@
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native ego velocity readback written once to original-speed.jsonl",
-            "name": "original_speed_mps",
-            "reference_frame": "Native world velocity vector",
+            "name": "sampled_speed_mps",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
-            "time_window": "All 900 original frames",
-            "uncertainty": "Supplied reviewed acquisition uncertainty; between-sample peaks unobserved",
-            "unit": "m/s"
+            "method": "original actor velocity magnitude",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
           },
           {
-            "method": "Original actor blueprint, control and reviewed site/source packet",
-            "name": "qualifying_vehicle_and_personal_operation",
-            "reference_frame": "Original Native actor and source packet",
+            "name": "ego_position_m",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
-            "time_window": "All 900 original frames",
-            "uncertainty": "Territorial and statutory definitions require independent source review",
-            "unit": "source-bound context"
+            "method": "original actor location vector",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "route_readback",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint and route station",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "camera_frame_sources",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame readback",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
           }
         ],
-        "duration_s": 45,
-        "sample_rate_hz": 20
+        "context_inputs": [],
+        "limitations": [
+          "Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment."
+        ]
       },
       "target_law_id": "NRS-484B-600-1e",
       "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "Whether the original trace establishes the sampled relation to 80 mph and any between-sample peak.",
-        "Whether the original site and operation satisfy statutory territorial and actor conditions."
+        "drive or operate a vehicle of any kind or character",
+        "In any event",
+        "a rate of speed greater than 80 miles per hour"
       ],
       "variable_assignments": {
-        "boundary_probe": "above",
-        "existing_recording_id": "94949cafef78412a15ef3d77525b0bf58967b7708c5ed46b90fa391740bd8462",
-        "requested_speed_mph": 85
+        "requested_speed_mph": {
+          "kind": "world_setup",
+          "value": 85
+        }
+      },
+      "paired_probe_id": "strict_rate_boundary",
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "80 mph strict upper boundary",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "greater_than",
+        "unit": "mph",
+        "test_value": 85
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Engineering probe spacing, not legal tolerance"
+      },
+      "sweep_id": "strict_rate_boundary_sweep",
+      "sweep_spec_version": "ea68decee50ed8bd7315537486f41d5cb53f76bff5ca418845045e00c7a3d19b",
+      "sweep_point": {
+        "requested_speed_mph": 85.0
+      }
+    },
+    {
+      "case_id": "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal",
+      "deliberate_differences": [
+        "requested_speed_mph"
+      ],
+      "rationale": "Preserve the exact 80 mph statutory boundary with below, requested-equal and above targets. Frozen accepted metadata is retained for source review; observed equality, public-way status and legal judgment remain unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sampled_speed_mps",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity magnitude",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "ego_position_m",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original actor location vector",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "route_readback",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint and route station",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "camera_frame_sources",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame readback",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment."
+        ]
+      },
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "drive or operate a vehicle of any kind or character",
+        "In any event",
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "variable_assignments": {
+        "requested_speed_mph": {
+          "kind": "world_setup",
+          "value": 80
+        }
+      },
+      "paired_probe_id": "strict_rate_boundary",
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "80 mph strict upper boundary",
+        "target_value_or_branch": "equal",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "greater_than",
+        "unit": "mph",
+        "test_value": 80
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "mph",
+        "rationale": "Engineering probe spacing, not legal tolerance"
+      },
+      "sweep_id": "strict_rate_boundary_sweep",
+      "sweep_spec_version": "ea68decee50ed8bd7315537486f41d5cb53f76bff5ca418845045e00c7a3d19b",
+      "sweep_point": {
+        "requested_speed_mph": 80.0
       }
     }
   ],
@@ -143,6 +332,98 @@
     }
   ],
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "strict_rate_boundary_sweep",
+      "target_law_id": "NRS-484B-600-1e",
+      "judgment_refs": [
+        {
+          "phrase": "drive or operate a vehicle of any kind or character",
+          "note": "Original actor/control readback and vehicle classification are required; the label alone does not establish statutory applicability."
+        },
+        {
+          "phrase": "In any event",
+          "note": "Original road/location and applicability review are required; this phrase supplies no exception from the speed restriction."
+        },
+        {
+          "phrase": "a rate of speed greater than 80 miles per hour",
+          "note": "Use all original 20 Hz velocity samples and acquisition uncertainty; between-sample peaks and exact equality remain unresolved."
+        }
+      ],
+      "rationale": "Source-bound diagnostic sampling of requested 75, 80 and 85 mph setpoints; no legal or physical acceptance inferred.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_speed_mph",
+          "observable": "requested_speed_mph",
+          "unit": "mph",
+          "min": 75,
+          "max": 85,
+          "spacing": 5,
+          "range_rationale": "Span the 80 mph statutory boundary with below, authored equality and above requests.",
+          "spacing_rationale": "Five mph engineering separation; not legal tolerance.",
+          "feasibility_evidence": "Three source-hashed diagnostic Native fixture recipes and offline bundles.",
+          "measurement": {
+            "method": "original 20 Hz Native velocity source and requested setpoint",
+            "time_window": "complete 45-second original capture",
+            "statistic": "max"
+          }
+        }
+      ],
+      "landmarks": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sampled_speed_mps",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original actor velocity magnitude",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "ego_position_m",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original actor location vector",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "route_readback",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint and route station",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          },
+          {
+            "name": "camera_frame_sources",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "original four-camera frame readback",
+            "time_window": "complete original 45-second capture",
+            "reference_frame": "original Native CARLA frame and time",
+            "uncertainty": "20 Hz sampled source; physical and site review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Sampled original values do not establish between-sample peak speed, actual public way/access aisle authority, scene pixels, physical completion or legal judgment."
+        ]
+      },
+      "spec_version": "ea68decee50ed8bd7315537486f41d5cb53f76bff5ca418845045e00c7a3d19b",
+      "planned_case_count": 3,
+      "selection_order": [
+        "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__below",
+        "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__above",
+        "testing__C10301__NRS-484B-600-1e__motor_vehicle_driver__equal"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }
