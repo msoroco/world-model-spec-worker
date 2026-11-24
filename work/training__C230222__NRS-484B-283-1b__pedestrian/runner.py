@@ -106,7 +106,10 @@ def execute(config, output, host, port):
         settings.fixed_delta_seconds = 1/RATE_HZ
         world.apply_settings(settings)
         world.set_weather(carla.WeatherParameters.ClearNoon)
-        native_map_sha = hashlib.sha256(world.get_map().to_opendrive().encode()).hexdigest()
+        native_road_text = world.get_map().to_opendrive()
+        native_map_sha = hashlib.sha256(native_road_text.encode()).hexdigest()
+        with (output / 'native-road.xodr').open('x') as native_road_file:
+            native_road_file.write(native_road_text)
         library = world.get_blueprint_library()
         walkers = sorted(library.filter('walker.pedestrian.*'), key=lambda bp: bp.id)
         vehicles = sorted(library.filter('vehicle.*'), key=lambda bp: bp.id)
@@ -201,6 +204,7 @@ def execute(config, output, host, port):
             'frozen_cell': {'layout': 'road', 'maneuver': 'travel', 'control': 'curb'},
             'authored_road_sha256': hashlib.sha256((HERE / 'road.xodr').read_bytes()).hexdigest(),
             'native_road_sha256': native_map_sha,
+            'native_road_source': 'native-road.xodr',
             'vehicle_source_audit_sha256': hashlib.sha256((output / 'video_frames.jsonl').read_bytes()).hexdigest(),
             'road_width_m': 7, 'vehicle_conflict_y_m': 0, 'curb_edge_xy_m': [-3.5, 0],
             'pedestrian_crossing_forward_xy': [1, 0], 'pedestrian_id': walker.id,

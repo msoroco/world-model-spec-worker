@@ -6,12 +6,12 @@
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
       "construction": "current-bundles/probe_a/primary/construction.json",
-      "construction_sha256": "1f5efb6e075d0ead1d27dd89cbf96d13e9f2dfd328ce8cfbd8388d2ee2b27097",
+      "construction_sha256": "5e74092234be0259f35235bd98ce8a7558056628a68bcd3c82e1113aa9a72a2f",
       "candidates": [
         {
           "id": "fallback1",
           "construction": "current-bundles/probe_a/fallback1/construction.json",
-          "construction_sha256": "476d9a4afced4ffa5292cd84fdff003d7befbdb48a991bc403645e549bf0c8d1",
+          "construction_sha256": "555d3a1b0c8cc4688bcb7eeac9aecdf30a224d0889c452028daa5311bd370441",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "first_whole_body_passage_frame",
@@ -19,25 +19,65 @@
           },
           "changed_knobs": [
             "approach_initial_position_and_speed"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c405647-1c-current-probe_a-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "555d3a1b0c8cc4688bcb7eeac9aecdf30a224d0889c452028daa5311bd370441",
+            "log": "current-public/probe_a-fallback1-offline.log",
+            "log_sha256": "9d05b0ba9b4608d7ed3f55a1b627f0060280f3d67d037bc920a4c99f1f512fce"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_a-fallback1-compatibility.json",
+            "sha256": "9a19781b160639b466d6ac8dcc4b0a970f4cfae3414b0041e21ea0c23beedbc3",
+            "log": "current-public/probe_a-fallback1-analysis.log",
+            "negative_log": "current-public/probe_a-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/probe_a-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/probe_a-fallback1-processing.json",
+            "sha256": "85f1520cff6d8cd8be8d3ce9f57771117ebe5d30a512df1ad71faae5b90f4d61"
+          }
         },
         {
           "id": "fallback2",
           "construction": "current-bundles/probe_a/fallback2/construction.json",
-          "construction_sha256": "2f94bca645b01a9a4dae574dabc7a85e1f1306751f2f6fe45958e05cddf076c8",
+          "construction_sha256": "9b2437a5facf519ad4d55cb51d1371f7eba9ddc497990803a440a6a1a1027be7",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "original overview camera full-body visibility",
             "failure_condition": "Original overview frames do not show both complete bodies around passage"
           },
           "changed_knobs": [
-            "overview_fov_deg"
-          ]
+            "subject_lateral_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a --candidate fallback2 --output .runtime-work/c405647-1c-current-probe_a-fallback2-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9b2437a5facf519ad4d55cb51d1371f7eba9ddc497990803a440a6a1a1027be7",
+            "log": "current-public/probe_a-fallback2-offline.log",
+            "log_sha256": "0a9dd1d2d39f1d00ea6ec780f1440b5cadb2db1f5a159f43c100de433916d4a9"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_a-fallback2-compatibility.json",
+            "sha256": "b0e0b253e8fd1daf63b83ebac6455ad7d5169a027f34b11400a65e3d90bebf83",
+            "log": "current-public/probe_a-fallback2-analysis.log",
+            "negative_log": "current-public/probe_a-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/probe_a-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/probe_a-fallback2-processing.json",
+            "sha256": "4bc1c18f80d8a76c00cd348f8a095f1f332e9cc659e3368845ec9f770748dae2"
+          }
         }
       ],
       "candidate_risk": {
         "status": "physical",
-        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view."
+        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane."
       },
       "kind": "delivery",
       "id": "primary",
@@ -51,17 +91,152 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
+        "receipt": "physical-proof/probe_a/proof.json",
+        "sha256": "7704b043c0ae19e54d51c8aea5ff9b9893f4c6e6e5e233d1dbf68620868caeba"
+      },
+      "acquisition": {
+        "approach_kind": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.cleared_line": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "emergency_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "qualifying_lamp_pixels": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "subject_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "video_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c405647-1c-current-probe_a-primary-offline --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "5e74092234be0259f35235bd98ce8a7558056628a68bcd3c82e1113aa9a72a2f",
+        "log": "current-public/probe_a-primary-offline.log",
+        "log_sha256": "27937cb6060f19cf995ac913fc379a2a5e85c0496d1b8a82db16c3019eec485e"
+      },
+      "compatibility": {
+        "receipt": "current-public/probe_a-primary-compatibility.json",
+        "sha256": "25af17d6b2e5acb9f01b26985db4477204b72c607ab0f52fbbba7f1d9d62f10d",
+        "log": "current-public/probe_a-primary-analysis.log",
+        "negative_log": "current-public/probe_a-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/probe_a-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-public/probe_a-primary-processing.json",
+        "sha256": "bc4df9e0af8fa7013e49ea895adefac81ff93ea1bb5e8b2be3259dcc91bd7412"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-public/probe_a-primary-processing.json",
+        "test_log_sha256": "bc4df9e0af8fa7013e49ea895adefac81ff93ea1bb5e8b2be3259dcc91bd7412"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "68d5833ee1f5ade09b99924b948a2e6020bd31ad751bad356909d805a9a49807",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_a",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/probe_a-positive.log",
+        "test_log_sha256": "5b02a4c98993cef17dfed3ee6e21091ae7daae4db244304d6b5ab1912cf7df69",
+        "negative_log": "delivery-proof/probe_a-negative.log",
+        "negative_log_sha256": "e34fbb9bb975a3ce9a3ed0d17edd449a9d9fc4d0ff7d94d19363e73dee437506"
       }
     },
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b",
       "construction": "current-bundles/probe_b/primary/construction.json",
-      "construction_sha256": "11dfbb7f0d6256503039c36e5c4d29b7debe1659a05f6d7a0b78d7ebf7b774ba",
+      "construction_sha256": "d71d99bd2519fd3f1e0d12aee4afad56cf020f8b017f007c200765c77b82f5f4",
       "candidates": [
         {
           "id": "fallback1",
           "construction": "current-bundles/probe_b/fallback1/construction.json",
-          "construction_sha256": "6d46e5cbc159cf07dcfc2d8160fd6d5a23b05cbf41e8c1afa5518ebb6cbb67c2",
+          "construction_sha256": "76e9073e015b3ad374610216b808d2891c0a8c02e51c81d209a90004f924274f",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "first_whole_body_passage_frame",
@@ -69,25 +244,65 @@
           },
           "changed_knobs": [
             "approach_initial_position_and_speed"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c405647-1c-current-probe_b-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "76e9073e015b3ad374610216b808d2891c0a8c02e51c81d209a90004f924274f",
+            "log": "current-public/probe_b-fallback1-offline.log",
+            "log_sha256": "90c12dd7e2b51a801bb3edbda0760509c6fe8aa634010ffe0765118691439c49"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_b-fallback1-compatibility.json",
+            "sha256": "fa0960067ea87b57cb40b734fb4d9967abb3063ff2ad970478169b694b4445b3",
+            "log": "current-public/probe_b-fallback1-analysis.log",
+            "negative_log": "current-public/probe_b-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/probe_b-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/probe_b-fallback1-processing.json",
+            "sha256": "ceafebb2d6cc47f09e572ffd7c09a6654a9bb33ddd138ad6f4490db764c144d7"
+          }
         },
         {
           "id": "fallback2",
           "construction": "current-bundles/probe_b/fallback2/construction.json",
-          "construction_sha256": "001c7fe89ceed7cf763ea98e0fadf1c272da6f927aa92a5d9ded074133887587",
+          "construction_sha256": "7166151ad0146d8d764bf8ff7906e23fdd7ed0f2320d3360da904ecd6778bc63",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "original overview camera full-body visibility",
             "failure_condition": "Original overview frames do not show both complete bodies around passage"
           },
           "changed_knobs": [
-            "overview_fov_deg"
-          ]
+            "subject_lateral_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b --candidate fallback2 --output .runtime-work/c405647-1c-current-probe_b-fallback2-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7166151ad0146d8d764bf8ff7906e23fdd7ed0f2320d3360da904ecd6778bc63",
+            "log": "current-public/probe_b-fallback2-offline.log",
+            "log_sha256": "0dd3df493c59e6c8d8a7566c30b3035211d10227fbde6dc7dff79fa27ac8fdbe"
+          },
+          "compatibility": {
+            "receipt": "current-public/probe_b-fallback2-compatibility.json",
+            "sha256": "8d8dd9b219545801c26ca7f588b85f87a16e20e2ae147c21f079bbce437eaa84",
+            "log": "current-public/probe_b-fallback2-analysis.log",
+            "negative_log": "current-public/probe_b-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/probe_b-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/probe_b-fallback2-processing.json",
+            "sha256": "b6689ed6fce2d843196803b162ab72edc0149a155cd098f7d24cd20ebac19e63"
+          }
         }
       ],
       "candidate_risk": {
         "status": "physical",
-        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view."
+        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane."
       },
       "kind": "delivery",
       "id": "primary",
@@ -101,17 +316,152 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b",
+        "receipt": "physical-proof/probe_b/proof.json",
+        "sha256": "2218a85fe21322837e65c00c06bec254e11b7e6c1c5395831b0df097c4e1600d"
+      },
+      "acquisition": {
+        "approach_kind": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.cleared_line": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "emergency_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "qualifying_lamp_pixels": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "subject_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "video_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c405647-1c-current-probe_b-primary-offline --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d71d99bd2519fd3f1e0d12aee4afad56cf020f8b017f007c200765c77b82f5f4",
+        "log": "current-public/probe_b-primary-offline.log",
+        "log_sha256": "27c5052ab58322eb3857516506023f12fed37f764bec5be5da94d7ebe164bada"
+      },
+      "compatibility": {
+        "receipt": "current-public/probe_b-primary-compatibility.json",
+        "sha256": "f62013af34184bf8a4745fecf39168955c39fce90bf346b9ece5bcf45b49f606",
+        "log": "current-public/probe_b-primary-analysis.log",
+        "negative_log": "current-public/probe_b-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/probe_b-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-public/probe_b-primary-processing.json",
+        "sha256": "f0f4cfdeb22e1f6d7a9076e3c90c687f61ee72f8316aca78eb4cf2096b2d9ecc"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-public/probe_b-primary-processing.json",
+        "test_log_sha256": "f0f4cfdeb22e1f6d7a9076e3c90c687f61ee72f8316aca78eb4cf2096b2d9ecc"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "68d5833ee1f5ade09b99924b948a2e6020bd31ad751bad356909d805a9a49807",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__probe_b",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/probe_b-positive.log",
+        "test_log_sha256": "4bfecff0c25b601e86e98573e04caa0cb8e330848cc5e35705f4ec41da1dfd3d",
+        "negative_log": "delivery-proof/probe_b-negative.log",
+        "negative_log_sha256": "e34fbb9bb975a3ce9a3ed0d17edd449a9d9fc4d0ff7d94d19363e73dee437506"
       }
     },
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
       "construction": "current-bundles/exception_1_1/primary/construction.json",
-      "construction_sha256": "1b6c3c4cb0bfc7fed1a22500752fbc4141de86dfc84cffdf517eb3cbc4b96d75",
+      "construction_sha256": "b1fda2e67fa1b89fe0c222e2f83e10212e9cb4de78e530cdfcc0c1e62582d750",
       "candidates": [
         {
           "id": "fallback1",
           "construction": "current-bundles/exception_1_1/fallback1/construction.json",
-          "construction_sha256": "a1c2032495ebae9bf8cd3f0f468a75d594d3f089818e5b1f52c12cfcde40dbe9",
+          "construction_sha256": "fe4b6c4f961a4a1c48cdcefa3a350690a0b2229b0d488925d7d097851d208330",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "first_whole_body_passage_frame",
@@ -119,25 +469,65 @@
           },
           "changed_knobs": [
             "approach_initial_position_and_speed"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1 --candidate fallback1 --output .runtime-work/c405647-1c-current-exception_1_1-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "fe4b6c4f961a4a1c48cdcefa3a350690a0b2229b0d488925d7d097851d208330",
+            "log": "current-public/exception_1_1-fallback1-offline.log",
+            "log_sha256": "8aeaf926013a56f08c02328cf4d8682cd999adce57bef29482b8c5d057d7d730"
+          },
+          "compatibility": {
+            "receipt": "current-public/exception_1_1-fallback1-compatibility.json",
+            "sha256": "b6b67e1aed0cf6e7fc4b164cebb3b99112a4d9f233330dd200f03249e9935fb7",
+            "log": "current-public/exception_1_1-fallback1-analysis.log",
+            "negative_log": "current-public/exception_1_1-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/exception_1_1-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/exception_1_1-fallback1-processing.json",
+            "sha256": "7dd8b6ec5422645ec15a2d88e2c9d19c1774a854f46d32b57a36c3b824c672c7"
+          }
         },
         {
           "id": "fallback2",
           "construction": "current-bundles/exception_1_1/fallback2/construction.json",
-          "construction_sha256": "345bece7b400f4b32a9ad4600e0bbf1446bd84ea3b40a84609c3f7497ad64eba",
+          "construction_sha256": "2352ded736c02fbfbfdcfb8915685a68aa25b19b1101d68be300107e5fbf8774",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "original overview camera full-body visibility",
             "failure_condition": "Original overview frames do not show both complete bodies around passage"
           },
           "changed_knobs": [
-            "overview_fov_deg"
-          ]
+            "subject_lateral_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1 --candidate fallback2 --output .runtime-work/c405647-1c-current-exception_1_1-fallback2-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2352ded736c02fbfbfdcfb8915685a68aa25b19b1101d68be300107e5fbf8774",
+            "log": "current-public/exception_1_1-fallback2-offline.log",
+            "log_sha256": "c2e576a54e9ca5171844431726b47d10b477d7501e9b884943b9f91ff0f82203"
+          },
+          "compatibility": {
+            "receipt": "current-public/exception_1_1-fallback2-compatibility.json",
+            "sha256": "975e14ae5023fff98e2843c68109dd0766b12debf838e50a613d5697f846105e",
+            "log": "current-public/exception_1_1-fallback2-analysis.log",
+            "negative_log": "current-public/exception_1_1-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/exception_1_1-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/exception_1_1-fallback2-processing.json",
+            "sha256": "b24cb23c74a81ebf554715fed1e1ff75e69ec9a0068fd7860bd67808e56a1546"
+          }
         }
       ],
       "candidate_risk": {
         "status": "physical",
-        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view."
+        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane."
       },
       "kind": "delivery",
       "id": "primary",
@@ -151,17 +541,152 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
+        "receipt": "physical-proof/exception_1_1/proof.json",
+        "sha256": "c4e5832191b229e27db112a6715756a2a7135a5df8525179d42238fd5b0e657c"
+      },
+      "acquisition": {
+        "approach_kind": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.cleared_line": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "emergency_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "qualifying_lamp_pixels": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "subject_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "video_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1 --candidate primary --output .runtime-work/c405647-1c-current-exception_1_1-primary-offline --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "b1fda2e67fa1b89fe0c222e2f83e10212e9cb4de78e530cdfcc0c1e62582d750",
+        "log": "current-public/exception_1_1-primary-offline.log",
+        "log_sha256": "a1313baf3d5620045b65576f5e0abbbc6b193f34abec3d6a784b9edcb79faee5"
+      },
+      "compatibility": {
+        "receipt": "current-public/exception_1_1-primary-compatibility.json",
+        "sha256": "3139400a5c2ab617e6c8b90e1d9d2058eba6cc5d7bfc4d2269aed20db8cf5817",
+        "log": "current-public/exception_1_1-primary-analysis.log",
+        "negative_log": "current-public/exception_1_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/exception_1_1-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-public/exception_1_1-primary-processing.json",
+        "sha256": "0695160526ac294673fe1f6573225f7b65561a028beab98b92a3e96c466a42ce"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-public/exception_1_1-primary-processing.json",
+        "test_log_sha256": "0695160526ac294673fe1f6573225f7b65561a028beab98b92a3e96c466a42ce"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "68d5833ee1f5ade09b99924b948a2e6020bd31ad751bad356909d805a9a49807",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/exception_1_1-positive.log",
+        "test_log_sha256": "1d6aba7799bfc8fe6453032ca8f48dc213c1574b3b7c7a2b98c30c89a728cba0",
+        "negative_log": "delivery-proof/exception_1_1-negative.log",
+        "negative_log_sha256": "e34fbb9bb975a3ce9a3ed0d17edd449a9d9fc4d0ff7d94d19363e73dee437506"
       }
     },
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2",
       "construction": "current-bundles/exception_1_2/primary/construction.json",
-      "construction_sha256": "8634ee62cc77f3c315f21e154787a407a4bc390cc5173ed8b086b0d2defb7c3d",
+      "construction_sha256": "9fd0e4451706130a65cd9dda8da500eb8104878e409d3933d46e711f99e670cb",
       "candidates": [
         {
           "id": "fallback1",
           "construction": "current-bundles/exception_1_2/fallback1/construction.json",
-          "construction_sha256": "e1dcb41015510c3e904dfaa35d79be108697d135eaf595fb5851538923af5480",
+          "construction_sha256": "7b35b6741454d3fa9aa8ef51e64f996a0cb6521f0fdf856478d016181f96757a",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "first_whole_body_passage_frame",
@@ -169,25 +694,65 @@
           },
           "changed_knobs": [
             "approach_initial_position_and_speed"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2 --candidate fallback1 --output .runtime-work/c405647-1c-current-exception_1_2-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7b35b6741454d3fa9aa8ef51e64f996a0cb6521f0fdf856478d016181f96757a",
+            "log": "current-public/exception_1_2-fallback1-offline.log",
+            "log_sha256": "9e3c1a606d299de0e5db4762ba755905fd9054b702a4f1233790ca0dd845e96a"
+          },
+          "compatibility": {
+            "receipt": "current-public/exception_1_2-fallback1-compatibility.json",
+            "sha256": "9337ca9d923e2a10fb0d49a83e326dca64ae7f154601453d158ac00ec6c1ef3b",
+            "log": "current-public/exception_1_2-fallback1-analysis.log",
+            "negative_log": "current-public/exception_1_2-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/exception_1_2-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/exception_1_2-fallback1-processing.json",
+            "sha256": "d0e3d022a990429769c4775c125b70b7cc967de6079938d60c794c50d61db353"
+          }
         },
         {
           "id": "fallback2",
           "construction": "current-bundles/exception_1_2/fallback2/construction.json",
-          "construction_sha256": "a9057f6f733af4f7e2f25709a9439e0d9580344c6af0c0cacc3a7b5557873c62",
+          "construction_sha256": "ea5120b478786df81edc588ed0565f3f393fbea98ecbeafe5353c48bac91f4ac",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "original overview camera full-body visibility",
             "failure_condition": "Original overview frames do not show both complete bodies around passage"
           },
           "changed_knobs": [
-            "overview_fov_deg"
-          ]
+            "subject_lateral_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2 --candidate fallback2 --output .runtime-work/c405647-1c-current-exception_1_2-fallback2-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ea5120b478786df81edc588ed0565f3f393fbea98ecbeafe5353c48bac91f4ac",
+            "log": "current-public/exception_1_2-fallback2-offline.log",
+            "log_sha256": "16099489271b8cbff880148b620529f0a80fe2c21c86f2c74b50a09731461dd3"
+          },
+          "compatibility": {
+            "receipt": "current-public/exception_1_2-fallback2-compatibility.json",
+            "sha256": "18d1ec1dc407564c617fc717ba0707e1d0b93e481775ed81250b6afab607b4ce",
+            "log": "current-public/exception_1_2-fallback2-analysis.log",
+            "negative_log": "current-public/exception_1_2-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/exception_1_2-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/exception_1_2-fallback2-processing.json",
+            "sha256": "92708b3cc67d47a3aa9dcb126c066f6ff82afd1b1954f725e12e2e2d8db33095"
+          }
         }
       ],
       "candidate_risk": {
         "status": "physical",
-        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view."
+        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane."
       },
       "kind": "delivery",
       "id": "primary",
@@ -201,17 +766,152 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2",
+        "receipt": "physical-proof/exception_1_2/proof.json",
+        "sha256": "1d0461329374b6d60a87bfb357b3f12e52460281543bd74d097c4d19c59d1bde"
+      },
+      "acquisition": {
+        "approach_kind": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.cleared_line": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "emergency_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "qualifying_lamp_pixels": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "subject_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "video_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2 --candidate primary --output .runtime-work/c405647-1c-current-exception_1_2-primary-offline --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9fd0e4451706130a65cd9dda8da500eb8104878e409d3933d46e711f99e670cb",
+        "log": "current-public/exception_1_2-primary-offline.log",
+        "log_sha256": "3a739de41e7f472d4470f01aad1a31347280db66dbec14300c8d5841f751d842"
+      },
+      "compatibility": {
+        "receipt": "current-public/exception_1_2-primary-compatibility.json",
+        "sha256": "9b8429004f66486196751edba527200173bcbe570c2c70bc8e362132ff1b890c",
+        "log": "current-public/exception_1_2-primary-analysis.log",
+        "negative_log": "current-public/exception_1_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/exception_1_2-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-public/exception_1_2-primary-processing.json",
+        "sha256": "a77cf79d4e9a1b15f69d0bdbe3e4b018be2f365f427d525aaad266f35586e617"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-public/exception_1_2-primary-processing.json",
+        "test_log_sha256": "a77cf79d4e9a1b15f69d0bdbe3e4b018be2f365f427d525aaad266f35586e617"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "68d5833ee1f5ade09b99924b948a2e6020bd31ad751bad356909d805a9a49807",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__exception_1_2",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/exception_1_2-positive.log",
+        "test_log_sha256": "f495188356d2a852a9f30c0f404dc9069b849493dff9e9f4f37665aaf8ce0feb",
+        "negative_log": "delivery-proof/exception_1_2-negative.log",
+        "negative_log_sha256": "e34fbb9bb975a3ce9a3ed0d17edd449a9d9fc4d0ff7d94d19363e73dee437506"
       }
     },
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
       "construction": "current-bundles/official_1/primary/construction.json",
-      "construction_sha256": "2ce581c6ed4126ac0aec433ca538caee207ded9499e185d42b2bc7b892c8e0ce",
+      "construction_sha256": "18ddc3d538762f4b26f2881a278f9561b68cd39a004724a7642c9a0df8b2c7e8",
       "candidates": [
         {
           "id": "fallback1",
           "construction": "current-bundles/official_1/fallback1/construction.json",
-          "construction_sha256": "1dd6e03fd7cbf52d38017cb89fb36f500cda08cb6636c6447de77891d3bda7c1",
+          "construction_sha256": "b96f74b9459a787aadb845569efc04ede426c53e80b9a2f10daffa5829a9a200",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "first_whole_body_passage_frame",
@@ -219,25 +919,65 @@
           },
           "changed_knobs": [
             "approach_initial_position_and_speed"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1 --candidate fallback1 --output .runtime-work/c405647-1c-current-official_1-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b96f74b9459a787aadb845569efc04ede426c53e80b9a2f10daffa5829a9a200",
+            "log": "current-public/official_1-fallback1-offline.log",
+            "log_sha256": "3c19f58189285b00d63fbbed767e27e838c0942b69a89dc5e9a417651f8a8c03"
+          },
+          "compatibility": {
+            "receipt": "current-public/official_1-fallback1-compatibility.json",
+            "sha256": "c076bccc5efa4104b9eba1dab8b96140177452a0afe0113861d6c09ffd85b1dc",
+            "log": "current-public/official_1-fallback1-analysis.log",
+            "negative_log": "current-public/official_1-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/official_1-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/official_1-fallback1-processing.json",
+            "sha256": "8f7364df54054007cbe4005a49b500981365862f16b9df3739a2fb99a710a717"
+          }
         },
         {
           "id": "fallback2",
           "construction": "current-bundles/official_1/fallback2/construction.json",
-          "construction_sha256": "d4e2a87f0a0fb3771fcd4aa3f407c0b4f227817310f50a406cfd52ac81571cbb",
+          "construction_sha256": "09f6064971d39a75a57e12bac2a7d35d471b68456bfafa0ed9d4296d4c8bfa2f",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "original overview camera full-body visibility",
             "failure_condition": "Original overview frames do not show both complete bodies around passage"
           },
           "changed_knobs": [
-            "overview_fov_deg"
-          ]
+            "subject_lateral_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1 --candidate fallback2 --output .runtime-work/c405647-1c-current-official_1-fallback2-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "09f6064971d39a75a57e12bac2a7d35d471b68456bfafa0ed9d4296d4c8bfa2f",
+            "log": "current-public/official_1-fallback2-offline.log",
+            "log_sha256": "9b3337409db03b362d72aaf55fa0d27e69c40031505409af02fbcce3c37f7c6e"
+          },
+          "compatibility": {
+            "receipt": "current-public/official_1-fallback2-compatibility.json",
+            "sha256": "39dedcea4e53ca770b63db8c638e2545bfc8d902121835eb49c46454d2d8f9e2",
+            "log": "current-public/official_1-fallback2-analysis.log",
+            "negative_log": "current-public/official_1-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/official_1-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/official_1-fallback2-processing.json",
+            "sha256": "03963902830459b1e80a5cbbe7fb06388c58af2fcafdd3eeb01fd1b6525f8424"
+          }
         }
       ],
       "candidate_risk": {
         "status": "physical",
-        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view."
+        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane."
       },
       "kind": "delivery",
       "id": "primary",
@@ -251,17 +991,152 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
+        "receipt": "physical-proof/official_1/proof.json",
+        "sha256": "69ae213cd388d247601d30eafbf73d0f23cebdee162d91ac6bfceeefb4fe82a9"
+      },
+      "acquisition": {
+        "approach_kind": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.cleared_line": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "emergency_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "qualifying_lamp_pixels": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "subject_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "video_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1 --candidate primary --output .runtime-work/c405647-1c-current-official_1-primary-offline --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "18ddc3d538762f4b26f2881a278f9561b68cd39a004724a7642c9a0df8b2c7e8",
+        "log": "current-public/official_1-primary-offline.log",
+        "log_sha256": "23a13756692518d71bfee8e854c193399e1264d9b1fecf1460baeac83b8ee782"
+      },
+      "compatibility": {
+        "receipt": "current-public/official_1-primary-compatibility.json",
+        "sha256": "27694292fc55c3ec933f2a413824b9be6b6e6154ef094b3e056cd5f3751ddea6",
+        "log": "current-public/official_1-primary-analysis.log",
+        "negative_log": "current-public/official_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/official_1-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-public/official_1-primary-processing.json",
+        "sha256": "dd7c712d5878041f9ce865ef69481026edd00714d24fd9d1c155bed4868e7c4c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-public/official_1-primary-processing.json",
+        "test_log_sha256": "dd7c712d5878041f9ce865ef69481026edd00714d24fd9d1c155bed4868e7c4c"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "68d5833ee1f5ade09b99924b948a2e6020bd31ad751bad356909d805a9a49807",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/official_1-positive.log",
+        "test_log_sha256": "6c50efa761c521d00b97fe277523df2ff14439343a39ff22187c12b35cce1ecf",
+        "negative_log": "delivery-proof/official_1-negative.log",
+        "negative_log_sha256": "e34fbb9bb975a3ce9a3ed0d17edd449a9d9fc4d0ff7d94d19363e73dee437506"
       }
     },
     {
       "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2",
       "construction": "current-bundles/official_2/primary/construction.json",
-      "construction_sha256": "b0e11c0c80a1702184c3ec0cfebf884cbdd5b623dd2da88b6ebf7cf567ce9095",
+      "construction_sha256": "89a3b76abd61238fa30c0d9dcc1f403f80a6fd3c6b6d7e649454b477afc6bb7f",
       "candidates": [
         {
           "id": "fallback1",
           "construction": "current-bundles/official_2/fallback1/construction.json",
-          "construction_sha256": "8f97d3b45156b7b0d4059c02ef501abdeeb438bf9393191c39b4d7ffabe35795",
+          "construction_sha256": "c6fb5447608ad766c46301825f1264d5ed091079180cbd951c0a515694f79444",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "first_whole_body_passage_frame",
@@ -269,25 +1144,65 @@
           },
           "changed_knobs": [
             "approach_initial_position_and_speed"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2 --candidate fallback1 --output .runtime-work/c405647-1c-current-official_2-fallback1-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "c6fb5447608ad766c46301825f1264d5ed091079180cbd951c0a515694f79444",
+            "log": "current-public/official_2-fallback1-offline.log",
+            "log_sha256": "b1a08316b802b9077ce8313055f487f694370ead3cf37e339e583b8dd975e180"
+          },
+          "compatibility": {
+            "receipt": "current-public/official_2-fallback1-compatibility.json",
+            "sha256": "629c29d1c818c13f3eb3ad79e26e2f9a65e84fc9d3e457fcf641a6c23aca55a4",
+            "log": "current-public/official_2-fallback1-analysis.log",
+            "negative_log": "current-public/official_2-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "current-public/official_2-fallback1-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/official_2-fallback1-processing.json",
+            "sha256": "317a7e030dd23ed694a258b7206e858dada0b24c7aa63228c9a4b6c380f68b19"
+          }
         },
         {
           "id": "fallback2",
           "construction": "current-bundles/official_2/fallback2/construction.json",
-          "construction_sha256": "5c758f3792fe5bc886539502863cc84cc7b51132552d0dfc4da22ff26db6b643",
+          "construction_sha256": "fc449d39f9f5f0eaadbc25e6124529dd5c8f99f574f428a51af1aa59e8d83d0d",
           "trigger": {
             "source": "original Native observed-actors.jsonl",
             "metric": "original overview camera full-body visibility",
             "failure_condition": "Original overview frames do not show both complete bodies around passage"
           },
           "changed_knobs": [
-            "overview_fov_deg"
-          ]
+            "subject_lateral_offset_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2 --candidate fallback2 --output .runtime-work/c405647-1c-current-official_2-fallback2-offline --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "fc449d39f9f5f0eaadbc25e6124529dd5c8f99f574f428a51af1aa59e8d83d0d",
+            "log": "current-public/official_2-fallback2-offline.log",
+            "log_sha256": "64d6a8b6b430f5fa56d80c5f09319b687ac66fc9fa34d21c2af66bd6d19d3877"
+          },
+          "compatibility": {
+            "receipt": "current-public/official_2-fallback2-compatibility.json",
+            "sha256": "88d0b39e874b87e3ccdc06e094b0e9390a5680fbebd0119819afd1f430fa5e86",
+            "log": "current-public/official_2-fallback2-analysis.log",
+            "negative_log": "current-public/official_2-fallback2-negative.log"
+          },
+          "negative": {
+            "log": "current-public/official_2-fallback2-negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-public/official_2-fallback2-processing.json",
+            "sha256": "f29dd593e012d1512246725de69d24b96ca7d0e06a84fb0b5bc6ddc5d7bd9d6c"
+          }
         }
       ],
       "candidate_risk": {
         "status": "physical",
-        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view."
+        "reason": "Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane."
       },
       "kind": "delivery",
       "id": "primary",
@@ -301,6 +1216,141 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2",
+        "receipt": "physical-proof/official_2/proof.json",
+        "sha256": "ac735557d54fc22271afbf290b2600d069ed356a90e9f65ab4444679e0df1232"
+      },
+      "acquisition": {
+        "approach_kind": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.cleared_line": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "emergency_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "qualifying_lamp_pixels": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "subject_body": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        },
+        "video_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl, road_geometry.json, trace.jsonl, capture/evidence.jsonl",
+          "method": "original 20 Hz Native map/body/frame joins; diagnostic source is synthetic"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/current-execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2 --candidate primary --output .runtime-work/c405647-1c-current-official_2-primary-offline --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "89a3b76abd61238fa30c0d9dcc1f403f80a6fd3c6b6d7e649454b477afc6bb7f",
+        "log": "current-public/official_2-primary-offline.log",
+        "log_sha256": "3a6d56ce06bf533190f587209c5125f37d94a3bd1161218832c14fc31309b60b"
+      },
+      "compatibility": {
+        "receipt": "current-public/official_2-primary-compatibility.json",
+        "sha256": "758510191188d3234c534cc892bf2301c1b70099158463617bca9e64c6bda007",
+        "log": "current-public/official_2-primary-analysis.log",
+        "negative_log": "current-public/official_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "current-public/official_2-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-public/official_2-primary-processing.json",
+        "sha256": "8dcfdfcd88da9eab20dc640dbb8cddb805845a226e092d898ad60987fa0ae4ad"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-public/official_2-primary-processing.json",
+        "test_log_sha256": "8dcfdfcd88da9eab20dc640dbb8cddb805845a226e092d898ad60987fa0ae4ad"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "68d5833ee1f5ade09b99924b948a2e6020bd31ad751bad356909d805a9a49807",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-1c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-1c__motor_vehicle_driver__official_2",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/official_2-positive.log",
+        "test_log_sha256": "1460a6422b2cb9f468bc8f98fdcfcc8063a7810d07eb67b38026f4d872ddf7ec",
+        "negative_log": "delivery-proof/official_2-negative.log",
+        "negative_log_sha256": "e34fbb9bb975a3ce9a3ed0d17edd449a9d9fc4d0ff7d94d19363e73dee437506"
       }
     }
   ],

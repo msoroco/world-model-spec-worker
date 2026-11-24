@@ -59,7 +59,8 @@ def run(item):
 
 def main():
     items = [(suffix, candidate) for suffix in ('probe_a', 'probe_b', 'exception_1_1', 'exception_1_2', 'official_1', 'official_2')
-             for candidate in ('primary', 'fallback1', 'fallback2')]
+             for candidate in ('primary', 'fallback1', 'fallback2')
+             if '--only-fallback2' not in sys.argv or candidate == 'fallback2']
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(run, items))
     target = PUBLIC / 'candidate-compat-summary.json'

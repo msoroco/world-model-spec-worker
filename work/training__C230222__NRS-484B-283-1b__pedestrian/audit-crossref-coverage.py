@@ -24,6 +24,12 @@ def main():
     comparisons = {row['comparison_id']: row for row in plan['comparisons']}
     assert len(cases) == len(plan['cases']) == 10
     assert len(comparisons) == len(plan['comparisons']) == 5
+    summary = plan['candidate_plans']
+    assert summary['selected_case_count'] == 2
+    assert summary['unselected_crossref_survey_case_count'] == 8
+    assert summary['selected_execution_manifest'] == 'execution-manifest.json'
+    assert summary['selected_semantic_index'] == 'proposals/semantic-index.json'
+    assert summary['selected_physical_fixture_index'] == 'physical-proof/index.json'
     assert set(row['case_id'] for row in main_manifest['cases']) == {
         HERE.name + '__probe_1', HERE.name + '__probe_2'}
     assert set(comparisons[HERE.name + '__comparison']['case_ids']) == {

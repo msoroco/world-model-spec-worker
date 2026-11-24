@@ -31,15 +31,15 @@ def main():
         case = entry['case_id']
         suffix = case.rsplit('__', 1)[-1]
         number = suffix.rsplit('_', 1)[-1]
-        attempt = ROOT / '.runtime-work' / f'c230222-v2-r2-primary-compat-probe{number}b'
-        processing = ROOT / '.runtime-work' / f'c230222-v2-r2-primary-saved-probe{number}' / 'v0001/processing.json'
+        attempt = ROOT / '.runtime-work' / f'c230222-map-r3-probe_{number}-primary-compat'
+        processing = ROOT / '.runtime-work' / f'c230222-map-r3-probe_{number}-primary-saved' / 'v0001/processing.json'
         folder = HERE / 'delivery-proof' / suffix
         folder.mkdir(parents=True, exist_ok=True)
         base = [sys.executable, str(SCRIPT), '--case', case,
                 '--candidate', 'primary', '--attempt', str(attempt),
                 '--processing', str(processing)]
-        positive = base + ['--output', str(ROOT / '.runtime-work' / f'c230222-v2-r2-{suffix}-diagnostic-final.json'), '--diagnostic']
-        negative = base + ['--output', str(ROOT / '.runtime-work' / f'c230222-v2-r2-{suffix}-rejected-final.json')]
+        positive = base + ['--output', str(ROOT / '.runtime-work' / f'c230222-map-r3-{suffix}-diagnostic-final.json'), '--diagnostic']
+        negative = base + ['--output', str(ROOT / '.runtime-work' / f'c230222-map-r3-{suffix}-rejected-final.json')]
         positive_log, negative_log = folder / 'positive.log', folder / 'negative.log'
         positive_code = run(positive, positive_log)
         negative_code = run(negative, negative_log)

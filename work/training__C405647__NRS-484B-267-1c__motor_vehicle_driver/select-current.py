@@ -59,7 +59,7 @@ def main():
                                    'failure_condition': 'Primary source-bound whole-body passage is outside the 600-frame capture window'
                                                         if fallback['id'] == 'fallback1' else
                                                         'Original overview frames do not show both complete bodies around passage'}
-            fallback['changed_knobs'] = ['approach_initial_position_and_speed'] if fallback['id'] == 'fallback1' else ['overview_fov_deg']
+            fallback['changed_knobs'] = ['approach_initial_position_and_speed'] if fallback['id'] == 'fallback1' else ['subject_lateral_offset_m']
         for item in [case] + case['candidates']:
             construction = json.loads((HERE / item['construction']).read_text())
             construction['files'].append({'path': 'finalize.py', 'content': finalizer})

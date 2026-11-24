@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 
 from physical_audit import (CROSSREFS, validate_cross_reference_evidence,
-                            validate_cross_reference_review)
+                            validate_cross_reference_review, validate_native_road_source,
+                            validate_road_context)
 
 HERE = Path(__file__).resolve().parent
 
@@ -20,6 +21,14 @@ def rejected(review):
 def evidence_rejected(evidence, frames):
     try:
         validate_cross_reference_evidence(evidence, frames)
+    except ValueError:
+        return True
+    return False
+
+
+def road_rejected(context, road_sha):
+    try:
+        validate_road_context(context, road_sha)
     except ValueError:
         return True
     return False
@@ -61,6 +70,35 @@ def main():
     blank = {key: dict(value) for key, value in evidence.items()}
     blank['LVMC-11-30-060-A']['observation'] = '  '
     assert evidence_rejected(blank, [100, 101])
+    road_sha = 'a' * 64
+    road = {'source_kind': 'native_observation',
+            'frozen_cell': {'layout': 'road', 'maneuver': 'travel', 'control': 'curb'},
+            'authored_road_sha256': road_sha, 'native_road_sha256': 'b' * 64}
+    assert validate_road_context(road, road_sha) == 'b' * 64
+    for changed in ({**road, 'source_kind': 'synthetic_scene_request'},
+                    {**road, 'authored_road_sha256': 'c' * 64},
+                    {**road, 'native_road_sha256': ''},
+                    {**road, 'frozen_cell': {'layout': 'intersection', 'maneuver': 'travel',
+                                            'control': 'curb'}}):
+        assert road_rejected(changed, road_sha)
+    native_xml=b'<OpenDRIVE><road id="1"><objects /></road></OpenDRIVE>'
+    native_hash=hashlib.sha256(native_xml).hexdigest()
+    assert validate_native_road_source(native_xml,native_hash)['road_count']==1
+    for changed in (native_xml.replace(b'<objects />',b'<objects><object type="crosswalk" /></objects>'),
+                    native_xml.replace(b'</OpenDRIVE>',b'<junction id="2" /></OpenDRIVE>'),
+                    native_xml.replace(b'<objects />',b'<signals><signal id="3" /></signals>')):
+        try:
+            validate_native_road_source(changed,hashlib.sha256(changed).hexdigest())
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('Unexpected Native map context accepted')
+    try:
+        validate_native_road_source(native_xml,'0'*64)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Changed Native map hash accepted')
     receipt = {
         'format': 'c230222-physical-crossref-gate-proof-v1',
         'physical_audit_sha256': hashlib.sha256((HERE / 'physical_audit.py').read_bytes()).hexdigest(),
@@ -72,6 +110,10 @@ def main():
         'source_bound_evidence_control_accepted': 1,
         'wrong_frame_camera_missing_or_blank_evidence_controls_rejected': 4,
         'pending_review_template_rejected': True,
+        'original_road_context_control_accepted': 1,
+        'wrong_provenance_road_hash_native_hash_or_cell_controls_rejected': 4,
+        'generated_native_map_source_control_accepted': 1,
+        'native_map_crosswalk_junction_signal_or_hash_controls_rejected': 4,
         'original_native_capture_observed': False,
         'legal_verdict_claimed': False,
     }

@@ -3,7 +3,9 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
+import xml.etree.ElementTree as ET
 
 CAMERAS=('overview','approach','reference_corner','driver_reference')
 CROSSREFS=('NRS-484B-287-1c','NRS-484B-287-1d','NRS-484B-287-1e',
@@ -36,6 +38,32 @@ def validate_cross_reference_evidence(evidence, reviewed_frames):
     return evidence
 
 
+def validate_road_context(context, road_sha256):
+    if (not isinstance(context,dict) or
+        context.get('source_kind')!='native_observation' or
+        context.get('frozen_cell') != {'layout':'road','maneuver':'travel','control':'curb'} or
+        context.get('authored_road_sha256')!=road_sha256 or
+        not isinstance(context.get('native_road_sha256'),str) or
+        re.fullmatch(r'[0-9a-f]{64}',context['native_road_sha256']) is None):
+        raise ValueError('Original Native road and frozen curb cell source join required')
+    return context['native_road_sha256']
+
+
+def validate_native_road_source(content, expected_sha256):
+    if hashlib.sha256(content).hexdigest()!=expected_sha256:
+        raise ValueError('Generated Native map source hash differs')
+    root=ET.fromstring(content)
+    road_count=len(root.findall('road'))
+    junction_count=len(root.findall('junction'))
+    signal_count=len(root.findall('.//signals/signal'))
+    crosswalk_count=sum(item.get('type')=='crosswalk'
+                        for item in root.findall('.//objects/object'))
+    if road_count<1 or junction_count or signal_count or crosswalk_count:
+        raise ValueError('Generated Native map has unexpected intersection or device context')
+    return {'road_count':road_count,'junction_count':junction_count,
+            'signal_count':signal_count,'crosswalk_count':crosswalk_count}
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -59,6 +87,17 @@ def audit(attempt,review):
             data.get('native_capture_report_sha256')!=sha(capture_path) or
             data.get('provenance')!='original_native' or not data.get('reviewer')):
         raise ValueError('Independent original Native review binding required')
+    context_path=attempt/'curb-context.json'
+    context=read(context_path)
+    if data.get('curb_context_sha256')!=sha(context_path):
+        raise ValueError('Original Native curb context review binding required')
+    native_road_sha=validate_road_context(context,sha(attempt/'road.xodr'))
+    native_road_path=attempt/'native-road.xodr'
+    if context.get('native_road_source')!='native-road.xodr' or not native_road_path.is_file():
+        raise ValueError('Generated Native OpenDRIVE source required')
+    native_road_shape=validate_native_road_source(native_road_path.read_bytes(),native_road_sha)
+    if data.get('native_road_source_sha256')!=native_road_sha:
+        raise ValueError('Original Native map review binding required')
     checks=('curb_and_place_of_safety_pixels_verified','pedestrian_footprint_pixels_verified',
             'approaching_vehicle_pixels_verified','physical_completion_reviewed',
             'vehicle_response_reviewed','driver_yield_capability_reviewed')
@@ -88,6 +127,10 @@ def audit(attempt,review):
         decoded[camera]=600
     return {'format':'c230222-original-physical-review-v1','case_id':config['case_id'],
             'native_capture_report_sha256':sha(capture_path),
+            'curb_context_sha256':sha(context_path),
+            'authored_road_sha256':context['authored_road_sha256'],
+            'native_road_sha256':native_road_sha,
+            'native_road_shape':native_road_shape,
             'source_video_sha256':hashes,'decoded_frames':decoded,
             'reviewed_frames':frames,'cross_reference_applicability':crossrefs,
             'cross_reference_evidence':crossref_evidence,

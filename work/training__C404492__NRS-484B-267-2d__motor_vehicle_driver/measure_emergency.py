@@ -84,12 +84,18 @@ def measure(root):
         light_phases.append(em['flashing_light_phase_on'])
         if em['speed_mps']<=0:
             raise ValueError('Selected moving emergency branch not observed')
-        dx,dy=ego['x_m']-em['x_m'],ego['y_m']-em['y_m']
-        dot=math.cos(ego['heading_rad']-em['heading_rad'])
-        if dot<=0.5 or abs(dy)<=ego['half_width_m']+em['half_width_m']:
+        delta=ego['heading_rad']-em['heading_rad']
+        dot=math.cos(delta)
+        c,s=math.cos(em['heading_rad']),math.sin(em['heading_rad'])
+        world_dx,world_dy=ego['x_m']-em['x_m'],ego['y_m']-em['y_m']
+        dx=world_dx*c+world_dy*s
+        dy=-world_dx*s+world_dy*c
+        ego_long_extent=abs(math.cos(delta))*ego['half_length_m']+abs(math.sin(delta))*ego['half_width_m']
+        ego_lat_extent=abs(math.sin(delta))*ego['half_length_m']+abs(math.cos(delta))*ego['half_width_m']
+        if dot<=0.5 or abs(dy)<=ego_lat_extent+em['half_width_m']:
             raise ValueError('Selected same-direction adjacent-lane geometry absent')
-        a0,a1=ego['x_m']-ego['half_length_m'],ego['x_m']+ego['half_length_m']
-        b0,b1=em['x_m']-em['half_length_m'],em['x_m']+em['half_length_m']
+        a0,a1=dx-ego_long_extent,dx+ego_long_extent
+        b0,b1=-em['half_length_m'],em['half_length_m']
         derived.append({'video_frame':i,'native_frame':n,'time_s':t,
             'longitudinal_intervals_m':[[a0,a1],[b0,b1]],
             'longitudinal_overlap_length_m':max(0,min(a1,b1)-max(a0,b0)),

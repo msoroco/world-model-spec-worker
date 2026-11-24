@@ -43,7 +43,8 @@ def main():
   candidates=[]
   for candidate, approach_start, approach_step, overview_fov in (
     ('primary',-30,0.1,90),('fallback1',-35,0.115,90),
-    ('fallback2',-30,0.1,105)):
+    ('fallback2',-30,0.1,90)):
+   ego_x = 5.5 if candidate == 'fallback2' else 5.25
    rows=[]
    for i in range(600):
     moving=i>=release
@@ -51,8 +52,8 @@ def main():
     emergency_y=round(approach_start+i*approach_step,4)
     rows.append({'frame':i,'time_s':(i+1)/20,
       'source_kind':'authored_native_request',
-      'ego_center_xy_m':[5.25,ego_y],
-      'ego_body_xy_m':[[x,round(ego_y+y,4)] for x in (4.25,6.25) for y in (-2.25,2.25)],
+      'ego_center_xy_m':[ego_x,ego_y],
+      'ego_body_xy_m':[[x,round(ego_y+y,4)] for x in (ego_x-1,ego_x+1) for y in (-2.25,2.25)],
       'ego_speed_mps':0 if not moving else 0.4,
       'emergency_center_xy_m':[1.75,emergency_y],
       'emergency_body_xy_m':[[x,round(emergency_y+y,4)] for x in (0.75,2.75) for y in (-2.25,2.25)],
@@ -83,6 +84,8 @@ def main():
     'officer_direction_source_required':True,
     'original_passage_source_required':True,
     'cameras':cameras,'physical_completion':False,'legal_verdict':None}
+   if candidate == 'fallback2':
+    config['requested_subject_lateral_offset_m'] = 0.25
    check_config(config,road)
    track=''.join(json.dumps(r,separators=(',',':'),allow_nan=False)+'\n' for r in rows)
    test='''import copy\nimport json\nimport unittest\nfrom pathlib import Path\nfrom emergency_wait import check_config,read_and_measure\n\nclass ExactEmergency(unittest.TestCase):\n def setUp(self):self.config=json.loads(Path('config.json').read_text())\n def test_scope(self):\n  r=check_config(self.config,Path('emergency-road.xodr').read_text())\n  self.assertEqual(r['frames'],600)\n  self.assertFalse(r['actual_passing_observed'])\n def test_passage(self):\n  r=read_and_measure('requested-track.jsonl','authored_native_request')\n  self.assertEqual(r['requested_waits_through_whole_body_passage'],self.config['requested_release_frame']==360)\n def test_negative(self):\n  for key,value in [('frames',599),('qualifying_flashes_source_required',False),('physical_completion',True)]:\n   cfg=copy.deepcopy(self.config);cfg[key]=value\n   with self.assertRaises(ValueError):check_config(cfg,Path('emergency-road.xodr').read_text())\n  with self.assertRaises(ValueError):read_and_measure('requested-track.jsonl','original_native')\n'''
@@ -125,7 +128,7 @@ def main():
   cases.append({'case_id':case,'construction':candidates[0]['construction'],
    'construction_sha256':candidates[0]['construction_sha256'],'candidates':candidates[1:],
    'candidate_risk':{'status':'physical','reason':
-     'Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 widens overview field of view.'}})
+     'Full-body passage timing and camera coverage need Native readback; fallback1 shifts approach timing and fallback2 shifts subject placement within the same lane.'}})
  write(BASE/'draft-native-manifest.json',{
    'format':'worker-unselected-draft-construction-manifest-v1',
    'assignment_id':PREFIX,'status':'draft_not_selected','cases':cases,

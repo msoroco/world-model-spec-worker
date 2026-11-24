@@ -48,6 +48,21 @@ def main():
         assert beside['per_frame_geometry'][0]['longitudinal_overlap_length_m']==0
         assert beside['per_frame_geometry'][-1]['longitudinal_overlap_length_m']>0
         assert follow['relative_order_crossings']==beside['relative_order_crossings']==0
+        rotated=root/'rotated';fixture(rotated,True)
+        poses=[json.loads(line) for line in (rotated/'vehicle_poses.jsonl').read_text().splitlines()]
+        traces=[json.loads(line) for line in (rotated/'trace.jsonl').read_text().splitlines()]
+        for pose,trace in zip(poses,traces):
+            for actor in (pose['ego'],pose['emergency']):
+                actor['x_m'],actor['y_m']=-actor['y_m'],actor['x_m']
+                actor['heading_rad']=math.pi/2
+            x,y,z=trace['position_m']
+            trace['position_m']=[-y,x,z]
+            trace['heading_deg']=90
+        (rotated/'vehicle_poses.jsonl').write_text(''.join(json.dumps(p)+'\n' for p in poses))
+        (rotated/'trace.jsonl').write_text(''.join(json.dumps(t)+'\n' for t in traces))
+        turned=measure(rotated)
+        assert sum(r['longitudinal_overlap_length_m']>0 for r in turned['per_frame_geometry'])==299
+        assert turned['relative_order_crossings']==0
         c=json.loads((a/'emergency_context.json').read_text());c['emergency_vehicle_authorized']=False
         (a/'emergency_context.json').write_text(json.dumps(c)+'\n');reject(a)
         lines=(b/'vehicle_poses.jsonl').read_text().splitlines();r=json.loads(lines[200]);r['emergency']['flashing_light_phase_on']=None;lines[200]=json.dumps(r)
@@ -64,7 +79,8 @@ def main():
         lines[42]=json.dumps(pose);(b/'vehicle_poses.jsonl').write_text('\n'.join(lines)+'\n');reject(b)
         print(json.dumps({'follow_overlap_frames':0,
             'beside_overlap_frames':sum(r['longitudinal_overlap_length_m']>0 for r in beside['per_frame_geometry']),
-            'overtake_crossings':0,'negative_source_checks':6,'legal_result':None},sort_keys=True))
+            'overtake_crossings':0,'rotated_road_passed':True,
+            'negative_source_checks':6,'legal_result':None},sort_keys=True))
 
 
 if __name__=='__main__':main()

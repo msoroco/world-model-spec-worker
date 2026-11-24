@@ -45,15 +45,42 @@ def survey_check(s):
         raise ValueError('Officer direction exception missing')
     if len(s['ego_spawn_xyz_m'])!=3 or len(s['emergency_spawn_xyz_m'])!=3:
         raise ValueError('Original vehicle transforms missing')
-    gap=s['ego_spawn_xyz_m'][0]-s['emergency_spawn_xyz_m'][0]
-    suffix=config()['case_suffix']
+    heading=s.get('travel_heading_deg')
+    if type(heading) not in (int,float) or not math.isfinite(heading):
+        raise ValueError('Reviewed same-direction road heading missing')
+    angle=math.radians(heading)
+    dx=s['ego_spawn_xyz_m'][0]-s['emergency_spawn_xyz_m'][0]
+    dy=s['ego_spawn_xyz_m'][1]-s['emergency_spawn_xyz_m'][1]
+    gap=dx*math.cos(angle)+dy*math.sin(angle)
+    lateral=-dx*math.sin(angle)+dy*math.cos(angle)
     if abs(gap-config()['engineering_initial_ego_gap_m'])>0.5:
         raise ValueError('Selected engineering spawn gap differs')
-    if abs(s['ego_spawn_xyz_m'][1]-s['emergency_spawn_xyz_m'][1])<2.5:
+    if abs(lateral)<2.5:
         raise ValueError('Separate adjacent-lane trajectories required')
     if set(s['camera_world_transforms'])!=set(CAMERAS):
         raise ValueError('Four camera transforms required')
     return s
+
+
+def validate_native_lane_pair(ego_waypoint, emergency_waypoint, travel_heading_deg):
+    """Require two adjacent, same-direction driving lanes on one Native road."""
+    if ego_waypoint is None or emergency_waypoint is None:
+        raise ValueError('Native spawn is outside a driving lane')
+    ego_road, emergency_road = ego_waypoint.road_id, emergency_waypoint.road_id
+    ego_lane, emergency_lane = ego_waypoint.lane_id, emergency_waypoint.lane_id
+    if (type(ego_road) is not int or type(emergency_road) is not int
+            or ego_road != emergency_road or type(ego_lane) is not int
+            or type(emergency_lane) is not int or ego_lane * emergency_lane <= 0
+            or abs(ego_lane - emergency_lane) != 1):
+        raise ValueError('Native spawns are not adjacent same-direction lanes on one road')
+    for waypoint in (ego_waypoint, emergency_waypoint):
+        yaw = waypoint.transform.rotation.yaw
+        if type(yaw) not in (int, float) or not math.isfinite(yaw):
+            raise ValueError('Native lane heading absent')
+        if math.cos(math.radians(yaw - travel_heading_deg)) < math.cos(math.radians(30)):
+            raise ValueError('Native lane heading differs from reviewed travel axis')
+    return {'road_id': ego_road, 'ego_lane_id': ego_lane,
+            'emergency_lane_id': emergency_lane}
 
 
 def transform(carla,xyz,rotation):
@@ -73,13 +100,21 @@ def execute(output,survey,host,port):
     saved=snapshot(client);world=client.get_world()
     if world.get_map().name!=survey['map_name'] or saved['settings'].synchronous_mode:
         raise RuntimeError('Reviewed map and exclusive asynchronous world required')
+    native_map=world.get_map()
+    ego_xyz,emergency_xyz=survey['ego_spawn_xyz_m'],survey['emergency_spawn_xyz_m']
+    ego_waypoint=native_map.get_waypoint(carla.Location(x=ego_xyz[0],y=ego_xyz[1],z=ego_xyz[2]),
+        project_to_road=False,lane_type=carla.LaneType.Driving)
+    emergency_waypoint=native_map.get_waypoint(carla.Location(x=emergency_xyz[0],y=emergency_xyz[1],z=emergency_xyz[2]),
+        project_to_road=False,lane_type=carla.LaneType.Driving)
+    native_lanes=validate_native_lane_pair(ego_waypoint,emergency_waypoint,survey['travel_heading_deg'])
     actors=[];encoders={};queues={}
     try:
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=1/RATE
         world.apply_settings(settings)
         lib=world.get_blueprint_library()
-        ego=world.try_spawn_actor(lib.find(survey['ego_blueprint']),transform(carla,survey['ego_spawn_xyz_m'],[0,0,0]))
-        emergency=world.try_spawn_actor(lib.find(survey['emergency_blueprint']),transform(carla,survey['emergency_spawn_xyz_m'],[0,0,0]))
+        heading=survey['travel_heading_deg']
+        ego=world.try_spawn_actor(lib.find(survey['ego_blueprint']),transform(carla,survey['ego_spawn_xyz_m'],[0,heading,0]))
+        emergency=world.try_spawn_actor(lib.find(survey['emergency_blueprint']),transform(carla,survey['emergency_spawn_xyz_m'],[0,heading,0]))
         if ego is None or emergency is None:raise RuntimeError('Reviewed vehicle blueprint spawn failed')
         actors.extend((ego,emergency));output.mkdir(parents=True,exist_ok=True)
         special=carla.VehicleLightState.Special1
@@ -103,9 +138,11 @@ def execute(output,survey,host,port):
             for i in range(COUNT):
                 phase=(i//10)%2==0
                 emergency.set_light_state(carla.VehicleLightState(special if phase else 0))
-                emergency.set_target_velocity(carla.Vector3D(x=4,y=0,z=0))
+                travel_rad=math.radians(heading)
+                travel_x,travel_y=math.cos(travel_rad),math.sin(travel_rad)
+                emergency.set_target_velocity(carla.Vector3D(x=4*travel_x,y=4*travel_y,z=0))
                 ego_requested=5 if cfg['case_suffix']=='controlled_2' and i<380 else 4
-                ego.set_target_velocity(carla.Vector3D(x=ego_requested,y=0,z=0))
+                ego.set_target_velocity(carla.Vector3D(x=ego_requested*travel_x,y=ego_requested*travel_y,z=0))
                 native=world.tick();snap=world.get_snapshot()
                 if snap.frame!=native:raise RuntimeError('Original Native frame mismatch')
                 if first is None:first=snap.timestamp.elapsed_seconds
@@ -141,6 +178,7 @@ def execute(output,survey,host,port):
             'case_id':cfg['case_id'],
             'review_kind':'original_source_review','ego_actor_id':ego.id,
             'emergency_actor_id':emergency.id,'qualification_review_required':True,
+            'native_lane_pair':native_lanes,
             'camera_sha256':{}},indent=2)+'\n')
         return {'case_id':cfg['case_id'],'original_frames':COUNT,'physical_acceptance_claimed':False}
     finally:
