@@ -1,9 +1,9 @@
 {
   "assignment_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver",
   "input_sha256": "503f25c3e0b0aa67108a6e6aad36d0d217d3bf1a92bc3ad7b3ea72575306b459",
-  "status": "partial",
-  "reason": "Two controlled Native constructions and paired shared fallbacks have current offline CPU proof. Public source-bound compatibility passed for controlled_1 primary, controlled_2 primary and controlled_1 fallback1; saved-only processing passed for controlled_1 primary. Controlled_2 fallback compatibility, remaining saved-only chains, selected execution manifest, semantic proposals and independent delivery audit remain unfinished. No physical or legal acceptance is claimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "CPU preparation proofs, selected manifest, semantic sweep, source-bound compatibility receipts, saved-only chains, and delivery audit self-tests validate. Native physical, public-highway, actual impediment and legal facts remain for independent GPU delivery review.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
   "candidate_count": 4,
   "source_law_review": "Exact NRS 484B.627(1)(a) and frozen witness reviewed. Activation needs motor-vehicle driver/operator, slow operation that impedes immediately following traffic, one lane each direction and width of paved portion permitting rightward movement. Extreme-right placement and conditional NRS 484B.630 compliance are separate; no speed, gap, lateral distance or duration is treated as a legal cutoff. Public highway status, actual impediment and 484B.630 applicability need independent evidence.",
@@ -11,7 +11,7 @@
   "reuse_count": 0,
   "unresolved_branch_count": 1,
   "applied_update": 16,
-  "selected_delivery_case_count": 0,
+  "selected_delivery_case_count": 2,
   "tests": [
     {
       "command": "runtime.py preflight",
@@ -32,60 +32,118 @@
       "sha256": "62f58e20cdae0d88f6ab0f8621b6eba4124d8512ea4972c5e9212a002395a956"
     },
     {
+      "command": "audit_comparison.py selected fixtures",
+      "exit_code": 0,
+      "log": "selected-source-comparison.log",
+      "sha256": "41314d9bd289ea3bb5730286c3f1930e6f61c3bc198e9a2dd7fed8ca1a458353"
+    },
+    {
       "command": "runtime.py offline controlled_1 primary",
       "exit_code": 0,
       "log": "controlled-1-primary-offline.log",
-      "sha256": "7d1d7490e358c7a22950ceac576fff74305e697f129a32db9aef11dba7d68e27"
-    },
-    {
-      "command": "runtime.py offline controlled_1 fallback1",
-      "exit_code": 0,
-      "log": "controlled-1-fallback1-offline.log",
-      "sha256": "e9fdf4c8be599385cb3ee906eba6898876e9322f4748ce1bc96006a118c6b492"
-    },
-    {
-      "command": "runtime.py offline controlled_2 primary",
-      "exit_code": 0,
-      "log": "controlled-2-primary-offline.log",
-      "sha256": "f7d623389c7eefe8865d9a256ea7350c91bfa3b86bfef9aebd017669f6799e38"
-    },
-    {
-      "command": "runtime.py offline controlled_2 fallback1",
-      "exit_code": 0,
-      "log": "controlled-2-fallback1-offline.log",
-      "sha256": "541e12a852800d4d1b74d400fcc649074682c20f030b1f887ab8e7d13b99a416"
+      "sha256": "573b8664a0178474f73627581c807ec916be6b257e821e5042378c12e55921b4"
     },
     {
       "command": "runtime.py compatibility controlled_1 primary",
       "exit_code": 0,
       "log": "compatibility/controlled_1-primary-compatibility.json",
-      "sha256": "9214077cd327452224208a92c32c0120173c4664a30cfabbabe53df8549a11e6"
-    },
-    {
-      "command": "runtime.py compatibility controlled_1 fallback1",
-      "exit_code": 0,
-      "log": "compatibility/controlled_1-fallback1-compatibility.json",
-      "sha256": "e9839cbd68ef38746cfe9aa8a2d72756628daaacf972b713ae9d7a0be175a0f6"
-    },
-    {
-      "command": "runtime.py compatibility controlled_2 primary",
-      "exit_code": 0,
-      "log": "compatibility/controlled_2-primary-compatibility.json",
-      "sha256": "046b6e45944997600dfe4b8e0a5cf771ff90d42bfd99eff5413af132a5c003ac"
+      "sha256": "39f554797aa66e017038407ccf9128e383267dc25286c9f569c9dfb120f9580b"
     },
     {
       "command": "runtime.py process-saved controlled_1 primary",
       "exit_code": 0,
       "log": "saved-controlled_1-primary-processing.json",
-      "sha256": "6b31a2e7f00bcc5d000f20c5111c6eb3837e242a656bd1ec7e7e3197dc9f528f"
+      "sha256": "8ab46f894ca61d23a9923ec7b689dee9b7a53975313ad9927df0e4a36e2cc0fb"
     },
     {
-      "command": "worker_check.py --assignment ID --complete",
+      "command": "runtime.py offline controlled_1 fallback1",
       "exit_code": 0,
-      "log": "HANDOFF.md"
+      "log": "controlled-1-fallback1-offline.log",
+      "sha256": "cb9f9651a3e572810733c2f88ee161f04b339bf1c700c8e644730e362898093e"
+    },
+    {
+      "command": "runtime.py compatibility controlled_1 fallback1",
+      "exit_code": 0,
+      "log": "compatibility/controlled_1-fallback1-compatibility.json",
+      "sha256": "fb8f57d4840e1ac5bcfc54da764f36d984b940856535bdd2c819dd3af7bcbe0d"
+    },
+    {
+      "command": "runtime.py process-saved controlled_1 fallback1",
+      "exit_code": 0,
+      "log": "saved-controlled_1-fallback1-processing.json",
+      "sha256": "48c590fa59699900b31d0cce6d5113cd4a30292d0269e69d0b5eb6bac9ca49f7"
+    },
+    {
+      "command": "physical_preparation.py --build controlled_1",
+      "exit_code": 0,
+      "log": "physical-proof/controlled_1/proof.json",
+      "sha256": "c2fce0c14de1ad9cda7f31359393bdd09c7e231e72364fd8b240618e85b971a0"
+    },
+    {
+      "command": "delivery_audit.py controlled_1 --self-test",
+      "exit_code": 0,
+      "log": "delivery-proofs/controlled_1-positive.log",
+      "sha256": "e8132c7e519593dda505a5740c2af77400af423969750f8b1a68a7ad7fd3bb4a"
+    },
+    {
+      "command": "runtime.py offline controlled_2 primary",
+      "exit_code": 0,
+      "log": "controlled-2-primary-offline.log",
+      "sha256": "b88aecad6b5c55b1bc86c80963eeb8019aed936f542c2abde2dc51c74e251603"
+    },
+    {
+      "command": "runtime.py compatibility controlled_2 primary",
+      "exit_code": 0,
+      "log": "compatibility/controlled_2-primary-compatibility.json",
+      "sha256": "b735db5304d285a7f831db5293544dea1559b2955a8635b802822f0ed1e8b8c0"
+    },
+    {
+      "command": "runtime.py process-saved controlled_2 primary",
+      "exit_code": 0,
+      "log": "saved-controlled_2-primary-processing.json",
+      "sha256": "44da48f529aeaf106cceab9b8831cefed4fe33794d7eba03bbd45aa22dd4027f"
+    },
+    {
+      "command": "runtime.py offline controlled_2 fallback1",
+      "exit_code": 0,
+      "log": "controlled-2-fallback1-offline.log",
+      "sha256": "6aa765deca6e1b86a1dba54d4681b568c3a25df4d6e77a728541a42644d5f4f9"
+    },
+    {
+      "command": "runtime.py compatibility controlled_2 fallback1",
+      "exit_code": 0,
+      "log": "compatibility/controlled_2-fallback1-compatibility.json",
+      "sha256": "7b54c028d56a259c733fe3b549bdcd82b2005aa9739afecd48527fe34f3f9e25"
+    },
+    {
+      "command": "runtime.py process-saved controlled_2 fallback1",
+      "exit_code": 0,
+      "log": "saved-controlled_2-fallback1-processing.json",
+      "sha256": "3152c7742456cfb1d42ddc5cb7d56cea3d2342377c14dc6a3d098555561c326d"
+    },
+    {
+      "command": "physical_preparation.py --build controlled_2",
+      "exit_code": 0,
+      "log": "physical-proof/controlled_2/proof.json",
+      "sha256": "b18523fa325b7c38bd2caa49a07689a421f1a72f5a945377d88b6739723dd1d0"
+    },
+    {
+      "command": "delivery_audit.py controlled_2 --self-test",
+      "exit_code": 0,
+      "log": "delivery-proofs/controlled_2-positive.log",
+      "sha256": "08bca226b273b1374813522c409293f7b242043ced393c0e464b206c8de1283d"
+    },
+    {
+      "command": "semantic_delivery.validate",
+      "exit_code": 0,
+      "log": "proposals/semantic-index.json",
+      "sha256": "53d718947f0906bcecf10f3bf5055dcb6687a0bb29abaca20b96d1a84f70c465"
     }
   ],
   "remaining_gpu_checks": [
     "Actual Native motion, public-highway and paved-width status, traffic impediment, original camera pixels and canonical acceptance after CPU preparation"
-  ]
+  ],
+  "selected_executable_case_count": 2,
+  "execution_manifest_sha256": "5eca4360a80f94fbe1f4786bf8981b38b4925f65bf55db99584fc9121e193de4",
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230259__NRS-484B-627-1a__motor_vehicle_driver --case training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

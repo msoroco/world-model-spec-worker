@@ -8,7 +8,7 @@ from saved import process
 
 SOURCES = ("native-raw-actors.jsonl", "video_frames.jsonl", "review.json",
            "trace.jsonl", "capture/evidence.jsonl")
-VIDEOS = ("overview.mkv", "forward.mkv", "stripe_side.mkv", "rear.mkv")
+VIDEOS = ("overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv")
 
 
 def sha(path):

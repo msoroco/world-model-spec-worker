@@ -19,14 +19,15 @@ def main():
     proposal_cases=[]
     for suffix,right in CASES:
         case=ASSIGNMENT+'__'+suffix
-        config={'case_id':case,'selected_case_id':case,'supported_case_ids':[case],
+        config={'case_id':case,'selected_case_id':case,'supported_case_ids':[ASSIGNMENT+'__'+item for item,_ in CASES],
                 'candidate_id':'primary','law_id':'NRS-484B-627-1a','cell_id':'C230259',
                 'actor':'motor_vehicle_driver','extreme_right_requested':right,
                 'initial_follower_gap_m':18,
                 'rate_hz':20,'duration_s':30,'required_atoms':[],'source_packets':[],
                 'case':{'case_id':case},
                 'cameras':[{'name':name,'width':1920 if name=='overview' else 1280,
-                            'height':1080 if name=='overview' else 720} for name in
+                            'height':1080 if name=='overview' else 720,
+                            'fov_deg':85,'pose_strategy':'fixed authored highway segment vantage'} for name in
                     ('overview','approach','reference_corner','driver_reference')],
                 'recording_description':{'channels':[
                     {'name':'participant_footprints','unit':'structured','sampling_rate_hz':20,

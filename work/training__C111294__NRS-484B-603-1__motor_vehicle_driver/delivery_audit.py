@@ -39,6 +39,8 @@ def check_result(result, case):
         required.update(('pedestrian_pose', 'pedestrian_hazard'))
     if 'obstruction_probe' in case:
         required.update(('obstruction_pose', 'highway_obstruction'))
+    if 'crest_probe' in case:
+        required.add('crest_design')
     if not required <= names:
         raise ValueError('Ego, other-traffic or weather recording missing')
     if not result.get('target_checks') or not result.get('realized_observables'):
@@ -100,6 +102,19 @@ def check_review(review, attempt, frame_map, trace, case):
         if any(row.get('obstruction_blueprint') != 'static.prop.streetbarrier' or
                not row.get('obstruction_position_m') for row in samples):
             raise ValueError('Highway obstruction missing from original Native samples')
+    if 'crest_probe' in case:
+        for name in ('context.json', 'capture/evidence.jsonl'):
+            expected[name] = source(attempt, name)
+        context = json.loads(expected['context.json'].read_text())
+        evidence = [json.loads(line) for line in expected['capture/evidence.jsonl'].read_text().splitlines()]
+        samples = [json.loads(line) for line in expected['native_samples.jsonl'].read_text().splitlines()]
+        heights = [row['ego_position_m'][2] for row in samples]
+        peak = max(range(20, 400), key=lambda i: heights[i]) if len(heights) == 600 else 0
+        if (context.get('crest_design', {}).get('peak_station_m') != 200 or
+                len(evidence) != 600 or len(heights) != 600 or peak <= 20 or
+                heights[peak] - min(heights[:peak]) < .5 or
+                heights[peak] - min(heights[peak + 1:500]) < .5):
+            raise ValueError('Original hill crest grade and ego rise/fall unverified')
     for name, path in expected.items():
         if review.get('source_sha256', {}).get(name) != digest(path):
             raise ValueError('Review lacks exact original source hash: ' + name)
@@ -111,6 +126,8 @@ def check_review(review, attempt, frame_map, trace, case):
         raise ValueError('Original pedestrian review incomplete')
     if 'obstruction_probe' in case and any(row.get('highway_obstruction_reviewed') is not True for row in rows):
         raise ValueError('Original highway obstruction review incomplete')
+    if 'crest_probe' in case and any(row.get('hill_crest_reviewed') is not True for row in rows):
+        raise ValueError('Original hill crest review incomplete')
 
 
 def audit(args):
@@ -154,7 +171,7 @@ def selftest(case, negative):
               'accepted': False, 'legal_verdict_claimed': False, 'setup_confirmed': False,
               'behavior_attempted': True, 'maneuver_completed': True, 'target_checks': [{'target': 'speed_profile', 'matched': True}],
               'realized_observables': {'ego_speed': {'value': 10}},
-              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'pedestrian_pose', 'pedestrian_hazard') if 'pedestrian_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'obstruction_pose', 'highway_obstruction') if 'obstruction_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
+              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'pedestrian_pose', 'pedestrian_hazard') if 'pedestrian_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'obstruction_pose', 'highway_obstruction') if 'obstruction_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'crest_design') if 'crest_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
               'measured_values': {'frames': 600, 'approach_start_mph': 28.8, 'preentry_mph': 20.0,
                                   'crossing_peak_mph': 20.0, 'measured_decrease_mph': 8.8,
                                   'reduction_necessity_legally_verified': False}}

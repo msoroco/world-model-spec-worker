@@ -32,7 +32,7 @@
         "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_1",
         "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Paired primary and shared fallback1 Native constructions pass pinned offline checks; recorded-only finalizer and independent comparison pass source-shaped positive/negative CPU proofs. Selected compatibility/saved processing, canonical semantic proposals, independent delivery audit and original physical evidence remain pending."
+      "evidence_or_gap": "Two selected Native constructions and shared fallback1 sources have current offline, compatibility and saved-only CPU proofs; original physical and legal facts remain for independent local review."
     }
   ],
   "neutral_baseline": {
@@ -126,44 +126,14 @@
   ],
   "observations": [
     {
-      "name": "drv.speed_below_traffic",
+      "name": "participant_footprints",
       "mandatory": true,
-      "reason": "the speed so slow as to impede the traffic behind"
+      "reason": "Original subject/follower bodies, lane placement and paved-edge geometry"
     },
     {
-      "name": "drv.queue_behind",
+      "name": "participant_velocity_and_intent",
       "mandatory": true,
-      "reason": "the traffic immediately behind"
-    },
-    {
-      "name": "st.lane_adjacency",
-      "mandatory": true,
-      "reason": "one lane in each direction"
-    },
-    {
-      "name": "st.lane_width",
-      "mandatory": true,
-      "reason": "whether the paved width permits"
-    },
-    {
-      "name": "st.road_edge",
-      "mandatory": true,
-      "reason": "the extreme right side of the highway"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the lateral position taken"
-    },
-    {
-      "name": "st.turnout",
-      "mandatory": true,
-      "reason": "the turnout rule the text then invokes"
-    },
-    {
-      "name": "kin.speed",
-      "mandatory": true,
-      "reason": "the subject's speed"
+      "reason": "Original subject/follower speeds and controller command readback"
     }
   ],
   "sources": [
@@ -179,7 +149,7 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Paired primary and shared fallback1 Native constructions pass pinned offline checks; recorded-only finalizer and independent comparison pass source-shaped positive/negative CPU proofs. Selected compatibility/saved processing, canonical semantic proposals, independent delivery audit and original physical evidence remain pending.",
+    "Selected CPU package and source-shaped trials pass, but original Native, public-highway status, actual impediment and legal applicability remain unverified.",
     "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
     "No CARLA execution or accepted recording is claimed.",
     "NRS 484B.630 applicability and public-highway status require independent sources."
@@ -189,9 +159,7 @@
     "Actor blueprint and route can realize each requested behavior",
     "Decisive physical distinction can be seen by retained cameras"
   ],
-  "blockers": [
-    "Paired primary and shared fallback1 Native constructions pass pinned offline checks; recorded-only finalizer and independent comparison pass source-shaped positive/negative CPU proofs. Selected compatibility/saved processing, canonical semantic proposals, independent delivery audit and original physical evidence remain pending."
-  ],
+  "blockers": [],
   "source_context_review": "Activation requires objectively slow operation impeding an immediate follower, one lane each way and sufficient paved width. Extreme-right placement and NRS 484B.630 compliance are separate duties.",
   "source_observation_mapping": {
     "drv.speed_below_traffic": {
@@ -215,20 +183,14 @@
     },
     "st.lane_adjacency": {
       "evidence": "Original Native sources and saved meter provide diagnostic measurements; physical causation and legal applicability remain unverified.",
-      "channels": [
-        "slow-traffic-context.json",
-        "road.xodr"
-      ],
+      "channels": [],
       "source_refs": [
         "inputs/training__C230259__NRS-484B-627-1a__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_width": {
       "evidence": "Original Native sources and saved meter provide diagnostic measurements; physical causation and legal applicability remain unverified.",
-      "channels": [
-        "slow-traffic-context.json",
-        "road.xodr"
-      ],
+      "channels": [],
       "source_refs": [
         "inputs/training__C230259__NRS-484B-627-1a__motor_vehicle_driver/assignment.json"
       ]
@@ -236,8 +198,7 @@
     "st.road_edge": {
       "evidence": "Original Native sources and saved meter provide diagnostic measurements; physical causation and legal applicability remain unverified.",
       "channels": [
-        "participant_footprints",
-        "slow-traffic-context.json"
+        "participant_footprints"
       ],
       "source_refs": [
         "inputs/training__C230259__NRS-484B-627-1a__motor_vehicle_driver/assignment.json"
@@ -254,9 +215,7 @@
     },
     "st.turnout": {
       "evidence": "Original Native sources and saved meter provide diagnostic measurements; physical causation and legal applicability remain unverified.",
-      "channels": [
-        "slow-traffic-context.json"
-      ],
+      "channels": [],
       "source_refs": [
         "inputs/training__C230259__NRS-484B-627-1a__motor_vehicle_driver/assignment.json"
       ]
@@ -270,5 +229,32 @@
         "inputs/training__C230259__NRS-484B-627-1a__motor_vehicle_driver/assignment.json"
       ]
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full highway, subject and immediate follower trajectories and right paved edge",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "subject and follower positions and initial gap",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "paved-edge body reference and rightward movement",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject body, lane center, paved edge and following traffic",
+        "interval": "all 600 frames / 0-30 s"
+      }
+    ]
   }
 }

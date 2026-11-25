@@ -51,7 +51,7 @@ def audit(args):
         raise ValueError('Controlled comparison map changed')
     left_context = json.loads((left / 'context.json').read_text())
     right_context = json.loads((right / 'context.json').read_text())
-    for condition in ('weather_parameters', 'pedestrian_hazard', 'highway_obstruction'):
+    for condition in ('weather_parameters', 'pedestrian_hazard', 'highway_obstruction', 'crest_design'):
         if left_context.get(condition) != right_context.get(condition):
             raise ValueError(f'Controlled comparison {condition} changed')
     lc = json.loads((left / 'candidate-selection.json').read_text())

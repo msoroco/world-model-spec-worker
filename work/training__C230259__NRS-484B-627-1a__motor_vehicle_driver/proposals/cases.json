@@ -4,19 +4,21 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_1",
+      "case_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__baseline",
       "target_law_id": "NRS-484B-627-1a",
-      "target_type": "controlled_probe",
-      "rationale": "Source-shaped controlled rightward placement comparison",
-      "paired_probe_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__comparison",
-      "deliberate_differences": [
-        "requested lateral placement"
-      ],
-      "probe": "controlled_1",
+      "target_type": "baseline",
+      "rationale": "Unselected neutral context for paired comparison",
+      "paired_probe_id": null,
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_rightward_placement",
+        "comparison_or_standard": "unselected baseline",
+        "target_value_or_branch": "neutral"
+      },
       "variable_assignments": {
         "requested_rightward_placement": {
           "kind": "controller",
-          "value": true
+          "value": null
         }
       },
       "recording_description": {
@@ -58,17 +60,21 @@
     {
       "case_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-627-1a",
-      "target_type": "controlled_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Source-shaped controlled rightward placement comparison",
       "paired_probe_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__comparison",
       "deliberate_differences": [
-        "requested lateral placement"
+        "requested_rightward_placement"
       ],
-      "probe": "controlled_2",
+      "probe": {
+        "primary_variable": "requested_rightward_placement",
+        "comparison_or_standard": "paired controlled rightward placement contrast",
+        "target_value_or_branch": false
+      },
       "variable_assignments": {
         "requested_rightward_placement": {
           "kind": "controller",
-          "value": false
+          "value": 0.0
         }
       },
       "recording_description": {
@@ -100,12 +106,151 @@
         ]
       },
       "unresolved_judgment_calls": [
-        "actual impediment",
-        "extreme right",
-        "sufficient paved width",
-        "public highway status",
-        "NRS 484B.630 applicability"
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the width of the paved portion permits",
+        "the extreme right side of the highway"
+      ],
+      "sweep_id": "c230259-rightward-placement",
+      "sweep_spec_version": "4a19ee19110fcdcf7cc634d0ac47947fc61812915498b1f0fe413ab32262a03f",
+      "sweep_point": {
+        "requested_rightward_placement": 0.0
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-627-1a",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-shaped controlled rightward placement comparison",
+      "paired_probe_id": "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_rightward_placement"
+      ],
+      "probe": {
+        "primary_variable": "requested_rightward_placement",
+        "comparison_or_standard": "paired controlled rightward placement contrast",
+        "target_value_or_branch": true
+      },
+      "variable_assignments": {
+        "requested_rightward_placement": {
+          "kind": "controller",
+          "value": 1.0
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor bounding boxes and transforms",
+            "time_window": "600 frames",
+            "reference_frame": "two-way paved highway draft",
+            "uncertainty": "50 ms frame interval"
+          },
+          {
+            "name": "participant_velocity_and_intent",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor velocity and controller command readback",
+            "time_window": "600 frames",
+            "reference_frame": "same highway segment",
+            "uncertainty": "controller intent is not proof of actual impediment"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Slow/impede and extreme right are legal findings, not numeric thresholds",
+          "Public highway status, sufficient paved width and NRS 484B.630 applicability need independent sources",
+          "Physical follower reaction and camera pixels remain unverified"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the width of the paved portion permits",
+        "the extreme right side of the highway"
+      ],
+      "sweep_id": "c230259-rightward-placement",
+      "sweep_spec_version": "4a19ee19110fcdcf7cc634d0ac47947fc61812915498b1f0fe413ab32262a03f",
+      "sweep_point": {
+        "requested_rightward_placement": 1.0
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c230259-rightward-placement",
+      "target_law_id": "NRS-484B-627-1a",
+      "judgment_refs": [
+        {
+          "phrase": "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+          "note": "Original follower position and velocity need source review."
+        },
+        {
+          "phrase": "the width of the paved portion permits",
+          "note": "Original Native map and lane survey need independent review."
+        },
+        {
+          "phrase": "the extreme right side of the highway",
+          "note": "Original body footprint and paved edge need independent review."
+        }
+      ],
+      "rationale": "Sample two authored lateral controller targets without declaring a legal distance cutoff.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_rightward_placement",
+          "observable": "requested_rightward_placement",
+          "unit": "unitless",
+          "min": 0,
+          "max": 1,
+          "spacing": 1,
+          "range_rationale": "Two fixed controller requests: lane-center hold and rightward movement.",
+          "spacing_rationale": "Only the two predefined binary controller settings are executable.",
+          "feasibility_evidence": "Both Native constructions and source-shaped CPU compatibility fixtures passed.",
+          "measurement": {
+            "method": "original Native controller request and body footage",
+            "time_window": "600 frames",
+            "statistic": "last"
+          }
+        }
+      ],
+      "landmarks": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_footprints",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor bounding boxes and transforms",
+            "time_window": "600 frames",
+            "reference_frame": "two-way paved highway draft",
+            "uncertainty": "50 ms frame interval"
+          },
+          {
+            "name": "participant_velocity_and_intent",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor velocity and controller command readback",
+            "time_window": "600 frames",
+            "reference_frame": "same highway segment",
+            "uncertainty": "controller intent is not proof of actual impediment"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Slow/impede and extreme right are legal findings, not numeric thresholds",
+          "Public highway status, sufficient paved width and NRS 484B.630 applicability need independent sources",
+          "Physical follower reaction and camera pixels remain unverified"
+        ]
+      },
+      "spec_version": "4a19ee19110fcdcf7cc634d0ac47947fc61812915498b1f0fe413ab32262a03f",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_2",
+        "training__C230259__NRS-484B-627-1a__motor_vehicle_driver__controlled_1"
       ]
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

@@ -16,6 +16,10 @@ The fixed actor and cell are `motor_vehicle_driver`, `road` / `travel` / `other_
 - `runtime.py process-saved` passed for controlled_1 primary; `saved-controlled_1-primary-processing.json` reports `passed: true`, `recorded_only: true`, original source checks and 600 decoded review frames.
 - Assignment-scoped `worker_check.py --complete` passed static checks. The strict `--require-delivery-ready` gate rejected the truthful partial status with `Preparation acceptance failed: partial/missing packages remain`.
 
+## Selected CPU milestone
+
+All four public compatibility receipts under `compatibility/` report `passed: true`; all four `saved-controlled_*-processing.json` receipts report `passed: true` and `recorded_only: true`. `physical_preparation.py --build` generated two synthetic physical/lifecycle proof receipts; the runtime physical-preparation validator accepted both through `execution_manifest.validate`. The selected `execution-manifest.json` validates on the current runtime, and `semantic_delivery.validate` accepts the eight-stage canonical semantic chain with a complete two-point controller sweep. `delivery_audit.py` self-tests pass positive and reject synthetic source for both cases; `delivery_handoff.validate_case` accepts their source-hashed contracts. These are CPU fixture results, not actual Native realization.
+
 ## Exact remaining CPU work
 
-Run public compatibility for controlled_2 fallback1; saved-only processing for controlled_1 fallback1 and controlled_2 primary/fallback1. Bind source-bound receipts into the selected execution manifest, run candidate selection and independent delivery audit, author canonical semantic stage proposals and source-backed comparison audit, then rerun the exact scoped strict gate. The current draft manifest and `result.json` remain partial until that gate passes. Actual Native motion, public-highway and paved-width status, actual impediment, camera pixels and legal conclusions remain unverified.
+Resolve canonical camera/config and plan bindings, run selected-manifest saved-only replay and independent local audit replay, complete readiness fields and run the exact scoped strict gate. Keep `result.json` partial until the strict gate passes. Original Native motion, public-highway and paved-width status, actual impediment, pixels and legal conclusions remain unverified.

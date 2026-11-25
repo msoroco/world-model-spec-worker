@@ -1,0 +1,168 @@
+{
+  "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__curve_probe_a",
+  "selected_case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__curve_probe_a",
+  "supported_case_ids": [
+    "training__C111294__NRS-484B-603-1__motor_vehicle_driver__curve_probe_a"
+  ],
+  "case_suffix": "curve_probe_a",
+  "candidate_id": "fallback1",
+  "cell_id": "C111294",
+  "law_id": "NRS-484B-603-1",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "comparison_variable": "hazard_approach_speed_profile",
+  "measurement_contract": "measurement-contract.json",
+  "required_atoms": [
+    "kin.speed",
+    "kin.velocity"
+  ],
+  "source_packets": [],
+  "frozen_source_hashes": [
+    {
+      "path": "inputs/training__C111294__NRS-484B-603-1__motor_vehicle_driver/assignment.json",
+      "sha256": "5144369b59ddd8c5661375847da5badffc1444db61c578fdea49cdcb852eec57"
+    }
+  ],
+  "mandatory_channels": [
+    "ego_pose",
+    "ego_speed",
+    "observed_speed",
+    "other_vehicle_pose"
+  ],
+  "case": {
+    "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__curve_probe_a"
+  },
+  "knobs": {
+    "brake_start_y_m": -65,
+    "brake_finish_y_m": -25,
+    "target_mph": 20,
+    "other_start_x_m": -35,
+    "sample_rate_hz": 20,
+    "duration_s": 30,
+    "camera_profile": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "speed_pid_kp": 0.55,
+    "brake_pid_kp": 0.55,
+    "steering_lookahead_m": 10.0
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "metres",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame-joined actor readback",
+        "time_window": "600 frames at 20 Hz",
+        "reference_frame": "surveyed Native map",
+        "uncertainty": "50 ms sampling and pose/velocity consistency"
+      },
+      {
+        "name": "ego_speed",
+        "unit": "metres/second",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame-joined actor readback",
+        "time_window": "600 frames at 20 Hz",
+        "reference_frame": "surveyed Native map",
+        "uncertainty": "50 ms sampling and pose/velocity consistency"
+      },
+      {
+        "name": "observed_speed",
+        "unit": "miles/hour",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame-joined actor readback",
+        "time_window": "600 frames at 20 Hz",
+        "reference_frame": "surveyed Native map",
+        "uncertainty": "50 ms sampling and pose/velocity consistency"
+      },
+      {
+        "name": "other_vehicle_pose",
+        "unit": "metres",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame-joined actor readback",
+        "time_window": "600 frames at 20 Hz",
+        "reference_frame": "surveyed Native map",
+        "uncertainty": "50 ms sampling and pose/velocity consistency"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "intersection_and_other_vehicle",
+        "unit": "structured",
+        "method": "authored OpenDRIVE and original cross-traffic actor readback"
+      },
+      {
+        "name": "curve_design",
+        "unit": "structured",
+        "method": "original Native lane offset and ego lateral path readback"
+      }
+    ],
+    "limitations": [
+      "Necessity of reduction and legal outcome require physical review",
+      "Synthetic CPU traces are diagnostic only"
+    ]
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "attachment": "ego",
+      "xyz_m": [
+        -12.0,
+        0.0,
+        6.0
+      ],
+      "yaw_deg": 0.0,
+      "pitch_deg": -18.0,
+      "fov_deg": 100.0,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "name": "approach",
+      "attachment": "ego",
+      "xyz_m": [
+        1.6,
+        0.0,
+        1.8
+      ],
+      "yaw_deg": 0.0,
+      "pitch_deg": -3.0,
+      "fov_deg": 90.0,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "reference_corner",
+      "attachment": "ego",
+      "xyz_m": [
+        0.0,
+        1.2,
+        2.1
+      ],
+      "yaw_deg": 90.0,
+      "pitch_deg": -8.0,
+      "fov_deg": 100.0,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "driver_reference",
+      "attachment": "world",
+      "xyz_m": [
+        0.0,
+        0.0,
+        28.0
+      ],
+      "yaw_deg": 0.0,
+      "pitch_deg": -90.0,
+      "fov_deg": 110.0,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "status": "unselected_native_draft"
+}
