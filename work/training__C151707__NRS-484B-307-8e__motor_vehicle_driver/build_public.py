@@ -116,7 +116,7 @@ def source_data(suffix: str) -> tuple[dict, dict]:
                                    "synthetic_diagnostic": True})
     spec = {"files": {"capture/native/frames.jsonl": "".join(
                      json.dumps(row, sort_keys=True) + "\n" for row in frames),
-                     "capture/recorder_info.txt": "synthetic CPU diagnostic frames only\n"},
+                     "capture/recorder_info.txt": "Create 107: vehicle.tesla.model3\nsynthetic CPU diagnostic frames only\n"},
             "graphs": graphs,
             "videos": [{"path": name + ".mkv", "frames": 600,
                         "width": 1920 if name == "overview" else 1280,
