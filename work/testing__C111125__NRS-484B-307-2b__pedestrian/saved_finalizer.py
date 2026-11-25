@@ -6,7 +6,11 @@ import hashlib
 import json
 from pathlib import Path
 
-from analysis import build_report as diagnostic_report, build_result as diagnostic_result
+from analysis import (build_report as diagnostic_report,
+                      build_result as diagnostic_result,
+                      measure_signal as diagnostic_signal,
+                      measure_crosswalk as diagnostic_crosswalk,
+                      measure_device as diagnostic_device)
 from delivery_audit import audit as audit_original
 from native_capture import ASSIGNMENT, CAMERAS
 from native_crossing import measure, source
@@ -18,6 +22,18 @@ def _sha(path):
 
 def _write(path, value):
     Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + '\n')
+
+
+def measure_signal(facts):
+    return diagnostic_signal(facts)
+
+
+def measure_crosswalk(facts):
+    return diagnostic_crosswalk(facts)
+
+
+def measure_device(facts):
+    return diagnostic_device(facts)
 
 
 def analyze_original(root, case_id):

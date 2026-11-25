@@ -21,10 +21,11 @@ class SemanticTests(unittest.TestCase):
 
     def test_exact_cases_and_unresolved_aim(self):
         stages = MODULE.prepare(self.assignment, self.plan, self.quote)
-        self.assertEqual(len(stages["cases"]["cases"]), 3)
+        self.assertEqual(len(stages["cases"]["cases"]), 4)
+        self.assertEqual(stages["cases"]["cases"][0]["target_type"], "baseline")
         self.assertEqual(len(stages["cases"]["comparisons"]), 2)
-        self.assertTrue(all("Emitted beam depression or dimming" in case["unresolved_judgment_calls"]
-                            for case in stages["cases"]["cases"]))
+        self.assertTrue(all("depressed or dimmed" in case["unresolved_judgment_calls"]
+                            for case in stages["cases"]["cases"][1:]))
 
     def test_quote_drift_rejected(self):
         plan = copy.deepcopy(self.plan)

@@ -13,7 +13,7 @@ from native_capture import capture_interval
 def capture_owned(client, packet_path, output_dir, *, case_id, mode,
                   transform_factory, control_factory, light_enum,
                   recorder_factory=CameraRecorder, diagnostic_fixture=False,
-                  pipeline_factory=None):
+                  pipeline_factory=None, camera_pose_source='primary'):
     """Capture an exact original interval from a supplied reviewed site packet.
 
     The packet is source material, not proof that its parking and intersection
@@ -35,6 +35,14 @@ def capture_owned(client, packet_path, output_dir, *, case_id, mode,
         raise ValueError('exact reviewed Native site identity or provenance missing')
     if set(packet.get('cameras', {})) != set(VIEWS):
         raise ValueError('four original camera constructions required')
+    if camera_pose_source not in ('primary', 'fallback1'):
+        raise ValueError('unknown source-reviewed camera pose selection')
+    selected_cameras = packet['cameras']
+    if camera_pose_source == 'fallback1':
+        selected_cameras = packet.get('alternate_camera_poses')
+        if (not isinstance(selected_cameras, dict) or set(selected_cameras) != set(VIEWS) or
+                not packet.get('alternate_camera_pose_source_ref')):
+            raise ValueError('source-reviewed alternate camera poses required')
     output = Path(output_dir)
     originals = ['actor-state.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl',
                  'native-source-receipt.json', 'site-packet.json', 'lamp-roi.json',
@@ -81,7 +89,7 @@ def capture_owned(client, packet_path, output_dir, *, case_id, mode,
         spawned.append(vehicle)
         cameras = {}
         for view in VIEWS:
-            spec = packet['cameras'][view]
+            spec = selected_cameras[view]
             if spec.get('blueprint_id') != 'sensor.camera.rgb':
                 raise ValueError('original camera blueprint differs')
             blueprint = library.find('sensor.camera.rgb')

@@ -1,6 +1,7 @@
 """Build exact selected parked-headlamp constructions and canonical root files."""
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -65,6 +66,7 @@ def description() -> dict:
 def build() -> None:
     plan_path = HERE / 'case-plan.json'
     plan = json.loads(plan_path.read_text(encoding='utf-8'))
+    plan['source_observation_mapping'] = {}
     plan['camera_plan'] = {
         'profile': 'overview1080-capability', 'duration_s': 45,
         'composition': 'synchronized_four_view_primary',
@@ -93,6 +95,7 @@ def build() -> None:
             'cell_id': 'C110454', 'actor': 'motor_vehicle_driver',
             'selected_case_id': case_id, 'supported_case_ids': [row['case_id'] for row in plan['cases']],
             'requested_headlamp_mode': mode, 'plan_sha256': plan_hash,
+            'camera_pose_source': 'primary',
             'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
             'cameras': [{'name': view, 'width': size[0], 'height': size[1],
                          'pose_strategy': 'source-reviewed site-relative four-view pose',
@@ -117,6 +120,12 @@ def build() -> None:
         path = HERE / ('construction-' + mode + '.json')
         write_json(path, construction)
         selected.append((case_id, mode, path, config, construction))
+        fallback_config = dict(config, camera_pose_source='fallback1')
+        fallback = copy.deepcopy(construction)
+        for item in fallback['files']:
+            if item['path'] == 'config.json':
+                item['content'] = json.dumps(fallback_config, indent=2, sort_keys=True) + '\n'
+        write_json(HERE / ('construction-fallback1-' + mode + '.json'), fallback)
     root_id, _, _, config, construction = selected[0]
     (HERE / 'runner.py').write_text((HERE / 'selected_runner.py').read_text(encoding='utf-8'),
                                     encoding='utf-8')
@@ -138,8 +147,14 @@ def build() -> None:
                    'construction': path.name, 'construction_sha256': sha(path),
                    'candidate_risk': {'status': 'physical',
                                       'reason': 'Original lamp emission or aim may not be visible from the primary surveyed camera pose.'},
-                   'candidates': []}
-                  for case_id, _, path, _, _ in selected]})
+                   'candidates': [{'id': 'fallback1',
+                        'construction': 'construction-fallback1-' + mode + '.json',
+                        'construction_sha256': sha(HERE / ('construction-fallback1-' + mode + '.json')),
+                        'trigger': {'source': 'source-joined original approach and driver-reference camera pixels',
+                                    'metric': 'independent headlamp and road-surface beam pixel resolvability',
+                                    'failure_condition': 'primary camera images cannot resolve headlamp and road-surface beam in the fixed reviewed ROIs'},
+                        'changed_knobs': ['camera pose source: alternate_camera_poses in source-sealed site packet']}]}
+                  for case_id, mode, path, _, _ in selected]})
     print('selected', len(selected), 'parked-headlamp constructions; root', root_id)
 
 

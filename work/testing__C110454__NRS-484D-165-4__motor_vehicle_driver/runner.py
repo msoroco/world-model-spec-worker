@@ -71,7 +71,9 @@ def main() -> None:
                   mode=case_id.rsplit('__', 1)[-1], transform_factory=transform,
                   control_factory=carla.VehicleControl,
                   light_enum=carla.VehicleLightState,
-                  pipeline_factory=PipelineCapture)
+                  pipeline_factory=PipelineCapture,
+                  camera_pose_source=json.loads((output / 'config.json').read_text())[
+                      'camera_pose_source'])
     finalize_acquisition(output, case_id=case_id)
     report = build(output)
     (output / 'analysis-report.json').write_text(json.dumps(report, indent=2) + '\n',

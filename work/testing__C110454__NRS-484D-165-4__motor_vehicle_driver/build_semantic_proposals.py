@@ -31,8 +31,12 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
         raise ValueError("Three exact headlamp cases required")
     parameter = {"name": "requested_headlamp_mode", "kind": "controller",
                  "range_or_domain": sorted(MODES)}
-    unresolved = ["Actual parked status", "Actual headlamp illumination",
-                  "Emitted beam depression or dimming"]
+    judgments = [
+        {"phrase": "parked vehicle", "note": "Parking requires original body and site observations."},
+        {"phrase": "lighted headlamps", "note": "API bits alone do not show emitted light."},
+        {"phrase": "depressed or dimmed", "note": "Original beam and independent physical review remain required."},
+    ]
+    unresolved = [item['phrase'] for item in judgments]
     relevance = {"cell_id": assignment["cell_id"], "actor": ACTOR, "status": "draft",
                  "relevant_laws": [{"law_id": LAW, "quote": frozen_quote,
                                     "applies_to": [ACTOR], "confidence": "medium",
@@ -45,7 +49,7 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
                               "obligation": {"type": "requirement", "description": "Any lighted headlamps upon the parked vehicle shall be depressed or dimmed."},
                               "exceptions": [],
                               "timing": {"description": "Join original parked-body, lamp-state and source image observations on the same frames."},
-                              "judgment_calls_needed": unresolved},
+                              "judgment_calls_needed": judgments},
                 "parameter_refs": [parameter]}
     bindings = {"cell_id": assignment["cell_id"], "actor": ACTOR, "status": "draft",
                 "established_contexts": ["C110454 intersection parking footprint pending site review"],
@@ -67,7 +71,12 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
                          "variable_assignments": {"requested_headlamp_mode": {"kind": "controller", "value": mode}},
                          "recording_description": json.loads(construction.read_text())["recording_description"],
                          "diagnostic_construction": {"path": construction.name, "sha256": sha(construction)},
-                         "unresolved_judgment_calls": unresolved})
+                         "unresolved_judgment_calls": unresolved,
+                         "paired_probe_id": AID + '__' + mode + '_comparison',
+                         "deliberate_differences": ["requested_headlamp_mode"],
+                         "probe": {"primary_variable": "requested_headlamp_mode",
+                                   "comparison_or_standard": "Source-matched parked headlamp-mode comparison; no legal cutoff",
+                                   "target_value_or_branch": mode}})
     exact = {row["case_id"]: row for row in proposed}
     if {row["comparison_id"] for row in plan["comparisons"]} != set(PAIRS):
         raise ValueError("Comparison inventory changed")
@@ -83,10 +92,23 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
                             "fixed_conditions": pair["fixed_conditions"],
                             "changed_variable": "requested_headlamp_mode",
                             "deliberate_differences": pair["deliberate_differences"]})
+    baseline = {"case_id": AID + '__baseline', "target_law_id": None,
+                "target_type": "baseline", "rationale": "Shared parked intersection setup before requested mode varies.",
+                "variable_assignments": {"requested_headlamp_mode": {"kind": "controller", "value": "unlit"}},
+                "recording_description": proposed[0]['recording_description'],
+                "unresolved_judgment_calls": unresolved}
+    sweep_specs = [{"sweep_id": AID + '__judgment_' + str(index),
+                    "target_law_id": LAW, "judgment_refs": [item],
+                    "status": "incomplete",
+                    "rationale": "Original Native source review is required before physical judgment sweep bounds can be chosen.",
+                    "missing_inputs": ["Reviewed original parked-body, lamp pixel and beam source"]}
+                   for index, item in enumerate(judgments, 1)]
     stage = {"cell_id": assignment["cell_id"], "actor": ACTOR, "status": "draft",
-             "cases": proposed, "comparisons": comparisons, "sweep_specs": []}
+             "cases": [baseline] + proposed, "comparisons": comparisons,
+             "sweep_specs": sweep_specs, "sweeps_expanded": True}
     return {"relevance_batch": relevance, "relevance": relevance,
-            "template": template, "bindings": bindings, "cases": stage}
+            "template": template, "bindings": bindings, "cases": stage,
+            "judgments": judgments}
 
 
 def main() -> None:
@@ -99,10 +121,26 @@ def main() -> None:
     destination.mkdir(exist_ok=True)
     refs = {}
     for name, payload in stages.items():
+        if name == 'judgments':
+            continue
         path = destination / f"{name}.json"
         path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
         refs[name] = {"path": str(path.relative_to(ROOT)), "sha256": sha(path)}
     refs["judgment_observables"] = []
+    for index, judgment in enumerate(stages['judgments'], 1):
+        phrase = judgment['phrase']
+        channel = 'original_actor_state' if phrase == 'parked vehicle' else 'headlamp_emission_and_aim_review'
+        requirement = {"name": channel, "unit": "structured record",
+                       "description": "Original source-joined physical observation for " + phrase}
+        payload = {"template_id": stages['template']['template_id'],
+                   "phrase": phrase, "note": judgment['note'], "status": "draft",
+                   "observable_requirements": {"observables": [requirement],
+                       "context_inputs": [], "sweep_dimensions": [], "landmarks": [],
+                       "recording_needs": [requirement],
+                       "limitations": ["Original Native sources require independent physical review; no legal verdict is inferred."]}}
+        path = destination / f"judgment-{index}.json"
+        path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+        refs['judgment_observables'].append({"path": str(path.relative_to(ROOT)), "sha256": sha(path)})
     index = {"format": "worker-semantic-delivery", "assignment_id": AID,
              "status": "draft", "physical_acceptance": "unverified",
              "sources": [{"path": str(path.relative_to(PROJECT)), "sha256": sha(path)}

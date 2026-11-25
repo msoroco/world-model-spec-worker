@@ -58,7 +58,9 @@ def build():
                 'parameter_refs': [{'name': name, 'kind': kind, 'range_or_domain': domain}
                                    for name, kind, domain in parameters]}
     write(ROOT / 'proposals/template.json', template)
-    record = json.loads((ROOT / 'cases/marked_cross/construction.json').read_text())['recording_description']
+    delivery_draft = ROOT / 'cases/marked_cross/delivery-construction.draft.json'
+    record = json.loads(delivery_draft.read_text() if delivery_draft.is_file() else
+                        (ROOT / 'cases/marked_cross/construction.json').read_text())['recording_description']
     observable = {'template_id': template_id, 'phrase': phrase, 'note': note,
                   'status': 'draft',
                   'observable_requirements': {
@@ -117,7 +119,7 @@ def build():
                                  'missing_inputs': ['reviewed Native intersection and official signal head',
                                                     'source-verified device route applicability and phase timing',
                                                     'physical pedestrian clearance feasibility']}],
-                'diagnostic_only': True}
+                'diagnostic_only': False}
     write(ROOT / 'proposals/cases.json', proposal)
     refs = {'relevance_batch': 'proposals/relevance_batch.json',
             'relevance': 'proposals/relevance.json', 'template': 'proposals/template.json',

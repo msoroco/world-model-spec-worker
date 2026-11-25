@@ -1,0 +1,359 @@
+{
+  "assignment_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "headlamp_emission_and_aim_review": {
+          "entrypoint": "native_publication.py",
+          "evidence": "headlamp_emission_and_aim_review.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        },
+        "original_actor_state": {
+          "entrypoint": "native_publication.py",
+          "evidence": "original_actor_state.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        },
+        "original_four_view_frame_map": {
+          "entrypoint": "native_publication.py",
+          "evidence": "original_four_view_frame_map.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original lamp emission or aim may not be visible from the primary surveyed camera pose.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site packet"
+          ],
+          "compatibility": {
+            "log": "fallback1-compat-unlit-analysis.log",
+            "negative_log": "fallback1-compat-unlit-negative.log",
+            "receipt": "fallback1-compat-unlit-receipt.json",
+            "sha256": "7694263554f674f96d136ab84f373c90436becdae42d41bec91d64d075a0e7bf"
+          },
+          "construction": "construction-fallback1-unlit.json",
+          "construction_sha256": "809835aa67bf0b250f666b068a936b9b388b83b34312cc4201cacb4305499a35",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --candidate fallback1 --output .runtime-work/c110454-owner/offline-unlit-fallback1-rev3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "809835aa67bf0b250f666b068a936b9b388b83b34312cc4201cacb4305499a35",
+            "exit_code": 0,
+            "log": "cpu-offline-unlit-fallback1.log",
+            "log_sha256": "80c86e7edf8f59b3af43d5ec227b0f0093c4d4c2ad5e00ecb8ef435b06bc8f65"
+          },
+          "trigger": {
+            "failure_condition": "primary camera images cannot resolve headlamp and road-surface beam in the fixed reviewed ROIs",
+            "metric": "independent headlamp and road-surface beam pixel resolvability",
+            "source": "source-joined original approach and driver-reference camera pixels"
+          }
+        }
+      ],
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit",
+      "compatibility": {
+        "log": "compat-unlit-analysis.log",
+        "receipt": "compat-unlit-receipt.json",
+        "sha256": "3e908f616c32da4b227bba95b1be5babb12a4ecea12117c18a431377b819434b"
+      },
+      "construction": "construction-unlit.json",
+      "construction_sha256": "47271fc5bb063eda9981abd809f9a004c6ddaf59a54536da4f254eff03a445b7",
+      "delivery_acceptance": {
+        "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/selected_delivery_audit.py --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --attempt .runtime-work/c110454-owner/compat-unlit-primary-rev3 --output work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/delivery-diagnostic-unlit.json --diagnostic-fixture",
+        "negative_command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/selected_delivery_audit.py --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --attempt .runtime-work/c110454-owner/compat-unlit-primary-rev3 --output .runtime-work/c110454-owner/negative-unlit.json --diagnostic-fixture --negative-remove-source site-packet.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: site-packet.json",
+        "negative_log": "delivery-negative-unlit.log",
+        "negative_log_sha256": "4b1520af78b2377691e954db937b0042fb535b2bc4f364db6efe939f95c7a7d0",
+        "script": "selected_delivery_audit.py",
+        "script_sha256": "818df6f2f340b72af638db6c5067135d4961db92f90b11a32a6a1ee66eec30d5",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-unlit.log",
+        "test_log_sha256": "f58d0e835bb9f62ceb8ba7d4b385b511311974859b91ce10e73624c2444bbbd2"
+      },
+      "fixture_recipe": "work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/fixture-recipe-unlit.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-unlit.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-unlit-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --output .runtime-work/c110454-owner/offline-unlit-primary-rev3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "47271fc5bb063eda9981abd809f9a004c6ddaf59a54536da4f254eff03a445b7",
+        "exit_code": 0,
+        "log": "cpu-offline-unlit-primary.log",
+        "log_sha256": "11581aa0e40edeb8cd149acc003ef3da8126cb92e116f06ead7366bcdb10fc33"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-unlit.json",
+        "sha256": "d8bc4337881e3ea5d78fee61ee36858bfbf1f76ed6c1d07dd2acbb884dcf07f1"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit --attempt ORIGINAL_ATTEMPT --output .runtime-work/c110454-owner/saved-process-unlit --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --owner-release-receipt ORIGINAL_OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat .runtime-work/c110454-owner/saved-process-unlit/v0001/processing.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-unlit.log",
+        "test_log_sha256": "4f13c2c58dd952d18a202b00c2f15cead96cc5c67ba40e89bda376d24e9f5d45"
+      }
+    },
+    {
+      "acquisition": {
+        "headlamp_emission_and_aim_review": {
+          "entrypoint": "native_publication.py",
+          "evidence": "headlamp_emission_and_aim_review.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        },
+        "original_actor_state": {
+          "entrypoint": "native_publication.py",
+          "evidence": "original_actor_state.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        },
+        "original_four_view_frame_map": {
+          "entrypoint": "native_publication.py",
+          "evidence": "original_four_view_frame_map.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original lamp emission or aim may not be visible from the primary surveyed camera pose.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site packet"
+          ],
+          "compatibility": {
+            "log": "fallback1-compat-low_beam-analysis.log",
+            "negative_log": "fallback1-compat-low_beam-negative.log",
+            "receipt": "fallback1-compat-low_beam-receipt.json",
+            "sha256": "82c1da7210f9b32c590552a5a70db7d8c1d11cfbb67cef648c35c73f13dab56e"
+          },
+          "construction": "construction-fallback1-low_beam.json",
+          "construction_sha256": "85c447f4348a2e69943f20fcf1fda9e60efb78ae85495dacede07cca3b23860f",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --candidate fallback1 --output .runtime-work/c110454-owner/offline-low_beam-fallback1-rev3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "85c447f4348a2e69943f20fcf1fda9e60efb78ae85495dacede07cca3b23860f",
+            "exit_code": 0,
+            "log": "cpu-offline-low_beam-fallback1.log",
+            "log_sha256": "7c4de3ed546ab4629ed9d55ba3a421dc2b902450cab11fa8520ac30bd0a7d4be"
+          },
+          "trigger": {
+            "failure_condition": "primary camera images cannot resolve headlamp and road-surface beam in the fixed reviewed ROIs",
+            "metric": "independent headlamp and road-surface beam pixel resolvability",
+            "source": "source-joined original approach and driver-reference camera pixels"
+          }
+        }
+      ],
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam",
+      "compatibility": {
+        "log": "compat-low_beam-analysis.log",
+        "receipt": "compat-low_beam-receipt.json",
+        "sha256": "60dc708f54c9fab481ec5e498afdfcbc7c0043605aa75efe16919b630a8317c5"
+      },
+      "construction": "construction-low_beam.json",
+      "construction_sha256": "f8e575a65c1411fc78bd90bab7ad5050cfd2aebf222dab55ab29174115b48348",
+      "delivery_acceptance": {
+        "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/selected_delivery_audit.py --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --attempt .runtime-work/c110454-owner/compat-low_beam-primary-rev3 --output work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/delivery-diagnostic-low_beam.json --diagnostic-fixture",
+        "negative_command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/selected_delivery_audit.py --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --attempt .runtime-work/c110454-owner/compat-low_beam-primary-rev3 --output .runtime-work/c110454-owner/negative-low_beam.json --diagnostic-fixture --negative-remove-source lamp-roi.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: lamp-roi.json",
+        "negative_log": "delivery-negative-low_beam.log",
+        "negative_log_sha256": "8627bac486e3e929090b114cf25a4e2fdbef0d9b34607eaf194d3ed1359bc4c1",
+        "script": "selected_delivery_audit.py",
+        "script_sha256": "818df6f2f340b72af638db6c5067135d4961db92f90b11a32a6a1ee66eec30d5",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-low_beam.log",
+        "test_log_sha256": "72b76f760f86b37be8087de5e7f304f4e6d26663ff9566cd3bb6249f87a70d64"
+      },
+      "fixture_recipe": "work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/fixture-recipe-low_beam.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-low_beam.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-low_beam-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --output .runtime-work/c110454-owner/offline-low_beam-primary-rev3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "f8e575a65c1411fc78bd90bab7ad5050cfd2aebf222dab55ab29174115b48348",
+        "exit_code": 0,
+        "log": "cpu-offline-low_beam-primary.log",
+        "log_sha256": "d31f5ac051b2e7b5ff30faa5c035a83471ab471dc41694c4b5ddbdeb2b61fe23"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-low_beam.json",
+        "sha256": "28afce07e85dd81f688957d7d0af022883eb29983d898eef8b7cebca51ffa6f2"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam --attempt ORIGINAL_ATTEMPT --output .runtime-work/c110454-owner/saved-process-low_beam --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --owner-release-receipt ORIGINAL_OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat .runtime-work/c110454-owner/saved-process-low_beam/v0001/processing.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-low_beam.log",
+        "test_log_sha256": "aaa16c669d4523c6ea35167ec42f9193bbda9ae8d022a8d4205521131d4e4882"
+      }
+    },
+    {
+      "acquisition": {
+        "headlamp_emission_and_aim_review": {
+          "entrypoint": "native_publication.py",
+          "evidence": "headlamp_emission_and_aim_review.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        },
+        "original_actor_state": {
+          "entrypoint": "native_publication.py",
+          "evidence": "original_actor_state.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        },
+        "original_four_view_frame_map": {
+          "entrypoint": "native_publication.py",
+          "evidence": "original_four_view_frame_map.jsonl",
+          "method": "source-joined original Native/Core frame projection"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original lamp emission or aim may not be visible from the primary surveyed camera pose.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "camera pose source: alternate_camera_poses in source-sealed site packet"
+          ],
+          "compatibility": {
+            "log": "fallback1-compat-high_beam-analysis.log",
+            "negative_log": "fallback1-compat-high_beam-negative.log",
+            "receipt": "fallback1-compat-high_beam-receipt.json",
+            "sha256": "3a37ccae478f6e65e6ee17023b8a4f7d81b0a65a91cbd920bbb8c6abfa3424fa"
+          },
+          "construction": "construction-fallback1-high_beam.json",
+          "construction_sha256": "70a32d510edaa3c7f1e891f4b917ef8ee36b76a3982990fe1ffb25c315f8c487",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --candidate fallback1 --output .runtime-work/c110454-owner/offline-high_beam-fallback1-rev3 --python \"$PWD/.venv-cpu/bin/python\"",
+            "construction_sha256": "70a32d510edaa3c7f1e891f4b917ef8ee36b76a3982990fe1ffb25c315f8c487",
+            "exit_code": 0,
+            "log": "cpu-offline-high_beam-fallback1.log",
+            "log_sha256": "c40697eee6fe30abd9f4fa085446a6e59ea9fcc24905ac01708df5229873f548"
+          },
+          "trigger": {
+            "failure_condition": "primary camera images cannot resolve headlamp and road-surface beam in the fixed reviewed ROIs",
+            "metric": "independent headlamp and road-surface beam pixel resolvability",
+            "source": "source-joined original approach and driver-reference camera pixels"
+          }
+        }
+      ],
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam",
+      "compatibility": {
+        "log": "compat-high_beam-analysis.log",
+        "receipt": "compat-high_beam-receipt.json",
+        "sha256": "70def9fa51360f7b8f5ec38078fa66939a1e92fc6388b527d315f651382f1fbd"
+      },
+      "construction": "construction-high_beam.json",
+      "construction_sha256": "7996dbb47e126d61304da44c0d1c0ea69c4e893991d431518be071ea4580e1d8",
+      "delivery_acceptance": {
+        "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/selected_delivery_audit.py --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --attempt .runtime-work/c110454-owner/compat-high_beam-primary-rev3 --output work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/delivery-diagnostic-high_beam.json --diagnostic-fixture",
+        "negative_command": ".venv-cpu/bin/python work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/selected_delivery_audit.py --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --attempt .runtime-work/c110454-owner/compat-high_beam-primary-rev3 --output .runtime-work/c110454-owner/negative-high_beam.json --diagnostic-fixture --negative-remove-source lamp-roi.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: lamp-roi.json",
+        "negative_log": "delivery-negative-high_beam.log",
+        "negative_log_sha256": "8627bac486e3e929090b114cf25a4e2fdbef0d9b34607eaf194d3ed1359bc4c1",
+        "script": "selected_delivery_audit.py",
+        "script_sha256": "818df6f2f340b72af638db6c5067135d4961db92f90b11a32a6a1ee66eec30d5",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-diagnostic-high_beam.log",
+        "test_log_sha256": "8bc0cd1228abbf06350b9734c4bdf6d19cb376ee689fc440a662f209ab52c3d2"
+      },
+      "fixture_recipe": "work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/fixture-recipe-high_beam.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-high_beam.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compat-high_beam-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --output .runtime-work/c110454-owner/offline-high_beam-primary-rev3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "7996dbb47e126d61304da44c0d1c0ea69c4e893991d431518be071ea4580e1d8",
+        "exit_code": 0,
+        "log": "cpu-offline-high_beam-primary.log",
+        "log_sha256": "6e50b68a79c842bb7d8b005d343dcd39c0084f354459ebb36176e5eb8a55dc95"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-high_beam.json",
+        "sha256": "db25aafdab8e26e85398171ca4a5f7dd251ca6bd587e59f1c63198b3371e16ef"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C110454__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam --attempt ORIGINAL_ATTEMPT --output .runtime-work/c110454-owner/saved-process-high_beam --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck --owner-release-receipt ORIGINAL_OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat .runtime-work/c110454-owner/saved-process-high_beam/v0001/processing.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-high_beam.log",
+        "test_log_sha256": "f2a987955117448829a21ec45dc8be53de76bc0fc2fda18c566e1de742e5469d"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_prepared"
+}

@@ -1,6 +1,18 @@
+## Current delivery-prepared return — 2026-11-24
+
+The exact scoped gate passed: `.venv-cpu/bin/python worker_check.py --assignment testing__C110454__NRS-484D-165-4__motor_vehicle_driver --complete --require-delivery-ready` (exit 0; `cpu-scoped-strict.log`). `execution-manifest.json` SHA-256: `5cba28734b3590f76915795b9a04f4057875131ba323caf1161226971fcd4b90`. This is CPU preparation for local Native acquisition, not physical or legal acceptance.
+
+Selected case IDs: `testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit`, `testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam`, and `testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam`. The exact controlled comparisons are `lighted_applicability` (unlit/low beam) and `dimmed_vs_bright_headlamp` (low/high beam). The quoted law has no statutory numeric cutoff; the 0.1 m/s parked observation is an engineering source check only. Actual emitted intensity, beam depression or dimming, statutory parking and legal meaning remain unresolved.
+
+`build_selected.py` binds the three selected Native runners and one source-reviewed alternate camera pose per case. `owned_capture.py`, `camera_recorder.py`, `native_capture.py`, `analysis.py`, `native_publication.py`, and `selected_runner.py` implement local world ownership, 900 synchronized original frames, lossless four-camera media, Core publication, source-joined measurements, source seals and restoration. Each fallback changes only the camera pose source from `cameras` to `alternate_camera_poses` in a sealed reviewed site packet. It is triggered by source-measured failure to resolve original headlamp and road-surface beam pixels; it does not choose a desired legal outcome. All six selected/fallback offline logs and all six positive/negative compatibility receipts are SHA-bound in `execution-manifest.json`. The five-frame fixtures prove software interfaces only.
+
+`build_physical_outcomes.py` records measured synthetic met/not-met/unverified parked intervals. `prove_lifecycle.py` actually executed capture seal, Native exit, attested owner release and saved-only replay in order for each case. Three `cpu-process-saved-*.log` files prove exact selected saved processing. `selected_delivery_audit.py` independently checks Native seals when present, original actor/camera/trace joins and full four-video decode; three positive diagnostic outputs and three missing-source negative logs are bound in the manifest. `selected_comparison_audit.py` checks both exact pairs against original source readbacks, held site/config/timeline and changed-fixed-condition negative fixtures. Diagnostic output makes no physical acceptance claim. The production audit command omits `--diagnostic-fixture` and takes `--case ID --attempt ORIGINAL_ATTEMPT --output AUDIT_JSON`; the comparison command takes `--comparison lighted_applicability|dimmed_vs_bright_headlamp --left ATTEMPT --right ATTEMPT --output AUDIT_JSON`.
+
+The canonical semantic proposals include the exact parked, lighted and depressed/dimmed judgment phrases with observation requirements and incomplete physical sweep notices; no extra selected recording is added. Local execution still needs a reviewed intersection site packet, separate parking/intersection source references, original lamp ROI for lit modes, alternate source-reviewed camera poses if fallback is used, and CARLA/physical review of the full 45-second recording. The first GPU dispatch is recorded in `result.json`. No accepted original recording was available in frozen inputs.
+
 # testing__C110454__NRS-484D-165-4__motor_vehicle_driver
 
-Status: partial executable Native headlamp source checkpoint. Three exact planned
+Historical checkpoint below; current status: delivery_prepared after exact scoped strict gate exit 0. Three exact planned
 cases are proposed; no original recording is claimed.
 
 Exact law: NRS 484D.165(4) — Any lighted headlamps upon a parked vehicle shall be depressed or dimmed.

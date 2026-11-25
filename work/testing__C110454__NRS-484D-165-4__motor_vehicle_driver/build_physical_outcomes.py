@@ -50,9 +50,8 @@ def main() -> None:
                                  'exit_code': 0, 'log': log.name, 'log_sha256': sha(log),
                                  'result': result_path.name, 'result_sha256': sha(result_path)})
         lifecycle_log = HERE / ('cpu-physical-lifecycle-' + mode + '.log')
-        lifecycle_log.write_text('Source-shaped Native close order tested by owned-capture unit suite.\n'
-            'capture_finished\nencoders_closed\nrestoration_verified\nnative_exit\n'
-            'owner_released\nsaved_processing_started\n', encoding='utf-8')
+        if not lifecycle_log.is_file() or 'saved_processing_started' not in lifecycle_log.read_text():
+            raise ValueError('actual synthetic Native closure and saved replay proof required: ' + mode)
         receipt = {'format': 'worker-physical-preparation',
                    'case_id': HERE.name + '__' + mode,
                    'construction_sha256': sha(construction), 'fixtures': fixtures,

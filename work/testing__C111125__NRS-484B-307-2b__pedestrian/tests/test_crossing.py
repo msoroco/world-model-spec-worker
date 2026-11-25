@@ -352,10 +352,17 @@ class CrossingTests(unittest.TestCase):
         class Library:
             def find(self, blueprint):
                 return blueprint
-        stream = BytesIO()
-        Image.new('RGB', (8, 6), (10, 20, 30)).save(stream, format='PNG')
-        png = stream.getvalue()
-        cameras = {name: (lambda frame: {'frame': frame, 'png_bytes': png})
+        dimensions = {'overview': (1920, 1080),
+                      'approach': (1280, 720),
+                      'reference_corner': (1280, 720),
+                      'driver_reference': (1280, 720)}
+        pngs = {}
+        for name, size in dimensions.items():
+            stream = BytesIO()
+            Image.new('RGB', size, (10, 20, 30)).save(stream, format='PNG')
+            pngs[name] = stream.getvalue()
+        cameras = {name: (lambda frame, data=pngs[name]:
+                          {'frame': frame, 'png_bytes': data})
                    for name in capture_module.CAMERAS}
         class FrameSink:
             def __init__(self):
@@ -381,11 +388,11 @@ class CrossingTests(unittest.TestCase):
         site_path.write_text(json.dumps(self.site))
         with self.assertRaisesRegex(ValueError, 'reviewed original'):
             owned.capture_reviewed(session, site_path, case_id, attempt,
-                camera_dimensions={name: (8, 6) for name in cameras})
+                camera_dimensions=dimensions)
         self.site['diagnostic_fixture'] = False
         site_path.write_text(json.dumps(self.site))
         receipt = owned.capture_reviewed(session, site_path, case_id, attempt,
-            camera_dimensions={name: (8, 6) for name in cameras},
+            camera_dimensions=dimensions,
             publisher=lambda output, exact_case: {'case_id': exact_case,
                                                    'scope': 'fake-publisher-only'})
         self.assertEqual(receipt['frame_count'], 900)
@@ -399,7 +406,7 @@ class CrossingTests(unittest.TestCase):
         reviewed_result = delivery.audit(attempt, receipt['reviewed_site_source'],
                                        'other_device_stop', require_reviewed=True)
         self.assertEqual(reviewed_result['decoded_images'], 3600)
-        selected = json.loads((ROOT / 'cases/other_device_stop/construction.json').read_text())
+        selected = json.loads((ROOT / 'cases/other_device_stop/delivery-construction.draft.json').read_text())
         selected_config = json.loads(next(item['content'] for item in selected['files']
                                          if item['path'] == 'config.json'))
         selected_config['case']['diagnostic_only'] = False
@@ -416,16 +423,37 @@ class CrossingTests(unittest.TestCase):
         for row in originals:
             frame = row['frame']
             graph_ref = f'graphs/base/{frame:08d}.adapter.json'
+            x, y = row['pedestrian_xy']
+            vertices = [[vx, vy, z] for vx, vy in
+                        ((x - .2, y - .2), (x + .2, y - .2),
+                         (x + .2, y + .2), (x - .2, y + .2))
+                        for z in (0, 1.8)]
+            observed = {'frame': frame, 'time_s': row['elapsed_seconds'],
+                        'map_context': {'declared_public_way_road_ids': []},
+                        'participants': [{'actor_id': 42,
+                                          'blueprint': actor.type_id,
+                                          'position_m': [x, y, 0],
+                                          'heading_deg': 0,
+                                          'speed_mps': 0,
+                                          'body_vertices_m': vertices}]}
             (native / graph_ref).write_text(json.dumps({
                 'format': 'native-adapter-graph-v1',
-                'metadata': {'frame': frame}, 'nodes': [], 'edges': []}))
+                'metadata': {'frame': frame,
+                             'observed_evidence': observed},
+                'nodes': [], 'edges': []}))
             graph_index.append({'frame': frame, 'adapter_graph': graph_ref})
-            evidence.append({'original_frame': frame,
-                             'recording_time_s': row['elapsed_seconds']})
+            evidence.append({'actor_id': 42, 'original_frame': frame,
+                             'recording_time_s': row['elapsed_seconds'],
+                             'ego': {'position_m': [x, y, 0],
+                                     'heading_deg': 0, 'speed_mps': 0,
+                                     'body_vertices_m': vertices},
+                             'original_observations': observed,
+                             'world': {'weather': {}}})
             trace.append({'frame': frame, 'time_s': row['elapsed_seconds'],
-                          'position': {'x': row['pedestrian_xy'][0],
-                                       'y': row['pedestrian_xy'][1], 'z': 0},
-                          'speed_mps': 0})
+                          'position': {'x': x, 'y': y, 'z': 0},
+                          'position_m': [x, y, 0], 'actor_id': 42,
+                          'speed_mps': 0, 'speed_mph': 0,
+                          'velocity_mps': [0, 0, 0], 'control': {}})
         (native / 'frames.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in graph_index))
         (attempt / 'capture/evidence.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in evidence))
         (attempt / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace))
@@ -460,6 +488,20 @@ class CrossingTests(unittest.TestCase):
         self.assertTrue(saved_report['analysis_complete'])
         self.assertTrue(saved_result['diagnostic_fixture'])
         self.assertEqual(saved_report['device_timeline']['entry_frame'], None)
+        from worker_exchange import saved_processing
+        native_exit = saved_processing.record_native_exit(attempt)
+        self.assertEqual(native_exit['event'], 'native_exit')
+        owner_receipt = self.root / 'owner-release.json'
+        saved_processing.acknowledge_owner_release(attempt, owner_receipt, True)
+        processed = saved_processing.run(
+            ROOT / 'execution-manifest.draft.json', case_id, attempt,
+            self.root / 'process-output', ROOT.parents[1] / 'runtime/library',
+            ROOT.parents[1] / '.runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck',
+            owner_receipt=owner_receipt)
+        self.assertTrue(processed['recorded_only'])
+        self.assertTrue(processed['originals_preserved'])
+        self.assertTrue(processed['timestamp_joins']['passed'])
+        self.assertFalse(processed['missing_evidence'])
         changed = dict(receipt)
         changed.pop('reviewed_site_source')
         (attempt / 'capture-receipt.json').write_text(json.dumps(changed))

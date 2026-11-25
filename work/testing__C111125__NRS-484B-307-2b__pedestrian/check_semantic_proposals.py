@@ -12,5 +12,7 @@ from worker_exchange.semantic_delivery import validate
 
 if __name__ == '__main__':
     assignment = json.loads((REPO / 'inputs' / ROOT.name / 'assignment.json').read_text())
-    manifest = json.loads((ROOT / 'diagnostic-manifest.json').read_text())
+    draft = ROOT / 'execution-manifest.draft.json'
+    manifest = json.loads((draft if draft.is_file() else
+                           ROOT / 'diagnostic-manifest.json').read_text())
     print(json.dumps(validate(ROOT, assignment, manifest), sort_keys=True))

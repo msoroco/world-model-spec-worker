@@ -4,6 +4,65 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared parked intersection setup before requested mode varies.",
+      "variable_assignments": {
+        "requested_headlamp_mode": {
+          "kind": "controller",
+          "value": "unlit"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle identity, speed, handbrake, body footprint and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native frame and world time",
+            "sampling_rate_hz": 20,
+            "time_window": "complete 45-second stationary interval",
+            "uncertainty": "20 Hz sample spacing, camera image and surveyed polygon precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original four-camera frames joined to Native world tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native frame and world time",
+            "sampling_rate_hz": 20,
+            "time_window": "complete 45-second stationary interval",
+            "uncertainty": "20 Hz sample spacing, camera image and surveyed polygon precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original camera images and reviewed fixed lamp-region pixels; physical/legal review retained",
+            "name": "headlamp_emission_and_aim_review",
+            "reference_frame": "original Native frame and world time",
+            "sampling_rate_hz": 20,
+            "time_window": "complete 45-second stationary interval",
+            "uncertainty": "20 Hz sample spacing, camera image and surveyed polygon precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Source-hashed reviewed map, parking and intersection geometry",
+            "name": "reviewed_site_geometry",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "API lamp bits do not establish emitted intensity or beam aim.",
+          "Pixel contrast does not establish statutory depressed or dimmed meaning."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "parked vehicle",
+        "lighted headlamps",
+        "depressed or dimmed"
+      ]
+    },
+    {
       "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit",
       "target_law_id": "NRS-484D-165-4",
       "target_type": "boundary_probe",
@@ -59,13 +118,22 @@
       },
       "diagnostic_construction": {
         "path": "construction-unlit.json",
-        "sha256": "44bffb349d56e19fdd8bfe1df785eec1423d559d21e0c0e0826080b2c0e192b8"
+        "sha256": "47271fc5bb063eda9981abd809f9a004c6ddaf59a54536da4f254eff03a445b7"
       },
       "unresolved_judgment_calls": [
-        "Actual parked status",
-        "Actual headlamp illumination",
-        "Emitted beam depression or dimming"
-      ]
+        "parked vehicle",
+        "lighted headlamps",
+        "depressed or dimmed"
+      ],
+      "paired_probe_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__unlit_comparison",
+      "deliberate_differences": [
+        "requested_headlamp_mode"
+      ],
+      "probe": {
+        "primary_variable": "requested_headlamp_mode",
+        "comparison_or_standard": "Source-matched parked headlamp-mode comparison; no legal cutoff",
+        "target_value_or_branch": "unlit"
+      }
     },
     {
       "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam",
@@ -123,13 +191,22 @@
       },
       "diagnostic_construction": {
         "path": "construction-low_beam.json",
-        "sha256": "e9fd07eeb30fe41696cb2200a04c812d6da657fef37d2e90fecde384a19c2862"
+        "sha256": "f8e575a65c1411fc78bd90bab7ad5050cfd2aebf222dab55ab29174115b48348"
       },
       "unresolved_judgment_calls": [
-        "Actual parked status",
-        "Actual headlamp illumination",
-        "Emitted beam depression or dimming"
-      ]
+        "parked vehicle",
+        "lighted headlamps",
+        "depressed or dimmed"
+      ],
+      "paired_probe_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__low_beam_comparison",
+      "deliberate_differences": [
+        "requested_headlamp_mode"
+      ],
+      "probe": {
+        "primary_variable": "requested_headlamp_mode",
+        "comparison_or_standard": "Source-matched parked headlamp-mode comparison; no legal cutoff",
+        "target_value_or_branch": "low_beam"
+      }
     },
     {
       "case_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam",
@@ -187,13 +264,22 @@
       },
       "diagnostic_construction": {
         "path": "construction-high_beam.json",
-        "sha256": "e90d2512bcc44f8c8b981e5c48007faa787756bbfa1404e481ba0d4853af602d"
+        "sha256": "7996dbb47e126d61304da44c0d1c0ea69c4e893991d431518be071ea4580e1d8"
       },
       "unresolved_judgment_calls": [
-        "Actual parked status",
-        "Actual headlamp illumination",
-        "Emitted beam depression or dimming"
-      ]
+        "parked vehicle",
+        "lighted headlamps",
+        "depressed or dimmed"
+      ],
+      "paired_probe_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__high_beam_comparison",
+      "deliberate_differences": [
+        "requested_headlamp_mode"
+      ],
+      "probe": {
+        "primary_variable": "requested_headlamp_mode",
+        "comparison_or_standard": "Source-matched parked headlamp-mode comparison; no legal cutoff",
+        "target_value_or_branch": "high_beam"
+      }
     }
   ],
   "comparisons": [
@@ -234,5 +320,52 @@
       ]
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__judgment_1",
+      "target_law_id": "NRS-484D-165-4",
+      "judgment_refs": [
+        {
+          "phrase": "parked vehicle",
+          "note": "Parking requires original body and site observations."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native source review is required before physical judgment sweep bounds can be chosen.",
+      "missing_inputs": [
+        "Reviewed original parked-body, lamp pixel and beam source"
+      ]
+    },
+    {
+      "sweep_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__judgment_2",
+      "target_law_id": "NRS-484D-165-4",
+      "judgment_refs": [
+        {
+          "phrase": "lighted headlamps",
+          "note": "API bits alone do not show emitted light."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native source review is required before physical judgment sweep bounds can be chosen.",
+      "missing_inputs": [
+        "Reviewed original parked-body, lamp pixel and beam source"
+      ]
+    },
+    {
+      "sweep_id": "testing__C110454__NRS-484D-165-4__motor_vehicle_driver__judgment_3",
+      "target_law_id": "NRS-484D-165-4",
+      "judgment_refs": [
+        {
+          "phrase": "depressed or dimmed",
+          "note": "Original beam and independent physical review remain required."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native source review is required before physical judgment sweep bounds can be chosen.",
+      "missing_inputs": [
+        "Reviewed original parked-body, lamp pixel and beam source"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }
