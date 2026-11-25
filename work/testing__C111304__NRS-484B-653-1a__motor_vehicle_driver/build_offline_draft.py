@@ -74,6 +74,7 @@ def main():
         raise ValueError("Existing Native attempt --output-dir required")
     import carla
     from native_runner import run
+    config = json.loads((Path(__file__).resolve().parent / "config.json").read_text())
     client = carla.Client(args.host, args.port)
     client.set_timeout(20.0)
     print(json.dumps(run(client.get_world(), carla,

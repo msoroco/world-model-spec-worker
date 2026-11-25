@@ -18,7 +18,8 @@ comparison_spec.loader.exec_module(saved_comparison)
 
 def active_attempt(root):
     packet_path = write_attempt(root, 'active_signal_exception',
-                                policy='observe_signal_governance', minimum_speed=2.0)
+                                policy='observe_signal_governance', minimum_speed=2.0,
+                                occupied=False)
     packet = json.loads(packet_path.read_text(encoding='utf-8'))
     packet['context']['signal_controlling'] = True
     frames = [row['frame'] for row in packet['frames']]
@@ -37,11 +38,28 @@ def active_attempt(root):
 
 
 class SignalExceptionTests(unittest.TestCase):
+    def test_rejects_occupied_clear_reference(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            left, right = Path(tmp) / 'yield', Path(tmp) / 'signal'
+            packet_path = write_attempt(left, 'nearest_view_clear',
+                                        policy='continue_after_clear_observation',
+                                        minimum_speed=2.0, occupied=False)
+            active_attempt(right)
+            packet = json.loads(packet_path.read_text(encoding='utf-8'))
+            for frame in packet['frames']:
+                if frame['ego_within_intersection']:
+                    frame['through_occupied'] = True
+            packet_path.write_text(json.dumps(packet, sort_keys=True) + '\n',
+                                   encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'clear reference has occupied'):
+                saved_comparison.audit(left, right, 'governing_signal_exception')
+
     def test_saved_signal_governance_and_fixed_comparison(self):
         with tempfile.TemporaryDirectory() as tmp:
             left, right = Path(tmp) / 'yield', Path(tmp) / 'signal'
             write_attempt(left, 'nearest_view_clear',
-                          policy='continue_after_clear_observation', minimum_speed=2.0)
+                          policy='continue_after_clear_observation', minimum_speed=2.0,
+                          occupied=False)
             active = active_attempt(right)
             proof = signal_exception.measure(json.loads(active.read_text()), right)
             self.assertEqual(proof['frame_count'], 7)
@@ -56,7 +74,8 @@ class SignalExceptionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             left, right = Path(tmp) / 'yield', Path(tmp) / 'signal'
             write_attempt(left, 'nearest_view_clear',
-                          policy='continue_after_clear_observation', minimum_speed=2.0)
+                          policy='continue_after_clear_observation', minimum_speed=2.0,
+                          occupied=False)
             active = active_attempt(right)
             source = right / 'native' / 'signal_state_readback.json'
             source.write_text('changed\n', encoding='utf-8')

@@ -60,7 +60,8 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
     _require(site.get('public_access_basis') == case.public_access_basis, 'public access basis mismatch')
     _require(output.is_dir(), 'attempt output directory missing')
     _require(not any((output / name).exists() for name in
-                 ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl', 'native-receipt.json')),
+                 ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl',
+                  'trace.jsonl', 'video_frames.jsonl', 'native-receipt.json')),
              'attempt output already exists')
     histories = []
     packet_rows = []
@@ -136,6 +137,23 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
         encoded_history = b''.join(_encoded(row) + b'\n' for row in histories)
         encoded_packets = b''.join(_encoded(row) + b'\n' for row in packet_rows)
         encoded_cameras = b''.join(_encoded(row) + b'\n' for row in camera_rows)
+        trace_rows = []
+        frame_map_rows = []
+        for index, (row, packet) in enumerate(zip(histories, packet_rows)):
+            ego = packet['actors']['ego']
+            z, heading = ego.get('z'), ego.get('heading_deg')
+            _require(type(z) in (int, float) and math.isfinite(z) and
+                     type(heading) in (int, float) and math.isfinite(heading),
+                     'original ego height or heading missing')
+            elapsed = row['elapsed_seconds'] - first_time
+            trace_rows.append({'frame': row['original_frame'], 'time_s': elapsed,
+                               'position_m': list(ego['xy']),
+                               'position': {'x': ego['xy'][0], 'y': ego['xy'][1], 'z': z},
+                               'heading_deg': heading, 'speed_mps': ego['speed_mps']})
+            frame_map_rows.append({'video_frame': index, 'carla_frame': row['original_frame'],
+                                   'time_s': elapsed})
+        encoded_trace = b''.join(_encoded(row) + b'\n' for row in trace_rows)
+        encoded_map = b''.join(_encoded(row) + b'\n' for row in frame_map_rows)
         receipt = {'format': 'worker-native-encounter-acquisition',
                    'assignment_id': ASSIGNMENT, 'case_id': f'{ASSIGNMENT}__{case.case_id}',
                    'site_sha256': site['site_sha256'], 'map_sha256': site['map_sha256'],
@@ -149,10 +167,14 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
                    'original_history_sha256': _sha(encoded_history),
                    'original_packets_sha256': _sha(encoded_packets),
                    'original_cameras_sha256': _sha(encoded_cameras),
+                   'original_trace_sha256': _sha(encoded_trace),
+                   'original_frame_map_sha256': _sha(encoded_map),
                    'physical_visibility_verified': False, 'legal_judgment': None}
         for name, data in (('original-history.jsonl', encoded_history),
                            ('original-packets.jsonl', encoded_packets),
                            ('original-cameras.jsonl', encoded_cameras),
+                           ('trace.jsonl', encoded_trace),
+                           ('video_frames.jsonl', encoded_map),
                            ('native-receipt.json', _encoded(receipt) + b'\n')):
             tmp = output / (name + '.tmp')
             tmp.write_bytes(data)

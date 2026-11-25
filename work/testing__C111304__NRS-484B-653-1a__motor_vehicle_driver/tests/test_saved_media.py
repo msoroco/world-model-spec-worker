@@ -54,6 +54,10 @@ class SavedMediaTests(unittest.TestCase):
             self.assertEqual(set(inventory['cameras']), {'front', 'rear', 'left', 'right'})
             self.assertTrue((root / 'camera-media-inventory.json').is_file())
             self.assertEqual(inventory['source_kind'], 'original_encoded')
+            for source_name, view_name in (('front', 'overview'), ('rear', 'approach'),
+                                           ('left', 'reference_corner'), ('right', 'driver_reference')):
+                self.assertEqual(sha((root / (view_name + '.mkv')).read_bytes()),
+                                 inventory['cameras'][source_name]['sha256'])
             with self.assertRaisesRegex(ValueError, 'already exists'):
                 saved_media.encode_original_cameras(root, plan)
 

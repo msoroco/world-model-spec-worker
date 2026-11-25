@@ -12,7 +12,7 @@ SOURCE_FILES = (
     "native_readback.py", "native_actor_adapter.py", "native_camera_capture.py", "native_camera_rig.py", "native_attempt.py",
     "native_bound_attempt.py",
     "pedestrian_core_capture.py", "native_publication.py", "saved_finalizer.py",
-    "saved_measurement.py", "delivery_audit.py", "comparison_audit.py",
+    "saved_measurement.py", "analysis.py", "delivery_audit.py", "comparison_audit.py",
     "compare_saved.py",
 )
 
@@ -168,6 +168,7 @@ def build():
             "requested_speed_mps": 1.4,
             "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
             "required_atoms": [], "diagnostic_only": True,
+            "recording_description": RECORDING_DESCRIPTION,
         }
         files = {name: (HERE / name).read_text() for name in SOURCE_FILES}
         files.update({"runner.py": RUNNER, "case-plan.json": plan_data.decode(),
@@ -184,6 +185,8 @@ def build():
         output.write_text(json.dumps(construction, indent=2) + "\n")
         rows.append({"case_id": case, "construction": output.name,
                      "construction_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
+                     "measurement_contract": "measurement-contract-" + suffix + ".json",
+                     "measurement_procedure": {"entrypoint": "analysis.py"},
                      "candidate_risk": {"status": "physical", "reason": item["physical_risk_assessment"]["risk"]}})
     semantic_index = HERE / "proposals/semantic-index.json"
     manifest = {"assignment_id": AID,

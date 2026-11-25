@@ -33,6 +33,7 @@ class Adapter:
         role = actor
         packet = {'original_frame': self.frame - 1, 'id': actor,
                   'xy': [float(self.frame - 100), float(len(actor))],
+                  'z': 0.0, 'heading_deg': 0.0,
                   'speed_mps': 2.0, 'blueprint': role + '-blueprint'}
         if role == 'occupant':
             packet['vehicle_id'] = 'wrong' if self.bad_occupancy else 'crossing_vehicle'
@@ -258,6 +259,19 @@ class NativeAcquisitionTests(unittest.TestCase):
             camera.unlink()
             with self.assertRaisesRegex(ValueError, 'missing or redirected'):
                 saved_audit.audit_native_acquisition(root, receipt)
+
+    def test_sealed_trace_and_frame_map_reject_tamper(self):
+        case = encounter.CASES[0]
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            receipt = native.capture(Adapter(), actors(case), case, site(), root)
+            for name in ('trace.jsonl', 'video_frames.jsonl'):
+                source = root / name
+                original = source.read_bytes()
+                source.write_bytes(original + b'\n')
+                with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                    saved_audit.audit_native_acquisition(root, receipt)
+                source.write_bytes(original)
 
     def test_rejects_unsourced_site_and_premises_mismatch(self):
         case = encounter.CASES[6]

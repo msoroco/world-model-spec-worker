@@ -99,6 +99,8 @@ class PacketTests(unittest.TestCase):
         self.assertEqual(len(seen), 900)
         self.assertEqual(seen, list(range(101, 1001)))
         self.assertEqual(packet["case_id"], self.case)
+        self.assertEqual((self.root / "captured/pedestrian-packet.json").read_bytes(),
+                         (self.root / "captured/source-packet.json").read_bytes())
         self.assertEqual(walker.controls[-1]["speed"], 0)
 
 

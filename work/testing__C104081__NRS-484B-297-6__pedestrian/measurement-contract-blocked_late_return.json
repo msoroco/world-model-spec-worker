@@ -1,0 +1,105 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Sidewalk obstruction and immediately adjacent highway bypass",
+      "source": "NRS 484B.297(6)",
+      "output_key": "sidewalk_obstruction_kind",
+      "method": "measure_obstruction_kind",
+      "value_type": "text",
+      "kind": "measured",
+      "inputs": [
+        "site-survey.json",
+        "obstruction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Due care while proceeding around the obstruction",
+      "source": "NRS 484B.297(6)",
+      "output_key": "nearest_traffic_distance_m",
+      "method": "measure_traffic_distance",
+      "value_type": "array",
+      "kind": "sourced_context",
+      "inputs": [
+        "traffic_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Travel as far to the side near the sidewalk as possible",
+      "source": "NRS 484B.297(6)",
+      "output_key": "lateral_distance_to_sidewalk_edge_m",
+      "method": "measure_lateral_distance",
+      "value_type": "array",
+      "kind": "measured",
+      "inputs": [
+        "site-survey.json",
+        "pedestrian_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Travel in sidewalk direction regardless of traffic direction",
+      "source": "NRS 484B.297(6)",
+      "output_key": "pedestrian_direction",
+      "method": "measure_direction",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "site-survey.json",
+        "pedestrian_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Bicycle lane use when area between lane and sidewalk is impassable",
+      "source": "NRS 484B.297(6)",
+      "output_key": "designated_lane_used",
+      "method": "measure_lane_use",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "site-survey.json",
+        "pedestrian_history.jsonl",
+        "obstruction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Observed condition of area between lane and sidewalk",
+      "source": "NRS 484B.297(6)",
+      "output_key": "intervening_barrier_present",
+      "method": "measure_intervening_barrier",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "site-survey.json",
+        "obstruction_history.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "Return to the sidewalk as soon as practicable",
+      "source": "NRS 484B.297(6)",
+      "output_key": "first_sidewalk_return_frame",
+      "method": "measure_return",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "site-survey.json",
+        "video_frames.jsonl",
+        "pedestrian_history.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "obstruction_history.jsonl"
+    ],
+    "error_contains": "Missing required source: obstruction_history.jsonl"
+  },
+  "scope": "Source measurements only; physical and legal judgments remain unresolved"
+}

@@ -138,6 +138,18 @@ def cameras():
 
 
 class CarlaBindingTests(unittest.TestCase):
+    def test_crossing_release_uses_attempt_elapsed_not_server_uptime(self):
+        world = World()
+        world.frame = 1000
+        adapter = CarlaEncounterAdapter(world, Carla, site(), cameras())
+        adapter.start()
+        actors = build_case(adapter, site(), CASES[0])
+        adapter.start_cameras(actors['ego'])
+        adapter.tick()
+        adapter.tick()
+        self.assertEqual(adapter.commands[actors['crossing_vehicle'].id]['throttle'], 0.0)
+        adapter.cleanup()
+
     def test_both_approaches_property_offset_and_camera_sources(self):
         for case in (CASES[0], CASES[2], CASES[4], CASES[5]):
             world = World()

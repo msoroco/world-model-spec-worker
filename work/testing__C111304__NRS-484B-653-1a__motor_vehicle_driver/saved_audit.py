@@ -85,8 +85,10 @@ def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
                        ('crossing_release_s', expected_case.crossing_release_s)):
         if receipt.get(key) != value:
             raise ValueError(f'native receipt {key} differs from exact case')
-    expected = ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl')
-    keys = ('original_history_sha256', 'original_packets_sha256', 'original_cameras_sha256')
+    expected = ('original-history.jsonl', 'original-packets.jsonl', 'original-cameras.jsonl',
+                'trace.jsonl', 'video_frames.jsonl')
+    keys = ('original_history_sha256', 'original_packets_sha256', 'original_cameras_sha256',
+            'original_trace_sha256', 'original_frame_map_sha256')
     tables = []
     for name, key in zip(expected, keys):
         path = attempt / name
@@ -99,7 +101,7 @@ def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
             tables.append([json.loads(line) for line in raw.decode('utf-8').splitlines() if line])
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise ValueError(f'{name} decode failed') from exc
-    histories, packets, cameras = tables
+    histories, packets, cameras, traces, frame_maps = tables
     count = receipt.get('frame_count')
     if count != 900 or any(len(table) != count for table in tables):
         raise ValueError('original acquisition frame count mismatch')
@@ -144,6 +146,16 @@ def audit_native_acquisition(attempt: Path, receipt: Mapping) -> dict:
             raise ValueError('four original camera hashes missing')
         if row.get('case_id') != receipt.get('case_id') or row.get('site_sha256') != receipt.get('site_sha256'):
             raise ValueError('case or site source mismatch')
+        ego = packet['actors']['ego']
+        elapsed = row['elapsed_seconds'] - histories[0]['elapsed_seconds']
+        if traces[offset] != {
+                'frame': frame, 'time_s': elapsed,
+                'position_m': list(ego['xy']),
+                'position': {'x': ego['xy'][0], 'y': ego['xy'][1], 'z': ego.get('z')},
+                'heading_deg': ego.get('heading_deg'), 'speed_mps': ego['speed_mps']}:
+            raise ValueError('original trace source join mismatch')
+        if frame_maps[offset] != {'video_frame': offset, 'carla_frame': frame, 'time_s': elapsed}:
+            raise ValueError('original frame map source join mismatch')
     return {'case_id': receipt['case_id'], 'frame_count': count,
             'original_history_sha256': receipt['original_history_sha256'],
             'original_cameras_sha256': receipt['original_cameras_sha256'],

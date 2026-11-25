@@ -11,8 +11,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "tests")]
 from compare_saved import compare
+from analysis import analyze
 from delivery_audit import CAMERAS, audit_saved
 from saved_finalizer import build_result
+from worker_exchange.measurement_contract import verify_report
 from test_saved_measurement import SavedMeasurementTests
 
 
@@ -72,6 +74,31 @@ class BoundSavedPathsTests(unittest.TestCase):
             self.assertTrue(all(item["matched"] for item in result["target_checks"]))
             with self.assertRaisesRegex(ValueError, "original saved acquisition"):
                 build_result(root, case)
+            (root / "config.json").write_text(json.dumps({"selected_case_id": case}) + "\n")
+            with self.assertRaisesRegex(ValueError, "original saved acquisition"):
+                analyze(root, root / "analysis-report.json")
+            self.assertFalse((root / "result.json").exists())
+            (root / "pedestrian-packet.json").write_bytes((root / "source-packet.json").read_bytes())
+            (root / "source-packet.json").unlink()
+            (root / "config.json").write_text(json.dumps({"selected_case_id": case,
+                                                            "diagnostic_only": True}) + "\n")
+            report = analyze(root, root / "analysis-report.json")
+            self.assertEqual((root / "source-packet.json").read_bytes(),
+                             (root / "pedestrian-packet.json").read_bytes())
+            suffix = case.removeprefix(ROOT.name + "__")
+            contract = json.loads((ROOT / ("measurement-contract-" + suffix + ".json")).read_text())
+            self.assertEqual(len(verify_report(contract, report, root)), 7)
+            self.assertEqual(report["case_id"], case)
+            self.assertEqual(report["measurements"]["pedestrian_direction"]["value"], 1)
+            self.assertEqual(report["measurements"]["designated_lane_used"]["value"],
+                             case.endswith("blocked_intervening"))
+            self.assertEqual(len(report["measurements"]["nearest_traffic_distance_m"]["value"]), 900)
+            self.assertTrue((root / "result.json").is_file())
+            self.assertEqual(
+                report["measurements"]["pedestrian_direction"]["sources"]["pedestrian_history.jsonl"],
+                hashlib.sha256((root / "pedestrian_history.jsonl").read_bytes()).hexdigest())
+            with self.assertRaisesRegex(ValueError, "prior result or analysis report"):
+                analyze(root, root / "analysis-report.json", diagnostic=True)
         receipt = compare(ROOT / "case-plan.json", "intervening_area_condition",
                           first, second, diagnostic=True)
         self.assertEqual(receipt["findings"][0]["observed_differences"],
@@ -79,6 +106,15 @@ class BoundSavedPathsTests(unittest.TestCase):
         self.assertFalse(receipt["delivery_acceptance_claimed"])
         with self.assertRaisesRegex(ValueError, "original saved acquisition"):
             compare(ROOT / "case-plan.json", "intervening_area_condition", first, second)
+
+    def test_analysis_refuses_missing_case_source_before_result(self):
+        root = self.base
+        case = ROOT.name + "__clear_intervening"
+        (root / "config.json").write_text(json.dumps({"selected_case_id": case}) + "\n")
+        with self.assertRaisesRegex(ValueError, "Missing required source: site-survey.json"):
+            analyze(root, root / "analysis-report.json", diagnostic=True)
+        self.assertFalse((root / "result.json").exists())
+        self.assertFalse((root / "analysis-report.json").exists())
 
 
 if __name__ == "__main__":

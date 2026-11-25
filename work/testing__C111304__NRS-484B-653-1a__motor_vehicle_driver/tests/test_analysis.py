@@ -12,6 +12,7 @@ from encounter import CASES
 from native_acquisition import capture
 from test_native_acquisition import Adapter, actors
 from test_carla_adapter import cameras
+from build_semantic_draft import description
 
 
 def sha(path):
@@ -44,6 +45,28 @@ def fixture(root):
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_source_derived_trace_and_recording_result(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fixture(root)
+            receipt = json.loads((root / 'native-receipt.json').read_text())
+            write(root / 'construction.json', {
+                'case_id': receipt['case_id'],
+                'recording_description': description(),
+            })
+            write(root / 'config.json', {'selected_case_id': receipt['case_id']})
+            for name in ('front', 'rear', 'left', 'right'):
+                (root / (name + '.mkv')).write_bytes(b'diagnostic-video-placeholder')
+            report = analysis.analyze(root, allow_diagnostic=True)
+            result = analysis.finalize_native_outputs(root, report)
+            self.assertEqual(len((root / 'trace.jsonl').read_text().splitlines()), 900)
+            self.assertEqual(len((root / 'video_frames.jsonl').read_text().splitlines()), 900)
+            self.assertEqual(len(result['video_references']), 4)
+            self.assertEqual(result['recording_description'], description())
+            self.assertEqual(len(result['recording_evidence']), 7)
+            with self.assertRaisesRegex(ValueError, 'derived output already exists'):
+                analysis.finalize_native_outputs(root, report)
+
     def test_source_shaped_diagnostic_measurements_and_missing_source(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

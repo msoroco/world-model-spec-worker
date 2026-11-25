@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import subprocess
 
 from native_acquisition import CAMERAS
@@ -71,6 +72,12 @@ def encode_original_cameras(attempt: Path, camera_plan: dict, *, ffmpeg='ffmpeg'
     inventory = {'case_id': receipt['case_id'], 'source_kind': 'original_encoded',
                  'native_receipt_sha256': _sha(receipt_path), 'cameras': cameras}
     audit_media(attempt, receipt, inventory, camera_plan)
+    for source_name, view_name in (('front', 'overview'), ('rear', 'approach'),
+                                   ('left', 'reference_corner'), ('right', 'driver_reference')):
+        view = attempt / (view_name + '.mkv')
+        if view.exists():
+            raise ValueError('saved four-view source already exists: ' + view_name)
+        shutil.copy2(encoded_root / (source_name + '.mkv'), view)
     (attempt / 'camera-media-inventory.json').write_text(
         json.dumps(inventory, sort_keys=True, indent=2) + '\n', encoding='utf-8')
     return inventory

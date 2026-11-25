@@ -49,6 +49,7 @@ class CarlaEncounterAdapter:
         self.routes = {}
         self.current_frame = None
         self.current_elapsed = None
+        self.start_elapsed = None
         self.commands = {}
         self.occupant_vehicle_id = None
         self.occupant_id = None
@@ -136,8 +137,8 @@ class CarlaEncounterAdapter:
         if len(self.routes) != 2 or not self.original_settings:
             raise ValueError('vehicles and synchronous world required before cameras')
         if output is not None:
-            if not output.is_dir() or any(output.iterdir()):
-                raise ValueError('empty original camera attempt directory required')
+            if not output.is_dir() or (output / 'cameras').exists():
+                raise ValueError('fresh original camera output required')
             self.camera_output = output
             for name in CAMERAS:
                 (output / 'cameras' / name).mkdir(parents=True)
@@ -207,7 +208,8 @@ class CarlaEncounterAdapter:
     def tick(self):
         if len(self.cameras) != 4 or len(self.routes) != 2:
             raise ValueError('owned actors and cameras required')
-        elapsed = 0.0 if self.current_elapsed is None else self.current_elapsed + 0.05
+        elapsed = (0.0 if self.current_elapsed is None else
+                   self.current_elapsed - self.start_elapsed + 0.05)
         self.commands = {actor_id: self._control(item, elapsed) for actor_id, item in self.routes.items()}
         frame = self.world.tick()
         snapshot = self.world.get_snapshot()
@@ -215,6 +217,8 @@ class CarlaEncounterAdapter:
             raise ValueError('world frame/snapshot mismatch')
         self.current_frame = frame
         self.current_elapsed = float(snapshot.timestamp.elapsed_seconds)
+        if self.start_elapsed is None:
+            self.start_elapsed = self.current_elapsed
         return frame, self.current_elapsed
 
     def read_actor(self, actor):
@@ -223,6 +227,8 @@ class CarlaEncounterAdapter:
         transform, velocity = actor.get_transform(), actor.get_velocity()
         result = {'original_frame': self.current_frame, 'id': actor.id,
                   'xy': [float(transform.location.x), float(transform.location.y)],
+                  'z': float(transform.location.z),
+                  'heading_deg': float(transform.rotation.yaw),
                   'speed_mps': math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2),
                   'blueprint': actor.type_id}
         if actor.id == self.occupant_id:

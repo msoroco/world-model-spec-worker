@@ -48,6 +48,15 @@ def build_result(attempt: Path, case_id: str, *, diagnostic: bool = False,
     source_hashes = dict(measured["source_sha256"])
     source_hashes["source-packet.json"] = measured["source_packet_sha256"]
     video = [audit["sealed_camera_media"][name]["path"] for name in CAMERAS]
+    config_path = attempt / "config.json"
+    if config_path.is_file():
+        recording_description = json.loads(config_path.read_text()).get("recording_description")
+    else:
+        recording_description = None
+    if recording_description is None and (attempt / "construction.json").is_file():
+        recording_description = json.loads((attempt / "construction.json").read_text()).get("recording_description")
+    if recording_description is None:
+        recording_description = "Pedestrian sidewalk obstruction bypass at C104081"
     return {
         "case_id": case_id,
         "source_kind": measured["provenance_kind"],
@@ -70,7 +79,7 @@ def build_result(attempt: Path, case_id: str, *, diagnostic: bool = False,
         "trace_reference": "pedestrian_history.jsonl",
         "video_references": video,
         "video_frame_map_reference": "video_frames.jsonl",
-        "recording_description": "Pedestrian sidewalk obstruction bypass at C104081",
+        "recording_description": recording_description,
         "recording_evidence": [
             {"name": "saved_source_packet", "unit": "metadata", "reference": "source-packet.json"},
             {"name": "observed_obstruction", "unit": "structured", "reference": "obstruction_history.jsonl"},

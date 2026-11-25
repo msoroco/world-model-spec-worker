@@ -129,6 +129,8 @@ def capture_constructed_sources(world, walker, carla, constructed: dict,
         result = packet.seal(output)
         if camera_recorder is not None:
             result["camera_media"] = camera_recorder.seal(output)
+        original_packet = output / "source-packet.json"
+        (output / "pedestrian-packet.json").write_bytes(original_packet.read_bytes())
         return result
     except Exception:
         if camera_recorder is not None:

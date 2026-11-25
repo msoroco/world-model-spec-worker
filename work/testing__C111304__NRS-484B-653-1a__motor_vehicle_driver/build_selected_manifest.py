@@ -1,0 +1,75 @@
+"""Pin the eight selected cases and existing CPU offline receipts, status partial."""
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[1]
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main() -> None:
+    draft = json.loads((HERE / 'execution-manifest.draft.json').read_text(encoding='utf-8'))
+    plan = json.loads((HERE / 'case-plan.json').read_text(encoding='utf-8'))
+    risks = {case['case_id']: case['physical_risk'] for case in plan['cases']}
+    cases = []
+    for row in draft['cases']:
+        case_id = row['case_id']
+        suffix = case_id.removeprefix(HERE.name + '__')
+        log = 'cpu-semantic-offline-' + suffix + '.log'
+        source = HERE / log
+        if not source.is_file() or '"offline_passed": true' not in source.read_text(encoding='utf-8'):
+            raise ValueError('selected case lacks passing offline proof: ' + case_id)
+        construction = HERE / row['construction']
+        if sha(construction) != row['construction_sha256']:
+            raise ValueError('selected construction changed: ' + case_id)
+        cases.append({
+            'case_id': case_id, 'kind': 'delivery', 'preparation_status': 'partial',
+            'construction': row['construction'],
+            'construction_sha256': row['construction_sha256'],
+            'candidate_risk': risks[case_id], 'candidates': [],
+            'offline': {
+                'command': '.venv-cpu/bin/python runtime.py offline --manifest '
+                           'work/' + HERE.name + '/execution-manifest.draft.json --case '
+                           + case_id + ' --output .runtime-work/c111304-offline-'
+                           + suffix + '-semantic-v5 --python ' + str(REPO / '.venv-cpu/bin/python'),
+                'construction_sha256': row['construction_sha256'],
+                'exit_code': 0, 'log': log, 'log_sha256': sha(source),
+            },
+            'measurement_contract': 'measurement-contract.json',
+            'measurement_procedure': {'entrypoint': 'analysis.py'},
+            'native_handoff': {'python_env_var': 'CARLA_PYTHON',
+                               'host_env_var': 'CARLA_HOST',
+                               'port_env_var': 'CARLA_PORT',
+                               'site_env_var': 'C111304_SITE_SOURCE',
+                               'access_env_var': 'C111304_ACCESS_SOURCE',
+                               'access_review_env_var': 'C111304_ACCESS_REVIEW',
+                               'camera_plan_env_var': 'C111304_CAMERA_PLAN'},
+            'acquisition': {
+                name: {'entrypoint': 'analysis.py', 'method': 'analyze',
+                       'evidence': 'sealed Native actor, control and camera packet sources'}
+                for name in ('access_context', 'driver_control_history',
+                             'person_encounter', 'property_encounter',
+                             'original_camera_frame_join')
+            },
+            'compatibility': {'status': 'pending_cpu_positive_and_negative'},
+            'delivery_acceptance': {'status': 'pending_independent_saved_proof'},
+        })
+    manifest = {
+        'format': 'worker-execution-manifest', 'assignment_id': HERE.name,
+        'preparation_status': 'partial',
+        'runtime_manifest_sha256': sha(REPO / 'runtime/SOURCE-MANIFEST.json'),
+        'cases': cases,
+    }
+    (HERE / 'execution-manifest.json').write_text(
+        json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+    print('pinned', len(cases), 'selected C111304 cases; compatibility remains pending')
+
+
+if __name__ == '__main__':
+    main()

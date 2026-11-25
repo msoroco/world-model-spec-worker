@@ -59,6 +59,8 @@ def audit(left_attempt: Path, right_attempt: Path, comparison_id: str) -> dict:
     if comparison_id == 'governing_signal_exception':
         if left['context'].get('signal_controlling') is not False or not rm['signal_governs_ego_approach']:
             raise ValueError('governing signal contrast not observed')
+        if lm['through_occupied_during_crossing']:
+            raise ValueError('clear reference has occupied through traffic')
         for name in nearest_view.REQUIRED_SOURCES:
             if name != 'signal_state_readback' and (
                     left['sources'][name]['sha256'] != right['sources'][name]['sha256']):
