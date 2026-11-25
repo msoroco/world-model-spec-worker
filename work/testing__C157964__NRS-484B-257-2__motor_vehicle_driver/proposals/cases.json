@@ -1,0 +1,633 @@
+{
+  "cell_id": "C157964",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__semantic_reference_only",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "baseline",
+      "rationale": "Shared semantic reference only; no selected physical recording or legal conclusion.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "source-reviewed category"
+        },
+        "other_approach_state": {
+          "kind": "world_setup",
+          "value": "within or approaching",
+          "unit": "source-reviewed category"
+        },
+        "other_entrance_sign_governance": {
+          "kind": "world_setup",
+          "value": "review original entrance",
+          "unit": "structured record"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Independent original-camera review at complete ego-body entry",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Original-frame gesture review separate from Native pose command",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "Native complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "Native other complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_approaching_observed",
+            "unit": "count",
+            "method": "Independent original-camera other-vehicle approach review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_speed_mps",
+            "unit": "m/s",
+            "method": "Native other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
+            "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
+          }
+        ],
+        "limitations": [
+          "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
+          "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
+          "Physical visibility, motion and device governance require later original capture review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "traffic is being controlled by a police officer or a traffic-control signal",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "not so obligated to stop or yield",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles"
+      ]
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Original officer direction and body entry are reviewed as physical observations; no statutory judgment is resolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "go",
+          "unit": "source-reviewed category"
+        },
+        "other_approach_state": {
+          "kind": "world_setup",
+          "value": "within or approaching",
+          "unit": "source-reviewed category"
+        },
+        "other_entrance_sign_governance": {
+          "kind": "world_setup",
+          "value": "review original entrance",
+          "unit": "structured record"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Independent original-camera review at complete ego-body entry",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Original-frame gesture review separate from Native pose command",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "Native complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "Native other complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_approaching_observed",
+            "unit": "count",
+            "method": "Independent original-camera other-vehicle approach review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_speed_mps",
+            "unit": "m/s",
+            "method": "Native other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
+            "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
+          }
+        ],
+        "limitations": [
+          "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
+          "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
+          "Physical visibility, motion and device governance require later original capture review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "traffic is being controlled by a police officer or a traffic-control signal",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "not so obligated to stop or yield",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles"
+      ],
+      "paired_probe_id": "officer_control_exception",
+      "deliberate_differences": [
+        "officer_controls_ego_at_entry",
+        "officer_direction_at_entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2) officer control and direction source review",
+        "target_value_or_branch": "officer_controls_go"
+      }
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Original officer direction and body entry are reviewed as physical observations; no statutory judgment is resolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "hold",
+          "unit": "source-reviewed category"
+        },
+        "other_approach_state": {
+          "kind": "world_setup",
+          "value": "within or approaching",
+          "unit": "source-reviewed category"
+        },
+        "other_entrance_sign_governance": {
+          "kind": "world_setup",
+          "value": "review original entrance",
+          "unit": "structured record"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Independent original-camera review at complete ego-body entry",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Original-frame gesture review separate from Native pose command",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "Native complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "Native other complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_approaching_observed",
+            "unit": "count",
+            "method": "Independent original-camera other-vehicle approach review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_speed_mps",
+            "unit": "m/s",
+            "method": "Native other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
+            "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
+          }
+        ],
+        "limitations": [
+          "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
+          "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
+          "Physical visibility, motion and device governance require later original capture review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "traffic is being controlled by a police officer or a traffic-control signal",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "not so obligated to stop or yield",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles"
+      ],
+      "paired_probe_id": "officer_direction",
+      "deliberate_differences": [
+        "officer_direction_at_entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_direction_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2) officer control and direction source review",
+        "target_value_or_branch": "officer_controls_hold"
+      }
+    },
+    {
+      "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "rationale": "Original officer direction and body entry are reviewed as physical observations; no statutory judgment is resolved.",
+      "variable_assignments": {
+        "officer_controls_ego_at_entry": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_at_entry": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "source-reviewed category"
+        },
+        "other_approach_state": {
+          "kind": "world_setup",
+          "value": "within or approaching",
+          "unit": "source-reviewed category"
+        },
+        "other_entrance_sign_governance": {
+          "kind": "world_setup",
+          "value": "review original entrance",
+          "unit": "structured record"
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "officer_control_observed",
+            "unit": "count",
+            "method": "Independent original-camera review at complete ego-body entry",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "officer_direction_observed",
+            "unit": "text",
+            "method": "Original-frame gesture review separate from Native pose command",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_body_in_intersection",
+            "unit": "count",
+            "method": "Native complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_body_in_intersection",
+            "unit": "count",
+            "method": "Native other complete-body polygon versus reviewed intersection polygon",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_approaching_observed",
+            "unit": "count",
+            "method": "Independent original-camera other-vehicle approach review",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "ego_speed_mps",
+            "unit": "m/s",
+            "method": "Native ego velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          },
+          {
+            "name": "other_speed_mps",
+            "unit": "m/s",
+            "method": "Native other-vehicle velocity magnitude",
+            "time_window": "original 20 Hz 30-second capture",
+            "reference_frame": "Native source frame and reviewed original camera frame",
+            "sampling_rate_hz": 20,
+            "uncertainty": "physical and legal judgments remain unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "officer_context",
+            "unit": "structured record",
+            "method": "Original camera review joined to Native officer pose, sign governance and complete-body frame history",
+            "uncertainty": "Physical authority, legal control and immediate hazard remain unresolved"
+          }
+        ],
+        "limitations": [
+          "A visible uniform or commanded gesture alone does not establish legal police authority or actual control.",
+          "Native body history and camera review do not supply a numerical legal threshold for cautious proceeding or immediate hazard.",
+          "Physical visibility, motion and device governance require later original capture review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "traffic is being controlled by a police officer or a traffic-control signal",
+        "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+        "proceed cautiously",
+        "not so obligated to stop or yield",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles"
+      ],
+      "paired_probe_id": "officer_control_exception",
+      "deliberate_differences": [
+        "officer_controls_ego_at_entry",
+        "officer_direction_at_entry"
+      ],
+      "probe": {
+        "primary_variable": "officer_controls_ego_at_entry",
+        "comparison_or_standard": "NRS 484B.257(2) officer control and direction source review",
+        "target_value_or_branch": "officer_present_inactive"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c157964_sub2_judgment_1",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+          "note": "An officer-like actor or scripted gesture alone does not establish police authority or actual traffic control."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      ],
+      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+    },
+    {
+      "sweep_id": "c157964_sub2_judgment_2",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1]",
+          "note": "The incorporated stop/yield manner and entrance references require original sign, body-entry and camera review."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      ],
+      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+    },
+    {
+      "sweep_id": "c157964_sub2_judgment_3",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "proceed cautiously",
+          "note": "The statute supplies no numerical cautious-speed threshold."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      ],
+      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+    },
+    {
+      "sweep_id": "c157964_sub2_judgment_4",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "not so obligated to stop or yield",
+          "note": "Other-entrance governance must be checked from original site and sign sources."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      ],
+      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+    },
+    {
+      "sweep_id": "c157964_sub2_judgment_5",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "approaching so closely as to constitute an immediate hazard",
+          "note": "Hazard proximity and timing remain a qualitative judgment without a statutory numeric cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      ],
+      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+    },
+    {
+      "sweep_id": "c157964_sub2_judgment_6",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "yielding to vehicles",
+          "note": "Complete body and speed histories support review but cannot themselves determine legal priority."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Source-backed physical feasibility and full fixed parameter grid for this qualitative branch; not supplied by diagnostic fixtures."
+      ],
+      "rationale": "Preserve explicit unresolved physical sweep need without inventing a legal threshold."
+    }
+  ],
+  "sweeps_expanded": false
+}

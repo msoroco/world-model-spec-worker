@@ -86,6 +86,12 @@ def finalize(attempt, output, *, assessor=None, writer=None):
     source_names = required + ("officer_context.json", "officer_history.jsonl")
     sources = {name: _sha(attempt / name) for name in source_names}
     (channels / "officer_context.json").write_text(json.dumps({
+        "officer_context": {
+            "first_ego_entry": observed["first_ego_entry"],
+            "first_hold_observation": observed["first_hold_observation"],
+            "police_authority_judgment": observed["police_authority_judgment"],
+            "legal_control_exception_judgment": "unresolved",
+        },
         "case_id": config["selected_case_id"],
         "first_ego_entry": observed["first_ego_entry"],
         "first_hold_observation": observed["first_hold_observation"],

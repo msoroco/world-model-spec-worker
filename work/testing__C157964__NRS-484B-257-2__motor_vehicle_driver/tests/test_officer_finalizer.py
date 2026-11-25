@@ -84,6 +84,19 @@ class OfficerFinalizerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "frame join differs"):
                 finalizer.finalize(attempt, attempt / "analysis.json")
 
+    def test_real_cpu_physical_assessor_keeps_fixture_unconfirmed(self):
+        with tempfile.TemporaryDirectory() as dirname:
+            attempt = Path(dirname) / "attempt"
+            attempt.mkdir()
+            self._attempt(attempt)
+            report = finalizer.finalize(attempt, attempt / "analysis.json")
+            result = json.loads((attempt / "result.json").read_text())
+            self.assertTrue(report["analysis_complete"])
+            self.assertFalse(result["setup_confirmed"])
+            self.assertEqual(result["physical_checks"]["setup"]["status"], "not_met")
+            self.assertFalse(result["physical_acceptance_claimed"])
+            self.assertEqual(result["provenance_kind"], "synthetic_fixture")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 from officer_direction import PREFIX, SUFFIXES
@@ -9,7 +10,7 @@ from officer_direction import PREFIX, SUFFIXES
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SOURCE_NAMES = ["runner.py", "finalizer.py", "officer-site.xodr"] + [
+SOURCE_NAMES = ["runner.py", "finalizer.py", "comparison_audit.py", "officer-site.xodr"] + [
     path.name for path in sorted(ROOT.glob("officer_*.py"))
 ]
 TEST_NAMES = ["tests/" + path.name for path in sorted((ROOT / "tests").glob("test*.py"))]
@@ -92,6 +93,21 @@ def main():
             construction_path = case_dir / "construction.json"
         write_json(construction_path, construction(case_id, config_path))
         print(case_id, hashlib.sha256(construction_path.read_bytes()).hexdigest())
+        fallback_config = deepcopy(json.loads(config_path.read_text()))
+        fallback_config["camera_mounts"]["overview"]["pose"]["location"].update(
+            {"x": -4.0, "y": -2.0, "z": 22.0})
+        fallback_config["camera_mounts"]["overview"]["pose"]["rotation"].update(
+            {"yaw": -145.0, "pitch": -60.0})
+        fallback_config["camera_mounts"]["reference_corner"]["pose"]["location"].update(
+            {"x": -9.0, "y": -10.0, "z": 10.0})
+        fallback_config["camera_mounts"]["reference_corner"]["pose"]["rotation"].update(
+            {"yaw": 35.0, "pitch": -30.0})
+        fallback_dir = ROOT / "cases" / case_id / "fallback1"
+        fallback_path = fallback_dir / "config.json"
+        write_json(fallback_path, fallback_config)
+        fallback_construction = fallback_dir / "construction.json"
+        write_json(fallback_construction, construction(case_id, fallback_path))
+        print(case_id, "fallback1", hashlib.sha256(fallback_construction.read_bytes()).hexdigest())
 
 
 if __name__ == "__main__":
