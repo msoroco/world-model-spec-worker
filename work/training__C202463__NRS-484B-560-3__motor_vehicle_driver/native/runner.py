@@ -17,8 +17,8 @@ CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 ASSIGNMENT = "training__C202463__NRS-484B-560-3__motor_vehicle_driver"
 VARIANTS = {"probe_a": ("right_single", 2), "probe_b": ("left_single", 2),
             "probe_c": ("left_abreast", 2),
-            "probe_d": ("left_abreast_four_lanes", 4),
-            "probe_e": ("left_abreast_five_lanes", 5)}
+            "probe_d": ("left_abreast", 4),
+            "probe_e": ("left_abreast", 5)}
 
 
 def sha(path):

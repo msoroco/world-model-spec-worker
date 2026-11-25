@@ -95,6 +95,7 @@ def build(suffix):
         "        self.assertIn('OpenDRIVE', open_drive('" + suffix + "'))\n")
     config = json.loads(files['config.json']['content'])
     config['case_id'] = config['selected_case_id'] = case_id
+    config['case']['case_id'] = case_id
     config['supported_case_ids'] = [case_id]
     config['crosswalk_case'] = suffix
     config['required_atoms'] = []

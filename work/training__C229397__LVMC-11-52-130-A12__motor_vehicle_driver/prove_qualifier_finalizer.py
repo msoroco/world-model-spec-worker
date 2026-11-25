@@ -28,8 +28,8 @@ def prepare(suffix, name):
     stem = ('traffic' if suffix == 'traffic_conflict_near' else
             'device' if suffix == 'device_direction_near' else
             'law' if suffix == 'law_compliance_near' else 'officer')
-    offline = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-offline-v4')
-    attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-' + name + '-v6')
+    offline = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-offline-v5')
+    attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-' + name + '-v7')
     if attempt.exists():
         raise ValueError('Retain existing qualifier finalizer proof')
     shutil.copytree(offline, attempt)

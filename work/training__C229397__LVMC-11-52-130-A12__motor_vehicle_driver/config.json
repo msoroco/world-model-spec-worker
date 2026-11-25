@@ -1,0 +1,100 @@
+{
+  "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+  "selected_case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+  "supported_case_ids": [
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near",
+    "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near"
+  ],
+  "candidate_id": "primary",
+  "law_id": "LVMC-11-52-130-A12",
+  "cell_id": "C229397",
+  "actor": "motor_vehicle_driver",
+  "crosswalk_case": "controlled_2",
+  "target_center_x_m": -5.0,
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2"
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "elevated road and crosswalk overview",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "parking-lane approach and vehicle motion",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "marked-crosswalk corner and closest body gap",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "driver-facing near-crosswalk and control context",
+      "fov_deg": 90
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "subject_vehicle_pose_and_extent",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native per-frame vehicle state",
+        "time_window": "600 frames",
+        "reference_frame": "Native world",
+        "uncertainty": "50 ms sampling"
+      },
+      {
+        "name": "control_intent",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original applied vehicle control command",
+        "time_window": "600 frames",
+        "reference_frame": "Native frame identity",
+        "uncertainty": "command does not establish legal action type"
+      },
+      {
+        "name": "frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native frame and four-camera join",
+        "time_window": "600 frames",
+        "reference_frame": "Native frame identity",
+        "uncertainty": "requires full video decode after capture"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "crosswalk_extent",
+        "unit": "structured",
+        "method": "OpenDRIVE object proposal plus original Native and marking review"
+      }
+    ],
+    "limitations": [
+      "Actual marked paint, jurisdiction, traffic conflict, law and officer/device directions need independent sources"
+    ]
+  },
+  "status": "cpu_draft_not_delivery_prepared"
+}

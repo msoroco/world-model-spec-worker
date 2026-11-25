@@ -30,7 +30,7 @@ def run(suffix, stem, kind):
                    'device-states.jsonl' if stem == 'device' else
                    'authority-events.jsonl')
         (attempt / missing).unlink()
-    output = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-' + kind + '-v5')
+    output = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-' + kind + '-v6')
     command = [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
         '--manifest', str(MANIFEST), '--case', ASSIGNMENT + '__' + suffix,
         '--attempt', str(attempt), '--output', str(output),

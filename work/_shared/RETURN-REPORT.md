@@ -4,6 +4,26 @@
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
 
+## 2026-11-25 lead preflight and shared return verification
+
+The lead reran current `runtime.py verify --runtime runtime`, `runtime.py preflight` and `worker_check.py --updates`: source verification, pinned CPU environment and Lean 4.28.0 passed; update version 16 has no paused assignments. Independent queue check and queue audit pass at 892 planned, 524 selected, 443 comparisons, zero dispatchable; the return audit passes with 114 ready, 139 partial and zero errors. A scan of all 83,334 files under `work/` found no file above the 2 MiB cap (5 MiB allowed for the shared queue). A focused scan of 623 shared files found no UTF-8, trailing-space, blank-EOF or conflict-marker issue. These checks do not replace the three owners' unfinished assignment-scoped strict gates.
+
+C202463/NRS 484B.560(3) has passed the first two of ten final-revision public candidate checks, including exact selected measurements, missing-required-stop negatives, Native validation, Core/Lean and final decode. Five 600-frame saved diagnostic analyses pass and reject missing required-stop source. The owner repaired a frame-map `carla_frame` mismatch exposed in the first public run and continues the other public candidates and semantic chain. Status remains partial.
+
+## 2026-11-25 final-hash boundary and qualifier proof continuation
+
+C124163/NRS 484B.413(2) owner found the 20 Hz, 8 m/s diagnostic quantized the exact 300-foot and 100-foot joins to 91.2 m and 30.4 m. The owner changed the diagnostic to one foot per frame (6.096 m/s), confirmed source-observed joins of exactly 91.44 m and 30.48 m, regenerated the six affected recipes, and is rebinding v8 public and saved proofs. Earlier v7 proofs are retained only as history; status stays partial until final-hash selected-package proofs and the scoped strict gate pass.
+
+C229397/LVMC 11.52.130(A)(12) owner passed recorded-only saved positive/missing-source negatives and independent delivery positive/altered-baseline/original-mode negatives for four newly selected textual qualifier cases. The nine-case semantic chain validates. Exact manifest review found a nested diagnostic case identity still set to `controlled_2`; the owner repaired and regenerated the four constructions and is rerunning affected offline/public receipts on their new hashes. Status stays partial.
+
+The four corrected qualifier constructions now pass exact pinned offline checks and final-hash public positive/missing-source negatives. Current `execution_manifest.validate`, nine-case semantic validation, and all nine delivery acceptance contracts pass. Recorded-only saved is being rerun on the corrected construction hashes; strict remains pending.
+
+C124163/NRS 484B.413(2) final v8 now has 12/12 exact pinned offline and public positive/missing-source negative candidate proofs, six independent delivery positive/physical-rejection negatives and four controlled pair audits. Source-measured distance triples are other-area 99.974/91.44/69.799 m and district 35.052/30.48/19.812 m. Twelve recorded-only saved jobs are running; physical triads, final manifest binding and scoped strict remain, so status is partial. Current manifest SHA-256 `41db1bb95bb8267b6258267b80b4276081ac77320aaca8a06e89e0920f674707`.
+
+C202463/NRS 484B.560(3) passed ten public primary/fallback paths before a final comparison-isolation review found c/d/e had suffix-specific `queue_mode` strings despite the same left-abreast arrangement. The owner is normalizing those three physical requests and rerunning affected exact public/saved receipts; the earlier ten-path sweep is historical, not final-hash binding. Its five-case semantic chain validates the 2/4/5 marked-lane below/at/above threshold sweep and two unresolved-judgment physical sweeps (semantic index SHA-256 `6cf66069da236f3a6a35883c117f34cf3faadb89ee7dc414c04ed1a0be734aa6`). Recorded-only saved a/b passed on stable constructions; c/d/e require the normalized queue-mode construction, followed by final binding and strict, so status remains partial.
+
+A lead branch-matrix review found `work/_shared/branch-coverage.json` still lists LVMC 11.52.130(A)(12) and NRS 484B.560(3) as `pending_review` source-inventory rows. Owners have been asked to supply exact runnable topic/case/comparison mappings after final package hashes stabilize; the lead will integrate shared coverage rather than claiming those rows complete early.
+
 ## 2026-11-25 active owners after 114-ready integration
 
 C124163/NRS 484B.413(2) remains partial while its owner completes a final-hash six-case district/other-area below/at/above signal-distance construction with 12 primary/fallback candidates. Canonical semantic validation passed nine stages on six cases; the preceding v6 twelve-path public positive/missing-signal-source sweep passed, but camera/frame-map/physical-progress changes require a definitive v7 offline/public/saved rebinding. Original weather, signal form, course-change, district and accepted-recording equivalence remain source-reviewed limitations.

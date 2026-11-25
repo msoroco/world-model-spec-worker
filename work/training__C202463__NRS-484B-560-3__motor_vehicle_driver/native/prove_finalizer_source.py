@@ -93,8 +93,8 @@ def fixture(path, suffix):
         "law_id": "NRS-484B-560-3", "cell_id": "C202463",
         "rate_hz": 20, "duration_s": 30,
         "queue_mode": {"probe_a": "right_single", "probe_b": "left_single",
-            "probe_c": "left_abreast", "probe_d": "left_abreast_four_lanes",
-            "probe_e": "left_abreast_five_lanes"}[suffix],
+            "probe_c": "left_abreast", "probe_d": "left_abreast",
+            "probe_e": "left_abreast"}[suffix],
         "recording_description": {"channels": [], "limitations": ["CPU diagnostic only"]}})
     return case
 

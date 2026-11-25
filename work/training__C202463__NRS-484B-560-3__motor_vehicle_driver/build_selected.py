@@ -12,8 +12,8 @@ CHANNELS = ("st.railway_crossing", "drv.stopped", "st.road_edge", "rel.occupies"
             "rel.longitudinal_overlap", "drv.laned_roadway", "st.lane_adjacency",
             "st.lane_marking")
 VARIANTS = (("probe_a", "right_single", 2), ("probe_b", "left_single", 2),
-            ("probe_c", "left_abreast", 2), ("probe_d", "left_abreast_four_lanes", 4),
-            ("probe_e", "left_abreast_five_lanes", 5))
+            ("probe_c", "left_abreast", 2), ("probe_d", "left_abreast", 4),
+            ("probe_e", "left_abreast", 5))
 
 
 def sha(path):
@@ -108,15 +108,18 @@ def build():
             "fixture_recipe": f"work/{ASSIGNMENT}/diagnostic-{suffix}-recipe.json",
             "delivery_readiness": "incomplete_original_rail_source_pending", "id": "primary"})
         proposals.append({"case_id": case, "target_law_id": "NRS-484B-560-3",
-            "target_type": "boundary_probe" if suffix in ("probe_c", "probe_d", "probe_e") else "controlled_attempt",
+            "target_type": "boundary_probe" if suffix in ("probe_c", "probe_d", "probe_e") else "judgment_sweep",
             "rationale": "Required-stop rail queue duties and marked-lane qualifier with original authority gate",
             "paired_probe_id": "c202463_rail_queue_and_lanes",
             "deliberate_differences": ["marked_lane_count"] if suffix in ("probe_d", "probe_e") else ["queue_mode"],
             "probe": {"primary_variable": "marked_lane_count" if suffix in ("probe_c", "probe_d", "probe_e") else "queue_mode",
                 "comparison_or_standard": "four or more marked lanes at required rail stop",
                 "target_value_or_branch": lanes if suffix in ("probe_c", "probe_d", "probe_e") else queue_mode,
-                **({"threshold_ref": "activation.numeric_conditions[0]", "operator": ">=",
+                **({"threshold_ref": "obligation.numeric_conditions[0]", "operator": ">=",
                     "unit": "lanes", "test_value": lanes} if suffix in ("probe_c", "probe_d", "probe_e") else {})},
+            **({"epsilon_used": {"value": 1, "unit": "lanes",
+                "rationale": "Integer marked-lane count brackets exact four-lane statutory boundary."}}
+                if suffix in ("probe_c", "probe_d", "probe_e") else {}),
             "variable_assignments": {"queue_mode": {"kind": "controller", "value": queue_mode},
                 "marked_lane_count": {"kind": "world_setup", "value": lanes}},
             "recording_description": description,

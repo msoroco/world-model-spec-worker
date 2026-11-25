@@ -19,7 +19,7 @@ def sha(path):
 def main():
     manifest_path = FOLDER/'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    proof_root = REPO/'.runtime-work'/'c124163-physical-proofs-v8'
+    proof_root = REPO/'.runtime-work'/'c124163-physical-proofs-v10'
     proof_root.mkdir(parents=True, exist_ok=True)
     for entry in manifest['cases']:
         condition = entry['case_id'].rsplit('__',1)[-1]
@@ -32,6 +32,18 @@ def main():
             attempt.mkdir(parents=True)
             for name in ('config.json','trace.jsonl','video_frames.jsonl','result.json'):
                 shutil.copyfile(source/name,attempt/name)
+            config = json.loads((attempt/'config.json').read_text())
+            config['course'] = 'left_turn'
+            config['physical_completion'] = {
+                'criterion':'road_transition',
+                'motion_source':'body_history.jsonl',
+                'body_key':'body_vertices_m',
+                'road_key':'road_id',
+                'destination_road':4,
+                'minimum_progress_m':120.0,
+                'engineering_tolerances_not_legal':True
+            }
+            (attempt/'config.json').write_text(json.dumps(config,indent=2)+'\n')
             if kind == 'incomplete_motion':
                 rows = [json.loads(s) for s in (attempt/'trace.jsonl').read_text().splitlines()]
                 first = rows[0]['position_m']
@@ -39,7 +51,18 @@ def main():
                     row['position_m'] = first
                     row['position'] = dict(zip(('x','y','z'),first))
                 (attempt/'trace.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
-            if kind == 'missing_evidence':
+            if kind != 'missing_evidence':
+                trace = [json.loads(s) for s in (attempt/'trace.jsonl').read_text().splitlines()]
+                history = []
+                for index,row in enumerate(trace):
+                    x,y = row['position_m'][:2]
+                    geometry = [[x-2,y-0.9],[x+2,y-0.9],
+                                [x+2,y+0.9],[x-2,y+0.9]]
+                    history.append({'frame':row['frame'],'time_s':row['time_s'],
+                                    'body_vertices_m':geometry,
+                                    'road_id':4 if kind=='complete_motion' and index>=400 else 1})
+                (attempt/'body_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in history))
+            else:
                 (attempt/'trace.jsonl').unlink()
             result_name = f'physical-{condition}-{kind}.json'
             log_name = f'physical-{condition}-{kind}.log'

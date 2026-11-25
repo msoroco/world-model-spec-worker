@@ -19,7 +19,7 @@ def sha(path):
 
 def main():
     reports = {}
-    altered = ROOT / '.runtime-work/c229397-qualifier-altered-baseline-v3'
+    altered = ROOT / '.runtime-work/c229397-qualifier-altered-baseline-v4'
     if altered.exists():
         raise ValueError('Retain prior altered baseline')
     altered.mkdir()
@@ -31,8 +31,8 @@ def main():
                          ('law_compliance_near', 'law'),
                          ('police_direction_near', 'officer'),
                          ('device_direction_near', 'device')):
-        attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-recorded-positive-v6')
-        processing = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-positive-v5/v0001/processing.json')
+        attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-recorded-positive-v7')
+        processing = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-positive-v6/v0001/processing.json')
         case = ASSIGNMENT + '__' + suffix
         result = audit(case, attempt, processing, BASE, diagnostic=True)
         receipt = HERE / 'proofs' / 'qualifiers' / stem / 'delivery-audit.json'

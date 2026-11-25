@@ -1,0 +1,720 @@
+{
+  "cell_id": "C202463",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "c202463-original-review-0",
+      "target_law_id": "NRS-484B-560-3",
+      "judgment_refs": [
+        {
+          "phrase": "stopping is required at a railroad crossing",
+          "note": "independent original authority, gate and crossing source needed"
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "rationale": "Original stop authority or available-right source is required before freezing this judgment sweep.",
+      "missing_inputs": [
+        "Original Native source bytes and independent reviewer identity"
+      ]
+    },
+    {
+      "sweep_id": "c202463-original-review-1",
+      "target_law_id": "NRS-484B-560-3",
+      "judgment_refs": [
+        {
+          "phrase": "as far to the right of the highway as possible",
+          "note": "review available right-side space and surrounding traffic"
+        }
+      ],
+      "status": "incomplete",
+      "mode": "one_dimensional",
+      "axes": [],
+      "rationale": "Original stop authority or available-right source is required before freezing this judgment sweep.",
+      "missing_inputs": [
+        "Original Native source bytes and independent reviewer identity"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "baseline",
+      "rationale": "Neutral nonselected rail-stop comparison anchor",
+      "probe": {
+        "primary_variable": "queue_mode",
+        "comparison_or_standard": "rightward single queue at required rail stop",
+        "target_value_or_branch": "baseline"
+      },
+      "variable_assignments": {
+        "queue_mode": {
+          "kind": "controller",
+          "value": "right_single"
+        },
+        "marked_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Gate indication alone does not establish stop authority; far-right possibility and legal verdict remain source-reviewed judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "original required-stop authority"
+      ]
+    },
+    {
+      "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_a",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Required-stop rail queue duties and marked-lane qualifier with original authority gate",
+      "paired_probe_id": "c202463_rail_queue_and_lanes",
+      "deliberate_differences": [
+        "queue_mode"
+      ],
+      "probe": {
+        "primary_variable": "queue_mode",
+        "comparison_or_standard": "four or more marked lanes at required rail stop",
+        "target_value_or_branch": "right_single"
+      },
+      "variable_assignments": {
+        "queue_mode": {
+          "kind": "controller",
+          "value": "right_single"
+        },
+        "marked_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Gate indication alone does not establish stop authority; far-right possibility and legal verdict remain source-reviewed judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "independent required-stop authority",
+        "rightmost possible position in sourced traffic and road context"
+      ]
+    },
+    {
+      "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_b",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Required-stop rail queue duties and marked-lane qualifier with original authority gate",
+      "paired_probe_id": "c202463_rail_queue_and_lanes",
+      "deliberate_differences": [
+        "queue_mode"
+      ],
+      "probe": {
+        "primary_variable": "queue_mode",
+        "comparison_or_standard": "four or more marked lanes at required rail stop",
+        "target_value_or_branch": "left_single"
+      },
+      "variable_assignments": {
+        "queue_mode": {
+          "kind": "controller",
+          "value": "left_single"
+        },
+        "marked_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Gate indication alone does not establish stop authority; far-right possibility and legal verdict remain source-reviewed judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "independent required-stop authority",
+        "rightmost possible position in sourced traffic and road context"
+      ]
+    },
+    {
+      "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_c",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "boundary_probe",
+      "rationale": "Required-stop rail queue duties and marked-lane qualifier with original authority gate",
+      "paired_probe_id": "c202463_rail_queue_and_lanes",
+      "deliberate_differences": [
+        "queue_mode"
+      ],
+      "probe": {
+        "primary_variable": "marked_lane_count",
+        "comparison_or_standard": "four or more marked lanes at required rail stop",
+        "target_value_or_branch": 2,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "lanes",
+        "test_value": 2
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "lanes",
+        "rationale": "Integer marked-lane count brackets exact four-lane statutory boundary."
+      },
+      "variable_assignments": {
+        "queue_mode": {
+          "kind": "controller",
+          "value": "left_abreast"
+        },
+        "marked_lane_count": {
+          "kind": "world_setup",
+          "value": 2
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Gate indication alone does not establish stop authority; far-right possibility and legal verdict remain source-reviewed judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "independent required-stop authority",
+        "rightmost possible position in sourced traffic and road context"
+      ]
+    },
+    {
+      "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "boundary_probe",
+      "rationale": "Required-stop rail queue duties and marked-lane qualifier with original authority gate",
+      "paired_probe_id": "c202463_rail_queue_and_lanes",
+      "deliberate_differences": [
+        "marked_lane_count"
+      ],
+      "probe": {
+        "primary_variable": "marked_lane_count",
+        "comparison_or_standard": "four or more marked lanes at required rail stop",
+        "target_value_or_branch": 4,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "lanes",
+        "test_value": 4
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "lanes",
+        "rationale": "Integer marked-lane count brackets exact four-lane statutory boundary."
+      },
+      "variable_assignments": {
+        "queue_mode": {
+          "kind": "controller",
+          "value": "left_abreast"
+        },
+        "marked_lane_count": {
+          "kind": "world_setup",
+          "value": 4
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Gate indication alone does not establish stop authority; far-right possibility and legal verdict remain source-reviewed judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "independent required-stop authority",
+        "rightmost possible position in sourced traffic and road context"
+      ]
+    },
+    {
+      "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_e",
+      "target_law_id": "NRS-484B-560-3",
+      "target_type": "boundary_probe",
+      "rationale": "Required-stop rail queue duties and marked-lane qualifier with original authority gate",
+      "paired_probe_id": "c202463_rail_queue_and_lanes",
+      "deliberate_differences": [
+        "marked_lane_count"
+      ],
+      "probe": {
+        "primary_variable": "marked_lane_count",
+        "comparison_or_standard": "four or more marked lanes at required rail stop",
+        "target_value_or_branch": 5,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "lanes",
+        "test_value": 5
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "lanes",
+        "rationale": "Integer marked-lane count brackets exact four-lane statutory boundary."
+      },
+      "variable_assignments": {
+        "queue_mode": {
+          "kind": "controller",
+          "value": "left_abreast"
+        },
+        "marked_lane_count": {
+          "kind": "world_setup",
+          "value": 5
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          },
+          {
+            "name": "st.lane_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original Native frames",
+            "method": "source-reviewed saved actor, gate, road, marked-lane and video joins",
+            "reference_frame": "original Native frame and reviewed crossing",
+            "uncertainty": "50 ms cadence; stop authority and rightmost possible require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Gate indication alone does not establish stop authority; far-right possibility and legal verdict remain source-reviewed judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "independent required-stop authority",
+        "rightmost possible position in sourced traffic and road context"
+      ]
+    }
+  ]
+}
