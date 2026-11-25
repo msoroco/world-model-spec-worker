@@ -286,3 +286,7 @@ Eight unbound saved-processing receipt copies were preserved byte-exactly in `wo
 ## 2026-11-23 unbound comparison receipt preservation
 
 Seven historical receipt files without current JSON path references were preserved byte for byte in `work/_shared/c125714-unbound-comparison-receipts-20261123.json` (SHA256 `dcc98445cdd9cdb2dfc20c135b7914c4fe2d8109fcdc2e45d394b63633faf417`). Each entry records the original path and SHA256. The assignment-scoped strict delivery-ready gate passed after archival; C125714 remains ready.
+
+## 2026-11-25 current-runtime renewal
+
+Eight exact cases and all 24 fallback candidates passed fresh current-runtime offline and positive/missing-source compatibility CPU proofs. The separate `execution-manifest-current-runtime-proof.json` kept the retained canonical manifest unchanged during proof generation; after the proofs passed, the renewed `execution-manifest.json` passed the scoped strict assignment gate. Previous manifest and receipts remain plain text in `prior-runtime-20261125/`. Physical Native and original-pixel acceptance remain unverified.

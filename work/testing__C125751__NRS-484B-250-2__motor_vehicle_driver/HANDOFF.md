@@ -821,3 +821,7 @@ Older result-linked logs from this package were preserved byte-exactly, includin
 2026-11-24 verification addendum: C125751 scoped strict gate passed again after all four historical v2 saved JSON files were archived. C125745 scoped nonready check passed; C125745 remains partial.
 
 2026-11-24: The unreferenced historical `opposite-turn-v2-primary-delivery-audit.json` is preserved as an exact member of `work/_shared/unreferenced-and-historical-diagnostics-20261124.tar.xz` (SHA-256 `b669bffe1a57a69a736e0eef352a49570ad1a2f1020528019727dff45c73df32`). This assignment passed its scoped strict gate after archival.
+
+## 2026-11-25 current-runtime proof resume
+
+The canonical manifest remains bound to the prior validated runtime and the result remains retained ready. A separate `execution-manifest-current-runtime-proof.json` was used to begin current-runtime renewal without changing the prior package. The first exact primary compatibility receipt passed at `.runtime-work/current-runtime-refresh/testing__C125751__NRS-484B-250-2__motor_vehicle_driver/0-primary/compat/compatibility.json`; the second candidate run was interrupted at the turn execution limit and has no receipt. Resume with `.venv-cpu/bin/python .runtime-work/refresh_retained.py testing__C125751__NRS-484B-250-2__motor_vehicle_driver`. The runner reuses only source-hash-matched passing attempts and removes its own incomplete ignored diagnostic directory before retrying. Do not label this package current-runtime-ready until all 16 primary/fallback proofs and its scoped strict gate pass.
