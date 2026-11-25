@@ -1,6 +1,6 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 80 of 253 assignments are ready and 173 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 84 of 253 assignments are ready and 169 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
 
@@ -3099,3 +3099,30 @@ C154537/NRS-484B-250(4) owner milestone: exact selected `__controlled_1` and `__
 The C111071 case plan now describes the authored, CPU-tested Native capture path accurately while preserving the absence of physical CARLA source and selected delivery. Both independent straight/yield source-chain audits and the scoped static check reran with exit 0 after the wording repair. Case-plan SHA-256 `f425661dfb48aa989d60d0c61a8810e434e8570d07a08590cd5b8a96f67097c8`; status remains partial.
 
 C229410/NRS-484B-450(1)(j) owner rebuilt the selected pair after changing its saved finalizer to derive completion from original approach and sustained-stop frames. Both primary offline, public positive/negative, recorded-only saved, physical/lifecycle and delivery-audit selftests pass again. Direct execution-manifest validation passes on current runtime; an independent comparison measures 12 m versus 0 m same-side gap with fixed entrance context and rejects a changed-context negative. The 75 ft opposite-side, stop/stand and exception branches, canonical semantic chain and actual source review remain, so status stays partial.
+## 2026-11-25 C111071 source bridge checkpoint
+
+Current inventory audit passes: 253 packages, 84 ready, 169 partial, 406 selected delivery cases, 400 comparisons, 791 proven candidates and zero reported blocked packages. Whole-batch strict delivery remains open because partial packages remain; retained prior-ready packages still have their recorded previous-runtime validation scope.
+
+C111071 now has `native/source_bridge.py`, an executable CLI that joins the authored live writer's 600 original readback and camera-frame rows to the existing saved measurement input format. It rechecks source-map body/stop/entry/detector geometry and signal cycle counts, binds a named original-source review by SHA-256, and retains the review with derived inputs. Seven controlled synthetic negatives reject stale or absent review evidence and forged entry geometry; the synthetic positive flows through `saved_measurement.analyze`. `SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-source-bridge TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/native/prove_source_bridge.py` exits 0. Current runtime verify, CPU preflight and scoped `worker_check.py --assignment training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator --complete` exit 0. C111071 remains partial: no original CARLA source review, selected manifest/fallback/semantic/physical/delivery chain, or actor-eligible opposite-turn binding has been completed.
+
+Three disjoint owners continue C150129, C154537 and C229410. C154537 added fail-closed statutory hierarchy and source-review context code with targeted CPU tests, while C229410 added branch-target and opposite-side construction prototypes. Neither has passed its strict assignment gate, and no new ready package is claimed here.
+
+C111071 source bridge now binds all four original camera hashes and per-camera Native frame joins, and the seventh negative rejects a missing camera. The controlled fixture is synthetic and does not decode these placeholder camera bytes; finalizer decode remains separately tested.
+
+C111071 corrected its unselected yield request from green right arrow to the fixed green left arrow used by its source-shaped diagnostics. A fifth negative rejects a right-arrow mutation. Current request script SHA-256 `e5b2781a0c1af8f743ca419354822e1f02aafaa4c5f46c353c2510c4ac2a88ea`; proof SHA-256 `0219dca575984ff56f3cc3495a13a7de34be7317884746a2982920caca28b23d`. This is a controlled request correction, not selected or physically observed delivery.
+
+Current owner progress after this checkpoint: C150129's two street primaries pass current-runtime public compatibility including a missing-posting negative; its independent street comparison audit rejects changed identity and frame rate, and scoped static checking passes. It remains partial for selected fallback, recorded-only, delivery and semantic proofs plus original City authority/vehicle-status source and the separate parking-facility cell. C229410 has eight additional exact opposite-side, stop/stand, traffic-conflict and authority-direction constructions passing primary offline checks; their selected public/saved/semantic/audit chain remains pending. C154537's saved-source stop-priority and original-review context checks pass targeted CPU tests; its further controlled statutory cases are still being constructed. No owner reports a new strict-ready assignment.
+
+## 2026-11-25 C111071 Native yield actors
+
+C111071/NRS 484B.307(9)(b) now has an authored live Native pedestrian and cross-traffic spawn/motion path for its two exact yield cases. The controller uses observed cycles and original body occupancy to distinguish hold from controlled early entry. Its CPU contract proof passes with 27 negative rejections, including mock actor spawn and control calls; scoped static, current runtime verify and CPU preflight pass. The case remains partial: no original Native occupancy, selected manifest or strict scoped delivery proof. Receipt SHA-256 `159e53472e673c88465a7f0f461f7fcec88be9ed180d9d45957e59fe48c98182`. Three separate owners continue C150129, C154537 and C229410.
+
+## 2026-11-25 C111071 original conflict body binding
+
+The C111071 Native-to-saved bridge now checks each reviewed lawful conflict against original pedestrian or vehicle body occupancy and rejects forged occupancy or unsupported review flags. Its synthetic 600-frame positive and 10 negative mutations pass; scoped static check passes. Receipt SHA-256 `266f1a2636adadf849c9a4b9051c931e74b39dc88d142a4456a69ace1cd5986b`. C111071 remains partial pending selected delivery and physical source review.
+
+The independent return audit passes with 84 ready, 169 partial and zero errors. The full strict gate remains unpassed. C111071 exact scoped strict rejects its truthful partial status; its CPU construction and source bridge proofs are checkpoints, not delivery readiness.
+
+## 2026-11-25 C111071 selected Native offline package
+
+C111071 now has four exact selected Native construction bundles, each embedding its live actor/camera writer, source-review bridge and authored road. All four pass pinned offline checks with three tests per case; the selected manifest SHA-256 is `d248a68fc8be769508e3c16ee1b87b31d133df8702c4380e4146b32efa1c502a`. The case is still partial: the selected public/saved chains, fallbacks and canonical audits are not yet complete. The current live acquisition proof passes 27 controlled negatives, including the two materialized yield request branches. No physical or legal acceptance is claimed.

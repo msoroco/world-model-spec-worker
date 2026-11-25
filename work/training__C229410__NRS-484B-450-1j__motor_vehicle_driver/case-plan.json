@@ -30,7 +30,9 @@
       "status": "selected_required",
       "case_ids": [
         "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__controlled_1",
-        "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__controlled_2"
+        "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__controlled_2",
+        "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_far",
+        "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_near"
       ],
       "evidence_or_gap": "Selected original Native CPU drafts and pinned offline checks pass for both 20-foot-clause cases; synthetic saved-shape diagnostics distinguish 12 m versus 0 m raw vehicle-body-to-entrance gap and reject unreviewed identity/missing camera. Four distinct candidates, original Native execution, fire-station and driveway identity, parking and exception activity, statutory reference-point method, opposite-side 75-foot clause, accepted measurements, independent audit and strict ready gate remain incomplete."
     },
@@ -75,6 +77,34 @@
       ],
       "construction": "native/bundles/controlled_2/construction.json",
       "offline_passed": true
+    },
+    {
+      "case_id": "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_far",
+      "target_law_id": "NRS-484B-450-1j",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "Opposite side of highway within 75 feet of a fire-station driveway entrance.",
+      "physical_target": "park on opposite highway side at a raw body-edge gap 30 m from entrance",
+      "comparison_variable": "measured opposite-side distance from driveway",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/opposite_far/construction.json",
+      "offline_passed": true
+    },
+    {
+      "case_id": "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_near",
+      "target_law_id": "NRS-484B-450-1j",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "Opposite side of highway within 75 feet of a fire-station driveway entrance.",
+      "physical_target": "park on opposite highway side at a raw body-edge gap 5 m from entrance",
+      "comparison_variable": "measured opposite-side distance from driveway",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/opposite_near/construction.json",
+      "offline_passed": true
     }
   ],
   "comparisons": [
@@ -90,6 +120,22 @@
       "fixed_conditions": [
         "frozen cell, actor, legal jurisdiction, relevant devices and participants",
         "route and controller policy except requested comparison variable",
+        "capture channels, rate, camera policy and recording duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_comparison",
+      "case_ids": [
+        "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_far",
+        "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_near"
+      ],
+      "deliberate_differences": [
+        "measured opposite-side distance from driveway"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, Nevada jurisdiction and fire-station entrance",
+        "opposite highway side, parking activity and no exception",
+        "route/controller policy except requested parking target",
         "capture channels, rate, camera policy and recording duration"
       ]
     }
@@ -194,5 +240,25 @@
   "blockers": [
     "Selected original Native CPU drafts and pinned offline checks pass for both 20-foot-clause cases; synthetic saved-shape diagnostics distinguish 12 m versus 0 m raw vehicle-body-to-entrance gap and reject unreviewed identity/missing camera. Four distinct candidates, original Native execution, fire-station and driveway identity, parking and exception activity, statutory reference-point method, opposite-side 75-foot clause, accepted measurements, independent audit and strict ready gate remain incomplete."
   ],
-  "source_context_review": "Witness requires actual fire-station identity, driveway geometry, road sides, purpose/activity, traffic and directions. It does not limit the 20-foot clause to the entrance side or adopt a statutory distance method. The 75-foot opposite-side clause remains separate."
+  "source_context_review": "Witness requires actual fire-station identity, driveway geometry, road sides, purpose/activity, traffic and directions. It does not limit the 20-foot clause to the entrance side or adopt a statutory distance method. The 75-foot opposite-side clause remains separate.",
+  "branch_expansion_checkpoint": {
+    "status": "partial_unselected",
+    "manifest": "expanded-native-manifest.json",
+    "case_ids": [
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_far",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__opposite_near",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__stopped",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__standing",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__traffic_conflict",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__law_direction",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__police_direction",
+      "training__C229410__NRS-484B-450-1j__motor_vehicle_driver__device_direction"
+    ],
+    "offline_passed_case_count": 8,
+    "limitations": [
+      "No positive or negative compatibility and saved-only proofs for expanded cases",
+      "Police-officer and official-device physical source construction absent",
+      "No source authority establishes actual fire-station identity or statutory reference method"
+    ]
+  }
 }

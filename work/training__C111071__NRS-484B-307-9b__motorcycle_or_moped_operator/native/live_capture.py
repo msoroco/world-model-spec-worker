@@ -261,6 +261,50 @@ def participant_rows(actors, ego_id):
     return sorted(rows, key=lambda row: row["actor_id"])
 
 
+def yield_case_policy(case_id, observed_cycles, conflict_occupied):
+    """Request the same two-cycle wait, changing only post-cycle yielding."""
+    if case_id not in (ASSIGNMENT + "__yield_wait_for_clearance",
+                       ASSIGNMENT + "__yield_enter_during_occupancy"):
+        raise ValueError("Exact yield case identity differs")
+    if type(observed_cycles) is not int or observed_cycles < 0 or type(conflict_occupied) is not bool:
+        raise ValueError("Original cycle or conflict readback absent")
+    return {"hold": observed_cycles < 2 or (
+        case_id.endswith("wait_for_clearance") and conflict_occupied),
+        "release_conflict_ignored": case_id.endswith("enter_during_occupancy") and
+        observed_cycles >= 2 and conflict_occupied,
+        "participant_motion_request": observed_cycles >= 1,
+        "physical_entry_verified": False}
+
+
+def spawn_yield_actors(world, library, carla, reference, ego_blueprint, owned):
+    """Create actual conflict bodies on the crosswalk and perpendicular route."""
+    walkers = library.filter("walker.pedestrian.*")
+    cross_vehicles = [blueprint for blueprint in library.filter("vehicle.*")
+                      if blueprint.id != ego_blueprint.id]
+    if not walkers or not cross_vehicles:
+        raise RuntimeError("Native pedestrian or cross-traffic blueprint absent")
+    walker = world.spawn_actor(walkers[0], carla.Transform(
+        carla.Location(x=-6, y=reference["nearest_crosswalk_y_m"], z=1),
+        carla.Rotation(yaw=0)))
+    owned.append(walker)
+    cross_vehicle = world.spawn_actor(cross_vehicles[0], carla.Transform(
+        carla.Location(x=-16, y=-1.75, z=1), carla.Rotation(yaw=0)))
+    owned.append(cross_vehicle)
+    for actor in (walker, cross_vehicle):
+        if len(actor.bounding_box.get_world_vertices(actor.get_transform())) != 8:
+            raise RuntimeError("Initial original conflict actor body absent")
+    return walker, cross_vehicle
+
+
+def apply_yield_actor_control(carla, walker, cross_vehicle, move):
+    if type(move) is not bool:
+        raise ValueError("Yield actor motion request absent")
+    walker.apply_control(carla.WalkerControl(
+        direction=carla.Vector3D(x=1, y=0, z=0), speed=1.3 if move else 0.0))
+    cross_vehicle.apply_control(carla.VehicleControl(
+        throttle=.25 if move else 0.0, brake=0.0 if move else 1.0))
+
+
 def _runtime_paths():
     for parent in HERE.parents:
         package = parent / "runtime/scenario_pipeline"
@@ -373,6 +417,12 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
         initial_distance = reference["stop_marking_y_m"] - max(v.y for v in initial_vertices)
         if not 5 < initial_distance < 30:
             raise RuntimeError("Initial motorcycle approach distance differs")
+        yield_case = config["case_id"].endswith(("yield_wait_for_clearance",
+                                                 "yield_enter_during_occupancy"))
+        walker = cross_vehicle = None
+        if yield_case:
+            walker, cross_vehicle = spawn_yield_actors(
+                world, library, carla, reference, ego_bp, owned)
         plans = (("overview", 0, -18, 22, -35),
                  ("approach", 1.75, -24, 9, -15),
                  ("reference_corner", -12, -12, 10, -25),
@@ -415,7 +465,13 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                     "yellow": carla.TrafficLightState.Yellow,
                     "red": carla.TrafficLightState.Red}[phase])
                 before_entry = prior_relation.get("front_to_crosswalk_m", 1) > 0
-                hold = observed_cycles < target_cycles or (before_entry and prior_conflict)
+                yield_policy = yield_case_policy(config["case_id"], observed_cycles,
+                                                 prior_conflict) if yield_case else None
+                hold = (yield_policy["hold"] if yield_case else
+                        observed_cycles < target_cycles or (before_entry and prior_conflict))
+                if yield_case:
+                    apply_yield_actor_control(carla, walker, cross_vehicle,
+                                              yield_policy["participant_motion_request"])
                 motion = approach_control(
                     prior_relation["front_to_stop_marking_m"],
                     prior_speed, stopped_near_line, not hold)
@@ -452,6 +508,9 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                 row["controller_cycle_count_from_readback"] = observed_cycles
                 row["controller_target_cycles"] = target_cycles
                 row["controller_hold_request"] = hold
+                if yield_case:
+                    row["yield_policy_request"] = yield_policy
+                    row["authored_conflict_actor_ids"] = [walker.id, cross_vehicle.id]
                 row["signal_actor_ids"] = {role: actor.id for role, actor in heads.items()}
                 row["other_participant_original_readback"] = participant_rows(
                     world.get_actors(), ego.id)

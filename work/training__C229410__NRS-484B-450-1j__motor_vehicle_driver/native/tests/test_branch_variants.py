@@ -8,6 +8,7 @@ from branch_variants import BRANCHES, FEET_20_M, FEET_75_M, check, design_gap_m,
 from expanded_layout import check as check_layout, open_drive
 from expanded_controller import approach_command, completion_observation
 import expanded_runner
+from expanded_measurement import validate_branch_measurement
 import xml.etree.ElementTree as ET
 
 
@@ -70,3 +71,20 @@ class BranchVariantTests(unittest.TestCase):
                     expanded_runner.check()
         finally:
             os.chdir(old)
+
+    def test_branch_measurement_requires_original_context_sources(self):
+        measured = {"stationary_sample_count": 40,
+                    "stationary_min_gap_by_entrance_side_m": {"same": 0.0, "opposite": 11.0},
+                    "initial_activity": "parked", "exception_context": "none"}
+        observed = validate_branch_measurement(measured, "opposite_near")
+        self.assertEqual(observed["selected_relation"], "opposite")
+        self.assertEqual(observed["statutory_verdict"], "unresolved")
+        measured["initial_activity"] = "stopped"
+        measured["exception_context"] = "traffic_conflict"
+        with self.assertRaisesRegex(ValueError, "traffic-conflict actor"):
+            validate_branch_measurement(measured, "traffic_conflict")
+        measured["traffic_conflict_actor_observed"] = True
+        self.assertEqual(validate_branch_measurement(measured, "traffic_conflict")["activity"], "stopped")
+        measured["exception_context"] = "police_officer"
+        with self.assertRaisesRegex(ValueError, "police-direction source"):
+            validate_branch_measurement(measured, "police_direction")

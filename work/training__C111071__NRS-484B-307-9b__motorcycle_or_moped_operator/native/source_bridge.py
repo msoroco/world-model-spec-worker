@@ -5,12 +5,16 @@ synthetic CPU review exercises this code but cannot establish physical facts.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import math
 from pathlib import Path
 
 from cycle_controller import EGO_FACE, FRAMES
+from live_capture import conflict_occupancy_from_original_bodies
+
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def sha(path):
@@ -27,11 +31,13 @@ def convert(attempt: Path, review_path: Path):
     raw_path = attempt / "native_raw_readback.jsonl"
     frames_path = attempt / "video_frames.jsonl"
     survey_path = attempt / "map-import-survey.json"
-    for path in (raw_path, frames_path, survey_path, review_path):
+    camera_paths = [attempt / (name + ".mkv") for name in CAMERAS]
+    for path in (raw_path, frames_path, survey_path, review_path, *camera_paths):
         require(path.is_file(), "Missing original source or bound review: " + path.name)
     review = json.loads(review_path.read_text())
     survey = json.loads(survey_path.read_text())
-    source_hashes = {path.name: sha(path) for path in (raw_path, frames_path, survey_path)}
+    source_hashes = {path.name: sha(path) for path in
+                     (raw_path, frames_path, survey_path, *camera_paths)}
     require(review.get("source_sha256") == source_hashes,
             "Review does not bind the original Native sources")
     require(review.get("review_kind") == "original_source_review" and
@@ -83,9 +89,20 @@ def convert(attempt: Path, review_path: Path):
                 mapped.get("native_frame") == frame and mapped.get("video_frame") == index and
                 abs(mapped.get("time_s", -math.inf) - time) <= 1e-4,
                 "Original Native/video frame or time join differs")
+        expected_camera_frames = {name: frame for name in CAMERAS}
+        require(source.get("camera_native_frames") == expected_camera_frames and
+                mapped.get("camera_native_frames") == expected_camera_frames,
+                "Original four-camera Native frame join differs")
         require(source.get("source_kind") == "native_observation" and
                 source.get("road_relation_from_original_body", {}).get("source_map_sha256") == reference["map_sha256"],
                 "Original body and source road relation absent")
+        require(source.get("road_id") in (1, 13, 4) and source.get("lane_id") == -1,
+                "Original straight approach route differs")
+        blueprint = str(source.get("blueprint_id", "")).lower()
+        require(blueprint.startswith("vehicle.") and
+                any(token in blueprint for token in ("harley", "kawasaki", "yamaha", "vespa")),
+                "Original motorcycle or moped blueprint absent")
+        actor_class = "moped" if "vespa" in blueprint else "motorcycle"
         require(source.get("signal_actor_ids") == {role: row["id"] for role, row in heads.items()},
                 "Original signal actor identity differs")
         signal = source.get("signal_readback", {})
@@ -100,6 +117,22 @@ def convert(attempt: Path, review_path: Path):
         require(type(lawful) is dict and type(lawful.get("pedestrians_in_crosswalk")) is bool and
                 type(lawful.get("lawful_traffic_conflict")) is bool and lawful.get("source_refs"),
                 "Reviewed lawful conflict frame absent")
+        participants = source.get("other_participant_original_readback")
+        require(isinstance(participants, list),
+                "Original participant body inventory absent")
+        observed_conflict = conflict_occupancy_from_original_bodies(participants, reference)
+        retained_conflict = source.get("conservative_conflict_body_occupancy")
+        require(isinstance(retained_conflict, dict) and all(
+            retained_conflict.get(key) == observed_conflict[key] for key in (
+                "pedestrian_body_in_adjacent_crosswalk", "vehicle_body_in_junction",
+                "pedestrian_actor_ids", "vehicle_actor_ids")),
+                "Original conflict body occupancy differs")
+        require(not lawful["pedestrians_in_crosswalk"] or
+                observed_conflict["pedestrian_body_in_adjacent_crosswalk"],
+                "Reviewed pedestrian conflict lacks an original body")
+        require(not lawful["lawful_traffic_conflict"] or
+                observed_conflict["vehicle_body_in_junction"],
+                "Reviewed lawful traffic conflict lacks an original body")
         relation = source["road_relation_from_original_body"]
         require(type(relation.get("entered_intersection_by_body")) is bool and
                 type(relation.get("detector_footprint_intersects_ego_body")) is bool,
@@ -134,7 +167,7 @@ def convert(attempt: Path, review_path: Path):
                      "ego_face_observed": EGO_FACE,
                      "cross_phase_observed": phase,
                      "controller_cycle_count": cycles,
-                     "actor_class_observed": "motorcycle",
+                     "actor_class_observed": actor_class,
                      "detector_request_present": True,
                      "detector_request_serviced": False,
                      "other_device_prohibition_observed": False,
@@ -166,3 +199,15 @@ def convert(attempt: Path, review_path: Path):
     (attempt / "source-review.json").write_bytes(review_path.read_bytes())
     return {"frames": FRAMES, "source_sha256": source_hashes,
             "review_sha256": sha(review_path), "physical_detector_causation_verified": False}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", required=True, type=Path)
+    parser.add_argument("--review", required=True, type=Path)
+    args = parser.parse_args()
+    print(json.dumps(convert(args.attempt, args.review), sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

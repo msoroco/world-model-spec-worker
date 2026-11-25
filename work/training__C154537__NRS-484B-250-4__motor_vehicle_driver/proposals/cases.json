@@ -281,6 +281,102 @@
           "value": "approaching"
         }
       }
+    },
+    {
+      "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_3",
+      "deliberate_differences": [
+        "governing_stop_reference"
+      ],
+      "paired_probe_id": "reference_controlled_3",
+      "probe": {
+        "comparison_or_standard": "marked stop-line priority against no-line view reference",
+        "primary_variable": "governing_stop_reference",
+        "target_value_or_branch": "marked_stop_line"
+      },
+      "rationale": "Same-cell marked-line statutory priority alternative; synthetic diagnostics do not establish physical marking or legal outcome.",
+      "recording_description": {
+        "limitations": [
+          "Authored OpenDRIVE and imported lane/device survey require physical review",
+          "Through-highway and official-device source review pending"
+        ],
+        "channels": [
+          {
+            "name": "ego_front",
+            "unit": "m",
+            "method": "original ego body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native velocity vector",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "governing_signal",
+            "unit": "structured",
+            "method": "original CARLA head/lane/state readback",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "other_vehicle",
+            "unit": "structured",
+            "method": "original actor body and motion history",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "driver_view_rays",
+            "unit": "structured",
+            "method": "sampled original Native world.cast_ray",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          }
+        ],
+        "context_inputs": []
+      },
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "marked line pixel identification and official authority",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "normal"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "marked_stop_line"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "approaching"
+        }
+      }
     }
   ]
 }

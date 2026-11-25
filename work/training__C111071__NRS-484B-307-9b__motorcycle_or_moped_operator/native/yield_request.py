@@ -21,7 +21,7 @@ def row(i,condition):
             'source_kind':'authored_native_request',
             'subject':{'kind':'motorcycle','front_x_m':round(front,4),'speed_mps':0 if t<enter else 4,
                        'stopped_before_crosswalk':t<enter,'movement':'straight'},
-            'signal':{'circular_red':True,'green_arrow_direction':'right',
+            'signal':{'circular_red':True,'green_arrow_direction':'left',
                       'complete_unchanged_cycles':min(2,int(t/4)),'failed_detection_proven':False},
             'crosswalk':{'near_edge_x_m':0,'nearest_side':True,
                          'pedestrian_lawfully_within':occupied},
@@ -46,7 +46,7 @@ def meter(path):
         if r.get('frame')!=i or abs(r.get('time_s',-1)-i/RATE)>1e-6:raise ValueError('Frame/time join differs')
         s,g,c,v=(r.get(k,{}) for k in ('subject','signal','crosswalk','intersection_traffic'))
         if s.get('kind')!='motorcycle' or s.get('movement')!='straight' or not isinstance(s.get('front_x_m'),(int,float)):raise ValueError('Subject motion source differs')
-        if g.get('circular_red') is not True or g.get('green_arrow_direction')!='right' or g.get('complete_unchanged_cycles')!=min(2,int(i/RATE/4)):raise ValueError('Two-cycle signal source differs')
+        if g.get('circular_red') is not True or g.get('green_arrow_direction')!='left' or g.get('complete_unchanged_cycles')!=min(2,int(i/RATE/4)):raise ValueError('Two-cycle signal source differs')
         if c.get('near_edge_x_m')!=0 or c.get('nearest_side') is not True or not isinstance(c.get('pedestrian_lawfully_within'),bool):raise ValueError('Crosswalk/pedestrian source absent')
         if not isinstance(v.get('lawful_actor_present'),bool) or not isinstance(v.get('conflict_region_occupied'),bool):raise ValueError('Lawful traffic source absent')
         if r.get('prohibiting_device_present') is not False:raise ValueError('Prohibiting-device context differs')
@@ -66,6 +66,7 @@ def prove(out):
     for name,change,expected in (
         ('missing_pedestrian',lambda r:r[0]['crosswalk'].pop('pedestrian_lawfully_within'),'Crosswalk/pedestrian source absent'),
         ('missing_traffic',lambda r:r[0]['intersection_traffic'].clear(),'Lawful traffic source absent'),
+        ('wrong_arrow',lambda r:r[0]['signal'].update(green_arrow_direction='right'),'Two-cycle signal source differs'),
         ('prohibiting_device',lambda r:r[0].update(prohibiting_device_present=True),'Prohibiting-device context differs'),
         ('forged_source',lambda r:r[0].update(source_kind='original_native'),'Unsealed or forged provenance')):
         rows=[json.loads(x) for x in (out/'enter_during_occupancy.jsonl').read_text().splitlines()]

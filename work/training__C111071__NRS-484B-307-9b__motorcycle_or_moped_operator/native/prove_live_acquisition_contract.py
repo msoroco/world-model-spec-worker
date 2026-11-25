@@ -12,7 +12,9 @@ from live_capture import (HERE, camera_frame, map_check, signal_heads,
                           body_road_relation,
                           approach_control, near_line_stop_observed,
                           conflict_occupancy_from_original_bodies,
-                          validate_attempt_directory)
+                          validate_attempt_directory, yield_case_policy,
+                          spawn_yield_actors, apply_yield_actor_control)
+from runner import ASSIGNMENT, check, request
 
 
 class Head:
@@ -156,6 +158,102 @@ def prove():
     clear = conflict_occupancy_from_original_bodies([participants[0]], reference)
     if clear["pedestrian_body_in_adjacent_crosswalk"] or clear["vehicle_body_in_junction"]:
         raise AssertionError("Clear original body source was declared occupied")
+    for suffix in ("yield_wait_for_clearance", "yield_enter_during_occupancy"):
+        case = ASSIGNMENT + "__" + suffix
+        config = {"law_id": "NRS-484B-307-9b", "cell_id": "C111071",
+                  "actor": "motorcycle_or_moped_operator", "case_id": case,
+                  "rate_hz": 20, "duration_s": 30, "case_variant": "two_cycles",
+                  "required_atoms": [], "source_packets": [],
+                  "cameras": [{"name": name, "width": width, "height": height}
+                              for name, width, height in (
+                                  ("overview", 1920, 1080), ("approach", 1280, 720),
+                                  ("reference_corner", 1280, 720),
+                                  ("driver_reference", 1280, 720))]}
+        if not check(config)["passed"]:
+            raise AssertionError("Exact yield capture configuration rejected")
+        if not yield_case_policy(case, 1, False)["hold"] or not \
+                yield_case_policy(case, 1, False)["participant_motion_request"]:
+            raise AssertionError("Yield actors did not move before second cycle")
+    wait = yield_case_policy(ASSIGNMENT + "__yield_wait_for_clearance", 2, True)
+    enter = yield_case_policy(ASSIGNMENT + "__yield_enter_during_occupancy", 2, True)
+    if not wait["hold"] or enter["hold"] or not enter["release_conflict_ignored"]:
+        raise AssertionError("Post-cycle yield requests do not separate")
+    if yield_case_policy(ASSIGNMENT + "__yield_wait_for_clearance", 2, False)["hold"]:
+        raise AssertionError("Yield request did not release after clearance")
+    observed = {"ego_face": "circular_red_green_left_arrow",
+                "cross_phase": "cross_green", "speed_mps": 0,
+                "front_to_stop_m": .5, "entered_intersection": False,
+                "completed_cycles": 2, "pedestrians_in_crosswalk": True,
+                "lawful_traffic_conflict": True}
+    if request(250, ASSIGNMENT + "__yield_wait_for_clearance", observed)["brake"] != 1 or \
+            request(250, ASSIGNMENT + "__yield_enter_during_occupancy", observed)["brake"] != 0:
+        raise AssertionError("Materialized runner yield requests do not separate")
+    for name, case, cycles, occupied in (
+            ("wrong_yield_case", ASSIGNMENT + "__probe_1", 2, True),
+            ("missing_cycle_readback", ASSIGNMENT + "__yield_wait_for_clearance", None, True),
+            ("missing_conflict_readback", ASSIGNMENT + "__yield_wait_for_clearance", 2, None)):
+        try:
+            yield_case_policy(case, cycles, occupied)
+        except ValueError:
+            rejected.append(name)
+        else:
+            raise AssertionError("Accepted " + name)
+    class FakeLibrary:
+        def filter(self, expression):
+            return ([SimpleNamespace(id="walker.pedestrian.0001")]
+                    if expression.startswith("walker.") else
+                    [SimpleNamespace(id="vehicle.kawasaki.ninja"),
+                     SimpleNamespace(id="vehicle.cross_car")])
+
+    class FakeActor:
+        def __init__(self, blueprint, transform, actor_id):
+            self.id, self.type_id, self.transform = actor_id, blueprint.id, transform
+            self.bounding_box = SimpleNamespace(
+                get_world_vertices=lambda _: [point(0, 0, 0) for _ in range(8)])
+            self.controls = []
+
+        def get_transform(self):
+            return self.transform
+
+        def apply_control(self, control):
+            self.controls.append(control)
+
+    class FakeWorld:
+        def __init__(self):
+            self.actors = []
+
+        def spawn_actor(self, blueprint, transform):
+            actor = FakeActor(blueprint, transform, len(self.actors) + 1)
+            self.actors.append(actor)
+            return actor
+
+    fake_carla = SimpleNamespace(
+        Location=lambda **kw: SimpleNamespace(**kw),
+        Rotation=lambda **kw: SimpleNamespace(**kw),
+        Transform=lambda location, rotation: SimpleNamespace(location=location, rotation=rotation),
+        Vector3D=lambda **kw: SimpleNamespace(**kw),
+        WalkerControl=lambda **kw: SimpleNamespace(**kw),
+        VehicleControl=lambda **kw: SimpleNamespace(**kw))
+    world, owned = FakeWorld(), []
+    walker, cross_vehicle = spawn_yield_actors(
+        world, FakeLibrary(), fake_carla, reference,
+        SimpleNamespace(id="vehicle.kawasaki.ninja"), owned)
+    if len(owned) != 2 or walker.transform.location.y != -10 or \
+            cross_vehicle.transform.location.x != -16 or \
+            cross_vehicle.type_id != "vehicle.cross_car":
+        raise AssertionError("Native conflict actor spawn calls differ")
+    apply_yield_actor_control(fake_carla, walker, cross_vehicle, False)
+    apply_yield_actor_control(fake_carla, walker, cross_vehicle, True)
+    if [control.speed for control in walker.controls] != [0, 1.3] or \
+            [control.throttle for control in cross_vehicle.controls] != [0, .25] or \
+            [control.brake for control in cross_vehicle.controls] != [1, 0]:
+        raise AssertionError("Native conflict actor control calls differ")
+    try:
+        apply_yield_actor_control(fake_carla, walker, cross_vehicle, None)
+    except ValueError:
+        rejected.append("missing_yield_motion_request")
+    else:
+        raise AssertionError("Accepted missing yield motion request")
     bad_body = SimpleNamespace(get_world_vertices=lambda transform: [point(0, 0, 0)])
     try:
         participant_rows([SimpleNamespace(**{**vars(actor), "bounding_box": bad_body})], 11)
@@ -243,6 +341,8 @@ def prove():
               "source_road_relation_positive": True,
               "detector_footprint_overlap_positive": True,
               "conservative_conflict_body_hold_positive": True,
+              "two_yield_case_requests_positive": True,
+              "two_conflict_actor_spawns_and_controls_positive": True,
               "nearby_device_inventory_positive": True,
               "near_line_stop_controller_positive": True,
               "materialized_attempt_positive": True,

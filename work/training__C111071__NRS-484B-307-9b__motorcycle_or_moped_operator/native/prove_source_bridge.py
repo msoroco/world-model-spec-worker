@@ -33,6 +33,9 @@ def fixture(root):
                                 for role, actor_id in (("red", 11), ("arrow", 12),
                                                        ("cross", 13))]}
     write(attempt / "map-import-survey.json", survey)
+    cameras = ("overview", "approach", "reference_corner", "driver_reference")
+    for name in cameras:
+        (attempt / (name + ".mkv")).write_bytes(("synthetic-camera-" + name).encode())
     raw, frames = [], []
     lawful = []
     for index in range(600):
@@ -43,6 +46,10 @@ def fixture(root):
                 for z in (0, 1)]
         raw.append({"native_frame": native_frame, "time_s": time,
                     "source_kind": "native_observation",
+                    "road_id": 1 if index < 250 else 13,
+                    "lane_id": -1,
+                    "blueprint_id": "vehicle.kawasaki.ninja",
+                    "camera_native_frames": {name: native_frame for name in cameras},
                     "road_relation_from_original_body": {
                         "source_map_sha256": map_sha,
                         "entered_intersection_by_body": index >= 250,
@@ -53,9 +60,16 @@ def fixture(root):
                     "signal_readback": {"red": "red", "arrow": "green", "cross": phase},
                     "controller_cycle_count_from_readback": index // 120,
                     "speed_mps": 3 if index < 15 or index >= 250 else 0,
-                    "body_vertices_m": body})
+                    "body_vertices_m": body,
+                    "other_participant_original_readback": [],
+                    "conservative_conflict_body_occupancy": {
+                        "pedestrian_body_in_adjacent_crosswalk": False,
+                        "vehicle_body_in_junction": False,
+                        "pedestrian_actor_ids": [], "vehicle_actor_ids": [],
+                        "lawful_status_review_required": True}})
         frames.append({"native_frame": native_frame, "video_frame": index,
-                       "time_s": time})
+                       "time_s": time,
+                       "camera_native_frames": {name: native_frame for name in cameras}})
         lawful.append({"pedestrians_in_crosswalk": False,
                        "lawful_traffic_conflict": False,
                        "source_refs": ["synthetic-original-frame-" + str(native_frame)]})
@@ -65,7 +79,7 @@ def fixture(root):
         json.dumps(row) + "\n" for row in frames))
     source_hashes = {name: sha(attempt / name) for name in
                      ("native_raw_readback.jsonl", "video_frames.jsonl",
-                      "map-import-survey.json")}
+                      "map-import-survey.json", *(name + ".mkv" for name in cameras))}
     review = {"review_kind": "original_source_review", "reviewer": "synthetic-cpu-fixture",
               "source_sha256": source_hashes,
               "governing_face": "circular_red_green_left_arrow",
@@ -101,7 +115,11 @@ def main():
                 ("missing_face_review", lambda r: r.pop("governing_face_source_refs")),
                 ("missing_device_review", lambda r: r.pop("other_device_source_refs")),
                 ("missing_detector_review", lambda r: r.pop("detector_request_source_refs")),
-                ("missing_lawful_frame", lambda r: r["lawful_conflict_by_frame"].pop())):
+                ("missing_lawful_frame", lambda r: r["lawful_conflict_by_frame"].pop()),
+                ("pedestrian_without_body", lambda r: r["lawful_conflict_by_frame"][20].update(
+                    pedestrians_in_crosswalk=True)),
+                ("traffic_without_body", lambda r: r["lawful_conflict_by_frame"][20].update(
+                    lawful_traffic_conflict=True))):
             bad_attempt, bad_review_path, bad_review = fixture(root / label)
             mutation(bad_review)
             write(bad_review_path, bad_review)
@@ -126,6 +144,32 @@ def main():
             rejections.append("forged_entry_relation")
         else:
             raise AssertionError("Forged source entry relation accepted")
+        bad_attempt, bad_review_path, bad_review = fixture(root / "forged_conflict_occupancy")
+        raw_path = bad_attempt / "native_raw_readback.jsonl"
+        changed = [json.loads(line) for line in raw_path.read_text().splitlines()]
+        changed[20]["conservative_conflict_body_occupancy"][
+            "pedestrian_body_in_adjacent_crosswalk"] = True
+        raw_path.write_text("".join(json.dumps(row) + "\n" for row in changed))
+        bad_review["source_sha256"]["native_raw_readback.jsonl"] = sha(raw_path)
+        write(bad_review_path, bad_review)
+        try:
+            convert(bad_attempt, bad_review_path)
+        except ValueError as error:
+            if "Original conflict body occupancy differs" not in str(error):
+                raise
+            rejections.append("forged_conflict_occupancy")
+        else:
+            raise AssertionError("Forged original-body conflict accepted")
+        bad_attempt, bad_review_path, bad_review = fixture(root / "missing_camera")
+        (bad_attempt / "driver_reference.mkv").unlink()
+        try:
+            convert(bad_attempt, bad_review_path)
+        except ValueError as error:
+            if "driver_reference.mkv" not in str(error):
+                raise
+            rejections.append("missing_camera")
+        else:
+            raise AssertionError("Missing original camera accepted")
         receipt = {"format": "c111071-source-bridge-cpu-proof-v1",
                    "passed": True, "synthetic_source_only": True,
                    "original_native_observed": False,
