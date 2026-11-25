@@ -8,12 +8,14 @@ CASE = 'testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffi
 FILES = ('runner.py', 'config.json', 'camera_setup.py', 'camera_encoder.py',
          'condition_capture.py', 'condition_construction.py',
          'traffic_construction.py', 'traffic_controller.py',
-         'conditions_measurements.py', 'finalizer.py', 'measurement-contract.json',
+         'conditions_measurements.py', 'finalizer.py', 'delivery_audit.py',
+         'measurement-contract.json',
          'road_packet.json', 'surface_packet.json',
          'surface.txt', 'weather.json',
          'tests/test_cameras.py', 'tests/test_camera_encoder.py',
          'tests/test_condition_capture.py', 'tests/test_condition_construction.py',
-         'tests/test_conditions.py', 'tests/test_finalizer.py', 'tests/test_runner_entry.py',
+         'tests/test_conditions.py', 'tests/test_finalizer.py',
+         'tests/test_delivery_audit.py', 'tests/test_runner_entry.py',
          'tests/test_traffic_controller.py')
 
 
