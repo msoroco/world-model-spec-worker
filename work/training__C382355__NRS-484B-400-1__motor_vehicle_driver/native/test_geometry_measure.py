@@ -21,6 +21,7 @@ class RightTurnLaneTest(unittest.TestCase):
         self.samples=self.root/'native_samples.jsonl'
         self.geometry.write_text(json.dumps({'native_map_sha256':'a'*64,
           'approach_road_id':1,'turn_connector_road_id':13,'right_turn_lane_id':-2,
+          'single_right_only_turn_lane':True,'rightmost_lane_id':-2,
           'right_turn_lane_native_y_bounds_m':[3.5,7.0],
           'intersection_native_xy_bounds_m':[-7,-7,7,7],
           'right_turn_lane_design_native_verified':False}))
@@ -34,7 +35,9 @@ class RightTurnLaneTest(unittest.TestCase):
 
     def test_geometry_covers_both_routes_and_fallback_turn_entry(self):
         report=check();self.assertTrue(report['passed'])
-        self.assertEqual(len(report['cases']),4)
+        self.assertEqual(len(report['cases']),8)
+        self.assertTrue(report['alternate_extreme_right_layout_constructed'])
+        self.assertFalse(report['alternate_native_design_verified'])
         self.assertEqual(set(CASE_APPROACH_Y_M.values()),{-5.25,-1.75})
         self.assertNotEqual(route(-5.25),route(-5.25,-10))
         self.assertFalse(report['right_turn_lane_design_and_signage_native_verified'])

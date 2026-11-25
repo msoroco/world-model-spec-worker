@@ -32,7 +32,7 @@
         "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_1",
         "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Eight current exact unselected bundles pass 15 pinned CPU tests each; two 480-frame saved positives/missing-source negatives, saved controlled comparison, source-bound three-gate trigger audit, eight synthetic v1 package positives/negatives and independent audits pass. Native single right-only designation and purpose, physical movement/pixels, straight-probe frozen-cell fit, selected strict v2 and delivery acceptance remain unverified."
+      "evidence_or_gap": "Two current selected in-cell 480-frame synthetic CPU source chains and fallback1 compatibility receipts cover right-only-lane occupancy present/absent with a measured right-turn exit. Original Native lane readback, pixels, physical completion and private purpose judgment remain pending."
     }
   ],
   "neutral_baseline": {
@@ -45,8 +45,8 @@
       "target_law_id": "NRS-484B-223-4a",
       "kind": "planned_only",
       "source_branch": "Intersection approach in a right-turn lane",
-      "physical_target": "use right-only lane to make right turn",
-      "comparison_variable": "subsequent movement from right-only lane",
+      "physical_target": "use the single right-only approach lane, then complete a right turn",
+      "comparison_variable": "measured approach occupancy of the single right-only lane",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -57,8 +57,8 @@
       "target_law_id": "NRS-484B-223-4a",
       "kind": "planned_only",
       "source_branch": "Intersection approach in a right-turn lane",
-      "physical_target": "use right-only lane then continue straight",
-      "comparison_variable": "subsequent movement from right-only lane",
+      "physical_target": "approach from adjacent lane without right-only-lane occupancy, then complete a right turn",
+      "comparison_variable": "measured approach occupancy of the single right-only lane",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -73,12 +73,12 @@
         "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2"
       ],
       "deliberate_differences": [
-        "subsequent movement from right-only lane"
+        "measured approach occupancy of the single right-only lane (-2 versus adjacent -1)"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
-        "route and controller policy except requested comparison variable",
-        "capture channels, rate, camera policy and recording duration"
+        "frozen intersection, actor, exact clause, right-only lane designation and right-turn outcome",
+        "Native map, capture channels, rate, camera policy and recording duration",
+        "path controller policy except approach-lane route assignment"
       ]
     }
   ],
@@ -157,8 +157,8 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Current pinned runtime: eight unselected bundles and Native right-only signal readback gate pass offline; source/controlled-input audit passes. The prior v1 package/Core/saved proofs remain historical after the JSON-graph adapter cutover.",
-    "Live JSON graph compatibility, strict v2 selected acceptance, actual Native right-only designation/pixels, private purpose and straight-probe frozen-cell fit remain unresolved."
+    "Current selected in-cell primary and fallback1 source-hashed CPU packages pass offline, public positive/missing-source negative and saved processing; original Native execution remains pending.",
+    "Native right-only designation/pixels, adjacent-lane to right-turn connector feasibility, private purpose and legal outcome remain for independent review."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -170,7 +170,7 @@
   ],
   "source_context_review": "Right-only lane must be a single designed right lane; commanded right turn does not prove actual turn or lane-use purpose.",
   "statutory_branch_review": {
-    "status": "draft_source_review_pending_native_design_and_cell_fit",
+    "status": "selected_in_cell_right_turn_pair_cpu_proven_physical_pending",
     "exact_clause": "NRS 484B.223(4)(a)",
     "activation": "A highway designed to provide a single right lane used only for turning, and the subject vehicle is driven in that lane.",
     "obligation": "Use of that right turn lane is only for the purpose of making a right turn.",
@@ -178,7 +178,7 @@
     "unresolved_judgment": "Private purpose cannot be proved solely by the observed subsequent movement; the turn or straight continuation is an observable proxy requiring independent judgment.",
     "exceptions_in_exact_supplied_clause": [],
     "related_distinct_clause": "NRS 484B.223(4)(b) separately prohibits traveling through an intersection while in the right turn lane.",
-    "same_cell_issue": "The frozen C382355 cell has maneuver right_turn, while controlled_2 requests straight continuation. The straight diagnostic has not been accepted as a valid selected case in this cell.",
+    "same_cell_issue": "The prior straight-through controlled_2 remains diagnostic outside the fixed right_turn cell. The selected in-cell controlled_2 approaches from adjacent lane -1 and completes a right turn; source activation is measured absent on approach. Private purpose and Native physical feasibility remain pending.",
     "unverified_fact": "An authored right-turn arrow and lane topology do not establish a Native single right-only lane design; connector IDs and designation require original Native map and pixels."
   },
   "draft_delivery_work": {
@@ -289,5 +289,85 @@
     "offline_audit_sha256": "ed06ed8a2de51ad4185a020d3078d7789072b73f6ce0d852b8b6201c0ce67236",
     "selected_delivery_cases": 0,
     "native_executed": false
+  },
+  "source_observation_mapping": {
+    "st.turn_lane": {
+      "evidence": "Authored single right-only-lane map signal and original Native map readback; original pixels require audit",
+      "channels": [
+        "st.turn_lane"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road_geometry.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original Native body footprint and lane identity, joined to frame/time",
+      "channels": [
+        "rel.occupies",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "body_history.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Authored request separate from original observed heading and completed right-turn exit",
+      "channels": [
+        "drv.turning",
+        "kin.heading"
+      ],
+      "source_refs": [
+        "native_samples.jsonl"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original Native forward vector and heading over approach, connector and exit",
+      "channels": [
+        "kin.heading"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original map and body trajectory across surveyed intersection bounds",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego and lane approach",
+        "interval": "full 24 s"
+      },
+      {
+        "view": "approach",
+        "subject": "right-only sign and both approach lanes",
+        "interval": "approach through intersection"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "vehicle body and completed right turn",
+        "interval": "junction through exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-facing context and road lane cues",
+        "interval": "full 24 s"
+      }
+    ]
   }
 }

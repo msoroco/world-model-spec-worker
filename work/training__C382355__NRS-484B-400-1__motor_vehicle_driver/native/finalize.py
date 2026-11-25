@@ -109,12 +109,50 @@ def capture_provenance(attempt, count):
 def measure_right_turn_lane(attempt):
     attempt=Path(attempt)
     result=measure(attempt/'native_samples.jsonl',attempt/'road_geometry.json')
-    value={key:result[key] for key in ('approach_window_s','turn_window_s',
+    value={key:result[key] for key in ('statutory_branch','required_approach_lane_id',
+        'approach_window_s','turn_window_s',
         'full_body_in_right_turn_lane_approach_samples','approach_lane_identity_fraction',
         'turn_connector_identity_fraction','right_turn_observed_at_complete_exit',
         'right_turn_lane_design_native_verified')}
     return {'value':value,'method':'measure_right_turn_lane',
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
+
+
+def derive_selected_channels(attempt,count,description):
+    """Materialize declared channels from retained same-frame Native-shaped sources."""
+    mapping=rows(attempt/'video_frames.jsonl')
+    motion=rows(attempt/'native_samples.jsonl')
+    evidence=rows(attempt/'capture/evidence.jsonl')
+    if any(len(source)!=count for source in (mapping,motion,evidence)):
+        raise ValueError('Cannot derive channels from incomplete original sources')
+    geometry=json.loads((attempt/'road_geometry.json').read_text())
+    channel_dir=attempt/'channels';channel_dir.mkdir(exist_ok=True)
+    expected={channel['name'] for channel in description['channels']}
+    existing={path.stem for path in channel_dir.glob('*.jsonl')}
+    if not existing<=expected:raise ValueError('Unexpected original Native channel')
+    allowed={'drv.turning','st.intersection','st.turn_lane','drv.extreme_lane',
+             'rel.occupies','drv.approaching','st.lane_adjacency',
+             'native_body_pose_control','camera_frame_join'}
+    if not expected<=allowed:raise ValueError('Unsupported original Native channel')
+    for name in sorted(expected-existing):
+        with (channel_dir/(name+'.jsonl')).open('x') as stream:
+            for frame,source,observed,captured in zip(range(count),mapping,motion,evidence):
+                if (source['video_frame']!=frame or
+                    source['native_frame']!=observed['native_frame'] or
+                    source['native_frame']!=captured['original_frame']):
+                    raise ValueError('Original channel frame join differs')
+                if name=='drv.turning':value={'observed_forward':observed['native_forward_xy']}
+                elif name in ('st.intersection','st.turn_lane'):value=geometry
+                elif name in ('drv.extreme_lane','st.lane_adjacency'):
+                    value={'observed_lane_id':observed['native_lane_id'],
+                           'rightmost_lane_id':geometry['rightmost_lane_id']}
+                elif name=='rel.occupies':value=observed['native_body_xy_m']
+                elif name=='drv.approaching':
+                    value=max(point[0] for point in observed['native_body_xy_m'])<-7
+                elif name=='native_body_pose_control':value=observed
+                else:value=source
+                stream.write(json.dumps({'time_s':source['time_s'],'value':value},
+                                        allow_nan=False)+'\n')
 
 
 def finalize(attempt,output):
@@ -132,11 +170,13 @@ def finalize(attempt,output):
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):
         raise ValueError('Source camera frame count differs from delivered trace')
-    actual=measured['value'];requested={'witness_1':True,'witness_2':False}[config['case_suffix']]
+    actual=measured['value'];requested={'witness_1':True,'witness_2':False,
+        'extreme_right_1':True,'extreme_right_2':False}[config['case_suffix']]
     observed=actual['full_body_in_right_turn_lane_approach_samples'] and \
              actual['approach_lane_identity_fraction']==1
     matched=observed==requested
     description=config['recording_description'];recording_evidence=[]
+    derive_selected_channels(attempt,count,description)
     for channel in description['channels']:
         name=channel['name'];reference='channels/'+name+'.jsonl'
         if not (attempt/reference).is_file():raise ValueError('Missing required source: '+reference)
@@ -155,7 +195,7 @@ def finalize(attempt,output):
       'setup_confirmed':native and actual['right_turn_lane_design_native_verified'],
       'behavior_attempted':native,'maneuver_completed':native and actual['right_turn_observed_at_complete_exit'],
       'termination_reason':'full original duration retained',
-      'physical_failure_flags':['right_turn_lane_design_and_pixels_unverified']+
+      'physical_failure_flags':['qualifying_lane_design_and_pixels_unverified']+
            ([] if matched else ['approach_lane_target_not_measured']),
       'trace_reference':'trace.jsonl','video_references':videos,
       'video_frame_map_reference':'video_frames.jsonl',

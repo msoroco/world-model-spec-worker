@@ -7,10 +7,11 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 
 LANE_WIDTH_M=3.5
-CASE_APPROACH_Y_M={'witness_1':-5.25,'witness_2':-1.75}
+CASE_APPROACH_Y_M={'witness_1':-5.25,'witness_2':-1.75,
+                   'extreme_right_1':-5.25,'extreme_right_2':-1.75}
 
 
-def open_drive():
+def open_drive(right_only=True):
     root=ET.Element('OpenDRIVE')
     ET.SubElement(root,'header',revMajor='1',revMinor='4',name='C382355-right-turn-lane-draft',
                   version='1',date='2026-11-05',north='100',south='-100',east='100',west='-100',
@@ -49,7 +50,7 @@ def open_drive():
                 ET.SubElement(lane,'roadMark',sOffset='0',type=mark,
                               color='yellow' if lane_id==0 else 'white',width='0.12')
         objects=ET.SubElement(road,'objects')
-        if ident==1:
+        if ident==1 and right_only:
             # Authored lane cue only; Native rendering and regulatory meaning
             # need saved-pixel and map review before the branch is certified.
             ET.SubElement(objects,'object',id='right_turn_arrow_1',name='right_turn_arrow',
@@ -88,6 +89,9 @@ def check():
     assert roads[13].find('link/successor').attrib['elementId']=='4'
     arrow=roads[1].find('objects/object')
     assert arrow is not None and arrow.attrib['name']=='right_turn_arrow' and arrow.attrib['t']=='-5.25'
+    alternate=ET.fromstring(open_drive(right_only=False))
+    assert alternate.find("road[@id='1']/objects/object") is None
+    assert alternate.find("junction/connection/laneLink").attrib=={'from':'-2','to':'-2'}
     links=root.findall('junction/connection/laneLink')
     assert len(links)==1 and links[0].attrib=={'from':'-2','to':'-2'}
     surface=unary_union((box(-100,-7,100,7),box(-7,-100,7,100)))
@@ -106,6 +110,8 @@ def check():
             results[f'{suffix}:entry{entry}']={'route_points':len(points),'maximum_gap_m':max(gaps),
                 'requested_approach_y_m':lateral,'turn_entry_x_m':entry}
     return {'passed':True,'cases':results,'authored_right_turn_lane_id':-2,
+            'alternate_extreme_right_layout_constructed':True,
+            'alternate_native_design_verified':False,
             'right_turn_lane_design_and_signage_native_verified':False,
             'lane_link_native_verified':False,'legal_outcome_claimed':False}
 

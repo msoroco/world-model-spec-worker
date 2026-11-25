@@ -19,8 +19,8 @@
       "candidates": [
         {
           "id": "fallback1",
-          "construction": "draft-candidates/controlled_1/fallback1/construction.json",
-          "construction_sha256": "8404c8ca992d1bdc7236d3d534a20b20e8da1c0e311158ea4464a04d9aa42a90",
+          "construction": "selected-candidates/controlled_1/fallback1/construction.json",
+          "construction_sha256": "648dbcf7092078aa227cf16d4f5d2dbd425fe238772a29b5952dfd04d73c7dc0",
           "trigger": {
             "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
             "evaluator": "fallback_triggers.py:evaluate",
@@ -30,40 +30,45 @@
           "changed_knobs": [
             "turn entry station -7 m to -10 m or straight route start -50 m to -55 m"
           ]
-        },
-        {
-          "id": "fallback2",
-          "construction": "draft-candidates/controlled_1/fallback2/construction.json",
-          "construction_sha256": "09a0ac87db8405ee467be7f9e44e589d6b3d8b86c7686bda8fe8fac9ef974233",
-          "trigger": {
-            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
-            "evaluator": "fallback_triggers.py:evaluate",
-            "metric": "requested path tracking",
-            "failure_condition": "maximum recorded route error on x=-10..7 m exceeds 0.35 m"
-          },
-          "changed_knobs": [
-            "pure-pursuit lookahead 4.0 m to 3.0 m"
-          ]
-        },
-        {
-          "id": "fallback3",
-          "construction": "draft-candidates/controlled_1/fallback3/construction.json",
-          "construction_sha256": "24c937ddca01aa496aa83cb0754c3a1805dce6e8165aa5b0d6b549df2ef16e7d",
-          "trigger": {
-            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
-            "evaluator": "fallback_triggers.py:evaluate",
-            "metric": "right-only-lane camera framing",
-            "failure_condition": "independent pixel audit cannot see full body and right-only lane cue in 95% of approach frames"
-          },
-          "changed_knobs": [
-            "ego-following camera height 3.2 m to 4.5 m and FOV 90 to 105 degrees"
-          ]
         }
       ],
       "id": "primary",
       "construction": "selected-construction-controlled_1.json",
       "construction_sha256": "76c099ec222005c62622b4b0ec97a4cbc4248d464a306242b9f224452d727784",
       "fixture_recipe": "work/training__C382355__NRS-484B-223-4a__motor_vehicle_driver/selected-recipe-controlled_1.json"
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-223-4a__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Right-only lane designation, subsequent movement, frozen cell fit, tracking and camera framing require original Native evidence"
+      },
+      "measurement_contract": "draft-candidates/controlled_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382355-right-only-lane-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/controlled_2/fallback1/construction.json",
+          "construction_sha256": "35d6c288cef93872ca3bf54e1b06921d5e095d137b6865296e6cd610c0101e0b",
+          "trigger": {
+            "source": "source-hashed original Native samples, surveyed geometry, reviewed lane-link and pixel audits",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "connector clearance or complete exit",
+            "failure_condition": "Native route lacks requested connector or full-body exit absent by 24 s"
+          },
+          "changed_knobs": [
+            "turn entry station -7 m to -10 m or straight route start -50 m to -55 m"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-construction-controlled_2.json",
+      "construction_sha256": "e3d66300969395d8620146aa0c667a87e3950297f4203e49db301ba7aaf103ec",
+      "fixture_recipe": "work/training__C382355__NRS-484B-223-4a__motor_vehicle_driver/selected-recipe-controlled_2.json"
     }
   ]
 }

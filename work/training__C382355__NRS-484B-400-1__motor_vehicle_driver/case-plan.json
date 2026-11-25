@@ -21,16 +21,18 @@
   "witness_branches": [
     "Referenced right-turn-lane branch."
   ],
-  "selected_branch": null,
+  "selected_branch": "two_source_defined_right_turn_lane_alternatives",
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-400-1",
       "source": "NRS 484B.400(1)",
-      "branch": "Referenced right-turn-lane branch.",
+      "branch": "Both qualifying right-only lane and alternative extreme-right lane branches of NRS 484B.400(1).",
       "status": "selected_required",
       "case_ids": [
         "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
-        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2"
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2",
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2"
       ],
       "evidence_or_gap": "Eight exact unselected bundles pass pinned offline with 14 CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified."
     }
@@ -123,6 +125,76 @@
       "unresolved_judgment_calls": [
         "'intends to turn' is interior state; the completed turn is the observable substitute"
       ]
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+      "target_law_id": "NRS-484B-400-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver approaches and turns from surveyed extreme right lane",
+      "comparison_variable": "extreme_right_approach_lane",
+      "source_branch": "Alternative extreme-right lane when no qualifying right-only turn lane exists.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "right_turn",
+          "control": "right_turn_lane"
+        },
+        "activation_conditions_to_verify": [
+          "the subject intends to turn right at an intersection"
+        ],
+        "right_only_turn_lane_design": false
+      },
+      "controller": {
+        "requested_behavior": "driver approaches and turns from surveyed extreme right lane"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'intends to turn' is interior state; the completed turn is the observable substitute"
+      ]
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2",
+      "target_law_id": "NRS-484B-400-1",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "driver approaches from another lane before the right turn",
+      "comparison_variable": "extreme_right_approach_lane",
+      "source_branch": "Alternative extreme-right lane when no qualifying right-only turn lane exists.",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "intersection",
+          "maneuver": "right_turn",
+          "control": "right_turn_lane"
+        },
+        "activation_conditions_to_verify": [
+          "the subject intends to turn right at an intersection"
+        ],
+        "right_only_turn_lane_design": false
+      },
+      "controller": {
+        "requested_behavior": "driver approaches from another lane before the right turn"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "'intends to turn' is interior state; the completed turn is the observable substitute"
+      ]
     }
   ],
   "comparisons": [
@@ -139,6 +211,21 @@
         "frozen cell and actor",
         "same map geometry except named comparison variable",
         "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+      ]
+    },
+    {
+      "comparison_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_comparison",
+      "case_ids": [
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+        "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2"
+      ],
+      "deliberate_differences": [
+        "extreme_right_approach_lane"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same no-qualifying-right-only-lane authored map and original Native survey",
+        "same non-target actors, cameras, recording policy, controller capability and observation windows"
       ]
     }
   ],
@@ -239,18 +326,17 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "Eight exact unselected bundles pass pinned offline with 14 CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified."
+    "Selected current-runtime executable packages and complete source-bound public, saved, semantic, physical and delivery receipts remain under construction."
   ],
   "runtime_uncertainties": [
-    "Eight exact unselected bundles pass pinned offline with 14 CPU tests each and embed source-hash-bound measured fallback trigger logic. Eight 480-frame synthetic v1 package positives and missing-source negatives are diagnostic; strict v2 portable compatibility, Native right-only lane design, original physical/pixel observations, statutory branch closure and independent selected delivery audit remain unverified.",
-    "The authored connector road/lane identifiers and right-only lane signage have not been verified against an original Native map and camera stream."
+    "Selected current-runtime executable packages and complete source-bound public, saved, semantic, physical and delivery receipts remain under construction."
   ],
-  "readiness_limitation": "CPU draft proofs only. No selected delivery cases, dispatchable GPU jobs, accepted recordings, physical CARLA results, or legal verdicts.",
+  "readiness_limitation": "Both statutory branches now have planned controlled pairs; current selected proofs and original physical checks remain incomplete.",
   "statutory_branch_review": {
-    "status": "draft_review_pending_native_design_and_complete_source_sweep",
+    "status": "both_branches_planned_native_design_pending",
     "exact_clause": "NRS 484B.400(1)",
     "present_right_turn_lane_branch": "Both approach and right turn use the right turn lane where a qualifying lane exists; C382355 is a draft controlled pair for this condition.",
-    "alternative_extreme_right_branch": "The clause alternatively requires the extreme right lane where no qualifying right turn lane exists; source and cell scope review remains pending.",
+    "alternative_extreme_right_branch": "Two additional exact cases target the surveyed extreme-right approach when no qualifying single right-only lane is present; original Native map design and pixels remain to be checked.",
     "cited_subsection_4": [
       {
         "source": "NRS 484B.223(4)(a)",

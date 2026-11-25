@@ -87,7 +87,7 @@ def direction(waypoint):
     return [v.x/length,v.y/length]
 
 
-def map_survey(carla, mapping, native_hash):
+def map_survey(carla, mapping, native_hash, right_only=True):
     requests={"right_turn_lane":(-30,5.25,1,-2,[1,0]),
               "inner_approach_lane":(-30,1.75,1,-1,[1,0]),
               "destination_lane":(-5.25,30,4,-2,[0,1])}
@@ -106,6 +106,11 @@ def map_survey(carla, mapping, native_hash):
     if abs(low-3.5)>.15 or abs(high-7.0)>.15:
         raise RuntimeError('Native right-turn-lane boundaries differ from authored map')
     return {"native_map_sha256":native_hash,"road_directions_native":observed,
+            "authored_right_only_design":right_only,
+            "design_source":"native_map_survey",
+            "single_right_only_turn_lane":right_only,
+            "rightmost_lane_id":-2,"designated_turn_lane_id":-2 if right_only else None,
+            "turn_connector_lane_id":-2,
             "approach_road_id":1,"turn_connector_road_id":13,
             "right_turn_lane_id":-2,"right_turn_lane_native_y_bounds_m":[3.5,7.0],
             "right_turn_lane_design_native_verified":False,
@@ -146,7 +151,8 @@ def execute(config, output, host, port):
     owned=[];encoders={};encoder_logs={};encoder_exit_codes={};camera_queues={};channels={}
     capture=None;changed=False;error=None;frames=0;restored=None
     try:
-        world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
+        right_only=config['case_suffix'].startswith('witness_')
+        world=client.generate_opendrive_world(open_drive(right_only=right_only),carla.OpendriveGenerationParameters(
             vertex_distance=.25,max_road_length=50,wall_height=0,additional_width=0,
             smooth_junctions=False,enable_mesh_visibility=True,enable_pedestrian_navigation=False))
         changed=True
@@ -156,7 +162,7 @@ def execute(config, output, host, port):
         world.apply_settings(settings);world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping=world.get_map();native_xml=mapping.to_opendrive()
         native_hash=hashlib.sha256(native_xml.encode()).hexdigest()
-        survey=map_survey(carla,mapping,native_hash)
+        survey=map_survey(carla,mapping,native_hash,right_only=right_only)
         write_new(output/"road_geometry.json",survey)
         write_new(output/"context.json",{'surveyed_right_turn_lane_intersection':survey})
         suffix=config["case_suffix"];candidate=config["candidate_id"]

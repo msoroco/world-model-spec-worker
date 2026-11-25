@@ -37,6 +37,9 @@ def measure(samples_path,geometry_path):
         raise ValueError('Approach/turn Native road survey missing')
     if geometry.get('right_turn_lane_id')!=-2 or geometry.get('right_turn_lane_native_y_bounds_m')!=[3.5,7.0]:
         raise ValueError('Right-turn-lane Native survey missing')
+    branch=geometry.get('single_right_only_turn_lane')
+    if type(branch) is not bool or geometry.get('rightmost_lane_id')!=-2:
+        raise ValueError('Source-defined qualifying lane branch missing')
     if geometry.get('intersection_native_xy_bounds_m')!=[-7,-7,7,7]:
         raise ValueError('Intersection Native bounds missing')
     rows=[json.loads(line) for line in samples_path.read_text().splitlines() if line.strip()]
@@ -63,9 +66,12 @@ def measure(samples_path,geometry_path):
         raise ValueError('Observed right-turn heading change missing')
     low_y,high_y=geometry['right_turn_lane_native_y_bounds_m']
     full_body=[all(low_y<=p[1]<=high_y for p in body) for _,body in approach]
-    lane_identity=[row['native_road_id']==1 and row['native_lane_id']==-2 for row,_ in approach]
+    required_lane=geometry.get('right_turn_lane_id') if branch else geometry['rightmost_lane_id']
+    lane_identity=[row['native_road_id']==1 and row['native_lane_id']==required_lane for row,_ in approach]
     connector=[row['native_road_id']==13 and row['native_lane_id']==-2 for row,_ in turn]
     return {'format':'c382355-right-turn-lane-samples-v1',
+      'statutory_branch':'qualifying_right_only_lane' if branch else 'alternative_extreme_right_lane',
+      'required_approach_lane_id':required_lane,
       'approach_window_s':[approach[0][0]['time_s'],approach[-1][0]['time_s']],
       'turn_window_s':[turn[0][0]['time_s'],turn[-1][0]['time_s']],
       'full_body_in_right_turn_lane_approach_samples':all(full_body),

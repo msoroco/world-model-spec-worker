@@ -1,0 +1,304 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_preparation",
+  "cases": [
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map right-only design, required approach lane and turn connector, full-body occupancy, route tracking and original pixels require source review"
+      },
+      "measurement_contract": "current-measurement-witness_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382355-right-turn-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/witness_1/fallback1/construction.json",
+          "construction_sha256": "a0609f8399a78e85bcca4b24ab030ea103b54167cb38a13cec6f083daa10db58",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn connector and completion",
+            "failure_condition": "Native map readback lacks a connected right-turn-lane link or original full-body destination exit is absent by 24 s"
+          },
+          "changed_knobs": [
+            "turn entry station -7 m to -10 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+            "candidate_id": "fallback1",
+            "construction_sha256": "a0609f8399a78e85bcca4b24ab030ea103b54167cb38a13cec6f083daa10db58",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/witness_1-fallback1-a0609f8399a7 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/witness_1-fallback1.log",
+            "log_sha256": "f616db8cccddf7d4f7b4e6535f828f7ef808b444b80151b99df0a94c4111be5d"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/witness_1/fallback2/construction.json",
+          "construction_sha256": "483a934fe0995f7e8d1ccd49e6aada6e5c8553a650961c63908d8300833990b6",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn path tracking",
+            "failure_condition": "maximum original Native turn-entry route error for x=-10..0 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+            "candidate_id": "fallback2",
+            "construction_sha256": "483a934fe0995f7e8d1ccd49e6aada6e5c8553a650961c63908d8300833990b6",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/witness_1-fallback2-483a934fe099 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/witness_1-fallback2.log",
+            "log_sha256": "b89daaff738106b8a40699e921c12c76fb03c0903edd533be20893601baad9d1"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-candidates/witness_1/primary/construction.json",
+      "construction_sha256": "4452b177048b50830df42839ec21490ca93f919a6641ffa88a23317b02248304",
+      "fixture_recipe": "work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-v2-witness_1-recipe.json",
+      "offline": {
+        "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1",
+        "candidate_id": "primary",
+        "construction_sha256": "4452b177048b50830df42839ec21490ca93f919a6641ffa88a23317b02248304",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_1 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/witness_1-primary-4452b177048b --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/witness_1-primary.log",
+        "log_sha256": "77602f776e8e9579fb23c0bb087c00d23d7a3478fe781786836a04ace22cb539"
+      }
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map right-only design, required approach lane and turn connector, full-body occupancy, route tracking and original pixels require source review"
+      },
+      "measurement_contract": "current-measurement-witness_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382355-right-turn-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/witness_2/fallback1/construction.json",
+          "construction_sha256": "74b1361daf7021580a0ca54a1b58ae07ea9f44ac567eda8f5ad2a72d0d8d8953",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn connector and completion",
+            "failure_condition": "Native map readback lacks a connected right-turn-lane link or original full-body destination exit is absent by 24 s"
+          },
+          "changed_knobs": [
+            "turn entry station -7 m to -10 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2",
+            "candidate_id": "fallback1",
+            "construction_sha256": "74b1361daf7021580a0ca54a1b58ae07ea9f44ac567eda8f5ad2a72d0d8d8953",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/witness_2-fallback1-74b1361daf70 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/witness_2-fallback1.log",
+            "log_sha256": "9b58df6636fb1c30e5f47120c7664d1632068fdb4ebef683227a75d836adad27"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/witness_2/fallback2/construction.json",
+          "construction_sha256": "8a33cb1d8cb055016ea6d945d7f4281dabb921e67ffa63c75f4e667ba8d99c75",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn path tracking",
+            "failure_condition": "maximum original Native turn-entry route error for x=-10..0 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2",
+            "candidate_id": "fallback2",
+            "construction_sha256": "8a33cb1d8cb055016ea6d945d7f4281dabb921e67ffa63c75f4e667ba8d99c75",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/witness_2-fallback2-8a33cb1d8cb0 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/witness_2-fallback2.log",
+            "log_sha256": "1c60c59c543efe3ec687bc732b29e8068766e8d5bae3507250df99ec49fd581d"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-candidates/witness_2/primary/construction.json",
+      "construction_sha256": "381110629245b2cd317eaf8b212832d3080455434534dbf311a9cabb197143ee",
+      "fixture_recipe": "work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-v2-witness_2-recipe.json",
+      "offline": {
+        "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2",
+        "candidate_id": "primary",
+        "construction_sha256": "381110629245b2cd317eaf8b212832d3080455434534dbf311a9cabb197143ee",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__witness_2 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/witness_2-primary-381110629245 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/witness_2-primary.log",
+        "log_sha256": "73772ee6c39a69793598d9ec3d8840cbbb999f2686649fe1112125f308a7e3e6"
+      }
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map right-only design, required approach lane and turn connector, full-body occupancy, route tracking and original pixels require source review"
+      },
+      "measurement_contract": "current-measurement-extreme_right_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382355-right-turn-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/extreme_right_1/fallback1/construction.json",
+          "construction_sha256": "7b81ab5cdac6cb52ad80880df5edb3dbe2f98bbd37d22cd4ac8b72a2b4fcb49b",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn connector and completion",
+            "failure_condition": "Native map readback lacks a connected right-turn-lane link or original full-body destination exit is absent by 24 s"
+          },
+          "changed_knobs": [
+            "turn entry station -7 m to -10 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+            "candidate_id": "fallback1",
+            "construction_sha256": "7b81ab5cdac6cb52ad80880df5edb3dbe2f98bbd37d22cd4ac8b72a2b4fcb49b",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/extreme_right_1-fallback1-7b81ab5cdac6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/extreme_right_1-fallback1.log",
+            "log_sha256": "70dfe338ad35ede8f2ee5021551671d57789a2f3e8b40a38597bd9ad2f954714"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/extreme_right_1/fallback2/construction.json",
+          "construction_sha256": "c00bd09851191a0ca8ff9a2e366e2409eb895668cb0ae18475b78050c7dbb749",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn path tracking",
+            "failure_condition": "maximum original Native turn-entry route error for x=-10..0 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+            "candidate_id": "fallback2",
+            "construction_sha256": "c00bd09851191a0ca8ff9a2e366e2409eb895668cb0ae18475b78050c7dbb749",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/extreme_right_1-fallback2-c00bd0985119 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/extreme_right_1-fallback2.log",
+            "log_sha256": "d93694b5ae4c7332d1a4e0811e059943c7aea6ad38f1fb31d2bfe8a2e8cda488"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-candidates/extreme_right_1/primary/construction.json",
+      "construction_sha256": "b7dab31bfa64d86dfb0cbb746e8d53c5b7a0cd8e3f70f1f4ff5fc764881cd9fa",
+      "fixture_recipe": "work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-v2-extreme_right_1-recipe.json",
+      "offline": {
+        "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1",
+        "candidate_id": "primary",
+        "construction_sha256": "b7dab31bfa64d86dfb0cbb746e8d53c5b7a0cd8e3f70f1f4ff5fc764881cd9fa",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_1 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/extreme_right_1-primary-b7dab31bfa64 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/extreme_right_1-primary.log",
+        "log_sha256": "81b74b06b39c76ad4d9041446b95d1b26babb667b0674b93e6ef0d7bc953efd6"
+      }
+    },
+    {
+      "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2",
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native map right-only design, required approach lane and turn connector, full-body occupancy, route tracking and original pixels require source review"
+      },
+      "measurement_contract": "current-measurement-extreme_right_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c382355-right-turn-saved-analysis-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-candidates/extreme_right_2/fallback1/construction.json",
+          "construction_sha256": "97f34e0def77d9315fd42e2bd0ed6838202b8e48960755f1e0f2bad5ca050aae",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn connector and completion",
+            "failure_condition": "Native map readback lacks a connected right-turn-lane link or original full-body destination exit is absent by 24 s"
+          },
+          "changed_knobs": [
+            "turn entry station -7 m to -10 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2",
+            "candidate_id": "fallback1",
+            "construction_sha256": "97f34e0def77d9315fd42e2bd0ed6838202b8e48960755f1e0f2bad5ca050aae",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/extreme_right_2-fallback1-97f34e0def77 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/extreme_right_2-fallback1.log",
+            "log_sha256": "435e15188d4827f67de43e7b9ca0a7aa424c1947337b5d29fa9974022b303060"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "selected-candidates/extreme_right_2/fallback2/construction.json",
+          "construction_sha256": "40633461725c8279776835fc234077e3b08b1ac25f2b383cc9ecaeffc19ede7c",
+          "trigger": {
+            "source": "original Native map and same-frame body, pose and camera sources",
+            "evaluator": "fallback_triggers.py:evaluate",
+            "metric": "right-turn path tracking",
+            "failure_condition": "maximum original Native turn-entry route error for x=-10..0 m exceeds 0.35 m"
+          },
+          "changed_knobs": [
+            "pure-pursuit lookahead 4.0 m to 3.0 m"
+          ],
+          "offline": {
+            "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2",
+            "candidate_id": "fallback2",
+            "construction_sha256": "40633461725c8279776835fc234077e3b08b1ac25f2b383cc9ecaeffc19ede7c",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2 --candidate fallback2 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/extreme_right_2-fallback2-40633461725c --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-offline/extreme_right_2-fallback2.log",
+            "log_sha256": "c00757035dc1b4dcd25e27d4ebe03a1df8a8823e52e19c497e36df3bde83928f"
+          }
+        }
+      ],
+      "id": "primary",
+      "construction": "selected-candidates/extreme_right_2/primary/construction.json",
+      "construction_sha256": "e8e89f93a2dd76eda9e775e0b5d187679d4d90efd8310642288df433128ceaad",
+      "fixture_recipe": "work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-v2-extreme_right_2-recipe.json",
+      "offline": {
+        "case_id": "training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2",
+        "candidate_id": "primary",
+        "construction_sha256": "e8e89f93a2dd76eda9e775e0b5d187679d4d90efd8310642288df433128ceaad",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C382355__NRS-484B-400-1__motor_vehicle_driver/selected-probe-manifest.json --case training__C382355__NRS-484B-400-1__motor_vehicle_driver__extreme_right_2 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c3823554001/selected-offline/extreme_right_2-primary-e8e89f93a2dd --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/extreme_right_2-primary.log",
+        "log_sha256": "913f711396349ce706fec4d3b4e2ba745ff5be2349a9aca937c36fa75985b337"
+      }
+    }
+  ]
+}
