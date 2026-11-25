@@ -8,7 +8,30 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCES = ('signal_exception.py', 'original_capture.py', 'native_session.py', 'camera_capture.py', 'saved_measurement.py',
-           'comparison_audit.py', 'delivery_audit.py', 'media_decode.py')
+           'comparison_audit.py', 'delivery_audit.py', 'media_decode.py', 'operator_native_adapter.py')
+
+
+def recording_description():
+    channels = [
+        ('motorcycle subtype and live actor identity', 'Native actor/blueprint readback'),
+        ('official composite red and turn-arrow aspect', 'reviewed Native head observer'),
+        ('source-ranked stop reference and ego front station', 'source survey and Native body vertices'),
+        ('complete aspect-return cycle frame bounds', '20 Hz original head history'),
+        ('malfunction or failed-detection causal record', 'original detector or device fault source'),
+        ('crosswalk pedestrian and lawful traffic tracks', '20 Hz original participant readback'),
+        ('four synchronized original camera views', 'four Native RGB camera sensors'),
+    ]
+    return {
+        'channels': [{'name': name, 'unit': 'source observation', 'sampling_rate_hz': 20,
+                      'method': method, 'time_window': 'original 45-second episode',
+                      'reference_frame': 'same original Native frame and simulation time',
+                      'uncertainty': 'Physical visibility, device authority and participant lawfulness await independent original-source review'}
+                     for name, method in channels],
+        'context_inputs': [{'name': 'reviewed map, route, head, stop hierarchy, causal device and participant authority',
+                            'unit': 'source record', 'method': 'SHA-256-sealed original site packet and Native readback'}],
+        'limitations': ['A fixed straight cell does not exercise the opposite-arrow turn branch.',
+                        'Unchanged signal state alone does not establish malfunction or failed detection.',
+                        'Diagnostic CPU fixtures do not establish physical camera visibility or lawful status.']}
 
 RUNNER = '''"""C111125 exact diagnostic preflight; unsourced Native launch is refused."""
 import argparse
@@ -138,8 +161,7 @@ def build():
         construction = {'law_id': config['law_id'], 'cell_id': config['cell_id'],
                         'actor': config['actor'], 'case_id': case_id,
                         'entrypoint': 'runner.py', 'diagnostic_only': True,
-                        'recording_description': {'status': 'original_sources_pending',
-                                                  'channels': config['cameras']},
+                        'recording_description': recording_description(),
                         'files': [{'path': name, 'content': content}
                                   for name, content in files.items()]}
         path = HERE / ('construction-' + suffix + '.json')

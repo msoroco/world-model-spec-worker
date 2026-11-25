@@ -24,6 +24,18 @@ class RunnerTests(unittest.TestCase):
                 native_runner.acquire(N(), N(), packet_path=path, packet_sha256=digest,
                                       variant='left_signal', attempt=Path(scratch) / 'attempt')
 
+    def test_fallback_requires_independent_review(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            path = Path(scratch) / 'map.json'
+            source = packet()
+            source['fallback_native_setup'] = {'reviewed_independently': False}
+            path.write_text(json.dumps(source) + '\n')
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'independently reviewed fallback'):
+                native_runner.acquire(N(), N(), packet_path=path, packet_sha256=digest,
+                                      variant='left_signal', attempt=Path(scratch) / 'attempt',
+                                      setup_role='fallback1')
+
     def test_exact_factory_wiring_and_original_frame_map(self):
         with tempfile.TemporaryDirectory() as scratch:
             path = Path(scratch) / 'map.json'
@@ -37,7 +49,9 @@ class RunnerTests(unittest.TestCase):
                                                     ('left', 90), ('right', -90)]}}
             path.write_text(json.dumps(source) + '\n')
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
-            world = N(get_blueprint_library=lambda: N())
+            world = N(get_blueprint_library=lambda: N(),
+                      get_map=lambda: N(name='TownSource',
+                                        to_opendrive=lambda: 'original-opendrive-text'))
             api = N(Transform=object(), Location=object(), Rotation=object(),
                     VehicleControl=object(), VehicleLightState=N(LeftBlinker=0x20))
 
@@ -50,7 +64,14 @@ class RunnerTests(unittest.TestCase):
                 self.assertTrue(callable(kwargs['controller_factory']))
                 kwargs['frame_map'].append(88, 4.4, camera_frame_ids={name: 88 for name in
                                                                    ('front', 'rear', 'left', 'right')})
-                return {'source_bound': True}
+                (attempt / 'trace.json').write_text('{}\n')
+                cameras = {}
+                for name in ('front', 'rear', 'left', 'right'):
+                    path = attempt / (name + '.zip')
+                    path.write_text(name + '\n')
+                    cameras[name] = {'path': path.name,
+                                     'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+                return {'source_bound': True, 'camera_sources': cameras}
 
             attempt = Path(scratch) / 'attempt'
             attempt.mkdir()
@@ -61,6 +82,10 @@ class RunnerTests(unittest.TestCase):
             row = json.loads((attempt / 'frame-map.jsonl').read_text())
             self.assertEqual(row['native_frame_id'], 88)
             self.assertEqual(row['original_index'], 0)
+            manifest = json.loads((attempt / 'source-manifest.json').read_text())
+            self.assertEqual(manifest['case_id'], native_runner.ASSIGNMENT + '__left_turn')
+            self.assertEqual(set(manifest['cameras']), {'front', 'rear', 'left', 'right'})
+            self.assertFalse(manifest['diagnostic_fixture'])
 
 
 if __name__ == '__main__':

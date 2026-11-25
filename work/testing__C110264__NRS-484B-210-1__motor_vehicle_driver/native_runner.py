@@ -6,12 +6,16 @@ loaded at command invocation; importing this module remains CPU portable.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
 from pass_right_control import make_controller, spawn_four_cameras, spawn_source_actors
-from pass_right_route import load_map_packet
+from pass_right_live import bind_live_route
+from pass_right_route import build_case, load_map_packet
 from pass_right_session import run_session
+
+ASSIGNMENT = 'testing__C110264__NRS-484B-210-1__motor_vehicle_driver'
 
 
 class LazyFrameMap:
@@ -35,11 +39,53 @@ class LazyFrameMap:
             self.stream.close()
 
 
+def write_source_manifest(world, packet_path: Path, packet_sha256: str,
+                          variant: str, attempt: Path, receipt: dict) -> Path:
+    """Seal original map, route, binding, trace and four camera source paths."""
+    attempt = Path(attempt)
+    if (attempt / 'source-manifest.json').exists():
+        raise ValueError('retain original Native source manifest')
+    packet = load_map_packet(packet_path, packet_sha256)
+    if packet.get('diagnostic_fixture') is True:
+        raise ValueError('synthetic map cannot become original Native source manifest')
+    (attempt / 'map.json').write_bytes(Path(packet_path).read_bytes())
+    (attempt / 'route.json').write_text(json.dumps(build_case(packet, variant), sort_keys=True) + '\n')
+    binding = bind_live_route(world, packet_path, packet_sha256, variant)
+    (attempt / 'live-map-binding.json').write_text(json.dumps(binding, sort_keys=True) + '\n')
+    def source(name):
+        path = attempt / name
+        return {'path': name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    cameras = receipt.get('camera_sources')
+    if not isinstance(cameras, dict) or set(cameras) != {'front', 'rear', 'left', 'right'}:
+        raise ValueError('four original camera sources missing from Native capture')
+    manifest = {
+        'assignment_id': ASSIGNMENT,
+        'case_id': ASSIGNMENT + '__' + variant,
+        'variant': variant, 'diagnostic_fixture': False,
+        'map': source('map.json'), 'route_request': source('route.json'),
+        'live_map_binding': source('live-map-binding.json'),
+        'trace': source('trace.json'), 'frame_count': 900,
+        'cameras': {name: source(cameras[name]['path']) for name in sorted(cameras)}}
+    for name in cameras:
+        if manifest['cameras'][name]['sha256'] != cameras[name]['sha256']:
+            raise ValueError(name + ' camera changed since original capture')
+    output = attempt / 'source-manifest.json'
+    output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
+    return output
+
+
 def acquire(world, carla_api, *, packet_path: Path, packet_sha256: str,
-            variant: str, attempt: Path) -> dict:
+            variant: str, attempt: Path, setup_role: str = 'primary') -> dict:
     """Execute both source-bound actors, four views, controller and readback."""
     packet = load_map_packet(packet_path, packet_sha256)
-    setup = packet.get('native_setup')
+    if setup_role not in ('primary', 'fallback1'):
+        raise ValueError('unknown reviewed Native setup role')
+    setup = packet.get('native_setup' if setup_role == 'primary' else 'fallback_native_setup')
+    if setup_role == 'fallback1' and (not isinstance(setup, dict) or
+                                      setup.get('reviewed_independently') is not True):
+        raise ValueError('independently reviewed fallback Native setup required')
+    if setup_role == 'fallback1':
+        setup = {key: value for key, value in setup.items() if key != 'reviewed_independently'}
     if not isinstance(setup, dict) or set(setup) != {
             'ego_blueprint_id', 'target_blueprint_id', 'ego_start_s_m',
             'target_start_s_m', 'ego_speed_mps', 'target_speed_mps',
@@ -56,7 +102,7 @@ def acquire(world, carla_api, *, packet_path: Path, packet_sha256: str,
         target_start_s_m=setup['target_start_s_m'])
     frame_map = LazyFrameMap(Path(attempt) / 'frame-map.jsonl')
     try:
-        return run_session(
+        receipt = run_session(
             world, packet_path=packet_path, packet_sha256=packet_sha256,
             variant=variant, attempt=attempt,
             map_reader=lambda native_world: native_world.get_map().to_opendrive().encode('utf-8'),
@@ -71,6 +117,9 @@ def acquire(world, carla_api, *, packet_path: Path, packet_sha256: str,
                 ego_speed_mps=setup['ego_speed_mps'], target_speed_mps=setup['target_speed_mps']),
             frame_map=frame_map,
             left_signal_mask=int(carla_api.VehicleLightState.LeftBlinker))
+        write_source_manifest(world, packet_path, packet_sha256, variant,
+                              Path(attempt), receipt)
+        return receipt
     finally:
         frame_map.close()
 
@@ -81,6 +130,7 @@ def main():
     parser.add_argument('--map-sha256', required=True)
     parser.add_argument('--variant', choices=('left_signal', 'left_turn', 'neither'), required=True)
     parser.add_argument('--attempt', type=Path, required=True)
+    parser.add_argument('--setup-role', choices=('primary', 'fallback1'), default='primary')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
@@ -90,7 +140,7 @@ def main():
     client.set_timeout(20)
     result = acquire(client.get_world(), carla, packet_path=args.map_packet,
                      packet_sha256=args.map_sha256, variant=args.variant,
-                     attempt=args.attempt)
+                     attempt=args.attempt, setup_role=args.setup_role)
     print(json.dumps(result, sort_keys=True))
 
 

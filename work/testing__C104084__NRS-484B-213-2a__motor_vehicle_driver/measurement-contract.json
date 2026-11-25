@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Vehicle driven to the left side of the highway",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "output_key": "left_side_measurement",
+      "method": "measure_left_side",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Approaching the crest of a grade with original sampled road geometry",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "output_key": "crest_grade_measurement",
+      "method": "measure_crest_grade",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road-profile.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Driver view obstructed within distance creating a hazard if another vehicle might approach from the opposite direction; preserve unresolved legal distance judgment",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "output_key": "view_hazard_measurement",
+      "method": "measure_view_hazard",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "crest-rays.jsonl",
+        "frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Subsection 2 does not apply upon a one-way highway; require original designation source",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "output_key": "one_way_measurement",
+      "method": "measure_one_way",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "lane-context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road-profile.json"
+    ],
+    "error_contains": "Missing required source: road-profile.json"
+  }
+}

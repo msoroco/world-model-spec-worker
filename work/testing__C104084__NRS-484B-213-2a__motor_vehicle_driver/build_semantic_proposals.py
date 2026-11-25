@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from build_constructions import description
 
 ROOT = Path(__file__).resolve().parent
 PROJECT = ROOT.parents[1]
@@ -74,7 +75,7 @@ def prepare(assignment: dict, plan: dict, frozen_quote: str) -> dict:
                              "requested_ego_side": {"kind": "controller", "value": side},
                              "requested_crest_view": {"kind": "world_setup", "value": view},
                              "source_road_direction": {"kind": "source_context", "value": direction}},
-                         "recording_description": "Original 45-second 20-Hz four-camera crest approach with body and proxy-ray packets",
+                         "recording_description": description(),
                          "unresolved_judgment_calls": unresolved})
     by_id = {c["case_id"]: c["variable_assignments"] for c in proposed}
     comparisons = []

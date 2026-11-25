@@ -27,7 +27,9 @@ class OfflineBundleTests(unittest.TestCase):
                 config = json.loads(files["config.json"])
                 self.assertEqual(config["target_behavior_request"], expected[row["case_id"]])
                 self.assertEqual(config["plan_sha256"], hashlib.sha256(files["case-plan.json"].encode()).hexdigest())
-                self.assertEqual(config["cameras"], ["front", "rear", "left", "right"])
+                self.assertEqual(config["native_cameras"], ["front", "rear", "left", "right"])
+                self.assertEqual([camera["name"] for camera in config["cameras"]],
+                                 ["overview", "approach", "reference_corner", "driver_reference"])
                 self.assertEqual(config["rate_hz"], 20)
                 self.assertEqual(config["frame_count"], 900)
                 self.assertEqual(files["pass_right_route.py"], (ROOT / "pass_right_route.py").read_text())

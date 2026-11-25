@@ -2,108 +2,66 @@
   "applied_update": 0,
   "assignment_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver",
   "input_sha256": "752aff8ff477cdc19bcbbbaffcdfcba97de8bfe1c29e46d1988f93f8ba3647ec",
-  "readiness_kind": "native_actor_sampler_cpu_draft",
-  "reason": "Native session now checks original loaded OpenDRIVE source, selected map packet and route, synchronous 20 Hz clock, actor/sensor ownership and trace sealing; reviewed map, actual actor/controller implementation, canonical semantic manifest and delivery receipts remain incomplete.",
+  "readiness_kind": "native_control_and_semantic_cpu_draft",
+  "reason": "Source-bound Native actor/control/camera entrypoint, canonical semantic proposals and six primary/fallback offline checks pass; selected current-runtime manifest, case-specific pinned compatibility, saved-only processing, physical/lifecycle and independent delivery/comparison receipts remain CPU work. Original reviewed Native map packet with world anchors, highway/pavement review and independent fallback setup is needed only for later physical execution.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
   "status": "partial",
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-actor-tests.log",
-      "sha256": "cecb33c3ca1e7ffcef3d8c79d9de6b12c6cdca0379eb9d8f97c3bae23cf0f828"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-actor-preflight.log",
-      "sha256": "068c7131d8360344105cd12bcee66d4a175d61e49b506788e5eeaf1efa891183"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110264-next-task/offline-left_signal",
-      "exit_code": 0,
-      "log": "cpu-actor-offline-left_signal.log",
-      "sha256": "4b5b9837ff67b8334fea242bbdbbfafda423a49f4a4fc3dc1763c9255ea93db5"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110264-next-task/offline-left_turn",
-      "exit_code": 0,
-      "log": "cpu-actor-offline-left_turn.log",
-      "sha256": "74a0d1aa3227066551eba01d2f3dd97a51ab1a633f51a4e5151170ce4ff28862"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c110264-next-task/offline-neither",
-      "exit_code": 0,
-      "log": "cpu-actor-offline-neither.log",
-      "sha256": "7d4ea04c1a7356d4be7d994b448eb0b15562ca0e6ebe8404e05a064b0f433ffb"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110264__NRS-484B-210-1__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-actor-static.log",
-      "sha256": "571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110264__NRS-484B-210-1__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-actor-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/tests -p test_pass_right_session.py -v",
-      "exit_code": 0,
-      "log": "cpu-session-focused.log",
-      "sha256": "bc5e9a4e6a4d4071ff3099184907ba3bcfaf68fe3b097e52f656c13dcdacbdb4"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/build_offline_draft.py",
-      "exit_code": 0,
-      "log": "cpu-session-build.log",
-      "sha256": "173b89227261207aa8e24e942be334d5e6b9d80ab49eb60930c5fe010c49bb9c"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-session-tests.log",
-      "sha256": "be6f46fa321df65c47a48512042e067f6c24166763f58e6f5491fc0c85ea18d1"
+      "log": "cpu-native-controller-tests.log",
+      "sha256": "05dba004574c57771da80b11def4520b4da0e5c968f6cc2d1aad3a1f45e3a0f2"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "cpu-session-preflight.log",
-      "sha256": "be60259acc2efb24b02cdcec875cfae9d9be480f3dfcc7ef50f7db71a0271396"
+      "log": "cpu-native-preflight.log",
+      "sha256": "e65e9f0926dde0b08e49626f05ca8bd7c39966baf55d528519e2e8bf52684b6c"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --output .runtime-work/c110264-session/left_signal --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c110264-output .venv-cpu/bin/python -c \"from worker_exchange.semantic_delivery import validate; ...\"",
       "exit_code": 0,
-      "log": "cpu-session-offline-left_signal.log",
-      "sha256": "b9aa7e814903b287b6a85dafba0f506920ed5269ca35ef4ca44b6f7077648910"
+      "log": "cpu-semantic-stage.log",
+      "sha256": "72cbc83938141f41c00ac254303d1f4d70121f8aa91816707f2ed19244d69db4"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --output .runtime-work/c110264-session/left_turn --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --output .runtime-work/c110264-output/offline4-left_signal-primary --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-session-offline-left_turn.log",
-      "sha256": "0efdf5aa31390a6269c15ae54497771e2b26f0f82f7ad2348a1483ac0828ce7c"
+      "log": "cpu-offline-left_signal-primary.log",
+      "sha256": "8e587a58b3f76d58b0b95a0d71c3576e26c57db3a799a551aa51fa4f8406b210"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --output .runtime-work/c110264-session/neither --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --candidate fallback1 --output .runtime-work/c110264-output/offline4-left_signal-fallback1 --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-session-offline-neither.log",
-      "sha256": "ffa9f291cd7fa5befe9ecd96d1670cc7901b888490a02465ee6bb39b079bb27e"
+      "log": "cpu-offline-left_signal-fallback1.log",
+      "sha256": "b7995ba4d89b69c9ba55672fc1045fc9c3270778e12a06a40775e60bde15b9e2"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110264__NRS-484B-210-1__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --output .runtime-work/c110264-output/offline4-left_turn-primary --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "cpu-session-static.log",
-      "sha256": "571b76109c783bb1c6eabefd66fe2c2d9475982cc59e67eed260b19f3a556a04"
+      "log": "cpu-offline-left_turn-primary.log",
+      "sha256": "a722c7b67250977db8f1a05575eb741f082faeabe0cbc4b4e1f4ef82630f75ac"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C110264__NRS-484B-210-1__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-session-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --candidate fallback1 --output .runtime-work/c110264-output/offline4-left_turn-fallback1 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-offline-left_turn-fallback1.log",
+      "sha256": "d2f292c0f7a648055291ad0cbd712146b57265c36abbb83d33884a676be89d23"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --output .runtime-work/c110264-output/offline4-neither-primary --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-offline-neither-primary.log",
+      "sha256": "b9b14fe9fb6afb66d8eb5280dd658f134a720ccf74f537772499b8559b83ab0e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --candidate fallback1 --output .runtime-work/c110264-output/offline4-neither-fallback1 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-offline-neither-fallback1.log",
+      "sha256": "c4473c6cc51fcba037899ff823a4b97333e6c89acfdb6721fcb5dfc7385e0293"
     }
   ]
 }

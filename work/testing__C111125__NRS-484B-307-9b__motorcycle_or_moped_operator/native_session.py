@@ -45,6 +45,8 @@ def capture_events(session, site_path, case_id, attempt):
     try:
         native = construct_native(site, source_root, session.world, session.carla,
                                   session.blueprint_library)
+        if hasattr(session, "bind_native"):
+            session.bind_native(native, site)
         (attempt / "native-site.json").write_bytes(site_bytes)
         for relative, source in source_paths.items():
             target = attempt / relative

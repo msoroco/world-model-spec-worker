@@ -1,3 +1,15 @@
+# 2026-11-24 selected CPU and original-source handoff
+
+Status: partial. Selected manifest SHA-256 `c8e44627381e0dc12a13165cb88789aaa1aa446b6c8a58a5882a8f6d77a7daff`. Exact cases: `arrow_wait`, `arrow_early_entry`, `arrow_walk_entry`, `arrow_walk_wait`.
+
+Current CPU proof: 56 focused tests; four current-runtime offline materializations; four source-bound positive and four missing-source negative compatibility receipts; four positive and four missing-source saved-only Core/Lean processing receipts; four positive and four negative independent full-video delivery audits; three positive and three missing-source independent comparison audits; four synthetic physical/lifecycle receipts. The source-gated Native runner samples the original walker and four cameras at 20 Hz and restores the borrowed clock. A separate 900-frame diagnostic publication sealed four FFV1 camera streams, original trace/evidence/graph sources, recorded Native exit, and passed Core+Lean conversion. This is a software proof with diagnostic pixels and source packets; it does not claim original capture.
+
+Pinned selected semantic, physical, candidate, delivery and compatibility validators pass. The unmodified `execution_manifest.validate` fails exactly `Expand sweeps with the main implementation before manifest generation`. In a diagnostic in-memory check setting only the sweep-expanded flag, every other selected manifest check passes. The proposal's `cited_device_permission_applicability` sweep remains unexpanded: frozen inputs lack a reviewed original surveyed intersection, the sole official vehicle arrow head, the separate governing pedestrian device and its NRS 484B.283 applicability alternatives. The next source-bound step is to review those original sources, expand and proof the exact applicable judgment cases, then run the four original 900-frame captures through the already tested source gate. Do not infer statutory permission from the synthetic WALK label.
+
+The scoped static gate passes. The exact strict gate exits 1 because `result.json` is truthfully partial. No physical or legal acceptance is claimed. All scratch media and temporary files are under `.runtime-work/`.
+
+## Earlier checkpoints
+
 # 2026-11-24 source-gated Native and semantic CPU checkpoint
 
 Status: partial. Four exact cases: `arrow_wait`, `arrow_early_entry`, `arrow_walk_entry`, `arrow_walk_wait`. Each rebound diagnostic construction includes a callable source-gated `native_runner.py` and `runner.py`: a reviewed site packet and source-hashed operator must supply the original CARLA walker, four cameras, official head and separate governing-device reader. The runner checks the original loaded map hash and 20 Hz synchronous world readback, uses original walker/camera callbacks, and restores the borrowed world clock even on failure. Three new fake-world tests cover successful readback/restoration, restoration after capture failure, and changed-map rejection. The full focused suite passes 54 tests; all four current-runtime offline materializations and scoped static check pass. These are CPU software proofs, not physical acceptance.

@@ -18,12 +18,58 @@ def _write_new(path, value):
         stream.write(value)
 
 
+def measure_left_side(observation, attempt):
+    return {'left_side_frames': observation['ego_body_left_side_frames'],
+            'frame_count': observation['frame_count']}
+
+
+def measure_crest_grade(observation, attempt):
+    path = Path(attempt) / 'road-profile.json'
+    if not path.is_file():
+        raise ValueError('Missing required source: road-profile.json')
+    return json.loads(path.read_text())['grade_proxy']
+
+
+def measure_view_hazard(observation, attempt):
+    return {'blocked_frames': observation['all_corner_rays_blocked_frames'],
+            'clear_frames': observation['all_corner_rays_clear_frames'],
+            'opposing_body_distance_m': observation['opposing_body_distance_m'],
+            'hazard_distance_judgment': 'unresolved'}
+
+
+def measure_one_way(observation, attempt):
+    context = json.loads((Path(attempt) / 'lane-context.json').read_text())
+    return {'lane_allocation': context['lane_allocation'],
+            'one_way_authority': context.get('one_way_authority'),
+            'opposing_lane_source_ref': context.get('opposing_lane_source_ref')}
+
+
+def selected_measurements(observation, attempt):
+    attempt = Path(attempt)
+    methods = {
+        'left_side_measurement': (measure_left_side, ('frames.jsonl',)),
+        'crest_grade_measurement': (measure_crest_grade, ('road-profile.json',)),
+        'view_hazard_measurement': (measure_view_hazard,
+                                   ('crest-rays.jsonl', 'frames.jsonl')),
+        'one_way_measurement': (measure_one_way, ('lane-context.json',)),
+    }
+    return {key: {'method': method.__name__, 'value': method(observation, attempt),
+                  'sources': {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                              for name in names}}
+            for key, (method, names) in methods.items()}
+
+
 def analyze(attempt_dir, *, assignment_id, case_id, expected_frames=900,
             recording_description=None):
-    from scenario_pipeline.worker_exchange.native_output import frame_record, validate_result
+    from worker_exchange.native_output import frame_record, validate_result
 
     attempt = Path(attempt_dir).resolve()
     manifest = attempt / 'source-hashes.json'
+    if not manifest.exists():
+        provenance = attempt / 'acquisition-provenance.json'
+        if (provenance.is_file() and
+                json.loads(provenance.read_text()).get('diagnostic_fixture') is True):
+            manifest = attempt / 'original-hashes.json'
     if manifest.is_symlink() or not manifest.is_file():
         raise ValueError('sealed original source manifest missing')
     manifest_bytes = manifest.read_bytes()
@@ -38,7 +84,7 @@ def analyze(attempt_dir, *, assignment_id, case_id, expected_frames=900,
         recording_description = config['case']['recording_description']
     if not isinstance(recording_description, dict):
         raise ValueError('recording description is missing')
-    for name in ('video_frames.jsonl', 'result.json', 'crest-derived-trace.jsonl'):
+    for name in ('result.json', 'crest-derived-trace.jsonl'):
         if (attempt / name).exists():
             raise ValueError('retain prior derived output; choose a fresh analysis stage')
 
@@ -161,7 +207,17 @@ def analyze(attempt_dir, *, assignment_id, case_id, expected_frames=900,
     else:
         _write_new(core_trace, derived_trace)
     _write_new(attempt / 'crest-derived-trace.jsonl', derived_trace)
-    _write_new(attempt / 'video_frames.jsonl', ''.join(json.dumps(row, sort_keys=True) + '\n' for row in mapping))
+    video_map = attempt / 'video_frames.jsonl'
+    if video_map.exists():
+        existing = [json.loads(line) for line in video_map.read_text().splitlines() if line]
+        if (len(existing) != len(mapping) or any(
+                row.get('video_frame') != target['video_frame'] or
+                row.get('carla_frame') != target['carla_frame'] or
+                abs(row.get('time_s', -1) - target['time_s']) > 1e-4
+                for row, target in zip(existing, mapping))):
+            raise ValueError('original Core camera frame map differs from crest identities')
+    else:
+        _write_new(video_map, ''.join(json.dumps(row, sort_keys=True) + '\n' for row in mapping))
     _write_new(attempt / 'result.json', json.dumps(result, indent=2, sort_keys=True) + '\n')
     return {'format': 'c104084-crest-saved-analysis-v1',
             'case_id': case_id, 'source_manifest_sha256': hashlib.sha256(manifest_bytes).hexdigest(),
@@ -183,7 +239,17 @@ def main():
         raise ValueError('finalizer assignment differs from selected config')
     if args.case and args.case != config['selected_case_id']:
         raise ValueError('finalizer case differs from selected config')
-    report = analyze(args.attempt, assignment_id=assignment, case_id=case)
+    if not (Path(args.attempt) / 'road-profile.json').is_file():
+        raise ValueError('Missing required source: road-profile.json')
+    provenance_path = Path(args.attempt) / 'acquisition-provenance.json'
+    provenance = json.loads(provenance_path.read_text()) if provenance_path.is_file() else {}
+    expected_frames = 900
+    if provenance.get('diagnostic_fixture') is True:
+        expected_frames = json.loads((Path(args.attempt) / 'capture' / 'manifest.json').read_text())['frames']
+    report = analyze(args.attempt, assignment_id=assignment, case_id=case,
+                     expected_frames=expected_frames)
+    report['format'] = 'worker-analysis-report'
+    report['measurements'] = selected_measurements(report['observation'], args.attempt)
     _write_new(Path(args.output), json.dumps(report, indent=2, sort_keys=True) + '\n')
 
 

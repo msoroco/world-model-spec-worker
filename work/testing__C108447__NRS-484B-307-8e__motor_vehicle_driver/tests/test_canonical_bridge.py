@@ -28,6 +28,65 @@ def tiny_png(value):
 
 
 class CanonicalBridgeTests(unittest.TestCase):
+    def test_full_duration_original_frame_publication(self):
+        count = 900
+        with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as temp:
+            root = Path(temp)
+            original = root / 'original-attempt'
+            original.mkdir()
+            ego = [{'frame': 100 + i, 'time_s': i / 20,
+                    'x': float(i) / 20, 'y': 0.0, 'speed_mps': 1.0,
+                    'yaw_rad': 0.0, 'velocity_mps': [1, 0, 0]}
+                   for i in range(count)]
+            (original / 'trace.json').write_text(json.dumps({'ego': ego}) + '\n')
+            frames = []
+            for body in ego:
+                data = tiny_png(body['frame'] % 256)
+                frames.append({'frame': body['frame'], 'time_s': body['time_s'],
+                               'cameras': {name: {'member': f'{body["frame"]}.png',
+                                                  'sha256': hashlib.sha256(data).hexdigest()}
+                                           for name in CAMERAS}})
+            (original / 'frame-map.jsonl').write_text(''.join(
+                json.dumps(row) + '\n' for row in frames))
+            for camera in CAMERAS:
+                with ZipFile(original / (camera + '.zip'), 'w') as archive:
+                    for body in ego:
+                        archive.writestr(f'{body["frame"]}.png',
+                                         tiny_png(body['frame'] % 256))
+            for name in ('map-packet.json', 'authority.json', 'road.xodr'):
+                (original / name).write_text('{}\n')
+            native = root / 'capture'
+            (native / 'native').mkdir(parents=True)
+            (native / 'manifest.json').write_text(json.dumps({
+                'frames': count, 'observation_contract_version': 2}) + '\n')
+            (native / 'native/frames.jsonl').write_text(''.join(
+                json.dumps({'frame': body['frame']}) + '\n' for body in ego))
+            (native / 'evidence.jsonl').write_text(''.join(
+                json.dumps({'original_frame': body['frame'],
+                            'replay_frame': body['frame'],
+                            'recording_time_s': body['time_s']}) + '\n'
+                for body in ego))
+            release = {'world_restored': True, 'actors_released': True,
+                       'sensors_released': True, 'readback_passed': True}
+            package = types.ModuleType('worker_exchange')
+            package.__path__ = []
+            native_output = types.ModuleType('worker_exchange.native_output')
+            native_output.seal_capture = mock.Mock(return_value={'sealed': True})
+            with mock.patch.dict(sys.modules, {
+                    'worker_exchange': package,
+                    'worker_exchange.native_output': native_output}):
+                result = bridge(root, original, release=release)
+            self.assertEqual(result['frame_count'], count)
+            self.assertEqual(result['capture_seal'], {'sealed': True})
+            mapping = [json.loads(line) for line in
+                       (root / 'video_frames.jsonl').read_text().splitlines()]
+            self.assertEqual(len(mapping), count)
+            self.assertEqual(mapping[0]['carla_frame'], 100)
+            self.assertEqual(mapping[-1]['carla_frame'], 999)
+            self.assertEqual(len((root / 'trace.jsonl').read_text().splitlines()), count)
+            for camera in CAMERAS:
+                self.assertGreater((root / (camera + '.mkv')).stat().st_size, 0)
+
     def test_two_original_frames_encode_and_seal(self):
         with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as temp:
             root = Path(temp)

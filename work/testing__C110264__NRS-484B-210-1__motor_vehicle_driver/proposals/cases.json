@@ -1,0 +1,758 @@
+{
+  "cell_id": "C110264",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared original map, actor, paved corridor and four-camera capture setup.",
+      "variable_assignments": {
+        "target_behavior_request": {
+          "kind": "controller",
+          "value": "neither"
+        },
+        "reviewed_right_pass_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_target_identity",
+            "unit": "actor IDs",
+            "method": "Distinct original Native ego and target actor identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_longitudinal_order",
+            "unit": "m",
+            "method": "Original actor stations before, during and after passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_lateral_order",
+            "unit": "m",
+            "method": "Original right-positive actor offsets during passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal",
+            "unit": "boolean",
+            "method": "Actual original target light-state readback per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_motion",
+            "unit": "frame sequence",
+            "method": "Actual target heading and left lateral displacement",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "intersection_bounds",
+            "unit": "m",
+            "method": "Original map intersection station interval and crossing frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "paved_surface_occupation",
+            "unit": "boolean",
+            "method": "Original actor footprint within source paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "road_direction_and_lane_count",
+            "unit": "source record",
+            "method": "Original two-way road and marked lane topology review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "original_road_and_intersection",
+            "unit": "source record",
+            "method": "Hash-bound public-highway, intersection and paved corridor review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "ego_target_identity_and_order",
+            "unit": "frame sequence",
+            "method": "Original actor IDs and relative longitudinal/lateral body positions",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal_state",
+            "unit": "boolean",
+            "method": "Original target light-state readback on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_turn_motion",
+            "unit": "frame sequence",
+            "method": "Original target lateral displacement and heading on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "pass_and_pavement_history",
+            "unit": "frame sequence",
+            "method": "Original ego and target body footprints, pass interval and paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "four_camera_frame_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized front, rear, left and right media frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_map_packet",
+            "unit": "source record",
+            "method": "Original OpenDRIVE SHA, road/intersection/pavement and world centerline anchors"
+          },
+          {
+            "name": "reviewed_vehicle_setup",
+            "unit": "source record",
+            "method": "Original actor footprint, distinct identities, controller setup and four camera mounts"
+          }
+        ],
+        "limitations": [
+          "Requested signal and turn behavior do not establish observed behavior.",
+          "Paragraph (b), (c), (d) and subsection 4 alternatives remain separately unresolved.",
+          "No legal verdict or physical acceptance is inferred from CPU fixtures."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "driver of the vehicle overtaken is making or signaling to make a left turn",
+        "overtake and pass upon the right",
+        "upon a highway"
+      ]
+    },
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal",
+      "target_law_id": "NRS-484B-210-1",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "Exact target signal/motion contrast; original behavior and legal outcome remain unresolved.",
+      "paired_probe_id": "left_signal_presence",
+      "deliberate_differences": [
+        "target_behavior_request"
+      ],
+      "variable_assignments": {
+        "target_behavior_request": {
+          "kind": "controller",
+          "value": "left_signal"
+        },
+        "reviewed_right_pass_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "driver of the vehicle overtaken is making or signaling to make a left turn",
+        "overtake and pass upon the right",
+        "upon a highway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_target_identity",
+            "unit": "actor IDs",
+            "method": "Distinct original Native ego and target actor identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_longitudinal_order",
+            "unit": "m",
+            "method": "Original actor stations before, during and after passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_lateral_order",
+            "unit": "m",
+            "method": "Original right-positive actor offsets during passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal",
+            "unit": "boolean",
+            "method": "Actual original target light-state readback per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_motion",
+            "unit": "frame sequence",
+            "method": "Actual target heading and left lateral displacement",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "intersection_bounds",
+            "unit": "m",
+            "method": "Original map intersection station interval and crossing frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "paved_surface_occupation",
+            "unit": "boolean",
+            "method": "Original actor footprint within source paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "road_direction_and_lane_count",
+            "unit": "source record",
+            "method": "Original two-way road and marked lane topology review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "original_road_and_intersection",
+            "unit": "source record",
+            "method": "Hash-bound public-highway, intersection and paved corridor review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "ego_target_identity_and_order",
+            "unit": "frame sequence",
+            "method": "Original actor IDs and relative longitudinal/lateral body positions",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal_state",
+            "unit": "boolean",
+            "method": "Original target light-state readback on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_turn_motion",
+            "unit": "frame sequence",
+            "method": "Original target lateral displacement and heading on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "pass_and_pavement_history",
+            "unit": "frame sequence",
+            "method": "Original ego and target body footprints, pass interval and paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "four_camera_frame_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized front, rear, left and right media frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_map_packet",
+            "unit": "source record",
+            "method": "Original OpenDRIVE SHA, road/intersection/pavement and world centerline anchors"
+          },
+          {
+            "name": "reviewed_vehicle_setup",
+            "unit": "source record",
+            "method": "Original actor footprint, distinct identities, controller setup and four camera mounts"
+          }
+        ],
+        "limitations": [
+          "Requested signal and turn behavior do not establish observed behavior.",
+          "Paragraph (b), (c), (d) and subsection 4 alternatives remain separately unresolved.",
+          "No legal verdict or physical acceptance is inferred from CPU fixtures."
+        ]
+      },
+      "probe": {
+        "primary_variable": "target_behavior_request",
+        "comparison_or_standard": "Actual signal and motion from original pass frames; no legal cutoff.",
+        "target_value_or_branch": "left_signal"
+      }
+    },
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn",
+      "target_law_id": "NRS-484B-210-1",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "Exact target signal/motion contrast; original behavior and legal outcome remain unresolved.",
+      "paired_probe_id": "left_turn_motion_presence",
+      "deliberate_differences": [
+        "target_behavior_request"
+      ],
+      "variable_assignments": {
+        "target_behavior_request": {
+          "kind": "controller",
+          "value": "left_turn"
+        },
+        "reviewed_right_pass_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "driver of the vehicle overtaken is making or signaling to make a left turn",
+        "overtake and pass upon the right",
+        "upon a highway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_target_identity",
+            "unit": "actor IDs",
+            "method": "Distinct original Native ego and target actor identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_longitudinal_order",
+            "unit": "m",
+            "method": "Original actor stations before, during and after passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_lateral_order",
+            "unit": "m",
+            "method": "Original right-positive actor offsets during passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal",
+            "unit": "boolean",
+            "method": "Actual original target light-state readback per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_motion",
+            "unit": "frame sequence",
+            "method": "Actual target heading and left lateral displacement",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "intersection_bounds",
+            "unit": "m",
+            "method": "Original map intersection station interval and crossing frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "paved_surface_occupation",
+            "unit": "boolean",
+            "method": "Original actor footprint within source paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "road_direction_and_lane_count",
+            "unit": "source record",
+            "method": "Original two-way road and marked lane topology review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "original_road_and_intersection",
+            "unit": "source record",
+            "method": "Hash-bound public-highway, intersection and paved corridor review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "ego_target_identity_and_order",
+            "unit": "frame sequence",
+            "method": "Original actor IDs and relative longitudinal/lateral body positions",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal_state",
+            "unit": "boolean",
+            "method": "Original target light-state readback on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_turn_motion",
+            "unit": "frame sequence",
+            "method": "Original target lateral displacement and heading on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "pass_and_pavement_history",
+            "unit": "frame sequence",
+            "method": "Original ego and target body footprints, pass interval and paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "four_camera_frame_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized front, rear, left and right media frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_map_packet",
+            "unit": "source record",
+            "method": "Original OpenDRIVE SHA, road/intersection/pavement and world centerline anchors"
+          },
+          {
+            "name": "reviewed_vehicle_setup",
+            "unit": "source record",
+            "method": "Original actor footprint, distinct identities, controller setup and four camera mounts"
+          }
+        ],
+        "limitations": [
+          "Requested signal and turn behavior do not establish observed behavior.",
+          "Paragraph (b), (c), (d) and subsection 4 alternatives remain separately unresolved.",
+          "No legal verdict or physical acceptance is inferred from CPU fixtures."
+        ]
+      },
+      "probe": {
+        "primary_variable": "target_behavior_request",
+        "comparison_or_standard": "Actual signal and motion from original pass frames; no legal cutoff.",
+        "target_value_or_branch": "left_turn"
+      }
+    },
+    {
+      "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither",
+      "target_law_id": "NRS-484B-210-1",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "Exact target signal/motion contrast; original behavior and legal outcome remain unresolved.",
+      "paired_probe_id": "shared_neither_baseline",
+      "deliberate_differences": [
+        "target_behavior_request"
+      ],
+      "variable_assignments": {
+        "target_behavior_request": {
+          "kind": "controller",
+          "value": "neither"
+        },
+        "reviewed_right_pass_site": {
+          "kind": "world_setup",
+          "value": "source_reviewed"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "driver of the vehicle overtaken is making or signaling to make a left turn",
+        "overtake and pass upon the right",
+        "upon a highway"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_target_identity",
+            "unit": "actor IDs",
+            "method": "Distinct original Native ego and target actor identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_longitudinal_order",
+            "unit": "m",
+            "method": "Original actor stations before, during and after passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "relative_lateral_order",
+            "unit": "m",
+            "method": "Original right-positive actor offsets during passing",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal",
+            "unit": "boolean",
+            "method": "Actual original target light-state readback per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_motion",
+            "unit": "frame sequence",
+            "method": "Actual target heading and left lateral displacement",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "intersection_bounds",
+            "unit": "m",
+            "method": "Original map intersection station interval and crossing frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "paved_surface_occupation",
+            "unit": "boolean",
+            "method": "Original actor footprint within source paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "road_direction_and_lane_count",
+            "unit": "source record",
+            "method": "Original two-way road and marked lane topology review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "original_road_and_intersection",
+            "unit": "source record",
+            "method": "Hash-bound public-highway, intersection and paved corridor review",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "ego_target_identity_and_order",
+            "unit": "frame sequence",
+            "method": "Original actor IDs and relative longitudinal/lateral body positions",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_signal_state",
+            "unit": "boolean",
+            "method": "Original target light-state readback on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "target_left_turn_motion",
+            "unit": "frame sequence",
+            "method": "Original target lateral displacement and heading on pass frames",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "pass_and_pavement_history",
+            "unit": "frame sequence",
+            "method": "Original ego and target body footprints, pass interval and paved bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          },
+          {
+            "name": "four_camera_frame_join",
+            "unit": "frame sequence",
+            "method": "Original synchronized front, rear, left and right media frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "Full original 45-second intersection right-pass episode",
+            "reference_frame": "Original Native map station and 20 Hz frame map",
+            "uncertainty": "Physical route, left motion/signal and view quality need original source review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_map_packet",
+            "unit": "source record",
+            "method": "Original OpenDRIVE SHA, road/intersection/pavement and world centerline anchors"
+          },
+          {
+            "name": "reviewed_vehicle_setup",
+            "unit": "source record",
+            "method": "Original actor footprint, distinct identities, controller setup and four camera mounts"
+          }
+        ],
+        "limitations": [
+          "Requested signal and turn behavior do not establish observed behavior.",
+          "Paragraph (b), (c), (d) and subsection 4 alternatives remain separately unresolved.",
+          "No legal verdict or physical acceptance is inferred from CPU fixtures."
+        ]
+      },
+      "probe": {
+        "primary_variable": "target_behavior_request",
+        "comparison_or_standard": "Actual signal and motion from original pass frames; no legal cutoff.",
+        "target_value_or_branch": "neither"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c110264-judgment-1",
+      "target_law_id": "NRS-484B-210-1",
+      "judgment_refs": [
+        {
+          "phrase": "driver of the vehicle overtaken is making or signaling to make a left turn",
+          "note": "Determine actual target light state or turn motion during the observed right pass."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original road review and Native physical observations are pending.",
+      "missing_inputs": [
+        "reviewed original map and physical Native observations"
+      ]
+    },
+    {
+      "sweep_id": "c110264-judgment-2",
+      "target_law_id": "NRS-484B-210-1",
+      "judgment_refs": [
+        {
+          "phrase": "overtake and pass upon the right",
+          "note": "Determine original ego/target order and lateral position, not a requested route."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original road review and Native physical observations are pending.",
+      "missing_inputs": [
+        "reviewed original map and physical Native observations"
+      ]
+    },
+    {
+      "sweep_id": "c110264-judgment-3",
+      "target_law_id": "NRS-484B-210-1",
+      "judgment_refs": [
+        {
+          "phrase": "upon a highway",
+          "note": "Review original road status, pavement, intersection and other permission alternatives."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original road review and Native physical observations are pending.",
+      "missing_inputs": [
+        "reviewed original map and physical Native observations"
+      ]
+    }
+  ]
+}
