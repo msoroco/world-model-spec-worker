@@ -97,6 +97,12 @@ class RunnerEntryTests(unittest.TestCase):
             surface_review,weather_ref=RUNNER.require_site_packet(packet,root,RUNNER.CASES[0])
             self.assertEqual(surface_review['surface'],'dry')
             self.assertEqual(weather_ref['path'],'weather.txt')
+            (root/'road_packet.json').write_text(json.dumps(packet)+'\n')
+            output=root/'attempt'
+            output.mkdir()
+            self.assertTrue(RUNNER.install_reviewed_bundle(output,RUNNER.CASES[0],root))
+            self.assertEqual((output/'surface.txt').read_text(),surface)
+            self.assertEqual((output/'weather.txt').read_text(),weather)
             changed_surface=json.loads((root/'surface_packet.json').read_text())
             changed_surface['road_id']=8
             (root/'surface_packet.json').write_text(json.dumps(changed_surface))

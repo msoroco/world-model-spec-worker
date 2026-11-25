@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from contextlib import ExitStack
 from pathlib import Path
 from queue import Empty, Queue
@@ -174,11 +175,46 @@ def prepare_surface_source(output):
     return source
 
 
+def install_reviewed_bundle(output, case_id, bundle=None):
+    """Copy a validated local review bundle into the exact Native attempt."""
+    bundle = bundle if bundle is not None else os.environ.get('C179789_REVIEW_BUNDLE')
+    if not bundle:
+        prepare_surface_source(output)
+        return False
+    source_root = Path(bundle).resolve()
+    if not source_root.is_dir():
+        raise ValueError('Reviewed source bundle directory missing')
+    road_path = source_root / 'road_packet.json'
+    surface_path = source_root / 'surface_packet.json'
+    if not road_path.is_file() or not surface_path.is_file():
+        raise ValueError('Reviewed road and surface packets required')
+    road = json.loads(road_path.read_text())
+    require_site_packet(road, source_root, case_id)
+    surface = json.loads(surface_path.read_text())
+    names = ['road_packet.json', 'surface_packet.json',
+             surface['source']['path'], road['weather_profile_source']['path']]
+    payloads = {}
+    for name in names:
+        relative = Path(name)
+        path = (source_root / relative).resolve()
+        if (relative.is_absolute() or '..' in relative.parts or
+                path.parent != source_root or not path.is_file()):
+            raise ValueError('Reviewed source path must be a top-level bundle file')
+        payloads[name] = path.read_bytes()
+        if not payloads[name] or len(payloads[name]) > 2 * 1024 * 1024:
+            raise ValueError('Reviewed source file missing or oversized')
+    output = Path(output).resolve()
+    for name, raw in payloads.items():
+        (output / name).write_bytes(raw)
+    require_site_packet(json.loads((output / 'road_packet.json').read_text()), output, case_id)
+    return True
+
+
 def capture(args, config):
     output = Path(args.output_dir).resolve()
     if not output.is_dir() or not (output / 'construction.json').is_file():
         raise ValueError('Use runtime.py capture to materialize exact construction first')
-    prepare_surface_source(output)
+    install_reviewed_bundle(output, config['selected_case_id'])
     packet = json.loads((output / 'road_packet.json').read_text())
     surface_review, weather_source = require_site_packet(packet, output, config['selected_case_id'])
     if surface_review['surface'] != config['condition_target']['surface']:
