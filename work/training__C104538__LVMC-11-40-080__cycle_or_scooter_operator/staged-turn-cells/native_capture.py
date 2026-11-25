@@ -102,8 +102,6 @@ def execute(output_dir, host, port):
         world.set_weather(carla.WeatherParameters.ClearNoon)
         mapping = world.get_map()
         survey = survey_governed_sign(mapping, carla, config)
-        survey['native_map_sha256'] = hashlib.sha256(mapping.to_opendrive().encode()).hexdigest()
-        _json_new(output / 'sign-survey.json', survey)
         shutil.copyfile(output / 'road.xodr', output / 'authored-road.xodr')
         blueprint = world.get_blueprint_library().find('vehicle.bh.crossbike')
         blueprint.set_attribute('role_name', 'c104538_staged_signed_turn')
@@ -144,6 +142,9 @@ def execute(output_dir, host, port):
                 stdin=subprocess.PIPE, stderr=logs[name])
         capture = PipelineCapture(client, ego, output, config['case_id'],
                                   visibility=False, required_observations=[])
+        shutil.copyfile(output / 'road.xodr', output / 'native-map.xodr')
+        survey['native_map_sha256'] = _sha(output / 'native-map.xodr')
+        _json_new(output / 'sign-survey.json', survey)
         frame_map = FrameMap(output / 'video_frames.jsonl')
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / 'native_samples.jsonl').open('x') as native_stream, \

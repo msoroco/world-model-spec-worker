@@ -1,0 +1,55 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver",
+  "status": "partial",
+  "delivery_ready": false,
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-preparing-hand-signal/primary/construction.json",
+      "construction_sha256": "c13e074543eb1f727fa25a92bc913172314cd5abb50eef77ccb19db5d880d275",
+      "measurement_contract": "measurement-contracts/preparing_hand_signal.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Visible driver hand signal, authorization and flashing pixels require original source review"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-preparing-hand-signal/fallback1/construction.json",
+          "construction_sha256": "7d9b8ba8740a3d150b362d0500465b681135a1349a1dbe4cf18d42e8ce4a4a17",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject does not remain behind the source vehicle",
+            "metric": "measured following gap during source preparation",
+            "source": "original Native pose and lane survey"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-preparing-hand-signal/fallback2/construction.json",
+          "construction_sha256": "46ebd857bfee24f76ca39b1e47dca2eb47b07848f975e8af74884dfc261f2324",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot distinguish the source driver hand signal or lamps",
+            "metric": "visible driver hand signal and flashing-light pixels",
+            "source": "original four-camera frame map and pixels"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-preparing_hand_signal-recipe.json"
+    }
+  ]
+}

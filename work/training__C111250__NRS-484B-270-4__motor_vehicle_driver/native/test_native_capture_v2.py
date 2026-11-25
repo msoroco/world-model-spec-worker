@@ -14,13 +14,14 @@ class NativeCaptureContractTest(unittest.TestCase):
                 [1280, 720], [1280, 720], [1280, 720]])
             self.assertFalse(proof["physical_or_legal_success_claimed"])
 
-    def test_unprepared_candidate_and_duration_fail(self):
+    def test_unprepared_camera_placement_and_duration_fail(self):
         config = {"case_id": "C111250__outside_cycle_lane",
-                  "case_suffix": "outside_cycle_lane", "candidate_id": "fallback1",
+                  "case_suffix": "outside_cycle_lane", "candidate_id": "primary",
+                  "camera_lateral_shift_m": 9,
                   "rate_hz": 20, "duration_s": 30}
-        with self.assertRaisesRegex(ValueError, "candidate"):
+        with self.assertRaisesRegex(ValueError, "camera placement"):
             check(config)
-        config["candidate_id"] = "primary"
+        config["camera_lateral_shift_m"] = 0
         config["duration_s"] = 29
         with self.assertRaisesRegex(ValueError, "duration"):
             check(config)

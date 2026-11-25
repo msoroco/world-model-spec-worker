@@ -25,9 +25,9 @@ class Bundle(unittest.TestCase):
         config=json.loads(Path("config.json").read_text())
         self.assertTrue(check(config)["passed"])
         self.assertTrue(route_check()["passed"])
-    def test_unprepared_candidate_rejected(self):
+    def test_unprepared_camera_placement_rejected(self):
         config=json.loads(Path("config.json").read_text())
-        config["candidate_id"]="fallback1"
+        config["camera_lateral_shift_m"]=9
         with self.assertRaises(ValueError): check(config)
 '''
 
@@ -37,6 +37,11 @@ def main():
     old_config = json.loads(next(item["content"] for item in base["files"]
                                  if item["path"] == "config.json"))
     recording = dict(base["recording_description"])
+    channel_template = dict(recording["channels"][0])
+    recording["channels"] = [dict(channel_template, name=name) for name in (
+        "vehicle_body", "cycle_facility", "st.bicycle_lane_or_path", "rel.occupies",
+        "st.intersection", "drv.entering_intersection", "drv.in_intersection",
+        "kin.velocity")]
     recording["context_inputs"] = [
         {"name": "native_facility_readback", "unit": "structured",
          "method": "original Native map lane readback"},
@@ -56,6 +61,7 @@ def main():
         config.update(case_id=case_id, selected_case_id=case_id,
                       case={"case_id": case_id}, case_suffix=route_suffix,
                       supported_case_ids=[case_id], candidate_id="primary",
+                      camera_lateral_shift_m=0,
                       status="unselected_native_draft", recording_description=recording,
                       cameras=[{"name": name, "width": width, "height": height,
                                 "fov_deg": fov, "pose_strategy": attach, "fps": 20}
@@ -82,6 +88,14 @@ def main():
                         "status": "unselected_native_draft"}
         filename = "draft-native-" + suffix + "-construction.json"
         path = HERE / filename; write(path, construction)
+        fallback = json.loads(json.dumps(construction))
+        fallback_config = dict(config, camera_lateral_shift_m=2.0)
+        for embedded_file in fallback["files"]:
+            if embedded_file["path"] == "config.json":
+                embedded_file["content"] = json.dumps(fallback_config, indent=2, sort_keys=True) + "\n"
+        fallback["status"] = "camera_placement_fallback"
+        fallback_name = "draft-native-" + suffix + "-fallback1-construction.json"
+        fallback_path = HERE / fallback_name; write(fallback_path, fallback)
         contract_name = "draft-native-" + suffix + "-measurement-contract.json"
         write(HERE / contract_name, {"format": "worker-measurement-contract",
             "case_id": case_id,
@@ -91,7 +105,13 @@ def main():
                 "method": "measure_original_native_cycle_lane", "value_type": "object",
                 "kind": "measured", "inputs": ["facility-context.json",
                     "subsection3-context.json", "body-history.jsonl", "trace.jsonl",
-                    "video_frames.jsonl", "capture/evidence.jsonl"]}],
+                    "video_frames.jsonl", "capture/evidence.jsonl"]},
+                {"disposition_index": 1, "requirement": "NRS-484B-270-4",
+                 "source": "NRS 484B.270(4)",
+                 "output_key": "subsection3_qualifier_context",
+                 "method": "measure_subsection3_context", "value_type": "object",
+                 "kind": "sourced_context", "inputs": ["facility-context.json",
+                     "subsection3-context.json"]}],
             "negative": {"remove": ["body-history.jsonl"],
                          "error_contains": "Missing required source: body-history.jsonl"},
             "status": "unselected_contract_draft"})
@@ -102,7 +122,13 @@ def main():
                         "measurement_procedure": {"entrypoint": "finalize.py"},
                         "fixture_recipe": str((HERE / ("native-diagnostic-" + suffix + "-recipe.json")).relative_to(REPO)),
                         "recording_description": recording,
-                        "candidates": [],
+                        "candidates": [{"id": "fallback1", "construction": fallback_name,
+                            "construction_sha256": sha(fallback_path),
+                            "trigger": {"metric": "minimum_visible_facility_pixels",
+                                        "source": "original overview and reference_corner video",
+                                        "failure_condition": "facility body-occupancy boundary not visible across intersection frames",
+                                        "op": "<", "threshold": 24},
+                            "changed_knobs": ["shift three world cameras 2 m toward bicycle facility"]}],
                         "candidate_risk": {"status": "physical",
                                            "reason": "Motion and camera coverage require local review"}})
     manifest = HERE / "draft-native-manifest.json"

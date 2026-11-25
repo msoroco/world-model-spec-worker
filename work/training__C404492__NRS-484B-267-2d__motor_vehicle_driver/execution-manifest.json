@@ -1120,6 +1120,192 @@
         "negative_log": "delivery-proofs/officer_directed/native-required.log",
         "negative_log_sha256": "0c0c1a60feb46462c48d6ca1e16248243a7104e9f698f5807a96d7c53b472eb8"
       }
+    },
+    {
+      "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "draft-preparing-hand-signal/primary/construction.json",
+      "construction_sha256": "c13e074543eb1f727fa25a92bc913172314cd5abb50eef77ccb19db5d880d275",
+      "measurement_contract": "measurement-contracts/preparing_hand_signal.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "source-bound-emergency-abreast-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Visible driver hand signal, authorization and flashing pixels require original source review"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "initial ego gap -20 m to -25 m"
+          ],
+          "construction": "draft-preparing-hand-signal/fallback1/construction.json",
+          "construction_sha256": "7d9b8ba8740a3d150b362d0500465b681135a1349a1dbe4cf18d42e8ce4a4a17",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "subject does not remain behind the source vehicle",
+            "metric": "measured following gap during source preparation",
+            "source": "original Native pose and lane survey"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal --candidate fallback1 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7d9b8ba8740a3d150b362d0500465b681135a1349a1dbe4cf18d42e8ce4a4a17",
+            "log": "current-hand-signal-offline/fallback1.log",
+            "log_sha256": "40ae958a0f5e2c2cedc8064b3a089746ae5d0d809e0b1b015179ad234f8c96e3"
+          },
+          "compatibility": {
+            "receipt": "current-hand-signal-public/fallback1/receipt.json",
+            "sha256": "745db1ec30ed7f0a8675717c4f591f23ba6c2d5da80b6218a0628e4cbe926cfa",
+            "log": "current-hand-signal-public/fallback1/analysis.log",
+            "negative_log": "current-hand-signal-public/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "current-hand-signal-public/fallback1/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-hand-signal-saved/fallback1.json",
+            "sha256": "3963af10fe35d4231944a58a6b13d7cfd77564904c2fc98cef0247efbc4c2c33"
+          }
+        },
+        {
+          "changed_knobs": [
+            "camera height +1 m",
+            "camera FOV 90 to 105 degrees"
+          ],
+          "construction": "draft-preparing-hand-signal/fallback2/construction.json",
+          "construction_sha256": "46ebd857bfee24f76ca39b1e47dca2eb47b07848f975e8af74884dfc261f2324",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "review cannot distinguish the source driver hand signal or lamps",
+            "metric": "visible driver hand signal and flashing-light pixels",
+            "source": "original four-camera frame map and pixels"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal --candidate fallback2 --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "46ebd857bfee24f76ca39b1e47dca2eb47b07848f975e8af74884dfc261f2324",
+            "log": "current-hand-signal-offline/fallback2.log",
+            "log_sha256": "da43893f6c2f64cdb3ade8f857635ab02b1055581338eb4c4d71ca908dd575b0"
+          },
+          "compatibility": {
+            "receipt": "current-hand-signal-public/fallback2/receipt.json",
+            "sha256": "35f187dd584add512fbaf8baa06c53f29d5ac7fb110cfef5342cf82394edca5b",
+            "log": "current-hand-signal-public/fallback2/analysis.log",
+            "negative_log": "current-hand-signal-public/fallback2/negative.log"
+          },
+          "negative": {
+            "log": "current-hand-signal-public/fallback2/negative.log"
+          },
+          "saved_processing": {
+            "receipt": "current-hand-signal-saved/fallback2.json",
+            "sha256": "cd7883b2e2b984c39512855529ab5215e7bea9396d90a2868f1fe1b33959325f"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-preparing_hand_signal-recipe.json",
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Record subject and authorized emergency vehicle identity, original pose and flashing phase on each Native frame",
+          "evidence": "vehicle_poses.jsonl and emergency_context.template.json; authorization and equipment require independent source review"
+        },
+        "rel.same_direction": {
+          "entrypoint": "runner.py",
+          "method": "Read back both observed driving-lane waypoints, travel heading and per-frame actor headings",
+          "evidence": "vehicle_poses.jsonl joined to video_frames.jsonl and reviewed lane context"
+        },
+        "rel.longitudinal_overlap": {
+          "entrypoint": "finalize.py",
+          "method": "Project original subject and emergency vehicle body extents onto observed travel axis and retain each overlapping frame",
+          "evidence": "vehicle_poses.jsonl, trace.jsonl and channels/rel.longitudinal_overlap.jsonl"
+        },
+        "drv.overtaking": {
+          "entrypoint": "finalize.py",
+          "method": "Track signed original relative order across frames separately from body overlap",
+          "evidence": "vehicle_poses.jsonl and channels/drv.overtaking.jsonl"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "finalize.py",
+          "method": "Report signed relative longitudinal order and distinct adjacent lane identities",
+          "evidence": "vehicle_poses.jsonl and channels/rel.ahead_behind_in_lane.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Retain observed per-frame actor velocities and ego trace at original Native frame and time",
+          "evidence": "vehicle_poses.jsonl and trace.jsonl joined to video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Record source-driver hand signal actor identity, window geometry, original frame interval and independent pixel review",
+          "evidence": "vehicle_poses.jsonl, emergency_context.template.json and four original camera streams"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/preparing_hand_signal/canonical-proof.json",
+        "sha256": "910b3e94fbfb690cf5d927661fe6c07d8d5cd7cfb60c1f6fd2a5ea7aada63a68"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_NATIVE_SURVEY"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal --candidate primary --output \"$OFFLINE_OUT\" --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c13e074543eb1f727fa25a92bc913172314cd5abb50eef77ccb19db5d880d275",
+        "log": "current-hand-signal-offline/primary.log",
+        "log_sha256": "da43893f6c2f64cdb3ade8f857635ab02b1055581338eb4c4d71ca908dd575b0"
+      },
+      "compatibility": {
+        "receipt": "current-hand-signal-public/primary/receipt.json",
+        "sha256": "a90a117eb9048990a9c9ea4f275aab0f6d40000e2de797050cebad2f8a8d1920",
+        "log": "current-hand-signal-public/primary/analysis.log",
+        "negative_log": "current-hand-signal-public/primary/negative.log"
+      },
+      "negative": {
+        "log": "current-hand-signal-public/primary/negative.log"
+      },
+      "saved_processing": {
+        "receipt": "current-hand-signal-saved/primary.json",
+        "sha256": "0eaab856586b7a1d3b0b56226c2cc6cff1f3a87dadcb52c32e2f8001fe12fba2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "current-hand-signal-saved/primary.json",
+        "test_log_sha256": "0eaab856586b7a1d3b0b56226c2cc6cff1f3a87dadcb52c32e2f8001fe12fba2"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/hand_signal_delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-hand-public-primary-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-hand-signal-saved/primary.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-hand-audit/diagnostic.json --diagnostic",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/hand_signal_delivery_audit.py --case training__C404492__NRS-484B-267-2d__motor_vehicle_driver__preparing_hand_signal --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-hand-public-primary-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C404492__NRS-484B-267-2d__motor_vehicle_driver/current-hand-signal-saved/primary.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c404492-hand-audit/diagnostic.json",
+        "script": "hand_signal_delivery_audit.py",
+        "script_sha256": "46fc71e789ba17bdfda5c03a7a27c7077992fae03ecd8525f84b115ed745d9e5",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required",
+        "test_log": "delivery-proofs/preparing_hand_signal/diagnostic.log",
+        "test_log_sha256": "ee0767a49adcd0390dc1fd21a1e8f5c578a5f9f5b1a79b17e06e7b788d1161cd",
+        "negative_log": "delivery-proofs/preparing_hand_signal/native-required.log",
+        "negative_log_sha256": "5f111a63c1eb42a4f9274ec64b4b33f299b95d4f338b54f6cb72ca5edf042527"
+      }
     }
   ]
 }

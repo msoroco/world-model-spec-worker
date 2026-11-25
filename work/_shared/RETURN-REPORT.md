@@ -1,8 +1,14 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 56 of 253 assignments are ready and 197 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 57 of 253 assignments are ready and 196 remain partial at the latest recorded inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-24 C111331 ready and C404492 hand-signal selected
+
+`training__C111331__NRS-484B-250-4__motor_vehicle_driver` passed both owner and lead assignment-scoped strict delivery gates on the current runtime and is ready. The lead strict command exited 0 with `static_checks_passed: true`. The queue was rebuilt and audited after that promotion: 814 case intents, 384 comparison intents, zero dispatchable rows, SHA-256 `27655a597b892eec8b7e197ba825c293107063f8bc0f9c3f5b68889cb34c54ac`. Inventory is 57 ready / 196 partial.
+
+Lead-owned `training__C404492__NRS-484B-267-2d__motor_vehicle_driver` now selects its seventh exact case, `preparing_hand_signal`, with primary plus two source-preserving fallbacks. Current-runtime pinned offline, public positive/missing-source negative, and recorded-only saved processing pass for all three. The Native runner constructs a source-driver hand actor with a stationary 40-frame signal phase. The finalizer, synthetic physical diagnostic, independent delivery audit, and movement-versus-hand-signal comparison pass source-shaped CPU positives and damaged-source negatives. Execution manifest SHA-256 `9e14d3d013354d79e161e56e19828145a2e826138683f142b693d448926ff55d`; public proof `b11a9fb5fe522e6fb9d00b0c7d113ad51fdba004adec6bd347e91fe45f0624bc`; saved proof `0aa723d8e848ae994803d1e7e7aedceb762bb1a832bf51d5ca14fea59cbe5e9c`; comparison proof `eca38e393b5e1d784970775e08de27331fe2a7fc3138a53bd2736ccdf4848928`. Assignment-scoped `--complete` passes; direct seven-case semantic, receipt and delivery validation is running. C404492 remains partial until all CPU proofs and its strict scoped gate pass. No original Native physical or legal acceptance is claimed.
 
 ## 2026-11-24 officer-directed selected CPU checkpoint
 

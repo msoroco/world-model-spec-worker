@@ -45,7 +45,7 @@ def audit(saved_overrides: dict[str, dict] | None = None) -> dict:
         require(config is not None, "Inline configuration missing")
         construction_by_suffix[suffix] = config
 
-        saved_path = PACKAGE / f"current-v4-{suffix}-primary-saved-processing.json"
+        saved_path = PACKAGE / f"current-v5-{suffix}-primary-saved-processing.json"
         saved = (saved_overrides or {}).get(suffix, load(saved_path))
         require(saved["case_id"] == case["case_id"] and saved["candidate_id"] == "primary",
                 "Saved receipt case/candidate mismatch")

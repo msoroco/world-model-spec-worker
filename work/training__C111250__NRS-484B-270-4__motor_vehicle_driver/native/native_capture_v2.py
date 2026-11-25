@@ -29,8 +29,9 @@ def check(config):
         raise ValueError("Unknown exact cycle-facility case")
     if config.get("rate_hz") != 20 or config.get("duration_s") != 30:
         raise ValueError("Capture rate or duration differs")
-    if config.get("candidate_id") != "primary":
-        raise ValueError("Unprepared candidate")
+    shift = config.get("camera_lateral_shift_m", 0)
+    if shift not in (0, 2.0):
+        raise ValueError("Unprepared camera placement")
     if not check_facility()["centerline_preserved"] or not check_routes()["passed"]:
         raise ValueError("Authored construction differs")
     return {"passed": True, "case_id": config["case_id"], "case_suffix": case,
@@ -57,13 +58,14 @@ def footprint(actor):
             [max(xs), max(ys)], [min(xs), max(ys)]]
 
 
-def transform(carla, camera):
+def transform(carla, camera, lateral_shift_m=0):
     _, _, _, _, xyz, attachment = camera
     if attachment == "ego":
         return carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2]))
-    yaw = math.degrees(math.atan2(-xyz[1], -xyz[0]))
-    pitch = math.degrees(math.atan2(-xyz[2], math.hypot(xyz[0], xyz[1])))
-    return carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2]),
+    shifted_x = xyz[0] + lateral_shift_m
+    yaw = math.degrees(math.atan2(-xyz[1], -shifted_x))
+    pitch = math.degrees(math.atan2(-xyz[2], math.hypot(shifted_x, xyz[1])))
+    return carla.Transform(carla.Location(x=shifted_x, y=xyz[1], z=xyz[2]),
                            carla.Rotation(yaw=yaw, pitch=pitch))
 
 
@@ -158,7 +160,8 @@ def execute(config, output_dir, host, port):
             for key, value in (("image_size_x", width), ("image_size_y", height),
                                ("fov", fov), ("sensor_tick", 0)):
                 sensor_bp.set_attribute(key, str(value))
-            sensor = world.spawn_actor(sensor_bp, transform(carla, spec),
+            sensor = world.spawn_actor(sensor_bp, transform(carla, spec,
+                config.get("camera_lateral_shift_m", 0)),
                 attach_to=ego if attachment == "ego" else None)
             owned.append(sensor); frame_queues[name] = queue.Queue()
             sensor.listen(frame_queues[name].put)

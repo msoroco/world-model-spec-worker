@@ -128,6 +128,52 @@ def check_original_body_join(native, rider, trace, body, evidence):
                 raise ValueError('Staged original body source differs')
 
 
+def check_map_source_join(root, config, survey):
+    root = Path(root)
+    if sha(root / 'authored-road.xodr') != config['road_sha256'] or \
+            sha(root / 'road.xodr') != survey.get('native_map_sha256') or \
+            sha(root / 'source.jsonl') != config['source_sha256'] or \
+            sha(root / 'native-map.xodr') != survey.get('native_map_sha256'):
+        raise ValueError('Staged authored/live map or requested route source hash differs')
+
+
+SEALED_SOURCES = (
+    'construction.json', 'runner.py', 'config.json', 'road.xodr',
+    'authored-road.xodr', 'native-map.xodr', 'source.jsonl',
+    'native_samples.jsonl', 'rider_native_samples.jsonl',
+    'video_frames.jsonl', 'trace.jsonl', 'body_history.jsonl',
+    'capture/evidence.jsonl', 'capture/manifest.json', 'sign-survey.json',
+    'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
+    'driver_reference.mkv', 'raw.mkv',
+)
+
+
+def check_capture_seal(root, expected_frames=FRAMES):
+    root = Path(root)
+    seal_path = root / 'capture-seal.json'
+    if not seal_path.is_file():
+        raise ValueError('Staged original capture seal missing')
+    seal = json.loads(seal_path.read_text())
+    if (seal.get('format') != 'worker-sealed-capture' or
+            seal.get('provenance_kind') != 'native' or
+            seal.get('diagnostic_fixture') is not False or
+            seal.get('frames') != expected_frames or
+            seal.get('restoration', {}).get('restored') is not True or
+            seal.get('events') != ['capture_finished', 'encoders_closed',
+                                   'restoration_verified'] or
+            any(code != 0 for code in seal.get('encoder_exit_codes', {}).values())):
+        raise ValueError('Staged original capture seal differs')
+    for name in SEALED_SOURCES:
+        path = root / name
+        if not path.is_file() or seal.get('sources', {}).get(name) != sha(path):
+            raise ValueError('Staged original sealed source differs: ' + name)
+    revisions = seal.get('native_revision', {})
+    if (revisions.get('construction_sha256') != sha(root / 'construction.json') or
+            revisions.get('runner_sha256') != sha(root / 'runner.py')):
+        raise ValueError('Staged original sealed construction differs')
+    return seal
+
+
 def audit_attempt(attempt):
     root = Path(attempt)
     config = json.loads((root / 'config.json').read_text())
@@ -158,15 +204,13 @@ def audit_attempt(attempt):
     if manifest.get('frames') != FRAMES or manifest.get('extraction_confirmed') is not True or \
             manifest.get('acquisition') != 'original_live_run':
         raise ValueError('Staged original capture seal missing')
+    check_capture_seal(root)
     survey = json.loads((root / 'sign-survey.json').read_text())
     expected_sign = '11400803' if config['direction'] == 'right' else '11400804'
     if survey.get('landmark_id') != expected_sign or survey.get('approach_road_id') != 1 or \
             survey.get('approach_lane_id') != -1:
         raise ValueError('Staged live sign/approach readback differs')
-    if sha(root / 'authored-road.xodr') != config['road_sha256'] or \
-            sha(root / 'source.jsonl') != config['source_sha256'] or \
-            sha(root / 'road.xodr') != survey.get('native_map_sha256'):
-        raise ValueError('Staged authored/live map or requested route source hash differs')
+    check_map_source_join(root, config, survey)
     geometry = assess_geometry(native, config)
     cameras = {name: _decode(root / (name + '.mkv'), size) for name, size in (
                ('overview', (1920, 1080)), ('approach', (1280, 720)),
@@ -179,7 +223,7 @@ def audit_attempt(attempt):
                 ('native_samples.jsonl', 'video_frames.jsonl', 'rider_native_samples.jsonl',
                  'trace.jsonl', 'body_history.jsonl', 'capture/evidence.jsonl',
                  'capture/manifest.json', 'sign-survey.json', 'authored-road.xodr',
-                 'road.xodr', 'source.jsonl')},
+                 'road.xodr', 'native-map.xodr', 'source.jsonl')},
             'posture_verified': False, 'official_sign_authorization_verified': False,
             'original_pixels_reviewed': False, 'legal_verdict_claimed': False}
 

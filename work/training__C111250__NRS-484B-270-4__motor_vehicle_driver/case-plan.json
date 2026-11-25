@@ -1,85 +1,76 @@
 {
-  "assignment_id": "training__C111250__NRS-484B-270-4__motor_vehicle_driver",
-  "law_id": "NRS-484B-270-4",
-  "cell_id": "C111250",
   "actor": "motor_vehicle_driver",
-  "frozen_cell": {
-    "layout": "intersection",
-    "maneuver": "travel",
-    "control": "centerline"
-  },
-  "selection_targets": [
-    "full-train"
+  "assignment_id": "training__C111250__NRS-484B-270-4__motor_vehicle_driver",
+  "blockers": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
   ],
-  "source_law": {
-    "source": "NRS 484B.270(4)",
-    "text": "Except as otherwise provided in subsection 3 [NRS-484B-270-3], the driver of a motor vehicle shall not enter or proceed through an intersection while driving within a pathway or lane provided for bicycles, electric bicycles or electric scooters.",
-    "sha256": "350c7e150cfb188425a057d8ed292ec3634a21823fc72201fbc9fb6a999d2d5e",
-    "text_sha256": "350c7e150cfb188425a057d8ed292ec3634a21823fc72201fbc9fb6a999d2d5e"
-  },
-  "summary_status": "recovered_requires_source_review",
-  "selected_branch": "Intersection entry and passage within a designated facility",
-  "witness_branches": [
-    "Intersection entry and passage within a designated facility"
-  ],
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS-484B-270-4",
-      "source": "NRS 484B.270(4)",
-      "branch": "Intersection entry and passage within a designated facility",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_1",
-        "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_2"
-      ],
-      "evidence_or_gap": "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
-    },
-    {
-      "requirement": "NRS-484B-270-4",
-      "source": "NRS 484B.270(4)",
-      "branch": "Textual exceptions, alternatives, or dependencies: except, provided",
-      "status": "exception_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
-    }
-  ],
-  "neutral_baseline": {
-    "kind": "unselected_baseline",
-    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording."
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 600 frames",
+        "subject": "ego full body and bicycle facility",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through intersection",
+        "subject": "lane entry and intersection conflict actor",
+        "view": "approach"
+      },
+      {
+        "interval": "all intersection frames",
+        "subject": "facility markings and source geometry",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all moving frames",
+        "subject": "driver forward perspective",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "case_id": "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_1",
-      "target_law_id": "NRS-484B-270-4",
-      "kind": "planned_only",
-      "source_branch": "Intersection entry and passage within a designated facility",
-      "physical_target": "cross bicycle facility only as permitted by subsection 3",
       "comparison_variable": "vehicle occupancy of bicycle facility through intersection",
-      "requested_not_measured": true,
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "kind": "delivery",
+      "physical_target": "cross bicycle facility only with retained subsection 3 conflict context; legal exception unresolved",
+      "requested_not_measured": false,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "source_branch": "Intersection entry and passage within a designated facility",
+      "target_law_id": "NRS-484B-270-4"
     },
     {
       "case_id": "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_2",
-      "target_law_id": "NRS-484B-270-4",
-      "kind": "planned_only",
-      "source_branch": "Intersection entry and passage within a designated facility",
-      "physical_target": "enter intersection while traveling within bicycle facility",
       "comparison_variable": "vehicle occupancy of bicycle facility through intersection",
-      "requested_not_measured": true,
+      "gap_ids": [
+        "no_accepted_recording"
+      ],
+      "kind": "delivery",
+      "physical_target": "enter intersection while traveling within bicycle facility",
+      "requested_not_measured": false,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "source_branch": "Intersection entry and passage within a designated facility",
+      "target_law_id": "NRS-484B-270-4"
     }
   ],
+  "cell_id": "C111250",
   "comparisons": [
     {
-      "comparison_id": "training__C111250__NRS-484B-270-4__motor_vehicle_driver__comparison",
       "case_ids": [
         "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_1",
         "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_2"
       ],
+      "comparison_id": "training__C111250__NRS-484B-270-4__motor_vehicle_driver__comparison",
       "deliberate_differences": [
         "vehicle occupancy of bicycle facility through intersection"
       ],
@@ -90,70 +81,180 @@
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_recording",
+        "requirement": "NRS-484B-270-4",
+        "source": "NRS 484B.270(4)",
+        "why_existing_insufficient": "Frozen evidence inventory lists no accepted recordings for the selected occupancy comparison."
+      }
+    ],
+    "method": "Inspect frozen accepted-recording inventory and exact source law",
+    "reviewer": "worker source review"
+  },
+  "existing_evidence": [],
+  "frozen_cell": {
+    "control": "centerline",
+    "layout": "intersection",
+    "maneuver": "travel"
+  },
+  "law_id": "NRS-484B-270-4",
   "mandatory_observation_terms": [
     {
-      "term": "st.bicycle_lane_or_path",
       "purpose": "the bicycle pathway or lane",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "st.bicycle_lane_or_path"
     },
     {
-      "term": "rel.occupies",
       "purpose": "the subject driving within it",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "rel.occupies"
     },
     {
-      "term": "st.intersection",
       "purpose": "the intersection region",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "st.intersection"
     },
     {
-      "term": "drv.entering_intersection",
       "purpose": "entry while in the lane",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "drv.entering_intersection"
     },
     {
-      "term": "drv.in_intersection",
       "purpose": "proceeding through",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "drv.in_intersection"
     },
     {
-      "term": "kin.velocity",
       "purpose": "the subject is driving, not stationary",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "kin.velocity"
     }
   ],
+  "neutral_baseline": {
+    "description": "Same frozen cell and actor with target activation absent; context only, no selected recording.",
+    "kind": "unselected_baseline"
+  },
   "observations": [
     {
-      "name": "st.bicycle_lane_or_path",
       "mandatory": true,
+      "name": "st.bicycle_lane_or_path",
       "reason": "the bicycle pathway or lane"
     },
     {
-      "name": "rel.occupies",
       "mandatory": true,
+      "name": "rel.occupies",
       "reason": "the subject driving within it"
     },
     {
-      "name": "st.intersection",
       "mandatory": true,
+      "name": "st.intersection",
       "reason": "the intersection region"
     },
     {
-      "name": "drv.entering_intersection",
       "mandatory": true,
+      "name": "drv.entering_intersection",
       "reason": "entry while in the lane"
     },
     {
-      "name": "drv.in_intersection",
       "mandatory": true,
+      "name": "drv.in_intersection",
       "reason": "proceeding through"
     },
     {
-      "name": "kin.velocity",
       "mandatory": true,
+      "name": "kin.velocity",
       "reason": "the subject is driving, not stationary"
     }
   ],
+  "requirement_dispositions": [
+    {
+      "branch": "Intersection entry and passage within a designated facility",
+      "case_ids": [
+        "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_1",
+        "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "Both exact Native constructions have a source-bound body occupancy measurement. Controlled_1 crosses the lane briefly; controlled_2 proceeds through it. Original execution and official facility designation remain for local review.",
+      "requirement": "NRS-484B-270-4",
+      "source": "NRS 484B.270(4)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "Textual exceptions, alternatives, or dependencies: except, provided",
+      "case_ids": [
+        "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_1",
+        "training__C111250__NRS-484B-270-4__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "Original NRS 484B.270(3) has six source-reviewed exception circumstances. Both selected cases retain the same conflict actor and source context; measured body occupancy and legal exception are separate. The finalizer makes no legal verdict.",
+      "requirement": "NRS-484B-270-4",
+      "source": "NRS 484B.270(4)",
+      "status": "selected_required"
+    }
+  ],
+  "reuse_count": 0,
+  "runtime_uncertainties": [
+    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
+    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
+    "No CARLA execution or accepted recording is claimed.",
+    "Preserve the subsection 3 exception as unresolved dependency. The comparison must measure intersection occupancy inside the bicycle facility, not merely a boundary touch."
+  ],
+  "selected_branch": "Intersection entry and passage within a designated facility",
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_context_review": "Preserve the subsection 3 exception as unresolved dependency. The comparison must measure intersection occupancy inside the bicycle facility, not merely a boundary touch.",
+  "source_law": {
+    "sha256": "350c7e150cfb188425a057d8ed292ec3634a21823fc72201fbc9fb6a999d2d5e",
+    "source": "NRS 484B.270(4)",
+    "text": "Except as otherwise provided in subsection 3 [NRS-484B-270-3], the driver of a motor vehicle shall not enter or proceed through an intersection while driving within a pathway or lane provided for bicycles, electric bicycles or electric scooters.",
+    "text_sha256": "350c7e150cfb188425a057d8ed292ec3634a21823fc72201fbc9fb6a999d2d5e"
+  },
+  "source_observation_mapping": {
+    "drv.entering_intersection": {
+      "channels": [
+        "drv.entering_intersection"
+      ],
+      "evidence": "Synchronized original body, map, trace and capture source rows retained by selected finalizer",
+      "source_refs": []
+    },
+    "drv.in_intersection": {
+      "channels": [
+        "drv.in_intersection"
+      ],
+      "evidence": "Synchronized original body, map, trace and capture source rows retained by selected finalizer",
+      "source_refs": []
+    },
+    "kin.velocity": {
+      "channels": [
+        "kin.velocity"
+      ],
+      "evidence": "Synchronized original body, map, trace and capture source rows retained by selected finalizer",
+      "source_refs": []
+    },
+    "rel.occupies": {
+      "channels": [
+        "rel.occupies"
+      ],
+      "evidence": "Synchronized original body, map, trace and capture source rows retained by selected finalizer",
+      "source_refs": []
+    },
+    "st.bicycle_lane_or_path": {
+      "channels": [
+        "st.bicycle_lane_or_path"
+      ],
+      "evidence": "Synchronized original body, map, trace and capture source rows retained by selected finalizer",
+      "source_refs": []
+    },
+    "st.intersection": {
+      "channels": [
+        "st.intersection"
+      ],
+      "evidence": "Synchronized original body, map, trace and capture source rows retained by selected finalizer",
+      "source_refs": []
+    }
+  },
   "sources": [
     {
       "path": "inputs/training__C111250__NRS-484B-270-4__motor_vehicle_driver/assignment.json",
@@ -164,21 +265,13 @@
       "sha256": "2431a824acd351911e051080989e7ff06121e80bc7fc2b4eac7840e3b43dbddc"
     }
   ],
-  "existing_evidence": [],
-  "reuse_count": 0,
-  "runtime_uncertainties": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified.",
-    "Native map, blueprint, route continuity, legal mechanism and camera framing are unverified.",
-    "No CARLA execution or accepted recording is claimed.",
-    "Preserve the subsection 3 exception as unresolved dependency. The comparison must measure intersection occupancy inside the bicycle facility, not merely a boundary touch."
-  ],
+  "summary_status": "selected_cpu_preparation_in_progress",
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
     "Actor blueprint and route can realize each requested behavior",
     "Decisive physical distinction can be seen by retained cameras"
   ],
-  "blockers": [
-    "No executable Native construction or four distinct candidates have been built; offline and compatibility proofs, measured-result finalization, positive/negative saved fixtures, independent audit and physical realization remain unverified."
-  ],
-  "source_context_review": "Preserve the subsection 3 exception as unresolved dependency. The comparison must measure intersection occupancy inside the bicycle facility, not merely a boundary touch."
+  "witness_branches": [
+    "Intersection entry and passage within a designated facility"
+  ]
 }

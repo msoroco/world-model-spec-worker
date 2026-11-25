@@ -18,6 +18,11 @@ def measure_original_native_cycle_lane(attempt, diagnostic=False):
     return measure(attempt, allow_diagnostic=diagnostic)
 
 
+def measure_subsection3_context(attempt):
+    """Retain original circumstance readback without inferring a legal exception."""
+    return json.loads((Path(attempt) / "subsection3-context.json").read_text())
+
+
 def finalize(attempt, output):
     attempt = Path(attempt); output = Path(output)
     if output.exists() or (attempt / "result.json").exists():
@@ -48,11 +53,16 @@ def finalize(attempt, output):
     channel_folder.mkdir()
     channel_evidence = []
     bodies = rows(attempt / "body-history.jsonl")
-    for name in ("vehicle_body", "cycle_facility"):
+    for name in ("vehicle_body", "cycle_facility", "st.bicycle_lane_or_path",
+                 "rel.occupies", "st.intersection", "drv.entering_intersection",
+                 "drv.in_intersection", "kin.velocity"):
         path = channel_folder / (name + ".jsonl")
         with path.open("x") as stream:
             for body in bodies:
-                observed = body["body_xy_m"] if name == "vehicle_body" else [3.5, 5.5]
+                observed = (body["body_xy_m"] if name == "vehicle_body" else
+                            [3.5, 5.5] if name in ("cycle_facility", "st.bicycle_lane_or_path") else
+                            body["speed_mps"] if name == "kin.velocity" else
+                            body["body_xy_m"])
                 stream.write(json.dumps({"time_s": body["time_s"], "value": observed},
                                         allow_nan=False) + "\n")
         channel_evidence.append({"name": name, "unit": "structured",
@@ -61,7 +71,12 @@ def finalize(attempt, output):
     analysis = {"format": "worker-analysis-report", "case_id": config["case_id"],
                 "measurements": {"cycle_lane_intersection_measurement": {
                     "method": "measure_original_native_cycle_lane", "value": value,
-                    "sources": value["source_sha256"]}},
+                    "sources": value["source_sha256"]},
+                    "subsection3_qualifier_context": {
+                        "method": "measure_subsection3_context",
+                        "value": measure_subsection3_context(attempt),
+                        "sources": {name: sha(attempt / name) for name in
+                                    ("facility-context.json", "subsection3-context.json")}}},
                 "source_complete": True, "diagnostic_fixture": diagnostic,
                 "physical_or_legal_acceptance": False}
     channel_evidence.extend([

@@ -7,7 +7,7 @@ from unittest import mock
 from runner import check
 from native_plan import command_from_observation, load_plan, make_controller, survey_governed_sign
 from native_capture import CAMERAS, _camera_pose
-from saved_native import assess_geometry, check_original_body_join, _decode
+from saved_native import assess_geometry, check_original_body_join, check_map_source_join, check_capture_seal, SEALED_SOURCES, _decode
 from finalize import finalize, _channel
 from comparison import assess_pair
 from geometry import sampled_source
@@ -18,6 +18,63 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SourcePreflightTest(unittest.TestCase):
+    def test_original_seal_rejects_missing_or_changed_source(self):
+        scratch = next(parent for parent in ROOT.parents if parent.name == '.runtime-work')
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            attempt = Path(temporary)
+            for name in SEALED_SOURCES:
+                target = attempt / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('sealed source\n')
+            import hashlib
+            sources = {name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                       for name in SEALED_SOURCES}
+            seal = {'format': 'worker-sealed-capture', 'provenance_kind': 'native',
+                    'diagnostic_fixture': False, 'frames': 600,
+                    'restoration': {'restored': True},
+                    'events': ['capture_finished', 'encoders_closed',
+                               'restoration_verified'],
+                    'encoder_exit_codes': {'overview': 0}, 'sources': sources,
+                    'native_revision': {'construction_sha256': sources['construction.json'],
+                                        'runner_sha256': sources['runner.py']}}
+            (attempt / 'capture-seal.json').write_text(json.dumps(seal) + '\n')
+            check_capture_seal(attempt)
+            seal['diagnostic_fixture'] = True
+            (attempt / 'capture-seal.json').write_text(json.dumps(seal) + '\n')
+            with self.assertRaisesRegex(ValueError, 'capture seal differs'):
+                check_capture_seal(attempt)
+            seal['diagnostic_fixture'] = False
+            (attempt / 'capture-seal.json').write_text(json.dumps(seal) + '\n')
+            (attempt / 'native-map.xodr').write_text('changed source\n')
+            with self.assertRaisesRegex(ValueError, 'sealed source differs'):
+                check_capture_seal(attempt)
+
+    def test_exported_map_is_bound_separately_from_authored_road(self):
+        scratch = next(parent for parent in ROOT.parents if parent.name == '.runtime-work')
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            attempt = Path(temporary)
+            (attempt / 'road.xodr').write_text('CARLA exported road')
+            (attempt / 'authored-road.xodr').write_text('authored road')
+            (attempt / 'native-map.xodr').write_text('CARLA exported road')
+            (attempt / 'source.jsonl').write_text('requested route')
+            import hashlib
+            digest = lambda name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+            config = {'road_sha256': digest('authored-road.xodr'),
+                      'source_sha256': digest('source.jsonl')}
+            survey = {'native_map_sha256': digest('native-map.xodr')}
+            check_map_source_join(attempt, config, survey)
+            (attempt / 'native-map.xodr').write_text('changed exported road')
+            with self.assertRaisesRegex(ValueError, 'authored/live map'):
+                check_map_source_join(attempt, config, survey)
+            (attempt / 'native-map.xodr').write_text('CARLA exported road')
+            (attempt / 'road.xodr').write_text('changed live road')
+            with self.assertRaisesRegex(ValueError, 'authored/live map'):
+                check_map_source_join(attempt, config, survey)
+            (attempt / 'road.xodr').write_text('CARLA exported road')
+            (attempt / 'authored-road.xodr').write_text('changed authored road')
+            with self.assertRaisesRegex(ValueError, 'authored/live map'):
+                check_map_source_join(attempt, config, survey)
+
     def test_saved_camera_requires_full_frames_size_and_rate(self):
         scratch = next(parent for parent in ROOT.parents if parent.name == '.runtime-work')
         with tempfile.TemporaryDirectory(dir=scratch) as temporary:
