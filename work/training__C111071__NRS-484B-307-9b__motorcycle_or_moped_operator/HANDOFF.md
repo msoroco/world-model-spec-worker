@@ -10,9 +10,9 @@ Statutory alternatives and exceptions still to cover or disposition: malfunction
 
 Accepted membership: 0 distinct recording IDs. Their contents and exact source-hashed equivalence are unavailable in this checkout, so reuse is not claimed.
 
-Blocker: No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified.
+Current status: Four exact selected straight cases have current-runtime primary and fallback construction, offline and public compatibility proofs, recorded-only saved processing, canonical semantic proposals, and independent CPU delivery and comparison audits. Original Native realization, physical observations and legal outcome are unverified. The opposite-direction turn alternative remains pending because the frozen C111071 maneuver is straight and no actor-eligible compatible turn cell is present in the frozen candidate registry.
 
-Resume: reconcile every branch against exact text and physical cell; construct Native routes and controllers, mandatory measurement mapping, four distinct plans per selected case, and execute pinned-runtime offline, compatibility, saved-only and independent audit proofs. Mark `ready` only after all CPU proofs pass.
+Resume: use the selected original-attempt acquisition and source-review commands described below for local Native review. Resolve the opposite-turn source binding through an authorized eligible allocation or source-hashed accepted evidence; retain the straight package without relabeling its maneuver. Mark `ready` only after the exact assignment-scoped strict gate passes.
 
 ## 2026-11-23 CPU construction checkpoint
 

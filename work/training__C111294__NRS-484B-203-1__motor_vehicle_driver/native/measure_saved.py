@@ -64,7 +64,7 @@ def measure(attempt):
     converted=[]
     for i,(row,frame) in enumerate(zip(motion,frame_map)):
         native=row.get('native_frame')
-        if row.get('video_frame')!=i or frame.get('video_frame')!=i or frame.get('native_frame')!=native or frame.get('camera_native_frames')!={name:native for name in CAMERAS}:
+        if row.get('video_frame')!=i or frame.get('video_frame')!=i or frame.get('native_frame')!=native or frame.get('camera_native_frames')!={name:native for name in CAMERAS} or abs(row.get('time_s',-1)-i/20)>1e-6 or abs(frame.get('time_s',-1)-i/20)>1e-6:
             raise ValueError('Original frame/camera join differs')
         ego=row.get('ego',{});other=row.get('oncoming',{})
         ep=ego.get('center_xyz_m');op=other.get('center_xyz_m')

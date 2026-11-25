@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C150916",
   "law_id": "NRS-484B-220-1",
-  "selected_branch": null,
+  "selected_branch": "designated and signposted one-way highway; compare travel along and opposed to its designated direction",
   "scope_branches": [
     {
       "law_id": "NRS-484B-220-1",
@@ -101,7 +101,7 @@
     {
       "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated",
       "target_law_id": "NRS-484B-220-1",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_construction_physical_unverified",
       "target_type": "attempt",
       "comparison_variable": "travel_direction_vs_sign",
       "comparison_unit": "category",
@@ -114,12 +114,20 @@
         "reviewed-scope-0",
         "reviewed-scope-1"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "gap_ids": [
+        "one-way-direction-original"
+      ]
     },
     {
       "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite",
       "target_law_id": "NRS-484B-220-1",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_construction_physical_unverified",
       "target_type": "attempt",
       "comparison_variable": "travel_direction_vs_sign",
       "comparison_unit": "category",
@@ -132,7 +140,15 @@
         "reviewed-scope-0",
         "reviewed-scope-1"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "gap_ids": [
+        "one-way-direction-original"
+      ]
     }
   ],
   "comparisons": [
@@ -155,7 +171,7 @@
         "controller behavior except comparison variable",
         "capture profile"
       ],
-      "status": "planned_unverified",
+      "status": "selected_cpu_comparison_physical_unverified",
       "measurement_method": "Record physical sign direction, road designation provenance, ego heading and movement."
     }
   ],
@@ -175,54 +191,60 @@
   ],
   "source_observation_mapping": {
     "st.one_way_roadway": {
-      "evidence": "Proposed capture only: the highway is designated one-way. No Native channel or Core atom proof yet.",
+      "evidence": "Selected source-bound acquisition: original Native pose, synchronized four-camera frame map, OpenDRIVE readback and separately hashed one-way/sign review; original authority and pixels remain unverified until capture",
       "channels": [
-        "travel_direction_vs_sign"
+        "travel_direction_vs_sign",
+        "st.one_way_roadway"
       ],
       "source_refs": [
         "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.regulatory_sign": {
-      "evidence": "Proposed capture only: code one_way — the signposting the rule requires. No Native channel or Core atom proof yet.",
+      "evidence": "Selected source-bound acquisition: original Native pose, synchronized four-camera frame map, OpenDRIVE readback and separately hashed one-way/sign review; original authority and pixels remain unverified until capture",
       "channels": [
-        "travel_direction_vs_sign"
+        "travel_direction_vs_sign",
+        "dev.regulatory_sign"
       ],
       "source_refs": [
         "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_direction": {
-      "evidence": "Proposed capture only: the designated direction. No Native channel or Core atom proof yet.",
+      "evidence": "Selected source-bound acquisition: original Native pose, synchronized four-camera frame map, OpenDRIVE readback and separately hashed one-way/sign review; original authority and pixels remain unverified until capture",
       "channels": [
-        "travel_direction_vs_sign"
+        "travel_direction_vs_sign",
+        "st.lane_direction"
       ],
       "source_refs": [
         "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Proposed capture only: the subject's direction of travel. No Native channel or Core atom proof yet.",
+      "evidence": "Selected source-bound acquisition: original Native pose, synchronized four-camera frame map, OpenDRIVE readback and separately hashed one-way/sign review; original authority and pixels remain unverified until capture",
       "channels": [
-        "travel_direction_vs_sign"
+        "ego_pose",
+        "kin.heading"
       ],
       "source_refs": [
         "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.wrong_way": {
-      "evidence": "Proposed capture only: heading opposed to the designated direction. No Native channel or Core atom proof yet.",
+      "evidence": "Selected source-bound acquisition: original Native pose, synchronized four-camera frame map, OpenDRIVE readback and separately hashed one-way/sign review; original authority and pixels remain unverified until capture",
       "channels": [
-        "travel_direction_vs_sign"
+        "travel_direction_vs_sign",
+        "drv.wrong_way"
       ],
       "source_refs": [
         "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the subject is on that highway. No Native channel or Core atom proof yet.",
+      "evidence": "Selected source-bound acquisition: original Native pose, synchronized four-camera frame map, OpenDRIVE readback and separately hashed one-way/sign review; original authority and pixels remain unverified until capture",
       "channels": [
-        "travel_direction_vs_sign"
+        "ego_pose",
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json"
@@ -258,14 +280,26 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
-    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Road designation requires sourced authority beyond an arbitrary map tag."
+    "Exact 600-frame/four-camera selected Native construction is CPU checked; original Native execution and sign pixels remain unverified.",
+    "Membership rows are not source-hashed accepted recording evidence.",
+    "Independent road designation and official, erected, governing sign authority require original source review.",
+    "Software compatibility, saved-only, semantic, delivery, physical and comparison proofs remain in progress."
   ],
   "selection_targets": [
     "demo-train",
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "method": "Reviewed frozen assignment membership rows and searched for an accepted evidence inventory; no evidence.json was supplied",
+    "reviewer": "worker source review",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "one-way-direction-original",
+        "requirement": "NRS-484B-220-1",
+        "source": "inputs/training__C150916__NRS-484B-220-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Four demo/full membership rows lack source-hashed accepted recording evidence of one-way designation, physical signposting or original direction of travel"
+      }
+    ]
+  }
 }

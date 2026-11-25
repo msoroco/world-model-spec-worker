@@ -6,6 +6,9 @@ from pathlib import Path
 
 CHECKS = ('native_source', 'all_participants', 'time_join', 'full_video_decode',
           'actual_pixels', 'physical_completion')
+SOURCE_CHANNELS = ('station_entrance_source', 'highway_side_source',
+                   'traffic_conflict_source', 'applicable_law_source',
+                   'police_direction_source', 'official_device_source')
 
 
 def sha(path):
@@ -37,8 +40,8 @@ def check_result(result, case):
             or not result.get('realized_observables')):
         raise ValueError('Missing source-bound entrance parking measurement')
     names = {row.get('name') for row in result.get('recording_evidence', [])}
-    if 'parking_geometry' not in names:
-        raise ValueError('Original parking geometry channel missing')
+    if not {'parking_geometry', *SOURCE_CHANNELS} <= names:
+        raise ValueError('Original parking geometry or authority source channel missing')
 
 
 def check_review(review, case, frame_map, context, motion, authority):
@@ -142,7 +145,8 @@ def selftest(case, negative):
               'realized_observables': {'raw_gap_m': {'value': 1.5, 'unit': 'm'}},
               'measured_values': {'frame_count': 600, 'stationary_sample_count': 100,
                                   'stationary_min_body_edge_gap_m': 1.5},
-              'recording_evidence': [{'name': 'parking_geometry'}]}
+              'recording_evidence': [{'name': name}
+                  for name in ('parking_geometry', *SOURCE_CHANNELS)]}
     if negative:
         sample['provenance_kind'] = 'synthetic_fixture'
         check_result(sample, case)

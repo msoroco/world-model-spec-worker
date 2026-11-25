@@ -1,0 +1,82 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_in_progress",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__designated",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "selected/drafts/designated/primary/construction.json",
+      "construction_sha256": "bc764524838827d6cf0597aa18baabc6968e8452ea70faa1aeef984b6c14e751",
+      "measurement_contract": "cases/designated/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/cases/designated/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "8 m/s subject may leave the governed segment or miss sign camera framing"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/drafts/designated/fallback1/construction.json",
+          "construction_sha256": "a142f8d15f5338edf74ca8011a96b76cf7b24ba902114d76177d802ab178e21b",
+          "trigger": {
+            "source": "original Native vehicle-pose.jsonl and road-context.json",
+            "metric": "600-frame governed extent and sign-pixel coverage",
+            "failure_condition": "subject leaves governed extent or requested sign is not visible in synchronized source cameras"
+          },
+          "changed_knobs": [
+            "target speed reduced from 8 to 5 m/s"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C150916__NRS-484B-220-1__motor_vehicle_driver__opposite",
+      "id": "primary",
+      "kind": "delivery",
+      "construction": "selected/drafts/opposite/primary/construction.json",
+      "construction_sha256": "0ed0ef6a2db7f840aff4aff2201fae824e09907a6a28b7d864f55436fae10f78",
+      "measurement_contract": "cases/opposite/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150916__NRS-484B-220-1__motor_vehicle_driver/cases/opposite/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "8 m/s subject may leave the governed segment or miss sign camera framing"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/drafts/opposite/fallback1/construction.json",
+          "construction_sha256": "169faaba93e7bc449f00d6c7884e94ffe1e8cd7569109577242e75372b8a927c",
+          "trigger": {
+            "source": "original Native vehicle-pose.jsonl and road-context.json",
+            "metric": "600-frame governed extent and sign-pixel coverage",
+            "failure_condition": "subject leaves governed extent or requested sign is not visible in synchronized source cameras"
+          },
+          "changed_knobs": [
+            "target speed reduced from 8 to 5 m/s"
+          ]
+        }
+      ]
+    }
+  ]
+}

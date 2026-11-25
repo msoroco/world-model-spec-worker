@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent/'native'))
 from native.expanded_layout import open_drive,ENTRANCE
+from native.layout import open_drive as original_open_drive
 from native.branch_variants import BRANCHES
 
 HERE=Path(__file__).resolve().parent
@@ -66,17 +67,19 @@ def build(suffix):
     for name,items in [('native-vehicle.jsonl',parking),('video_frames.jsonl',mapping),
         ('trace.jsonl',core),('capture/evidence.jsonl',evidence),
         ('capture/native/frames.jsonl',graph_frames)]:write(folder,name,lines(items))
-    write(folder,'road.xodr',open_drive())
-    write(folder,'entrance-context.json',json.dumps({'source_kind':'synthetic_diagnostic',
+    write(folder,'road.xodr',original_open_drive() if suffix=='same_at' else open_drive())
+    context={'source_kind':'synthetic_diagnostic',
         'cell_id':'C229410','entrance':ENTRANCE,'initial_activity':branch.activity,
         'exception_context':branch.exception,'fire_station_identity_reviewed':True,
         'driveway_entrance_reviewed':True,'highway_side_reviewed':True,
         'parking_activity_reviewed':False,'traffic_conflict_reviewed':False,
         'law_officer_device_direction_reviewed':False,
-        'police_direction_source_observed':suffix=='police_direction',
-        'official_device_source_observed':suffix=='device_direction',
-        'applicable_law_source_reviewed':suffix=='law_direction',
-        'fixture_kind':'synthetic_diagnostic_only'},indent=2))
+        'fixture_kind':'synthetic_diagnostic_only'}
+    if suffix!='same_at':
+        context.update({'police_direction_source_observed':suffix=='police_direction',
+            'official_device_source_observed':suffix=='device_direction',
+            'applicable_law_source_reviewed':suffix=='law_direction'})
+    write(folder,'entrance-context.json',json.dumps(context,indent=2))
     write(folder,'capture/recorder_info.txt','Create 107: vehicle.tesla.model3')
     write(folder,'acquisition-provenance.json',json.dumps({'provenance_kind':'synthetic_fixture',
         'diagnostic_fixture':True,'native_executed':False},indent=2))

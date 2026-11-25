@@ -8,6 +8,8 @@ import queue
 import subprocess
 import xml.etree.ElementTree as ET
 
+from road_geometry import ROAD
+
 FRAMES = 600
 RATE = 20
 CAMERAS = (
@@ -19,7 +21,7 @@ CAMERAS = (
 
 
 def road_source():
-    return (Path(__file__).parent / 'road.xodr').read_text()
+    return ROAD
 
 
 def check(direction='designated'):
@@ -47,8 +49,8 @@ def survey(world, carla):
         raise RuntimeError('Native one-way sign request readback failed')
     rows = []
     for name, y, lane_id in (('inner_lane', -1.75, -1), ('outer_lane', -5.25, -2)):
-        waypoint = mapping.get_waypoint(carla.Location(x=40, y=y, z=1),
-                                        project_to_road=True, lane_type=carla.LaneType.Driving)
+        waypoint = mapping.get_waypoint(carla.Location(x=40, y=-y, z=1),
+                                        project_to_road=False, lane_type=carla.LaneType.Driving)
         if waypoint is None or waypoint.road_id != 1 or waypoint.lane_id != lane_id:
             raise RuntimeError('Native one-way driving lane readback failed: ' + name)
         rows.append({'name': name, 'road_id': waypoint.road_id, 'lane_id': waypoint.lane_id,
@@ -59,9 +61,15 @@ def survey(world, carla):
 
 def execute(output_dir, direction, host, port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
     check(direction)
+    config_path = Path(__file__).parent / 'config.json'
+    config = json.loads(config_path.read_text()) if config_path.is_file() else {}
+    speed_mps = config.get('target_speed_mps', 8)
+    if speed_mps not in (5, 8):
+        raise ValueError('Unknown selected one-way travel speed')
     output = Path(output_dir).resolve()
     if (output / 'road.xodr').exists() or (output / 'vehicle-pose.jsonl').exists():
         raise ValueError('choose a fresh original Native attempt directory')
@@ -73,6 +81,9 @@ def execute(output_dir, direction, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
     owned, encoders, queues = [], {}, {}
+    capture = None
+    restoration = None
+    encoder_codes = {}
     changed = False
     try:
         world = client.generate_opendrive_world(road_source(), carla.OpendriveGenerationParameters(
@@ -97,17 +108,21 @@ def execute(output_dir, direction, host, port):
             'map_source_sha256': hashlib.sha256(source_map).hexdigest(),
             'one_way_designation_source_sha256': None,
             'signposting_source_sha256': None,
-            'roadway_is_one_way': None, 'device_id': '497' if permission_device else None,
+            'roadway_is_one_way': None,
             'sign_request_ids': [101, 102],
             'requested_direction': direction,
             'permitted_direction_xy': [1, 0], 'governed_longitudinal_extent_m': [-100, 300],
             'native_survey': readback,
             'physical_sign_pixels_verified': False,
             'operator_source_review_required': True}, indent=2) + '\n')
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'case_id': config['case_id'], 'physical_acceptance_claimed': False},
+            indent=2) + '\n')
         blueprints = world.get_blueprint_library()
         vehicle_bp = blueprints.find('vehicle.tesla.model3')
         vehicle_bp.set_attribute('role_name', 'c150916_one_way_subject')
-        target_y = -1.75
+        target_y = 1.75
         initial_x = -20 if direction == 'designated' else 220
         initial_yaw = 0 if direction == 'designated' else 180
         vehicle = world.spawn_actor(vehicle_bp, carla.Transform(
@@ -131,11 +146,13 @@ def execute(output_dir, direction, host, port):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        capture = PipelineCapture(client, vehicle, output, config['case_id'],
+                                  visibility=False, required_observations=[])
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'vehicle-pose.jsonl').open('x') as poses:
             first_elapsed = None
             for index in range(FRAMES):
                 # Engineering travel request; original position, heading and motion are measured later.
-                vehicle.set_target_velocity(carla.Vector3D(x=8 if direction == 'designated' else -8,
+                vehicle.set_target_velocity(carla.Vector3D(x=speed_mps if direction == 'designated' else -speed_mps,
                                                            y=0, z=0))
                 native_frame = world.tick()
                 snap = world.get_snapshot()
@@ -145,6 +162,7 @@ def execute(output_dir, direction, host, port):
                 if first_elapsed is None:
                     first_elapsed = absolute
                 relative = absolute - first_elapsed
+                capture.capture(native_frame, relative)
                 transform, velocity = vehicle.get_transform(), vehicle.get_velocity()
                 extent = vehicle.bounding_box.extent
                 x, y = transform.location.x, transform.location.y
@@ -169,15 +187,16 @@ def execute(output_dir, direction, host, port):
                     'speed_mps': velocity.length(), 'yaw_deg': transform.rotation.yaw,
                     'footprint_corners_xy_m': corners, 'camera_native_frames': mapped,
                     'requested_direction': direction}) + '\n')
+        capture.close(confirmed=True)
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
+            encoder_codes[name] = process.wait(timeout=180)
+            if encoder_codes[name] or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed: ' + name + ': ' + stderr.decode()[-400:])
-        return {'frames': FRAMES, 'requested_direction': direction,
-                'native_survey': readback,
-                'source_review_required': True, 'physical_acceptance_claimed': False}
     finally:
+        if capture is not None and not capture.closed:
+            capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -190,7 +209,15 @@ def execute(output_dir, direction, host, port):
             except Exception:
                 pass
         if changed:
-            restore(client, saved)
+            restoration = restore(client, saved)
+    seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                 encoder_exit_codes=encoder_codes,
+                 context={'requested_direction': direction,
+                          'source_review_required': True,
+                          'physical_sign_pixels_verified': False})
+    return {'frames': FRAMES, 'requested_direction': direction,
+            'native_survey': readback,
+            'source_review_required': True, 'physical_acceptance_claimed': False}
 
 
 if __name__ == '__main__':

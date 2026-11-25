@@ -40,13 +40,20 @@ def build():
             'case':{'case_id':case_id},'recording_description':description,
             'target':'source-reviewed parked at '+branch.side+' side engineering equality target'}
         files=[{'path':'config.json','content':json.dumps(config,indent=2)+'\n'}]
-        for name in ('branch_variants.py','expanded_layout.py','expanded_controller.py',
-                     'expanded_measurement.py','measure_entrance.py','source_context.py','source_channels.py',
-                     'expanded_finalize.py'):
+        module_names = (('layout.py','measure_entrance.py','source_context.py',
+                         'source_channels.py','finalize.py') if suffix == 'same_at' else
+                        ('branch_variants.py','expanded_layout.py','expanded_controller.py',
+                         'expanded_measurement.py','measure_entrance.py','source_context.py',
+                         'source_channels.py','expanded_finalize.py'))
+        for name in module_names:
             files.append({'path':name,'content':(HERE/name).read_text()})
-        files += [{'path':'runner.py','content':(HERE/'expanded_runner.py').read_text()},
-                  {'path':'finalize.py','content':(HERE/'expanded_finalize.py').read_text()},
-                  {'path':'tests/test_expanded_bundle.py','content':(HERE/'tests/test_expanded_bundle.py').read_text()}]
+        if suffix == 'same_at':
+            files += [{'path':'runner.py','content':(HERE/'threshold_same_runner.py').read_text()},
+                      {'path':'tests/test_native.py','content':(HERE/'tests/test_native.py').read_text()}]
+        else:
+            files += [{'path':'runner.py','content':(HERE/'expanded_runner.py').read_text()},
+                      {'path':'finalize.py','content':(HERE/'expanded_finalize.py').read_text()},
+                      {'path':'tests/test_expanded_bundle.py','content':(HERE/'tests/test_expanded_bundle.py').read_text()}]
         for name in ('assignment.json','witnesses.json'):
             source=Path('inputs')/ASSIGNMENT/name
             files.append({'path':name,'content':source.read_text()})
