@@ -107,7 +107,7 @@ def fixture(base, variant):
 
 def fake_probe(path):
     width, height = CAMERAS[path.stem]
-    return {"width": width, "height": height, "r_frame_rate": "20/1",
+    return {"codec_name": "ffv1", "width": width, "height": height, "r_frame_rate": "20/1",
             "nb_read_frames": "900"}
 
 

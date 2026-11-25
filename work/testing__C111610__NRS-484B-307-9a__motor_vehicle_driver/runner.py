@@ -12,7 +12,7 @@ import json
 import os
 from pathlib import Path
 
-from native_capture import capture
+from native_capture import OriginalVideo, capture
 from native_turn import case_command, construct_native, verify_site
 
 
@@ -130,6 +130,8 @@ def run_native(root, output, source_root, *, host="localhost", port=2000):
     if not profile_path.is_file():
         raise ValueError("exact four-camera profile missing")
     import carla
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     client = carla.Client(host, int(port))
     client.set_timeout(30.0)
     world = client.get_world()
@@ -137,6 +139,11 @@ def run_native(root, output, source_root, *, host="localhost", port=2000):
     previous = (settings.synchronous_mode, settings.fixed_delta_seconds)
     adapter = None
     actors = {}
+    pipeline = video = frame_map = None
+    body_history = None
+    codes = {}
+    frames = 0
+    restored = False
     try:
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
@@ -151,12 +158,47 @@ def run_native(root, output, source_root, *, host="localhost", port=2000):
             raise ValueError("reviewed original construction command differs")
         adapter = OriginalAdapter(world, site, site_raw, module,
                                   site["adapter_source"], command, actors)
-        return capture(adapter, site_path, profile_path, output,
-                       config["case_suffix"])
+        output.mkdir(parents=True, exist_ok=True)
+        if any((output / name).exists() for name in ("capture", "trace.jsonl",
+                                                    "video_frames.jsonl", "body_history.jsonl")):
+            raise ValueError("original acquisition already exists")
+        (output / "acquisition-provenance.json").write_text(json.dumps({
+            "provenance_kind": "native", "diagnostic_fixture": False,
+            "physical_acceptance_claimed": False,
+            "method": "reviewed original CARLA site and live same-tick acquisition"}, indent=2) + "\n")
+        pipeline = PipelineCapture(client, actors["ego"], output,
+                                   config["selected_case_id"])
+        frame_map = FrameMap(output / "video_frames.jsonl")
+        video = OriginalVideo(output, json.loads(profile_path.read_text()))
+        body_history = (output / "body_history.jsonl").open("x", buffering=1)
+
+        def on_frame(index, original):
+            nonlocal frames
+            native_frame = original["native_frame"]
+            time_s = original["native_elapsed_s"]
+            pipeline.capture(native_frame, time_s)
+            frame_map.append(native_frame, time_s)
+            video.append(original["cameras"])
+            ego = actors["ego"]
+            vertices = ego.bounding_box.get_world_vertices(ego.get_transform())
+            body_history.write(json.dumps({"frame": native_frame, "time_s": time_s,
+                "body_vertices_m": [[p.x, p.y, p.z] for p in vertices],
+                "heading_deg": ego.get_transform().rotation.yaw,
+                "source": "original live CARLA actor bounding box and transform"}) + "\n")
+            frames = index + 1
+
+        capture(adapter, site_path, profile_path, output,
+                config["case_suffix"], on_frame=on_frame)
+        pipeline.close(); pipeline = None
+        frame_map.close(); frame_map = None
+        codes = video.close(); video = None
+        body_history.close(); body_history = None
     finally:
         try:
-            if adapter is not None:
-                adapter.close()
+            for resource in (pipeline, frame_map, video, body_history):
+                if resource is not None:
+                    resource.close()
+            if adapter is not None: adapter.close()
         finally:
             try:
                 for actor in reversed(tuple(actors.values())):
@@ -167,6 +209,15 @@ def run_native(root, output, source_root, *, host="localhost", port=2000):
                 restored = world.get_settings()
                 if (restored.synchronous_mode, restored.fixed_delta_seconds) != previous:
                     raise ValueError("original world settings restoration readback differs")
+                restored = True
+    if frames != 600 or not restored or set(codes) != set(CAMERAS):
+        raise ValueError("original acquisition incomplete or restoration unverified")
+    return seal_capture(output, frames=frames,
+                        restoration={"restored": True,
+                                     "settings_readback": "synchronous mode and fixed delta restored"},
+                        errors=[], encoder_exit_codes=codes,
+                        context={"red_arrow_site_sha256": hashlib.sha256(site_raw).hexdigest(),
+                                 "case_id": config["selected_case_id"]})
 
 
 def main():

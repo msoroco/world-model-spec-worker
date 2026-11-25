@@ -6,8 +6,50 @@
     {
       "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
       "construction": "construction.json",
-      "construction_sha256": "4a2abf4b34ba24a67bbc4f611ed5a383ac2e3e66bbf0296db07996b7fb4ca259",
+      "construction_sha256": "13cfe053ec5769dedd63146e4529d1ee7f09f5deaedebfc1ad1f4fd1b75badc0",
       "kind": "delivery",
+      "acquisition": {
+        "ego_facing_red_arrow": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/ego_facing_red_arrow.jsonl"
+        },
+        "opposing_red": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/opposing_red.jsonl"
+        },
+        "official_head_approach": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/official_head_approach.jsonl"
+        },
+        "adjacent_crosswalk": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/adjacent_crosswalk.jsonl"
+        },
+        "pedestrian_lawful_presence": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/pedestrian_lawful_presence.jsonl"
+        },
+        "ego_entry_route_speed": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/ego_entry_route_speed.jsonl"
+        },
+        "other_traffic_lawful_use": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/other_traffic_lawful_use.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
+          "evidence": "channels/camera_frame_map.jsonl"
+        }
+      },
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -18,16 +60,86 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_probe.py",
+        "script_sha256": "6628333bfdc782b00a04430abf04d5fdfc18e0cbf2f8237d87b543e4aa363f32",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "5b05385ba82e7ee91b1da651ce86f457b858add62d475717e940632d9d2167ab",
+        "command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-yield_pedestrian.log",
+        "test_log_sha256": "68b00bbd49d19d2d1ad3e77992d6cb3a058a7fb05e31c42d333d921b7da917a8",
+        "negative_command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-delivery-yield_pedestrian-negative.log",
+        "negative_log_sha256": "5488d6b592cd544a2345d54faf67da89a8104dba7908836ac338ba891667e0a8",
+        "production_command": ".venv-cpu/bin/python delivery_audit.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --attempt $SAVED_ATTEMPT",
+        "diagnostic_cpu_proof": {
+          "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+          "decoded_original_png_frames": 2400,
+          "format": "worker-delivery-audit-diagnostic",
+          "legal_verdict": null,
+          "passed": true,
+          "physical_acceptance_claimed": false
+        },
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-yield_pedestrian-receipt.json",
+        "sha256": "a120151b4d671f83f7840cfa9d25b1e73e70704f65588519946a2ea76cf6dc43"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --output $SCRATCH --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "13cfe053ec5769dedd63146e4529d1ee7f09f5deaedebfc1ad1f4fd1b75badc0",
+        "log": "proof-offline-yield_pedestrian.log",
+        "log_sha256": "e373d7d7c46dec5494027d4a0f328ab8ee15c57a41d70c1060d0e90b42969a6c"
+      },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-9a-compat-v1-yield_pedestrian --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --output $SCRATCH --library runtime/library --validator $VALIDATOR",
         "receipt": "compat-yield_pedestrian-receipt.json",
-        "sha256": "393ecca5408d3285581093894efd4224df93b3defc748d763d605a52484cf3cb",
+        "sha256": "2d5b4c456b49901f2b9a309b68ee86a678eb588edf68d28caf6bba39ba8f615c",
         "log": "compat-yield_pedestrian-analysis.log",
         "negative_log": "compat-yield_pedestrian-negative.log"
       },
       "negative": {
-        "log": "compat-yield_pedestrian-negative.log"
+        "log": "compat-yield_pedestrian-negative.log",
+        "log_sha256": "0947d7e2402aabb5cf8d227dd0e8825e0ae50199d249340cf8a9836ea4350d19"
       },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-attempt-yield_pedestrian-1795602780553591830 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-output-yield_pedestrian-1795602780553591830 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-attempt-yield_pedestrian-1795602780553591830 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-output-yield_pedestrian-1795602780553591830 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "saved-yield_pedestrian.log",
+        "test_log_sha256": "26d6c2d9c447f6fe4f6f03b04d20291173f59fbe6ef378b443fa9daa173a8d05",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+      "construction": "construction-continue_pedestrian.json",
+      "construction_sha256": "907e1abb4f32f3cde7328abac074c1e375235aa10f5cfb36e6d4af1668f890f7",
+      "kind": "delivery",
       "acquisition": {
         "ego_facing_red_arrow": {
           "entrypoint": "analysis.py",
@@ -70,17 +182,6 @@
           "evidence": "channels/camera_frame_map.jsonl"
         }
       },
-      "candidate_risk": {
-        "status": "none",
-        "reason": "The reviewed official signal/site is a mandatory original source, not an engineering alternative; source preflight rejects unreviewed sites before capture."
-      },
-      "candidates": []
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
-      "construction": "construction-continue_pedestrian.json",
-      "construction_sha256": "dd748bc1f16f4b400bc0d0f2e4442ad9c2a393862a9faab5e9a45268730680aa",
-      "kind": "delivery",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -91,16 +192,86 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_probe.py",
+        "script_sha256": "6628333bfdc782b00a04430abf04d5fdfc18e0cbf2f8237d87b543e4aa363f32",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "5b05385ba82e7ee91b1da651ce86f457b858add62d475717e940632d9d2167ab",
+        "command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-continue_pedestrian.log",
+        "test_log_sha256": "cc0960ca591a94e0511b2017d03cf416b95a17ae589512353b4c28db493ba19b",
+        "negative_command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-delivery-continue_pedestrian-negative.log",
+        "negative_log_sha256": "5488d6b592cd544a2345d54faf67da89a8104dba7908836ac338ba891667e0a8",
+        "production_command": ".venv-cpu/bin/python delivery_audit.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --attempt $SAVED_ATTEMPT",
+        "diagnostic_cpu_proof": {
+          "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+          "decoded_original_png_frames": 2400,
+          "format": "worker-delivery-audit-diagnostic",
+          "legal_verdict": null,
+          "passed": true,
+          "physical_acceptance_claimed": false
+        },
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-continue_pedestrian-receipt.json",
+        "sha256": "fad2951c57c3a5eb10187e168f9a71cdacfdd7a226211ed03c31e8e3928f9672"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --output $SCRATCH --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "907e1abb4f32f3cde7328abac074c1e375235aa10f5cfb36e6d4af1668f890f7",
+        "log": "proof-offline-continue_pedestrian.log",
+        "log_sha256": "68c5c687b01bf8327076160b2131b4047dad251d53ecc08375c563210dc9f53c"
+      },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-9a-compat-v1-continue_pedestrian --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --output $SCRATCH --library runtime/library --validator $VALIDATOR",
         "receipt": "compat-continue_pedestrian-receipt.json",
-        "sha256": "f809f33d03528d7049956078c4d479fbd225d8b5dc927e3567b198ccf1451a06",
+        "sha256": "d9b1830f586bee97fe0cd5a7603e89ab1f196e7bbc659bb6f45eaf299aec3169",
         "log": "compat-continue_pedestrian-analysis.log",
         "negative_log": "compat-continue_pedestrian-negative.log"
       },
       "negative": {
-        "log": "compat-continue_pedestrian-negative.log"
+        "log": "compat-continue_pedestrian-negative.log",
+        "log_sha256": "cea960ff1f7f9f11636ff08c162b9ddd9ec81b1fbf228b66fb2fac7ac88854d4"
       },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-attempt-continue_pedestrian-1795602784980668911 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-output-continue_pedestrian-1795602784980668911 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-attempt-continue_pedestrian-1795602784980668911 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-saved-output-continue_pedestrian-1795602784980668911 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "saved-continue_pedestrian.log",
+        "test_log_sha256": "276c021c2f719ca226e66af2032a2009ddde83395bfa73c02a3580d0bf0de64b",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+      "construction": "construction-clear_crosswalk_turn.json",
+      "construction_sha256": "b3f7b992381305ca633697c384d946137973dff4860af38b15db78f2909d689e",
+      "kind": "delivery",
       "acquisition": {
         "ego_facing_red_arrow": {
           "entrypoint": "analysis.py",
@@ -143,17 +314,6 @@
           "evidence": "channels/camera_frame_map.jsonl"
         }
       },
-      "candidate_risk": {
-        "status": "none",
-        "reason": "The reviewed official signal/site is a mandatory original source, not an engineering alternative; source preflight rejects unreviewed sites before capture."
-      },
-      "candidates": []
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
-      "construction": "construction-clear_crosswalk_turn.json",
-      "construction_sha256": "f757476f34742e4b18e4786fee72e80658f4bb9fff9ec09622fb72256f6db07c",
-      "kind": "delivery",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -164,16 +324,76 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_probe.py",
+        "script_sha256": "6628333bfdc782b00a04430abf04d5fdfc18e0cbf2f8237d87b543e4aa363f32",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "5b05385ba82e7ee91b1da651ce86f457b858add62d475717e940632d9d2167ab",
+        "command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-clear_crosswalk_turn.log",
+        "test_log_sha256": "67445989e972cd79292bd35d489d889aaef539cecf96a1ed86ed28750d8de159",
+        "negative_command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-delivery-clear_crosswalk_turn-negative.log",
+        "negative_log_sha256": "5488d6b592cd544a2345d54faf67da89a8104dba7908836ac338ba891667e0a8",
+        "production_command": ".venv-cpu/bin/python delivery_audit.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn --attempt $SAVED_ATTEMPT",
+        "diagnostic_cpu_proof": {
+          "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+          "decoded_original_png_frames": 2400,
+          "format": "worker-delivery-audit-diagnostic",
+          "legal_verdict": null,
+          "passed": true,
+          "physical_acceptance_claimed": false
+        },
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-clear_crosswalk_turn-receipt.json",
+        "sha256": "9c559b23080346a972b17a71790db85eee3e9427edfa1af079cdf5d2a47254a5"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn --output $SCRATCH --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "b3f7b992381305ca633697c384d946137973dff4860af38b15db78f2909d689e",
+        "log": "proof-offline-clear_crosswalk_turn.log",
+        "log_sha256": "1275dc42f0e9daeeb9fee79a7be40bf39cc39599edbab4d5842acbd96902f763"
+      },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-9a-compat-v1-clear_crosswalk_turn --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn --output $SCRATCH --library runtime/library --validator $VALIDATOR",
         "receipt": "compat-clear_crosswalk_turn-receipt.json",
-        "sha256": "0041671ab1223200eb8c0f6677d7233760b95b9356773d8b4a1f6d6fbf36e5c4",
+        "sha256": "edd2fa18d153553a428ca34952e2fe312a0d17efffa8077645511bebf8525afa",
         "log": "compat-clear_crosswalk_turn-analysis.log",
         "negative_log": "compat-clear_crosswalk_turn-negative.log"
       },
       "negative": {
-        "log": "compat-clear_crosswalk_turn-negative.log"
-      },
+        "log": "compat-clear_crosswalk_turn-negative.log",
+        "log_sha256": "cb7638b4cce22b3b8362e19f7ee323317bc8dba773a357af0e1db8b48986c498"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+      "construction": "construction-wrong_movement.json",
+      "construction_sha256": "60263f456397428d91d34fdaf0ed83bfaa50ed0bce9c3ea59138e6b6340e9429",
+      "kind": "delivery",
       "acquisition": {
         "ego_facing_red_arrow": {
           "entrypoint": "analysis.py",
@@ -216,17 +436,6 @@
           "evidence": "channels/camera_frame_map.jsonl"
         }
       },
-      "candidate_risk": {
-        "status": "none",
-        "reason": "The reviewed official signal/site is a mandatory original source, not an engineering alternative; source preflight rejects unreviewed sites before capture."
-      },
-      "candidates": []
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
-      "construction": "construction-wrong_movement.json",
-      "construction_sha256": "7763a0ef9eed146dc4ed4d3c9eccda104576c64812e23a63d86df9424102ec18",
-      "kind": "delivery",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -237,16 +446,76 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_probe.py",
+        "script_sha256": "6628333bfdc782b00a04430abf04d5fdfc18e0cbf2f8237d87b543e4aa363f32",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "5b05385ba82e7ee91b1da651ce86f457b858add62d475717e940632d9d2167ab",
+        "command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-wrong_movement.log",
+        "test_log_sha256": "b731dafbf6d2c1b4d1a0efa2155b930c57261a94f3ee388153c26a0dbbe26ff2",
+        "negative_command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-delivery-wrong_movement-negative.log",
+        "negative_log_sha256": "5488d6b592cd544a2345d54faf67da89a8104dba7908836ac338ba891667e0a8",
+        "production_command": ".venv-cpu/bin/python delivery_audit.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement --attempt $SAVED_ATTEMPT",
+        "diagnostic_cpu_proof": {
+          "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+          "decoded_original_png_frames": 2400,
+          "format": "worker-delivery-audit-diagnostic",
+          "legal_verdict": null,
+          "passed": true,
+          "physical_acceptance_claimed": false
+        },
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-wrong_movement-receipt.json",
+        "sha256": "eed499b8d4135ab08b98a8224a26f21b89474972672c9bb7e782ead6fd481880"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement --output $SCRATCH --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "60263f456397428d91d34fdaf0ed83bfaa50ed0bce9c3ea59138e6b6340e9429",
+        "log": "proof-offline-wrong_movement.log",
+        "log_sha256": "69b1c031a294419538e41bae4952579ae030785308785f8170cc3c14da020a15"
+      },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-9a-compat-v1-wrong_movement --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement --output $SCRATCH --library runtime/library --validator $VALIDATOR",
         "receipt": "compat-wrong_movement-receipt.json",
-        "sha256": "4879ef72d2fef8eab6b2ce3563519b8be73ab0404fa1b11bf1f3eba39ac99e4d",
+        "sha256": "d9e0122f373d5474e8259ad94acd0274d6187d7edf5b641c330ca87154d2c142",
         "log": "compat-wrong_movement-analysis.log",
         "negative_log": "compat-wrong_movement-negative.log"
       },
       "negative": {
-        "log": "compat-wrong_movement-negative.log"
-      },
+        "log": "compat-wrong_movement-negative.log",
+        "log_sha256": "f6be679c4f3105080cba5293d3b84a0ad7f03e15db9b37c2376544640514b773"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+      "construction": "construction-yield_other_traffic.json",
+      "construction_sha256": "b7a224feae7385832bff41aa0449f841dca04ca398f05565f3e70beed38c6323",
+      "kind": "delivery",
       "acquisition": {
         "ego_facing_red_arrow": {
           "entrypoint": "analysis.py",
@@ -289,17 +558,6 @@
           "evidence": "channels/camera_frame_map.jsonl"
         }
       },
-      "candidate_risk": {
-        "status": "none",
-        "reason": "The reviewed official signal/site is a mandatory original source, not an engineering alternative; source preflight rejects unreviewed sites before capture."
-      },
-      "candidates": []
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
-      "construction": "construction-yield_other_traffic.json",
-      "construction_sha256": "fd1a11f1d3ad8468374229428e85be0ac62620f0bf08b5ce99d7057c69ef711e",
-      "kind": "delivery",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -310,16 +568,76 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_probe.py",
+        "script_sha256": "6628333bfdc782b00a04430abf04d5fdfc18e0cbf2f8237d87b543e4aa363f32",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "5b05385ba82e7ee91b1da651ce86f457b858add62d475717e940632d9d2167ab",
+        "command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-yield_other_traffic.log",
+        "test_log_sha256": "0d5b8f0b13912589cb11d70f5f9314152d5af31d83f8f123d6038ca55393b3c8",
+        "negative_command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-delivery-yield_other_traffic-negative.log",
+        "negative_log_sha256": "5488d6b592cd544a2345d54faf67da89a8104dba7908836ac338ba891667e0a8",
+        "production_command": ".venv-cpu/bin/python delivery_audit.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic --attempt $SAVED_ATTEMPT",
+        "diagnostic_cpu_proof": {
+          "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+          "decoded_original_png_frames": 2400,
+          "format": "worker-delivery-audit-diagnostic",
+          "legal_verdict": null,
+          "passed": true,
+          "physical_acceptance_claimed": false
+        },
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-yield_other_traffic-receipt.json",
+        "sha256": "67737dd82de1567b2b9f5fa8d47b0334310c0f8c17c37a6552dc0dd39da2c383"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic --output $SCRATCH --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "b7a224feae7385832bff41aa0449f841dca04ca398f05565f3e70beed38c6323",
+        "log": "proof-offline-yield_other_traffic.log",
+        "log_sha256": "71e3d96933b3916cb2cbca3040b48ed0277200e5cce9c8430a667994ea25d75c"
+      },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-9a-compat-v1-yield_other_traffic --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic --output $SCRATCH --library runtime/library --validator $VALIDATOR",
         "receipt": "compat-yield_other_traffic-receipt.json",
-        "sha256": "df0ea53625cc3329c6fc03dce739f9683c49225fd0c38d2980e7fdd2381e1929",
+        "sha256": "961750acd48f69ed6bd488159723c94fef13f65a7d1d916e26b4f0e80fd867a2",
         "log": "compat-yield_other_traffic-analysis.log",
         "negative_log": "compat-yield_other_traffic-negative.log"
       },
       "negative": {
-        "log": "compat-yield_other_traffic-negative.log"
-      },
+        "log": "compat-yield_other_traffic-negative.log",
+        "log_sha256": "c0fc05b1db35db4ba973a66ad43926f71cc120bf79d7fc90e115a7551954b66c"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
+      "construction": "construction-continue_other_traffic.json",
+      "construction_sha256": "167b60e0fd04f7bc43b21933c1c72ca02045df59cdaba73befbd4c866199e178",
+      "kind": "delivery",
       "acquisition": {
         "ego_facing_red_arrow": {
           "entrypoint": "analysis.py",
@@ -362,17 +680,6 @@
           "evidence": "channels/camera_frame_map.jsonl"
         }
       },
-      "candidate_risk": {
-        "status": "none",
-        "reason": "The reviewed official signal/site is a mandatory original source, not an engineering alternative; source preflight rejects unreviewed sites before capture."
-      },
-      "candidates": []
-    },
-    {
-      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
-      "construction": "construction-continue_other_traffic.json",
-      "construction_sha256": "25345d84f7826a9e84e0e1de642ff7898abd63d17c916a7384a24284849a8ac2",
-      "kind": "delivery",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -383,63 +690,285 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."
+      },
+      "candidates": [],
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_probe.py",
+        "script_sha256": "6628333bfdc782b00a04430abf04d5fdfc18e0cbf2f8237d87b543e4aa363f32",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "5b05385ba82e7ee91b1da651ce86f457b858add62d475717e940632d9d2167ab",
+        "command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-continue_other_traffic.log",
+        "test_log_sha256": "126bb9b4242a548dfe526948157d47717db4d73e81e3f95d54ba0bb22b1a2027",
+        "negative_command": ".venv-cpu/bin/python delivery_probe.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-delivery-continue_other_traffic-negative.log",
+        "negative_log_sha256": "5488d6b592cd544a2345d54faf67da89a8104dba7908836ac338ba891667e0a8",
+        "production_command": ".venv-cpu/bin/python delivery_audit.py --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic --attempt $SAVED_ATTEMPT",
+        "diagnostic_cpu_proof": {
+          "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
+          "decoded_original_png_frames": 2400,
+          "format": "worker-delivery-audit-diagnostic",
+          "legal_verdict": null,
+          "passed": true,
+          "physical_acceptance_claimed": false
+        },
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-continue_other_traffic-receipt.json",
+        "sha256": "17039a22490861714bf93a30093bea267897091dbc05451eab22f432e37f987a"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic --output $SCRATCH --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "167b60e0fd04f7bc43b21933c1c72ca02045df59cdaba73befbd4c866199e178",
+        "log": "proof-offline-continue_other_traffic.log",
+        "log_sha256": "7ae15bbcdf22385d54482a6a4f43f7f2b5bf2376acf22eca1a6ed755a3aa3b7d"
+      },
       "compatibility": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111610-9a-compat-v1-continue_other_traffic --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111610__NRS-484B-307-9a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic --output $SCRATCH --library runtime/library --validator $VALIDATOR",
         "receipt": "compat-continue_other_traffic-receipt.json",
-        "sha256": "3ece596e6d5cbf7008a298d7e804ef6b91cdf52c1d5d04b34d22c7321dfabc69",
+        "sha256": "c166e8fd25c790d4c9c28ba3abae895ed852215cec0f42dd4aaa96bc056f283f",
         "log": "compat-continue_other_traffic-analysis.log",
         "negative_log": "compat-continue_other_traffic-negative.log"
       },
       "negative": {
-        "log": "compat-continue_other_traffic-negative.log"
-      },
-      "acquisition": {
-        "ego_facing_red_arrow": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/ego_facing_red_arrow.jsonl"
+        "log": "compat-continue_other_traffic-negative.log",
+        "log_sha256": "92d38825f201722a1133ba926adae47f99ef047e50d54c8745d5791034fd5025"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "pedestrian_yield",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same relevant pedestrian permission source and arrow direction"
+      ],
+      "deliberate_differences": [
+        "measured controller hold until crosswalk clears versus turn while lawful pedestrian remains"
+      ],
+      "audit_script": "comparison_probe.py",
+      "audit_script_sha256": "0cc816bccbbe43c9136d5323cac1219664b319aadd7a3652f8c189a3c8145dd4",
+      "production_command": ".venv-cpu/bin/python saved_pair.py --comparison pedestrian_yield --left-attempt $LEFT_ATTEMPT --right-attempt $RIGHT_ATTEMPT",
+      "diagnostic_cpu_proof": {
+        "command": ".venv-cpu/bin/python comparison_probe.py --comparison pedestrian_yield",
+        "exit_code": 0,
+        "log": "proof-comparison-pedestrian_yield.log",
+        "log_sha256": "682610f8c8e5f225970bb1ad2bddc79fb11f2ba5ee287b987f121e348f4b3007",
+        "negative_command": ".venv-cpu/bin/python comparison_probe.py --comparison pedestrian_yield --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-comparison-pedestrian_yield-negative.log",
+        "negative_log_sha256": "fd8d077571671fe0e61a6dafb637287b4a0257349c312296b4cdb28157c4f8f3",
+        "source_bound_saved_replay": {
+          "case_suffixes": [
+            "yield_pedestrian",
+            "continue_pedestrian"
+          ],
+          "comparison_id": "pedestrian_yield",
+          "decoded_view_frames": 4800,
+          "fixed_sources_checked": 8,
+          "format": "c111610-source-bound-red-arrow-comparison-v1",
+          "legal_verdict": null,
+          "physical_acceptance": false,
+          "source_hashes": {
+            "left": {
+              "manifest": "adfee0e5567f9f9020f52da57fe21b2f8f0992298ac95dca82651c7115c96427",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "8e837205d0a1e67fa2f55f748d02bd250387d48fd3aa0f64d7005ed2ec117aee"
+            },
+            "right": {
+              "manifest": "6b2285f1762e3f9b8a202ced5ab3c5709c66f340f1632761e55a02c02175a558",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "ab800c308aa8763dc11d12d6174a2c8da5739f7fbf74fbcd599ecce8b74176d8"
+            }
+          }
         },
-        "opposing_red": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/opposing_red.jsonl"
+        "physical_acceptance_claimed": false
+      }
+    },
+    {
+      "comparison_id": "pedestrian_presence",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same relevant pedestrian permission source and arrow direction"
+      ],
+      "deliberate_differences": [
+        "measured lawful adjacent-crosswalk occupancy at approach"
+      ],
+      "audit_script": "comparison_probe.py",
+      "audit_script_sha256": "0cc816bccbbe43c9136d5323cac1219664b319aadd7a3652f8c189a3c8145dd4",
+      "production_command": ".venv-cpu/bin/python saved_pair.py --comparison pedestrian_presence --left-attempt $LEFT_ATTEMPT --right-attempt $RIGHT_ATTEMPT",
+      "diagnostic_cpu_proof": {
+        "command": ".venv-cpu/bin/python comparison_probe.py --comparison pedestrian_presence",
+        "exit_code": 0,
+        "log": "proof-comparison-pedestrian_presence.log",
+        "log_sha256": "1854f2030055eea61f4c6ee159e65fa93888a1b4ab5ccacf004735716194b5ea",
+        "negative_command": ".venv-cpu/bin/python comparison_probe.py --comparison pedestrian_presence --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-comparison-pedestrian_presence-negative.log",
+        "negative_log_sha256": "73f695cc36fcf4d05d237cf4f5e8d2b8268ba6cfad5a673df8fc6e16e1c38b11",
+        "source_bound_saved_replay": {
+          "case_suffixes": [
+            "clear_crosswalk_turn",
+            "yield_pedestrian"
+          ],
+          "comparison_id": "pedestrian_presence",
+          "decoded_view_frames": 4800,
+          "fixed_sources_checked": 8,
+          "format": "c111610-source-bound-red-arrow-comparison-v1",
+          "legal_verdict": null,
+          "physical_acceptance": false,
+          "source_hashes": {
+            "left": {
+              "manifest": "598dc5adc9c794c3f3c8e948b5efeb5e46612eb130baf4bf32faf23c3b297b9d",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "02769a02e2f9b1e6661bc0663b444bc7ebb808641c3d5b1a37f4b6d379f5d287"
+            },
+            "right": {
+              "manifest": "adfee0e5567f9f9020f52da57fe21b2f8f0992298ac95dca82651c7115c96427",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "8e837205d0a1e67fa2f55f748d02bd250387d48fd3aa0f64d7005ed2ec117aee"
+            }
+          }
         },
-        "official_head_approach": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/official_head_approach.jsonl"
+        "physical_acceptance_claimed": false
+      }
+    },
+    {
+      "comparison_id": "arrow_movement",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same relevant pedestrian permission source and arrow direction"
+      ],
+      "deliberate_differences": [
+        "measured arrow-directed turn versus straight entry"
+      ],
+      "audit_script": "comparison_probe.py",
+      "audit_script_sha256": "0cc816bccbbe43c9136d5323cac1219664b319aadd7a3652f8c189a3c8145dd4",
+      "production_command": ".venv-cpu/bin/python saved_pair.py --comparison arrow_movement --left-attempt $LEFT_ATTEMPT --right-attempt $RIGHT_ATTEMPT",
+      "diagnostic_cpu_proof": {
+        "command": ".venv-cpu/bin/python comparison_probe.py --comparison arrow_movement",
+        "exit_code": 0,
+        "log": "proof-comparison-arrow_movement.log",
+        "log_sha256": "63323d441b6737b8152be61cb497c2e15ceaa18c0ac76d8bfe260a7e44070871",
+        "negative_command": ".venv-cpu/bin/python comparison_probe.py --comparison arrow_movement --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-comparison-arrow_movement-negative.log",
+        "negative_log_sha256": "ee18b884903e93f10c45880abfbc6936d6cb69576993337ec6fc371e8a6a41ba",
+        "source_bound_saved_replay": {
+          "case_suffixes": [
+            "clear_crosswalk_turn",
+            "wrong_movement"
+          ],
+          "comparison_id": "arrow_movement",
+          "decoded_view_frames": 4800,
+          "fixed_sources_checked": 8,
+          "format": "c111610-source-bound-red-arrow-comparison-v1",
+          "legal_verdict": null,
+          "physical_acceptance": false,
+          "source_hashes": {
+            "left": {
+              "manifest": "598dc5adc9c794c3f3c8e948b5efeb5e46612eb130baf4bf32faf23c3b297b9d",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "02769a02e2f9b1e6661bc0663b444bc7ebb808641c3d5b1a37f4b6d379f5d287"
+            },
+            "right": {
+              "manifest": "6fb8b86fc6b6a6b508e90d44eef76b1f31c7ebabeb469cba9f3dba7c7d33e14b",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "bc3b44dd04ad819447cf03b4c289736c24ad699f9f8267f90996851946342ef7"
+            }
+          }
         },
-        "adjacent_crosswalk": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/adjacent_crosswalk.jsonl"
+        "physical_acceptance_claimed": false
+      }
+    },
+    {
+      "comparison_id": "other_traffic_yield",
+      "case_ids": [
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+        "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+      ],
+      "fixed_conditions": [
+        "same source-sealed intersection, red plus arrow, opposing red, camera and duration",
+        "same other traffic actor and lawful route",
+        "adjacent crosswalk clear"
+      ],
+      "deliberate_differences": [
+        "measured hold until lawful other traffic clears versus movement during occupancy"
+      ],
+      "audit_script": "comparison_probe.py",
+      "audit_script_sha256": "0cc816bccbbe43c9136d5323cac1219664b319aadd7a3652f8c189a3c8145dd4",
+      "production_command": ".venv-cpu/bin/python saved_pair.py --comparison other_traffic_yield --left-attempt $LEFT_ATTEMPT --right-attempt $RIGHT_ATTEMPT",
+      "diagnostic_cpu_proof": {
+        "command": ".venv-cpu/bin/python comparison_probe.py --comparison other_traffic_yield",
+        "exit_code": 0,
+        "log": "proof-comparison-other_traffic_yield.log",
+        "log_sha256": "5ab7ff48c7fdf91e8750d1cce05237bec071881f0f7fa5d8f7947a824909a265",
+        "negative_command": ".venv-cpu/bin/python comparison_probe.py --comparison other_traffic_yield --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "source hash mismatch",
+        "negative_log": "proof-comparison-other_traffic_yield-negative.log",
+        "negative_log_sha256": "1d762764ede27bc743b4d75780c6e983c076b6a4fbc6e4a7224fef86b46fd224",
+        "source_bound_saved_replay": {
+          "case_suffixes": [
+            "yield_other_traffic",
+            "continue_other_traffic"
+          ],
+          "comparison_id": "other_traffic_yield",
+          "decoded_view_frames": 4800,
+          "fixed_sources_checked": 8,
+          "format": "c111610-source-bound-red-arrow-comparison-v1",
+          "legal_verdict": null,
+          "physical_acceptance": false,
+          "source_hashes": {
+            "left": {
+              "manifest": "64c95ff76d28d090b712885739efd8f4571b5683a38a0dbd642ce1b65aa1fd83",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "94c2d2ac25d62f0dd5cea31776139f2f4c52ac02087be35ec09389991f65933f"
+            },
+            "right": {
+              "manifest": "66d58ee4a469fe63f40ed3b7cf378da5ae2d569c52f9fe501a276f313ddf5a44",
+              "site": "b9cb87ca0196426439178846daf32f7fc8a927d686985632d57a73f633186d79",
+              "telemetry": "178e79cd6888159968e89950510eb8583caa206630292e4941e21584432221be"
+            }
+          }
         },
-        "pedestrian_lawful_presence": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/pedestrian_lawful_presence.jsonl"
-        },
-        "ego_entry_route_speed": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/ego_entry_route_speed.jsonl"
-        },
-        "other_traffic_lawful_use": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/other_traffic_lawful_use.jsonl"
-        },
-        "camera_frame_map": {
-          "entrypoint": "analysis.py",
-          "method": "Source-verified original Native red-arrow replay, with explicit synthetic diagnostic branch",
-          "evidence": "channels/camera_frame_map.jsonl"
-        }
-      },
-      "candidate_risk": {
-        "status": "none",
-        "reason": "The reviewed official signal/site is a mandatory original source, not an engineering alternative; source preflight rejects unreviewed sites before capture."
-      },
-      "candidates": []
+        "physical_acceptance_claimed": false
+      }
     }
   ]
 }

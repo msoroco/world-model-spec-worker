@@ -14,13 +14,58 @@ from rail_stop_audit import audit_saved_file
 
 
 def _sha(path: Path) -> str:
+    if not path.is_file():
+        raise ValueError("Missing required source: " + path.name)
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _rows(path: Path) -> list[dict]:
     if not path.is_file():
-        raise ValueError("missing original saved source: " + path.name)
+        raise ValueError("Missing required source: " + path.name)
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def measure_crossing_authority(packet: dict, source_hashes: dict) -> dict:
+    return {"method": "measure_crossing_authority",
+            "sources": {name: source_hashes[name] for name in
+                        ("rail-stop-packet.json", "native-authority-record.json", "native-stop-device.json",
+                         "native-crossing-geometry.json")},
+            "value": {"crossing_type": packet["context"]["crossing_type"],
+                      "designation_authority": packet["context"]["designation_authority"],
+                      "device_type": packet["context"]["device_type"],
+                      "device_governs": packet["context"]["device_governs"],
+                      "legal_source_review": "pending"}}
+
+
+def measure_stop_gap(measurement: dict, source_hashes: dict) -> dict:
+    return {"method": "measure_stop_gap",
+            "sources": {name: source_hashes[name] for name in
+                        ("rail-stop-packet.json", "native-crossing-geometry.json", "native-ego-footprint.json",
+                         "native-ego-kinematics.json")},
+            "value": {"complete_stop_observed": measurement["complete_stop_observed"],
+                      "minimum_body_corner_gap_ft": measurement.get(
+                          "first_stop_body_to_nearest_rail_min_ft"),
+                      "body_signed_range_ft": measurement.get("first_stop_body_signed_range_ft"),
+                      "vehicle_reference_point": "unresolved"}}
+
+
+def measure_cessation(measurement: dict, source_hashes: dict) -> dict:
+    return {"method": "measure_cessation",
+            "sources": {name: source_hashes[name] for name in
+                        ("rail-stop-packet.json", "native-ego-kinematics.json")},
+            "value": {"complete_stop_observed": measurement["complete_stop_observed"],
+                      "stop_samples": measurement["stop_samples"],
+                      "first_stop_frame": measurement.get("first_stop_frame")}}
+
+
+def measure_departure_context(measurement: dict, source_hashes: dict) -> dict:
+    return {"method": "measure_departure_context",
+            "sources": {"rail-stop-packet.json": source_hashes["rail-stop-packet.json"]},
+            "value": {"proceeding_observed": measurement["proceeding_observed"],
+                      "conflict_actor_present": measurement["conflict_actor_present"],
+                      "minimum_departure_conflict_body_separation_m": measurement.get(
+                          "minimum_departure_conflict_body_separation_m"),
+                      "due_care": "unresolved by physical measurement alone"}}
 
 
 def analyze(attempt: Path, output: Path) -> dict:
@@ -33,6 +78,7 @@ def analyze(attempt: Path, output: Path) -> dict:
     if case["case_id"] != config["selected_case_id"]:
         raise ValueError("saved exact case identity differs")
     packet_path = attempt / "rail-stop-packet.json"
+    _sha(packet_path)
     packet = json.loads(packet_path.read_text())
     measurement = audit_saved_file(packet_path)
     mapping = _rows(attempt / "video_frames.jsonl")
@@ -54,7 +100,8 @@ def analyze(attempt: Path, output: Path) -> dict:
         raise ValueError("selected crossing-conflict actor differs from original")
     stop_observed = measurement["complete_stop_observed"]
     desired_stop = case["stop_behavior"] == "complete"
-    gap = measurement.get("first_stop_body_to_nearest_rail_min_ft")
+    gap = measurement.get("first_stop_body_to_nearest_rail_min_ft",
+                          measurement.get("minimum_body_to_nearest_rail_min_ft"))
     # The tolerance is a construction feedback threshold in feet. It cannot
     # resolve the statute's unspecified vehicle reference point.
     target_checks = [
@@ -79,9 +126,11 @@ def analyze(attempt: Path, output: Path) -> dict:
     if selected_conflict:
         sources["native-conflict-history.json"] = _sha(attempt / "native-conflict-history.json")
     report = {"format": "worker-analysis-report", "analysis_complete": True,
-              "measurements": {"rail_stop": {
-                  "method": "audit_saved_file", "sources": sources,
-                  "value": measurement}},
+              "measurements": {
+                  "crossing_authority": measure_crossing_authority(packet, sources),
+                  "stop_gap": measure_stop_gap(measurement, sources),
+                  "cessation": measure_cessation(measurement, sources),
+                  "departure_context": measure_departure_context(measurement, sources)},
               "limitations": ["Statutory vehicle reference point and due care require independent original scene review."],
               "legal_verdict_claimed": False}
     if output.exists():

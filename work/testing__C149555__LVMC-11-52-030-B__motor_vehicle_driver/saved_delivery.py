@@ -40,7 +40,7 @@ def sha256_file(path: Path) -> str:
 def probe_and_decode(path: Path) -> dict:
     probe = subprocess.run(
         ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
-         "-show_entries", "stream=width,height,r_frame_rate,nb_read_frames", "-of", "json", str(path)],
+         "-show_entries", "stream=codec_name,width,height,r_frame_rate,nb_read_frames", "-of", "json", str(path)],
         capture_output=True, text=True, check=True,
     )
     streams = json.loads(probe.stdout).get("streams", [])
@@ -77,6 +77,7 @@ def audit_delivery(manifest: dict, *, attempt_root: Path, media_probe=probe_and_
         require(path.is_relative_to(attempt_root) and path.is_file(), f"media escapes attempt: {name}")
         require(sha256_file(path) == ref["sha256"], f"stale media source: {name}")
         info = media_probe(path)
+        require(info.get("codec_name") == "ffv1", f"original camera codec differs: {name}")
         require((info.get("width"), info.get("height")) == size, f"wrong camera size: {name}")
         require(info.get("r_frame_rate") == "20/1", f"wrong camera rate: {name}")
         require(str(info.get("nb_read_frames")) == "900", f"wrong camera frame count: {name}")
@@ -91,6 +92,10 @@ def audit_delivery(manifest: dict, *, attempt_root: Path, media_probe=probe_and_
         "frames_checked": measured["frames_checked"],
         "media_sha256": media_digests,
         "source_integrity": True,
+        "all_participants": bool(measured["vehicle_id"] and manifest["sources"].get("sign_observation") and
+                                 (measured["observed_action"] == "none" or
+                                  manifest["sources"].get("freight_activity"))),
+        "time_join": measured["frames_checked"] == 900,
         "full_video_decode": True,
         "physical_case_completion": completion["physical_completion"],
         "actual_pixels_reviewed": False,

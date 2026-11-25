@@ -62,7 +62,7 @@ def main():
             for name in ('red-arrow-observations.json', 'source_site.json')})
         spec = {'files': files, 'graphs': base['graphs'], 'videos': base['videos']}
         spec_path = HERE / ('diagnostic-' + suffix + '.json')
-        spec_path.write_text(json.dumps(spec, indent=2) + '\n')
+        spec_path.write_text(encode(spec))
         recipe = {'format': 'worker-fixture-recipe',
                   'sources': [{'path': 'assignment-source.json',
                                'source': 'inputs/' + ASSIGNMENT + '/assignment.json',

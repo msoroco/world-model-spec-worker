@@ -164,10 +164,21 @@ def capture(world, scene: dict, camera, attempt: Path, case: dict,
                 mapped = frame_map.append(frame, timestamp)
                 if mapped["video_frame"] != index:
                     raise ValueError("original video frame identity differs")
+                location = scene["ego"].get_location()
+                heading = float(scene["ego"].get_transform().rotation.yaw)
                 trace.write(json.dumps({"frame": frame, "time_s": timestamp,
-                                        "position_m": [scene["ego"].get_location().x,
-                                                       scene["ego"].get_location().y],
-                                        "speed_mps": speed}, allow_nan=False) + "\n")
+                                        "position": {"x": float(location.x),
+                                                     "y": float(location.y),
+                                                     "z": float(location.z)},
+                                        "position_m": [float(location.x), float(location.y),
+                                                       float(location.z)],
+                                        "heading_deg": heading,
+                                        "speed_mps": speed,
+                                        "speed_mph": speed / .44704,
+                                        "velocity_mps": [float(velocity.x),
+                                                         float(velocity.y),
+                                                         float(velocity.z)],
+                                        "control": command}, allow_nan=False) + "\n")
                 controls.write(json.dumps({"frame": frame, "time_s": timestamp,
                                            **command}, allow_nan=False) + "\n")
                 previous_frame, previous_time = frame, timestamp

@@ -102,6 +102,36 @@ def main() -> None:
         entry.update({"case_id": case["case_id"], "kind": "delivery",
                       "construction": relative,
                       "construction_sha256": hashlib.sha256(construction.read_bytes()).hexdigest()})
+        selected = []
+        names = {0: ("crossing_authority", "measure_crossing_authority",
+                     ["rail-stop-packet.json", "native-authority-record.json",
+                      "native-stop-device.json", "native-crossing-geometry.json"]),
+                 1: ("stop_gap", "measure_stop_gap",
+                     ["rail-stop-packet.json", "native-crossing-geometry.json",
+                      "native-ego-footprint.json", "native-ego-kinematics.json"]),
+                 2: ("cessation", "measure_cessation",
+                     ["rail-stop-packet.json", "native-ego-kinematics.json"]),
+                 3: ("departure_context", "measure_departure_context",
+                     ["rail-stop-packet.json"])}
+        for disposition in plan["requirement_dispositions"]:
+            if case["case_id"] not in disposition["case_ids"]:
+                continue
+            name, method, inputs = names[disposition["disposition_index"]]
+            selected.append({"disposition_index": disposition["disposition_index"],
+                             "requirement": disposition["requirement"],
+                             "source": disposition["source"],
+                             "output_key": name, "method": method,
+                             "value_type": "object", "kind": "measured" if name != "crossing_authority" else "sourced_context",
+                             "inputs": inputs})
+        contract_name = "measurement-contract-" + suffix + ".json"
+        write_json(HERE / contract_name, {
+            "format": "worker-measurement-contract", "case_id": case["case_id"],
+            "requirements": selected,
+            "negative": {"remove": ["rail-stop-packet.json"],
+                         "error_contains": "Missing required source: rail-stop-packet.json"},
+            "scope": "Original rail/vehicle measurements and authority context; vehicle-reference and due-care legal judgments remain unresolved."})
+        entry["measurement_contract"] = contract_name
+        entry["measurement_procedure"] = {"entrypoint": "analysis.py"}
         entries.append(entry)
     # This is a draft until every offline, compatibility, semantic and delivery
     # receipt is bound. Keeping every planned case here enables exact offline.

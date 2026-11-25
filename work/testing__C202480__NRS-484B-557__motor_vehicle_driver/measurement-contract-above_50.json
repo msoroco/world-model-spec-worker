@@ -1,0 +1,65 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_50",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "official DOT-designated highway railroad crossing and governing stop sign",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "output_key": "crossing_authority",
+      "method": "measure_crossing_authority",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "rail-stop-packet.json",
+        "native-authority-record.json",
+        "native-stop-device.json",
+        "native-crossing-geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "stop within 50 feet but not less than 15 feet from nearest track",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "output_key": "stop_gap",
+      "method": "measure_stop_gap",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "rail-stop-packet.json",
+        "native-crossing-geometry.json",
+        "native-ego-footprint.json",
+        "native-ego-kinematics.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "complete cessation before proceeding",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "output_key": "cessation",
+      "method": "measure_cessation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "rail-stop-packet.json",
+        "native-ego-kinematics.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "rail-stop-packet.json"
+    ],
+    "error_contains": "Missing required source: rail-stop-packet.json"
+  },
+  "scope": "Original rail/vehicle measurements and authority context; vehicle-reference and due-care legal judgments remain unresolved."
+}

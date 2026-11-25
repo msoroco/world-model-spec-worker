@@ -1,6 +1,11 @@
 """Reopen two sealed saved arrow-turn attempts for a planned comparison."""
 from __future__ import annotations
 
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
 from comparison_audit import PAIRS, audit_pair
 from saved_turn import audit_saved_attempt
 
@@ -36,3 +41,22 @@ def audit_saved_pair(comparison_id, left_root, left_manifest_ref,
                                sum(v["frames"] for v in right["decoded_cameras"].values()),
     })
     return receipt
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--comparison', required=True)
+    parser.add_argument('--left-attempt', type=Path, required=True)
+    parser.add_argument('--right-attempt', type=Path, required=True)
+    args = parser.parse_args()
+    def ref(root):
+        path = root / 'manifest.json'
+        return {'path': 'manifest.json',
+                'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    receipt = audit_saved_pair(args.comparison, args.left_attempt, ref(args.left_attempt),
+                               args.right_attempt, ref(args.right_attempt))
+    print(json.dumps(receipt, indent=2))
+
+
+if __name__ == '__main__':
+    main()

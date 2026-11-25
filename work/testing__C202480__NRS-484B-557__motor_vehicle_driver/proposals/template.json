@@ -1,0 +1,74 @@
+{
+  "template_id": "NRS-484B-557@motor_vehicle_driver",
+  "law_id": "NRS-484B-557",
+  "actor": "motor_vehicle_driver",
+  "quote": "The Department of Transportation, and local authorities with the approval of the Department of Transportation, may designate dangerous highway grade crossings of railroads and erect official traffic-control devices at such crossings directing a stop. When such stop signs are erected the driver of any vehicle shall stop within 50 feet but not less than 15 feet from the nearest track of such a grade crossing and afterward may proceed only upon exercising due care.",
+  "structure": {
+    "law_id": "NRS-484B-557",
+    "activation": {
+      "condition": "DOT or DOT-approved local designation of a highway railroad grade crossing with an official stop sign governing this approach.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "The driver stops within 50 feet but not less than 15 feet from the nearest track, then proceeds only upon exercising due care.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "original_body_gap_ft",
+          "operator": ">=",
+          "value": 15,
+          "unit": "ft"
+        },
+        {
+          "variable": "original_body_gap_ft",
+          "operator": "<=",
+          "value": 50,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Complete cessation precedes any subsequent proceeding at the designated crossing.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "exercising due care",
+        "note": "Original approach conflict, visibility and feasible departure alternatives require independent review; no legal due-care cutoff is chosen."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "planned_stop_body_gap_ft",
+      "kind": "world_setup",
+      "range_or_domain": "requested gap in feet; original body gap is separately observed"
+    },
+    {
+      "name": "stop_behavior",
+      "kind": "controller",
+      "range_or_domain": "complete cessation request or rolling passage"
+    },
+    {
+      "name": "departure_context",
+      "kind": "world_setup",
+      "range_or_domain": "clear approach or reviewed crossing-conflict actor"
+    },
+    {
+      "name": "original_body_gap_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "original four-corner body interval to nearest rail, feet"
+    },
+    {
+      "name": "complete_stop_observed",
+      "kind": "subject_behavior",
+      "range_or_domain": "zero original speed after approach and before track contact"
+    },
+    {
+      "name": "conflict_actor_presence",
+      "kind": "subject_behavior",
+      "range_or_domain": "original second actor body and frame history"
+    }
+  ]
+}

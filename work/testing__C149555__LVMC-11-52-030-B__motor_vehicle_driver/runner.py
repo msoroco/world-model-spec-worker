@@ -149,6 +149,10 @@ def run(output: Path, source_root: Path, inventory_path: Path, *, host: str,
     case_id = config["selected_case_id"]
     site, dossier, copies = copy_original_sources(source_root, inventory, output,
                                                    case_id=case_id)
+    (output / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "native", "diagnostic_fixture": False,
+        "case_id": case_id, "source_inventory_sha256": sha(inventory_path),
+    }, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     site = dict(site, approach_throttle=config["engineering_controller"]["approach_throttle"])
     if client_factory is None:
         import carla
@@ -163,11 +167,25 @@ def run(output: Path, source_root: Path, inventory_path: Path, *, host: str,
     result_path = write_native_result(output, source_manifest)
     delivery_manifest = write_delivery_manifest(output, source_manifest, capture["media"],
                                                 result_path, inventory)
+    require(capture["frames"] == 900 and capture["restoration"].get("restored") is True,
+            "original Native capture or world restoration incomplete")
+    (output / "native-run-status.json").write_text(json.dumps({
+        "case_id": case_id, "frames": capture["frames"], "errors": [],
+        "restoration": capture["restoration"],
+    }, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    from scenario_pipeline.worker_exchange.native_output import seal_capture
+    seal = seal_capture(output, frames=capture["frames"],
+                        restoration=capture["restoration"], errors=[],
+                        encoder_exit_codes={name: 0 for name in capture["media"]},
+                        context={"case_id": case_id,
+                                 "source_inventory_sha256": sha(inventory_path)})
     return {"case_id": case_id, "frames": capture["frames"],
             "result_path": str(result_path), "result_sha256": sha(result_path),
             "source_manifest": source_manifest, "delivery_manifest": str(delivery_manifest),
             "delivery_manifest_sha256": sha(delivery_manifest), "media": capture["media"],
-            "restoration": capture["restoration"]}
+            "restoration": capture["restoration"],
+            "capture_seal_sha256": sha(output / "capture-seal.json"),
+            "capture_events": seal["events"]}
 
 
 def main() -> int:
@@ -186,8 +204,17 @@ def main() -> int:
     inventory = args.source_inventory or os.environ.get("C149555_SOURCE_INVENTORY")
     require(args.output_dir is not None and source_root is not None and
             inventory is not None, "reviewed original source inventory required")
-    print(json.dumps(run(args.output_dir, Path(source_root), Path(inventory),
-                         host=args.host, port=args.port), indent=2, sort_keys=True))
+    try:
+        receipt = run(args.output_dir, Path(source_root), Path(inventory),
+                      host=args.host, port=args.port)
+    except BaseException as error:
+        status = args.output_dir / "native-run-status.json"
+        if args.output_dir.is_dir() and not status.exists():
+            status.write_text(json.dumps({"errors": [str(error)],
+                                          "restoration_verified": False},
+                                         sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        raise
+    print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
 
 

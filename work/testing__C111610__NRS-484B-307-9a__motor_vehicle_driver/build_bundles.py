@@ -10,7 +10,7 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
 SOURCES = ("runner.py", "native_turn.py", "native_capture.py",
            "saved_turn.py", "saved_pair.py", "comparison_audit.py",
-           "analysis.py")
+           "delivery_audit.py", "analysis.py")
 VIEWS = (("overview", 1920, 1080), ("approach", 1280, 720),
          ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 TEST = '''import json
@@ -138,7 +138,10 @@ def build():
                       "fixture_recipe": str((HERE / ("diagnostic-" + suffix + "-recipe.json")).relative_to(HERE.parent.parent)),
                       "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                          "host_env_var": "CARLA_HOST",
-                                         "port_env_var": "CARLA_PORT"}})
+                                         "port_env_var": "CARLA_PORT"},
+                      "candidate_risk": {"status": "none",
+                                         "reason": "The documented failure modes are unavailable or mismatched original signal/permission sources, missing actor readbacks, and failed original camera or motion evidence. A different control or route knob cannot establish those source facts; the strict Native and saved audits reject such attempts."},
+                      "candidates": []})
         if suffix == "yield_pedestrian":
             (HERE / "config.json").write_text(files["config.json"])
     (HERE / "execution-manifest.draft.json").write_text(json.dumps({

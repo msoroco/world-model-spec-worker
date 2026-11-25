@@ -73,14 +73,16 @@ def audit(attempt: Path, processing_path: Path, review_path: Path, *,
     delivery = audit_delivery(manifest, attempt_root=attempt,
                               **({"media_probe": media_probe} if media_probe else {}))
     require(delivery["physical_case_completion"] is True and
-            delivery["full_video_decode"] is True,
-            "physical delivery or full media decode incomplete")
+            delivery["full_video_decode"] is True and
+            delivery["all_participants"] is True and delivery["time_join"] is True,
+            "physical delivery, participants, time join or full media decode incomplete")
     review = read(review_path)
     pixels = audit_pixels(manifest, attempt=attempt, review=review,
                           **({"decode": pixel_decode} if pixel_decode else {}))
     return {"format": "worker-freight-independent-delivery-audit-v1",
             "case_id": case_id, "passed": True, "source_integrity": True,
             "saved_only_processing": True, "full_video_decode": True,
+            "all_participants": True, "time_join": True,
             "actual_pixels_reviewed": pixels["actual_pixels_reviewed"],
             "physical_case_completion": True,
             "processing_sha256": sha(processing_path),

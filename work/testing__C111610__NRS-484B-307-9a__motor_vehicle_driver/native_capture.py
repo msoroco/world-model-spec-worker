@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import math
+import subprocess
 from pathlib import Path
 
 from PIL import Image
@@ -32,10 +33,11 @@ def _json(value):
 
 
 def capture(adapter, site_path, profile_path, output, case_suffix,
-            *, frame_count=600):
+            *, frame_count=600, on_frame=None):
     site_path, profile_path, output = map(Path, (site_path, profile_path, output))
-    if output.exists() and any(output.iterdir()):
-        raise ValueError("original attempt directory must be empty")
+    if output.exists() and any((output / name).exists() for name in
+                                ("manifest.json", "site.json", "telemetry.json")):
+        raise ValueError("original acquisition already exists")
     site_raw, profile_raw = site_path.read_bytes(), profile_path.read_bytes()
     site, profile = json.loads(site_raw), json.loads(profile_raw)
     verify_site(site, site_path.parent)
@@ -127,6 +129,8 @@ def capture(adapter, site_path, profile_path, output, case_suffix,
             path = output / f"{name}-{i:06d}.png"
             ref = _write(path, raw)
             camera_rows[name].append({"frame": i, "source": ref})
+        if on_frame is not None:
+            on_frame(i, original)
     manifest = {"case_suffix": case_suffix, "fps": 20,
                 "duration_frames": 600, "site": site_ref,
                 "camera_profile": profile_ref,
@@ -135,3 +139,37 @@ def capture(adapter, site_path, profile_path, output, case_suffix,
                 "native_source_attestation": attestation,
                 "cameras": camera_rows}
     return _write(output / "manifest.json", _json(manifest))
+
+
+class OriginalVideo:
+    """Encode only verified same-frame PNG bodies into four lossless source videos."""
+
+    def __init__(self, output, profile):
+        self.output = Path(output)
+        self.processes = {}
+        self.profile = profile
+        for name in CAMERAS:
+            width, height = profile["dimensions"][name]
+            command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                       "-f", "image2pipe", "-vcodec", "png", "-r", "20",
+                       "-i", "pipe:0", "-frames:v", "600", "-c:v", "ffv1",
+                       "-level", "3", "-pix_fmt", "bgr0",
+                       str(self.output / (name + ".mkv"))]
+            self.processes[name] = subprocess.Popen(command, stdin=subprocess.PIPE,
+                                                     stderr=subprocess.PIPE)
+
+    def append(self, cameras):
+        for name in CAMERAS:
+            raw = cameras[name]["png_bytes"]
+            self.processes[name].stdin.write(raw)
+
+    def close(self):
+        codes = {}
+        for name, process in self.processes.items():
+            if process.stdin and not process.stdin.closed:
+                process.stdin.close()
+            message = process.stderr.read().decode(errors="replace")
+            codes[name] = process.wait()
+            if codes[name]:
+                raise RuntimeError("source video encoder failed: " + name + ": " + message)
+        return codes

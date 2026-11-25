@@ -33,7 +33,8 @@ def packet(root):
 
 def fake_probe(path):
     width, height = delivery.CAMERAS[path.stem]
-    return {"width": width, "height": height, "r_frame_rate": "20/1", "nb_read_frames": "900"}
+    return {"codec_name": "ffv1", "width": width, "height": height,
+            "r_frame_rate": "20/1", "nb_read_frames": "900"}
 
 
 class SavedDeliveryTests(unittest.TestCase):

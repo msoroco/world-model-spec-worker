@@ -229,6 +229,8 @@ def audit_saved_packet(packet: dict[str, Any]) -> dict[str, Any]:
                (first_rail_contact is None or r["frame"] < first_rail_contact)]
     if not stopped:
         return {"status": "measured", "complete_stop_observed": False, "stop_samples": [],
+                "minimum_body_to_nearest_rail_min_ft": min(
+                    r["body_to_nearest_rail_min_ft"] for r in rows),
                 "first_source_frame": first_source_frame,
                 "last_source_frame": first_source_frame + len(rows) - 1,
                 "proceeding_observed": False, "due_care": "unresolved",
