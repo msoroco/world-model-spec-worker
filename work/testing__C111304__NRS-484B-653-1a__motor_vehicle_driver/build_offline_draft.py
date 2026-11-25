@@ -8,6 +8,7 @@ from pathlib import Path
 
 from encounter import CASES
 from native_acquisition import CAMERAS
+from build_semantic_draft import description
 
 
 HERE = Path(__file__).resolve().parent
@@ -15,7 +16,7 @@ AID = HERE.name
 SOURCE_FILES = (
     "encounter.py", "native_acquisition.py", "site_binding.py",
     "saved_audit.py", "media_audit.py", "carla_adapter.py",
-    "native_runner.py",
+    "native_runner.py", "saved_media.py", "analysis.py",
 )
 
 RUNNER = '''"""Exact C111304 encounter bundle preflight; no unsourced simulation."""
@@ -23,6 +24,7 @@ import argparse
 from dataclasses import asdict
 import hashlib
 import json
+import os
 from pathlib import Path
 from encounter import CASES
 from native_acquisition import CAMERAS
@@ -56,12 +58,28 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     case_id = check()
     if args.check:
         print("diagnostic C111304 encounter bundle passed: " + case_id)
         return
-    raise ValueError("Reviewed original C111304 site, actors and camera sensor sources required")
+    sources = [os.environ.get(name) for name in (
+        "C111304_SITE_SOURCE", "C111304_ACCESS_SOURCE",
+        "C111304_ACCESS_REVIEW", "C111304_CAMERA_PLAN")]
+    if not all(sources):
+        raise ValueError("Reviewed original C111304 site source environment required")
+    if not args.output_dir:
+        raise ValueError("Existing Native attempt --output-dir required")
+    import carla
+    from native_runner import run
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(20.0)
+    print(json.dumps(run(client.get_world(), carla,
+                         case_id.removeprefix(config["assignment_id"] + "__"),
+                         *(Path(value) for value in sources), Path(args.output_dir)),
+                     sort_keys=True))
 
 
 if __name__ == "__main__":
@@ -82,7 +100,7 @@ class BundleTests(unittest.TestCase):
 
     def test_refuses_unsourced_capture(self):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
-            with self.assertRaisesRegex(ValueError, "Reviewed original C111304 site"):
+            with self.assertRaisesRegex(ValueError, "Reviewed original C111304 site source"):
                 runner.main()
 
 
@@ -121,7 +139,7 @@ def build():
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case_id,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_original_sources_pending", "channels": config["cameras"]},
+            "recording_description": description(),
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         output = HERE / ("construction-" + suffix + ".json")

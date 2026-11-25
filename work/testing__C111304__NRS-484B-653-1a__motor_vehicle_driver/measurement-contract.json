@@ -1,0 +1,70 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Qualifying highway or premises to which the public has access",
+      "source": "NRS 484B.653(1)(a) exact exported text in case-plan.json",
+      "output_key": "access_context",
+      "method": "measure_access",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "site.json",
+        "access-review.json",
+        "access-source.txt"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Person driving a vehicle with original controls and route",
+      "source": "NRS 484B.653(1)(a) exact exported text in case-plan.json",
+      "output_key": "driver_control_history",
+      "method": "measure_driver",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-receipt.json",
+        "original-history.jsonl",
+        "original-packets.jsonl",
+        "original-cameras.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Safety context involving persons and property",
+      "source": "NRS 484B.653(1)(a) exact exported text in case-plan.json",
+      "output_key": "person_encounter",
+      "method": "measure_person",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-receipt.json",
+        "original-history.jsonl",
+        "original-packets.jsonl",
+        "original-cameras.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Willful or wanton disregard of safety remains for independent legal review",
+      "source": "NRS 484B.653(1)(a) exact exported text in case-plan.json",
+      "output_key": "property_encounter",
+      "method": "measure_property",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-receipt.json",
+        "original-history.jsonl",
+        "original-packets.jsonl",
+        "original-cameras.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "access-source.txt"
+    ],
+    "error_contains": "Missing required source: access-source.txt"
+  }
+}

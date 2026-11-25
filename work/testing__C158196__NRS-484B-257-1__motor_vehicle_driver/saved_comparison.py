@@ -40,7 +40,7 @@ def audit(left_attempt: Path, right_attempt: Path, comparison_id: str) -> dict:
         left_suffix, right_suffix = "nearest_view_continue", "nearest_view_clear"
         differing = {"through_vehicle_initial_station_m"}
     elif comparison_id == 'governing_signal_exception':
-        left_suffix, right_suffix = 'nearest_view_continue', 'active_signal_exception'
+        left_suffix, right_suffix = 'nearest_view_clear', 'active_signal_exception'
         differing = {'signal_controlling', 'engineering_policy'}
     else:
         raise ValueError("unsupported comparison")

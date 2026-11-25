@@ -2,14 +2,14 @@
   "assignment_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "27b646bb2bb33ecd14d259b65b7b0218d344c887f4900ed2793c920fcef07c95",
   "status": "partial",
-  "readiness_kind": "nearest_view_source_gated_selected_analysis_cpu_proved",
+  "readiness_kind": "source_gated_statutory_matrix_and_diagnostic_compatibility_cpu_proved",
   "applied_update": 0,
   "tests": [
     {
       "command": "TMPDIR=\"$PWD/.runtime-work/c158208-owner-nov24b/tmp\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "3f111ff9d0264c78e03b46bf9e4be7ca05df84a6c1f65fc86f0e173469bf135f"
+      "sha256": "b7d902f9bd36849f1ad824496be732d4858946d81083001478286d1786fd0441"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/build_branch_plan.py",
@@ -87,11 +87,35 @@
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c158208-owner-nov24b/pipeline\" TMPDIR=\"$PWD/.runtime-work/c158208-owner-nov24b/tmp\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/prove_selected_analysis.py",
       "exit_code": 0,
       "log": "cpu-selected-analysis.log",
-      "sha256": "dc2f66285ed6e7f448f4e5ef9e5c70bdc6f2263be6076c6c690b3a51170c20b3"
+      "sha256": "3da61ce0daff97a6588bdabaf06c694400ff03754ac00c0548d4a4491becdbb0"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c158208-owner-nov24b/pipeline\" PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c158208-owner-nov24b/tmp\" .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.diagnostic.json --case testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --output .runtime-work/c158208-owner-nov24b/compat-nearest_view_response --library runtime/library --validator .runtime-work/c158208-owner-nov24b/decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-compatibility-nearest_view_response.json",
+      "sha256": "b707aadc0e88bb06dc2922e80381ab0b01cee921371ef0e4dcae2830351a8487"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c158208-owner-nov24b/pipeline\" PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c158208-owner-nov24b/tmp\" .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.diagnostic.json --case testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_response --attempt .runtime-work/c158208-owner-nov24b/compat-nearest_view_response --output .runtime-work/c158208-owner-nov24b/saved-nearest_view_response --library runtime/library --validator .runtime-work/c158208-owner-nov24b/decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "saved-processing-nearest_view_response.json",
+      "sha256": "5925b0f611f18a6eb6150f373f10024501397fbfb063e6447cffa99d4659b13d"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c158208-owner-nov24b/pipeline\" PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c158208-owner-nov24b/tmp\" .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.diagnostic.json --case testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --output .runtime-work/c158208-owner-nov24b/compat-nearest_view_uninterrupted --library runtime/library --validator .runtime-work/c158208-owner-nov24b/decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-compatibility-nearest_view_uninterrupted.json",
+      "sha256": "9aa5a20ef0a63e1399d2304b9585f8106cdb4a4b95958c296acaa4ed570ce8f7"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c158208-owner-nov24b/pipeline\" PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c158208-owner-nov24b/tmp\" .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.diagnostic.json --case testing__C158208__NRS-484B-257-1__motor_vehicle_driver__nearest_view_uninterrupted --attempt .runtime-work/c158208-owner-nov24b/compat-nearest_view_uninterrupted --output .runtime-work/c158208-owner-nov24b/saved-nearest_view_uninterrupted --library runtime/library --validator .runtime-work/c158208-owner-nov24b/decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "saved-processing-nearest_view_uninterrupted.json",
+      "sha256": "a6590baca932caa7736add8c611871ba131a1814493b1710615c10e02d37aa75"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Sixty-three focused CPU tests pass. Source-hashed selected analysis reopens sealed original ticks and all four camera archives, produces a six-channel Native result with four FFV1 source videos, and passes the pinned Native result and CARLA attempt validators on an explicitly synthetic three-frame fixture; missing source and tampered archive negatives pass. Source-gated production construction and nine semantic draft stages pass their CPU checks. Sweeps remain unexpanded. Genuine reviewed C158208 site and eight original survey sources, full statutory branch cases, selected production manifest and exact compatibility/process-saved receipts remain CPU construction; no physical or legal acceptance is claimed."
+  "reason": "66 focused CPU tests pass. Two exact generated source-shaped cases pass pinned package compatibility and saved-only processing with unchanged originals, Native validation, selected measurements, Core/Lean and final decode and independent delivery source/video audit; missing-source and altered-hash negatives pass. A source-hashed statutory matrix now enumerates seven controlled branches across 11 accepted snapshot case IDs and separately gates three compatible control-cell candidates. These are diagnostic/planning evidence: original reviewed C158208 site and eight survey sources, source-grounded full branch constructions/sweeps, selected production manifest, 900-frame Native capture and physical/legal acceptance remain unproved."
 }

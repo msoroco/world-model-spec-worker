@@ -44,6 +44,8 @@ def build(suffix="two_cycles_clear"):
                                                 "source_kind": "native_world_snapshot"}]
             elif suffix == "no_causal_record":
                 fixture.site["unchanged_signal_cause"] = "not_established"
+                fixture.site["cause_source_ref"] = None
+                fixture.site["original_sources"].pop("cause_ref", None)
             else:
                 raise ValueError("Unknown selected diagnostic case: " + suffix)
             fixture.site["case_id"] = HERE.name + "__" + suffix
@@ -54,6 +56,9 @@ def build(suffix="two_cycles_clear"):
             saved_case = json.loads((root / "saved-manifest.json").read_text())
             saved_case["case_id"] = fixture.site["case_id"]
             saved_case["sources"]["original_events"] = receipt["event_ref"]
+            if suffix == "no_causal_record":
+                saved_case["sources"].pop("cause", None)
+                saved_case["cause_status"] = "not_established"
             (root / "saved-manifest.json").write_text(json.dumps(saved_case) + "\n")
             (root / "trace.jsonl").write_text("".join(json.dumps({
                 "frame": row["frame"], "time_s": row["time_s"],
@@ -140,7 +145,9 @@ def build(suffix="two_cycles_clear"):
         files = ("native-site.json", "saved-manifest.json", "original-events.json",
                  "video_frames.jsonl", "trace.jsonl", "media-receipt.json",
                  "acquisition-provenance.json", "map_ref.json", "route_ref.json",
-                 "signal_ref.json", "stop_ref.json", "crosswalk_ref.json", "cause.json")
+                 "signal_ref.json", "stop_ref.json", "crosswalk_ref.json")
+        if suffix != "no_causal_record":
+            files += ("cause.json",)
         sources = []
         for name, content in (("capture/evidence.jsonl", "\n".join(evidence) + "\n"),
                               ("capture/native/frames.jsonl", "\n".join(frames) + "\n")):

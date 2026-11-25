@@ -1,13 +1,9 @@
-import importlib.util
 from pathlib import Path
+import sys
 import unittest
 
-path = Path(__file__).resolve().parents[1] / 'encounter.py'
-spec = importlib.util.spec_from_file_location('encounter', path)
-module = importlib.util.module_from_spec(spec)
-import sys
-sys.modules[spec.name] = module
-spec.loader.exec_module(module)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import encounter as module
 
 
 class Adapter:

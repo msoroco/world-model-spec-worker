@@ -1,6 +1,7 @@
 """Saved-only conversion of sealed original C111304 camera PNG frames."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -13,9 +14,15 @@ def _sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _safe(path):
-    if not path.is_file() or path.is_symlink():
+def _safe(path, attempt):
+    root = attempt.resolve()
+    if not path.is_file() or path.is_symlink() or root not in path.resolve().parents:
         raise ValueError('original camera source missing or redirected')
+    parent = path.parent
+    while parent != attempt:
+        if parent.is_symlink():
+            raise ValueError('original camera source missing or redirected')
+        parent = parent.parent
 
 
 def encode_original_cameras(attempt: Path, camera_plan: dict, *, ffmpeg='ffmpeg') -> dict:
@@ -24,8 +31,8 @@ def encode_original_cameras(attempt: Path, camera_plan: dict, *, ffmpeg='ffmpeg'
 
     receipt_path = attempt / 'native-receipt.json'
     camera_rows_path = attempt / 'original-cameras.jsonl'
-    _safe(receipt_path)
-    _safe(camera_rows_path)
+    _safe(receipt_path, attempt)
+    _safe(camera_rows_path, attempt)
     receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
     if receipt.get('frame_count') != 900 or receipt.get('original_fps') != 20:
         raise ValueError('sealed original timebase mismatch')
@@ -43,7 +50,7 @@ def encode_original_cameras(attempt: Path, camera_plan: dict, *, ffmpeg='ffmpeg'
             raise ValueError('original camera frame or channel join mismatch')
         for name in CAMERAS:
             path = attempt / 'cameras' / name / f'{frame:06d}.png'
-            _safe(path)
+            _safe(path, attempt)
             if _sha(path) != row['camera_sha256'][name]:
                 raise ValueError(name + ' original PNG hash mismatch')
     encoded_root = attempt / 'encoded'
@@ -67,3 +74,18 @@ def encode_original_cameras(attempt: Path, camera_plan: dict, *, ffmpeg='ffmpeg'
     (attempt / 'camera-media-inventory.json').write_text(
         json.dumps(inventory, sort_keys=True, indent=2) + '\n', encoding='utf-8')
     return inventory
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--attempt', type=Path, required=True)
+    parser.add_argument('--camera-plan', type=Path, required=True)
+    args = parser.parse_args()
+    if not args.camera_plan.is_file() or args.camera_plan.is_symlink():
+        raise ValueError('reviewed camera plan missing or redirected')
+    plan = json.loads(args.camera_plan.read_text(encoding='utf-8'))
+    print(json.dumps(encode_original_cameras(args.attempt, plan), sort_keys=True))
+
+
+if __name__ == '__main__':
+    main()

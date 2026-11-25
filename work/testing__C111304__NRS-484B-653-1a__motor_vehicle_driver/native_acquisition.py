@@ -48,7 +48,7 @@ def capture(adapter, actors: dict, case, site: dict, output: Path, *, frames: in
 
     adapter.tick() returns (original_frame, elapsed_seconds); read_actor returns
     current original state for ego/crossing/occupant/property. read_camera returns
-    (original_frame, raw_camera_bytes) for each named camera. The caller owns the
+    (original_frame, encoded_original_png_bytes) for each named camera. The caller owns the
     supplied adapter; this function brakes ego and destroys its constructed actors.
     """
     from encounter import CASES

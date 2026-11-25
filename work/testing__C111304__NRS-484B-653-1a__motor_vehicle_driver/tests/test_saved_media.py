@@ -66,6 +66,18 @@ class SavedMediaTests(unittest.TestCase):
                 saved_media.encode_original_cameras(root, plan)
             self.assertFalse((root / 'encoded').exists())
 
+    def test_redirected_camera_directory_rejected(self):
+        with TemporaryDirectory() as tmp, TemporaryDirectory() as other:
+            root = Path(tmp)
+            plan = fixture(root)
+            original = root / 'cameras' / 'front'
+            moved = Path(other) / 'front'
+            original.rename(moved)
+            original.symlink_to(moved, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, 'missing or redirected'):
+                saved_media.encode_original_cameras(root, plan)
+            self.assertFalse((root / 'encoded').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

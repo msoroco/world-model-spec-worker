@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import shutil
 
 from carla_adapter import CarlaEncounterAdapter
 from encounter import CASES, build_case
@@ -17,8 +18,12 @@ def run(world, carla, case_id: str, site_path: Path, access_source: Path,
     if len(matches) != 1:
         raise ValueError('unknown exact C111304 case')
     case = matches[0]
-    if not output.is_dir() or any(output.iterdir()):
-        raise ValueError('empty existing Native attempt directory required')
+    if not output.is_dir():
+        raise ValueError('existing Native attempt directory required')
+    if any((output / name).exists() for name in
+           ('site.json', 'access-source.txt', 'access-review.json',
+            'camera-plan.json', 'native-receipt.json', 'original-history.jsonl')):
+        raise ValueError('Native attempt already contains source or acquisition files')
     site = bind_world_site(world, site_path, access_source, access_review,
                            camera_plan_path, case)
     camera_plan = json.loads(camera_plan_path.read_text(encoding='utf-8'))
@@ -27,6 +32,11 @@ def run(world, carla, case_id: str, site_path: Path, access_source: Path,
         adapter.start()
         actors = build_case(adapter, site, case)
         adapter.start_cameras(actors['ego'], output)
+        for source, name in ((site_path, 'site.json'),
+                             (access_source, 'access-source.txt'),
+                             (access_review, 'access-review.json'),
+                             (camera_plan_path, 'camera-plan.json')):
+            shutil.copyfile(source, output / name)
         return capture(adapter, actors, case, site, output)
     finally:
         adapter.cleanup()

@@ -38,6 +38,7 @@ def prove() -> dict:
     from worker_exchange.saved_processing import prepare_video
     from worker_exchange.runtime_cli import process, render
     from worker_exchange.media import audit as audit_video
+    from selected_delivery_audit import audit as audit_delivery
     validator = scratch / "c158208-owner-nov24b" / "decoder/.lake/build/bin/adapterCheck"
     if not validator.is_file():
         raise ValueError("isolated pinned Lean decoder has not been built")
@@ -93,6 +94,25 @@ def prove() -> dict:
                                "recording_description": description,
                                "rationale": "synthetic source-shaped software proof"})
             final_decode = audit_video(rendered["video"], 3)
+            delivery = audit_delivery(fixture_stage, case_id=selected_case,
+                                      diagnostic_fixture=True)
+            if delivery["source_frames"] != 3 or len(delivery["camera_sources"]) != 4:
+                raise ValueError("independent selected delivery audit incomplete")
+            report_path = fixture_stage / "analysis-report.json"
+            original_report = report_path.read_text()
+            altered = json.loads(original_report)
+            altered["measurements"]["nearest_view_history"]["sources"]["capture-identity.json"] = "0" * 64
+            report_path.write_text(json.dumps(altered) + "\n")
+            try:
+                audit_delivery(fixture_stage, case_id=selected_case,
+                               diagnostic_fixture=True)
+            except ValueError as error:
+                if "selected measurement source differs" not in str(error):
+                    raise
+            else:
+                raise ValueError("independent delivery audit accepted altered source hash")
+            finally:
+                report_path.write_text(original_report)
             negative = Path(directory) / ("negative-" + kind)
             materialize_fixture(ROOT, HERE / ("fixture-recipe-" + kind + ".json"), negative)
             (negative / "nearest-view-saved-packet.json").unlink()
@@ -107,6 +127,8 @@ def prove() -> dict:
                               "measurement_keys": sorted(report["measurements"]),
                               "native_result_valid": True, "negative_source_rejected": True,
                               "core_and_lean_valid": True,
+                              "independent_delivery_audit": True,
+                              "altered_source_hash_rejected": True,
                               "final_video_frames": final_decode["frames"],
                               "diagnostic_fixture": native["diagnostic_fixture"]}
         return {"case_id": case, "original_frames": 3,

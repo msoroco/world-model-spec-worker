@@ -40,8 +40,8 @@ class SignalExceptionTests(unittest.TestCase):
     def test_saved_signal_governance_and_fixed_comparison(self):
         with tempfile.TemporaryDirectory() as tmp:
             left, right = Path(tmp) / 'yield', Path(tmp) / 'signal'
-            write_attempt(left, 'nearest_view_continue',
-                          policy='continue_through_observed_traffic', minimum_speed=2.0)
+            write_attempt(left, 'nearest_view_clear',
+                          policy='continue_after_clear_observation', minimum_speed=2.0)
             active = active_attempt(right)
             proof = signal_exception.measure(json.loads(active.read_text()), right)
             self.assertEqual(proof['frame_count'], 7)
@@ -55,8 +55,8 @@ class SignalExceptionTests(unittest.TestCase):
     def test_rejects_stale_signal_and_changed_fixed_context(self):
         with tempfile.TemporaryDirectory() as tmp:
             left, right = Path(tmp) / 'yield', Path(tmp) / 'signal'
-            write_attempt(left, 'nearest_view_continue',
-                          policy='continue_through_observed_traffic', minimum_speed=2.0)
+            write_attempt(left, 'nearest_view_clear',
+                          policy='continue_after_clear_observation', minimum_speed=2.0)
             active = active_attempt(right)
             source = right / 'native' / 'signal_state_readback.json'
             source.write_text('changed\n', encoding='utf-8')
