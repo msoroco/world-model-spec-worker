@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 from saved_entry import CAMERAS, build_report
+from physical_entry import assess as assess_entry
 
 
 def _pipeline_output_root():
@@ -114,6 +115,12 @@ def finalize(attempt):
     _pipeline_output_root()
     from worker_exchange.native_output import physical_result, validate_result
     result = physical_result(root, result)
+    entry_check = assess_entry(report, scene, _jsonl(root / "walker-body-history.jsonl"))
+    result["physical_checks"]["maneuver"] = entry_check
+    result["maneuver_completed"] = entry_check["status"] == "met"
+    result["behavior_attempted"] = result["physical_checks"]["target"]["status"] == "met"
+    result["termination_reason"] = (
+        "Saved entry or waiting source pattern assessed; legal judgment remains separate")
     validate_result(result)
     report.update({"format": "worker-analysis-report",
                    "measurements": {"pedestrian_highway_entry": {

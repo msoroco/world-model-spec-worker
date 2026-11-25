@@ -30,6 +30,12 @@ def make_attempt(root):
     inside = [[1, 3], [2, 3], [2, 4], [1, 4]]
     _write(root, "scene.json", {"law_id": "NRS-484B-307-8b", "cell_id": "C227824",
                                 "actor": "pedestrian", "case_id": CASE,
+                                "map_source_sha256": "a" * 64,
+                                "facing_head_id": 5,
+                                "walker_blueprint_id": "walker.pedestrian.test",
+                                "route_id": "crossing-1", "camera_placements": {"views": 4},
+                                "entry_request": "entry",
+                                "requested_pedestrian_indication": "none",
                                 "highway_polygon_xy_m": [[0, 0], [8, 0], [8, 8], [0, 8]]})
     _write(root, "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture",
                                                   "diagnostic_fixture": True})
@@ -73,6 +79,9 @@ class SavedEntryTests(unittest.TestCase):
         self.assertTrue(report["diagnostic_fixture"])
         self.assertFalse(report["actual_pixels_verified"])
         self.assertFalse(report["physical_acceptance_claimed"])
+        self.assertEqual(report["map_sha256"], "a" * 64)
+        self.assertEqual(report["entry_request"], "entry")
+        self.assertEqual(report["planned_device_indication"], "none")
 
     def test_rejects_changed_source_hash(self):
         with (self.root / "signal-history.jsonl").open("a") as stream:

@@ -1,6 +1,8 @@
 """A 900-frame saved fixture exercises the actual selected analyzer entrypoint."""
 import json
+import hashlib
 from pathlib import Path
+import subprocess
 import sys
 import unittest
 
@@ -79,6 +81,43 @@ class AnalysisTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "event/camera frame join"):
             analysis.analyze(self.root)
         self.assertFalse((self.root / "result.json").exists())
+
+    def test_full_video_native_validation_remains_diagnostic(self):
+        from batch_pipeline.carla import validate_attempt
+        trace_path = self.root / "trace.jsonl"
+        trace = [json.loads(line) for line in trace_path.read_text().splitlines()]
+        for row in trace:
+            row.update(heading_deg=0.0, velocity_mps=[row["speed_mps"], 0, 0],
+                       position={"x": row["position_m"][0], "y": 0, "z": 0})
+        trace_path.write_text("".join(json.dumps(row) + "\n" for row in trace))
+        saved = json.loads((self.root / "saved-manifest.json").read_text())
+        for name, view in saved["camera_views"].items():
+            video = self.root / (name + ".mkv")
+            video.unlink()
+            subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                            "-f", "lavfi", "-i", "color=c=black:s=16x16:r=20",
+                            "-frames:v", "900", "-an", "-c:v", "ffv1", "-threads", "1",
+                            "-fflags", "+bitexact", "-flags:v", "+bitexact", str(video)],
+                           check=True)
+            view["source"]["sha256"] = hashlib.sha256(video.read_bytes()).hexdigest()
+        (self.root / "saved-manifest.json").write_text(json.dumps(saved) + "\n")
+        analysis.analyze(self.root)
+        construction = json.loads((ROOT / "construction-two_cycles_clear.json").read_text())
+        proposal = json.loads((ROOT / "proposals/cases.json").read_text())
+        case = next(row for row in proposal["cases"] if row["case_id"].endswith("__two_cycles_clear"))
+        validated = validate_attempt(self.root,
+                                     {"case": case, "cell": {"cell_id": "C111125"},
+                                      "actor": "motorcycle_or_moped_operator"},
+                                     construction, {"recorded_exit_code": 0}, {}, source_audits={})
+        self.assertTrue(validated["rebuild_required"])
+        self.assertFalse(validated["situation_confirmed"])
+        self.assertEqual(len(validated["video_references"]), 4)
+        (self.root / "overview.mkv").unlink()
+        with self.assertRaisesRegex(ValueError, "Missing or out-of-attempt recording"):
+            validate_attempt(self.root,
+                             {"case": case, "cell": {"cell_id": "C111125"},
+                              "actor": "motorcycle_or_moped_operator"},
+                             construction, {"recorded_exit_code": 0}, {}, source_audits={})
 
 
 if __name__ == "__main__":

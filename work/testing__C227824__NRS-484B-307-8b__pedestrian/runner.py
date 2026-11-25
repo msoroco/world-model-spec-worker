@@ -27,6 +27,9 @@ def check(attempt):
     scene = json.loads(scene_path.read_text())
     if not isinstance(scene, dict):
         raise ValueError("materialized Native scene must be an object")
+    if (scene.get("law_id"), scene.get("cell_id"), scene.get("actor")) != (
+            "NRS-484B-307-8b", "C227824", "pedestrian"):
+        raise ValueError("materialized Native scene exact law, cell or actor differs")
     root = _materialized(scene, root)
     for name, key in (("config.json", "selected_case_id"),
                       ("construction.json", "case_id"),

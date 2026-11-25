@@ -12,7 +12,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from source_tick_capture import TickCapture, write_capture_identity
-from camera_sources import CAMERAS, audit_camera_sources, write_camera_sources
+from camera_sources import CAMERAS, _verify_raw_bgra_hash, audit_camera_sources, write_camera_sources
 from saved_finalizer import finalize
 
 
@@ -71,6 +71,13 @@ def fixture(attempt):
 
 
 class CameraSourcesTests(unittest.TestCase):
+    def test_archived_png_reconstructs_opaque_original_bgra(self):
+        import hashlib
+        original = b"\x00\x00\xff\xff" * (8 * 6)
+        _verify_raw_bgra_hash(png("red"), hashlib.sha256(original).hexdigest(), "overview")
+        with self.assertRaisesRegex(ValueError, "BGRA source hash differs"):
+            _verify_raw_bgra_hash(png("blue"), hashlib.sha256(original).hexdigest(), "overview")
+
     def test_saved_finalizer_joins_measurement_and_decoded_pixels(self):
         with tempfile.TemporaryDirectory() as directory:
             attempt = Path(directory) / "attempt"

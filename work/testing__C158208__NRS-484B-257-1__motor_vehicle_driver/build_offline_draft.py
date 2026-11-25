@@ -39,8 +39,18 @@ def check():
         raise ValueError("case is absent from frozen nearest-view comparison")
     if config["selected_case_id"] != scene["case_id"] or config["case"]["kind"] != scene["kind"]:
         raise ValueError("selected case and scene differ")
-    if scene["source_kind"] != "diagnostic_review_context":
-        raise ValueError("unexpected source kind in diagnostic bundle")
+    if scene["source_kind"] == "original_reviewed_site":
+        site_path = Path(scene["site_source"])
+        if site_path.is_absolute() or len(site_path.parts) != 1:
+            raise ValueError("reviewed Native site must be embedded in construction")
+        site_bytes = (root / site_path).read_bytes()
+        if hashlib.sha256(site_bytes).hexdigest() != scene["site_sha256"]:
+            raise ValueError("reviewed Native site packet changed")
+        site = json.loads(site_bytes)
+        if site.get("review_status") != "reviewed" or site.get("cell_id") != "C158208":
+            raise ValueError("genuine reviewed Native site required")
+    elif scene["source_kind"] != "diagnostic_review_context":
+        raise ValueError("unknown Native source kind")
     validate_geometry(scene["capture_geometry"])
     control(scene["kind"], {"ego_speed_mps": 3.0, "distance_to_view_point_m": 5.0,
                            "through_vehicle_in_conflict_interval": True,
@@ -53,12 +63,28 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     scene = check()
     if args.check:
-        print("diagnostic offline check passed: " + scene["case_id"])
+        print("source-gated offline check passed: " + scene["case_id"])
         return
-    raise ValueError("Diagnostic review context is not a genuine Native site packet; capture is refused")
+    if scene["source_kind"] == "diagnostic_review_context":
+        raise ValueError("Diagnostic review context is not a genuine Native site packet; capture is refused")
+    from carla_scene_adapter import CarlaSceneAdapter
+    from native_attempt import run_native_attempt
+    from scenario_pipeline.worker_exchange import world_restore
+    import carla
+    root = Path(__file__).resolve().parent
+    site = root / scene["site_source"]
+    if hashlib.sha256(site.read_bytes()).hexdigest() != scene["site_sha256"]:
+        raise ValueError("reviewed Native site packet changed")
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30.0)
+    run_native_attempt(client, CarlaSceneAdapter(carla), world_restore,
+                       case_id=scene["case_id"], construction=root / "construction.json",
+                       reviewed_site_packet=site, attempt=Path(args.output_dir))
 
 
 if __name__ == "__main__":
@@ -81,6 +107,10 @@ class BundleTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         self.assertEqual(hashlib.sha256((root / scene["review_source"]).read_bytes()).hexdigest(),
                          scene["review_sha256"])
+        config = json.loads((root / "config.json").read_text())
+        self.assertEqual(config["rate_hz"] * config["duration_s"], 900)
+        self.assertEqual(config["cameras"], ["overview", "approach",
+                                              "reference_corner", "driver_reference"])
 
     def test_controller_isolates_conflict_response(self):
         scene = check()
@@ -118,14 +148,19 @@ def build():
                  "capture_geometry": DIAGNOSTIC_GEOMETRY}
         config = {"law_id": "NRS-484B-257-1", "cell_id": "C158208",
                   "actor": "motor_vehicle_driver", "selected_case_id": case_id,
-                  "rate_hz": 20, "duration_s": 20,
+                  "rate_hz": 20, "duration_s": 45,
                   "case": {"kind": kind, "comparison_variable": "observed_conflict_response"},
-                  "required_atoms": [], "source_packets": [], "cameras": ["front", "rear", "left", "right"]}
+                  "required_atoms": [], "source_packets": [],
+                  "cameras": ["overview", "approach", "reference_corner", "driver_reference"]}
         files = {"runner.py": RUNNER, "yield_control.py": (HERE / "yield_control.py").read_text(),
                  "source_tick_capture.py": (HERE / "source_tick_capture.py").read_text(),
                  "native_attempt.py": (HERE / "native_attempt.py").read_text(),
+                 "carla_scene_adapter.py": (HERE / "carla_scene_adapter.py").read_text(),
                  "camera_sources.py": (HERE / "camera_sources.py").read_text(),
                  "physical_completion.py": (HERE / "physical_completion.py").read_text(),
+                 "nearest_view_measurement.py": (HERE / "nearest_view_measurement.py").read_text(),
+                 "saved_finalizer.py": (HERE / "saved_finalizer.py").read_text(),
+                 "delivery_audit.py": (HERE / "delivery_audit.py").read_text(),
                  "scene.json": json.dumps(scene, indent=2) + "\n",
                  "config.json": json.dumps(config, indent=2) + "\n",
                  "review-context.json": frozen,

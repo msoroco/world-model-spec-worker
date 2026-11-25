@@ -10,7 +10,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_attempt import run_native_attempt
+from native_attempt import REVIEW_SOURCES, run_native_attempt, verify_review_sources
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
 GEOMETRY = {"ego_route_origin_xy_m": [-10, 5], "ego_route_axis_xy": [1, 0],
@@ -165,6 +165,26 @@ class NativeAttemptTests(unittest.TestCase):
             self.run_attempt()
         self.assertEqual(self.restore.calls, [])
         self.assertEqual(self.adapter.destroyed, [])
+
+    def test_original_review_requires_all_hashed_site_sources(self):
+        site = json.loads(self.site.read_text())
+        site.pop("diagnostic_fixture")
+        site["source_provenance"] = "native_operator_review"
+        site["source_bindings"] = {}
+        for name in REVIEW_SOURCES:
+            path = self.root / (name + ".txt")
+            data = b"<OpenDRIVE>site</OpenDRIVE>" if name == "native_map" else name.encode()
+            path.write_bytes(data)
+            site["source_bindings"][name] = {"path": path.name,
+                                              "sha256": hashlib.sha256(data).hexdigest()}
+        self.assertEqual(len(verify_review_sources(site, self.site,
+                                                   diagnostic_fixture=False)), 8)
+        (self.root / "yield_sign.txt").write_text("changed")
+        with self.assertRaisesRegex(ValueError, "yield_sign original source hash differs"):
+            verify_review_sources(site, self.site, diagnostic_fixture=False)
+        site["source_bindings"].pop("yield_sign")
+        with self.assertRaisesRegex(ValueError, "complete original Native site source"):
+            verify_review_sources(site, self.site, diagnostic_fixture=False)
 
 
 if __name__ == "__main__":

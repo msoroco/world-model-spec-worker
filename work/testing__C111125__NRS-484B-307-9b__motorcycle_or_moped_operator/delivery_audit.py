@@ -56,6 +56,8 @@ def audit_saved(root, manifest):
     need(all(r.get('actor_id') == manifest.get('actor_id') for r in rows), 'ego actor drift')
     views = manifest.get('camera_views')
     need(isinstance(views, dict) and set(views) == set(VIEWS), 'four-view capture missing')
+    source_paths = [views[name]['source']['path'] for name in VIEWS]
+    need(len(set(source_paths)) == len(source_paths), 'four-view sources must be distinct')
     for name in VIEWS:
         view = views[name]
         sealed(root, view['source'])

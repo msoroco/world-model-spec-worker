@@ -37,6 +37,16 @@ def _decode(data: bytes, dimensions: tuple[int, int]) -> None:
         image.load()
 
 
+def _verify_raw_bgra_hash(data: bytes, expected: str, name: str) -> None:
+    """Prove the archived lossless PNG reconstructs the original opaque BGRA."""
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise ValueError(f"{name} original BGRA source hash missing")
+    with Image.open(BytesIO(data)) as image:
+        reconstructed = image.convert("RGBA").tobytes("raw", "BGRA")
+    if _sha(reconstructed) != expected:
+        raise ValueError(f"{name} original BGRA source hash differs")
+
+
 def _safe_file(attempt: Path, name: str) -> Path:
     if not isinstance(name, str) or Path(name).name != name or not name:
         raise ValueError("camera source path must be a direct attempt child")
@@ -70,6 +80,7 @@ def write_camera_sources(attempt: Path, frames: list[dict], *,
     packet = verify_seal(attempt)
     identity, identity_sha = _identity(attempt, diagnostic_fixture)
     samples = packet["samples"]
+    raw_rows = [json.loads(line) for line in (attempt / "nearest-view-original-ticks.jsonl").read_text().splitlines()]
     if len(frames) != len(samples) or (not diagnostic_fixture and len(frames) != 900):
         raise ValueError("camera count differs from 900-frame original tick source")
     dimensions = {name: DIMENSIONS[name] if not diagnostic_fixture else (8, 6)
@@ -86,11 +97,16 @@ def write_camera_sources(attempt: Path, frames: list[dict], *,
         if not isinstance(sources, dict) or set(sources) != set(CAMERAS):
             raise ValueError("four original cameras required for every tick")
         row = {"frame": sample["frame"], "time_s": sample["time_s"], "cameras": {}}
+        raw_hashes = raw_rows[len(rows)].get("camera_raw_bgra_sha256")
+        if not diagnostic_fixture and (not isinstance(raw_hashes, dict) or set(raw_hashes) != set(CAMERAS)):
+            raise ValueError("four original BGRA camera hashes required")
         for name in CAMERAS:
             data = sources[name]
             if not isinstance(data, bytes):
                 raise ValueError("original camera source must be PNG bytes")
             _decode(data, dimensions[name])
+            if isinstance(raw_hashes, dict) and name in raw_hashes:
+                _verify_raw_bgra_hash(data, raw_hashes[name], name)
             row["cameras"][name] = _sha(data)
         rows.append(row)
     for name, path in archives.items():
@@ -125,6 +141,7 @@ def audit_camera_sources(attempt: Path, *, diagnostic_fixture: bool = False) -> 
     if manifest.get("case_id") != identity["case_id"] or manifest.get("capture_identity_sha256") != identity_sha:
         raise ValueError("camera manifest capture identity differs")
     samples = packet["samples"]
+    raw_rows = [json.loads(line) for line in (attempt / "nearest-view-original-ticks.jsonl").read_text().splitlines()]
     rows = manifest.get("rows")
     if not isinstance(rows, list) or len(rows) != len(samples) or (not diagnostic_fixture and len(rows) != 900):
         raise ValueError("camera count differs from 900-frame original tick source")
@@ -148,11 +165,16 @@ def audit_camera_sources(attempt: Path, *, diagnostic_fixture: bool = False) -> 
         with ZipFile(path) as archive:
             if archive.namelist() != expected_members:
                 raise ValueError(f"{name} original camera frame map differs")
-            for member, row in zip(expected_members, rows):
+            for index, (member, row) in enumerate(zip(expected_members, rows)):
                 data = archive.read(member)
                 if _sha(data) != row["cameras"][name]:
                     raise ValueError(f"{name} original camera pixel hash differs")
                 _decode(data, dimensions)
+                raw_hashes = raw_rows[index].get("camera_raw_bgra_sha256")
+                if not diagnostic_fixture and (not isinstance(raw_hashes, dict) or name not in raw_hashes):
+                    raise ValueError(f"{name} original BGRA source hash missing")
+                if isinstance(raw_hashes, dict) and name in raw_hashes:
+                    _verify_raw_bgra_hash(data, raw_hashes[name], name)
     return {"format": "c158208-saved-camera-audit-v1", "frame_count": len(rows),
             "decoded_images": len(rows) * len(CAMERAS),
             "camera_manifest_sha256": _sha(manifest_path.read_bytes()),

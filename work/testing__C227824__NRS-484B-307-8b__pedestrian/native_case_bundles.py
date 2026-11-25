@@ -50,7 +50,9 @@ def expand(plan, *, no_device_base, one_device_base):
         if case_id in result:
             raise ValueError("duplicate exact pedestrian case")
         scene = deepcopy(no_device_base if intended[0] == "none" else one_device_base)
-        scene.update({"case_id": case_id, "entry_request": intended[1],
+        scene.update({"law_id": plan["law_id"], "cell_id": plan["cell_id"],
+                      "actor": plan["actor"], "case_id": case_id,
+                      "entry_request": intended[1],
                       "requested_pedestrian_indication": intended[0]})
         result[case_id] = scene
     if {key[len(prefix) + 2:] for key in result} != set(expected):

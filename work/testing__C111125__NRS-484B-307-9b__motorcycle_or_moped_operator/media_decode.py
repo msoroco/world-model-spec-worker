@@ -52,6 +52,9 @@ def audit_four_views(root, views, expected_frames):
     names = ('overview', 'approach', 'reference_corner', 'driver_reference')
     if set(views) != set(names):
         raise MediaError('four-view capture missing')
+    paths = [views[name]['source']['path'] for name in names]
+    if len(set(paths)) != len(paths):
+        raise MediaError('four-view sources must be distinct')
     result = {}
     for name in names:
         item = views[name]
@@ -71,7 +74,7 @@ def audit_manifest(root, manifest_ref, output_path):
         raise MediaError('media manifest hash mismatch')
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     count = manifest.get('duration_frames')
-    if not isinstance(count, int) or count < 900 or manifest.get('fps') != 20:
+    if not isinstance(count, int) or count != 900 or manifest.get('fps') != 20:
         raise MediaError('45 second 20 Hz capture missing')
     if not manifest.get('case_id'):
         raise MediaError('case identity missing')

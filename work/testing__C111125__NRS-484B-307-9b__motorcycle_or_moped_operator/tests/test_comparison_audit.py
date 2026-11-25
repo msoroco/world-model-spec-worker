@@ -23,6 +23,7 @@ class ComparisonTest(unittest.TestCase):
 
     def test_each_declared_difference_and_fixed_conditions(self):
         changes = {'one_cycle_entry': ('full_cycles_after_stop', 1),
+                   'three_cycles_clear': ('full_cycles_after_stop', 3),
                    'rolling_entry': ('stopped_frame', None),
                    'no_causal_record': ('unchanged_signal_cause', 'not_established'),
                    'pedestrian_crosswalk': ('other_user_region', 'adjacent_crosswalk'),

@@ -51,6 +51,11 @@ class DeliveryTest(unittest.TestCase):
         with self.assertRaisesRegex(audit.DeliveryError, 'alignment'):
             audit.audit_saved(self.root, self.manifest)
 
+    def test_reused_camera_source_rejected(self):
+        self.manifest['camera_views']['approach']['source'] = self.manifest['camera_views']['overview']['source']
+        with self.assertRaisesRegex(audit.DeliveryError, 'distinct'):
+            audit.audit_saved(self.root, self.manifest)
+
     def test_rejects_hash_and_frame_loss(self):
         self.manifest['sources']['map']['sha256'] = '0'*64
         with self.assertRaisesRegex(audit.DeliveryError, 'hash mismatch'):

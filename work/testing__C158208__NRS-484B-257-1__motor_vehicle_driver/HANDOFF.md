@@ -120,3 +120,28 @@ Current SHA-256 bound logs:
 - `cpu-assignment-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` (exit 1)
 - `cpu-saved-finalizer-tests.log`: `deed176962d1cb1a4c11165c89fca5e9dfc01e2dff265e7eda9a385abae82902` (exit 0)
 - `cpu-preflight-native.log`: `b61ed2ce22cdfe7c7c30eb02b30d3ea499834ea5979b77d576353607d5cec7e6` (exit 0)
+
+## 2026-11-24 source-gated Native adapter and independent audit checkpoint
+
+`case-plan.json` now names the two frozen nearest-view exact cases, the `yield_nearest_view` controlled comparison, the 45-second/20-Hz four-camera plan, the evidence gap and physical risks. This remains a partial plan; eight other frozen review-context topic descriptions are not asserted covered by these two diagnostic bundles.
+
+`carla_scene_adapter.py` adds an executable CARLA-lazy scene implementation. It requires a reviewed `native_scene` with ego/through blueprint IDs and transforms, four camera extrinsics and FOVs, and a live yield-sign actor ID. It sets and reads back synchronous 20 Hz settings, spawns owned actors/sensors, reads original eight-corner body hulls and velocity, casts the original visibility ray, joins four same-tick camera frames and applies the observed-response controller. `native_attempt.py` now checks eight adjacent SHA-bound original survey files for production, compares loaded OpenDRIVE, and restores the world after ownership. Diagnostic tests use explicit synthetic provenance.
+
+`camera_sources.py` now verifies that each archived lossless PNG reconstructs the original opaque BGRA bytes via the hash retained in the sealed original tick. `delivery_audit.py` independently reopens the sealed ticks, four camera archives, saved report, physical traversal and Native owner-release receipt; production mode requires the exact reviewed construction/site/map hashes and 900 original frames. Its result explicitly leaves physical acceptance false and legal status unresolved. The current 3-frame diagnostic audit positive and missing-media/stale-report/case/provenance negatives pass. Production composed-video decode and visual review still need implementation and evidence.
+
+Both exact diagnostic constructions embed the adapter, saved finalizer and independent audit and pass pinned `runtime.py offline` with three embedded tests each. The synthetic physical-preparation receipts were rebuilt for the changed constructions and pass the pinned validator. The source-gated production runner branch is present in each bundle, but the frozen export supplies only accepted metadata and authored review settings, no genuine C158208 OpenDRIVE/sign/stop-line/crosswalk/sidewalk/through-highway/viewpoint source bytes or camera/trace bytes. No source review or physical claim was fabricated.
+
+Proofs (all under this directory):
+
+- `cpu-tests.log`: SHA-256 `8b4a90fbdf91544f2b639dad542bf3f58f2790b5459966a0d467488286ea2604`; exit 0.
+- `cpu-draft-build.log`: SHA-256 `b7f015a78bc7d6331ee51a630df516b4ddd81de327de7b2c8fb0815f54cddbce`; exit 0.
+- `cpu-nearest_view_response.log`: SHA-256 `0cfb6dbb85079ecc90dfd88fec42c5ac0c21ea28cb17db92a7993c907de8077d`; exit 0.
+- `cpu-nearest_view_uninterrupted.log`: SHA-256 `4c5192377f3250352e0b75ac4c988467a39a646ef2922a2c4eb649b9f282793a`; exit 0.
+- `cpu-physical-build.log`: SHA-256 `dfe68152fca895be0a9cd0f5deb11f4b34e71b6dc80e810710eadde826bf18db`; exit 0.
+- `cpu-physical-validator.log`: SHA-256 `d2505ecb3764a7890feecc24917d30abcd6950542fa061affa7a7f8479085f16`; exit 0.
+- `cpu-assignment-static.log`: SHA-256 `5d6a52e3ac3676f689ef42a0d023b341b13484b36161a633bb95587b2217a899`; exit 0.
+- `cpu-assignment-strict.log`: SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`; exit 1 (truthful partial).
+
+Exact scoped static command: `.venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-1__motor_vehicle_driver --complete` (exit 0). Exact scoped delivery-ready command with `--require-delivery-ready` exits 1 because the result is still partial.
+
+Next CPU actions: obtain/review a genuine C158208 site packet and its eight original source bindings; construct and test the remaining compatible statutory branches and canonical semantic proposals; convert these diagnostic bundles into a selected `execution-manifest.json` with case-specific measurement contracts and source-hashed recipes; run pinned positive/missing-source compatibility and saved-only processing for each exact case; add composed-video decode and production delivery/comparison audit proofs; repeat the exact scoped strict gate. Physical CARLA motion, actual pixels and legal judgment remain later local review.

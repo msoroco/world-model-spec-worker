@@ -2,6 +2,7 @@
 
 PAIRS = {
     'complete_cycle_count': ('two_cycles_clear', 'one_cycle_entry', 'full_cycles_after_stop', (2, 1)),
+    'complete_cycle_count_above': ('two_cycles_clear', 'three_cycles_clear', 'full_cycles_after_stop', (2, 3)),
     'stopping_event': ('two_cycles_clear', 'rolling_entry', 'stopped_frame', ('present', 'absent')),
     'causal_record': ('two_cycles_clear', 'no_causal_record', 'unchanged_signal_cause', ('failed_detection', 'not_established')),
     'crosswalk_yield': ('two_cycles_clear', 'pedestrian_crosswalk', 'other_user_region', ('clear', 'adjacent_crosswalk')),

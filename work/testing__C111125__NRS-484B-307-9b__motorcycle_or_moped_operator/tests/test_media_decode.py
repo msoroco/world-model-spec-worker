@@ -43,8 +43,8 @@ class MediaDecodeTest(unittest.TestCase):
         item = {'source': self.ref, 'width': 32, 'height': 24}
         views = {name: item for name in ('overview', 'approach', 'reference_corner',
                                          'driver_reference')}
-        result = media_decode.audit_four_views(self.root, views, 40)
-        self.assertEqual(len(result), 4)
+        with self.assertRaisesRegex(media_decode.MediaError, 'distinct'):
+            media_decode.audit_four_views(self.root, views, 40)
         with self.assertRaisesRegex(media_decode.MediaError, 'four-view'):
             media_decode.audit_four_views(self.root, {'overview': item}, 40)
 
@@ -55,8 +55,13 @@ class MediaDecodeTest(unittest.TestCase):
         ref = {'path': self.path.name,
                'sha256': hashlib.sha256(self.path.read_bytes()).hexdigest()}
         item = {'source': ref, 'width': 32, 'height': 24}
-        views = {name: item for name in ('overview', 'approach', 'reference_corner',
-                                         'driver_reference')}
+        views = {}
+        for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
+            target = self.root / (name + '.mkv')
+            target.write_bytes(self.path.read_bytes())
+            views[name] = {'source': {'path': target.name,
+                                      'sha256': hashlib.sha256(target.read_bytes()).hexdigest()},
+                           'width': 32, 'height': 24}
         manifest = {'case_id': 'exact-case', 'fps': 20, 'duration_frames': 900,
                     'camera_views': views}
         path = self.root / 'media-manifest.json'
@@ -71,3 +76,10 @@ class MediaDecodeTest(unittest.TestCase):
         with self.assertRaisesRegex(media_decode.MediaError, 'manifest hash'):
             media_decode.audit_manifest(self.root, dict(manifest_ref, sha256='0' * 64),
                                         self.root / 'bad.json')
+        manifest['duration_frames'] = 901
+        path.write_text(json.dumps(manifest), encoding='utf-8')
+        with self.assertRaisesRegex(media_decode.MediaError, '45 second'):
+            media_decode.audit_manifest(self.root,
+                                        {'path': path.name,
+                                         'sha256': hashlib.sha256(path.read_bytes()).hexdigest()},
+                                        self.root / 'bad-duration.json')

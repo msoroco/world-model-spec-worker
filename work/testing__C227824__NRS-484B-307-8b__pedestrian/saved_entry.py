@@ -98,9 +98,21 @@ def build_report(attempt):
                         "facing_traffic_signal": signal.get("facing_traffic_signal"),
                         "other_devices": device.get("other_devices")})
     measured = measure_entry(samples, scene.get("highway_polygon_xy_m"))
+    def context_hash(value):
+        return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"),
+                                         allow_nan=False).encode()).hexdigest()
+
     return {"format": "worker-saved-entry-measurement",
             "case_id": case_id, "provenance_kind": kind,
             "diagnostic_fixture": fixture, "sample_count": count,
+            "map_sha256": scene.get("map_source_sha256"),
+            "highway_boundary_sha256": context_hash(scene.get("highway_polygon_xy_m")),
+            "facing_signal_id": scene.get("facing_head_id"),
+            "actor_blueprint": scene.get("walker_blueprint_id"),
+            "route_id": scene.get("route_id"),
+            "camera_plan_sha256": context_hash(scene.get("camera_placements")),
+            "entry_request": scene.get("entry_request"),
+            "planned_device_indication": scene.get("requested_pedestrian_indication"),
             "measurement": measured, "source_sha256": source_hashes,
             "actual_pixels_verified": False,
             "physical_acceptance_claimed": False,

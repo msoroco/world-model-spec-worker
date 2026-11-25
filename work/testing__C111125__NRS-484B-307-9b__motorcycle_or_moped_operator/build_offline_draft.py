@@ -8,7 +8,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCES = ('signal_exception.py', 'original_capture.py', 'native_session.py', 'camera_capture.py', 'saved_measurement.py',
-           'comparison_audit.py', 'delivery_audit.py', 'media_decode.py', 'operator_native_adapter.py', 'analysis.py')
+           'comparison_audit.py', 'prove_comparison.py', 'delivery_audit.py', 'media_decode.py',
+           'operator_native_adapter.py', 'analysis.py')
 
 
 def recording_description():

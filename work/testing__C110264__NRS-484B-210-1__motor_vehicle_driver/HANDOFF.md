@@ -129,3 +129,25 @@ The local Native path now has source-station-to-world interpolation, a bounded t
 Three primary and three fallback diagnostic constructions passed `runtime.py offline` on the pinned runtime under `.runtime-work/c110264-output/offline4-*`. The 48-test CPU suite passed in `cpu-native-controller-tests.log`; current `runtime.py preflight` passed in `cpu-native-preflight.log`. Scoped `worker_check.py --complete` passed. Status remains partial until the exact scoped strict gate exits 0.
 
 Next CPU work on this same assignment: build selected `execution-manifest.json`, measurement contracts and textual fixture recipes; add a package analysis entrypoint that reads source-bound saved diagnostic evidence without replacing the production full-PNG audit; run pinned positive and case-source-removed negative compatibility for each primary and fallback; prove saved-only processing, three physical outcomes/lifecycle, independent delivery and both comparison audits. For later physical acquisition, obtain an original reviewed public-highway/intersection map packet with world XY centerline anchors, paved bounds, actor dimensions, `native_setup` and independently reviewed `fallback_native_setup`, all bound to loaded OpenDRIVE SHA-256. Actual CARLA motion, target light-state readback, paved clearance and camera visibility remain unverified.
+
+## 2026-11-24 selected CPU construction and proof checkpoint
+
+Canonical semantic proposals cover the three exact paragraph (a) cases: `left_signal`, `left_turn`, and `neither`. The selected manifest binds three primary source-gated Native constructions and three independently reviewed fallback-role constructions. Its direct pinned `execution_manifest.validate` passed after all six pinned compatibility runs. Each compatibility run executed the selected saved analyzer, Core/Lean and four-view decode and rejected removal of the case-specific original Native trace. All three `runtime.py process-saved` diagnostic source replays passed, preserved acquisition hashes, and made no physical or legal acceptance claim.
+
+The assignment-local diagnostic delivery proof independently reopened sealed map, route, trace and 900-frame four-camera join for each case. It passed three positives and rejected three missing-trace negatives. Both exact comparison audits passed against independently reopened case attempts and rejected swapped case identities. The production-profile CPU proof decoded all 3,600 original-shaped PNGs at the required 1920x1080/1280x720 dimensions and rejected a tampered rear-camera source. Those pixels are synthetic and remain under `.runtime-work`; they do not establish original Native capture or legal outcome.
+
+For the later local Native attempt, supply a reviewed source map packet with public-highway/intersection and paved-boundary evidence, world XY centerline anchors, actor dimensions, loaded OpenDRIVE SHA-256, `native_setup`, and independently reviewed `fallback_native_setup`. Preserve actual CARLA readback, original camera PNG archives, physical right-pass and signal/turn observation, then run the assignment-local production source auditor. Other NRS 484B.210 permission alternatives and legal necessity remain unresolved.
+
+Production additional-source audit command template for each exact case:
+
+```
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/pass_right_audit.py --attempt "$ATTEMPT" --manifest "$ATTEMPT_SOURCE_MANIFEST" --full-media --output "$SOURCE_AUDIT_OUTPUT"
+```
+
+Production comparison audit command templates use two independent Native attempt roots and their own source manifests. Replace `COMPARISON_ID` with `left_signal_presence` or `left_turn_motion_presence`; pair left_signal/neither or left_turn/neither respectively:
+
+```
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/pass_right_audit.py --attempt-a "$ATTEMPT_A" --manifest-a "$ATTEMPT_A_SOURCE_MANIFEST" --attempt-b "$ATTEMPT_B" --manifest-b "$ATTEMPT_B_SOURCE_MANIFEST" --comparison-id "$COMPARISON_ID" --full-media --output "$COMPARISON_AUDIT_OUTPUT"
+```
+
+The first strict run exited 1 at the missing primary negative-log binding in the selected manifest. That binding was added, and the exact scoped strict gate then exited 0 with `static_checks_passed: true`. `result.json` is ready and declares `delivery_prepared`.

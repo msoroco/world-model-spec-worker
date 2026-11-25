@@ -17,6 +17,39 @@ from yield_control import KINDS, control
 
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
+REVIEW_SOURCES = ("native_map", "yield_sign", "stop_line_survey",
+                  "crosswalk_survey", "sidewalk_survey", "through_highway_survey",
+                  "control_survey", "nearest_view_survey")
+
+
+def verify_review_sources(site: dict, site_path: Path, *, diagnostic_fixture: bool) -> dict:
+    """Reopen every original survey source before trusting a reviewed site."""
+    if diagnostic_fixture:
+        if site.get("diagnostic_fixture") is not True:
+            raise ValueError("diagnostic mode requires explicit fixture provenance")
+        return {}
+    if site.get("source_provenance") != "native_operator_review":
+        raise ValueError("original Native operator review provenance required")
+    bindings = site.get("source_bindings")
+    if not isinstance(bindings, dict) or set(bindings) != set(REVIEW_SOURCES):
+        raise ValueError("complete original Native site source bindings required")
+    hashes = {}
+    for name in REVIEW_SOURCES:
+        source = bindings[name]
+        if not isinstance(source, dict):
+            raise ValueError(f"{name} source binding missing")
+        relative = source.get("path")
+        if not isinstance(relative, str) or Path(relative).name != relative or not relative:
+            raise ValueError(f"{name} original source must be an adjacent file")
+        path = site_path.parent / relative
+        data = path.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != source.get("sha256"):
+            raise ValueError(f"{name} original source hash differs")
+        hashes[name] = digest
+    if hashes["native_map"] != site.get("map_opendrive_sha256"):
+        raise ValueError("original map source differs from reviewed map hash")
+    return hashes
 
 
 def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
@@ -35,7 +68,8 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
     construction = Path(construction)
     if not construction.is_file() or not construction.read_bytes():
         raise ValueError("exact construction file required")
-    site_bytes = Path(reviewed_site_packet).read_bytes()
+    reviewed_site_packet = Path(reviewed_site_packet)
+    site_bytes = reviewed_site_packet.read_bytes()
     site = json.loads(site_bytes)
     if site.get("review_status") != "reviewed" or site.get("cell_id") != "C158208":
         raise ValueError("reviewed C158208 Native site required")
@@ -52,13 +86,13 @@ def run_native_attempt(client, carla_adapter, restore_api, *, case_id: str,
             "no_sidewalk_derived_crosswalk", "through_highway_confirmed", "no_officer_control",
             "no_signal_control", "viewpoint_reviewed")):
         raise ValueError("reviewed sign, nearest-view and control context required")
-    if diagnostic_fixture and site.get("diagnostic_fixture") is not True:
-        raise ValueError("diagnostic mode requires explicit fixture provenance")
-    saved = restore_api.snapshot(client)
+    verify_review_sources(site, reviewed_site_packet,
+                          diagnostic_fixture=diagnostic_fixture)
     world = client.get_world()
     actual_map = world.get_map().to_opendrive().encode()
     if hashlib.sha256(actual_map).hexdigest() != site.get("map_opendrive_sha256"):
         raise ValueError("reviewed site does not match loaded Native map")
+    saved = restore_api.snapshot(client)
     owned = []
     primary_error = None
     cleanup_errors = []

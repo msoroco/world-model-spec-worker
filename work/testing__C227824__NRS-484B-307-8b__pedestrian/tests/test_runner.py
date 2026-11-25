@@ -31,6 +31,8 @@ class RunnerTests(unittest.TestCase):
         (self.root / "device-review.json").write_text('{"complete": true}\n')
         (self.root / "camera-review.json").write_text('{"complete": true}\n')
         self.scene = {
+            "law_id": "NRS-484B-307-8b", "cell_id": "C227824",
+            "actor": "pedestrian",
             "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
             "map_source_sha256": hashlib.sha256(map_bytes).hexdigest(),
             "fixed_delta_seconds": .05, "planned_frames": 3,
@@ -64,6 +66,12 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(main(["--output-dir", str(self.root), "--check"]), 0)
             native.assert_not_called()
         self.assertEqual(check(self.root), self.scene)
+
+    def test_wrong_exact_scene_identity_rejected(self):
+        self.scene["actor"] = "motor_vehicle_driver"
+        self.write_scene()
+        with self.assertRaisesRegex(ValueError, "exact law, cell or actor differs"):
+            check(self.root)
 
     def test_runtime_offline_check_uses_materialized_cwd(self):
         with patch("runner.Path.cwd", return_value=self.root), patch("runner.run_native") as native:
