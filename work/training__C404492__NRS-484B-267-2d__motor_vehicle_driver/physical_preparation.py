@@ -50,7 +50,7 @@ def evaluate(poses, frames, suffix):
     ego_delta = poses[-1]['ego']['x_m'] - poses[0]['ego']['x_m']
     emergency_delta = poses[-1]['emergency']['x_m'] - poses[0]['emergency']['x_m']
     lamps = {p['emergency'].get('flashing_light_phase_on') for p in poses}
-    target = overlap == 0 if suffix == 'controlled_1' else overlap > 0
+    target = overlap == 0 if suffix.endswith('_1') else overlap > 0
     complete = (ego_delta > 80 and emergency_delta > 80
                 and all(p['ego']['speed_mps'] > 0 for p in poses)
                 and all(p['emergency']['speed_mps'] > 0 for p in poses)
@@ -65,14 +65,18 @@ def evaluate(poses, frames, suffix):
 
 
 def fixture(suffix, kind, output):
-    manifest = json.loads((HERE / 'current-probe-manifest.json').read_text())
+    manifest_name = ('current-official-probe-manifest.json' if suffix.startswith('official_')
+                     else 'current-probe-manifest.json')
+    manifest = json.loads((HERE / manifest_name).read_text())
     entry = next(c for c in manifest['cases'] if c['case_id'].endswith('__' + suffix))
     result = {'case_id': entry['case_id'],
               'construction_sha256': entry['construction_sha256'],
               'diagnostic_fixture': True, 'provenance_kind': 'synthetic_fixture',
               'original_native_observed': False, 'legal_verdict': None}
     if kind == 'lifecycle':
-        receipt_path = HERE / 'current-saved' / (suffix + '-primary-receipt.json')
+        receipt_path = (HERE / 'current-official-saved' / (suffix + '-primary.json')
+                        if suffix.startswith('official_') else
+                        HERE / 'current-saved' / (suffix + '-primary-receipt.json'))
         receipt = json.loads(receipt_path.read_text())
         if not (receipt['passed'] and receipt['recorded_only']
                 and receipt['originals_preserved'] and not receipt['missing_evidence']):
@@ -111,8 +115,10 @@ def fixture(suffix, kind, output):
                       'status': result.get('physical_checks', {}).get('maneuver', {}).get('status')}))
 
 
-def build():
-    manifest = json.loads((HERE / 'current-probe-manifest.json').read_text())
+def build(official=False):
+    manifest_name = ('current-official-probe-manifest.json' if official
+                     else 'current-probe-manifest.json')
+    manifest = json.loads((HERE / manifest_name).read_text())
     index = []
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
@@ -145,7 +151,8 @@ def build():
         put(path, proof)
         index.append({'case_id': entry['case_id'],
                       'receipt': path.relative_to(HERE).as_posix(), 'sha256': sha(path)})
-    put(HERE / 'physical-proof/index.json', {'cases': index,
+    index_name = 'official-index.json' if official else 'index.json'
+    put(HERE / 'physical-proof' / index_name, {'cases': index,
                                              'diagnostic_only': True})
     print(json.dumps({'physical_fixture_cases': len(index)}))
 
@@ -156,12 +163,16 @@ if __name__ == '__main__':
         raise SystemExit('Set TMPDIR under .runtime-work')
     parser = argparse.ArgumentParser()
     parser.add_argument('--build', action='store_true')
-    parser.add_argument('--case', choices=('controlled_1', 'controlled_2'))
+    parser.add_argument('--build-official', action='store_true')
+    parser.add_argument('--case', choices=('controlled_1', 'controlled_2',
+                                          'official_1', 'official_2'))
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     if args.build:
         build()
+    elif args.build_official:
+        build(official=True)
     elif args.case and args.kind and args.output:
         fixture(args.case, args.kind, args.output)
     else:

@@ -112,6 +112,76 @@ def measure_dismounted_turn(root, frames, dismount_frame, first_turn_frame,
             "sources": {name: sha(root/name) for name in sources}}
 
 
+def reviewed_original_rows(root, config, manifest, native, mapping, rider, sign):
+    """Join human-reviewed labels to sealed, unchanged Native source rows.
+
+    A Native actor and authored sign alone cannot supply posture, sign authority,
+    or pedestrian conduct. Missing review is a saved-processing failure.
+    """
+    if (manifest.get("source_kind") != "original_native_capture_unreviewed" or
+            manifest.get("original_native_capture_executed") is not True or
+            any(manifest.get(key) for key in ("mounted_posture_verified",
+                                                "turn_from_saved_geometry_verified",
+                                                "official_sign_authorization_verified"))):
+        raise ValueError("Original Native source manifest is unreviewed or inconsistent")
+    if any(any(row.get(key) is not None for key in
+               ("mounted", "walking_machine", "u_turn_active")) for row in rider):
+        raise ValueError("Original Native rider rows must remain unreviewed")
+    from measure_geometry import measure
+    geometry = measure(rider, native, mapping, sign)
+    review_path = root / "sign-review.json"
+    labels_path = root / "rider-review.jsonl"
+    pixels_path = root / "pixel_review.jsonl"
+    for path in (review_path, labels_path, pixels_path):
+        if not path.is_file():
+            raise ValueError("Missing required source: " + path.name)
+    review = json.loads(review_path.read_text())
+    labels, pixels = rows(labels_path), rows(pixels_path)
+    if len(labels) != len(rider) or len(pixels) != len(rider):
+        raise ValueError("Original reviewed labels or pixel frames incomplete")
+    camera_names = ("overview", "approach", "reference_corner", "driver_reference")
+    camera_hashes = {name + ".mkv": sha(root / (name + ".mkv")) for name in camera_names}
+    if (review.get("source_kind") != "original_camera_sign_and_rider_review" or
+            review.get("reviewed_from_original_pixels") is not True or
+            review.get("official_device_verified") is not True or
+            review.get("governs_approach") is not True or
+            review.get("rider_posture_verified") is not True or
+            review.get("sign_code") != "no_u_turn" or
+            review.get("pedestrian_rule_compliance_verified") not in (True, False) or
+            review.get("native_samples_sha256") != sha(root / "native_samples.jsonl") or
+            review.get("frame_map_sha256") != sha(root / "video_frames.jsonl") or
+            review.get("rider_samples_sha256") != sha(root / "rider_native_samples.jsonl") or
+            review.get("rider_review_sha256") != sha(labels_path) or
+            review.get("pixel_review_sha256") != sha(pixels_path) or
+            review.get("camera_source_sha256") != camera_hashes):
+        raise ValueError("Original sign, rider or camera review source binding differs")
+    if (not any(p.get("sign_visible") is True for p in pixels) or
+            not any(p.get("rider_visible") is True for p in pixels)):
+        raise ValueError("Original sign or rider pixels not visible in review")
+    effective = []
+    for i, (source, label, pixel, frame) in enumerate(zip(rider, labels, pixels, mapping)):
+        if (label.get("frame") != pixel.get("frame") or label.get("frame") != i or
+                label.get("time_s") != source["time_s"] or
+                label.get("actor_id") != source["actor_id"] or
+                pixel.get("carla_frame") != frame["carla_frame"] or
+                any(type(pixel.get(key)) is not bool for key in
+                    ("sign_visible", "rider_visible", "machine_visible")) or
+                any(type(label.get(key)) is not bool for key in
+                    ("mounted", "walking_machine", "u_turn_active"))):
+            raise ValueError("Original reviewed rider/pixel time or actor join differs")
+        if label["walking_machine"] is label["mounted"]:
+            raise ValueError("Original reviewed posture contradicts machine state")
+        if label["u_turn_active"] and not (pixel["rider_visible"] and pixel["machine_visible"]):
+            raise ValueError("Original turn frame lacks reviewed rider and machine pixels")
+        effective.append({**source, **{key: label[key] for key in
+                                     ("mounted", "walking_machine", "u_turn_active")}})
+    if geometry["u_turn_geometry_observed"] != any(row["u_turn_active"] for row in effective):
+        raise ValueError("Original reviewed U-turn differs from Native geometry")
+    if config["case_suffix"] == "dismounted_turn" and review["pedestrian_rule_compliance_verified"] is not True:
+        raise ValueError("Original pedestrian-rule conduct unverified")
+    return effective, review, geometry
+
+
 def finalize(attempt, output):
     root, target = Path(attempt), Path(output)
     if target.exists() or (root/"result.json").exists():
@@ -133,7 +203,9 @@ def finalize(attempt, output):
     if not manifest_path.is_file():
         raise ValueError("Missing required source: rider-source-manifest.json")
     manifest = json.loads(manifest_path.read_text())
-    if manifest.get("source_kind") != "synthetic_native_shaped_diagnostic" or manifest.get("case_suffix") != kind:
+    original_mode = manifest.get("source_kind") == "original_native_capture_unreviewed"
+    if manifest.get("source_kind") not in ("synthetic_native_shaped_diagnostic",
+                                          "original_native_capture_unreviewed") or manifest.get("case_suffix") != kind:
         raise ValueError("Unreviewed source kind or case differs")
     if manifest.get("rider_samples_sha256") != sha(root/"rider_native_samples.jsonl"):
         raise ValueError("Rider source hash differs")
@@ -143,13 +215,19 @@ def finalize(attempt, output):
     if (sign.get("code") != "no_u_turn" or sign.get("station_m") != 72.0 or
             sign.get("authorization_proven") is not False):
         raise ValueError("Synthetic sign scope differs")
+    review = None
+    geometry = None
+    if original_mode:
+        rider, review, geometry = reviewed_original_rows(root, config, manifest,
+                                                         native, mapping, rider, sign)
     turn_frames = mounted_turn_frames = 0
     dismount_frame = None
     first_turn_frame = None
     walking_turn_frames = 0
     for i, (n, m, r, t, e, b) in enumerate(zip(native, mapping, rider, trace, evidence, body)):
         frame, time = n["native_frame"], n["time_s"]
-        if (r["frame"] != i or r["time_s"] != time or r["actor_id"] != "rider-1" or
+        if (r["frame"] != i or r["time_s"] != time or
+            (not original_mode and r["actor_id"] != "rider-1") or
             r["machine_class"] != "bicycle" or r["sign_id"] != sign["id"] or
             r["road_id"] != sign["governs_road"] or r["approach_lane_id"] != sign["governs_lane"]):
             raise ValueError("Rider/sign/frame source join differs")
@@ -180,6 +258,8 @@ def finalize(attempt, output):
                 walking_turn_frames != turn_frames or
                 any(r["mounted"] for r in rider[dismount_frame:])):
             raise ValueError("Dismount-before-turn and persistent walking-machine source differs")
+    if original_mode and geometry["u_turn_geometry_observed"] != (turn_frames > 0):
+        raise ValueError("Original Native geometry and turn review differ")
     capture = json.loads((root/"capture/manifest.json").read_text())
     if capture.get("frames") != frames or not capture.get("extraction_confirmed"):
         raise ValueError("Capture extraction incomplete")

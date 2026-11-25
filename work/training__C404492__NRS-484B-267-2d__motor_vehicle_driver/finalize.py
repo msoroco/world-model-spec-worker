@@ -93,7 +93,9 @@ def finalize_attempt(attempt, output):
                     raise ValueError('Unknown declared recording channel: '+name)
                 stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name]},allow_nan=False)+'\n')
         evidence.append({'name':name,'unit':descriptor['unit'],'reference':'channels/'+path.name})
-    review_context={'emergency_context':{
+    context_name=('regulatory_vehicle_context' if statutory_branch(case_id)=='regulatory_moving'
+                  else 'emergency_context')
+    review_context={context_name:{
         'authorized':reviewed_authority(context,case_id),
         'qualifying_flash_equipment_reviewed':context['qualifying_flash_equipment_reviewed'],
         'source_review_kind':context['review_kind'],
@@ -103,7 +105,7 @@ def finalize_attempt(attempt, output):
     for descriptor in construction['recording_description']['context_inputs']:
         evidence.append({'name':descriptor['name'],'unit':descriptor['unit'],
                          'reference':'channels/context-review.json'})
-    requested=case_id.endswith('__controlled_2')
+    requested=case_id.endswith(('__controlled_2','__official_2'))
     observed=any(row['longitudinal_overlap_length_m']>0 for row in measured['per_frame_geometry'])
     result={'case_id':case_id,'measured_values':{
                 'overlap_frames':sum(row['longitudinal_overlap_length_m']>0 for row in measured['per_frame_geometry']),

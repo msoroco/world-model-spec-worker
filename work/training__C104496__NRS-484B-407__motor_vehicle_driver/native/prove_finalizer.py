@@ -10,7 +10,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 CASE = HERE.parent
 ROOT = CASE.parents[1]
-SCRATCH = ROOT / ".runtime-work/c104496-finalizer-proof-v5"
+SCRATCH = ROOT / ".runtime-work/c104496-finalizer-proof-v9"
 
 
 def sha(path):
@@ -45,16 +45,17 @@ def main():
     reports = []
     for suffix, branch in (("probe_01", "crest"), ("probe_02", "crest"),
                            ("probe_03", "curve")):
-        fixture = ROOT / ".runtime-work/c104496-fixture-proof-v3" / suffix
+        fixture = ROOT / ".runtime-work/c104496-fixture-proof-v7" / suffix
         if not fixture.is_dir():
             raise ValueError("materialized source fixture missing: " + suffix)
         stage = SCRATCH / suffix
         if stage.exists():
             raise ValueError("use fresh finalizer proof scratch")
         shutil.copytree(fixture, stage)
-        config = json.loads((CASE / "native" / branch / "drafts" / suffix /
-                             "primary/config.json").read_text())
-        config["selected_case_id"] = CASE.name + "__" + suffix
+        selected = json.loads((CASE / "selected" / suffix / "primary" /
+                               "construction.json").read_text())
+        config = json.loads(next(item["content"] for item in selected["files"]
+                                 if item["path"] == "config.json"))
         case = next(c for c in proposal["cases"] if c["case_id"] ==
                     config["selected_case_id"])
         construction = {"case_id": case["case_id"],
@@ -64,8 +65,9 @@ def main():
         positive = exercise(stage)
         result = json.loads((stage / "result.json").read_text())
         report = json.loads((stage / "analysis-report.json").read_text())
-        if (result["case_id"] != case["case_id"] or result["setup_confirmed"] or
-                result["maneuver_completed"] or result["accepted"] or
+        if (result["case_id"] != case["case_id"] or result["accepted"] or
+                result["physical_checks"]["maneuver"]["status"] != "met" or
+                not result["maneuver_completed"] or
                 len(result["recording_evidence"]) != 8 or
                 len(report["measurements"]) != 4):
             raise ValueError("diagnostic finalizer overclaimed or omitted source")

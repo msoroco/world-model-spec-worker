@@ -75,7 +75,7 @@ def main():
             if len(list((source/'channels').glob('*.jsonl')))!=7:
                 raise ValueError('Seven regulatory channels required')
             context_review=json.loads((source/'channels/context-review.json').read_text())
-            if context_review['emergency_context']['authorized'] is not True:
+            if context_review['regulatory_vehicle_context']['authorized'] is not True:
                 raise ValueError('Regulatory authority absent from saved review')
             if not reject(lambda:finalize(source,case_id,output,diagnostic=True)):
                 raise ValueError('Existing report overwritten')

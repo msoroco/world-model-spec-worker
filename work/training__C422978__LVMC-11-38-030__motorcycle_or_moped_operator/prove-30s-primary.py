@@ -8,7 +8,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 AID = HERE.name
 OUT = HERE / 'extended-primary'
-SCRATCH = ROOT / '.runtime-work/c422978-30s-v4'
+SCRATCH = ROOT / '.runtime-work/c422978-30s-v5'
 
 
 def sha(data):

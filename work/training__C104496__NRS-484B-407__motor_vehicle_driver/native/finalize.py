@@ -181,7 +181,10 @@ def finalize(attempt, output):
         "realized_observables": {},
         "provenance_kind": "synthetic_local_diagnostic" if synthetic else "original_native",
         "accepted": False}
-    from worker_exchange.native_output import validate_result
+    from worker_exchange.native_output import physical_result, validate_result
+    result = physical_result(attempt, result)
+    report["physical_checks"] = result["physical_checks"]
+    report["realized_observables"] = result["realized_observables"]
     validate_result(result)
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     (attempt / "result.json").write_text(json.dumps(result, indent=2,

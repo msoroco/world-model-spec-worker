@@ -10,7 +10,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work/c104496-fixture-proof-v4"
+SCRATCH = ROOT / ".runtime-work/c104496-fixture-proof-v7"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 

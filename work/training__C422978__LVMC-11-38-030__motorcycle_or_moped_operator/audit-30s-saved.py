@@ -35,7 +35,7 @@ def audit_one(case, candidate, receipt):
     observed = rows(folder / 'native-observed.jsonl')
     mapping = rows(folder / 'video_frames.jsonl')
     evidence = rows(folder / 'capture/evidence.jsonl')
-    requested = rows(ROOT / '.runtime-work/c422978-30s-v4' /
+    requested = rows(ROOT / '.runtime-work/c422978-30s-v5' /
                      (case + '-' + candidate) / 'requested-tracks.jsonl')
     if len(observed) != len(mapping) or len(mapping) != len(evidence) or len(evidence) != len(requested) or len(requested) != 600:
         raise ValueError('Six hundred synchronized source rows absent')

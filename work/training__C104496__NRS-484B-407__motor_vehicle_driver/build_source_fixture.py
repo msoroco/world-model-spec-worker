@@ -142,14 +142,15 @@ def build_case(suffix: str, branch: str):
     manifest = {"acquisition": "synthetic_diagnostic",
                 "frames": FRAMES, "extraction_confirmed": True,
                 "observation_contract_version": 1,
-                "required_observations": ["kin.position", "st.grade", "st.curvature",
-                                          "st.sight_distance"],
+                "required_observations": (["kin.position", "st.grade", "st.curvature"]
+                                          if branch == "crest" else ["kin.position"]),
                 "sources": {"road.xodr": sha(out / "road.xodr"),
                             "trace.jsonl": sha(out / "trace.jsonl")},
                 "synthetic_diagnostic": True}
     put(out / "capture/manifest.json", dump(manifest))
     put(out / "capture/recorder_info.txt",
-        "Synthetic C104496 textual diagnostic; no CARLA recorder or original media")
+        "Synthetic C104496 textual diagnostic; no CARLA recorder or original media\n"
+        "Create 107: " + scope["ego_blueprint"] + " (synthetic fixture identity)")
     put(out / "acquisition-provenance.json",
         dump({"provenance_kind": "synthetic_local_diagnostic",
               "diagnostic_fixture": True, "native_executed": False,

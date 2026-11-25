@@ -8,7 +8,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work/c104496-selected-offline-v2"
+SCRATCH = ROOT / ".runtime-work/c104496-selected-offline-v3"
 
 
 def sha(path):
