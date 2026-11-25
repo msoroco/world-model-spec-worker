@@ -2,13 +2,13 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_cpu_source_dependency",
+  "status": "cpu_prepared_original_source_pending",
   "cases": [
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1",
       "kind": "delivery",
       "construction": "native/probe_1/construction.json",
-      "construction_sha256": "b52a44e787fa749ce2446407f6709bdb668592b045c43eefe77e2e0f691970f8",
+      "construction_sha256": "937dd9132e09d836c45e12f78df6850e9fe8c5e28a4614f888e051e9130dbf26",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_1/fallback1/construction.json",
-          "construction_sha256": "0009e5d729563fedaa5336aeb62b55d201d3950ed1e167d821951ac56c57a60b",
+          "construction_sha256": "58bf2b231844b1280d15cfdfd656f9dd22cb0e9248e0b84aa69e62bf0292aa8e",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -25,7 +25,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_1/public-fallback1/receipt.json",
+            "sha256": "dc50567cfd1b8f302af96bda2264575eab5baa533ecdc26e28603109ca7e83f0",
+            "log": "proofs/probe_1/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_1/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1 --candidate fallback1 --output .runtime-work/c150668-offline-probe_1-fallback1-v11",
+            "construction_sha256": "58bf2b231844b1280d15cfdfd656f9dd22cb0e9248e0b84aa69e62bf0292aa8e",
+            "exit_code": 0,
+            "log": "proofs/probe_1/public-fallback1/static.log",
+            "log_sha256": "66dae71375cad0c7fad574dfcaba42e53b109c8bdbd328a4d6ed16a75a83938c"
+          }
         }
       ],
       "measurement_procedure": {
@@ -33,14 +46,119 @@
       },
       "measurement_contract": "selected-measurements/probe_1/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_1-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_1/public-primary/receipt.json",
+        "sha256": "cef90c4d08a68d09d609e0257e2650d85db48a714006b747327121def5f79cb9",
+        "log": "proofs/probe_1/public-primary/analysis.log",
+        "negative_log": "proofs/probe_1/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1 --candidate primary --output .runtime-work/c150668-offline-probe_1-primary-v11",
+        "construction_sha256": "937dd9132e09d836c45e12f78df6850e9fe8c5e28a4614f888e051e9130dbf26",
+        "exit_code": 0,
+        "log": "proofs/probe_1/public-primary/static.log",
+        "log_sha256": "ad07ef67fe2074a6b50d073b6ba6420d30e6675750f6804fc9317d9990bb86e2"
+      },
+      "negative": {
+        "log": "proofs/probe_1/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_1/saved-processing.json",
+        "test_log_sha256": "6092b8dbcfa2efc082fd802fccf4c2f925ddd976b6dbbf4478cc2d0eee9dc800"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_1/proof.json",
+        "sha256": "7f5443f93997a8e4df6d61c25639cb951b30cfb4a9d9651be42e367d1b8ecbb5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1 --attempt .runtime-work/c150668-saved-probe1-attempt-v11 --processing .runtime-work/c150668-saved-probe1-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe1-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_1/delivery-positive.log",
+        "test_log_sha256": "60c1cd2b149d8673047923e4747459aca33b2e9d774dd4865e52bee66167351a",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_1 --attempt .runtime-work/c150668-delivery-probe1-negative-v11 --processing .runtime-work/c150668-saved-probe1-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe1-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/fixture-identity.json",
+        "negative_log": "proofs/probe_1/delivery-negative.log",
+        "negative_log_sha256": "5929ed29d99538a57629aed7eb4402d0a64e382ecb495c0a2112aded0854212c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2",
       "kind": "delivery",
       "construction": "native/probe_2/construction.json",
-      "construction_sha256": "e1c4476c0005042c805444d1e710d2935dc521c7d1ebe6609f809c047b421892",
+      "construction_sha256": "0d18d1864126474f8e414619436010db7faf3220ba35e9370fad3518c07052f3",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -49,7 +167,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_2/fallback1/construction.json",
-          "construction_sha256": "2a9961ce54e0cf02713ec561639b9475a2d4e132713d59bfbe83bbe2d43b9ea9",
+          "construction_sha256": "05bbd00622c3795a115bcd43498d82e5346acd6f270144eeae965d28e748c9f4",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -57,7 +175,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_2/public-fallback1/receipt.json",
+            "sha256": "96f9bcd93ba91feddac52fda8973038172f6d417ff0914c0919322f6f3dba8cf",
+            "log": "proofs/probe_2/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_2/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2 --candidate fallback1 --output .runtime-work/c150668-offline-probe_2-fallback1-v11",
+            "construction_sha256": "05bbd00622c3795a115bcd43498d82e5346acd6f270144eeae965d28e748c9f4",
+            "exit_code": 0,
+            "log": "proofs/probe_2/public-fallback1/static.log",
+            "log_sha256": "30adce514ba5701728ca054185e6a10d1e77f01c0e07a8180555858af95c8aa7"
+          }
         }
       ],
       "measurement_procedure": {
@@ -65,14 +196,119 @@
       },
       "measurement_contract": "selected-measurements/probe_2/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_2-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_2/public-primary/receipt.json",
+        "sha256": "f144e2a959dd60df7a7b1c805827d5f16cf63e3a0772a29c11b1de101866dc52",
+        "log": "proofs/probe_2/public-primary/analysis.log",
+        "negative_log": "proofs/probe_2/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2 --candidate primary --output .runtime-work/c150668-offline-probe_2-primary-v11",
+        "construction_sha256": "0d18d1864126474f8e414619436010db7faf3220ba35e9370fad3518c07052f3",
+        "exit_code": 0,
+        "log": "proofs/probe_2/public-primary/static.log",
+        "log_sha256": "736a53a4041f6266c6433b0ee95a366cbe05f9d072afcf84be80fdd8652ba855"
+      },
+      "negative": {
+        "log": "proofs/probe_2/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_2/saved-processing.json",
+        "test_log_sha256": "5d89a8163aedb825f694936246539e7b6f023d6717a17b336e4d8996d9fd38b2"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_2/proof.json",
+        "sha256": "262048279b84cbc7555bef8abd64154c3fb18db18f91a9b98654a914397be3d4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2 --attempt .runtime-work/c150668-saved-probe2-attempt-v11 --processing .runtime-work/c150668-saved-probe2-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe2-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_2/delivery-positive.log",
+        "test_log_sha256": "4aa06f16a3ea20e00a48eabe406d92c87cb18315f07dfa1507fd05f9d5e51963",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_2 --attempt .runtime-work/c150668-delivery-probe2-negative-v11 --processing .runtime-work/c150668-saved-probe2-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe2-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/fixture-identity.json",
+        "negative_log": "proofs/probe_2/delivery-negative.log",
+        "negative_log_sha256": "5929ed29d99538a57629aed7eb4402d0a64e382ecb495c0a2112aded0854212c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3",
       "kind": "delivery",
       "construction": "native/probe_3/construction.json",
-      "construction_sha256": "51a3fc908218d36ff2b23009b42415a2624c154ad4624bd9ddbaf6d504d0462c",
+      "construction_sha256": "a03cef2eaaa835fcb6087cb019320e84a69a12b9dd9c478eaa57c7b8ded2e03c",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -81,7 +317,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_3/fallback1/construction.json",
-          "construction_sha256": "a6d876a95dfec5d8c543f167d2e527f4a805c25f9ca9457da85d331d47856ae3",
+          "construction_sha256": "2a0f271674752f9b0174ebe1e1f53dabb7bdef91f3c071fae3ad93c16d966fb3",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -89,7 +325,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_3/public-fallback1/receipt.json",
+            "sha256": "d202fd51ee1b221d437eaca0a6f7288b5e6eaa2c8f4add36dce61688ef09f3ab",
+            "log": "proofs/probe_3/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_3/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3 --candidate fallback1 --output .runtime-work/c150668-offline-probe_3-fallback1-v11",
+            "construction_sha256": "2a0f271674752f9b0174ebe1e1f53dabb7bdef91f3c071fae3ad93c16d966fb3",
+            "exit_code": 0,
+            "log": "proofs/probe_3/public-fallback1/static.log",
+            "log_sha256": "e704287c7d9e916e8c899aa2d80d8d0098aec88fd21a0a26920e8ea2d5657f2b"
+          }
         }
       ],
       "measurement_procedure": {
@@ -97,14 +346,119 @@
       },
       "measurement_contract": "selected-measurements/probe_3/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_3-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_3/public-primary/receipt.json",
+        "sha256": "b028899adb96c39b74f1ef44540132340dbd5c6b9dcfbb20111720c3d9dbf2c5",
+        "log": "proofs/probe_3/public-primary/analysis.log",
+        "negative_log": "proofs/probe_3/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3 --candidate primary --output .runtime-work/c150668-offline-probe_3-primary-v11",
+        "construction_sha256": "a03cef2eaaa835fcb6087cb019320e84a69a12b9dd9c478eaa57c7b8ded2e03c",
+        "exit_code": 0,
+        "log": "proofs/probe_3/public-primary/static.log",
+        "log_sha256": "08d6dd5bc517e2632e6064519b444393fc374b5caaad5effc5adb6a89a426ec2"
+      },
+      "negative": {
+        "log": "proofs/probe_3/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_3/saved-processing.json",
+        "test_log_sha256": "a58a2565d48fa78f348280dbe784ebd0c2f08491ba119a76de56a3fae3028cf0"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_3/proof.json",
+        "sha256": "a9d24250078a5276e5eb5c4866686b6914c6c3cfe52425782f9bce9cd16cc71c"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3 --attempt .runtime-work/c150668-saved-probe3-attempt-v11 --processing .runtime-work/c150668-saved-probe3-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe3-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_3/delivery-positive.log",
+        "test_log_sha256": "e0eeac57be19303831b45fd33af8c3a23e41868981fd7ba95e0923c7bbf45425",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_3 --attempt .runtime-work/c150668-delivery-probe3-negative-v11 --processing .runtime-work/c150668-saved-probe3-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe3-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/fixture-identity.json",
+        "negative_log": "proofs/probe_3/delivery-negative.log",
+        "negative_log_sha256": "5929ed29d99538a57629aed7eb4402d0a64e382ecb495c0a2112aded0854212c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4",
       "kind": "delivery",
       "construction": "native/probe_4/construction.json",
-      "construction_sha256": "299c1e91904e485881ea46aa38abbe536a78235ecb7c8f63b2ea85fff66eadc9",
+      "construction_sha256": "d228b64df46a18c7f60ad767bbef38c74cb232edce3fadb843ed5b39a04aca5f",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -113,7 +467,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_4/fallback1/construction.json",
-          "construction_sha256": "8b8fe910e93a4a200c2b502356e66471181a8551281c8d229b3a01f6f18dc6a4",
+          "construction_sha256": "62155dd9e0977a86e7169335982cd0e00281cbb03a23952cc94f5cd2770919fd",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -121,7 +475,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_4/public-fallback1/receipt.json",
+            "sha256": "e91c57c6a1ee2cdd10cdc86feafe68c8aa284a904e04c2a449fd9d289d2a6da2",
+            "log": "proofs/probe_4/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_4/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4 --candidate fallback1 --output .runtime-work/c150668-offline-probe_4-fallback1-v11",
+            "construction_sha256": "62155dd9e0977a86e7169335982cd0e00281cbb03a23952cc94f5cd2770919fd",
+            "exit_code": 0,
+            "log": "proofs/probe_4/public-fallback1/static.log",
+            "log_sha256": "62a84b6331edf019bcd2cb2184695e7e4acdc802dd3f7223c22e58147fdedc19"
+          }
         }
       ],
       "measurement_procedure": {
@@ -129,14 +496,119 @@
       },
       "measurement_contract": "selected-measurements/probe_4/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_4-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_4/public-primary/receipt.json",
+        "sha256": "f9c32c5462e27038f0702e6a82073ccea3a108db3d130465ee82977aa2e9c472",
+        "log": "proofs/probe_4/public-primary/analysis.log",
+        "negative_log": "proofs/probe_4/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4 --candidate primary --output .runtime-work/c150668-offline-probe_4-primary-v11",
+        "construction_sha256": "d228b64df46a18c7f60ad767bbef38c74cb232edce3fadb843ed5b39a04aca5f",
+        "exit_code": 0,
+        "log": "proofs/probe_4/public-primary/static.log",
+        "log_sha256": "91836fce8b1b042806f2ff61d50ebfe01a8993e1cca957e70f2ba91dd5965f39"
+      },
+      "negative": {
+        "log": "proofs/probe_4/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_4/saved-processing.json",
+        "test_log_sha256": "68d5d14a6d85007ba5ad774df7ce0caf67de3bad0a817a578a5d1b37dede91a8"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_4/proof.json",
+        "sha256": "7caa3adc2e8ee00c8d2bb57d43d4b58926bfc4bb926a0b8e64a885ee838caa62"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4 --attempt .runtime-work/c150668-saved-probe4-attempt-v11 --processing .runtime-work/c150668-saved-probe4-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe4-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_4/delivery-positive.log",
+        "test_log_sha256": "ceb868e3fe452416054411d75c16a26e781bab85580ed5fc300b351c9cf4846b",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_4 --attempt .runtime-work/c150668-delivery-probe4-negative-v11 --processing .runtime-work/c150668-saved-probe4-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe4-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/traffic-context.json",
+        "negative_log": "proofs/probe_4/delivery-negative.log",
+        "negative_log_sha256": "2c4d965b4bc85859adaf128e9d50b60975c418553014ba2ddb84abf56ea8ff02"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5",
       "kind": "delivery",
       "construction": "native/probe_5/construction.json",
-      "construction_sha256": "7b83fd5f6a59396fbf0baf9e98f15316e56ad76fdf4e9eaeb77dad70df4b6590",
+      "construction_sha256": "793959677516628cbec69c4c23dca1c77cec3a7a4c07de8d534beb836b2455c9",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -145,7 +617,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_5/fallback1/construction.json",
-          "construction_sha256": "d6deb4aef9ff4afa04e80a087587f1bab49cdee4496ea599b145eeb8d22fb62e",
+          "construction_sha256": "630258aea0d60d9cdeadf1b621610f28c713097338a4093f07e4c4efa59eaab3",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -153,7 +625,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_5/public-fallback1/receipt.json",
+            "sha256": "9948c500645f1d309b2f9e211673edc028d552015b8a69f4dc6f1dcef7838ac6",
+            "log": "proofs/probe_5/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_5/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5 --candidate fallback1 --output .runtime-work/c150668-offline-probe_5-fallback1-v11",
+            "construction_sha256": "630258aea0d60d9cdeadf1b621610f28c713097338a4093f07e4c4efa59eaab3",
+            "exit_code": 0,
+            "log": "proofs/probe_5/public-fallback1/static.log",
+            "log_sha256": "adf77222d6172ac7ca2f18584b50c0792a8152112ea33d5ef1d224e5b2b1b333"
+          }
         }
       ],
       "measurement_procedure": {
@@ -161,14 +646,119 @@
       },
       "measurement_contract": "selected-measurements/probe_5/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_5-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_5/public-primary/receipt.json",
+        "sha256": "8d394e93438adecb58f2247572157ecd08f3d67212411b9940e903753f07a6d5",
+        "log": "proofs/probe_5/public-primary/analysis.log",
+        "negative_log": "proofs/probe_5/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5 --candidate primary --output .runtime-work/c150668-offline-probe_5-primary-v11",
+        "construction_sha256": "793959677516628cbec69c4c23dca1c77cec3a7a4c07de8d534beb836b2455c9",
+        "exit_code": 0,
+        "log": "proofs/probe_5/public-primary/static.log",
+        "log_sha256": "55ff6df7e383ef6bf8a30c5804fad69d5f27c6e5a0780e1275f5346542cb1524"
+      },
+      "negative": {
+        "log": "proofs/probe_5/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_5/saved-processing.json",
+        "test_log_sha256": "ec0fdedd64112f6ab65e626089311976bc88fbb0f5338adff1a4b9ba5797e728"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_5/proof.json",
+        "sha256": "e4e5f5a8dbcec12288ae7717ab19443ab8ec1dfc2f14cb3bd366b46191da015d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5 --attempt .runtime-work/c150668-saved-probe5-attempt-v11 --processing .runtime-work/c150668-saved-probe5-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe5-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_5/delivery-positive.log",
+        "test_log_sha256": "808b6067364ae168df362069e717f9a36cbf10b5017e5879e497fa590ad1df43",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_5 --attempt .runtime-work/c150668-delivery-probe5-negative-v11 --processing .runtime-work/c150668-saved-probe5-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe5-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/police-direction.json",
+        "negative_log": "proofs/probe_5/delivery-negative.log",
+        "negative_log_sha256": "bf211c8d31765c54c3d413e1039707431c259feecf43b3b5866dc08e9ee96ff6"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6",
       "kind": "delivery",
       "construction": "native/probe_6/construction.json",
-      "construction_sha256": "258c53cd1dae471f9d89f0548f859f52bb284be7eaba01861704000be4c0df61",
+      "construction_sha256": "949feef6b83dc210a8024a7aacb781169d5d7b68b9d78d3177be715d67519dde",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -177,7 +767,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_6/fallback1/construction.json",
-          "construction_sha256": "3b2d5085403ab07305928d5e6f9c3809935c36e2393a3c06922687de3e8f66d0",
+          "construction_sha256": "ab222850b18cdc61ff0697354d7cc84ff5aba7f2621d7fc92d0aed3575b88380",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -185,7 +775,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_6/public-fallback1/receipt.json",
+            "sha256": "6d8abcad22780d0d736dc074c63b44eee3c0c39b55ac8db36c2e1126429a514e",
+            "log": "proofs/probe_6/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_6/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6 --candidate fallback1 --output .runtime-work/c150668-offline-probe_6-fallback1-v11",
+            "construction_sha256": "ab222850b18cdc61ff0697354d7cc84ff5aba7f2621d7fc92d0aed3575b88380",
+            "exit_code": 0,
+            "log": "proofs/probe_6/public-fallback1/static.log",
+            "log_sha256": "146ce96f9ff2f8769ff4e4064f92559fa5edf74026f9a4f2de10a62680602995"
+          }
         }
       ],
       "measurement_procedure": {
@@ -193,14 +796,119 @@
       },
       "measurement_contract": "selected-measurements/probe_6/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_6-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_6/public-primary/receipt.json",
+        "sha256": "0aa64785ec480ad742fee87e567a4a31a1e127ba1fa32e6ad971bed05b93ec70",
+        "log": "proofs/probe_6/public-primary/analysis.log",
+        "negative_log": "proofs/probe_6/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6 --candidate primary --output .runtime-work/c150668-offline-probe_6-primary-v11",
+        "construction_sha256": "949feef6b83dc210a8024a7aacb781169d5d7b68b9d78d3177be715d67519dde",
+        "exit_code": 0,
+        "log": "proofs/probe_6/public-primary/static.log",
+        "log_sha256": "3ee683a981a999b9cb72061a36a97278ad0b4dbec9df16391dd7b6e1bc0b9165"
+      },
+      "negative": {
+        "log": "proofs/probe_6/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_6/saved-processing.json",
+        "test_log_sha256": "29b85b8af8a53979acc73383183dcae8f347d9fa9ecd5f576322d035b693970b"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_6/proof.json",
+        "sha256": "0b722896c65e5d1f1ce4b75b815a54d1dfdc88099a41595cea214d372616b239"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6 --attempt .runtime-work/c150668-saved-probe6-attempt-v11 --processing .runtime-work/c150668-saved-probe6-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe6-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_6/delivery-positive.log",
+        "test_log_sha256": "9f99ce2be000c48fbec621f47694561f87c3e320318e91c910196a11e43dd616",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_6 --attempt .runtime-work/c150668-delivery-probe6-negative-v11 --processing .runtime-work/c150668-saved-probe6-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe6-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/device-direction.json",
+        "negative_log": "proofs/probe_6/delivery-negative.log",
+        "negative_log_sha256": "352f918bf2f5e1d46dcbec1e721eacbb2b599053879723e773477b42c65cb99d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7",
       "kind": "delivery",
       "construction": "native/probe_7/construction.json",
-      "construction_sha256": "a19416ef28fa80a5d93701efdb4b7609a97c67336c2cad166c51da3d071369c8",
+      "construction_sha256": "52af31b272b9bfbeeab1cc1a2a453adbdbc2a9815548789c39469bb5a9377e58",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native braking may stop outside the requested side band or fail to settle."
@@ -209,7 +917,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/probe_7/fallback1/construction.json",
-          "construction_sha256": "03851d2b119f097260f18a3943a8ef943b9a0d8b26035bd0a8278cc76557c1f1",
+          "construction_sha256": "9f4f64cd4764799ecf651f780903cd70b4cf05baf62d8b215626824c94cc8ea6",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and reviewed fixture geometry",
             "metric": "stationary vehicle-body side clearance",
@@ -217,7 +925,20 @@
           },
           "changed_knobs": [
             "brake_margin_m 1.5 to 2.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/probe_7/public-fallback1/receipt.json",
+            "sha256": "6d7092e3a5b4455246f54cf4641e4fd742d4d7920f6aff5ce78a393594482ed7",
+            "log": "proofs/probe_7/public-fallback1/analysis.log",
+            "negative_log": "proofs/probe_7/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7 --candidate fallback1 --output .runtime-work/c150668-offline-probe_7-fallback1-v11",
+            "construction_sha256": "9f4f64cd4764799ecf651f780903cd70b4cf05baf62d8b215626824c94cc8ea6",
+            "exit_code": 0,
+            "log": "proofs/probe_7/public-fallback1/static.log",
+            "log_sha256": "d813b490a07db64a5f02dd6419d8bba3df4a477aa7cd9e1d02b9a4e675f5bac3"
+          }
         }
       ],
       "measurement_procedure": {
@@ -225,8 +946,113 @@
       },
       "measurement_contract": "selected-measurements/probe_7/measurement-contract.json",
       "fixture_recipe": "work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/diagnostic-probe_7-recipe.json",
-      "delivery_readiness": "incomplete_original_fixture_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/probe_7/public-primary/receipt.json",
+        "sha256": "70f7f67b522beb1a0b1c5d19bb00c75bbc861e8bf330f2ecbdb670e556ad54e7",
+        "log": "proofs/probe_7/public-primary/analysis.log",
+        "negative_log": "proofs/probe_7/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7 --candidate primary --output .runtime-work/c150668-offline-probe_7-primary-v11",
+        "construction_sha256": "52af31b272b9bfbeeab1cc1a2a453adbdbc2a9815548789c39469bb5a9377e58",
+        "exit_code": 0,
+        "log": "proofs/probe_7/public-primary/static.log",
+        "log_sha256": "0928074856db490340fc356151dd37fb9babdbdfcc1b4dbfee638307012ebba5"
+      },
+      "negative": {
+        "log": "proofs/probe_7/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/execution-manifest.json --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_7/saved-processing.json",
+        "test_log_sha256": "638a10921358a935e4db176317bce4fe8746ae4552b74784403f05cf3c85c574"
+      },
+      "acquisition": {
+        "device_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "police_direction_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.obstruction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "st.sidewalk": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        },
+        "traffic_conflict_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only original Native actor, road, footprint, review-role and frame join",
+          "evidence": "vehicle-poses.jsonl; road.xodr; fixture-review roles; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/probe_7/proof.json",
+        "sha256": "cab9440cf236ed448f4a6b0952df976e02093d66af9d11b18b86b3a513ae07a5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e5f78b79bc4a2c6ffa3fc967c96236353e34225360eafe900a2967e14744da7c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7 --attempt .runtime-work/c150668-saved-probe7-attempt-v11 --processing .runtime-work/c150668-saved-probe7-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe7-v11.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_7/delivery-positive.log",
+        "test_log_sha256": "5a4a16329c71a93d14660d3562963becd07792fc5104c937862ea235675fb8ed",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver/delivery_audit.py --case training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7 --attempt .runtime-work/c150668-delivery-probe7-negative-v11 --processing .runtime-work/c150668-saved-probe7-output-v11/v0001/processing.json --output .runtime-work/c150668-delivery-probe7-negative-v11.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: fixture-review/fixture-identity.json",
+        "negative_log": "proofs/probe_7/delivery-negative.log",
+        "negative_log_sha256": "5929ed29d99538a57629aed7eb4402d0a64e382ecb495c0a2112aded0854212c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }

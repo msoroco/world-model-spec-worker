@@ -88,6 +88,26 @@ def reviewed_measure(root, config):
     return frames, poses, review, observation
 
 
+def sourced_bus_scope(review):
+    return {'vehicle_class': review['vehicle_class'],
+        'non_tour_bus_source_reviewed': review['vehicle_class'] == 'non_tour_bus',
+        'tour_bus_excluded_from_selected_scope': True}
+
+
+def sourced_traffic(observation):
+    return {'other_vehicle_speed_mps_range': observation['other_vehicle_speed_mps_range'],
+        'other_vehicle_delay_s_range': observation['other_vehicle_delay_s_range'],
+        'unduly_impede': 'requires_independent_judgment'}
+
+
+def sourced_location(review):
+    return {'location_kind': review['location_kind'],
+        'public_street': review['public_street'],
+        'qualifying_alternatives': ['bus_stop', 'bus_stand',
+            'passenger_loading_zone', 'origin', 'destination'],
+        'selected_witness': 'bus_stop'}
+
+
 def finalize(attempt, output):
     root, output = Path(attempt), Path(output)
     require(not output.exists() and not (root / 'result.json').exists(),
@@ -134,8 +154,16 @@ def finalize(attempt, output):
         (channel_dir / (name + '.jsonl')).write_text(''.join(
             json.dumps(item, allow_nan=False) + '\n' for item in values))
     report = {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],
-        'measurements': {'bus_loading_measurement': {'method': 'reviewed_measure',
-            'value': observation, 'sources': hashes}}, 'legal_verdict_claimed': False}
+        'measurements': {
+            'bus_loading_measurement': {'method': 'reviewed_measure',
+                'value': observation, 'sources': hashes},
+            'bus_scope_measurement': {'method': 'sourced_bus_scope',
+                'value': sourced_bus_scope(review), 'sources': hashes},
+            'traffic_impedance_measurement': {'method': 'sourced_traffic',
+                'value': sourced_traffic(observation), 'sources': hashes},
+            'qualifying_location_measurement': {'method': 'sourced_location',
+                'value': sourced_location(review), 'sources': hashes}},
+        'legal_verdict_claimed': False}
     target = config['bus_case']
     observed_gap = observation['wheel_to_curb_gap_m_range']
     result = {'case_id': config['case_id'], 'measured_values': observation,

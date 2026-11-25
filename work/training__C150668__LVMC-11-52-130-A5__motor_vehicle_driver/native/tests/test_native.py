@@ -35,7 +35,7 @@ class NativeDraft(unittest.TestCase):
         self.assertEqual(check(config)['frames'], 600)
         self.assertEqual(len(CAMERAS), 4)
         self.assertEqual(geometry_check()['fixture_bounds_m']['min_x'], 0)
-        self.assertEqual(set(STOP_X_M), {'outside', 'side_band', 'front'})
+        self.assertEqual(set(STOP_X_M), {'outside', 'side_band', 'front', 'at_five_feet'})
         self.assertEqual(command(config['stop_case'], 0, -60, 0)['phase'], 'approach')
         self.assertEqual(len(survey(FakeCarla, FakeMap())), 6)
         with self.assertRaisesRegex(RuntimeError, 'lane survey failed'):

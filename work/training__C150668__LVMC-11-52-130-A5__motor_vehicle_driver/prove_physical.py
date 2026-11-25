@@ -22,7 +22,7 @@ def main(attempts):
         if value["rest_interval_frames"] != [100, 599]:
             raise ValueError("Diagnostic rest interval differs")
         if value["within_five_foot_side_band_at_rest"] != (suffix in
-                ("probe_2", "probe_4", "probe_5", "probe_6")):
+                ("probe_2", "probe_4", "probe_5", "probe_6", "probe_7")):
             raise ValueError("Diagnostic side clearance differs")
         if (value["directly_in_front_frame_count_at_rest"] >= 100) != (suffix == "probe_3"):
             raise ValueError("Diagnostic front placement differs")
@@ -62,6 +62,6 @@ def main(attempts):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 7:
-        raise SystemExit("Usage: prove_physical.py PROBE1_ATTEMPT ... PROBE6_ATTEMPT")
-    main({"probe_" + str(i): sys.argv[i] for i in range(1, 7)})
+    if len(sys.argv) != 8:
+        raise SystemExit("Usage: prove_physical.py PROBE1_ATTEMPT ... PROBE7_ATTEMPT")
+    main({"probe_" + str(i): sys.argv[i] for i in range(1, 8)})

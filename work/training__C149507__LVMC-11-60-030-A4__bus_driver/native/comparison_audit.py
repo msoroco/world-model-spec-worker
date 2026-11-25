@@ -6,7 +6,10 @@ from pathlib import Path
 
 AID = 'training__C149507__LVMC-11-60-030-A4__bus_driver'
 FIXED = ('vehicle_class', 'location_kind', 'public_street', 'curb_face_y_m',
-         'curb_heading_deg', 'other_vehicle_baseline_mps')
+         'curb_heading_deg', 'other_vehicle_baseline_mps',
+         'loading_activity_frames', 'native_map_sha256',
+         'curb_calibration_sha256', 'bus_classification_sha256',
+         'wheel_geometry_sha256', 'loading_zone_sha256')
 
 
 def rows(path):
@@ -42,18 +45,21 @@ def check(root, suffix):
                      'gap_m_range': [min(active), max(active)]}
 
 
-def compare(left, right, diagnostic=False, negative_selftest=False):
+def compare(left, right, middle, diagnostic=False, negative_selftest=False):
     a, first = check(left, 'probe_1')
     b, second = check(right, 'probe_2')
+    c, boundary = check(middle, 'probe_3')
     if negative_selftest:
         b['location_kind'] = 'passenger_loading_zone'
-    if any(a.get(name) != b.get(name) for name in FIXED):
+    if any(a.get(name) != b.get(name) or a.get(name) != c.get(name) for name in FIXED):
         raise ValueError('Fixed bus loading context differs')
-    if not first['gap_m_range'][1] < .4572 < second['gap_m_range'][0]:
-        raise ValueError('Source-measured right-front-wheel gap contrast absent')
+    if not (first['gap_m_range'][1] < .4572 and
+            all(abs(value - .4572) <= .005 for value in boundary['gap_m_range']) and
+            second['gap_m_range'][0] > .4572):
+        raise ValueError('Source-measured below/at/above front-wheel gap contrast absent')
     return {'format': 'worker-bus-loading-comparison-v1',
         'comparison_id': AID + '__wheel_gap_comparison',
-        'case_ids': [AID + '__probe_1', AID + '__probe_2'],
+        'case_ids': [AID + '__probe_1', AID + '__probe_2', AID + '__probe_3'],
         'passed': True, 'diagnostic_fixture': diagnostic,
         'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
         'fixed_conditions_checked': list(FIXED),
@@ -61,16 +67,20 @@ def compare(left, right, diagnostic=False, negative_selftest=False):
         'source_sha256': {'probe_1': {name: sha(Path(left) / name) for name in
             ('video_frames.jsonl', 'bus-traffic-poses.jsonl', 'bus-zone-review.json')},
             'probe_2': {name: sha(Path(right) / name) for name in
+            ('video_frames.jsonl', 'bus-traffic-poses.jsonl', 'bus-zone-review.json')},
+            'probe_3': {name: sha(Path(middle) / name) for name in
             ('video_frames.jsonl', 'bus-traffic-poses.jsonl', 'bus-zone-review.json')}},
-        'measurements': {'probe_1': first, 'probe_2': second}}
+        'measurements': {'probe_1': first, 'probe_2': second, 'probe_3': boundary},
+        'boundary_measurement_uncertainty_m': .005}
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--left', required=True)
     parser.add_argument('--right', required=True)
+    parser.add_argument('--middle', required=True)
     parser.add_argument('--diagnostic', action='store_true')
     parser.add_argument('--negative-selftest', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(compare(args.left, args.right, args.diagnostic,
+    print(json.dumps(compare(args.left, args.right, args.middle, args.diagnostic,
                              args.negative_selftest), sort_keys=True))

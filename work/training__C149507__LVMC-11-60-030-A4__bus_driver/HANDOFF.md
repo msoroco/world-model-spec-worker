@@ -1,5 +1,15 @@
 # LVMC-11-60-030-A4 at C149507
 
+## 2026-11-25 delivery preparation handoff
+
+Status: delivery prepared. The exact assignment-scoped strict gate passed on the final v9 CPU package; original Native capture and independent physical/legal review remain the delivery step. The selected 0.30 m, exactly 0.4572 m, and 0.70 m right-front-wheel gap requests span below, at, and above the statute's 18-inch value. Each has a primary surveyed -20 m bus spawn and a surveyed -25 m fallback activated only by original primary spawn failure. Six pinned offline, six current-runtime public positive/missing-review negative checks, three recorded-only saved checks, three physical fixture suites, three independent delivery-audit positive/missing-pose negatives, seven semantic stages and a three-case comparison positive/changed-location negative are retained in the execution manifest and proof files. CPU fixtures make no Native, physical or legal acceptance claim.
+
+The exact law applies to a non-tour bus entering one of five qualifying public-street locations and stopped to load or unload. The selected witness is a bus stop with following vehicular traffic. `case-plan.json` binds each clause element to all three selected cases: original bus classification; source-reviewed bus-stop/public-street status; measured wheel/curb contact and heading; stopped-loading interval; following-vehicle speed and delay. Other locations are disjunctive activation modes and are not claimed executed by this witness. Original source review must establish the bus and location facts. Approximately parallel and undue impedance remain independent judgments without invented angular or delay cutoffs. The exact at-boundary placement has a 0.005 m engineering measurement tolerance that does not change the 18-inch legal value.
+
+The Native runner retains four separate 600-frame/20-Hz source cameras, bus and other-vehicle poses, surveyed curb/wheel geometry, trace and capture graph. It emits a review template rather than self-certifying passenger or baggage loading, legal location, bus classification or physical acceptance. An original reviewer must source-hash original videos/road and supply the final bus-zone review. The independent delivery audit rejects missing pose joins and checks actual decoded pixels plus original source review before acceptance. This is a GPU delivery source gate, not a CPU proof gap.
+
+To resume original delivery, use `execution-manifest.json` and the ordered shared queue; execute the first GPU delivery command in `result.json`, complete original source review, then run `runtime.py process-saved` and independent delivery/comparison audits. Keep temporary artifacts under `.runtime-work/`. Historical checkpoints below document earlier partial drafts and are superseded by this section.
+
 Actor: `bus_driver`. Frozen cell: `one_way_road` / `load_unload` / `other_vehicle`.
 
 Exact statutory source: LVMC 11.60.030(A)(4). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Other traffic during entry and stopped loading.

@@ -1,0 +1,543 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C149507__LVMC-11-60-030-A4__bus_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "delivery_prepared",
+  "cases": [
+    {
+      "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_1/primary/construction.json",
+      "construction_sha256": "b1c6b17edc12152afd69c4cd5a0c33caaa009c260334d66c98770328889eebff",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bus stop dynamics, wheel geometry and loading visibility require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_1/fallback1/construction.json",
+          "construction_sha256": "36b776b4118338d71a439409152ab0a153799cf6161817ecd87736a42ee93f05",
+          "trigger": {
+            "source": "original Native bus spawn receipt",
+            "metric": "primary_bus_spawn_failed",
+            "failure_condition": "primary -20 m bus spawn is occupied or fails placement"
+          },
+          "changed_knobs": [
+            "surveyed bus spawn x -20 m to -25 m before same curb zone"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/selected-offline-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1 --candidate fallback1 --output .runtime-work/c149507-offline-v9-probe_1-fallback1",
+            "construction_sha256": "36b776b4118338d71a439409152ab0a153799cf6161817ecd87736a42ee93f05",
+            "exit_code": 0,
+            "log": "proof-offline-probe_1-fallback1.log",
+            "log_sha256": "f18d8450467f96181325a6895d806d48a68601c548f40b1a4ec8339b6f9b9c1c"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_1/fallback1-compatibility.json",
+            "sha256": "44de71c32af0ec5faefe1ad0ee02603c1ec7ed6afbaca2712dd506a5e4836e19",
+            "log": "cases/probe_1/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/probe_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_bus.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/probe_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C149507__LVMC-11-60-030-A4__bus_driver/cases/probe_1/recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/selected-offline-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1 --candidate primary --output .runtime-work/c149507-offline-v9-probe_1-primary",
+        "construction_sha256": "b1c6b17edc12152afd69c4cd5a0c33caaa009c260334d66c98770328889eebff",
+        "exit_code": 0,
+        "log": "proof-offline-probe_1-primary.log",
+        "log_sha256": "670fd0cd3eeaef36ca0fbc2be34208bdb1e3d184099ad0b6fad313e9a8c7fcff"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_1/proof.json",
+        "sha256": "bc0344e61919ad1202ab81cbfed49cbd3e4cf126ffb7741598e7dfffcbd3d262"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_1/primary-compatibility.json",
+        "sha256": "83fe2cd6de6edadf9d88c15fb3c3eefa7ac06954eaeefa3a28bc7727419b34fb",
+        "log": "cases/probe_1/primary-compatibility-analysis.log",
+        "negative_log": "cases/probe_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_1/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.bus": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "st.curb_zone": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "kin.heading": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "sig.door_open": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.queue_behind": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "bus_wheel_and_pose": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "curb_and_zone_geometry": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a5f6ae18cbc2abe7469e8bf3bf8eb4ef95accdcb2aa4599c3c0e5491e3fecc47",
+        "command": ".venv-cpu/bin/python work/training__C149507__LVMC-11-60-030-A4__bus_driver/native/delivery_audit.py --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_1-selftest.log",
+        "test_log_sha256": "6638a8a1fc68d224abe753ad529ee9c6744c3ad4ddca29c17c59e00b077a7773",
+        "negative_command": ".venv-cpu/bin/python work/training__C149507__LVMC-11-60-030-A4__bus_driver/native/delivery_audit.py --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: bus-traffic-poses.jsonl",
+        "negative_log": "delivery-probe_1-negative-selftest.log",
+        "negative_log_sha256": "83a52fbda0ab6663fca4706011254e39d1b8721c7734ef7d667e635fa4259831",
+        "scope": "Synthetic CPU audit mechanics only; original Native and legal review remain source gated"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "cat \"$SAVED_VERSION/processing.json\"",
+        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/compat-draft-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1 --attempt .runtime-work/c149507-compat-v9-probe_1-primary --output .runtime-work/c149507-saved-v9-probe_1 --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "test_exit_code": 0,
+        "test_log": "saved-probe_1.log",
+        "test_log_sha256": "f3e9b5f914053f45936a344fbaeba07bf72d441497f6d338c76c64629c5be29f",
+        "test_receipt": "cases/probe_1/process-saved.json",
+        "test_receipt_sha256": "f3e9b5f914053f45936a344fbaeba07bf72d441497f6d338c76c64629c5be29f"
+      }
+    },
+    {
+      "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_2/primary/construction.json",
+      "construction_sha256": "dcba056fd39e13250acf33804bd1a9e7d618afa4d34fc2f05fc95077286aca4a",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bus stop dynamics, wheel geometry and loading visibility require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_2/fallback1/construction.json",
+          "construction_sha256": "2b7d0c039232acde87fc242d4b4fbb491a56284bced39d68b75758d6293e7932",
+          "trigger": {
+            "source": "original Native bus spawn receipt",
+            "metric": "primary_bus_spawn_failed",
+            "failure_condition": "primary -20 m bus spawn is occupied or fails placement"
+          },
+          "changed_knobs": [
+            "surveyed bus spawn x -20 m to -25 m before same curb zone"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/selected-offline-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2 --candidate fallback1 --output .runtime-work/c149507-offline-v9-probe_2-fallback1",
+            "construction_sha256": "2b7d0c039232acde87fc242d4b4fbb491a56284bced39d68b75758d6293e7932",
+            "exit_code": 0,
+            "log": "proof-offline-probe_2-fallback1.log",
+            "log_sha256": "82e3e32cd357485c6258b260d10b3d922daa133e135e4b0b92203c81e35d64b4"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_2/fallback1-compatibility.json",
+            "sha256": "62f66c68c4cd3a5c35746b9bf5780d2b7c9d2b68b9a1780b4dda05c6597c36d9",
+            "log": "cases/probe_2/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/probe_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_bus.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/probe_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C149507__LVMC-11-60-030-A4__bus_driver/cases/probe_2/recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/selected-offline-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2 --candidate primary --output .runtime-work/c149507-offline-v9-probe_2-primary",
+        "construction_sha256": "dcba056fd39e13250acf33804bd1a9e7d618afa4d34fc2f05fc95077286aca4a",
+        "exit_code": 0,
+        "log": "proof-offline-probe_2-primary.log",
+        "log_sha256": "e06b275a4c011d10aca318c8815f066f29bedc4a6f8b011ec5526777ecf49038"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_2/proof.json",
+        "sha256": "db93c7b6a76fccce672a4d3c07fa94e5bcbcf0260776b41e5b574b6789fa3235"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_2/primary-compatibility.json",
+        "sha256": "660124c263e6770726c522b438c60bdeafccb3f58b4660d1c2f75cb07712919b",
+        "log": "cases/probe_2/primary-compatibility-analysis.log",
+        "negative_log": "cases/probe_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_2/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.bus": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "st.curb_zone": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "kin.heading": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "sig.door_open": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.queue_behind": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "bus_wheel_and_pose": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "curb_and_zone_geometry": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a5f6ae18cbc2abe7469e8bf3bf8eb4ef95accdcb2aa4599c3c0e5491e3fecc47",
+        "command": ".venv-cpu/bin/python work/training__C149507__LVMC-11-60-030-A4__bus_driver/native/delivery_audit.py --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_2-selftest.log",
+        "test_log_sha256": "dd1e35bd6e38a6a413dd0eda05b220d8f7ca855c95e3c9316bcff6539aa02384",
+        "negative_command": ".venv-cpu/bin/python work/training__C149507__LVMC-11-60-030-A4__bus_driver/native/delivery_audit.py --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: bus-traffic-poses.jsonl",
+        "negative_log": "delivery-probe_2-negative-selftest.log",
+        "negative_log_sha256": "83a52fbda0ab6663fca4706011254e39d1b8721c7734ef7d667e635fa4259831",
+        "scope": "Synthetic CPU audit mechanics only; original Native and legal review remain source gated"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "cat \"$SAVED_VERSION/processing.json\"",
+        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/compat-draft-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_2 --attempt .runtime-work/c149507-compat-v9-probe_2-primary --output .runtime-work/c149507-saved-v9-probe_2 --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "test_exit_code": 0,
+        "test_log": "saved-probe_2.log",
+        "test_log_sha256": "92abd8f0499ef1c01e24fb469cb343fa0285aab81b90c2442f48b471fbdc4b02",
+        "test_receipt": "cases/probe_2/process-saved.json",
+        "test_receipt_sha256": "92abd8f0499ef1c01e24fb469cb343fa0285aab81b90c2442f48b471fbdc4b02"
+      }
+    },
+    {
+      "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_3/primary/construction.json",
+      "construction_sha256": "d1c061dfbed14e5f1992731d437c97ea06184b5c8450f560f953b6aa5f12b420",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native bus stop dynamics, wheel geometry and loading visibility require review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_3/fallback1/construction.json",
+          "construction_sha256": "c911f1b2b7ca0c5d2963cf171d4a6770ac37a7691d80e89500d26765305e3698",
+          "trigger": {
+            "source": "original Native bus spawn receipt",
+            "metric": "primary_bus_spawn_failed",
+            "failure_condition": "primary -20 m bus spawn is occupied or fails placement"
+          },
+          "changed_knobs": [
+            "surveyed bus spawn x -20 m to -25 m before same curb zone"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/selected-offline-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3 --candidate fallback1 --output .runtime-work/c149507-offline-v9-probe_3-fallback1",
+            "construction_sha256": "c911f1b2b7ca0c5d2963cf171d4a6770ac37a7691d80e89500d26765305e3698",
+            "exit_code": 0,
+            "log": "proof-offline-probe_3-fallback1.log",
+            "log_sha256": "85723094762f24bbca5676be64ffa3d6105b8b9c32d2dfcd11b22d1a0f538b7a"
+          },
+          "compatibility": {
+            "receipt": "cases/probe_3/fallback1-compatibility.json",
+            "sha256": "e865b6a53e256211a9430fa50f5100460b6724050fdaf115fcf272e8eb874382",
+            "log": "cases/probe_3/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/probe_3/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_bus.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/probe_3/measurement-contract.json",
+      "fixture_recipe": "work/training__C149507__LVMC-11-60-030-A4__bus_driver/cases/probe_3/recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/selected-offline-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3 --candidate primary --output .runtime-work/c149507-offline-v9-probe_3-primary",
+        "construction_sha256": "d1c061dfbed14e5f1992731d437c97ea06184b5c8450f560f953b6aa5f12b420",
+        "exit_code": 0,
+        "log": "proof-offline-probe_3-primary.log",
+        "log_sha256": "d048663d0a75a6ff610fdd5381574136facd65c19cff106ac1f77e9be7ec5491"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_3/proof.json",
+        "sha256": "05c28e52c5544049707bac42c8f0425c4896dd0ae4acafac1dc51d43f90e7fc1"
+      },
+      "compatibility": {
+        "receipt": "cases/probe_3/primary-compatibility.json",
+        "sha256": "3b4eaea238e4face25609779a429d8733597ffca8e3327f64787ba523140fbc1",
+        "log": "cases/probe_3/primary-compatibility-analysis.log",
+        "negative_log": "cases/probe_3/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "cases/probe_3/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.bus": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "st.curb_zone": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "kin.heading": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "sig.door_open": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.queue_behind": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "bus_wheel_and_pose": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "curb_and_zone_geometry": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize_bus.py",
+          "method": "Original Native bus/traffic pose joined to reviewed wheel/curb, non-tour classification, public-street loading location and four source cameras",
+          "evidence": "video_frames.jsonl,bus-traffic-poses.jsonl,bus-zone-review.json,road.xodr"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a5f6ae18cbc2abe7469e8bf3bf8eb4ef95accdcb2aa4599c3c0e5491e3fecc47",
+        "command": ".venv-cpu/bin/python work/training__C149507__LVMC-11-60-030-A4__bus_driver/native/delivery_audit.py --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe_3-selftest.log",
+        "test_log_sha256": "69c9630d31eb8156c935faac343612a11652955a474092c4d235bb52f43472dc",
+        "negative_command": ".venv-cpu/bin/python work/training__C149507__LVMC-11-60-030-A4__bus_driver/native/delivery_audit.py --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: bus-traffic-poses.jsonl",
+        "negative_log": "delivery-probe_3-negative-selftest.log",
+        "negative_log_sha256": "83a52fbda0ab6663fca4706011254e39d1b8721c7734ef7d667e635fa4259831",
+        "scope": "Synthetic CPU audit mechanics only; original Native and legal review remain source gated"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/execution-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$ADAPTER_CHECK\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "cat \"$SAVED_VERSION/processing.json\"",
+        "test_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149507__LVMC-11-60-030-A4__bus_driver/compat-draft-manifest.json --case training__C149507__LVMC-11-60-030-A4__bus_driver__probe_3 --attempt .runtime-work/c149507-compat-v9-probe_3-primary --output .runtime-work/c149507-saved-v9-probe_3 --library runtime/library --validator \"$ADAPTER_CHECK\"",
+        "test_exit_code": 0,
+        "test_log": "saved-probe_3.log",
+        "test_log_sha256": "98dd7d22716a443c514ab9f8fe44da761eb169931848ffa4a68e11c95783f660",
+        "test_receipt": "cases/probe_3/process-saved.json",
+        "test_receipt_sha256": "98dd7d22716a443c514ab9f8fe44da761eb169931848ffa4a68e11c95783f660"
+      }
+    }
+  ],
+  "delivery_ready": true
+}

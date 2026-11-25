@@ -2,7 +2,7 @@
   "format": "worker-package-compatibility",
   "case_id": "training__C149507__LVMC-11-60-030-A4__bus_driver__probe_1",
   "candidate_id": "primary",
-  "construction_sha256": "934a8d6355a87ee05220fe90d22353f7d2c53aeb0044058bdc3ae81ad5378e3c",
+  "construction_sha256": "b1c6b17edc12152afd69c4cd5a0c33caaa009c260334d66c98770328889eebff",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "fixture_sha256": "8b715256a029440371dd52b91600e3e3c1569a5e727afcdf715b62da4b6a63d8",
   "passed": true,
@@ -20,7 +20,7 @@
     "negative_case_source"
   ],
   "scope": "diagnostic software compatibility only",
-  "analysis_sha256": "e6d6667c1d196e0271a5534b0283378fb3bdaf303853356477030c8b05669cb2",
+  "analysis_sha256": "e51baa112d411a6eaee88c04c0f006eaeefb7f80612ed15c83f4ed2b8821a4fe",
   "fixture_manifest": {
     "approach.mkv": "d077c2db2b25939cd8ff45cc6651871057150ebed6352c7db211e6b9806402ea",
     "bus-classification.json": "e8f959e72b827fb90874627fe56e9c82333e7c8479ed766743b87187ebe4b805",
@@ -641,13 +641,16 @@
     "video_frames.jsonl": "36cfe9adcbb3f7f28ae3896beea0f76d0179da5bb175f72c434ee10f5f51bc3c",
     "wheel-geometry.json": "3d71d0d8cabb7f047fbf2da3411e8ec360d2a3f2411105fed72664953b3c6918"
   },
-  "log_sha256": "900e8e2c2d92ba74822cb7f21a3170f9aa44a694e136f68c10adc663afe71da5",
+  "log_sha256": "4968de546bf6e990e0bea15c4b9edd6746f8d016a2818220f4427ca9b493a9af",
   "fixture_generator_sha256": "0857d9ac6c0a08c5bc25f4b58fef81c93cf1fe31d6845e904ce6a10c4f6eab53",
   "fixture_recipe_sha256": "e99ce22e8fd01628bc5ffdbf40d8caaa3d64cbc7327dd41b759f6e8212bd05d5",
-  "measurement_contract_sha256": "282f491178c95905a064d98f77b226f360ef03a52c2561a3e629c9f9eabcd570",
-  "analysis_report_sha256": "f141beb5ab4f30a73b59535dbe01fe3dc475f24e521b596fc469e35d7a38f758",
+  "measurement_contract_sha256": "b7c51143ecbdceecf561d3a8c9a8637939b65e7a02e6ce85dee69f547299e4e7",
+  "analysis_report_sha256": "7b8527ff205ef70e0d602e81f794f64aa6f0cc2e542c9dcfbded8118aee1ae0c",
   "measurement_keys": [
-    "bus_loading_measurement"
+    "bus_loading_measurement",
+    "bus_scope_measurement",
+    "qualifying_location_measurement",
+    "traffic_impedance_measurement"
   ],
   "measurement_examples": {
     "bus_loading_measurement": {
@@ -700,9 +703,76 @@
         "wheel-geometry.json": "3d71d0d8cabb7f047fbf2da3411e8ec360d2a3f2411105fed72664953b3c6918",
         "loading-location.json": "f6a8f48f7a8ce6f09a8fd1d0b4fe8402f369233195a1d0890e9ad4a8ff480ccd"
       }
+    },
+    "bus_scope_measurement": {
+      "method": "sourced_bus_scope",
+      "value": {
+        "vehicle_class": "non_tour_bus",
+        "non_tour_bus_source_reviewed": true,
+        "tour_bus_excluded_from_selected_scope": true
+      },
+      "sources": {
+        "video_frames.jsonl": "36cfe9adcbb3f7f28ae3896beea0f76d0179da5bb175f72c434ee10f5f51bc3c",
+        "bus-traffic-poses.jsonl": "6955eaac0549fb92bec6765a652f52c2226f6c8696d28a7c7861aa71e6693b67",
+        "bus-zone-review.json": "e4c19a8667898621e7519b23b79e44dbef1efb5bad176a0ef530bf9c0fa15e41",
+        "road.xodr": "de6d20d7b51ec3b203246694c75a04ee095f2997e13c140e3afcb3f327d37584",
+        "curb-calibration.json": "b4b8ad424d43fb0fc619313e3c755880255bc631936693145463aa73d313de6f",
+        "bus-classification.json": "e8f959e72b827fb90874627fe56e9c82333e7c8479ed766743b87187ebe4b805",
+        "wheel-geometry.json": "3d71d0d8cabb7f047fbf2da3411e8ec360d2a3f2411105fed72664953b3c6918",
+        "loading-location.json": "f6a8f48f7a8ce6f09a8fd1d0b4fe8402f369233195a1d0890e9ad4a8ff480ccd"
+      }
+    },
+    "traffic_impedance_measurement": {
+      "method": "sourced_traffic",
+      "value": {
+        "other_vehicle_speed_mps_range": [
+          2.5,
+          3.6
+        ],
+        "other_vehicle_delay_s_range": [
+          0.004999999999999999,
+          0.018750000000000003
+        ],
+        "unduly_impede": "requires_independent_judgment"
+      },
+      "sources": {
+        "video_frames.jsonl": "36cfe9adcbb3f7f28ae3896beea0f76d0179da5bb175f72c434ee10f5f51bc3c",
+        "bus-traffic-poses.jsonl": "6955eaac0549fb92bec6765a652f52c2226f6c8696d28a7c7861aa71e6693b67",
+        "bus-zone-review.json": "e4c19a8667898621e7519b23b79e44dbef1efb5bad176a0ef530bf9c0fa15e41",
+        "road.xodr": "de6d20d7b51ec3b203246694c75a04ee095f2997e13c140e3afcb3f327d37584",
+        "curb-calibration.json": "b4b8ad424d43fb0fc619313e3c755880255bc631936693145463aa73d313de6f",
+        "bus-classification.json": "e8f959e72b827fb90874627fe56e9c82333e7c8479ed766743b87187ebe4b805",
+        "wheel-geometry.json": "3d71d0d8cabb7f047fbf2da3411e8ec360d2a3f2411105fed72664953b3c6918",
+        "loading-location.json": "f6a8f48f7a8ce6f09a8fd1d0b4fe8402f369233195a1d0890e9ad4a8ff480ccd"
+      }
+    },
+    "qualifying_location_measurement": {
+      "method": "sourced_location",
+      "value": {
+        "location_kind": "bus_stop",
+        "public_street": true,
+        "qualifying_alternatives": [
+          "bus_stop",
+          "bus_stand",
+          "passenger_loading_zone",
+          "origin",
+          "destination"
+        ],
+        "selected_witness": "bus_stop"
+      },
+      "sources": {
+        "video_frames.jsonl": "36cfe9adcbb3f7f28ae3896beea0f76d0179da5bb175f72c434ee10f5f51bc3c",
+        "bus-traffic-poses.jsonl": "6955eaac0549fb92bec6765a652f52c2226f6c8696d28a7c7861aa71e6693b67",
+        "bus-zone-review.json": "e4c19a8667898621e7519b23b79e44dbef1efb5bad176a0ef530bf9c0fa15e41",
+        "road.xodr": "de6d20d7b51ec3b203246694c75a04ee095f2997e13c140e3afcb3f327d37584",
+        "curb-calibration.json": "b4b8ad424d43fb0fc619313e3c755880255bc631936693145463aa73d313de6f",
+        "bus-classification.json": "e8f959e72b827fb90874627fe56e9c82333e7c8479ed766743b87187ebe4b805",
+        "wheel-geometry.json": "3d71d0d8cabb7f047fbf2da3411e8ec360d2a3f2411105fed72664953b3c6918",
+        "loading-location.json": "f6a8f48f7a8ce6f09a8fd1d0b4fe8402f369233195a1d0890e9ad4a8ff480ccd"
+      }
     }
   },
   "negative_removed": "bus-zone-review.json",
   "negative_error_contains": "Missing required source: bus-zone-review.json",
-  "negative_log_sha256": "ed304c97db2b4828b7ef0b7f3030bf0f92612f1bfb2c185e565ba2b0eb5d2be7"
+  "negative_log_sha256": "b0391e22a0d122f4d2bca0edbe929da609ff9a0330248d4d904bb05ebf0edaa6"
 }

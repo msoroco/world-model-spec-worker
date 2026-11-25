@@ -1,0 +1,39 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.413(2)",
+      "output_key": "continuous_signal_distance",
+      "method": "measure_signal_distance",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "signal-source.jsonl",
+        "video_frames.jsonl",
+        "context-review.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.413(2)",
+      "output_key": "weather_no_waiver",
+      "method": "source_weather_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "signal-source.jsonl",
+        "video_frames.jsonl",
+        "context-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "signal-source.jsonl"
+    ],
+    "error_contains": "Missing required source: signal-source.jsonl"
+  }
+}

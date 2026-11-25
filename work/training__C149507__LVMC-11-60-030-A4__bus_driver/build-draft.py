@@ -43,7 +43,10 @@ def main():
                   'case': {'case_id': case_id},
                   'cameras': [{'name': name,
                                'width': 1920 if name == 'overview' else 1280,
-                               'height': 1080 if name == 'overview' else 720}
+                               'height': 1080 if name == 'overview' else 720,
+                               'fov_deg': {'overview': 95, 'approach': 85,
+                                   'reference_corner': 90, 'driver_reference': 95}[name],
+                               'pose_strategy': 'reviewed_world_transform'}
                               for name in ('overview', 'approach', 'reference_corner', 'driver_reference')],
                   'recording_description': description,
                   'status': 'cpu_draft_location_loading_unverified'}

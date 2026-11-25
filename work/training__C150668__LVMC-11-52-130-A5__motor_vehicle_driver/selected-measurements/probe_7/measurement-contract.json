@@ -1,0 +1,84 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150668__LVMC-11-52-130-A5__motor_vehicle_driver__probe_7",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0-side-band",
+      "source": "LVMC 11.52.130(A)(5)",
+      "output_key": "fixture_stop",
+      "method": "measure_fixture_stop",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "fixture-review/fixture-identity.json",
+        "fixture-review/fixture-geometry.json",
+        "fixture-review/sidewalk-geometry.json",
+        "fixture-review/front-orientation.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-0-direct-front",
+      "source": "LVMC 11.52.130(A)(5)",
+      "output_key": "direct_front",
+      "method": "measure_direct_front",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "vehicle-poses.jsonl",
+        "video_frames.jsonl",
+        "fixture-review/front-orientation.json",
+        "fixture-review/fixture-geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "text-0-traffic-conflict",
+      "source": "LVMC 11.52.130(A)(5)",
+      "output_key": "traffic_exception",
+      "method": "measure_traffic_exception",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "fixture-review/traffic-context.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "text-0-police-direction",
+      "source": "LVMC 11.52.130(A)(5)",
+      "output_key": "police_exception",
+      "method": "measure_police_exception",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "fixture-review/police-direction.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "text-0-device-direction",
+      "source": "LVMC 11.52.130(A)(5)",
+      "output_key": "device_exception",
+      "method": "measure_device_exception",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "fixture-review/device-direction.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "fixture-review/fixture-identity.json"
+    ],
+    "error_contains": "Missing required source: fixture-review/fixture-identity.json"
+  }
+}

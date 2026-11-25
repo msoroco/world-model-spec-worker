@@ -9,9 +9,10 @@
       "condition": "Vehicle stops, stands or parks in front of a sidewalk elevator or chute or within five feet on either side.",
       "numeric_conditions": [
         {
+          "variable": "side_clearance",
+          "operator": "<=",
           "value": 5,
-          "unit": "feet",
-          "relation": "within each side"
+          "unit": "feet"
         }
       ]
     },
@@ -21,18 +22,42 @@
       "numeric_conditions": []
     },
     "exceptions": [
-      "Necessary to avoid conflict with other traffic in compliance with law",
-      "Directions of a police officer",
-      "Directions of a traffic control device"
+      {
+        "trigger": "necessary traffic conflict",
+        "effect": "exception context to review",
+        "replacement_obligation": "follow applicable law",
+        "source_clause": "when necessary to avoid conflict with other traffic in compliance with law"
+      },
+      {
+        "trigger": "police officer direction",
+        "effect": "exception context to review",
+        "replacement_obligation": "follow direction",
+        "source_clause": "directions of a police officer"
+      },
+      {
+        "trigger": "traffic control device direction",
+        "effect": "exception context to review",
+        "replacement_obligation": "follow direction",
+        "source_clause": "a traffic control device"
+      }
     ],
     "timing": {
       "description": "During the qualifying stop, stand or park.",
       "numeric_conditions": []
     },
     "judgment_calls_needed": [
-      "fixture legal identity",
-      "front orientation",
-      "traffic conflict and direction source"
+      {
+        "phrase": "fixture legal identity and front orientation",
+        "note": "original fixture and street view required"
+      },
+      {
+        "phrase": "necessity of traffic conflict in compliance with law",
+        "note": "other actor and lawful necessity require review"
+      },
+      {
+        "phrase": "police or device direction",
+        "note": "original authority and direction require review"
+      }
     ]
   },
   "parameter_refs": []

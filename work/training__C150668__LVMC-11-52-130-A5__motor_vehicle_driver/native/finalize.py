@@ -33,7 +33,7 @@ def analyze(attempt):
             raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     case = config.get("case_id")
-    if case not in tuple(ASSIGNMENT + "__probe_" + str(i) for i in range(1, 7)) or config.get(
+    if case not in tuple(ASSIGNMENT + "__probe_" + str(i) for i in range(1, 8)) or config.get(
             "selected_case_id") != case or config.get("law_id") != "LVMC-11-52-130-A5" or config.get(
             "cell_id") != "C150668" or config.get("rate_hz") != 20 or config.get(
             "duration_s") != 30:

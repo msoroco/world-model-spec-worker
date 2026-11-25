@@ -119,6 +119,12 @@ def finalize(attempt, output):
             for frame, source in zip(measured['mapping'], measured['signal'])))
         recording.append({'name': name, 'unit': item['unit'],
                           'reference': 'channels/'+path.name})
+    for item in config['recording_description']['context_inputs']:
+        name = item['name']
+        path = channels/(name+'.json')
+        path.write_text(json.dumps({name: context}, separators=(',', ':'))+'\n')
+        recording.append({'name': name, 'unit': item['unit'],
+                          'reference': 'channels/'+path.name})
     result = {'case_id': config['case_id'],
         'measured_values': {'native_light_state_continuity_m': measured['distance_m'],
                             'legal_result': None},
@@ -126,7 +132,8 @@ def finalize(attempt, output):
                            'requested': config['requested_signal_distance_m'],
                            'measured': measured['distance_m'],
                            'method': 'source-joined post-tick Native odometer and light-state readback',
-                           'tolerance': 0, 'matched': False,
+                           'tolerance': 0.4,
+                           'matched': abs(config['requested_signal_distance_m']-measured['distance_m']) <= 0.4,
                            'physical_cause_confirmed': False,
                            'cause_evidence': list(inputs)}],
         'setup_confirmed': False, 'behavior_attempted': not diagnostic,

@@ -33,17 +33,33 @@ def build():
     template = {"template_id": TEMPLATE, "law_id": LAW,
         "actor": "motor_vehicle_driver", "status": "draft", "quote": QUOTE,
         "structure": {"activation": {"condition": "Vehicle stops, stands or parks in front of a sidewalk elevator or chute or within five feet on either side.",
-                                     "numeric_conditions": [{"value": 5, "unit": "feet", "relation": "within each side"}]},
+                                     "numeric_conditions": [{"variable": "side_clearance", "operator": "<=", "value": 5, "unit": "feet"}]},
             "obligation": {"type": "must_not", "description": "Do not stop, stand or park at the stated place unless a stated exception applies.",
                 "numeric_conditions": []},
-            "exceptions": ["Necessary to avoid conflict with other traffic in compliance with law",
-                           "Directions of a police officer", "Directions of a traffic control device"],
+            "exceptions": [{"trigger": "necessary traffic conflict", "effect": "exception context to review",
+                "replacement_obligation": "follow applicable law", "source_clause": "when necessary to avoid conflict with other traffic in compliance with law"},
+                {"trigger": "police officer direction", "effect": "exception context to review",
+                 "replacement_obligation": "follow direction", "source_clause": "directions of a police officer"},
+                {"trigger": "traffic control device direction", "effect": "exception context to review",
+                 "replacement_obligation": "follow direction", "source_clause": "a traffic control device"}],
             "timing": {"description": "During the qualifying stop, stand or park.",
                        "numeric_conditions": []},
-            "judgment_calls_needed": ["fixture legal identity", "front orientation",
-                                      "traffic conflict and direction source"]},
+            "judgment_calls_needed": [{"phrase": "fixture legal identity and front orientation", "note": "original fixture and street view required"},
+                {"phrase": "necessity of traffic conflict in compliance with law", "note": "other actor and lawful necessity require review"},
+                {"phrase": "police or device direction", "note": "original authority and direction require review"}]},
         "parameter_refs": []}
     template_ref = write("template.json", template)
+    observable_refs = []
+    for index, (phrase, note, name) in enumerate((
+            ("fixture legal identity and front orientation", "original fixture and street view required", "st.obstruction"),
+            ("necessity of traffic conflict in compliance with law", "other actor and lawful necessity require review", "traffic_conflict_context"),
+            ("police or device direction", "original authority and direction require review", "police_direction_context"))):
+        observable_refs.append(write(f"judgment-{index}.json", {
+            "template_id": TEMPLATE, "phrase": phrase, "note": note, "status": "draft",
+            "observable_requirements": {"observables": [{"name": name, "unit": "structured", "description": "Original time-joined Native source and reviewed context"}],
+                "context_inputs": [], "sweep_dimensions": [], "landmarks": [],
+                "recording_needs": [{"name": name, "unit": "structured", "description": "Source recording needed for review"}],
+                "limitations": ["Original fixture or authority cannot be inferred from a synthetic prop"]}}))
     binding = {"cell_id": "C150668", "actor": "motor_vehicle_driver",
         "status": "draft", "established_contexts": [{"name": "one_way_sidewalk_elevator",
             "source": "frozen cell; original sidewalk elevator/chute and frontage review pending"}],
@@ -51,22 +67,34 @@ def build():
         "context_refs": [], "fixed_parameters": [],
         "variable_parameters": [{"name": "stop_case", "kind": "controller",
             "range_or_domain": "outside or within five-foot side band",
+            "used_by_laws": [LAW]}, {"name": "exception_mode", "kind": "world_setup",
+            "range_or_domain": "none, traffic conflict, police direction, device direction",
             "used_by_laws": [LAW]}]}
     binding_ref = write("bindings.json", binding)
     selected = json.loads((HERE / "proposals/cases.json").read_text())
+    selected["sweep_specs"] = [{"sweep_id": f"c150668-original-review-{index}",
+        "target_law_id": LAW, "judgment_refs": [{"phrase": phrase, "note": note}],
+        "status": "incomplete", "mode": "one_dimensional", "axes": [],
+        "rationale": "Original fixture or authority source is required before a judgment sweep can be frozen.",
+        "missing_inputs": ["Original Native source bytes and independent reviewer identity"]}
+        for index, (phrase, note) in enumerate((
+            ("fixture legal identity and front orientation", "original fixture and street view required"),
+            ("necessity of traffic conflict in compliance with law", "other actor and lawful necessity require review"),
+            ("police or device direction", "original authority and direction require review")))]
     selected["cases"].insert(0, {"case_id": ASSIGNMENT + "__baseline",
         "target_law_id": LAW, "target_type": "baseline",
         "rationale": "Neutral nonselected comparison anchor",
         "probe": {"primary_variable": "stop_case", "comparison_or_standard": "five-foot side band",
                   "target_value_or_branch": "baseline"},
-        "variable_assignments": {"stop_case": {"kind": "controller", "value": "outside"}},
+        "variable_assignments": {"stop_case": {"kind": "controller", "value": "outside"},
+                                 "exception_mode": {"kind": "world_setup", "value": "none"}},
         "recording_description": selected["cases"][0]["recording_description"],
         "unresolved_judgment_calls": ["original fixture legal identity"]})
     cases_ref = write("canonical-cases.json", selected)
     return write("semantic-index.json", {"format": "worker-semantic-delivery",
         "assignment_id": ASSIGNMENT,
         "stages": {"relevance_batch": rel_batch, "relevance": rel,
-                   "template": template_ref, "judgment_observables": [],
+                   "template": template_ref, "judgment_observables": observable_refs,
                    "bindings": binding_ref, "cases": cases_ref}})
 
 

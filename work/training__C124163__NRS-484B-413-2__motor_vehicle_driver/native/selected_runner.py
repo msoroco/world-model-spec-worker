@@ -25,6 +25,9 @@ def check(config):
             or config.get('actor') != 'motor_vehicle_driver'
             or config.get('legal_verdict') is not None):
         raise ValueError('Law, cell, actor or unverified status changed')
+    if set(config.get('supported_case_ids', [])) != {
+            config['case_id'].rsplit('__', 1)[0]+'__'+name for name in CONDITIONS}:
+        raise ValueError('Exact selected case set changed')
     if type(config.get('spawn_point_index')) is not int or config['spawn_point_index'] < 0:
         raise ValueError('Spawn index missing')
     if (config.get('course_change_request_odometer_m') != 120.0 or
@@ -38,6 +41,7 @@ def check(config):
         size = (1920, 1080) if camera['name'] == 'overview' else (1280, 720)
         if ((camera.get('width'), camera.get('height')) != size
                 or not isinstance(camera.get('pose'), list) or len(camera['pose']) != 6
+                or not camera.get('pose_strategy')
                 or not all(type(x) in (int, float) and math.isfinite(x) for x in camera['pose'])):
             raise ValueError('Camera size or pose changed')
     return {'case_id': config['case_id'], 'frames': FRAMES, 'rate_hz': RATE_HZ,

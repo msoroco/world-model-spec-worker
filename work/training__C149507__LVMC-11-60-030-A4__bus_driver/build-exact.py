@@ -42,8 +42,10 @@ def main():
             'changed_knobs': ['surveyed bus spawn x -20 m to -25 m before same curb zone']}]
         if suffix == 'probe_1':
             write(HERE / 'construction.json', primary)
-            write(HERE / 'config.json', config)
-            (HERE / 'runner.py').write_text((HERE / 'native/runner.py').read_text())
+            for item in primary['files']:
+                materialized = HERE / item['path']
+                materialized.parent.mkdir(parents=True, exist_ok=True)
+                materialized.write_text(item['content'])
     write(HERE / 'selected-offline-manifest.json', manifest)
     print([(e['case_id'], len(e['candidates'])) for e in manifest['cases']])
 

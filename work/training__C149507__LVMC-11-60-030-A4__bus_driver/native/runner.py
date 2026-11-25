@@ -157,6 +157,7 @@ def execute(config, output_dir, host, port):
             cbp = library.find('sensor.camera.rgb')
             cbp.set_attribute('image_size_x', str(spec['width']))
             cbp.set_attribute('image_size_y', str(spec['height']))
+            cbp.set_attribute('fov', str(spec['fov_deg']))
             cbp.set_attribute('sensor_tick', str(1 / RATE_HZ))
             camera = world.spawn_actor(cbp, carla.Transform(
                 carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch)))

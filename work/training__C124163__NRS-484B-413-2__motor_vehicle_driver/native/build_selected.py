@@ -1,6 +1,7 @@
 """Materialize four exact source-capture proposals for the two statutory forks."""
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -64,12 +65,18 @@ def main():
                  'maneuver', 'layout')}
         cfg.update(case_id=case, selected_case_id=case, law_id=LAW,
                    cell_id='C124163', actor='motor_vehicle_driver',
+                   supported_case_ids=[ROOT.name+'__'+name for name in DISTANCES],
                    spawn_point_index=0, legal_verdict=None,
                    required_atoms=['kin.position', 'kin.speed'],
                    signal_request_start_odometer_m=120.0-requested_m,
                    course_change_request_odometer_m=120.0,
+                   physical_completion={'criterion': 'travel_progress',
+                        'motion_source': 'trace.jsonl', 'position_key': 'position_m',
+                        'minimum_progress_m': 120.0,
+                        'engineering_tolerances_not_legal': True},
                    cameras=[{'name': name, 'width': width, 'height': height,
-                             'fov_deg': 90, 'pose': [*xyz, 0, 0, 0]}
+                             'fov_deg': 90, 'pose': [*xyz, 0, 0, 0],
+                             'pose_strategy': 'capture original indicator pixels, median-opening turn onset and route context for all 600 frames'}
                             for name, width, height, xyz, _ in
                             [(c['name'], c['width'], c['height'], c['xyz_m'],
                               c['attach_to_ego']) for c in request['cameras']]],
@@ -77,10 +84,17 @@ def main():
                        'channels': [{'name': name, 'unit': 'structured',
                                      'sampling_rate_hz': 20,
                                      'time_window': '600 original frames',
-                                     'method': 'post-tick Native source joined to original camera frames'}
+                                     'method': 'post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved',
+                                     'reference_frame': 'original Native frame',
+                                     'uncertainty': 'Visible signaling, hand signal, district/weather and turn onset need original independent review'}
                                     for name in ('kin.position', 'kin.speed',
-                                                 'sig.turn_indicator', 'kin.path_length',
-                                                 'drv.turning', 'env.precipitation')],
+                                                 'sig.turn_indicator', 'sig.hand_signal',
+                                                 'drv.distance_while', 'kin.path_length',
+                                                 'drv.turning', 'drv.lane_change',
+                                                 'env.precipitation')],
+                       'context_inputs': [{'name': 'district_weather_review',
+                            'unit': 'structured',
+                            'method': 'independent original district and weather source review'}],
                        'limitations': ['A control request does not prove visible signaling.',
                                        'District, weather, turn onset and indicator pixels require original review.']})
         files = [{'path': name, 'source': 'work/'+ROOT.name+'/native/'+name,
@@ -103,10 +117,25 @@ def main():
                                           'exact condition and source-uncertainty flags']}
         path = NATIVE/'selected-drafts'/condition/'primary'/'construction.json'
         write(path, construction)
+        fallback_config = deepcopy(cfg)
+        fallback_config['spawn_point_index'] = 1
+        fallback_files = [dict(item) for item in files]
+        fallback_files = [dict(item, content=json.dumps(fallback_config, indent=2)+'\n')
+                          if item['path'] == 'config.json' else item for item in fallback_files]
+        fallback_construction = dict(construction, files=fallback_files,
+            measurement_plan=construction['measurement_plan']+' Fallback shifts only the surveyed spawn point.')
+        fallback_path = NATIVE/'selected-drafts'/condition/'fallback1'/'construction.json'
+        write(fallback_path, fallback_construction)
         entries.append({'case_id': case, 'kind': 'delivery', 'id': 'primary',
-                        'candidate_risk': {'status': 'none',
-                            'reason': 'Current CPU proof selects one surveyed spawn; fallback assessment pending original route survey.'},
-                        'candidates': [],
+                        'candidate_risk': {'status': 'physical',
+                            'reason': 'The median-opening route or actor spawn may be occupied or unsuitable for the requested 120 m approach.'},
+                        'candidates': [{'id': 'fallback1',
+                            'construction': str(fallback_path.relative_to(ROOT)),
+                            'construction_sha256': sha(fallback_path),
+                            'trigger': {'source': 'native-run-status.json',
+                                'metric': 'spawn_and_120m_route_progress',
+                                'failure_condition': 'primary spawn occupied or source route cannot reach requested course-change point'},
+                            'changed_knobs': ['spawn_point_index 0 to 1']}],
                         'construction': str(path.relative_to(ROOT)),
                         'construction_sha256': sha(path),
                         'measurement_contract': 'measurement-'+condition+'.json',
@@ -184,6 +213,11 @@ def main():
          'audit_gap': 'Original pixel visibility, route, district/weather and independent comparison review pending.'}
         for district in ('other', 'district') for left, right in (('long', 'at'), ('at', 'short'))]
     plan_data['legal_analysis_note'] = ('Six selected left-indicator requests cover above, exactly at and below 300-foot other-area clear and 100-foot district rain stimuli. Observed post-tick distance is measured separately; exact physical boundary is not inferred from a request. Right turns, hand signals and other direct-course changes remain source alternatives requiring explicit future original capture/review; weather never waives either distance. Accepted membership lacks source-hashed equivalence.')
+    plan_data['camera_plan'] = {'profile': 'overview1080-capability',
+        'duration_s': 30, 'composition': 'synchronized_four_view_primary',
+        'coverage': [{'subject': 'visible left indicator, median-opening course change, district and weather context',
+                      'interval': 'all 600 original frames', 'view': view}
+                     for view in ('overview', 'approach', 'reference_corner', 'driver_reference')]}
     plan_data['readiness'] = 'selected_cpu_partial'
     write(ROOT/'case-plan.json', plan_data)
     write(ROOT/'proposals'/'cases.json',

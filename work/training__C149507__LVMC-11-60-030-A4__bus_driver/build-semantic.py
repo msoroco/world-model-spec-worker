@@ -51,14 +51,14 @@ def main():
     refs['judgment_observables'] = []
     for index, item in enumerate(J):
         angular = index == 0
-        observables = {'observables': [{'name': 'kin.heading' if angular else 'drv.queue_behind', 'unit': 'structured',
+        observables = {'observables': [{'name': 'bus_wheel_and_pose' if angular else 'other_vehicle_motion', 'unit': 'structured',
             'description': 'Original bus-to-curb heading geometry' if angular else 'Original following-vehicle motion and delay'}],
             'context_inputs': [{'name': 'bus_zone_review', 'unit': 'structured', 'description': 'Source-reviewed non-tour bus, public street, qualifying bus stop, curb and traffic.'}],
-            'sweep_dimensions': [{'name': 'rel.surface_gap' if angular else 'drv.hard_deceleration', 'unit': 'structured',
+            'sweep_dimensions': [{'name': 'bus_wheel_and_pose' if angular else 'other_vehicle_motion', 'unit': 'structured',
                 'description': 'Controlled wheel gap with heading and traffic context held fixed; no invented legal cutoff.'}],
             'landmarks': [],
-            'recording_needs': [{'name': 'st.road_edge', 'unit': 'structured', 'description': 'Surveyed curb and source video.'},
-                                {'name': 'ru.bus', 'unit': 'structured', 'description': 'Original bus wheel, heading, stopped loading and following traffic.'}],
+            'recording_needs': [{'name': 'curb_and_zone_geometry', 'unit': 'structured', 'description': 'Surveyed curb and source video.'},
+                                {'name': 'bus_wheel_and_pose', 'unit': 'structured', 'description': 'Original bus wheel, heading and stopped loading.'}],
             'limitations': ['Independent original-source judgment remains required; measurement is not a legal verdict.']}
         refs['judgment_observables'].append(write(f'judgment-observables-{index + 1}.json',
             {'template_id': TID, 'phrase': item['phrase'], 'note': item['note'], 'status': 'draft',

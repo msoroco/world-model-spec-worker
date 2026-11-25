@@ -28,13 +28,17 @@ def main():
     for entry in manifest['cases']:
         cid = entry['case_id']
         suffix = cid.rsplit('__', 1)[-1]
+        measurements = [('bus_loading_measurement', 'reviewed_measure', 'measured'),
+                        ('bus_scope_measurement', 'sourced_bus_scope', 'sourced_context'),
+                        ('traffic_impedance_measurement', 'sourced_traffic', 'measured'),
+                        ('qualifying_location_measurement', 'sourced_location', 'sourced_context')]
         contract = {'format': 'worker-measurement-contract', 'case_id': cid,
-            'requirements': [{'disposition_index': 0,
-                'requirement': plan['requirement_dispositions'][0]['requirement'],
-                'source': plan['requirement_dispositions'][0]['source'],
-                'output_key': 'bus_loading_measurement',
-                'method': 'reviewed_measure', 'value_type': 'object',
-                'kind': 'measured', 'inputs': SOURCES}],
+            'requirements': [{'disposition_index': index,
+                'requirement': plan['requirement_dispositions'][index]['requirement'],
+                'source': plan['requirement_dispositions'][index]['source'],
+                'output_key': key, 'method': method, 'value_type': 'object',
+                'kind': kind, 'inputs': SOURCES}
+                for index, (key, method, kind) in enumerate(measurements)],
             'negative': {'remove': ['bus-zone-review.json'],
                 'error_contains': 'Missing required source: bus-zone-review.json'}}
         write(HERE / 'cases' / suffix / 'measurement-contract.json', contract)
