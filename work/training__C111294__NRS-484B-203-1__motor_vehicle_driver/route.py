@@ -2,7 +2,7 @@
 
 FRAMES = 600
 RATE_HZ = 20
-SETTINGS = {'0.45': 0.45, '0.55': 0.55}
+SETTINGS = {'0.45': 0.45, '0.55': 0.55, '1.00': 1.0}
 
 
 def requested_rows(case):

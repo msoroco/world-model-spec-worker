@@ -82,8 +82,9 @@ def run(case_id, source, scratch, output):
         'log': str(lifecycle_log.resolve().relative_to(assignment)),
         'log_sha256': sha(lifecycle_log),
         'synthetic_fixture': True, 'actual_owner_release_claimed': False}
+    exact_construction = assignment / 'native' / 'bundles' / case_id.rsplit('__', 1)[-1] / 'construction.json'
     return {'format': 'c111294-physical-preparation-v1', 'case_id': case_id,
-        'construction_sha256': sha(source / 'construction.json'),
+        'construction_sha256': sha(exact_construction),
         'fixtures': fixtures, 'lifecycle': lifecycle,
         'physical_or_legal_acceptance_claimed': False}
 

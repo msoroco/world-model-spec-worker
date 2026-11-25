@@ -196,6 +196,37 @@
         "negative_log": "native/proofs/055_delivery_negative.log",
         "negative_log_sha256": "bad447cf66fa2eaea76a19e6db0dcff0477ec3150f8ab667775ca9aeb6c6dc77"
       }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__1.00",
+      "kind": "delivery",
+      "construction": "native/bundles/1.00/construction.json",
+      "construction_sha256": "0208ffd79df94c31447dbda207201e1b60a32d64467766d064b55e6ce13f8cb0",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original actor spawn can fail or overlap imported pavement edge"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/1.00/fallback1.json",
+          "construction_sha256": "1f4496d9bfcb84a2914ac39cbcdcc9952a5457e6607ca320f8eaed45c0be8df6",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ]
+        }
+      ],
+      "delivery_readiness": "draft_selected_unproven",
+      "fixture_recipe": "work/training__C111294__NRS-484B-203-1__motor_vehicle_driver/native/diagnostic-1.00-fixture-recipe.json",
+      "measurement_contract": "native/1.00-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      }
     }
   ]
 }

@@ -143,86 +143,102 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "ego_body",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Original ego pose and full body footprint across meeting"
     },
     {
-      "name": "ego_right_half_occupancy",
-      "unit": "fraction",
+      "name": "oncoming_body",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measure paved width, center, both footprints and lateral allocation during meeting."
+      "purpose": "Original opposing actor pose and full body footprint"
+    },
+    {
+      "name": "paved_road_context",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Surveyed paved edges, centre and one lane per direction"
+    },
+    {
+      "name": "meeting_motion",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Opposite signed velocities, centers and meeting frames"
     }
   ],
   "source_observation_mapping": {
     "rel.oncoming": {
-      "evidence": "Proposed capture only: two vehicles proceeding in opposite directions. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: meeting_motion, oncoming_body; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "meeting_motion",
+        "oncoming_body"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.meeting": {
-      "evidence": "Proposed capture only: their paths overlap within the horizon. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: meeting_motion; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "meeting_motion"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.bearing": {
-      "evidence": "Proposed capture only: which side each passes on. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: meeting_motion; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "meeting_motion"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.centre_line": {
-      "evidence": "Proposed capture only: the centre of the paved portion. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: paved_road_context; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "paved_road_context"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_width": {
-      "evidence": "Proposed capture only: the paved width available. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: paved_road_context; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "paved_road_context"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: each vehicle's lateral position. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: ego_body, oncoming_body, paved_road_context; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "ego_body",
+        "oncoming_body",
+        "paved_road_context"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "Proposed capture only: the lateral clearance at the moment of meeting. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: ego_body, oncoming_body; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "ego_body",
+        "oncoming_body"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.roadway": {
-      "evidence": "Proposed capture only: the paved portion. No Native channel or Core atom proof yet.",
+      "evidence": "Source-bound original Native capture: paved_road_context; original paved-edge, pixel and physical review remain required for legal verdict.",
       "channels": [
-        "ego_right_half_occupancy"
+        "paved_road_context"
       ],
       "source_refs": [
         "inputs/training__C111294__NRS-484B-203-1__motor_vehicle_driver/assignment.json"
@@ -329,5 +345,32 @@
     "one_half_paved_portion": "surveyed paved_width_m and both minimum_fraction_available_to_{oncoming,ego} from body footprints at meeting frames; physical constraints and as-nearly-as-possible remain under original source review",
     "comparison_parameter": "requested ego right paved-half body footprint fraction 0.45 versus 0.55 is an engineering control, not a statutory numerical threshold",
     "accepted_original_memberships": "unclaimed reuse because source-hashed equivalence is unavailable"
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both opposing vehicles, entire two-direction roadway, paved edges and meeting interval",
+        "interval": "all 600 frames at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "ego right-side passing relation to oncoming vehicle and road centre",
+        "interval": "all 600 frames at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "both full body footprints and paved-edge reference during meeting",
+        "interval": "all 600 frames at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego forward view of opposing approach, available paved width and road constraints",
+        "interval": "all 600 frames at 20 Hz"
+      }
+    ]
   }
 }

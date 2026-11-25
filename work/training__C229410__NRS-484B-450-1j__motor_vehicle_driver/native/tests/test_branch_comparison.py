@@ -83,6 +83,41 @@ class BranchComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Police direction source'):
             audit.compare(self.base, variant, 'police_officer')
 
+    def test_original_direction_source_and_actor_time_join(self):
+        variant = self.make('original', 'stopped', 'police_officer')
+        authority = variant / 'authority'
+        authority.mkdir()
+        sources = {}
+        for name in ('station_identity', 'driveway_entrance', 'highway_boundary'):
+            path = authority / (name + '.source')
+            path.write_text(name + '\n')
+            sources[name] = {'sha256': audit.sha(path)}
+        command = {'police_officer': {'source_id': 'order-1', 'issued_by': 'officer-3',
+                   'directed_action': 'stop', 'actor_id': 3,
+                   'valid_time': {'start_s': 24, 'end_s': 30}}}
+        path = authority / 'activity_and_directions.source'
+        path.write_text(json.dumps(command) + '\n')
+        sources['activity_and_directions'] = {'sha256': audit.sha(path)}
+        manifest = authority / 'manifest.json'
+        manifest.write_text(json.dumps({'sources': sources}) + '\n')
+        context = json.loads((variant / 'entrance-context.json').read_text())
+        context.update({'authority_manifest_sha256': audit.sha(manifest),
+                        'authority_source_sha256': {key: item['sha256']
+                        for key, item in sources.items()}})
+        rows = audit.load_rows(variant / 'native-vehicle.jsonl')
+        for row in rows[-100:]:
+            row['direction_source_actor_ids'] = [3]
+        self.assertEqual(audit.original_direction_record(variant, context,
+                         'police_officer', rows)['source_id'], 'order-1')
+        rows[-1]['direction_source_actor_ids'] = []
+        with self.assertRaisesRegex(ValueError, 'not joined'):
+            audit.original_direction_record(variant, context, 'police_officer', rows)
+        rows[-1]['direction_source_actor_ids'] = [3]
+        command['police_officer']['valid_time']['end_s'] = 25
+        path.write_text(json.dumps(command) + '\n')
+        with self.assertRaisesRegex(ValueError, 'source missing or changed'):
+            audit.original_direction_record(variant, context, 'police_officer', rows)
+
 
 if __name__ == '__main__':
     unittest.main()

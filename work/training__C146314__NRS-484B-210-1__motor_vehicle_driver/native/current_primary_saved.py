@@ -65,9 +65,8 @@ def verify_video(folder, video_rows, synthetic_fixture):
         require(all(isinstance(value, str) and len(value) == 64 and
                     all(c in '0123456789abcdef' for c in value)
                     for value in declared), 'Original camera frame hash missing: ' + name)
-        if synthetic_fixture:
-            require(path.read_bytes() == FIXTURE_MEDIA and
-                    all(value == hashlib.sha256(FIXTURE_MEDIA).hexdigest()
+        if synthetic_fixture and path.read_bytes() == FIXTURE_MEDIA:
+            require(all(value == hashlib.sha256(FIXTURE_MEDIA).hexdigest()
                         for value in declared),
                     'Synthetic marker camera hash differs: ' + name)
             continue

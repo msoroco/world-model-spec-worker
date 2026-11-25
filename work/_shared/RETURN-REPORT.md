@@ -1,8 +1,16 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 87 of 253 assignments are ready and 166 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 88 of 253 assignments are ready and 165 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-25 current owner gate progress
+
+C229410 binds 12 selected current-runtime cases, 11 semantic stages, source-bound receipts, both same- and opposite-side 20-foot and 75-foot below/at/above comparisons, and authority/actor/stationary-time exception comparisons. Its first exact scoped strict run found a missing canonical top-level runner artifact; the owner restored partial status, added the top-level runner/config/construction envelope, and is rechecking it. C111294 binds three selected cases, including the 1.00 geometric reference with measured minimum half-paved fraction 0.5000 for oncoming traffic; direct manifest, semantic, delivery and receipt checks pass. Its first exact scoped strict run found a missing root construction measurement plan; the owner restored partial status, added the source-bound plan and reruns the gate. C146314 has a distinct source-bound paragraph (d) 600-frame four-camera contrast construction with current-runtime offline and decoder checks; selected delivery binding remains unfinished. No new assignment is counted ready until its final exact scoped strict gate and the lead's independent rerun pass.
+
+## 2026-11-25 C150916 current-runtime ready integration
+
+Newly ready: `training__C150916__NRS-484B-220-1__motor_vehicle_driver`, selected `__designated` and `__opposite` cases and one source-bound direction comparison. Four exact current-runtime primary/fallback offline and positive/missing-source negative compatibility chains, both recorded-only saved paths, synthetic physical complete/incomplete/missing-source fixtures, delivery positive/negative audits, five semantic stages and a positive/negative comparison audit are bound. The owner twice passed the exact assignment-scoped strict gate on final report bytes; the lead independently reran `.venv-cpu/bin/python worker_check.py --assignment training__C150916__NRS-484B-220-1__motor_vehicle_driver --complete --require-delivery-ready` and received `static_checks_passed: true`. Execution manifest SHA-256 `d4ea2e57ca083b71106e0c1ffded94bd82180ca4cb54627496131adf4b4099b5`; semantic index SHA-256 `7b521ae2bff8c1c8924665713eb44d495e1363e3748cef3139db26733916017e`. The lead rebuilt and independently audited the nondispatchable queue: 860 planned cases, 415 comparisons, zero dispatchable, SHA-256 `c417166a7205b8c956b3a65a554bd8ada00f2e595f8a40d0e52ed88309e76f82`. Independent return audit passed with 88 ready / 165 partial and zero errors. One-way designation/sign authority, actual motion and visibility, physical capture and legal acceptance remain for local review. C229410 and C111294 remain owned partials; a disjoint owner has started C146314.
 
 ## 2026-11-25 active owner continuation
 

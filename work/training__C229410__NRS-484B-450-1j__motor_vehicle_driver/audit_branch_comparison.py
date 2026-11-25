@@ -16,6 +16,47 @@ def load_rows(path):
     return [json.loads(line) for line in path.read_text().splitlines()]
 
 
+def original_direction_record(folder, context, difference, rows):
+    manifest_path = folder / 'authority/manifest.json'
+    if sha(manifest_path) != context.get('authority_manifest_sha256'):
+        raise ValueError('Original authority manifest hash differs')
+    manifest = json.loads(manifest_path.read_text())
+    sources = manifest.get('sources', {})
+    for name in ('station_identity', 'driveway_entrance', 'highway_boundary',
+                 'activity_and_directions'):
+        record = sources.get(name, {})
+        path = folder / 'authority' / (name + '.source')
+        expected = record.get('sha256')
+        if not path.is_file() or not expected or sha(path) != expected:
+            raise ValueError('Original authority source missing or changed: ' + name)
+        if context.get('authority_source_sha256', {}).get(name) != expected:
+            raise ValueError('Original context authority binding differs: ' + name)
+    record = json.loads((folder / 'authority/activity_and_directions.source').read_text()).get(difference)
+    if not isinstance(record, dict):
+        raise ValueError('Original direction source record missing')
+    for name in ('source_id', 'issued_by', 'directed_action'):
+        if not isinstance(record.get(name), str) or not record[name].strip():
+            raise ValueError('Original direction record field missing: ' + name)
+    window = record.get('valid_time')
+    if not isinstance(window, dict) or set(window) != {'start_s', 'end_s'}:
+        raise ValueError('Original direction valid time missing')
+    start, end = window['start_s'], window['end_s']
+    if any(type(value) not in (int, float) for value in (start, end)) or start > end:
+        raise ValueError('Original direction valid time invalid')
+    if start > rows[-100]['time_s'] or end < rows[-1]['time_s']:
+        raise ValueError('Original direction does not cover stationary interval')
+    if difference in ('police_officer', 'official_device'):
+        actor = record.get('actor_id')
+        if type(actor) is not int or actor == rows[0]['actor_id']:
+            raise ValueError('Original direction actor missing or equals ego')
+        if not all(actor in row.get('direction_source_actor_ids', []) for row in rows[-100:]):
+            raise ValueError('Original direction actor not joined to stationary frames')
+    if difference == 'law' and not isinstance(record.get('citation'), str):
+        raise ValueError('Original applicable-law citation missing')
+    return {'source_id': record['source_id'],
+            'authority_sha256': sha(folder / 'authority/activity_and_directions.source')}
+
+
 def compare(base, variant, difference):
     base, variant = Path(base), Path(variant)
     if difference not in ('activity', 'traffic_conflict', 'law', 'police_officer', 'official_device'):
@@ -69,10 +110,8 @@ def compare(base, variant, difference):
                      'reference_corner.mkv', 'driver_reference.mkv'):
             if not (base / name).is_file() or not (variant / name).is_file():
                 raise ValueError('Original authority or camera source missing: ' + name)
-        if difference in ('police_officer', 'official_device'):
-            raise ValueError('Original direction actor and command join audit not yet implemented')
-        if difference == 'law':
-            raise ValueError('Original applicable-law citation audit not yet implemented')
+        if difference in ('law', 'police_officer', 'official_device'):
+            original_direction_record(variant, v, difference, variant_rows)
     return {'format': 'c229410-branch-source-comparison-v1', 'passed': True,
             'difference': difference, 'source_kind': b['source_kind'],
             'fixed_map_sha256': sha(base / 'road.xodr'),

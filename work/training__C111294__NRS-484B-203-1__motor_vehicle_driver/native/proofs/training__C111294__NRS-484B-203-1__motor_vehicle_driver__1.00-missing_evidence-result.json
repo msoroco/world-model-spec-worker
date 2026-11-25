@@ -1,0 +1,250 @@
+{
+  "case_id": "training__C111294__NRS-484B-203-1__motor_vehicle_driver__1.00",
+  "measured_values": {
+    "format": "worker-source-opposite-meeting-measurement",
+    "frame_count": 600,
+    "rate_hz": 20,
+    "first_meeting_frame": 230,
+    "last_meeting_frame": 250,
+    "ego_right_paved_half_footprint_fraction_min": 1.0,
+    "ego_right_paved_half_footprint_fraction_max": 1.0,
+    "minimum_lateral_surface_gap_m": 1.5,
+    "ego_passed_to_right_of_other_center": true,
+    "paved_width_m": 8.0,
+    "right_passing_condition": {
+      "observed": true,
+      "source": "both vehicle centers and signed longitudinal velocities at every meeting frame"
+    },
+    "one_half_paved_portion_condition": {
+      "minimum_width_available_to_oncoming_m": 4.0,
+      "minimum_fraction_available_to_oncoming": 0.5,
+      "minimum_width_available_to_ego_m": 5.5,
+      "minimum_fraction_available_to_ego": 0.6875,
+      "source": "both vehicle body footprints and surveyed paved edges at every meeting frame",
+      "as_nearly_as_possible": "unassessed"
+    },
+    "legal_compliance": "unassessed",
+    "limitations": [
+      "Vehicle-footprint fraction is an engineering diagnostic, not the statutory allocation of at least half the paved portion.",
+      "Available paved width is a geometric proxy; final statutory allocation needs original pixel and constraint review.",
+      "As nearly as possible requires original road and surrounding constraints review.",
+      "Both opposite-direction bodies, pavement edges and lane count require original source and pixel review."
+    ],
+    "source_kind": "synthetic_original_shape",
+    "source_review_sha256": null,
+    "diagnostic_fixture": true,
+    "physical_acceptance_claimed": false,
+    "source_sha256": {
+      "pavement-survey.json": "5226c0110549b2be47d75d69599871a25a71441870575965e03da8fe669579eb",
+      "native-motion.jsonl": "94b411748ff719a44efd1c5329385010e74798b8c48aed70add498b62e34ddfa",
+      "video_frames.jsonl": "8a96dca8b51d476df31a4c2975659fbd432b54f99a2e0ec06400478188f50d8a"
+    },
+    "camera_video_sha256": {
+      "overview": "52263cfc6338696954b034a9b812508649033d34de9e9409aa753c9c6819bb2e",
+      "approach": "6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938",
+      "reference_corner": "6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938",
+      "driver_reference": "6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938"
+    }
+  },
+  "target_checks": [
+    {
+      "target": "ego body fraction in right paved half",
+      "requested": 1.0,
+      "measured": 1.0,
+      "method": "measure_reference",
+      "tolerance": 0.03,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "pavement-survey.json",
+        "native-motion.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [
+    "Original paved bounds, physical feasibility and statutory as-nearly-as-possible review pending"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_body",
+        "unit": "structured",
+        "method": "original Native body vertices",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "reference_frame": "Native world and frame",
+        "uncertainty": "original road/body review pending"
+      },
+      {
+        "name": "oncoming_body",
+        "unit": "structured",
+        "method": "original Native body vertices",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "reference_frame": "Native world and frame",
+        "uncertainty": "original road/body review pending"
+      },
+      {
+        "name": "paved_road_context",
+        "unit": "structured",
+        "method": "OpenDRIVE lane readback plus original pavement edge review",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "reference_frame": "Native road 111294",
+        "uncertainty": "authored boundaries are not verified original pavement edges"
+      },
+      {
+        "name": "meeting_motion",
+        "unit": "structured",
+        "method": "original Native actor velocities and positions",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "reference_frame": "Native world and frame",
+        "uncertainty": "50 ms frame bracket"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Original pavement edges and as-nearly-as-possible physical context require separate review.",
+      "Body-footprint fraction is an engineering diagnostic, not statutory half allocation."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "ego_body",
+      "unit": "structured",
+      "reference": "channels/ego_body.jsonl"
+    },
+    {
+      "name": "oncoming_body",
+      "unit": "structured",
+      "reference": "channels/oncoming_body.jsonl"
+    },
+    {
+      "name": "paved_road_context",
+      "unit": "structured",
+      "reference": "channels/paved_road_context.jsonl"
+    },
+    {
+      "name": "meeting_motion",
+      "unit": "structured",
+      "reference": "channels/meeting_motion.jsonl"
+    }
+  ],
+  "realized_observables": {},
+  "provenance_kind": "synthetic_fixture",
+  "accepted": false,
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "6eb5a39340c4a5739f9f352d15ddc433dbc8434c10c7f8b44d82377bd08582cd",
+        "video_frames.jsonl": "8a96dca8b51d476df31a4c2975659fbd432b54f99a2e0ec06400478188f50d8a"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "6eb5a39340c4a5739f9f352d15ddc433dbc8434c10c7f8b44d82377bd08582cd",
+        "video_frames.jsonl": "8a96dca8b51d476df31a4c2975659fbd432b54f99a2e0ec06400478188f50d8a"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "6eb5a39340c4a5739f9f352d15ddc433dbc8434c10c7f8b44d82377bd08582cd",
+        "video_frames.jsonl": "8a96dca8b51d476df31a4c2975659fbd432b54f99a2e0ec06400478188f50d8a"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "6eb5a39340c4a5739f9f352d15ddc433dbc8434c10c7f8b44d82377bd08582cd",
+        "video_frames.jsonl": "8a96dca8b51d476df31a4c2975659fbd432b54f99a2e0ec06400478188f50d8a"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "diagnostic_fixture": true,
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}
