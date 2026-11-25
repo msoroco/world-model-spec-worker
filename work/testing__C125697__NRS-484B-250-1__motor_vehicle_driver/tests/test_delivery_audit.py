@@ -3,6 +3,8 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+import subprocess
+from PIL import Image
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
@@ -30,6 +32,38 @@ def staged(root, suffix="precedence", ego_entry=60):
 
 
 class DeliveryAuditTests(unittest.TestCase):
+    def test_full_decode_and_original_png_pixel_join(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            samples = []
+            for index in range(3):
+                image = Image.new("RGB", (32, 18))
+                image.putdata([((x * 7 + index * 9) % 256,
+                                (y * 13 + index * 11) % 256,
+                                (x * 5 + y * 3) % 256)
+                               for y in range(18) for x in range(32)])
+                path = root / f"sample-overview-{index:06d}.png"
+                image.save(path)
+                samples.append(path)
+            rows = [{"video_frame": index, "carla_frame": 100 + index,
+                     "time_s": index / 20} for index in range(3)]
+            (root / "frame-map-overview.json").write_text(json.dumps(rows) + "\n")
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                            "-framerate", "20", "-i", str(root / "sample-overview-%06d.png"),
+                            "-c:v", "ffv1", str(root / "overview.mkv")], check=True)
+            value = delivery_audit._pixels(root, "overview", 3, (32, 18))
+            self.assertEqual(value["frame_count"], 3)
+            image = Image.open(samples[1]).convert("RGB")
+            image.putpixel((10, 10), (0, 0, 0))
+            image.save(samples[1])
+            with self.assertRaisesRegex(ValueError, "PNG/video pixel join differs"):
+                delivery_audit._pixels(root, "overview", 3, (32, 18))
+            samples[1].unlink()
+            with self.assertRaisesRegex(ValueError, "sealed original missing or changed"):
+                delivery_audit._pixels(root, "overview", 3, (32, 18))
+
     def test_independent_original_source_join_and_tamper(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "attempt"

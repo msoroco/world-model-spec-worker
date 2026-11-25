@@ -229,6 +229,20 @@ def measure_saved(trace, scene, expected_frames=900):
         "frames": packet_frames,
     }
     observation = entry_timing.measure(packet)
+    prior_inside = {"ego": False, "other": False}
+    exits = {"ego": None, "other": None}
+    for row in packet_frames:
+        for name in ("ego", "other"):
+            inside = row["actors"][name]["footprint_intersects_intersection"]
+            if prior_inside[name] and not inside and exits[name] is None:
+                exits[name] = {"frame": row["frame"],
+                               "timestamp_s": row["timestamp_s"]}
+            prior_inside[name] = inside
+    observation["ego_exit"] = exits["ego"]
+    observation["other_exit"] = exits["other"]
+    observation["ego_entered_after_other_exit"] = (
+        None if exits["other"] is None else
+        observation["ego_entry"]["upper_frame"] >= exits["other"]["frame"])
     observation["native_first_frame_id"] = first_frame
     observation["native_first_elapsed_seconds"] = first_time
     return observation
@@ -262,6 +276,25 @@ def audit_saved_sources(root, manifest, scene, *, diagnostic_fixture=False):
         hashes[name] = digest
     _require(hashes["opendrive"] == scene["crossing"]["opendrive_sha256"],
              "original map differs from construction source")
+    if not diagnostic_fixture:
+        opendrive = (root / refs["opendrive"]["path"]).read_text()
+        validate_scene(scene, opendrive)
+        for name in ("device_inventory", "highway_identity"):
+            source_ref = scene.get("source_refs", {}).get(name, {})
+            _require(source_ref.get("sha256") == hashes[name] and
+                     source_ref.get("citation"),
+                     "reviewed original " + name + " reference differs")
+        device = json.loads((root / refs["device_inventory"]["path"]).read_text())
+        highway = json.loads((root / refs["highway_identity"]["path"]).read_text())
+        _require(device.get("governing_signal_actor_id") ==
+                 scene["governing_signal"].get("actor_id") and
+                 device.get("controlled_approach_road_ids") ==
+                 scene["governing_signal"].get("controlled_approach_road_ids"),
+                 "original governing-device inventory changed")
+        _require(highway.get("ego_highway") == scene["ego_highway"] and
+                 highway.get("other_highway") == scene["other_highway"] and
+                 highway.get("public_access_confirmed") is True,
+                 "original public-highway source changed")
     trace = json.loads((root / refs["native_trace"]["path"]).read_text())
     observation = measure_saved(trace, scene, expected_frames)
     return {"source_sha256": hashes, "observations": observation,

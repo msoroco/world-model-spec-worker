@@ -141,11 +141,18 @@ def _control(carla, actor, route, point_index: int, request: str) -> int:
     return point_index
 
 
+def release_frames(requested_entry_offset_s: float) -> dict[str, int]:
+    """Turn a signed request into 20 Hz start delays; realization is measured."""
+    if type(requested_entry_offset_s) not in (int, float) or not math.isfinite(requested_entry_offset_s):
+        raise ValueError("finite requested entry offset required")
+    return {"ego": max(0, round(requested_entry_offset_s * 20)),
+            "other": max(0, round(-requested_entry_offset_s * 20))}
+
+
 def run(world, carla, packet_path: Path, output: Path, expected_case: str,
         requested_entry_offset_s: float, expected_ego_side: str,
         frame_count: int = 900) -> dict:
-    if type(requested_entry_offset_s) not in (int, float) or not math.isfinite(requested_entry_offset_s):
-        raise ValueError("finite requested entry offset required")
+    release = release_frames(requested_entry_offset_s)
     if frame_count != 900:
         raise ValueError("original acquisition requires 900 frames")
     output = Path(output)
@@ -202,13 +209,11 @@ def run(world, carla, packet_path: Path, output: Path, expected_case: str,
         frames = []
         maps = {name: [] for name in CAMERAS}
         indices = {"ego": 1, "other": 1}
-        ego_release_frame = max(0, round(requested_entry_offset_s * 20))
-        other_release_frame = max(0, round(-requested_entry_offset_s * 20))
         first_native_frame = None
         first_native_elapsed = None
         for index in range(frame_count):
-            ego_request = "brake" if index < ego_release_frame else "proceed"
-            other_request = "brake" if index < other_release_frame else "proceed"
+            ego_request = "brake" if index < release["ego"] else "proceed"
+            other_request = "brake" if index < release["other"] else "proceed"
             indices["ego"] = _control(carla, actors["ego"], scene["ego_route_xy_m"],
                                        indices["ego"], ego_request)
             indices["other"] = _control(carla, actors["other"], scene["other_route_xy_m"],
@@ -269,6 +274,13 @@ def run(world, carla, packet_path: Path, output: Path, expected_case: str,
             "time_s": row["native_elapsed_seconds"]}) + "\n"
             for index, row in enumerate(frames)))
         (output / "scene.json").write_text(json.dumps(scene, indent=2) + "\n")
+        box = scene["crossing"]["bounds_xy_m"]
+        (output / "crossing_geometry.json").write_text(json.dumps({
+            "intersection_xy_m": [[box[0], box[1]], [box[2], box[1]],
+                                   [box[2], box[3]], [box[0], box[3]]],
+            "source_opendrive_sha256": scene["crossing"]["opendrive_sha256"],
+            "crossing_id": scene["crossing"]["id"],
+            "legal_judgment": "unresolved"}, indent=2) + "\n")
         (output / "opendrive.xodr").write_bytes(original_sources["opendrive"])
         (output / "device_inventory.json").write_bytes(original_sources["device_inventory"])
         (output / "highway_identity.json").write_bytes(original_sources["highway_identity"])
@@ -286,6 +298,7 @@ def run(world, carla, packet_path: Path, output: Path, expected_case: str,
         refs = {
             "native_trace": "native_trace.json", "opendrive": "opendrive.xodr",
             "device_inventory": "device_inventory.json",
+            "highway_identity": "highway_identity.json",
             **{f"camera_{name}": f"{name}.mkv" for name in CAMERAS},
         }
         source_manifest = {"case_id": scene["case_id"], "frame_count": frame_count,

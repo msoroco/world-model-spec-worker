@@ -105,15 +105,30 @@ def compare(observations: list[dict], planned_case_ids: list[str], variable: str
     _require(variable in {"entry_timing", "approach_side"}, "unsupported comparison variable")
     _require(len(observations) == len(planned_case_ids) and len(set(planned_case_ids)) == len(planned_case_ids), "comparison member count/identity invalid")
     _require([o.get("case_id") for o in observations] == planned_case_ids, "case identity mismatch")
-    _require(all(o.get("format") == "nrs-484b-250-2-entry-observation-v1" and o.get("source") for o in observations), "source-bound observations required")
+    _require(all(o.get("format") == "nrs-484b-250-2-entry-observation-v1" and
+                 isinstance(o.get("source"), dict) and
+                 len(o["source"].get("sha256", "")) == 64 for o in observations),
+             "source-bound observations required")
+    _require(len({o["source"]["sha256"] for o in observations}) == len(observations),
+             "comparison reuses the same original source")
     _require(all(o.get("law_id") == "NRS-484B-250-2" and o.get("cell_id") == "C125697" for o in observations), "comparison law/cell mismatch")
-    for field in ("road_ids", "movements", "signal", "opposite_approaches", "official_device_controls_intersection"):
+    for field in ("signal", "opposite_approaches", "official_device_controls_intersection"):
         _require(all(o.get(field) == observations[0].get(field) for o in observations), f"fixed condition changed: {field}")
     if variable == "entry_timing":
+        for field in ("road_ids", "movements"):
+            _require(all(o.get(field) == observations[0].get(field) for o in observations),
+                     f"fixed condition changed: {field}")
         _require(len({o["ego_approach_side"] for o in observations}) == 1, "approach side changed in timing comparison")
         _require(len({o["intersection_entry_time_difference_s"] for o in observations}) == len(observations), "timing difference not observed")
     else:
         _require({o["ego_approach_side"] for o in observations} == {"left", "right"}, "left/right reversal not observed")
+        _require(all(set(o["road_ids"].values()) == set(observations[0]["road_ids"].values())
+                     for o in observations), "fixed crossing highways changed")
+        _require(all(set(o["movements"].values()) == {"straight"} for o in observations),
+                 "fixed straight movements changed")
+        first = observations[0]["intersection_entry_time_difference_s"]
+        _require(all(abs(o["intersection_entry_time_difference_s"] - first) <= .05
+                     for o in observations), "fixed entry timing changed in side comparison")
     return {"format": "nrs-484b-250-2-comparison-audit-v1", "case_ids": planned_case_ids, "variable": variable, "source_hashes": [o["source"]["sha256"] for o in observations], "legal_judgment": None}
 
 

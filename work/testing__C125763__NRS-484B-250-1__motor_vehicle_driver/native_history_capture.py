@@ -106,6 +106,7 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     media_root = output / 'original-frames'
     media_root.mkdir()
     histories = {"ego": [], "other": []}
+    trace = []
     camera_rows = []
     previous = None
     if before_tick is not None and not callable(before_tick):
@@ -153,6 +154,20 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
                 histories[name].append({"frame": frame, "time_s": time_s,
                                         "actor_id": actor.id,
                                         "body_vertices_xy_m": _vertices(actor)})
+            transform = ego.get_transform()
+            velocity = ego.get_velocity()
+            position = transform.location
+            components = (position.x, position.y, position.z, transform.rotation.yaw,
+                          velocity.x, velocity.y, velocity.z)
+            if any(not math.isfinite(float(value)) for value in components):
+                raise ValueError('original ego trace has nonfinite pose or speed')
+            trace.append({'frame': frame, 'time_s': time_s,
+                          'position': {'x': float(position.x), 'y': float(position.y),
+                                       'z': float(position.z)},
+                          'heading_deg': float(transform.rotation.yaw),
+                          'speed_mps': math.sqrt(float(velocity.x) ** 2 +
+                                                 float(velocity.y) ** 2 +
+                                                 float(velocity.z) ** 2)})
     site = dict(scene)
     site.update({"ego_actor_id": ego.id, "other_actor_id": other.id,
                  "case_id": scene['assignment_id'] + '__' + case_id})
@@ -170,6 +185,8 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     for name, rows in histories.items():
         files[name + "-body-history.jsonl"] = "".join(
             json.dumps(row, sort_keys=True) + "\n" for row in rows).encode()
+    files['trace.jsonl'] = ''.join(json.dumps(row, sort_keys=True) + '\n'
+                                   for row in trace).encode()
     if camera_readers is not None:
         files['camera-frame-map.jsonl'] = ''.join(
             json.dumps(row, sort_keys=True) + '\n' for row in camera_rows).encode()
@@ -197,7 +214,7 @@ def audit_media(attempt, *, camera_dimensions):
         raise ValueError('four original camera dimensions required')
     sources = {}
     for name in ('ego-body-history.jsonl', 'other-body-history.jsonl',
-                 'camera-frame-map.jsonl', 'video_frames.jsonl'):
+                 'trace.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl'):
         binding = manifest.get(name)
         if not isinstance(binding, dict) or binding.get('kind') != 'original_native':
             raise ValueError('original camera/body source missing')
@@ -206,10 +223,10 @@ def audit_media(attempt, *, camera_dimensions):
         if hashlib.sha256(data).hexdigest() != binding.get('sha256'):
             raise ValueError('original camera/body source changed')
         sources[name] = [json.loads(line) for line in data.decode('utf-8').splitlines()]
-    ego, other, cameras, mapping = (sources[name] for name in
+    ego, other, trace, cameras, mapping = (sources[name] for name in
                            ('ego-body-history.jsonl', 'other-body-history.jsonl',
-                            'camera-frame-map.jsonl', 'video_frames.jsonl'))
-    if not ego or len(ego) != len(other) or len(ego) != len(cameras) or len(ego) != len(mapping):
+                            'trace.jsonl', 'camera-frame-map.jsonl', 'video_frames.jsonl'))
+    if not ego or any(len(ego) != len(rows) for rows in (other, trace, cameras, mapping)):
         raise ValueError('original camera/body frame count differs')
     for index, (a, b, row) in enumerate(zip(ego, other, cameras)):
         if (a['frame'], a['time_s']) != (b['frame'], b['time_s']) or (
@@ -218,6 +235,18 @@ def audit_media(attempt, *, camera_dimensions):
         if mapping[index] != {'video_frame': index, 'carla_frame': a['frame'],
                               'native_frame': a['frame'], 'time_s': a['time_s']}:
             raise ValueError('canonical original video frame map differs')
+        if (trace[index].get('frame'), trace[index].get('time_s')) != (a['frame'], a['time_s']):
+            raise ValueError('original ego trace/body clock differs')
+        pose = trace[index].get('position', {})
+        vertices = a.get('body_vertices_xy_m', [])
+        if (not isinstance(pose, dict) or not vertices or
+                any(type(pose.get(axis)) not in (int, float) or
+                    not math.isfinite(pose[axis]) for axis in ('x', 'y')) or
+                not min(point[0] for point in vertices) <= pose['x'] <=
+                    max(point[0] for point in vertices) or
+                not min(point[1] for point in vertices) <= pose['y'] <=
+                    max(point[1] for point in vertices)):
+            raise ValueError('original ego trace/body position differs')
         if not isinstance(row.get('views'), dict) or set(row['views']) != set(CAMERAS):
             raise ValueError('four original camera views required')
         for name in CAMERAS:

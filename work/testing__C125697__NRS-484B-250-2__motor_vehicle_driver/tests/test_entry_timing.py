@@ -85,6 +85,24 @@ class EntryTimingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "fixed condition changed: road_ids"):
                 entry.compare([a, c], ["case-a", "case-b"], "entry_timing")
 
+    def test_side_relation_allows_identity_swap_but_keeps_timing(self):
+        left = entry.measure(packet(ego_entry=3, other_entry=3))
+        right = entry.measure(packet(ego_entry=3, other_entry=3, ego_side="right"))
+        left["source"] = {"path": "left.json", "sha256": "a" * 64}
+        right["source"] = {"path": "right.json", "sha256": "b" * 64}
+        right["case_id"] = "case-b"
+        right["road_ids"] = {"ego": "highway-b", "other": "highway-a"}
+        audit = entry.compare([left, right], ["case-a", "case-b"], "approach_side")
+        self.assertEqual(audit["variable"], "approach_side")
+        changed = copy.deepcopy(right)
+        changed["intersection_entry_time_difference_s"] = .2
+        with self.assertRaisesRegex(ValueError, "fixed entry timing changed"):
+            entry.compare([left, changed], ["case-a", "case-b"], "approach_side")
+        changed = copy.deepcopy(right)
+        changed["source"]["sha256"] = left["source"]["sha256"]
+        with self.assertRaisesRegex(ValueError, "same original source"):
+            entry.compare([left, changed], ["case-a", "case-b"], "approach_side")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -166,9 +166,16 @@ class CrossingTest(unittest.TestCase):
         ):
             (self.root / name).write_text(''.join(json.dumps(row) + '\n'
                                                  for row in content), encoding='utf-8')
+        trace = [{'frame': row['frame'], 'time_s': row['time_s'],
+                  'position': {'x': sum(point[0] for point in row['body_vertices_xy_m']) / 4,
+                               'y': sum(point[1] for point in row['body_vertices_xy_m']) / 4,
+                               'z': 0.0}, 'heading_deg': 0.0, 'speed_mps': 0.0}
+                 for row in self.ego]
+        (self.root / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n'
+                                                      for row in trace), encoding='utf-8')
         manifest_path = self.root / 'source-manifest.json'
         manifest = json.loads(manifest_path.read_text())
-        for name in ('camera-frame-map.jsonl', 'video_frames.jsonl'):
+        for name in ('camera-frame-map.jsonl', 'video_frames.jsonl', 'trace.jsonl'):
             manifest[name] = {'kind': 'original_native',
                               'sha256': module.sha(self.root / name)}
         manifest_path.write_text(json.dumps(manifest))
@@ -212,9 +219,16 @@ class CrossingTest(unittest.TestCase):
         other_ego = self.rows(11, 3, 8, 'x')
         (second / 'ego-body-history.jsonl').write_text(''.join(
             json.dumps(row) + '\n' for row in other_ego))
+        second_trace = [json.loads(line) for line in
+                        (second / 'trace.jsonl').read_text().splitlines()]
+        for row, body_row in zip(second_trace, other_ego):
+            row['position']['x'] = sum(point[0] for point in
+                                       body_row['body_vertices_xy_m']) / 4
+        (second / 'trace.jsonl').write_text(''.join(
+            json.dumps(row) + '\n' for row in second_trace))
         second_manifest_path = second / 'source-manifest.json'
         second_manifest = json.loads(second_manifest_path.read_text())
-        for name in ('site-context.json', 'ego-body-history.jsonl'):
+        for name in ('site-context.json', 'ego-body-history.jsonl', 'trace.jsonl'):
             second_manifest[name]['sha256'] = module.sha(second / name)
         second_manifest_path.write_text(json.dumps(second_manifest))
         after_saved = second / 'after-result.json'

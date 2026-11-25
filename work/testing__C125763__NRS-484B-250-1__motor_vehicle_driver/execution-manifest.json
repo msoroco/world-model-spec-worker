@@ -1,0 +1,182 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125763__NRS-484B-250-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "kind": "delivery",
+      "construction": "cases/precedence/construction.json",
+      "construction_sha256": "8ea84e1bc752244bfeb4a7db6483d8d114b2bb3fad3f01ac2de402399bb7ac3c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Either original vehicle may not reach and clear the crossing before the 900-frame capture ends."
+      },
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "saved source-bound original footprint crossing and device context"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/cases/precedence/fixture-recipe.json",
+      "measurement_contract": "cases/precedence/measurement-contract.json",
+      "offline": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125763-2501-offline-precedence-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "8ea84e1bc752244bfeb4a7db6483d8d114b2bb3fad3f01ac2de402399bb7ac3c",
+        "exit_code": 0,
+        "log": "cpu-offline-precedence-nov25.log",
+        "log_sha256": "f8815e15c4f260cd17ac707b38793cd5093a59c283851a162114ea0aa0cb95d1"
+      },
+      "compatibility": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp MPLCONFIGDIR=$PWD/.runtime-work/c125763-2501-mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125763-2501-compat-precedence-v2 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "log": "cpu-compat-precedence-analysis.log",
+        "negative_log": "cpu-compat-precedence-negative.log",
+        "receipt": "cpu-compat-precedence-receipt.json",
+        "sha256": "8ae5c9eb15926a63f64b8dc96cdc49d739bdffb82e7e682eeb30fd1f3520117e"
+      },
+      "negative": {
+        "log": "cpu-compat-precedence-negative.log",
+        "log_sha256": "e01018ef6b637a68cd69ea3f99bff4f4ddaa41eb7d51306d17a7a30269513078"
+      },
+      "acquisition": {
+        "other_entry_and_clearance_brackets": {
+          "entrypoint": "saved_crossing.py",
+          "method": "20 Hz source-sealed original body polygon entry and exit transition brackets",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl",
+            "site-context.json",
+            "road.xodr"
+          ]
+        },
+        "original_body_footprint": {
+          "entrypoint": "native_history_capture.py",
+          "method": "capture two original actor bounding boxes on every world tick",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl"
+          ]
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_history_capture.py",
+          "method": "capture four synchronized original RGB camera PNG streams and frame map",
+          "evidence": [
+            "camera/overview",
+            "camera/approach",
+            "camera/reference_corner",
+            "camera/driver_reference",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp MPLCONFIGDIR=$PWD/.runtime-work/c125763-2501-mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125763-2501-compat-precedence-v2 --output .runtime-work/c125763-2501-saved-precedence-v2 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp MPLCONFIGDIR=$PWD/.runtime-work/c125763-2501-mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125763-2501-compat-precedence-missing-v1 --output .runtime-work/c125763-2501-saved-precedence-missing-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-saved-precedence-nov25.log",
+        "test_log_sha256": "b950da39930a60854a4697b41164a25473c10dd36558c3b36950a85d984a0c57",
+        "test_exit_code": 0,
+        "feedback_log": "cpu-saved-precedence-missing-nov25.log",
+        "feedback_log_sha256": "b63ca15bf8349b4d091651c9801fb6b0a1e6492d493be944fc785102281204e9",
+        "feedback_test_exit_code": 0,
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-precedence-receipt.json",
+        "sha256": "9aaea1652554b81a553fa847a2de08ddfcf40f811750823d5fd91d85a8d6cb81"
+      }
+    },
+    {
+      "case_id": "testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "kind": "delivery",
+      "construction": "cases/advance/construction.json",
+      "construction_sha256": "91d079766c3539e0f4a507700432ca98d62d61b5a073b3fafd52f5414893b161",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Either original vehicle may not reach and clear the crossing before the 900-frame capture ends."
+      },
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "saved source-bound original footprint crossing and device context"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/cases/advance/fixture-recipe.json",
+      "measurement_contract": "cases/advance/measurement-contract.json",
+      "offline": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125763-2501-offline-advance-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "91d079766c3539e0f4a507700432ca98d62d61b5a073b3fafd52f5414893b161",
+        "exit_code": 0,
+        "log": "cpu-offline-advance-nov25.log",
+        "log_sha256": "770a85041f3a1679f01fa64245cd37c9ff8e4ff4515f942a2d27aaa792b51571"
+      },
+      "compatibility": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp MPLCONFIGDIR=$PWD/.runtime-work/c125763-2501-mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125763-2501-compat-advance-v2 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "log": "cpu-compat-advance-analysis.log",
+        "negative_log": "cpu-compat-advance-negative.log",
+        "receipt": "cpu-compat-advance-receipt.json",
+        "sha256": "0f59e4f8e53c219ca6db4f763e3df29bd5ba78b6275786d748a0c0d304a8abcf"
+      },
+      "negative": {
+        "log": "cpu-compat-advance-negative.log",
+        "log_sha256": "dcd9c13c0df4fc2d54bdfae3277463346ac2bf9baa670260aea2111f7672d11c"
+      },
+      "acquisition": {
+        "other_entry_and_clearance_brackets": {
+          "entrypoint": "saved_crossing.py",
+          "method": "20 Hz source-sealed original body polygon entry and exit transition brackets",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl",
+            "site-context.json",
+            "road.xodr"
+          ]
+        },
+        "original_body_footprint": {
+          "entrypoint": "native_history_capture.py",
+          "method": "capture two original actor bounding boxes on every world tick",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl"
+          ]
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_history_capture.py",
+          "method": "capture four synchronized original RGB camera PNG streams and frame map",
+          "evidence": [
+            "camera/overview",
+            "camera/approach",
+            "camera/reference_corner",
+            "camera/driver_reference",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp MPLCONFIGDIR=$PWD/.runtime-work/c125763-2501-mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125763-2501-compat-advance-v2 --output .runtime-work/c125763-2501-saved-advance-v2 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-2501-pipeline TMPDIR=$PWD/.runtime-work/c125763-2501-temp MPLCONFIGDIR=$PWD/.runtime-work/c125763-2501-mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125763-2501-compat-advance-missing-v1 --output .runtime-work/c125763-2501-saved-advance-missing-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "cpu-saved-advance-nov25.log",
+        "test_log_sha256": "c60abe606fd8a09974ccf6d3bf4997088ce50b6a357836282589aef7460e0127",
+        "test_exit_code": 0,
+        "feedback_log": "cpu-saved-advance-missing-nov25.log",
+        "feedback_log_sha256": "7bff3361291832c5b4a9e1c0c3a66dac270e866c7589f5fa4f80432dda554c58",
+        "feedback_test_exit_code": 0,
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      },
+      "physical_preparation": {
+        "receipt": "physical-advance-receipt.json",
+        "sha256": "b6dc1317885d85e41e09c933d632c58aa1b0f45dd6493e46fa591bf5c0b5518a"
+      }
+    }
+  ],
+  "status": "partial_offline_only"
+}

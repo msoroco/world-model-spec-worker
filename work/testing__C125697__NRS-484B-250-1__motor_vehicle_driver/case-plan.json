@@ -156,27 +156,46 @@
     {
       "name": "other_entry_frame",
       "source": "sealed original Native frame/actor histories and governing signal readback",
-      "status": "measurement_code_cpu_tested_original_source_pending"
+      "status": "measurement_code_cpu_tested_original_source_pending",
+      "mandatory": false
     },
     {
       "name": "ego_entry_frame",
       "source": "sealed original Native frame/actor histories and governing signal readback",
-      "status": "measurement_code_cpu_tested_original_source_pending"
+      "status": "measurement_code_cpu_tested_original_source_pending",
+      "mandatory": false
     },
     {
       "name": "other_exit_frame",
       "source": "sealed original Native frame/actor histories and governing signal readback",
-      "status": "measurement_code_cpu_tested_original_source_pending"
+      "status": "measurement_code_cpu_tested_original_source_pending",
+      "mandatory": false
     },
     {
       "name": "ego_waited_until_other_exit",
       "source": "sealed original Native frame/actor histories and governing signal readback",
-      "status": "measurement_code_cpu_tested_original_source_pending"
+      "status": "measurement_code_cpu_tested_original_source_pending",
+      "mandatory": false
     },
     {
       "name": "signal_inoperative_all_frames",
       "source": "sealed original Native frame/actor histories and governing signal readback",
-      "status": "measurement_code_cpu_tested_original_source_pending"
+      "status": "measurement_code_cpu_tested_original_source_pending",
+      "mandatory": false
+    },
+    {
+      "name": "intersection_body_history",
+      "mandatory": true,
+      "method": "original synchronized actor body and road history",
+      "source": "native_trace.json",
+      "unit": "native record"
+    },
+    {
+      "name": "governing_signal_readback",
+      "mandatory": true,
+      "method": "original governing signal state joined to Native frame clock",
+      "source": "native_trace.json",
+      "unit": "native record"
     }
   ],
   "sources": [
@@ -238,10 +257,6 @@
           {
             "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/accepted/dea6fb5d2c8221b13b7c1bb878d6b35154187aafa4c0dcac3ead5e4695b8d8f4/metadata.json",
             "sha256": "c2313b50a45d26803e68f7b0ce5746e3adf7f4286c19dca84e94ba00d09318d7"
-          },
-          {
-            "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "8fbf458ca4a65bd7f75112db22003d12cc056328280ac44a703676b36d6b4d42"
           }
         ]
       },
@@ -253,10 +268,6 @@
           {
             "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/accepted/4724442f9099a88f6ec32fbc63141c47f5984402a5980e5dfd87c5fa38cba641/metadata.json",
             "sha256": "b33bd025ef60278c90fd48ff5b55dfc0a0c3170b09dd00f8c7fea503271912f6"
-          },
-          {
-            "path": "inputs/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "8fbf458ca4a65bd7f75112db22003d12cc056328280ac44a703676b36d6b4d42"
           }
         ]
       }
@@ -304,7 +315,30 @@
       "reference_corner",
       "driver_reference"
     ],
-    "physical_pixels_verified": false
+    "physical_pixels_verified": false,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego and earlier-arriving other vehicle at the reviewed median roadway crossing",
+        "interval": "approaches through full body clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "ego approach, governing signal and median opening",
+        "interval": "approach through crossing",
+        "view": "approach"
+      },
+      {
+        "subject": "other highway entry, crossing conflict and exit",
+        "interval": "other entry through ego entry",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "ego driver view of governing device and crossing vehicle",
+        "interval": "approach through clearance",
+        "view": "driver_reference"
+      }
+    ]
   },
   "source_observation_mapping": {},
   "requirement_dispositions": [

@@ -127,6 +127,16 @@ def build():
             "governing_signal_state": "inoperative",
             "requested_entry_offset_s": item["planned_entry_time_difference_s"],
             "ego_approach_side": item["ego_approach_side"],
+            "physical_completion": {
+                "criterion": "intersection_clearance",
+                "motion_source": "crossing_history.jsonl",
+                "body_key": "ego_vertices_m",
+                "context_sources": ["crossing_geometry.json"],
+                "exit_axis": 0 if item["ego_approach_side"] == "right" else 1,
+                "exit_sign": 1,
+                "minimum_progress_m": 1.0,
+                "engineering_tolerances_not_legal": True,
+            },
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
             "physical_completion": {"criterion": "intersection_clearance",
                 "motion_source": "crossing_history.jsonl", "body_key": "ego_vertices_m",
@@ -143,6 +153,8 @@ def build():
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
                  "entry_timing.py": (HERE / "entry_timing.py").read_text(),
                  "footprint_capture.py": (HERE / "footprint_capture.py").read_text(),
+                 "analysis.py": (HERE / "analysis.py").read_text(),
+                 "judgment-probe-plan.json": (HERE / "judgment-probe-plan.json").read_text(),
                  "case-plan.json": raw.decode(), "config.json": json.dumps(config, indent=2) + "\n",
                  "tests/test_bundle.py": TEST}
         construction = {

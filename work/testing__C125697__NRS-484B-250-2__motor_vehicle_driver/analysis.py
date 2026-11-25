@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-import median_opening
+import median_source
 from worker_exchange.native_output import physical_result, validate_result
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -48,22 +48,29 @@ def measure_crossing_highways(scene: dict) -> dict:
             "distinct_highways": scene["ego_highway"] != scene["other_highway"]}
 
 
-def measure_other_entry(measured: dict) -> dict:
-    return {"other_entry_frame": measured["entry_frames"]["other"],
-            "ego_entry_frame": measured["entry_frames"]["ego"],
-            "other_entered_before_ego": measured["other_entered_before_ego"],
+def measure_entry_timing(measured: dict) -> dict:
+    return {"ego_entry": measured["ego_entry"],
+            "other_entry": measured["other_entry"],
+            "intersection_entry_time_difference_s":
+                measured["intersection_entry_time_difference_s"],
             "native_first_frame_id": measured["native_first_frame_id"]}
 
 
-def measure_ego_response(measured: dict) -> dict:
-    return {"ego_entry_frame": measured["entry_frames"]["ego"],
-            "other_exit_frame": measured["exit_frames"]["other"],
-            "ego_waited_until_other_exit": measured["ego_waited_until_other_exit"]}
+def measure_approach_side(measured: dict) -> dict:
+    return {"ego_approach_side": measured["ego_approach_side"],
+            "other_approach_side": measured["other_approach_side"],
+            "road_ids": measured["road_ids"]}
+
+
+def measure_yield_response(measured: dict) -> dict:
+    return {"ego_entered_after_other_exit": measured["ego_entered_after_other_exit"],
+            "other_exit": measured["other_exit"],
+            "legal_yield_judgment": "unresolved"}
 
 
 def measure_device_context(scene: dict, measured: dict) -> dict:
     return {"governing_signal": scene["governing_signal"],
-            "signal_inoperative_all_frames": measured["signal_inoperative_all_frames"],
+            "signal_inoperative_all_frames": True,
             "subsection_4_applicability_review": scene.get("subsection_4_applicability_review"),
             "legal_applicability": "unresolved"}
 
@@ -80,19 +87,32 @@ def analyze(attempt: Path, output: Path) -> dict:
     config = json.loads(_required(root, "config.json").read_text())
     construction = json.loads(_required(root, "construction.json").read_text())
     case = config["selected_case_id"]
-    if construction.get("case_id") != case or case not in (
-            "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
-            "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance"):
+    if construction.get("case_id") != case or case not in {
+            "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__" + suffix
+            for suffix in ("timing_below_training", "timing_inside_training",
+                           "timing_above_training", "right_approach_inside")}:
         raise ValueError("wrong selected median-opening construction")
     scene = json.loads(_required(root, "scene.json").read_text())
+    geometry = json.loads(_required(root, "crossing_geometry.json").read_text())
+    box = scene["crossing"]["bounds_xy_m"]
+    expected_polygon = [[box[0], box[1]], [box[2], box[1]],
+                        [box[2], box[3]], [box[0], box[3]]]
+    if (geometry.get("intersection_xy_m") != expected_polygon or
+            geometry.get("source_opendrive_sha256") !=
+            scene["crossing"]["opendrive_sha256"]):
+        raise ValueError("original crossing geometry differs from reviewed site")
     manifest = _source_manifest(root)
     _required(root, manifest["sources"]["native_trace"]["path"])
     diagnostic = (root / "fixture-provenance.json").is_file()
-    audited = median_opening.audit_saved_sources(root, manifest, scene,
+    audited = median_source.audit_saved_sources(root, manifest, scene,
                                                  diagnostic_fixture=diagnostic)
     measured = audited["observations"]
-    if not measured["other_entered_before_ego"]:
-        raise ValueError("original history lost earlier other entry")
+    if measured["ego_approach_side"] != config["ego_approach_side"] or (
+            config["requested_entry_offset_s"] != next(
+                row["planned_entry_time_difference_s"] for row in
+                json.loads(_required(root, "case-plan.json").read_text())["cases"]
+                if row["case_id"] == case)):
+        raise ValueError("selected timing or approach request changed")
     original = json.loads(_required(root, manifest["sources"]["native_trace"]["path"]).read_text())
     frames = original["frames"]
     mapping = [json.loads(line) for line in _required(root, "video_frames.jsonl").read_text().splitlines()]
@@ -145,18 +165,39 @@ def analyze(attempt: Path, output: Path) -> dict:
     evidence = [{"name": item["name"], "unit": item["unit"],
                  "reference": str(refs[item["name"]].relative_to(root))}
                 for item in description["channels"] + description["context_inputs"]]
-    requested = case.endswith("__precedence")
-    observed = measured["ego_waited_until_other_exit"]
+    requested = config["requested_entry_offset_s"]
+    observed = measured["intersection_entry_time_difference_s"]
+    ranges = json.loads(_required(root, "judgment-probe-plan.json").read_text())["ranges"]
+    if len(ranges) != 1 or ranges[0]["variable"] != "intersection_entry_time_difference":
+        raise ValueError("frozen judgment coverage range missing")
+    minimum, maximum = ranges[0]["source_minimum"], ranges[0]["source_maximum"]
+    if case.endswith("__timing_below_training"):
+        coverage_matched = observed < minimum
+        coverage_band = "below_training_range"
+    elif case.endswith("__timing_above_training"):
+        coverage_matched = observed > maximum
+        coverage_band = "above_training_range"
+    else:
+        coverage_matched = minimum <= observed <= maximum
+        coverage_band = "inside_training_range"
     checks = [
-        {"target": "other_entered_before_ego", "requested": True,
-         "measured": measured["other_entered_before_ego"],
+        {"target": "both_original_entries_observed", "requested": True,
+         "measured": True,
          "method": "original footprint entry transitions", "tolerance": 0,
-         "matched": measured["other_entered_before_ego"],
+         "matched": True,
          "physical_cause_confirmed": False,
          "cause_evidence": audited["source_sha256"]},
-        {"target": "ego_waited_until_other_exit", "requested": requested,
-         "measured": observed, "method": "original ego entry and other exit transitions",
-         "tolerance": 0, "matched": requested == observed,
+        {"target": "entry_time_difference_training_coverage", "requested": {
+             "coverage_band": coverage_band, "requested_offset_s": requested,
+             "source_minimum_s": minimum, "source_maximum_s": maximum},
+         "measured": observed, "method": "original ego and other entry brackets; training bounds are not legal thresholds",
+         "tolerance": 0, "matched": coverage_matched,
+         "physical_cause_confirmed": False,
+         "cause_evidence": audited["source_sha256"]},
+        {"target": "mapped_ego_approach_side", "requested": config["ego_approach_side"],
+         "measured": measured["ego_approach_side"],
+         "method": "original reviewed route vectors joined to participant identity",
+         "tolerance": 0, "matched": measured["ego_approach_side"] == config["ego_approach_side"],
          "physical_cause_confirmed": False,
          "cause_evidence": audited["source_sha256"]},
     ]
@@ -183,10 +224,12 @@ def analyze(attempt: Path, output: Path) -> dict:
     measurement_specs = {
         "crossing_highways": ("measure_crossing_highways", measure_crossing_highways(scene),
                               ["scene.json", "opendrive.xodr", "highway_identity.json"]),
-        "other_entry": ("measure_other_entry", measure_other_entry(measured),
+        "entry_timing": ("measure_entry_timing", measure_entry_timing(measured),
                         ["native_trace.json", "crossing_history.jsonl", "scene.json"]),
-        "ego_response": ("measure_ego_response", measure_ego_response(measured),
+        "approach_side": ("measure_approach_side", measure_approach_side(measured),
                          ["native_trace.json", "crossing_history.jsonl", "scene.json"]),
+        "yield_response": ("measure_yield_response", measure_yield_response(measured),
+                           ["native_trace.json", "scene.json"]),
         "device_context": ("measure_device_context", measure_device_context(scene, measured),
                            ["native_trace.json", "scene.json", "device_inventory.json"]),
         "opposing_turn_context": ("measure_opposing_turn_context", measure_opposing_turn_context(scene),

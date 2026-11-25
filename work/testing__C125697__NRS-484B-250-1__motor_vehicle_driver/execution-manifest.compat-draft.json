@@ -7,7 +7,7 @@
       "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
       "kind": "delivery",
       "construction": "construction-precedence.json",
-      "construction_sha256": "c0301a709c048bacec1197851e6f33fef8f0f808cda1ccd3425d72e3000d312d",
+      "construction_sha256": "dbc4b660a653447ca79026f73b2a95a34bbab9ea7c3a3271ad638a45ef64f24f",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -33,7 +33,7 @@
         {
           "id": "fallback1",
           "construction": "fallback-precedence-construction.json",
-          "construction_sha256": "3821376176fb96c17ae1211beef1346c8462fb894f01f0f8649acb008e889e3c",
+          "construction_sha256": "304efd841d2982e6d45d48848ac1cc458367cf2c4b005251ff82114a454fd5a6",
           "changed_knobs": [
             "requested approach target 8 to 5 m/s",
             "throttle cap 0.55 to 0.35",
@@ -43,15 +43,79 @@
             "source": "original native_trace.json body/speed history and scene.json crossing bounds",
             "metric": "ego speed and body exit across 900 original frames",
             "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence --candidate fallback1 --output .runtime-work/c125697-semantic/offline-precedence-fallback1-v13 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "304efd841d2982e6d45d48848ac1cc458367cf2c4b005251ff82114a454fd5a6",
+            "log": "cpu-offline-precedence-fallback1-v13.log",
+            "log_sha256": "379e0f6443f0ddff893100edd9a20859f1f7ab42ab1de693c782012c36c9d252"
+          },
+          "compatibility": {
+            "receipt": "compat-precedence-fallback1-v13-receipt.json",
+            "sha256": "364167761324b738c3d82ab26d1db0b2b636fa7549f2a47e9bf7b650db55e852",
+            "log": "compat-precedence-fallback1-v13-analysis.log",
+            "negative_log": "compat-precedence-fallback1-v13-negative.log"
           }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence --candidate primary --output .runtime-work/c125697-semantic/offline-precedence-primary-v13 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "dbc4b660a653447ca79026f73b2a95a34bbab9ea7c3a3271ad638a45ef64f24f",
+        "log": "cpu-offline-precedence-primary-v13.log",
+        "log_sha256": "ba1d8a001abb4fff528ae3ddef80bc0a1f6fe9332ddaf9f18cdddcfc6fdf5e2a"
+      },
+      "compatibility": {
+        "receipt": "compat-precedence-primary-v13-receipt.json",
+        "sha256": "ee24a5db40e7c90da95d38d8d6953939fa86c198f6829c6978cd2537c87aa14b",
+        "log": "compat-precedence-primary-v13-analysis.log",
+        "negative_log": "compat-precedence-primary-v13-negative.log"
+      },
+      "negative": {
+        "log": "compat-precedence-primary-v13-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit_probe.py",
+        "script_sha256": "9a766bd81a8f2947e70adb158d0438ce57b06c97d2a83aa30e315ab290e6c233",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125697-semantic/audit-precedence-positive-v2",
+        "test_exit_code": 0,
+        "test_log": "audit-precedence-positive-v2.log",
+        "test_log_sha256": "0e42b29baddab82ad8143179a0fea8a7a331fa716c48715d6e88897091959536",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125697-semantic/audit-precedence-negative-v2 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed: overview.mkv",
+        "negative_log": "audit-precedence-negative-v2.log",
+        "negative_log_sha256": "cef5148c0f72fd659b090ea2c9747fcda0989f2a60823f60c161e1e0635801fd"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-precedence-proof-v4.json",
+        "sha256": "6d8ab6afa983bdfa0ded2f350767b9dd5d7a99ee5b9f9f11566225bb79bf582f"
+      }
     },
     {
       "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance",
       "kind": "delivery",
       "construction": "construction-advance.json",
-      "construction_sha256": "0c1aef8825f77199697616cb13d0f14ab130ab2227aeb691ef8203c113a83863",
+      "construction_sha256": "1c751f828ec8dfbf1e41e0881943886f6de79d83fe0769e6f552fd2b5b5969a0",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
@@ -77,7 +141,7 @@
         {
           "id": "fallback1",
           "construction": "fallback-advance-construction.json",
-          "construction_sha256": "0ae1db29f5b04c04a6487d4f1c72311702f0a2bd59c9685a309628fd87cdc4f4",
+          "construction_sha256": "a2d140592202a1355ccf57ee3a9a578228786b265b46c8d27deec9dad5e8e2ce",
           "changed_knobs": [
             "requested approach target 8 to 5 m/s",
             "throttle cap 0.55 to 0.35",
@@ -87,9 +151,73 @@
             "source": "original native_trace.json body/speed history and scene.json crossing bounds",
             "metric": "ego speed and body exit across 900 original frames",
             "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance --candidate fallback1 --output .runtime-work/c125697-semantic/offline-advance-fallback1-v13 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a2d140592202a1355ccf57ee3a9a578228786b265b46c8d27deec9dad5e8e2ce",
+            "log": "cpu-offline-advance-fallback1-v13.log",
+            "log_sha256": "5594716f565587903a2747e335f5c0582726def1a40f652c7b1b1b52d9898ace"
+          },
+          "compatibility": {
+            "receipt": "compat-advance-fallback1-v13-receipt.json",
+            "sha256": "c3b50acb74fb0c6bff7d56a7220c8e6255632e389b6c01e295fa983558bde936",
+            "log": "compat-advance-fallback1-v13-analysis.log",
+            "negative_log": "compat-advance-fallback1-v13-negative.log"
           }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance --candidate primary --output .runtime-work/c125697-semantic/offline-advance-primary-v13 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "1c751f828ec8dfbf1e41e0881943886f6de79d83fe0769e6f552fd2b5b5969a0",
+        "log": "cpu-offline-advance-primary-v13.log",
+        "log_sha256": "42decb366260ae9bc9a1e90519724f935bc588b823da016385377b1a72447be6"
+      },
+      "compatibility": {
+        "receipt": "compat-advance-primary-v13-receipt.json",
+        "sha256": "3c6566234941c208e66f9768c83621ad59434d0d1213580c84e2e35445bccb2d",
+        "log": "compat-advance-primary-v13-analysis.log",
+        "negative_log": "compat-advance-primary-v13-negative.log"
+      },
+      "negative": {
+        "log": "compat-advance-primary-v13-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit_probe.py",
+        "script_sha256": "9a766bd81a8f2947e70adb158d0438ce57b06c97d2a83aa30e315ab290e6c233",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125697-semantic/audit-advance-positive-v2",
+        "test_exit_code": 0,
+        "test_log": "audit-advance-positive-v2.log",
+        "test_log_sha256": "b902e33c5728b1e7bfd1e6b83eb6da026cf5dfc297f94dd46257a4a4379b1baf",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-1__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125697-semantic/audit-advance-negative-v2 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed: overview.mkv",
+        "negative_log": "audit-advance-negative-v2.log",
+        "negative_log_sha256": "cef5148c0f72fd659b090ea2c9747fcda0989f2a60823f60c161e1e0635801fd"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-advance-proof-v4.json",
+        "sha256": "dcc573c9a45602d143caf4f590a0de3ebeb5ada080f684116ee5601a5b3ff098"
+      }
     }
   ]
 }
