@@ -20,6 +20,7 @@ def site():
         ],
         "sign": {"source_id": "sign-1", "wording": "BICYCLES PROHIBITED ON ROADWAY",
                  "facing_direction": "eastbound", "erection_source": "original_sign_installation_packet",
+                 "native_blueprint_id": "static.prop.sign",
                  "position": [-1, 1, 0], "street_id": "street-1", "posted": True,
                  "prohibits_bicycle_roadway_use": True},
     }
@@ -34,6 +35,10 @@ class Bike:
     id = 23
     is_alive = True
     type_id = "vehicle.bicycle"
+    location = Vector(-10, 0, 0)
+
+    def get_location(self):
+        return self.location
 
     def set_target_velocity(self, value):
         self.velocity = value
@@ -82,6 +87,7 @@ class TestNativeSource(unittest.TestCase):
         carla = type("Carla", (), {"Vector3D": Vector})
         row = command_bicycle(bike, carla, s, {"motion": "enter_roadway"}, 4.0)
         self.assertEqual(row["observed_velocity_mps"], [3.0, 0.0, 0.0])
+        bike.location = Vector(-0.5, 0, 0)
         held = command_bicycle(bike, carla, s, {"motion": "stop_before_roadway"}, 4.0)
         self.assertEqual(held["observed_velocity_mps"], [0.0, 0.0, 0.0])
 

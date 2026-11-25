@@ -10,7 +10,8 @@ from native_site import canonical_sha, validate_site
 
 def measure(site: dict, packet: dict, case: dict) -> dict:
     binding = validate_site(site)
-    if packet.get("source_kind") != "original_native_capture" or packet.get("site_sha256") != binding["site_sha256"]:
+    diagnostic = packet.get('source_kind') == 'diagnostic_fixture_capture'
+    if packet.get("source_kind") not in ('original_native_capture', 'diagnostic_fixture_capture') or packet.get("site_sha256") != binding["site_sha256"]:
         raise ValueError("missing or mismatched original Native site source")
     body = {key: value for key, value in packet.items() if key != "seal_sha256"}
     if packet.get("seal_sha256") != canonical_sha(body):
@@ -47,4 +48,4 @@ def measure(site: dict, packet: dict, case: dict) -> dict:
         raise ValueError("roadway entry not observed after trail")
     if case.get("motion") in ("remain_trail", "stop_before_roadway") and roadway_frames:
         raise ValueError("roadway entry contradicts planned nonentry")
-    return {"source_kind": "original_native_measurement", "case_id": case["case_id"], "site_sha256": binding["site_sha256"], "packet_sha256": hashlib.sha256(json.dumps(packet, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "frames": len(frames), "roadway_frames": len(roadway_frames), "trail_frames": len(trail_frames), "first_roadway_frame": min(roadway_frames) if roadway_frames else None, "sign_posted_original_frames": len(frames), "designation_source": site["engineer_designation_source"], "legal_assessment": "unresolved"}
+    return {"source_kind": "diagnostic_fixture_measurement" if diagnostic else "original_native_measurement", "case_id": case["case_id"], "site_sha256": binding["site_sha256"], "packet_sha256": hashlib.sha256(json.dumps(packet, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "frames": len(frames), "roadway_frames": len(roadway_frames), "trail_frames": len(trail_frames), "first_roadway_frame": min(roadway_frames) if roadway_frames else None, "sign_posted_original_frames": len(frames), "designation_source": site["engineer_designation_source"], "legal_assessment": "unresolved"}

@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-263@motor_vehicle_driver",
+  "law_id": "NRS-484B-263",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of a vehicle about to enter or exit a controlled-access highway shall yield the right-of-way to all vehicles approaching on the highway whose proximity constitutes an immediate hazard and shall continue to yield the right-of-way to that traffic until the driver may proceed with reasonable safety.",
+  "structure": {
+    "law_id": "NRS-484B-263",
+    "activation": {
+      "condition": "The driver is about to exit a controlled-access highway into a general-road connection.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Yield right-of-way to all approaching highway vehicles whose proximity is an immediate hazard and continue yielding until reasonable safety.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Observe all approaching vehicles and ego yielding through original exit interaction entry.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "whose proximity constitutes an immediate hazard",
+        "note": "Original approaching vehicle occupancy, range, speed and interaction traces need human review."
+      },
+      {
+        "phrase": "until the driver may proceed with reasonable safety",
+        "note": "Original ego wait and exit entry joined to every approaching vehicle need human review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "exit_policy",
+      "kind": "world_setup",
+      "range_or_domain": "yield until clear, proceed before clear, or proceed between vehicles",
+      "unit": "category"
+    },
+    {
+      "name": "approaching_count",
+      "kind": "world_setup",
+      "range_or_domain": "one or two approaching vehicles",
+      "unit": "count"
+    },
+    {
+      "name": "approach_headway_s",
+      "kind": "world_setup",
+      "range_or_domain": "3 or 9 seconds engineering probes, not legal cutoffs",
+      "unit": "s"
+    }
+  ]
+}

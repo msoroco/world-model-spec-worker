@@ -41,7 +41,7 @@ def validate_site(site: dict) -> dict:
     sign = site.get("sign")
     if not isinstance(sign, dict) or sign.get("street_id") != site["street_id"]:
         raise ValueError("sign does not govern designated street")
-    for key in ("source_id", "wording", "facing_direction", "erection_source"):
+    for key in ("source_id", "wording", "facing_direction", "erection_source", "native_blueprint_id"):
         if not isinstance(sign.get(key), str) or not sign[key].strip():
             raise ValueError(f"missing original sign field: {key}")
     _point(sign.get("position"))
@@ -66,13 +66,21 @@ def command_bicycle(bike, carla, site: dict, case: dict, elapsed_s: float) -> di
         raise ValueError("Native bicycle readback failed")
     if case.get("motion") not in ("enter_roadway", "remain_trail", "stop_before_roadway"):
         raise ValueError("unknown case motion")
-    segment = site["route_segments"][0 if case["motion"] == "remain_trail" else 1]
+    location = bike.get_location()
+    if not all(math.isfinite(v) for v in (location.x, location.y, location.z)):
+        raise ValueError('Native bicycle position readback unavailable')
+    trail = site['route_segments'][0]
+    junction_distance = math.dist([location.x, location.y], trail['end'][:2])
+    on_trail = junction_distance > 1.0
+    segment = trail if (on_trail or case['motion'] != 'enter_roadway') else site['route_segments'][1]
     start, end = segment["start"], segment["end"]
     dx, dy = end[0] - start[0], end[1] - start[1]
     length = math.hypot(dx, dy)
     if length < 1.0:
         raise ValueError("degenerate route segment")
-    speed = 0.0 if case["motion"] == "stop_before_roadway" and elapsed_s >= 3.0 else float(site.get("engineering_speed_mps", 3.0))
+    speed = float(site.get("engineering_speed_mps", 3.0))
+    if case['motion'] != 'enter_roadway' and junction_distance <= 1.0:
+        speed = 0.0
     if not math.isfinite(speed) or not 0 <= speed <= 8:
         raise ValueError("unsafe engineering speed")
     command = carla.Vector3D(x=dx / length * speed, y=dy / length * speed, z=0.0)
@@ -80,4 +88,4 @@ def command_bicycle(bike, carla, site: dict, case: dict, elapsed_s: float) -> di
     actual = bike.get_velocity()
     if not all(math.isfinite(v) for v in (actual.x, actual.y, actual.z)):
         raise ValueError("Native velocity readback unavailable")
-    return {"source_kind": "original_native_control_readback", "actor_id": str(bike.id), "site_sha256": canonical_sha(site), "elapsed_s": elapsed_s, "motion": case["motion"], "observed_velocity_mps": [actual.x, actual.y, actual.z]}
+    return {"source_kind": "original_native_control_readback", "actor_id": str(bike.id), "site_sha256": canonical_sha(site), "elapsed_s": elapsed_s, "motion": case["motion"], "junction_distance_m": junction_distance, "commanded_segment": segment['kind'], "observed_velocity_mps": [actual.x, actual.y, actual.z]}

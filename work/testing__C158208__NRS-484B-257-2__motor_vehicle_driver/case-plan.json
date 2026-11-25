@@ -1,136 +1,574 @@
 {
-  "assignment_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C158208",
-  "law_id": "NRS-484B-257-2",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-257-2",
-      "cell_id": "C158208",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-257-2",
-      "branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 362,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
-  "law_source": "NRS 484B.257(2)",
-  "topic_inventory": {
-    "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
+  "assignment_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "approach through full clearance",
+        "subject": "ego, other participant and intersection",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through entry",
+        "subject": "yield sign, stop reference and ego leading body",
+        "view": "approach"
+      },
+      {
+        "interval": "approach through conflict interval",
+        "subject": "other participant within and approaching the intersection",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach through crossing",
+        "subject": "ego-facing yield sign and intersection sightline",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability",
+    "status": "poses and original visibility require reviewed Native site and capture"
   },
   "cases": [
     {
+      "approach_policy": "slow",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_response",
-      "target_law_id": "NRS-484B-257-2",
-      "branch": "non-through intersection yield; within or approaching other vehicle",
-      "through_phase": "within",
-      "approach_policy": "slow",
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "draft_variables": {
+        "approach_policy": "slow",
+        "ego_control": "yield_sign",
+        "non_through_highway": true,
+        "officer_controls": false,
+        "requested_other_station_m": 0,
+        "signal_controls": false,
+        "through_phase": "within"
+      },
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "legal_judgment": "unresolved",
+      "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_acceptance_claimed": false,
+      "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
+      "physical_risk_assessment": {
+        "reason": "Original intersection classification, sign and participant phase require reviewed site and Native motion.",
+        "status": "unverified"
+      },
+      "preparation_status": "source_gated_construction_draft",
       "requested_other_station_m": 0,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
-      "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
-      "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep_attempt",
+      "through_phase": "within"
     },
     {
+      "approach_policy": "slow",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
-      "target_law_id": "NRS-484B-257-2",
-      "branch": "non-through intersection yield; within or approaching other vehicle",
-      "through_phase": "approaching",
-      "approach_policy": "slow",
-      "requested_other_station_m": 8,
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "draft_variables": {
+        "approach_policy": "slow",
+        "ego_control": "yield_sign",
+        "non_through_highway": true,
+        "officer_controls": false,
+        "requested_other_station_m": 8,
+        "signal_controls": false,
+        "through_phase": "approaching"
+      },
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "legal_judgment": "unresolved",
       "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_acceptance_claimed": false,
       "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "physical_risk_assessment": {
+        "reason": "Original intersection classification, sign and participant phase require reviewed site and Native motion.",
+        "status": "unverified"
+      },
+      "preparation_status": "source_gated_construction_draft",
+      "requested_other_station_m": 8,
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep_attempt",
+      "through_phase": "approaching"
     },
     {
+      "approach_policy": "slow",
+      "branch": "non-through intersection yield; within or approaching other vehicle",
       "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_far_response",
-      "target_law_id": "NRS-484B-257-2",
-      "branch": "non-through intersection yield; within or approaching other vehicle",
-      "through_phase": "approaching",
-      "approach_policy": "slow",
-      "requested_other_station_m": 35,
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "draft_variables": {
+        "approach_policy": "slow",
+        "ego_control": "yield_sign",
+        "non_through_highway": true,
+        "officer_controls": false,
+        "requested_other_station_m": 35,
+        "signal_controls": false,
+        "through_phase": "approaching"
+      },
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "legal_judgment": "unresolved",
       "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_acceptance_claimed": false,
       "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "physical_risk_assessment": {
+        "reason": "Original intersection classification, sign and participant phase require reviewed site and Native motion.",
+        "status": "unverified"
+      },
+      "preparation_status": "source_gated_construction_draft",
+      "requested_other_station_m": 35,
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep_attempt",
+      "through_phase": "approaching"
     },
     {
-      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_uninterrupted",
-      "target_law_id": "NRS-484B-257-2",
-      "branch": "non-through intersection yield; within or approaching other vehicle",
-      "through_phase": "approaching",
       "approach_policy": "uninterrupted",
-      "requested_other_station_m": 8,
+      "branch": "non-through intersection yield; within or approaching other vehicle",
+      "case_id": "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_uninterrupted",
+      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "draft_variables": {
+        "approach_policy": "uninterrupted",
+        "ego_control": "yield_sign",
+        "non_through_highway": true,
+        "officer_controls": false,
+        "requested_other_station_m": 8,
+        "signal_controls": false,
+        "through_phase": "approaching"
+      },
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction": "nonthrough_yield.construct: governed approach plus non-obligated through participant",
+      "legal_judgment": "unresolved",
       "measurement": "nonthrough_yield.measure_original: 900 original frames, physical entry, ego speed, other center/min-vertex and across-or-within history",
+      "physical_acceptance_claimed": false,
       "physical_risk": "actual sign/reference, other vehicle timing, sightlines and movement require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "physical_risk_assessment": {
+        "reason": "Original intersection classification, sign and participant phase require reviewed site and Native motion.",
+        "status": "unverified"
+      },
+      "preparation_status": "source_gated_construction_draft",
+      "requested_other_station_m": 8,
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "judgment_sweep_attempt",
+      "through_phase": "approaching"
     }
   ],
+  "cell_id": "C158208",
   "comparisons": [
     {
-      "comparison_id": "occupied_vs_approaching",
       "case_ids": [
         "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_response",
         "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response"
       ],
-      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route",
+      "comparison_id": "occupied_vs_approaching",
       "deliberate_differences": [
         "other within intersection versus approaching"
-      ]
+      ],
+      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route"
     },
     {
-      "comparison_id": "approach_station_sweep",
       "case_ids": [
         "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
         "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_far_response"
       ],
-      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route",
+      "comparison_id": "approach_station_sweep",
       "deliberate_differences": [
         "requested other center station"
-      ]
+      ],
+      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route"
     },
     {
-      "comparison_id": "response_vs_uninterrupted",
       "case_ids": [
         "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
         "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_uninterrupted"
       ],
-      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route",
+      "comparison_id": "response_vs_uninterrupted",
       "deliberate_differences": [
         "ego initial yield response policy"
-      ]
+      ],
+      "fixed_conditions": "same non-through intersection, yield sign, entrance controls, ego/other vehicle, camera/duration and route"
     }
   ],
-  "observations": [
-    "original non-through-highway classification and all entrance controls",
-    "proper ego yield sign and subsection 1 stop-reference hierarchy",
-    "other vehicle not obligated to stop/yield",
-    "original ego speed and first leading-body physical entry",
-    "other center/min-vertex stations and occupied/approaching phase",
-    "continuous ego across-or-within and sightline histories",
-    "no actual officer or traffic-signal control",
-    "hazard, cautious proceeding and right-of-way reserved for review"
+  "evidence_review": {
+    "facts": [
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__nearest_view_response, and decoder_passed=None. Frozen review context describes the authored setting as: nearest view response",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "9d5ec6a35199e3065843da1bd1954412697b2866c7cd1157e7161221c0d80dd8",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/9d5ec6a35199e3065843da1bd1954412697b2866c7cd1157e7161221c0d80dd8/metadata.json",
+            "sha256": "a008dd41bcc3e652efe6bc6b1e41e146aa18f96140561e2bd6536c5353b05a03"
+          },
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "5cafd2597106753a57b90198a911049ed036ab40a56ed8d9414e1dbd34916059"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__nearest_view_uninterrupted, and decoder_passed=None. Frozen review context describes the authored setting as: nearest view uninterrupted",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "dde8215cb1efebdde65eabf421f0be0f1c6ae37c7ca78db4cbcf112230fcb0ab",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/dde8215cb1efebdde65eabf421f0be0f1c6ae37c7ca78db4cbcf112230fcb0ab/metadata.json",
+            "sha256": "ac33f9ba49e2a9a0818c4043b71ae791624fa0a203baf5d6c8db6ecb2acbd84e"
+          },
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "5cafd2597106753a57b90198a911049ed036ab40a56ed8d9414e1dbd34916059"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__marked_stop_line_response, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "fc97ed72934aa0896ff9d4eb67528f2771bca587f799c73436b211e79f4019a3",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/fc97ed72934aa0896ff9d4eb67528f2771bca587f799c73436b211e79f4019a3/metadata.json",
+            "sha256": "1b9ac23f4e71b5f725efcbc1c3481ce4b62776dd4d271c5938082b3cdf208cc0"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__marked_stop_line_uninterrupted, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "80faf4cf87a856d881bbcdfba4466c43058283c9a7c16d65e2582a336c2e1665",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/80faf4cf87a856d881bbcdfba4466c43058283c9a7c16d65e2582a336c2e1665/metadata.json",
+            "sha256": "9921268874e9d5a67a4d8692f6ab0a1c330a58e85fb88542c2d344e370a7f07b"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_marked_crosswalk_response, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "2e58516f29305a4ac6e65c7b37f3a1d093669b68218bd4710ae1ac1d242259e3",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/2e58516f29305a4ac6e65c7b37f3a1d093669b68218bd4710ae1ac1d242259e3/metadata.json",
+            "sha256": "6d860df44269803bca400f9d562969eaf9eb980491081460192648601880dd9c"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "bc51674110ef01f93e62f6e4c829e234a02d8b60398108431a9ba23f33e359fb",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/bc51674110ef01f93e62f6e4c829e234a02d8b60398108431a9ba23f33e359fb/metadata.json",
+            "sha256": "a377e42f062d43196ea1cd627dfd77f18f61bb37657e695d4a821838c4a254e9"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "bc8494df7909b6807d407764abcc733cdfe8c8c88c121ffe97f1b7b21c6cdaf7",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/bc8494df7909b6807d407764abcc733cdfe8c8c88c121ffe97f1b7b21c6cdaf7/metadata.json",
+            "sha256": "e7f125674add62757f1ef8616c55860c285893bc9a671a3dc3f7311ec0790541"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "afa78fb8173a685652d78d0604af9dff444ed9ad8027569a3d4cb506f532b066",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/afa78fb8173a685652d78d0604af9dff444ed9ad8027569a3d4cb506f532b066/metadata.json",
+            "sha256": "e58d2a6316efb1ae6dfa7f5ba62c0f1dfff80217a0518f9047342e5ec9fc3562"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_phase_probe, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "583ff324dd84d60fb5b5cc1ceca0dd699c50097f079e264bd8db58b34dd04f04",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/583ff324dd84d60fb5b5cc1ceca0dd699c50097f079e264bd8db58b34dd04f04/metadata.json",
+            "sha256": "3439cdca0a78bb97a90494fcef7782caac61837a723f97e8032af320c1c53b44"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__later_history_probe, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "c6b0a9a47b1efc0fdcfafdf155d1776eaadd8e7375935d551391a04bcd054955",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/c6b0a9a47b1efc0fdcfafdf155d1776eaadd8e7375935d551391a04bcd054955/metadata.json",
+            "sha256": "4c5ba220ab599f6f9ee82c56bb9b4969eef777b94ad4bedae3f9a0a8093dcdbf"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__nearest_view_stopped, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "f556c04748c776c8e988d66a18441832f9633739074fd345aee9f41b3a00b5b6",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/f556c04748c776c8e988d66a18441832f9633739074fd345aee9f41b3a00b5b6/metadata.json",
+            "sha256": "3e6287fe49c9197d978d019e9f97ea559ae6963be02f16380645dd16de35ac08"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__cautious_profile_probe, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
+        "recording_id": "bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b",
+        "sources": [
+          {
+            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b/metadata.json",
+            "sha256": "5b2a4899917010e48862af612feae1029445b8d7f8d1d3e167b047d168c4dec5"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Prepare and review evidence for these assigned branches: Within-intersection instance plus unresolved approaching-hazard sweep.. Verify any existing accepted evidence before selecting a new recording.",
+        "source": {
+          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+          "sha256": "340e94f77056c364b8f35d9027c44a2760f4e8b255c4f0d4bb949bd231cd1512"
+        },
+        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [
+    "9d5ec6a35199e3065843da1bd1954412697b2866c7cd1157e7161221c0d80dd8",
+    "dde8215cb1efebdde65eabf421f0be0f1c6ae37c7ca78db4cbcf112230fcb0ab",
+    "fc97ed72934aa0896ff9d4eb67528f2771bca587f799c73436b211e79f4019a3",
+    "80faf4cf87a856d881bbcdfba4466c43058283c9a7c16d65e2582a336c2e1665",
+    "2e58516f29305a4ac6e65c7b37f3a1d093669b68218bd4710ae1ac1d242259e3",
+    "bc51674110ef01f93e62f6e4c829e234a02d8b60398108431a9ba23f33e359fb",
+    "bc8494df7909b6807d407764abcc733cdfe8c8c88c121ffe97f1b7b21c6cdaf7",
+    "afa78fb8173a685652d78d0604af9dff444ed9ad8027569a3d4cb506f532b066",
+    "583ff324dd84d60fb5b5cc1ceca0dd699c50097f079e264bd8db58b34dd04f04",
+    "c6b0a9a47b1efc0fdcfafdf155d1776eaadd8e7375935d551391a04bcd054955",
+    "f556c04748c776c8e988d66a18441832f9633739074fd345aee9f41b3a00b5b6",
+    "bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b"
   ],
+  "judgment_range_inventory": [
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"counterpart_center_station\", \"m\", {\"method\": \"Initial crossing vehicle actual Native center y in original frame matching frozen traffic-only engineering reference; actual front-to-intersection edge and full body containment independently retained\", \"statistic\": \"first\", \"time_window\": \"Observed reference event; full original startup and all across-or-within responses also mandatory\"}]",
+      "maximum": 21.046010971069336,
+      "minimum": 0.043116357177495956,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"ego_speed\", \"m/s\", {\"method\": \"Actual raw Native ego speed minimum, with velocity, displacement and controls retained; actual peak-to-leading-reference-passage sample interval\", \"statistic\": \"min\", \"time_window\": \"Actual approach speed peak through first leading body passage of physical West marked-line upstream boundary\"}]",
+      "maximum": 0.008087591730665596,
+      "minimum": 0.008087591730665596,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"ego_speed\", \"m/s\", {\"method\": \"Mean actual raw Native subject speed from first full-body polygon overlap with intersection through first full-body clearance; all original raw states/controls and before/after histories retained\", \"statistic\": \"mean\", \"time_window\": \"First body-overlap sample through first full-body-clearance sample, including both brackets\"}]",
+      "maximum": 4.481228043183699,
+      "minimum": 1.5380067614072788,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"proceed cautiously\"}, \"counterpart_center_station\", \"m\", {\"method\": \"Initial crossing vehicle actual Native center y in original frame matching frozen traffic-only engineering reference; actual front-to-intersection edge and full body containment independently retained\", \"statistic\": \"first\", \"time_window\": \"Observed reference event; full original startup and all across-or-within responses also mandatory\"}]",
+      "maximum": 21.046010971069336,
+      "minimum": 0.043116357177495956,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"proceed cautiously\"}, \"ego_speed\", \"m/s\", {\"method\": \"Actual raw Native ego speed minimum, with velocity, displacement and controls retained; actual peak-to-leading-reference-passage sample interval\", \"statistic\": \"min\", \"time_window\": \"Actual approach speed peak through first leading body passage of physical West marked-line upstream boundary\"}]",
+      "maximum": 0.008087591730665596,
+      "minimum": 0.008087591730665596,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"proceed cautiously\"}, \"ego_speed\", \"m/s\", {\"method\": \"Mean actual raw Native subject speed from first full-body polygon overlap with intersection through first full-body clearance; all original raw states/controls and before/after histories retained\", \"statistic\": \"mean\", \"time_window\": \"First body-overlap sample through first full-body-clearance sample, including both brackets\"}]",
+      "maximum": 4.481228043183699,
+      "minimum": 1.5380067614072788,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yielding to vehicles not so obligated to stop or yield\"}, \"counterpart_center_station\", \"m\", {\"method\": \"Initial crossing vehicle actual Native center y in original frame matching frozen traffic-only engineering reference; actual front-to-intersection edge and full body containment independently retained\", \"statistic\": \"first\", \"time_window\": \"Observed reference event; full original startup and all across-or-within responses also mandatory\"}]",
+      "maximum": 21.046010971069336,
+      "minimum": 0.043116357177495956,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yielding to vehicles not so obligated to stop or yield\"}, \"ego_speed\", \"m/s\", {\"method\": \"Actual raw Native ego speed minimum, with velocity, displacement and controls retained; actual peak-to-leading-reference-passage sample interval\", \"statistic\": \"min\", \"time_window\": \"Actual approach speed peak through first leading body passage of physical West marked-line upstream boundary\"}]",
+      "maximum": 0.008087591730665596,
+      "minimum": 0.008087591730665596,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yielding to vehicles not so obligated to stop or yield\"}, \"ego_speed\", \"m/s\", {\"method\": \"Mean actual raw Native subject speed from first full-body polygon overlap with intersection through first full-body clearance; all original raw states/controls and before/after histories retained\", \"statistic\": \"mean\", \"time_window\": \"First body-overlap sample through first full-body-clearance sample, including both brackets\"}]",
+      "maximum": 4.481228043183699,
+      "minimum": 1.5380067614072788,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    }
+  ],
+  "law_id": "NRS-484B-257-2",
+  "law_source": "NRS 484B.257(2)",
+  "law_text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "non_through_classification"
+    },
+    {
+      "mandatory": true,
+      "name": "entrance_controls"
+    },
+    {
+      "mandatory": true,
+      "name": "yield_sign"
+    },
+    {
+      "mandatory": true,
+      "name": "stop_reference"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_speed"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_body_position"
+    },
+    {
+      "mandatory": true,
+      "name": "other_body_position"
+    },
+    {
+      "mandatory": true,
+      "name": "other_obligation"
+    },
+    {
+      "mandatory": true,
+      "name": "other_phase"
+    },
+    {
+      "mandatory": true,
+      "name": "sightlines"
+    },
+    {
+      "mandatory": true,
+      "name": "officer_signal_control"
+    },
+    {
+      "mandatory": true,
+      "name": "across_or_within"
+    }
+  ],
+  "planning_status": "selected_four_case_cpu_construction_underway",
+  "prior_review_context": {
+    "comparison_ids": [
+      "yield_nearest_view",
+      "yield_occupied_traffic",
+      "yield_approaching_traffic",
+      "yield_across_or_within_history",
+      "yield_slowed_or_stopped",
+      "yield_proceed_cautiously",
+      "yield_not_so_obligated"
+    ],
+    "remaining_requirements_note": null
+  },
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__occupied_response",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_response",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_far_response",
+        "testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_near_uninterrupted"
+      ],
+      "evidence_or_gap": "Twelve accepted metadata records do not source-bind the selected within-intersection and approaching-hazard originals.",
+      "requirement": "NRS-484B-257-2",
+      "source": {
+        "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+        "sha256": "340e94f77056c364b8f35d9027c44a2760f4e8b255c4f0d4bb949bd231cd1512"
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Twelve frozen accepted recordings have metadata and authored settings, but no original trace/video in this export.",
+    "Diagnostic fixture measurements do not establish actual hazard or fill judgment ranges.",
+    "Canonical capture/offline/compatibility, semantic and independent saved delivery/comparison proofs remain CPU work."
+  ],
+  "selected_branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
+      "cell_id": "C158208",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-257-2",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-257-2",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 362,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
@@ -209,292 +647,15 @@
       "sha256": "eead9c93d9923b2d5f24f57d4b5bdbd886c7de99ad5de65b801ee9a6cab42c9b"
     }
   ],
-  "existing_evidence": [
-    "9d5ec6a35199e3065843da1bd1954412697b2866c7cd1157e7161221c0d80dd8",
-    "dde8215cb1efebdde65eabf421f0be0f1c6ae37c7ca78db4cbcf112230fcb0ab",
-    "fc97ed72934aa0896ff9d4eb67528f2771bca587f799c73436b211e79f4019a3",
-    "80faf4cf87a856d881bbcdfba4466c43058283c9a7c16d65e2582a336c2e1665",
-    "2e58516f29305a4ac6e65c7b37f3a1d093669b68218bd4710ae1ac1d242259e3",
-    "bc51674110ef01f93e62f6e4c829e234a02d8b60398108431a9ba23f33e359fb",
-    "bc8494df7909b6807d407764abcc733cdfe8c8c88c121ffe97f1b7b21c6cdaf7",
-    "afa78fb8173a685652d78d0604af9dff444ed9ad8027569a3d4cb506f532b066",
-    "583ff324dd84d60fb5b5cc1ceca0dd699c50097f079e264bd8db58b34dd04f04",
-    "c6b0a9a47b1efc0fdcfafdf155d1776eaadd8e7375935d551391a04bcd054955",
-    "f556c04748c776c8e988d66a18441832f9633739074fd345aee9f41b3a00b5b6",
-    "bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b"
-  ],
-  "runtime_uncertainties": [
-    "Twelve frozen accepted recordings have metadata and authored settings, but no original trace/video in this export.",
-    "Diagnostic fixture measurements do not establish actual hazard or fill judgment ranges.",
-    "Canonical capture/offline/compatibility, semantic and independent saved delivery/comparison proofs remain CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
-    "facts": [
-      {
-        "recording_id": "9d5ec6a35199e3065843da1bd1954412697b2866c7cd1157e7161221c0d80dd8",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__nearest_view_response, and decoder_passed=None. Frozen review context describes the authored setting as: nearest view response",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/9d5ec6a35199e3065843da1bd1954412697b2866c7cd1157e7161221c0d80dd8/metadata.json",
-            "sha256": "a008dd41bcc3e652efe6bc6b1e41e146aa18f96140561e2bd6536c5353b05a03"
-          },
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "5cafd2597106753a57b90198a911049ed036ab40a56ed8d9414e1dbd34916059"
-          }
-        ]
-      },
-      {
-        "recording_id": "dde8215cb1efebdde65eabf421f0be0f1c6ae37c7ca78db4cbcf112230fcb0ab",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__nearest_view_uninterrupted, and decoder_passed=None. Frozen review context describes the authored setting as: nearest view uninterrupted",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/dde8215cb1efebdde65eabf421f0be0f1c6ae37c7ca78db4cbcf112230fcb0ab/metadata.json",
-            "sha256": "ac33f9ba49e2a9a0818c4043b71ae791624fa0a203baf5d6c8db6ecb2acbd84e"
-          },
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/review-context/review.json",
-            "sha256": "5cafd2597106753a57b90198a911049ed036ab40a56ed8d9414e1dbd34916059"
-          }
-        ]
-      },
-      {
-        "recording_id": "fc97ed72934aa0896ff9d4eb67528f2771bca587f799c73436b211e79f4019a3",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__marked_stop_line_response, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/fc97ed72934aa0896ff9d4eb67528f2771bca587f799c73436b211e79f4019a3/metadata.json",
-            "sha256": "1b9ac23f4e71b5f725efcbc1c3481ce4b62776dd4d271c5938082b3cdf208cc0"
-          }
-        ]
-      },
-      {
-        "recording_id": "80faf4cf87a856d881bbcdfba4466c43058283c9a7c16d65e2582a336c2e1665",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__marked_stop_line_uninterrupted, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/80faf4cf87a856d881bbcdfba4466c43058283c9a7c16d65e2582a336c2e1665/metadata.json",
-            "sha256": "9921268874e9d5a67a4d8692f6ab0a1c330a58e85fb88542c2d344e370a7f07b"
-          }
-        ]
-      },
-      {
-        "recording_id": "2e58516f29305a4ac6e65c7b37f3a1d093669b68218bd4710ae1ac1d242259e3",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_marked_crosswalk_response, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/2e58516f29305a4ac6e65c7b37f3a1d093669b68218bd4710ae1ac1d242259e3/metadata.json",
-            "sha256": "6d860df44269803bca400f9d562969eaf9eb980491081460192648601880dd9c"
-          }
-        ]
-      },
-      {
-        "recording_id": "bc51674110ef01f93e62f6e4c829e234a02d8b60398108431a9ba23f33e359fb",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_marked_crosswalk_uninterrupted, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/bc51674110ef01f93e62f6e4c829e234a02d8b60398108431a9ba23f33e359fb/metadata.json",
-            "sha256": "a377e42f062d43196ea1cd627dfd77f18f61bb37657e695d4a821838c4a254e9"
-          }
-        ]
-      },
-      {
-        "recording_id": "bc8494df7909b6807d407764abcc733cdfe8c8c88c121ffe97f1b7b21c6cdaf7",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/bc8494df7909b6807d407764abcc733cdfe8c8c88c121ffe97f1b7b21c6cdaf7/metadata.json",
-            "sha256": "e7f125674add62757f1ef8616c55860c285893bc9a671a3dc3f7311ec0790541"
-          }
-        ]
-      },
-      {
-        "recording_id": "afa78fb8173a685652d78d0604af9dff444ed9ad8027569a3d4cb506f532b066",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/afa78fb8173a685652d78d0604af9dff444ed9ad8027569a3d4cb506f532b066/metadata.json",
-            "sha256": "e58d2a6316efb1ae6dfa7f5ba62c0f1dfff80217a0518f9047342e5ec9fc3562"
-          }
-        ]
-      },
-      {
-        "recording_id": "583ff324dd84d60fb5b5cc1ceca0dd699c50097f079e264bd8db58b34dd04f04",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__approaching_phase_probe, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/583ff324dd84d60fb5b5cc1ceca0dd699c50097f079e264bd8db58b34dd04f04/metadata.json",
-            "sha256": "3439cdca0a78bb97a90494fcef7782caac61837a723f97e8032af320c1c53b44"
-          }
-        ]
-      },
-      {
-        "recording_id": "c6b0a9a47b1efc0fdcfafdf155d1776eaadd8e7375935d551391a04bcd054955",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__later_history_probe, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/c6b0a9a47b1efc0fdcfafdf155d1776eaadd8e7375935d551391a04bcd054955/metadata.json",
-            "sha256": "4c5ba220ab599f6f9ee82c56bb9b4969eef777b94ad4bedae3f9a0a8093dcdbf"
-          }
-        ]
-      },
-      {
-        "recording_id": "f556c04748c776c8e988d66a18441832f9633739074fd345aee9f41b3a00b5b6",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__nearest_view_stopped, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/f556c04748c776c8e988d66a18441832f9633739074fd345aee9f41b3a00b5b6/metadata.json",
-            "sha256": "3e6287fe49c9197d978d019e9f97ea559ae6963be02f16380645dd16de35ac08"
-          }
-        ]
-      },
-      {
-        "recording_id": "bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158208__NRS-484B-257-2__motor_vehicle_driver__cautious_profile_probe, and decoder_passed=None.",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/accepted/bc1e7aad3e483f8fdfa38a25f16b3ebc8670407ce1d3cb092a7048612e66569b/metadata.json",
-            "sha256": "5b2a4899917010e48862af612feae1029445b8d7f8d1d3e167b047d168c4dec5"
-          }
-        ]
-      }
-    ],
-    "gaps": [
-      {
-        "id": "unverified-law-coverage",
-        "requirement": "Prepare and review evidence for these assigned branches: Within-intersection instance plus unresolved approaching-hazard sweep.. Verify any existing accepted evidence before selecting a new recording.",
-        "source": {
-          "path": "inputs/testing__C158208__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
-          "sha256": "340e94f77056c364b8f35d9027c44a2760f4e8b255c4f0d4bb949bd231cd1512"
-        },
-        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
   },
-  "judgment_range_inventory": [
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"counterpart_center_station\", \"m\", {\"method\": \"Initial crossing vehicle actual Native center y in original frame matching frozen traffic-only engineering reference; actual front-to-intersection edge and full body containment independently retained\", \"statistic\": \"first\", \"time_window\": \"Observed reference event; full original startup and all across-or-within responses also mandatory\"}]",
-      "minimum": 0.043116357177495956,
-      "maximum": 21.046010971069336,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"ego_speed\", \"m/s\", {\"method\": \"Actual raw Native ego speed minimum, with velocity, displacement and controls retained; actual peak-to-leading-reference-passage sample interval\", \"statistic\": \"min\", \"time_window\": \"Actual approach speed peak through first leading body passage of physical West marked-line upstream boundary\"}]",
-      "minimum": 0.008087591730665596,
-      "maximum": 0.008087591730665596,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"ego_speed\", \"m/s\", {\"method\": \"Mean actual raw Native subject speed from first full-body polygon overlap with intersection through first full-body clearance; all original raw states/controls and before/after histories retained\", \"statistic\": \"mean\", \"time_window\": \"First body-overlap sample through first full-body-clearance sample, including both brackets\"}]",
-      "minimum": 1.5380067614072788,
-      "maximum": 4.481228043183699,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"proceed cautiously\"}, \"counterpart_center_station\", \"m\", {\"method\": \"Initial crossing vehicle actual Native center y in original frame matching frozen traffic-only engineering reference; actual front-to-intersection edge and full body containment independently retained\", \"statistic\": \"first\", \"time_window\": \"Observed reference event; full original startup and all across-or-within responses also mandatory\"}]",
-      "minimum": 0.043116357177495956,
-      "maximum": 21.046010971069336,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"proceed cautiously\"}, \"ego_speed\", \"m/s\", {\"method\": \"Actual raw Native ego speed minimum, with velocity, displacement and controls retained; actual peak-to-leading-reference-passage sample interval\", \"statistic\": \"min\", \"time_window\": \"Actual approach speed peak through first leading body passage of physical West marked-line upstream boundary\"}]",
-      "minimum": 0.008087591730665596,
-      "maximum": 0.008087591730665596,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"proceed cautiously\"}, \"ego_speed\", \"m/s\", {\"method\": \"Mean actual raw Native subject speed from first full-body polygon overlap with intersection through first full-body clearance; all original raw states/controls and before/after histories retained\", \"statistic\": \"mean\", \"time_window\": \"First body-overlap sample through first full-body-clearance sample, including both brackets\"}]",
-      "minimum": 1.5380067614072788,
-      "maximum": 4.481228043183699,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yielding to vehicles not so obligated to stop or yield\"}, \"counterpart_center_station\", \"m\", {\"method\": \"Initial crossing vehicle actual Native center y in original frame matching frozen traffic-only engineering reference; actual front-to-intersection edge and full body containment independently retained\", \"statistic\": \"first\", \"time_window\": \"Observed reference event; full original startup and all across-or-within responses also mandatory\"}]",
-      "minimum": 0.043116357177495956,
-      "maximum": 21.046010971069336,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yielding to vehicles not so obligated to stop or yield\"}, \"ego_speed\", \"m/s\", {\"method\": \"Actual raw Native ego speed minimum, with velocity, displacement and controls retained; actual peak-to-leading-reference-passage sample interval\", \"statistic\": \"min\", \"time_window\": \"Actual approach speed peak through first leading body passage of physical West marked-line upstream boundary\"}]",
-      "minimum": 0.008087591730665596,
-      "maximum": 0.008087591730665596,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-2\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yielding to vehicles not so obligated to stop or yield\"}, \"ego_speed\", \"m/s\", {\"method\": \"Mean actual raw Native subject speed from first full-body polygon overlap with intersection through first full-body clearance; all original raw states/controls and before/after histories retained\", \"statistic\": \"mean\", \"time_window\": \"First body-overlap sample through first full-body-clearance sample, including both brackets\"}]",
-      "minimum": 1.5380067614072788,
-      "maximum": 4.481228043183699,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    }
-  ],
-  "planning_status": "partial_exact_nonthrough_yield_cpu_probes",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 362,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Within-intersection instance plus unresolved approaching-hazard sweep.",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "The yield-sign one-way to two-way intersection supports approach-timing sweeps and an independently active occupied-intersection instance.",
       "required_context": [
         "Establish non-through-highway status and all entrance stop/yield obligations.",
         "Establish non-through-highway status, all entrance obligations, yield-sign governance and connected participant routes.",
@@ -507,19 +668,9 @@
         "Retain sightlines and interactions throughout subject movement across or within the intersection.",
         "Retain the initial yield action, incorporated subsection 1 manner and subsequent movement interval."
       ],
-      "reason": "The yield-sign one-way to two-way intersection supports approach-timing sweeps and an independently active occupied-intersection instance."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 362,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "prior_review_context": {
-    "comparison_ids": [
-      "yield_nearest_view",
-      "yield_occupied_traffic",
-      "yield_approaching_traffic",
-      "yield_across_or_within_history",
-      "yield_slowed_or_stopped",
-      "yield_proceed_cautiously",
-      "yield_not_so_obligated"
-    ],
-    "remaining_requirements_note": null
-  }
+  ]
 }

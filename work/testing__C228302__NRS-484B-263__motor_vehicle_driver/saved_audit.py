@@ -22,7 +22,7 @@ def audit_saved(packet: Mapping) -> dict:
         require(frame.get("original_frame") == first + index, "original frame map discontinuous")
         require(abs(frame.get("elapsed_s", -1) - index * .05) <= .001, "original frame time mismatch")
     videos = packet.get("videos", {})
-    require(set(videos) == {"chase", "overhead", "front", "side"}, "four original cameras required")
+    require(set(videos) == {"overview", "approach", "reference_corner", "driver_reference"}, "four original cameras required")
     for name, video in videos.items():
         require(video.get("sha256") and video.get("decode_receipt_sha256"), f"camera source missing: {name}")
         require(video.get("decoded_frame_count") == 900, f"full camera decode missing: {name}")

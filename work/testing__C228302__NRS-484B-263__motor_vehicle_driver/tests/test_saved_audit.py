@@ -19,7 +19,7 @@ def packet():
         "videos": {name: {"sha256": "video-hash", "decode_receipt_sha256": "receipt-hash",
                           "decoded_frame_count": 900, "actual_pixel_audit": True,
                           "first_original_frame": 100, "last_original_frame": 999}
-                   for name in ("chase", "overhead", "front", "side")},
+                   for name in ("overview", "approach", "reference_corner", "driver_reference")},
         "measurement": {"case_id": "exit_yield_first", "frame_count": 900,
                         "source_history_sha256": "history-hash", "first_entry_frame": 120,
                         "approaching_actor_ids": [2], "immediate_hazard_judgment": None,
@@ -33,7 +33,7 @@ class Tests(unittest.TestCase):
 
     def test_reject_missing_camera(self):
         p = packet()
-        del p["videos"]["front"]
+        del p["videos"]["approach"]
         with self.assertRaisesRegex(ValueError, "four original cameras required"):
             module.audit_saved(p)
 
@@ -45,7 +45,7 @@ class Tests(unittest.TestCase):
 
     def test_reject_incomplete_decode(self):
         p = packet()
-        p["videos"]["side"]["decoded_frame_count"] = 899
+        p["videos"]["driver_reference"]["decoded_frame_count"] = 899
         with self.assertRaisesRegex(ValueError, "full camera decode missing"):
             module.audit_saved(p)
 

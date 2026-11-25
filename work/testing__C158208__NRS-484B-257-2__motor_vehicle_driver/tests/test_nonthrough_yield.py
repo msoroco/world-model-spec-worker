@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from nonthrough_yield import CASES, construct, measure_original, validate_scene
+from nonthrough_yield import CASES, construct, measure_frozen_windows, measure_original, validate_scene
 
 
 def scene():
@@ -104,6 +104,22 @@ class NonThroughYieldTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'approach failed'):
             construct(adapter, scene(), CASES[0])
         self.assertEqual(adapter.events[-2:], [('destroy', 'other'), ('destroy', 'ego')])
+
+    def test_frozen_measurement_windows_and_missing_clearance(self):
+        x = scene()
+        case = CASES[1]
+        source = rows(x, case)
+        for i, row in enumerate(source):
+            row['ego_full_body_overlap'] = 120 <= i <= 200
+            row['ego_full_body_cleared'] = i >= 201
+            row['traffic_reference_event'] = i == 119
+        result = measure_frozen_windows(source, x, case)
+        self.assertEqual(result['frozen_windows']['first_clear_frame'], 401)
+        self.assertEqual(result['frozen_observables']['counterpart_center_station_first_m'],
+                         8 - 119 * .01)
+        source[201]['ego_full_body_cleared'] = False
+        with self.assertRaisesRegex(ValueError, 'containment history'):
+            measure_frozen_windows(source, x, case)
 
 
 if __name__ == '__main__':

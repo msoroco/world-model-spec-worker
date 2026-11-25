@@ -1,0 +1,586 @@
+{
+  "cell_id": "C228302",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "c228302-0",
+      "target_law_id": "NRS-484B-263",
+      "judgment_refs": [
+        {
+          "phrase": "whose proximity constitutes an immediate hazard",
+          "note": "Original approaching vehicle occupancy, range, speed and interaction traces need human review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original controlled-access authority, exit source, or qualitative judgment range supplied.",
+      "missing_inputs": [
+        "reviewed road authority, original exit attempt, independent judgment range"
+      ]
+    },
+    {
+      "sweep_id": "c228302-1",
+      "target_law_id": "NRS-484B-263",
+      "judgment_refs": [
+        {
+          "phrase": "until the driver may proceed with reasonable safety",
+          "note": "Original ego wait and exit entry joined to every approaching vehicle need human review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original controlled-access authority, exit source, or qualitative judgment range supplied.",
+      "missing_inputs": [
+        "reviewed road authority, original exit attempt, independent judgment range"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared source-bound exit baseline without legal finding.",
+      "variable_assignments": {
+        "exit_policy": {
+          "kind": "world_setup",
+          "value": "yield_until_clear",
+          "unit": "category"
+        },
+        "approaching_count": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "count"
+        },
+        "approach_headway_s": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whose proximity constitutes an immediate hazard",
+        "until the driver may proceed with reasonable safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "controlled_access_designation",
+            "unit": "source context",
+            "method": "original public dedication, access restriction and authority determination",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish legal road status"
+          },
+          {
+            "name": "exit_path",
+            "unit": "m and original frame",
+            "method": "ego original position and exit interaction polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish realized exit"
+          },
+          {
+            "name": "all_approaching_vehicles",
+            "unit": "m and m/s",
+            "method": "all highway vehicle identities, occupancy, range and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish immediate hazard"
+          },
+          {
+            "name": "precedence_duration",
+            "unit": "s",
+            "method": "ego wait and entry time joined to approaching vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture cannot establish reasonable safety"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture is not physical video evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No reviewed controlled-access authority or original map exit source.",
+          "Immediate hazard and reasonable safety are unresolved legal judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_first",
+      "target_law_id": "NRS-484B-263",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact exit-only engineering and policy comparison; original road authority and legal judgments remain open.",
+      "paired_probe_id": "controlled_access_exit_alternatives",
+      "deliberate_differences": [
+        "exit_policy",
+        "approaching_count",
+        "approach_headway_s"
+      ],
+      "probe": {
+        "primary_variable": "exit_policy",
+        "comparison_or_standard": "Compare original exit entry, wait and all approaching vehicle histories; no legal threshold inferred.",
+        "target_value_or_branch": "exit_yield_first"
+      },
+      "variable_assignments": {
+        "exit_policy": {
+          "kind": "world_setup",
+          "value": "yield_until_clear",
+          "unit": "category"
+        },
+        "approaching_count": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "count"
+        },
+        "approach_headway_s": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whose proximity constitutes an immediate hazard",
+        "until the driver may proceed with reasonable safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "controlled_access_designation",
+            "unit": "source context",
+            "method": "original public dedication, access restriction and authority determination",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish legal road status"
+          },
+          {
+            "name": "exit_path",
+            "unit": "m and original frame",
+            "method": "ego original position and exit interaction polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish realized exit"
+          },
+          {
+            "name": "all_approaching_vehicles",
+            "unit": "m and m/s",
+            "method": "all highway vehicle identities, occupancy, range and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish immediate hazard"
+          },
+          {
+            "name": "precedence_duration",
+            "unit": "s",
+            "method": "ego wait and entry time joined to approaching vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture cannot establish reasonable safety"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture is not physical video evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No reviewed controlled-access authority or original map exit source.",
+          "Immediate hazard and reasonable safety are unresolved legal judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_first",
+      "target_law_id": "NRS-484B-263",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact exit-only engineering and policy comparison; original road authority and legal judgments remain open.",
+      "paired_probe_id": "controlled_access_exit_alternatives",
+      "deliberate_differences": [
+        "exit_policy",
+        "approaching_count",
+        "approach_headway_s"
+      ],
+      "probe": {
+        "primary_variable": "exit_policy",
+        "comparison_or_standard": "Compare original exit entry, wait and all approaching vehicle histories; no legal threshold inferred.",
+        "target_value_or_branch": "exit_proceed_first"
+      },
+      "variable_assignments": {
+        "exit_policy": {
+          "kind": "world_setup",
+          "value": "proceed_before_clear",
+          "unit": "category"
+        },
+        "approaching_count": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "count"
+        },
+        "approach_headway_s": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whose proximity constitutes an immediate hazard",
+        "until the driver may proceed with reasonable safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "controlled_access_designation",
+            "unit": "source context",
+            "method": "original public dedication, access restriction and authority determination",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish legal road status"
+          },
+          {
+            "name": "exit_path",
+            "unit": "m and original frame",
+            "method": "ego original position and exit interaction polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish realized exit"
+          },
+          {
+            "name": "all_approaching_vehicles",
+            "unit": "m and m/s",
+            "method": "all highway vehicle identities, occupancy, range and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish immediate hazard"
+          },
+          {
+            "name": "precedence_duration",
+            "unit": "s",
+            "method": "ego wait and entry time joined to approaching vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture cannot establish reasonable safety"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture is not physical video evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No reviewed controlled-access authority or original map exit source.",
+          "Immediate hazard and reasonable safety are unresolved legal judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_yield_second",
+      "target_law_id": "NRS-484B-263",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact exit-only engineering and policy comparison; original road authority and legal judgments remain open.",
+      "paired_probe_id": "controlled_access_exit_alternatives",
+      "deliberate_differences": [
+        "exit_policy",
+        "approaching_count",
+        "approach_headway_s"
+      ],
+      "probe": {
+        "primary_variable": "approaching_count",
+        "comparison_or_standard": "Compare original exit entry, wait and all approaching vehicle histories; no legal threshold inferred.",
+        "target_value_or_branch": "exit_yield_second"
+      },
+      "variable_assignments": {
+        "exit_policy": {
+          "kind": "world_setup",
+          "value": "yield_until_clear",
+          "unit": "category"
+        },
+        "approaching_count": {
+          "kind": "world_setup",
+          "value": 2,
+          "unit": "count"
+        },
+        "approach_headway_s": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whose proximity constitutes an immediate hazard",
+        "until the driver may proceed with reasonable safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "controlled_access_designation",
+            "unit": "source context",
+            "method": "original public dedication, access restriction and authority determination",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish legal road status"
+          },
+          {
+            "name": "exit_path",
+            "unit": "m and original frame",
+            "method": "ego original position and exit interaction polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish realized exit"
+          },
+          {
+            "name": "all_approaching_vehicles",
+            "unit": "m and m/s",
+            "method": "all highway vehicle identities, occupancy, range and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish immediate hazard"
+          },
+          {
+            "name": "precedence_duration",
+            "unit": "s",
+            "method": "ego wait and entry time joined to approaching vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture cannot establish reasonable safety"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture is not physical video evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No reviewed controlled-access authority or original map exit source.",
+          "Immediate hazard and reasonable safety are unresolved legal judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_proceed_between",
+      "target_law_id": "NRS-484B-263",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact exit-only engineering and policy comparison; original road authority and legal judgments remain open.",
+      "paired_probe_id": "controlled_access_exit_alternatives",
+      "deliberate_differences": [
+        "exit_policy",
+        "approaching_count",
+        "approach_headway_s"
+      ],
+      "probe": {
+        "primary_variable": "exit_policy",
+        "comparison_or_standard": "Compare original exit entry, wait and all approaching vehicle histories; no legal threshold inferred.",
+        "target_value_or_branch": "exit_proceed_between"
+      },
+      "variable_assignments": {
+        "exit_policy": {
+          "kind": "world_setup",
+          "value": "proceed_between_vehicles",
+          "unit": "category"
+        },
+        "approaching_count": {
+          "kind": "world_setup",
+          "value": 2,
+          "unit": "count"
+        },
+        "approach_headway_s": {
+          "kind": "world_setup",
+          "value": 3.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whose proximity constitutes an immediate hazard",
+        "until the driver may proceed with reasonable safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "controlled_access_designation",
+            "unit": "source context",
+            "method": "original public dedication, access restriction and authority determination",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish legal road status"
+          },
+          {
+            "name": "exit_path",
+            "unit": "m and original frame",
+            "method": "ego original position and exit interaction polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish realized exit"
+          },
+          {
+            "name": "all_approaching_vehicles",
+            "unit": "m and m/s",
+            "method": "all highway vehicle identities, occupancy, range and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish immediate hazard"
+          },
+          {
+            "name": "precedence_duration",
+            "unit": "s",
+            "method": "ego wait and entry time joined to approaching vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture cannot establish reasonable safety"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture is not physical video evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No reviewed controlled-access authority or original map exit source.",
+          "Immediate hazard and reasonable safety are unresolved legal judgments."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C228302__NRS-484B-263__motor_vehicle_driver__exit_distant_approach",
+      "target_law_id": "NRS-484B-263",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact exit-only engineering and policy comparison; original road authority and legal judgments remain open.",
+      "paired_probe_id": "controlled_access_exit_alternatives",
+      "deliberate_differences": [
+        "exit_policy",
+        "approaching_count",
+        "approach_headway_s"
+      ],
+      "probe": {
+        "primary_variable": "approach_headway_s",
+        "comparison_or_standard": "Compare original exit entry, wait and all approaching vehicle histories; no legal threshold inferred.",
+        "target_value_or_branch": "exit_distant_approach"
+      },
+      "variable_assignments": {
+        "exit_policy": {
+          "kind": "world_setup",
+          "value": "yield_until_clear",
+          "unit": "category"
+        },
+        "approaching_count": {
+          "kind": "world_setup",
+          "value": 1,
+          "unit": "count"
+        },
+        "approach_headway_s": {
+          "kind": "world_setup",
+          "value": 9.0,
+          "unit": "s"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "whose proximity constitutes an immediate hazard",
+        "until the driver may proceed with reasonable safety"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "controlled_access_designation",
+            "unit": "source context",
+            "method": "original public dedication, access restriction and authority determination",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish legal road status"
+          },
+          {
+            "name": "exit_path",
+            "unit": "m and original frame",
+            "method": "ego original position and exit interaction polygon",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish realized exit"
+          },
+          {
+            "name": "all_approaching_vehicles",
+            "unit": "m and m/s",
+            "method": "all highway vehicle identities, occupancy, range and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original map and frame",
+            "uncertainty": "synthetic fixture cannot establish immediate hazard"
+          },
+          {
+            "name": "precedence_duration",
+            "unit": "s",
+            "method": "ego wait and entry time joined to approaching vehicles",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture cannot establish reasonable safety"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera streams",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame",
+            "uncertainty": "synthetic fixture is not physical video evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "No reviewed controlled-access authority or original map exit source.",
+          "Immediate hazard and reasonable safety are unresolved legal judgments."
+        ]
+      }
+    }
+  ]
+}
