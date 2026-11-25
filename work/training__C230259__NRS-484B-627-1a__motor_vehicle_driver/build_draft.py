@@ -16,14 +16,17 @@ def sha(path):
 def main():
     batch=json.loads((ROOT/'batch.json').read_text())
     entries=[]
+    proposal_cases=[]
     for suffix,right in CASES:
         case=ASSIGNMENT+'__'+suffix
         config={'case_id':case,'selected_case_id':case,'supported_case_ids':[case],
                 'candidate_id':'primary','law_id':'NRS-484B-627-1a','cell_id':'C230259',
                 'actor':'motor_vehicle_driver','extreme_right_requested':right,
+                'initial_follower_gap_m':18,
                 'rate_hz':20,'duration_s':30,'required_atoms':[],'source_packets':[],
                 'case':{'case_id':case},
-                'cameras':[{'name':name,'width':1280,'height':720} for name in
+                'cameras':[{'name':name,'width':1920 if name=='overview' else 1280,
+                            'height':1080 if name=='overview' else 720} for name in
                     ('overview','approach','reference_corner','driver_reference')],
                 'recording_description':{'channels':[
                     {'name':'participant_footprints','unit':'structured','sampling_rate_hz':20,
@@ -34,6 +37,7 @@ def main():
                      'method':'original Native actor velocity and controller command readback',
                      'time_window':'600 frames','reference_frame':'same highway segment',
                      'uncertainty':'controller intent is not proof of actual impediment'}],
+                     'context_inputs':[],
                      'limitations':['Slow/impede and extreme right are legal findings, not numeric thresholds',
                                     'Public highway status, sufficient paved width and NRS 484B.630 applicability need independent sources',
                                     'Physical follower reaction and camera pixels remain unverified']},
@@ -62,6 +66,13 @@ def main():
         path=HERE/'draft-slow-traffic'/suffix/'primary'/'construction.json'
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_text(json.dumps(construction,indent=2)+'\n')
+        fallback=json.loads(json.dumps(construction))
+        fallback_config=dict(config,candidate_id='fallback1',initial_follower_gap_m=14)
+        next(item for item in fallback['files'] if item['path']=='config.json')['content']=json.dumps(fallback_config,indent=2)+'\n'
+        fallback['mechanisms'].append('shared gap fallback: initial follower gap 18 m to 14 m; lateral comparison remains unchanged')
+        fallback_path=HERE/'draft-slow-traffic'/suffix/'fallback1'/'construction.json'
+        fallback_path.parent.mkdir(parents=True,exist_ok=True)
+        fallback_path.write_text(json.dumps(fallback,indent=2)+'\n')
         contract={'format':'worker-measurement-contract','case_id':case,
             'requirements':[{'disposition_index':0,'requirement':'NRS-484B-627-1a',
                 'source':'NRS 484B.627(1)(a)','output_key':'slow_traffic_observation',
@@ -78,14 +89,35 @@ def main():
             'measurement_contract':contract_path.name,
             'measurement_procedure':{'entrypoint':'finalize.py',
                                      'output_schema':'c230259-source-analysis-v1'},
+            'fixture_recipe':str((HERE/('selected-recipe-'+suffix+'.json')).relative_to(ROOT)),
             'candidate_risk':{'status':'physical',
                 'reason':'Paved edge, actual following impediment and rightward trajectory need Native review'},
-            'candidates':[],'delivery_readiness':'incomplete'})
+            'candidates':[{'id':'fallback1',
+                'construction':str(fallback_path.relative_to(HERE)),
+                'construction_sha256':sha(fallback_path),
+                'trigger':{'source':'original first 100 Native participant gap samples',
+                           'metric':'minimum_initial_follower_gap_m',
+                           'failure_condition':'follower remains farther than 15 m during initial observation'},
+                'changed_knobs':['initial follower spawn gap 18 m to 14 m in both linked cases']}],
+            'delivery_readiness':'incomplete'})
+        proposal_cases.append({'case_id':case,'target_law_id':'NRS-484B-627-1a',
+            'target_type':'controlled_probe','rationale':'Source-shaped controlled rightward placement comparison',
+            'paired_probe_id':ASSIGNMENT+'__comparison',
+            'deliberate_differences':['requested lateral placement'],
+            'probe':suffix,
+            'variable_assignments':{'requested_rightward_placement':{
+                'kind':'controller','value':right}},
+            'recording_description':config['recording_description'],
+            'unresolved_judgment_calls':['actual impediment','extreme right',
+                'sufficient paved width','public highway status','NRS 484B.630 applicability']})
     manifest={'format':'worker-selected-cpu-draft-manifest-v1',
               'assignment_id':ASSIGNMENT,
               'runtime_manifest_sha256':batch['runtime']['source_manifest_sha256'],
               'status':'partial','cases':entries}
     (HERE/'draft-slow-traffic-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    proposals=HERE/'proposals';proposals.mkdir(exist_ok=True)
+    (proposals/'cases.json').write_text(json.dumps({'cell_id':'C230259',
+        'actor':'motor_vehicle_driver','status':'draft','cases':proposal_cases},indent=2)+'\n')
     print(json.dumps({'cases':[{'case_id':e['case_id'],'construction_sha256':e['construction_sha256']}
                                 for e in entries],
                       'runtime_manifest_sha256':manifest['runtime_manifest_sha256']}))

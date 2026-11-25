@@ -1,9 +1,9 @@
 {
   "assignment_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver",
   "input_sha256": "a2c4b90f3430a71b5d68ac4ed9cee596065ad0cea45fbc4b89b1d44306f48252",
-  "status": "partial",
-  "reason": "Crosswalk and marked-line selected chains passed. Sight-point six-case static validation passed before Native acquisition review, but the selected sight Native construction lacked an intersecting actor and original sight_samples. The acquisition now spawns and observes actor/occluder and writes a source-bound ray proxy; changed sight constructions are being re-proven offline, public positive/negative and saved-only before strict promotion. Original driver pixels remain a local review.",
-  "readiness_kind": "selected_crosswalk_and_marked_line_cpu_prepared_sight_native_reproof_in_progress",
+  "status": "ready",
+  "reason": "Six selected crosswalk, marked-line and no-reference sight-point cases have exact primary and fallback offline, public positive/missing-source compatibility and recorded-only saved CPU proofs. Canonical semantic, source-bound physical, independent comparison and delivery checks passed. Original Native geometry, driver view, traffic and pixels remain for local review.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 6,
   "candidate_count": 6,
   "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
@@ -84,6 +84,12 @@
       "exit_code": 0,
       "log": "selected-sight-comparison-test.log",
       "sha256": "027d71476905be4c8e6bc26f04790963aef584c73aedfef5c4d91b1ba54ab684"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/output TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/prove-sight-native-source.py",
+      "exit_code": 0,
+      "log": "sight-native-source-proof.log",
+      "sha256": "1fab9188d0082412b2ac35869f4b3180d254cb5643b716b95ce8458a68370f64"
     }
   ],
   "marked_line_checkpoint": {
@@ -106,18 +112,19 @@
   },
   "sight_point_checkpoint": {
     "road_no_crosswalk_or_line_sha256": "bbf205f3261d45cb81cf53ebfb799f2b8d67e7261ba7e1c27fb849b826bc8ec6",
-    "source_only_proof_sha256": "f056f6aa49ba65189c21d7d23193d7f2b0f12a4d6e60b2cfce3e1a54d4a7d8d0",
+    "source_only_proof_sha256": "231728f7f67ffc548d4868f5d68192e3fb62ad0a16131d9fbd751de6ac88e873",
     "source_kind": "synthetic_view_proxy",
     "synthetic_cases": 2,
     "negative_rejections": 2,
-    "selected_public_proofs": 0,
-    "selected_saved_proofs": 0,
+    "selected_public_proofs": 4,
+    "selected_saved_proofs": 4,
     "physical_visibility_verified": false,
     "legal_verdict_claimed": false,
     "physical_fixture_outcomes": 6,
     "lifecycle_checks": 2,
     "comparison_sha256": "2ba35375d70d2dc16748e8bc45f4e19edad6d52816dc6fff5a0d096d5af5a9db",
-    "combined_manifest_sha256": "9114679c45b2ac2d07fffa843ba24b4d4cfe63384b0eb935a21b9c69a4fe346c"
+    "combined_manifest_sha256": "6e5d23a9534b2882a6c0524f0a1c626ba0bc761807e800f194a1398b955a57f7",
+    "native_shaped_source_proof_sha256": "dda6617cd020761467cea884e1ca6bc45a8b9079f7e62142a934efd2d666976a"
   },
   "cases_planned": 6,
   "cases_selected": 6,
@@ -125,7 +132,7 @@
   "comparison_audits_passed": 3,
   "carla_executed": false,
   "recordings_accepted": 0,
-  "execution_manifest_sha256": "9114679c45b2ac2d07fffa843ba24b4d4cfe63384b0eb935a21b9c69a4fe346c",
+  "execution_manifest_sha256": "6e5d23a9534b2882a6c0524f0a1c626ba0bc761807e800f194a1398b955a57f7",
   "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C111325__NRS-484A-450-2__motor_vehicle_driver --case training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "remaining_gpu_checks": [
     "Original Native stop-sign governing lane, crosswalk, marked line and sight-point geometry",

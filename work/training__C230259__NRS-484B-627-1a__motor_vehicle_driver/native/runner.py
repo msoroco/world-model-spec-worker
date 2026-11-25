@@ -12,7 +12,7 @@ from geometry import check as geometry_check, open_drive
 FRAMES=600
 RATE=20
 CAMERAS=(
-    ('overview',1280,720,0,-22,18,-40),
+    ('overview',1920,1080,0,-22,18,-40),
     ('approach',1280,720,0,-13,8,-20),
     ('reference_corner',1280,720,-30,-10,9,-22),
     ('driver_reference',1280,720,25,-14,10,-30),
@@ -56,7 +56,7 @@ def corners(actor):
                           (extent.x,extent.y),(-extent.x,extent.y))]
 
 
-def execute(output_dir,extreme_right,host,port):
+def execute(output_dir,extreme_right,host,port,initial_follower_gap_m=18):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
@@ -112,8 +112,10 @@ def execute(output_dir,extreme_right,host,port):
         ego=world.spawn_actor(ego_bp,carla.Transform(
             carla.Location(x=-30,y=-1.75,z=1),carla.Rotation(yaw=0)))
         owned.append(ego)
+        if not 12 <= initial_follower_gap_m <= 18:
+            raise ValueError('Unreviewed initial follower gap')
         other=world.spawn_actor(traffic_bp,carla.Transform(
-            carla.Location(x=-48,y=-1.75,z=1),carla.Rotation(yaw=0)))
+            carla.Location(x=-30-initial_follower_gap_m,y=-1.75,z=1),carla.Rotation(yaw=0)))
         owned.append(other)
         for name,width,height,x,y,z,pitch in CAMERAS:
             bp=blueprints.find('sensor.camera.rgb')
@@ -240,5 +242,6 @@ if __name__=='__main__':
     else:
         if not a.output_dir:
             raise SystemExit('--output-dir required for Native execution')
-        extreme_right=json.loads((Path(__file__).parent/'config.json').read_text())['extreme_right_requested']
-        print(json.dumps(execute(a.output_dir,extreme_right,a.host,a.port)))
+        config=json.loads((Path(__file__).parent/'config.json').read_text())
+        print(json.dumps(execute(a.output_dir,config['extreme_right_requested'],a.host,a.port,
+                                 config['initial_follower_gap_m'])))

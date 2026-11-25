@@ -3,7 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 from slow_traffic_saved_measure import measure_original
-from finalize import analysis_report
+from finalize import analysis_report, verify_capture_joins
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
@@ -86,6 +86,28 @@ def main():
         report=analysis_report(folder)
         assert report['measurements']['slow_traffic_observation']['value']['frame_count']==600
         assert report['measurements']['slow_traffic_observation']['sources']['road.xodr']==hashlib.sha256(sources[3]).hexdigest()
+        core=[];evidence=[];graphs=[]
+        for row in (json.loads(line) for line in sources[0].splitlines()):
+            frame=row['native_frame'];time=row['time_s']
+            core.append({'frame':frame,'time_s':time})
+            evidence.append({'original_frame':frame,'recording_time_s':time})
+            graphs.append({'frame':frame})
+        for filename,rows in (('trace.jsonl',core),('capture/evidence.jsonl',evidence),
+                              ('capture/native/frames.jsonl',graphs)):
+            path=folder/filename;path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text('\n'.join(json.dumps(row) for row in rows)+'\n')
+        assert verify_capture_joins(folder)['frame_count']==600
+        evidence_path=folder/'capture/evidence.jsonl'
+        original=evidence_path.read_text()
+        evidence[25]['original_frame']+=1
+        evidence_path.write_text('\n'.join(json.dumps(row) for row in evidence)+'\n')
+        try:
+            verify_capture_joins(folder)
+        except ValueError as exc:
+            assert 'Core/evidence/graph/slow frame join differs' in str(exc)
+        else:
+            raise AssertionError('Finalizer accepted changed Core evidence frame')
+        evidence_path.write_text(original)
     missing=SCRATCH/'right'/'slow-traffic-context.json'
     missing.unlink()
     try:

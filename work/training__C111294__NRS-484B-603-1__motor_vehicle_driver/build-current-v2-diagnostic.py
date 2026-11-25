@@ -35,6 +35,8 @@ def main():
     construction = json.loads(json.dumps(draft))
     frozen = sha(ROOT / 'inputs' / HERE.name / 'assignment.json')
     for file in construction['files']:
+        if file['path'] == 'runner.py':
+            file['content'] = file['content'].replace('runtime/pipeline/scenario_pipeline', 'runtime/scenario_pipeline').replace('runtime/pipeline/python', 'runtime/python')
         if file['path'] not in ('authored-road.xodr', 'geometry.py'):
             file['content'] = (file['content'].replace('ego_forward', 'approach')
                                .replace('ego_side', 'reference_corner')

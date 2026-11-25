@@ -50,6 +50,58 @@ def decoded_frames(path):
     return int(result.stdout.strip())
 
 
+def verify_capture_joins(attempt):
+    names = ('trace.jsonl', 'capture/evidence.jsonl',
+             'capture/native/frames.jsonl', 'video_frames.jsonl',
+             'slow-traffic-trace.jsonl')
+    rows = [[json.loads(line) for line in required(attempt, name).read_text().splitlines()]
+            for name in names]
+    if any(len(part) != 600 for part in rows):
+        raise ValueError('Original Core, evidence and slow-traffic frame count differs')
+    previous = -1
+    for index, (core, evidence, graph, mapping, slow) in enumerate(zip(*rows)):
+        frame = mapping.get('native_frame')
+        if type(frame) is not int or frame <= previous:
+            raise ValueError('Original Core frame order differs')
+        previous = frame
+        if (core.get('frame') != frame or evidence.get('original_frame') != frame or
+                graph.get('frame') != frame or slow.get('native_frame') != frame or
+                mapping.get('video_frame') != index):
+            raise ValueError('Original Core/evidence/graph/slow frame join differs')
+        if (abs(core['time_s']-mapping['time_s']) > .005 or
+                abs(evidence['recording_time_s']-mapping['time_s']) > .005 or
+                abs(slow['time_s']-mapping['time_s']) > .005):
+            raise ValueError('Original Core/evidence/slow time join differs')
+    return {'frame_count': 600, 'source_sha256': {name: sha(required(attempt, name))
+                                                 for name in names}}
+
+
+def derive_channels(attempt):
+    attempt = Path(attempt)
+    source = [json.loads(line) for line in
+              required(attempt, 'slow-traffic-trace.jsonl').read_text().splitlines()]
+    folder = attempt / 'channels'
+    folder.mkdir(exist_ok=True)
+    targets = {'participant_footprints': [], 'participant_velocity_and_intent': []}
+    for row in source:
+        time = row['time_s']
+        targets['participant_footprints'].append({'time_s': time,
+            'value': {'ego_id': row['ego_id'], 'traffic_id': row['traffic_id'],
+                      'ego_xy_m': row['ego_xy_m'], 'traffic_xy_m': row['traffic_xy_m'],
+                      'ego_footprint_xy_m': row['ego_footprint_xy_m']}})
+        targets['participant_velocity_and_intent'].append({'time_s': time,
+            'value': {'ego_speed_mps': row['ego_speed_mps'],
+                      'traffic_speed_mps': row['traffic_speed_mps'],
+                      'follower_command_mps': row['follower_command_mps'],
+                      'follower_free_flow_request_mps': row['follower_free_flow_request_mps']}})
+    for name, rows in targets.items():
+        path = folder / (name + '.jsonl')
+        if path.exists():
+            raise ValueError('Derived channel already exists: ' + name)
+        path.write_text('\n'.join(json.dumps(row, allow_nan=False) for row in rows) + '\n')
+    return {name: 'channels/' + name + '.jsonl' for name in targets}
+
+
 def finalize(attempt, output):
     from worker_exchange.native_output import provenance_record, write_result
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
@@ -60,6 +112,8 @@ def finalize(attempt, output):
         raise ValueError('C230259 original recording contract changed')
     report = analysis_report(attempt)
     measurement = report['measurements']['slow_traffic_observation']['value']
+    joins = verify_capture_joins(attempt)
+    channels = derive_channels(attempt)
     counts = {name: decoded_frames(required(attempt, name)) for name in VIDEOS}
     if set(counts.values()) != {600}:
         raise ValueError('Original four-camera frame count differs')
@@ -87,14 +141,14 @@ def finalize(attempt, output):
         'termination_reason': '600 original Native frames retained',
         'physical_failure_flags': ['public_highway_and_impediment_require_independent_review',
                                    'extreme_right_and_paved_width_require_physical_review'],
-        'trace_reference': 'slow-traffic-trace.jsonl', 'video_references': list(VIDEOS),
+        'trace_reference': 'trace.jsonl', 'video_references': list(VIDEOS),
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config['recording_description'],
         'recording_evidence': [
             {'name': 'participant_footprints', 'unit': 'structured',
-             'reference': 'slow-traffic-trace.jsonl'},
+             'reference': channels['participant_footprints']},
             {'name': 'participant_velocity_and_intent', 'unit': 'm/s',
-             'reference': 'slow-traffic-trace.jsonl'}],
+             'reference': channels['participant_velocity_and_intent']}],
         'realized_observables': {'right_body_edge_to_paved_edge_m': {
             'value': edge, 'unit': 'm', 'method': 'original body footprint and authored edge',
             'time_window': '600 frames', 'statistic': 'minimum absolute distance',
@@ -103,7 +157,8 @@ def finalize(attempt, output):
         'diagnostic_fixture': provenance['diagnostic_fixture'],
         'accepted': False, 'legal_verdict_claimed': False}
     write_result(attempt, result)
-    report.update(candidate_id=config['candidate_id'], source_video_frames=counts,
+    report.update(candidate_id=config['candidate_id'], original_joins=joins,
+                  source_video_frames=counts,
                   provenance=provenance)
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     return report

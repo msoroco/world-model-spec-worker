@@ -89,6 +89,12 @@ def main():
     config = json.loads(config_path.read_text())
     config['supported_case_ids'] = [entry['case_id'] for entry in manifest['cases']]
     config_path.write_text(json.dumps(config, indent=2) + '\n')
+    root_construction = HERE / 'construction.json'
+    construction = json.loads(root_construction.read_text())
+    for file in construction['files']:
+        if file['path'] == 'config.json':
+            file['content'] = config_path.read_text()
+    root_construction.write_text(json.dumps(construction, indent=2) + '\n')
     print(sha('execution-manifest.json'))
 
 

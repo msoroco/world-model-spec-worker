@@ -99,3 +99,5 @@ The finalizer now emits source-hashed `detector_trace` alongside cycle and, for 
 All four `detector_trace` outputs explicitly say `physical_failure_cause_verified: false`. These are synthetic source-shaped CPU diagnostics, not selected Native physical evidence. Original Native acquisition, lawful-status source review, selected semantic/physical/delivery audits, fallbacks, and an actor-eligible binding for the opposite-turn statutory alternative remain. The frozen cell says straight; the package stays `partial`.
 
 Exact `.venv-cpu/bin/python worker_check.py --assignment training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator --complete` passes static checks. Next owner should build a true Native spawn/tick/camera runner and selected case manifest, then prove the exact scoped strict gate before changing status.
+
+The four updated offline logs are returned and SHA-bound in result.json as current-v3 case offline logs; each records a passing 600-frame adapter check.

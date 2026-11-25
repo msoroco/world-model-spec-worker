@@ -69,7 +69,7 @@ def build():
             entry['offline'] = offline(index, 'primary', entry['construction_sha256'])
         else:
             draft_name = 'selected-sight-draft-manifest.json' if index.startswith('sight_') else 'selected-line-draft-manifest.json'
-            output_name = f'offline-sight-v3-{index.removeprefix("sight_")}-primary' if index.startswith('sight_') else f'offline-v2-{index}-primary'
+            output_name = f'offline-sight-v5-{index.removeprefix("sight_")}-primary' if index.startswith('sight_') else f'offline-v2-{index}-primary'
             path = HERE / 'selected-offline-proofs' / f'{index.replace("_", "-")}-primary.log'
             entry['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/{draft_name} --case {case} --candidate primary --output .runtime-work/c111325-selected/{output_name} --python $PWD/.venv-cpu/bin/python',
                                 'construction_sha256': entry['construction_sha256'],
@@ -83,7 +83,7 @@ def build():
                 candidate['offline'] = offline(index, ident, candidate['construction_sha256'])
             else:
                 draft_name = 'selected-sight-draft-manifest.json' if index.startswith('sight_') else 'selected-line-draft-manifest.json'
-                output_name = f'offline-sight-v3-{index.removeprefix("sight_")}-{ident}' if index.startswith('sight_') else f'offline-v2-{index}-{ident}'
+                output_name = f'offline-sight-v5-{index.removeprefix("sight_")}-{ident}' if index.startswith('sight_') else f'offline-v2-{index}-{ident}'
                 path = HERE / 'selected-offline-proofs' / f'{index.replace("_", "-")}-{ident}.log'
                 candidate['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/{draft_name} --case {case} --candidate {ident} --output .runtime-work/c111325-selected/{output_name} --python $PWD/.venv-cpu/bin/python',
                                         'construction_sha256': candidate['construction_sha256'],

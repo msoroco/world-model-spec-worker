@@ -141,8 +141,8 @@ def execute(case: str, candidate: str, output_dir: Path, host: str, port: int) -
     import carla
     import numpy as np
     for parent in ROOT.parents:
-        package = parent / "runtime/pipeline/scenario_pipeline"
-        source = parent / "runtime/pipeline/python"
+        package = parent / "runtime/scenario_pipeline"
+        source = parent / "runtime/python"
         if package.is_dir() and source.is_dir():
             sys.path[:0] = [str(package), str(source)]
             break
