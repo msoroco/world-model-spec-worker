@@ -38,7 +38,10 @@ def check(root=None):
         raise ValueError("Exact arrow case or construction changed")
     if (config["rate_hz"], config["frame_count"], config["duration_s"]) != (20, 900, 45):
         raise ValueError("Original arrow timebase changed")
-    if config["cameras"] != CAMERAS:
+    cameras = config["cameras"]
+    names = [camera if isinstance(camera, str) else camera.get("name")
+             for camera in cameras]
+    if names != CAMERAS:
         raise ValueError("Original four-camera profile changed")
     return case_id
 

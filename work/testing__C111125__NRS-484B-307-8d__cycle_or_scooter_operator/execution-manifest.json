@@ -23,7 +23,56 @@
       },
       "negative": {
         "log": "cpu-compat-negative-two_cycles_failed_detection.log"
-      }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "b79a87a5603320d4054faf0d9e3fbfabf77cce4b9a8d795691ad9ceaa4495320",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --output .runtime-work/c111125-8d-nov24/offline-compat-rebind-two_cycles_failed_detection",
+        "log": "cpu-compat-rebind-offline-two_cycles_failed_detection.log",
+        "log_sha256": "1a0b0659632b5b5be4530152d3217f53a491155a18bfe5e0eaa54f3723792ac6"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-proof-two_cycles_failed_detection.json",
+        "sha256": "e898091e01fef9a047a4d53f824d36001523e329bf0f58005ad5a7b01293ba9d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-two_cycles_failed_detection-fallback1.json",
+          "construction_sha256": "72a47382d54c48aa0e853c20bfb7f5fd54fbe10720326a1b56614ad6cfee3597",
+          "trigger": {
+            "source": "sealed Native detector readback and bicycle actor trajectory",
+            "metric": "detector_occupied_through_completed_cycles",
+            "failure_condition": "false after primary bicycle spawn with observed target approach; retain primary attempt and review source before choosing fallback"
+          },
+          "changed_knobs": [
+            {
+              "name": "fallback_spawn_upstream_m",
+              "primary": 0.0,
+              "fallback": 2.0,
+              "reason": "provide two additional meters of observed bicycle approach before the fixed detector zone without altering the device cycle, recording profile, or target maneuver"
+            }
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "72a47382d54c48aa0e853c20bfb7f5fd54fbe10720326a1b56614ad6cfee3597",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection --candidate fallback1 --output .runtime-work/c111125-8d-nov24/offline-fallback1-two_cycles_failed_detection-1",
+            "log": "cpu-fallback1-offline-two_cycles_failed_detection.log",
+            "log_sha256": "8bbcfd9af1fb2808803b84b25549fed2a0d5e949316cb96679428c465d3dc8fb"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-receipt-two_cycles_failed_detection.json",
+            "sha256": "d8bc1a584b73cb8d7bcf92bffdaab285c679a596a21da959c98d88b855d73461",
+            "log": "cpu-fallback1-analysis-two_cycles_failed_detection.log",
+            "negative_log": "cpu-fallback1-negative-two_cycles_failed_detection.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
@@ -46,7 +95,56 @@
       },
       "negative": {
         "log": "cpu-compat-negative-one_cycle.log"
-      }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "9d1c491321e78ec0ccf07534bacd8289f874c26d2191df55e869600e9cfbd134",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle --output .runtime-work/c111125-8d-nov24/offline-compat-rebind-one_cycle",
+        "log": "cpu-compat-rebind-offline-one_cycle.log",
+        "log_sha256": "22b8546288c9c55d75ad41d647c1f0a14374212f8ff4a050687631b86bc84257"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-proof-one_cycle.json",
+        "sha256": "db693bd2f5ac029328daa44e01466e46b4f59dc99791720df536ae439f640cd1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-one_cycle-fallback1.json",
+          "construction_sha256": "08a0abb669b80712dfc98bdbb948099e7c09faf153ef1e89b0f5fe7889836b5d",
+          "trigger": {
+            "source": "sealed Native detector readback and bicycle actor trajectory",
+            "metric": "detector_occupied_through_completed_cycles",
+            "failure_condition": "false after primary bicycle spawn with observed target approach; retain primary attempt and review source before choosing fallback"
+          },
+          "changed_knobs": [
+            {
+              "name": "fallback_spawn_upstream_m",
+              "primary": 0.0,
+              "fallback": 2.0,
+              "reason": "provide two additional meters of observed bicycle approach before the fixed detector zone without altering the device cycle, recording profile, or target maneuver"
+            }
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "08a0abb669b80712dfc98bdbb948099e7c09faf153ef1e89b0f5fe7889836b5d",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle --candidate fallback1 --output .runtime-work/c111125-8d-nov24/offline-fallback1-one_cycle-1",
+            "log": "cpu-fallback1-offline-one_cycle.log",
+            "log_sha256": "7595d64fbdf5da1ce4d4701278ccd0d3dedc0b4c94f281752064fabbeda321f4"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-receipt-one_cycle.json",
+            "sha256": "609e0f115fa559c1116a333506897fbbccd5e5f2310d4d98082ab5059b726cb3",
+            "log": "cpu-fallback1-analysis-one_cycle.log",
+            "negative_log": "cpu-fallback1-negative-one_cycle.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
@@ -69,7 +167,56 @@
       },
       "negative": {
         "log": "cpu-compat-negative-three_cycles.log"
-      }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "2dd919479fe745f9b29ba4a5adce77f501ee2466090d40cd079238fff299399f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles --output .runtime-work/c111125-8d-nov24/offline-compat-rebind-three_cycles",
+        "log": "cpu-compat-rebind-offline-three_cycles.log",
+        "log_sha256": "ae2aa4ce029974cfc08924d14c6046a98becc9796d7297e9b1f4dae4871868b4"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-proof-three_cycles.json",
+        "sha256": "040ff1bf869b1ec4e4cc1e691f8389e3773accae3ab94ceb7d72d144a890f7ae"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-three_cycles-fallback1.json",
+          "construction_sha256": "81f26fdca432c881a4db3137248ecd5d22248f40bc041b41a1b22d00d7d5d4ec",
+          "trigger": {
+            "source": "sealed Native detector readback and bicycle actor trajectory",
+            "metric": "detector_occupied_through_completed_cycles",
+            "failure_condition": "false after primary bicycle spawn with observed target approach; retain primary attempt and review source before choosing fallback"
+          },
+          "changed_knobs": [
+            {
+              "name": "fallback_spawn_upstream_m",
+              "primary": 0.0,
+              "fallback": 2.0,
+              "reason": "provide two additional meters of observed bicycle approach before the fixed detector zone without altering the device cycle, recording profile, or target maneuver"
+            }
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "81f26fdca432c881a4db3137248ecd5d22248f40bc041b41a1b22d00d7d5d4ec",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles --candidate fallback1 --output .runtime-work/c111125-8d-nov24/offline-fallback1-three_cycles-1",
+            "log": "cpu-fallback1-offline-three_cycles.log",
+            "log_sha256": "183479543bd072255a7ff4c4eb5a179fa27f2c08e78ab2e3fb780579eadc4370"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-receipt-three_cycles.json",
+            "sha256": "677f170a82105c4dc14eb013ad1dc9bee74b6fc07a2add47c42d4da3e8cf311f",
+            "log": "cpu-fallback1-analysis-three_cycles.log",
+            "negative_log": "cpu-fallback1-negative-three_cycles.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
@@ -92,7 +239,56 @@
       },
       "negative": {
         "log": "cpu-compat-negative-signal_changes.log"
-      }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "f64e481454b8e643b7ffa581e4d5486890ad1ebc254a5319950a3810c480481a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes --output .runtime-work/c111125-8d-nov24/offline-compat-rebind-signal_changes",
+        "log": "cpu-compat-rebind-offline-signal_changes.log",
+        "log_sha256": "a0ce4662feb8a7a973ecedf6dd05c38d8201f478b745246330770482b0db7b65"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-proof-signal_changes.json",
+        "sha256": "4ec392511039cef8d317140eefb3ebf07f27e7d228f7ce374b85181ae48c5e41"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-signal_changes-fallback1.json",
+          "construction_sha256": "9e5c53e49f7f27206d4d6bc5c57e349ac92a9fe7d32ebf12644025e76c82de16",
+          "trigger": {
+            "source": "sealed Native detector readback and bicycle actor trajectory",
+            "metric": "detector_occupied_through_completed_cycles",
+            "failure_condition": "false after primary bicycle spawn with observed target approach; retain primary attempt and review source before choosing fallback"
+          },
+          "changed_knobs": [
+            {
+              "name": "fallback_spawn_upstream_m",
+              "primary": 0.0,
+              "fallback": 2.0,
+              "reason": "provide two additional meters of observed bicycle approach before the fixed detector zone without altering the device cycle, recording profile, or target maneuver"
+            }
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "9e5c53e49f7f27206d4d6bc5c57e349ac92a9fe7d32ebf12644025e76c82de16",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes --candidate fallback1 --output .runtime-work/c111125-8d-nov24/offline-fallback1-signal_changes-1",
+            "log": "cpu-fallback1-offline-signal_changes.log",
+            "log_sha256": "1a15e94a1cbea4d22cf50750428131bcc154a975e462bfc76409b30f0e5056e2"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-receipt-signal_changes.json",
+            "sha256": "88e024bac2ea60c4ab894883f1aa9c453a4c4a322ca32ae7b156b580f8920e21",
+            "log": "cpu-fallback1-analysis-signal_changes.log",
+            "negative_log": "cpu-fallback1-negative-signal_changes.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
@@ -115,7 +311,56 @@
       },
       "negative": {
         "log": "cpu-compat-negative-no_prior_stop.log"
-      }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "68575a287048014e448853012be68d82bd9b995541fac2904fb77a2cac20beda",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop --output .runtime-work/c111125-8d-nov24/offline-compat-rebind-no_prior_stop",
+        "log": "cpu-compat-rebind-offline-no_prior_stop.log",
+        "log_sha256": "22f0f824b949a1e8f0e9ab1023dee241780afacd0767e41c18741fee03129216"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-proof-no_prior_stop.json",
+        "sha256": "8b3ac281f6346acd7094f59a54691eea171039c1de096e42509ba5f41f3a031d"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-no_prior_stop-fallback1.json",
+          "construction_sha256": "0088570f2b28e212be8e28bc5e7e77992f3ec2625a6b3b67d6cdcf8f1e7380f2",
+          "trigger": {
+            "source": "sealed Native detector readback and bicycle actor trajectory",
+            "metric": "detector_occupied_through_completed_cycles",
+            "failure_condition": "false after primary bicycle spawn with observed target approach; retain primary attempt and review source before choosing fallback"
+          },
+          "changed_knobs": [
+            {
+              "name": "fallback_spawn_upstream_m",
+              "primary": 0.0,
+              "fallback": 2.0,
+              "reason": "provide two additional meters of observed bicycle approach before the fixed detector zone without altering the device cycle, recording profile, or target maneuver"
+            }
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "0088570f2b28e212be8e28bc5e7e77992f3ec2625a6b3b67d6cdcf8f1e7380f2",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop --candidate fallback1 --output .runtime-work/c111125-8d-nov24/offline-fallback1-no_prior_stop-1",
+            "log": "cpu-fallback1-offline-no_prior_stop.log",
+            "log_sha256": "ed1e8fecde88feb87768a00dc27bef8480e3900fdaba1b8353c74e4994917806"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-receipt-no_prior_stop.json",
+            "sha256": "203582020b8df06fac5508f04589fbbfaf311b1c71af4909bb8e4cd3eb5cff1a",
+            "log": "cpu-fallback1-analysis-no_prior_stop.log",
+            "negative_log": "cpu-fallback1-negative-no_prior_stop.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield",
@@ -138,7 +383,56 @@
       },
       "negative": {
         "log": "cpu-compat-negative-fails_to_yield.log"
-      }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "8ac66bc52a03444a357c3c972aa0e2f9fe9cfc0c36da2ecc5fb16a580ed39207",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.draft.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield --output .runtime-work/c111125-8d-nov24/offline-compat-rebind-fails_to_yield",
+        "log": "cpu-compat-rebind-offline-fails_to_yield.log",
+        "log_sha256": "bbbd1cb4af22ee036b57ecdbfb743d7b50aad6dff61e74cf70e9741b125cb786"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-proof-fails_to_yield.json",
+        "sha256": "5283aabbb804330bc85d266367b1bfdd656d8f7566028ebed9bf6d2e4ba9f04e"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fails_to_yield-fallback1.json",
+          "construction_sha256": "be3d7583ce33ad2d076ce26935d566d06d840fb740f544a3d64f44f382e8bfda",
+          "trigger": {
+            "source": "sealed Native detector readback and bicycle actor trajectory",
+            "metric": "detector_occupied_through_completed_cycles",
+            "failure_condition": "false after primary bicycle spawn with observed target approach; retain primary attempt and review source before choosing fallback"
+          },
+          "changed_knobs": [
+            {
+              "name": "fallback_spawn_upstream_m",
+              "primary": 0.0,
+              "fallback": 2.0,
+              "reason": "provide two additional meters of observed bicycle approach before the fixed detector zone without altering the device cycle, recording profile, or target maneuver"
+            }
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "be3d7583ce33ad2d076ce26935d566d06d840fb740f544a3d64f44f382e8bfda",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/execution-manifest.json --case testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield --candidate fallback1 --output .runtime-work/c111125-8d-nov24/offline-fallback1-fails_to_yield-1",
+            "log": "cpu-fallback1-offline-fails_to_yield.log",
+            "log_sha256": "aa8028aa31ec13f0149b34be518d52209ba8936ff1cfa0f9d28c7820f1b497ff"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback1-receipt-fails_to_yield.json",
+            "sha256": "7b9494012eba8b6bd17101024d98916f159ed2a6bd073b09234a58fdee661980",
+            "log": "cpu-fallback1-analysis-fails_to_yield.log",
+            "negative_log": "cpu-fallback1-negative-fails_to_yield.log"
+          }
+        }
+      ]
     }
   ],
   "format": "worker-execution-manifest",

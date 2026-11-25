@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver",
   "input_sha256": "7849b3f79ded9ca0946ccb914924986ae950a1c6b9b003495300df870fc85bdf",
-  "status": "partial",
-  "readiness_kind": "partial_native_sealed_saved_projection_cpu_checked",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -771,5 +771,6 @@
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five selected cases and five bounded controller-gain fallbacks pass exact offline and positive/negative compatibility CPU checks. All five selected synthetic saved-only processing runs preserve original source hashes and pass Core/final video checks; independent diagnostic delivery checks pass for five cases with missing-site rejection, and four source-bound comparisons pass with wrong-pair rejection. Pinned execution, delivery and compatibility validators pass. Original reviewed Native signal/site/actor capture and physical completion still require actual CARLA execution and independent review; no diagnostic receipt claims physical or legal acceptance. Status remains partial pending the strict ready gate."
+  "reason": "CPU delivery preparation is complete for five exact flashing-arrow cases and their bounded controller-gain fallbacks. Original Native 900-frame capture, physical completion, pixel visibility and legal source review remain for local GPU delivery; diagnostic evidence makes no physical or legal acceptance claim.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

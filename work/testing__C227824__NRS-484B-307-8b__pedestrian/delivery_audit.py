@@ -5,6 +5,7 @@ pedestrian or signal was visible in pixels, or make a legal determination.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from fractions import Fraction
@@ -130,3 +131,24 @@ def audit(attempt):
             "entry_measurement": report["measurement"],
             "actual_pixels_verified": False, "physical_acceptance_claimed": False,
             "legal_verdict_claimed": False}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--attempt", required=True)
+    parser.add_argument("--case", required=True)
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args(argv)
+    result = audit(args.attempt)
+    if result["case_id"] != args.case:
+        raise ValueError("independent delivery audit exact case differs")
+    output = Path(args.output).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+    print(json.dumps({"case_id": args.case, "native_seal_verified": True,
+                      "physical_acceptance_claimed": False}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

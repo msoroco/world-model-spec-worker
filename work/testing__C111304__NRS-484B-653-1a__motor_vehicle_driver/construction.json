@@ -1,0 +1,108 @@
+{
+  "law_id": "NRS-484B-653-1a",
+  "cell_id": "C111304",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "access_context",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Source-hashed original CARLA actor, control and camera frame join",
+        "time_window": "entire 45-second encounter",
+        "reference_frame": "original CARLA world and source-reviewed public-access site",
+        "uncertainty": "20 Hz temporal resolution, actor geometry, camera occlusion and source review"
+      },
+      {
+        "name": "driver_control_history",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Source-hashed original CARLA actor, control and camera frame join",
+        "time_window": "entire 45-second encounter",
+        "reference_frame": "original CARLA world and source-reviewed public-access site",
+        "uncertainty": "20 Hz temporal resolution, actor geometry, camera occlusion and source review"
+      },
+      {
+        "name": "person_encounter",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Source-hashed original CARLA actor, control and camera frame join",
+        "time_window": "entire 45-second encounter",
+        "reference_frame": "original CARLA world and source-reviewed public-access site",
+        "uncertainty": "20 Hz temporal resolution, actor geometry, camera occlusion and source review"
+      },
+      {
+        "name": "property_encounter",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Source-hashed original CARLA actor, control and camera frame join",
+        "time_window": "entire 45-second encounter",
+        "reference_frame": "original CARLA world and source-reviewed public-access site",
+        "uncertainty": "20 Hz temporal resolution, actor geometry, camera occlusion and source review"
+      },
+      {
+        "name": "original_camera_frame_join",
+        "unit": "structured record",
+        "sampling_rate_hz": 20,
+        "method": "Source-hashed original CARLA actor, control and camera frame join",
+        "time_window": "entire 45-second encounter",
+        "reference_frame": "original CARLA world and source-reviewed public-access site",
+        "uncertainty": "20 Hz temporal resolution, actor geometry, camera occlusion and source review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "source_public_access_review",
+        "unit": "structured record",
+        "method": "Reviewer-cited source and site hash join"
+      },
+      {
+        "name": "source_map_topology",
+        "unit": "structured record",
+        "method": "Original loaded-map hash and source waypoint join"
+      }
+    ],
+    "limitations": [
+      "An original encounter and four camera views require independent physical review.",
+      "Physical proximity and controls do not by themselves decide the statutory judgment."
+    ]
+  },
+  "measurement_plan": {
+    "purpose": "Record 900 original 20 Hz frames for eight source-bound encounter variants",
+    "case_ids": [
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_late",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_early",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_late",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_near",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_far",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_early",
+      "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_late"
+    ]
+  },
+  "static_checks": [
+    "eight exact constructions and offline proofs",
+    "source-shaped compatibility and missing-source rejection",
+    "physical outcome and Native lifecycle CPU fixtures"
+  ],
+  "termination_rules": [
+    "stop after the authored 900-frame original recording",
+    "abort on missing source or failed camera/acquisition seal"
+  ],
+  "mechanisms": [
+    "source-gated CARLA route and encounter actors",
+    "same-frame Native actor/control/four-camera packet acquisition",
+    "saved-only analysis, Core/Lean conversion and full video decode"
+  ],
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Exact C111304 encounter bundle preflight; no unsourced simulation.\"\"\"\nimport argparse\nfrom dataclasses import asdict\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nfrom encounter import CASES\nfrom native_acquisition import CAMERAS\n\n\ndef check():\n    root = Path(__file__).resolve().parent\n    config = json.loads((root / \"config.json\").read_text())\n    source = (root / \"case-plan.json\").read_bytes()\n    if hashlib.sha256(source).hexdigest() != config[\"plan_sha256\"]:\n        raise ValueError(\"Exact case plan source changed\")\n    case_id = config[\"selected_case_id\"]\n    if not case_id.startswith(config[\"assignment_id\"] + \"__\"):\n        raise ValueError(\"Foreign exact case\")\n    if sum(row[\"case_id\"] == case_id for row in json.loads(source)[\"cases\"]) != 1:\n        raise ValueError(\"Exact case absent from plan\")\n    suffix = case_id.removeprefix(config[\"assignment_id\"] + \"__\")\n    matches = [case for case in CASES if case.case_id == suffix]\n    if len(matches) != 1 or config[\"case_spec\"] != asdict(matches[0]):\n        raise ValueError(\"Exact encounter construction changed\")\n    if config[\"rate_hz\"] != 20 or config[\"frame_count\"] != 900 or config[\"duration_s\"] != 45:\n        raise ValueError(\"Original timebase changed\")\n    if config[\"cameras\"] != list(CAMERAS):\n        raise ValueError(\"Original four-camera plan changed\")\n    if config[\"required_sources\"] != [\"loaded_map\", \"public_access_review\", \"site_packet\", \"actor_trace\", \"control_trace\", \"original_camera_media\"]:\n        raise ValueError(\"Required original sources changed\")\n    return case_id\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    parser.add_argument(\"--output-dir\")\n    parser.add_argument(\"--host\", default=\"127.0.0.1\")\n    parser.add_argument(\"--port\", type=int, default=2000)\n    args = parser.parse_args()\n    case_id = check()\n    if args.check:\n        print(\"diagnostic C111304 encounter bundle passed: \" + case_id)\n        return\n    sources = [os.environ.get(name) for name in (\n        \"C111304_SITE_SOURCE\", \"C111304_ACCESS_SOURCE\",\n        \"C111304_ACCESS_REVIEW\", \"C111304_CAMERA_PLAN\")]\n    if not all(sources):\n        raise ValueError(\"Reviewed original C111304 site source environment required\")\n    if not args.output_dir:\n        raise ValueError(\"Existing Native attempt --output-dir required\")\n    import carla\n    from native_runner import run\n    config = json.loads((Path(__file__).resolve().parent / \"config.json\").read_text())\n    client = carla.Client(args.host, args.port)\n    client.set_timeout(20.0)\n    print(json.dumps(run(client.get_world(), carla,\n                         case_id.removeprefix(config[\"assignment_id\"] + \"__\"),\n                         *(Path(value) for value in sources), Path(args.output_dir),\n                         client=client),\n                     sort_keys=True))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"assignment_id\": \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver\",\n  \"law_id\": \"NRS-484B-653-1a\",\n  \"cell_id\": \"C111304\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"selected_case_id\": \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early\",\n  \"case_spec\": {\n    \"case_id\": \"person_north_early\",\n    \"subject\": \"person_occupant\",\n    \"public_access_basis\": \"highway\",\n    \"approach\": \"northbound\",\n    \"ego_speed_mps\": 8.0,\n    \"crossing_speed_mps\": 6.0,\n    \"crossing_release_s\": 1.0\n  },\n  \"plan_sha256\": \"a31b24c34532d46557a382543f7aa46e8c77ccc80a9eff8caf5bc8f57ed1cb24\",\n  \"rate_hz\": 20,\n  \"frame_count\": 900,\n  \"duration_s\": 45,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"source_reviewed_synchronized_original_view\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source_reviewed_synchronized_original_view\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source_reviewed_synchronized_original_view\",\n      \"fov_deg\": 90\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"source_reviewed_synchronized_original_view\",\n      \"fov_deg\": 90\n    }\n  ],\n  \"required_sources\": [\n    \"loaded_map\",\n    \"public_access_review\",\n    \"site_packet\",\n    \"actor_trace\",\n    \"control_trace\",\n    \"original_camera_media\"\n  ],\n  \"required_atoms\": [],\n  \"diagnostic_only\": true,\n  \"supported_case_ids\": [\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_late\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_early\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_south_late\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_near\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__property_far\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_early\",\n    \"testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__premises_person_late\"\n  ]\n}\n"
+    }
+  ]
+}

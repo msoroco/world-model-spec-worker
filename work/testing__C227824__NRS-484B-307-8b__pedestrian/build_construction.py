@@ -20,7 +20,7 @@ MODULES = ("runner.py", "case-plan.json", "materialize_cases.py", "build_selecte
            "native_packets.py", "native_signal.py", "native_cameras.py",
            "native_recorder.py", "walker_control.py", "saved_entry.py",
            "entry_measurement.py", "analysis.py", "delivery_audit.py",
-           "comparison_audit.py", "physical_entry.py")
+           "comparison_audit.py", "comparison_delivery.py", "physical_entry.py")
 
 
 def build(case_id=CASE):

@@ -235,44 +235,34 @@
   ],
   "observations": [
     {
-      "name": "qualifying_highway_or_public_access_premises",
+      "name": "access_context",
       "mandatory": true,
-      "source": "site public-access basis plus source hash and original scene review"
+      "source": "Source-hashed original CARLA actor, control and camera frame join",
+      "unit": "structured record"
     },
     {
-      "name": "ego_driver_vehicle_and_route",
+      "name": "driver_control_history",
       "mandatory": true,
-      "source": "original actor identity, blueprint and lane history"
-    },
-    {
-      "name": "fixed_person_occupancy",
-      "mandatory": true,
-      "source": "occupant registration and original crossing-vehicle ID join"
-    },
-    {
-      "name": "crossing_vehicle_route_and_control",
-      "mandatory": true,
-      "source": "source-hashed map route, original control commands and actor positions"
+      "source": "Source-hashed original CARLA actor, control and camera frame join",
+      "unit": "structured record"
     },
     {
       "name": "person_encounter",
       "mandatory": true,
-      "source": "original synchronized ego and occupant position histories; full camera visibility"
+      "source": "Source-hashed original CARLA actor, control and camera frame join",
+      "unit": "structured record"
     },
     {
-      "name": "property_context_and_encounter",
+      "name": "property_encounter",
       "mandatory": true,
-      "source": "source-hashed property anchor, original property identity and position history"
+      "source": "Source-hashed original CARLA actor, control and camera frame join",
+      "unit": "structured record"
     },
     {
-      "name": "traffic_visibility_and_signal_context",
+      "name": "original_camera_frame_join",
       "mandatory": true,
-      "source": "original signal state, other actor tracks, four camera pixels"
-    },
-    {
-      "name": "willful_or_wanton_disregard",
-      "mandatory": true,
-      "source": "original driver control history, repeated behavior and context for independent human review; no worker legal label"
+      "source": "Source-hashed original CARLA actor, control and camera frame join",
+      "unit": "structured record"
     }
   ],
   "sources": [
@@ -410,5 +400,169 @@
       "status": "selected_required",
       "evidence_or_gap": "Original repeated driver control, surrounding traffic, signal/visibility and person/property context required; no worker numeric cutoff or mental-state inference."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego driver, approach and public-access site",
+        "interval": "full 900-frame 20 Hz original recording",
+        "view": "overview"
+      },
+      {
+        "subject": "person, occupant and property encounter zone",
+        "interval": "full 900-frame 20 Hz original recording",
+        "view": "approach"
+      },
+      {
+        "subject": "source-defined highway or public-access boundary",
+        "interval": "full 900-frame 20 Hz original recording",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "original ego driver control and sightline",
+        "interval": "full 900-frame 20 Hz original recording",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {},
+  "semantic_observations": [
+    {
+      "name": "qualifying_highway_or_public_access_premises",
+      "mandatory": true,
+      "source": "site public-access basis plus source hash and original scene review"
+    },
+    {
+      "name": "ego_driver_vehicle_and_route",
+      "mandatory": true,
+      "source": "original actor identity, blueprint and lane history"
+    },
+    {
+      "name": "fixed_person_occupancy",
+      "mandatory": true,
+      "source": "occupant registration and original crossing-vehicle ID join"
+    },
+    {
+      "name": "crossing_vehicle_route_and_control",
+      "mandatory": true,
+      "source": "source-hashed map route, original control commands and actor positions"
+    },
+    {
+      "name": "person_encounter",
+      "mandatory": true,
+      "source": "original synchronized ego and occupant position histories; full camera visibility"
+    },
+    {
+      "name": "property_context_and_encounter",
+      "mandatory": true,
+      "source": "source-hashed property anchor, original property identity and position history"
+    },
+    {
+      "name": "traffic_visibility_and_signal_context",
+      "mandatory": true,
+      "source": "original signal state, other actor tracks, four camera pixels"
+    },
+    {
+      "name": "willful_or_wanton_disregard",
+      "mandatory": true,
+      "source": "original driver control history, repeated behavior and context for independent human review; no worker legal label"
+    }
+  ],
+  "semantic_observation_mapping": {
+    "qualifying_highway_or_public_access_premises": {
+      "channels": [
+        "access_context",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_public_access_review",
+        "source_map_topology"
+      ],
+      "evidence": "site public-access basis plus source hash and original scene review",
+      "mandatory": true
+    },
+    "ego_driver_vehicle_and_route": {
+      "channels": [
+        "driver_control_history",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_map_topology"
+      ],
+      "evidence": "original actor identity, blueprint and lane history",
+      "mandatory": true
+    },
+    "fixed_person_occupancy": {
+      "channels": [
+        "person_encounter",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_public_access_review"
+      ],
+      "evidence": "occupant registration and original crossing-vehicle ID join",
+      "mandatory": true
+    },
+    "crossing_vehicle_route_and_control": {
+      "channels": [
+        "driver_control_history",
+        "person_encounter",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_map_topology"
+      ],
+      "evidence": "source-hashed map route, original control commands and actor positions",
+      "mandatory": true
+    },
+    "person_encounter": {
+      "channels": [
+        "person_encounter",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_map_topology"
+      ],
+      "evidence": "original synchronized ego and occupant position histories; full camera visibility",
+      "mandatory": true
+    },
+    "property_context_and_encounter": {
+      "channels": [
+        "property_encounter",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_map_topology"
+      ],
+      "evidence": "source-hashed property anchor, original property identity and position history",
+      "mandatory": true
+    },
+    "traffic_visibility_and_signal_context": {
+      "channels": [
+        "access_context",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_map_topology"
+      ],
+      "evidence": "original signal state, other actor tracks, four camera pixels",
+      "mandatory": true
+    },
+    "willful_or_wanton_disregard": {
+      "channels": [
+        "driver_control_history",
+        "person_encounter",
+        "property_encounter",
+        "original_camera_frame_join"
+      ],
+      "source_context_inputs": [
+        "source_public_access_review"
+      ],
+      "evidence": "original driver control history, repeated behavior and context for independent human review; no worker legal label",
+      "mandatory": true
+    }
+  }
 }

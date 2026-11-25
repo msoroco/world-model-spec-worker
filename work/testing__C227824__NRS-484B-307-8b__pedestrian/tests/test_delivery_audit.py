@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from delivery_audit import _digest, _sha, audit, decode_video, verify_seal
+from delivery_audit import _digest, _sha, audit, decode_video, main, verify_seal
 from saved_entry import CAMERAS, build_report
 from test_saved_entry import make_attempt
 
@@ -78,6 +78,24 @@ class DeliveryAuditTests(unittest.TestCase):
         self.assertEqual(set(result["videos"]), set(CAMERAS))
         self.assertFalse(result["actual_pixels_verified"])
         self.assertFalse(result["physical_acceptance_claimed"])
+
+    def test_production_cli_binds_exact_case_and_rejects_missing_seal(self):
+        case = build_report(self.root)["case_id"]
+        output = self.root / "delivery-result.json"
+        with patch("delivery_audit.decode_video",
+                   side_effect=lambda path, **kwargs: {"full_decode_passed": True,
+                                                        "source_sha256": _sha(path)}):
+            with self.assertRaisesRegex(ValueError, "exact case differs"):
+                main(["--attempt", str(self.root), "--case", case + "-wrong",
+                      "--output", str(output)])
+            self.assertFalse(output.exists())
+            self.assertEqual(main(["--attempt", str(self.root), "--case", case,
+                                   "--output", str(output)]), 0)
+        self.assertFalse(json.loads(output.read_text())["physical_acceptance_claimed"])
+        (self.root / "capture-seal.json").unlink()
+        with self.assertRaisesRegex(ValueError, "sealed source"):
+            main(["--attempt", str(self.root), "--case", case,
+                  "--output", str(output)])
 
     def test_real_ffv1_probe_and_full_decode(self):
         video = self.root / "tiny.mkv"

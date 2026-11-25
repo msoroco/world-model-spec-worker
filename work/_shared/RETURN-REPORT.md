@@ -3854,3 +3854,32 @@ C111610 NRS-484B-307-7a now has five exact current-manifest saved-only `runtime.
 ## 2026-11-24 C111304 physical-preparation fixtures
 
 C111304 NRS-484B-653-1a's owner added 24 exact synthetic physical outcome probes across all eight cases (complete motion, incomplete motion, missing evidence) and eight Native closure lifecycle probes. The lead opened all eight physical-preparation receipts, verified their exact case identities, six required lifecycle events, false physical-acceptance claim and every bound log/result SHA-256; no binding was stale. Direct selected execution-manifest validation passes all eight cases. These are CPU checker fixtures, not original CARLA realization. The owner is running final semantic/delivery/compatibility subvalidators, then the exact scoped strict gate. Status remains partial; no ready/queue promotion, Git or checkpoint script.
+
+## 2026-11-24 C111125-8d saved negative and comparison coverage repair
+
+C111125 NRS-484B-307-8d's fresh saved-only missing-detector negative returns a diagnostic receipt with `missing_evidence: true`, preserved originals and false physical/legal claims, classifying the incomplete source instead of claiming success. Four exact source-bound comparison positives pass and four stale-map negatives reject; the lead verified their bound log hashes. Independent plan review found a fifth declared comparison, `two_vs_three_complete_cycles`, absent from the current proof JSON. The owner is adding that positive/negative pair before any ready claim. Status remains partial; no ready/queue promotion, Git or checkpoint script.
+
+## 2026-11-24 C111125-8d fifth comparison repaired
+
+C111125 NRS-484B-307-8d now binds all five exact case-plan comparisons, including `two_vs_three_complete_cycles` over the six saved analysis reports. The lead matched proof IDs to plan IDs and checked all five positive exit codes, five stale-map negative exits and ten log SHA-256 bindings. The exact scoped strict gate reaches only the truthful-partial status check. The owner continues physical preparation, justified fallback and independent delivery audit work. No ready/queue promotion, Git or checkpoint script.
+
+## 2026-11-24 C111610-7a strict ready and queue integration
+
+C111610 NRS-484B-307-7a passed the exact assignment strict gate twice in its owner's run and once independently in the lead's run (exit 0). Its five primary and five fallback official offline/compatibility proofs, five saved-only replays, five positive/negative independent delivery audits and four comparisons are bound. The lead added its five exact cases and four comparison audit commands to `work/_shared/gpu-queue.json`, including fallback prepare commands and original-source audit commands. Queue now has 147 cases and 98 comparisons, with consecutive case orders and no duplicates; the current runtime queue validator progressed through all rows and then stopped because the batch-level `work/_shared/local-integration-proof.json` has not been authored. The queue is still labeled partial, and physical execution remains local. No Git or checkpoint script was run.
+
+## 2026-11-24 C111304 ready-only gate exposes root artifact gap
+
+C111304 NRS-484B-653-1a's owner passed direct manifest, semantic, delivery and compatibility validators, then provisionally set ready to exercise the exact scoped strict gate. Both owner and lead strict runs stopped at `Missing executable artifact runner.py` in the ready-only artifact check. The owner immediately restored truthful partial status and is adding the canonical root runner/config/construction bindings while preserving the exact case receipts where unchanged. No readiness or queue promotion occurred for C111304; no Git or checkpoint script.
+
+### 2026-11-24 evening continuation: fallback review and hygiene
+
+- The lead re-read current `AGENT_PROMPT.md`, `START_HERE.md`, and the worker-preparation skill. Two owners remain on nearest-to-ready packages C111304/653-1a and C111125/307-8d. The full-batch gate is deferred while partial packages remain; exact assignment gates govern new readiness.
+- C111125/307-8d: lead compared each of six primary and `fallback1` constructions. Top-level construction fields are unchanged; the only bundled changes are a Native runner and a config field `fallback_spawn_upstream_m=2.0`. Case IDs, legal conditions and comparison definitions remain fixed. Six pinned `fallback1` compatibility receipts report `passed=true`, `candidate_id=fallback1`, exact case IDs, SHA-matching fallback construction files, and 11 checks including `negative_case_source`. Receipt hashes begin d8bc1a58 (two cycles), 609e0f11 (one cycle), 677f170a (three cycles), 88e024ba (signal changes), 20358202 (no prior stop), and 7b949401 (fails to yield). Owner is validating candidate/physical bindings and has not claimed ready.
+- Read-only scan of every current partial `construction.json` found zero embedded file-content mismatches, including `analysis.py`; the user's last reported full-gate mismatch is not present in the current partial packages. This scan does not substitute for a strict package gate.
+- Lead hygiene scan covered 29,787 files under `work/`: zero UTF-8, size, trailing-whitespace, blank-EOF, or conflict-marker issues. No Git commands were run.
+
+### C111125/307-8d source-bound checkpoint
+
+- The owner completed six fallback compatibility receipts and bound them in the manifest. Direct pinned candidate-construction and physical-preparation validators passed all six; a diagnostic delivery protocol passed its positive and tampered-source negative. The exact scoped strict command still rejects truthful `partial` at preparation.py:267.
+- The remaining manifest blocker is concrete: `proposals/cases.json` has `source_pending_0` for detector malfunction/failure causation and `source_pending_1` for signal-directed pedestrian/traffic right-of-way. `execution_manifest.validate` rejects unexpanded sweeps. The frozen `inputs/.../evidence.json` has zero accepted recordings. Original detector causal variation, lawful participant status, and reviewed site/device/rider source bytes are not established by synthetic receipts. The owner updated HANDOFF/result and preserved partial.
+- C111304/653-1a second provisional strict reached preparation.py:239 and failed for missing `source_observation_mapping`; the owner restored partial and is authoring exact semantic-to-channel source mappings before another scoped gate.
