@@ -20,9 +20,9 @@ def sha(path: Path) -> str:
 
 
 def run(entry: dict, candidate: str, suffix: str, env: dict) -> dict:
-    output = REPO / '.runtime-work/c153046-nov25d' / ('compat-' + suffix + '-' + candidate + '-v1')
+    output = REPO / '.runtime-work/c153046-nov25d' / ('compat-' + suffix + '-' + candidate + '-v2')
     if suffix == 'stopped_leftmost_clear' and candidate == 'primary':
-        output = REPO / '.runtime-work/c153046-nov25d/compat-first-v2'
+        output = REPO / '.runtime-work/c153046-nov25d/compat-first-v4'
     command = [sys.executable, str(REPO / 'runtime.py'), 'compatibility', '--manifest',
                str(MANIFEST), '--case', entry['case_id'], '--candidate', candidate,
                '--output', str(output), '--library', str(REPO / 'runtime/library'),

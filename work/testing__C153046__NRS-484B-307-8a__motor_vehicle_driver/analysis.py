@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
+import io
 import json
 import zipfile
 from pathlib import Path
@@ -51,10 +53,17 @@ def build(attempt: Path) -> tuple[dict, dict]:
            for row in rows):
         raise ValueError('original red-left case/source identity differs')
     for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
-        archive = required(attempt, 'original-attempt/' + camera + '.zip')
-        if sha(archive) != inventory.get('camera_media_sha256', {}).get(camera):
+        archive = original / (camera + '.zip')
+        if archive.is_file():
+            archive_bytes = archive.read_bytes()
+        elif inventory.get('diagnostic_fixture') is True:
+            archive_bytes = base64.b64decode(required(attempt,
+                'original-attempt/' + camera + '.zip.b64').read_text().strip(), validate=True)
+        else:
+            raise ValueError('Missing original camera source: ' + camera)
+        if hashlib.sha256(archive_bytes).hexdigest() != inventory.get('camera_media_sha256', {}).get(camera):
             raise ValueError('sealed original camera changed: ' + camera)
-        with zipfile.ZipFile(archive) as frames:
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as frames:
             names = frames.namelist()
             expected = [f'{index:04d}-{row["native_frame"]["frame"]}.png'
                         for index, row in enumerate(rows)]

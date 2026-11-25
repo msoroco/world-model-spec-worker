@@ -53,10 +53,81 @@
       "offline": {
         "construction_sha256": "d4b03a36444d4e22d9d7fdc71c9a2c6afadc73e80df4d1c6610deb7d8384184a",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --output .runtime-work/c142510/selected-offline-bicycle_signal_before_yield",
-        "exit_code": null,
+        "exit_code": 0,
         "log": "cpu-nov25-selected-offline-bicycle_signal_before_yield.log",
-        "log_sha256": null
-      }
+        "log_sha256": "4b57295687aaf0e19eaee8ea70d4c87dd80145ed51951dedbfff04e4f3f3725d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-bicycle_signal_before_yield.log",
+        "test_log_sha256": "445210f2251a71f6034dc8ca7e7bf9656e19489b47481bf87e69681baaa487ed",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original sidewalk/audio acceptance"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-positive-bicycle_signal_before_yield.log",
+        "test_log_sha256": "17b036034750fab529098cb3e61fdf33b78d759db4940d54631698f988ee999b",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-bicycle_signal_before_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_signal_before_yield-receipt.json",
+        "sha256": "191cd37c71436ca2a8cdeba463728d63907f9ff9920fd637c9917c05fed0e532"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Rider spawn may collide with the pedestrian or leave too little approach for a measured pass; an upstream start can increase clearance only after the original connected sidewalk is reviewed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bicycle_signal_before_yield.json",
+          "construction_sha256": "75130e917b1ae9f93e0618274cd14b3e0dd58b37c52169ec2dd57fe8296f32c7",
+          "trigger": {
+            "source": "original rider spawn/readback and 900-frame body history",
+            "metric": "rider spawn clearance and approach stabilization before pedestrian pass",
+            "failure_condition": "primary rider spawn is obstructed or approach does not establish a behind-to-ahead pass"
+          },
+          "changed_knobs": [
+            "rider approach start moved 1 m upstream within the reviewed connected sidewalk; signal timing, rider response, pedestrian route and capture contract unchanged"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield --candidate fallback1 --output .runtime-work/c142510/fallback-offline-bicycle_signal_before_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "75130e917b1ae9f93e0618274cd14b3e0dd58b37c52169ec2dd57fe8296f32c7",
+            "log": "cpu-nov25-fallback-offline-bicycle_signal_before_yield.log",
+            "log_sha256": "a27a9a117035e4d4e09e8e38b2a2c2d44865a6e8de84342eca43bc0b0a1c74ed"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-bicycle_signal_before_yield/receipt.json",
+            "sha256": "657744d9177944f7c33c116fce7ea3a658cf031cfbe4299da838e14d177e03f1",
+            "log": "proofs/fallback1-bicycle_signal_before_yield/analysis.log",
+            "negative_log": "proofs/fallback1-bicycle_signal_before_yield/negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
@@ -107,10 +178,81 @@
       "offline": {
         "construction_sha256": "4cd68976e01d841d116c54a9983e5da865a5b6811b6f2dd05de85b6f019aeac7",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --output .runtime-work/c142510/selected-offline-bicycle_signal_late_yield",
-        "exit_code": null,
+        "exit_code": 0,
         "log": "cpu-nov25-selected-offline-bicycle_signal_late_yield.log",
-        "log_sha256": null
-      }
+        "log_sha256": "f0cdc6dcb1b96ba634c204bf61631e2ec438a45125d9511091a40a2cb83f2aa7"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-bicycle_signal_late_yield.log",
+        "test_log_sha256": "8857709e82cf1985ea3fe1173271c615fa120c8769b3e7a47c2ca4056db5c5e5",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original sidewalk/audio acceptance"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-positive-bicycle_signal_late_yield.log",
+        "test_log_sha256": "e1fadb5b1cf45afcf5354bfbae430e8328731fbb716453d025dd4e288fcba6e3",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-bicycle_signal_late_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_signal_late_yield-receipt.json",
+        "sha256": "fb5ad075f36cc088483c998b56a178236bce406155b189c432afe2356587181a"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Rider spawn may collide with the pedestrian or leave too little approach for a measured pass; an upstream start can increase clearance only after the original connected sidewalk is reviewed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bicycle_signal_late_yield.json",
+          "construction_sha256": "15c3f39deddeacf47cfe11f4694c6d9d2345dac63d5f18c124dc61b09121be1c",
+          "trigger": {
+            "source": "original rider spawn/readback and 900-frame body history",
+            "metric": "rider spawn clearance and approach stabilization before pedestrian pass",
+            "failure_condition": "primary rider spawn is obstructed or approach does not establish a behind-to-ahead pass"
+          },
+          "changed_knobs": [
+            "rider approach start moved 1 m upstream within the reviewed connected sidewalk; signal timing, rider response, pedestrian route and capture contract unchanged"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield --candidate fallback1 --output .runtime-work/c142510/fallback-offline-bicycle_signal_late_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "15c3f39deddeacf47cfe11f4694c6d9d2345dac63d5f18c124dc61b09121be1c",
+            "log": "cpu-nov25-fallback-offline-bicycle_signal_late_yield.log",
+            "log_sha256": "1f2b4754baf26c5d4ea585ed532b556c315652753fd2206887d6071de56876b5"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-bicycle_signal_late_yield/receipt.json",
+            "sha256": "554b8b7438c5ad1c39ec5001f14723c8cc3554ff54acf640f95f7bdeba3b4ddb",
+            "log": "proofs/fallback1-bicycle_signal_late_yield/analysis.log",
+            "negative_log": "proofs/fallback1-bicycle_signal_late_yield/negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
@@ -161,10 +303,81 @@
       "offline": {
         "construction_sha256": "30619d875e11304a2d9d53aec40692493fa790e31ebea68c656c2f8f5824f2d2",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --output .runtime-work/c142510/selected-offline-bicycle_silent_yield",
-        "exit_code": null,
+        "exit_code": 0,
         "log": "cpu-nov25-selected-offline-bicycle_silent_yield.log",
-        "log_sha256": null
-      }
+        "log_sha256": "ce5db876f1d4670fb89d52b889339ba7401bd4039574ecc0ead79728031ed546"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-bicycle_silent_yield.log",
+        "test_log_sha256": "6fda99736f55fbefa7bc175c0ca431cef9105f53847a056303b2fad844bbeb82",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original sidewalk/audio acceptance"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-positive-bicycle_silent_yield.log",
+        "test_log_sha256": "92674e1ed7802b83d9d011a2049666915ce7678a43c35fc0006b28e8a3bf1d51",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-bicycle_silent_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_silent_yield-receipt.json",
+        "sha256": "29078315708d3ef32cd3f9931251c828348ca9dc2523851687ff2a60f2561a50"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Rider spawn may collide with the pedestrian or leave too little approach for a measured pass; an upstream start can increase clearance only after the original connected sidewalk is reviewed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bicycle_silent_yield.json",
+          "construction_sha256": "1be36b21a7d0d6882d921c0f438c79505dcf4ba093a799e5ce262cebfe26780b",
+          "trigger": {
+            "source": "original rider spawn/readback and 900-frame body history",
+            "metric": "rider spawn clearance and approach stabilization before pedestrian pass",
+            "failure_condition": "primary rider spawn is obstructed or approach does not establish a behind-to-ahead pass"
+          },
+          "changed_knobs": [
+            "rider approach start moved 1 m upstream within the reviewed connected sidewalk; signal timing, rider response, pedestrian route and capture contract unchanged"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield --candidate fallback1 --output .runtime-work/c142510/fallback-offline-bicycle_silent_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "1be36b21a7d0d6882d921c0f438c79505dcf4ba093a799e5ce262cebfe26780b",
+            "log": "cpu-nov25-fallback-offline-bicycle_silent_yield.log",
+            "log_sha256": "9203392a144f64cf4e2b53f995083aada8b1abe3ed4268da0f119fa4a060ecc7"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-bicycle_silent_yield/receipt.json",
+            "sha256": "2019d16f9120f5d79be453edad50b92e2195b9db51d10400cb2f3dd1212bf91e",
+            "log": "proofs/fallback1-bicycle_silent_yield/analysis.log",
+            "negative_log": "proofs/fallback1-bicycle_silent_yield/negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
@@ -215,10 +428,81 @@
       "offline": {
         "construction_sha256": "77044c25fab95183dba0e23a7f6b89394202c9f8b5810f93b8cc806a23b16641",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --output .runtime-work/c142510/selected-offline-bicycle_signal_before_advance",
-        "exit_code": null,
+        "exit_code": 0,
         "log": "cpu-nov25-selected-offline-bicycle_signal_before_advance.log",
-        "log_sha256": null
-      }
+        "log_sha256": "3f8ff4c5e9730f1e79a2a69d6b8b93e2eae0a07af768fcf726dcc0b1de07d6e3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-bicycle_signal_before_advance.log",
+        "test_log_sha256": "ffd9a9f0d83b650a4f9ad7bf058697479f151e5d2a41b3a4679baebb90433c42",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original sidewalk/audio acceptance"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-positive-bicycle_signal_before_advance.log",
+        "test_log_sha256": "a16c4e0c98c34188def76ecfdd3c8e97a4f0950b1da8a470cb24a61ce32af1c9",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-bicycle_signal_before_advance.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_signal_before_advance-receipt.json",
+        "sha256": "64a5a549eab8d7a6277f87e52d3cd71b7066cb5b7330f664fe8b5d06420e58cc"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Rider spawn may collide with the pedestrian or leave too little approach for a measured pass; an upstream start can increase clearance only after the original connected sidewalk is reviewed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-bicycle_signal_before_advance.json",
+          "construction_sha256": "ca1bc1a7f3cee4791373bf5601eca17b73eb65742349a91f2dc5e17674aa576c",
+          "trigger": {
+            "source": "original rider spawn/readback and 900-frame body history",
+            "metric": "rider spawn clearance and approach stabilization before pedestrian pass",
+            "failure_condition": "primary rider spawn is obstructed or approach does not establish a behind-to-ahead pass"
+          },
+          "changed_knobs": [
+            "rider approach start moved 1 m upstream within the reviewed connected sidewalk; signal timing, rider response, pedestrian route and capture contract unchanged"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance --candidate fallback1 --output .runtime-work/c142510/fallback-offline-bicycle_signal_before_advance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "ca1bc1a7f3cee4791373bf5601eca17b73eb65742349a91f2dc5e17674aa576c",
+            "log": "cpu-nov25-fallback-offline-bicycle_signal_before_advance.log",
+            "log_sha256": "6cf7c03458d690118d8634d8648b3d062ce7f97bcd88e27d1a310aca3ab46630"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-bicycle_signal_before_advance/receipt.json",
+            "sha256": "31a64b829c6b5dc551f71423eb2afc6f8d8a462ae1934dbdf6259e3011af700f",
+            "log": "proofs/fallback1-bicycle_signal_before_advance/analysis.log",
+            "negative_log": "proofs/fallback1-bicycle_signal_before_advance/negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
@@ -269,10 +553,81 @@
       "offline": {
         "construction_sha256": "4e352e733d5f9c0aa8cc56970cfbab4a84f806d5422c3b53b406fe7b4575597c",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --output .runtime-work/c142510/selected-offline-electric_bicycle_signal_before_yield",
-        "exit_code": null,
+        "exit_code": 0,
         "log": "cpu-nov25-selected-offline-electric_bicycle_signal_before_yield.log",
-        "log_sha256": null
-      }
+        "log_sha256": "dd2b1cf2026e2f869f9a53bf9b9e098a17d190972aaedb690ac723792e1dc1b2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-electric_bicycle_signal_before_yield.log",
+        "test_log_sha256": "4386efe813968c57c55de1c7c1e4f0e8f4504b848c006405ae5b56e309347b42",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original sidewalk/audio acceptance"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-positive-electric_bicycle_signal_before_yield.log",
+        "test_log_sha256": "57b61c520ef233b608ad5f93ef4940c4c88eb4f7441f90b44080a2b326e7e1ed",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-electric_bicycle_signal_before_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_bicycle_signal_before_yield-receipt.json",
+        "sha256": "3c3daf6d867301678e546caf43273b5e18d0de31973eed49322f4ec5537fc781"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Rider spawn may collide with the pedestrian or leave too little approach for a measured pass; an upstream start can increase clearance only after the original connected sidewalk is reviewed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-electric_bicycle_signal_before_yield.json",
+          "construction_sha256": "10f9ac91f01d7cbbd2ad12b5e4989819cf04ae7f74da05db14d155e212cbda6b",
+          "trigger": {
+            "source": "original rider spawn/readback and 900-frame body history",
+            "metric": "rider spawn clearance and approach stabilization before pedestrian pass",
+            "failure_condition": "primary rider spawn is obstructed or approach does not establish a behind-to-ahead pass"
+          },
+          "changed_knobs": [
+            "rider approach start moved 1 m upstream within the reviewed connected sidewalk; signal timing, rider response, pedestrian route and capture contract unchanged"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield --candidate fallback1 --output .runtime-work/c142510/fallback-offline-electric_bicycle_signal_before_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "10f9ac91f01d7cbbd2ad12b5e4989819cf04ae7f74da05db14d155e212cbda6b",
+            "log": "cpu-nov25-fallback-offline-electric_bicycle_signal_before_yield.log",
+            "log_sha256": "82f0fea9c337eb2c18e77bc3456558e121af67adce663c641b85593507e5faa2"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-electric_bicycle_signal_before_yield/receipt.json",
+            "sha256": "668fd4ac843a775c4408a0284bf2a5df382b1354ba130c5bf075dfedeeaf873e",
+            "log": "proofs/fallback1-electric_bicycle_signal_before_yield/analysis.log",
+            "negative_log": "proofs/fallback1-electric_bicycle_signal_before_yield/negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
@@ -323,10 +678,81 @@
       "offline": {
         "construction_sha256": "7097554b66c56b500d1343fe43341d1e7020d3be2406ac491af242485f5020d0",
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --output .runtime-work/c142510/selected-offline-electric_scooter_signal_before_yield",
-        "exit_code": null,
+        "exit_code": 0,
         "log": "cpu-nov25-selected-offline-electric_scooter_signal_before_yield.log",
-        "log_sha256": null
-      }
+        "log_sha256": "5de1146077566e74d2895d8e715ec360f8b999295dab2eb6cb6dd0c59f9f877e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-nov25-saved-electric_scooter_signal_before_yield.log",
+        "test_log_sha256": "676623501d581a714359c70a75d6b6bff610db253ad92339c1235cdcf109326c",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; no original sidewalk/audio acceptance"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "script": "prove_original_delivery.py",
+        "script_sha256": "59c048869ae3e3d16383fc850eedae848d77eda1a3afb4f11b4b92af295a60ce",
+        "command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-nov25-delivery-positive-electric_scooter_signal_before_yield.log",
+        "test_log_sha256": "26b58ec04e5fa4b20bbcacaa9a9699fc002ce96c916054cad9437bad061775bd",
+        "negative_command": ".venv-cpu/bin/python work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/prove_original_delivery.py --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --negative-missing-attempt",
+        "negative_exit_code": 2,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "cpu-nov25-delivery-negative-electric_scooter_signal_before_yield.log",
+        "negative_log_sha256": "ef040bc01f85038d90b413a39a1e696385b0ac1d187a9e9797ccbe99f4e37dea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_scooter_signal_before_yield-receipt.json",
+        "sha256": "6eb96e016f12accdd1f49f7af344a0afcd846cd083500a6cb2e6f448e0664188"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Rider spawn may collide with the pedestrian or leave too little approach for a measured pass; an upstream start can increase clearance only after the original connected sidewalk is reviewed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-electric_scooter_signal_before_yield.json",
+          "construction_sha256": "23a27067db27243e44d0bfa38f77f7bafcb1cd748e993ad6361dd3f044de1e60",
+          "trigger": {
+            "source": "original rider spawn/readback and 900-frame body history",
+            "metric": "rider spawn clearance and approach stabilization before pedestrian pass",
+            "failure_condition": "primary rider spawn is obstructed or approach does not establish a behind-to-ahead pass"
+          },
+          "changed_knobs": [
+            "rider approach start moved 1 m upstream within the reviewed connected sidewalk; signal timing, rider response, pedestrian route and capture contract unchanged"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator/execution-manifest.json --case testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield --candidate fallback1 --output .runtime-work/c142510/fallback-offline-electric_scooter_signal_before_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "exit_code": 0,
+            "construction_sha256": "23a27067db27243e44d0bfa38f77f7bafcb1cd748e993ad6361dd3f044de1e60",
+            "log": "cpu-nov25-fallback-offline-electric_scooter_signal_before_yield.log",
+            "log_sha256": "8e50e136830e8122811d13e0f7f70abcb720aa163cbc950b705b20263b30fd90"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-electric_scooter_signal_before_yield/receipt.json",
+            "sha256": "dc319fe3dc9235d29f75413339f83498044d777b161d0ea62fa274e56c6d77cd",
+            "log": "proofs/fallback1-electric_scooter_signal_before_yield/analysis.log",
+            "negative_log": "proofs/fallback1-electric_scooter_signal_before_yield/negative.log"
+          }
+        }
+      ]
     }
   ]
 }

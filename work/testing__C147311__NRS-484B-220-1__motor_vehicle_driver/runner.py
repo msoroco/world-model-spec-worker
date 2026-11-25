@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
+import subprocess
 from pathlib import Path
 
 from one_way_direction import CASES
@@ -48,15 +50,55 @@ def main() -> None:
     if args.output_dir is None:
         raise ValueError('Native output directory required')
     source = os.environ.get('C147311_REVIEWED_SITE_PACKET')
-    if not source:
-        raise ValueError('original reviewed site packet path required')
-    reviewed = verify(Path(source), config['case']['variant'])
-    from native_adapter import NativeAdapter
-    adapter = NativeAdapter(args.host, args.port, args.output_dir, Path(source))
+    adapter = None
     try:
+        if not source:
+            raise ValueError('original reviewed site packet path required')
+        reviewed = verify(Path(source), config['case']['variant'])
+        from native_adapter import NativeAdapter
+        adapter = NativeAdapter(args.host, args.port, args.output_dir, Path(source))
         adapter.execute(reviewed, config)
-    finally:
         adapter.close()
+        if not adapter.restoration_verified:
+            raise ValueError('original Native restoration unverified')
+        output = args.output_dir
+        packet = json.loads(Path(source).read_text(encoding='utf-8'))
+        shutil.copy2(source, output / 'site-source.json')
+        for binding in packet['source_bindings'].values():
+            destination = output / binding['path']
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(Path(source).parent / binding['path'], destination)
+        for camera in CAMERAS:
+            frames = output / 'capture' / camera
+            subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error',
+                            '-nostdin', '-framerate', '20', '-start_number', '0',
+                            '-i', str(frames / '%06d.png'), '-frames:v', '900',
+                            '-c:v', 'ffv1', '-pix_fmt', 'bgr0',
+                            str(output / (camera + '.mkv'))],
+                           check=True, timeout=600)
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'physical_acceptance_claimed': False}) + '\n', encoding='utf-8')
+        from analysis import analyze, saved_result
+        from worker_exchange.native_output import seal_capture, write_result
+        report = analyze(output, config['selected_case_id'])
+        result = saved_result(output, report)
+        write_result(output, result)
+        seal_capture(output, frames=900,
+                     restoration={'restored': True,
+                                  'settings_readback': 'synchronous mode and delta verified'},
+                     errors=[], encoder_exit_codes={name: 0 for name in CAMERAS},
+                     context={'site_sha256': reviewed['site_sha256'],
+                              'source_hashes': reviewed['source_hashes']})
+    except BaseException as error:
+        if args.output_dir.is_dir():
+            (args.output_dir / 'native-run-status.json').write_text(json.dumps({
+                'errors': [repr(error)], 'physical_acceptance_claimed': False}) + '\n',
+                encoding='utf-8')
+        raise
+    finally:
+        if adapter is not None and not getattr(adapter, 'restoration_verified', False):
+            adapter.close()
 
 
 if __name__ == '__main__':

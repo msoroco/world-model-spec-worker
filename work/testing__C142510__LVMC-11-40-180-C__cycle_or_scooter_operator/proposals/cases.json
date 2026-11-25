@@ -36,11 +36,94 @@
   ],
   "cases": [
     {
+      "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared source-bound sidewalk rider/pedestrian baseline without legal finding.",
+      "variable_assignments": {
+        "rider_kind": {
+          "kind": "world_setup",
+          "value": "bicycle",
+          "unit": "category"
+        },
+        "signal_timing": {
+          "kind": "world_setup",
+          "value": "before_pass",
+          "unit": "category"
+        },
+        "rider_response": {
+          "kind": "world_setup",
+          "value": "yield_brake",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to any pedestrian",
+        "give audible signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sidewalk_body_history",
+            "unit": "m",
+            "method": "joined rider/pedestrian centers and sidewalk ID",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "synthetic fixture is not physical evidence"
+          },
+          {
+            "name": "pedestrian_audio",
+            "unit": "synthetic emission event",
+            "method": "emitter frame schedule, not an original waveform",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "synthetic fixture is not physical evidence"
+          },
+          {
+            "name": "rider_response",
+            "unit": "m/s and brake state",
+            "method": "rider speed and brake frame schedule",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "synthetic fixture is not physical evidence"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "original frame ID",
+            "method": "four synchronized camera frame identities",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "synthetic fixture is not physical evidence"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original connected sidewalk, pedestrian microphone waveform, yielding and legal audibility remain unresolved."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_yield",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "connected_sidewalk_pedestrian_overtake",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Exact rider/signal/response alternative; original observations and legal judgments remain open.",
+      "paired_probe_id": "sidewalk_overtake_alternatives",
+      "deliberate_differences": [
+        "rider_kind",
+        "signal_timing",
+        "rider_response"
+      ],
+      "probe": {
+        "primary_variable": "signal_timing",
+        "comparison_or_standard": "Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.",
+        "target_value_or_branch": "bicycle_signal_before_yield"
+      },
       "variable_assignments": {
         "rider_kind": {
           "kind": "world_setup",
@@ -110,9 +193,20 @@
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_late_yield",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "connected_sidewalk_pedestrian_overtake",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Exact rider/signal/response alternative; original observations and legal judgments remain open.",
+      "paired_probe_id": "sidewalk_overtake_alternatives",
+      "deliberate_differences": [
+        "rider_kind",
+        "signal_timing",
+        "rider_response"
+      ],
+      "probe": {
+        "primary_variable": "signal_timing",
+        "comparison_or_standard": "Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.",
+        "target_value_or_branch": "bicycle_signal_late_yield"
+      },
       "variable_assignments": {
         "rider_kind": {
           "kind": "world_setup",
@@ -182,9 +276,20 @@
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_silent_yield",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "connected_sidewalk_pedestrian_overtake",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Exact rider/signal/response alternative; original observations and legal judgments remain open.",
+      "paired_probe_id": "sidewalk_overtake_alternatives",
+      "deliberate_differences": [
+        "rider_kind",
+        "signal_timing",
+        "rider_response"
+      ],
+      "probe": {
+        "primary_variable": "signal_timing",
+        "comparison_or_standard": "Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.",
+        "target_value_or_branch": "bicycle_silent_yield"
+      },
       "variable_assignments": {
         "rider_kind": {
           "kind": "world_setup",
@@ -254,9 +359,20 @@
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__bicycle_signal_before_advance",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "connected_sidewalk_pedestrian_overtake",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Exact rider/signal/response alternative; original observations and legal judgments remain open.",
+      "paired_probe_id": "sidewalk_overtake_alternatives",
+      "deliberate_differences": [
+        "rider_kind",
+        "signal_timing",
+        "rider_response"
+      ],
+      "probe": {
+        "primary_variable": "rider_response",
+        "comparison_or_standard": "Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.",
+        "target_value_or_branch": "bicycle_signal_before_advance"
+      },
       "variable_assignments": {
         "rider_kind": {
           "kind": "world_setup",
@@ -326,9 +442,20 @@
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_bicycle_signal_before_yield",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "connected_sidewalk_pedestrian_overtake",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Exact rider/signal/response alternative; original observations and legal judgments remain open.",
+      "paired_probe_id": "sidewalk_overtake_alternatives",
+      "deliberate_differences": [
+        "rider_kind",
+        "signal_timing",
+        "rider_response"
+      ],
+      "probe": {
+        "primary_variable": "rider_kind",
+        "comparison_or_standard": "Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.",
+        "target_value_or_branch": "electric_bicycle_signal_before_yield"
+      },
       "variable_assignments": {
         "rider_kind": {
           "kind": "world_setup",
@@ -398,9 +525,20 @@
     {
       "case_id": "testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator__electric_scooter_signal_before_yield",
       "target_law_id": "LVMC-11-40-180-C",
-      "target_type": "connected_sidewalk_pedestrian_overtake",
+      "target_type": "boundary_probe",
       "status": "draft",
       "rationale": "Exact rider/signal/response alternative; original observations and legal judgments remain open.",
+      "paired_probe_id": "sidewalk_overtake_alternatives",
+      "deliberate_differences": [
+        "rider_kind",
+        "signal_timing",
+        "rider_response"
+      ],
+      "probe": {
+        "primary_variable": "rider_kind",
+        "comparison_or_standard": "Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.",
+        "target_value_or_branch": "electric_scooter_signal_before_yield"
+      },
       "variable_assignments": {
         "rider_kind": {
           "kind": "world_setup",

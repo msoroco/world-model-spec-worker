@@ -19,7 +19,8 @@ def scene(case):
              direction=case.direction, sign_authorized=True,
              signposted=True, sign_governs_route=True,
              designated_unit_xy=[1, 0], lane_ids=[1, 2],
-             sign_xy=[0, 2], ego_route_xy=[[0, case.lane], [30, case.lane]])
+             sign_xy=[0, 2], ego_route_xy=[[0, case.lane],
+                                          [30 if case.direction == 'designated' else -30, case.lane]])
     for field in ('highway', 'vehicle', 'driver_control',
                   'lane_inventory', 'one_way_designation',
                   'sign_authority', 'sign_message', 'sign_orientation',
@@ -103,6 +104,13 @@ class OneWayTests(unittest.TestCase):
         s['sign_authority_source_sha256']='unsealed'
         with self.assertRaisesRegex(ValueError,'original context missing'):
             probe.validate_scene(s,case)
+
+    def test_reviewed_route_endpoint_must_match_selected_direction(self):
+        for case in probe.CASES:
+            s=scene(case)
+            s['ego_route_xy'][-1][0] *= -1
+            with self.assertRaisesRegex(ValueError,'route endpoint differs'):
+                probe.validate_scene(s,case)
 
     def test_unauthorized_sign_and_spawn_rejected(self):
         case=probe.CASES[0]

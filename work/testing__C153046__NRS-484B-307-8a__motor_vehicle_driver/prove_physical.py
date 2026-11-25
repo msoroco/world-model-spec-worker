@@ -88,10 +88,10 @@ def main() -> None:
         suffix = case['case_id'].removeprefix(ROOT.name + '__')
         fixtures = []
         for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
-            location = SCRATCH / (suffix + '-' + kind + '-v2')
+            location = SCRATCH / (suffix + '-' + kind + '-v3')
             packet, history = fixture(case, kind, location)
-            result = ROOT / f'cpu-physical-{suffix}-{kind}-v2.json'
-            log = ROOT / f'cpu-physical-{suffix}-{kind}-v2.log'
+            result = ROOT / f'cpu-physical-{suffix}-{kind}-v3.json'
+            log = ROOT / f'cpu-physical-{suffix}-{kind}-v3.log'
             command = [sys.executable, str(ROOT / 'physical_probe.py'), '--case',
                        case['case_id'], '--packet', str(packet), '--history', str(history),
                        '--plan', str(ROOT / 'case-plan.json'), '--result', str(result)]
@@ -99,11 +99,11 @@ def main() -> None:
             fixtures.append({'kind': kind, 'command': ' '.join(command), 'exit_code': 0,
                              'log': log.name, 'log_sha256': sha(log),
                              'result': result.name, 'result_sha256': sha(result)})
-        lifecycle_log = ROOT / f'cpu-lifecycle-{suffix}-v2.log'
+        lifecycle_log = ROOT / f'cpu-lifecycle-{suffix}-v3.log'
         lifecycle_command = [sys.executable, str(ROOT / 'prove_lifecycle.py'),
                              '--case', case['case_id'], '--construction',
                              str(ROOT / entry['construction']), '--scratch',
-                             str(SCRATCH / (suffix + '-lifecycle-v2'))]
+                             str(SCRATCH / (suffix + '-lifecycle-v3'))]
         run(lifecycle_command, lifecycle_log, env)
         events = json.loads(lifecycle_log.read_text())['events']
         receipt = {'format': 'worker-red-left-physical-diagnostic-proof',

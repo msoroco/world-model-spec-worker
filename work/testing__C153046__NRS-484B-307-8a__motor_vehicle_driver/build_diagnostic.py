@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import base64
 import io
 import json
 import zipfile
@@ -78,11 +79,8 @@ def main() -> None:
                             'source_packet_sha256': sha(packet_raw),
                             'native_frame': native, 'camera_frames': {}})
         camera_hashes = {}
-        source_items = []
-        source_dir = ROOT / 'diagnostic-sources' / suffix
-        source_dir.mkdir(parents=True, exist_ok=True)
         for camera in CAMERAS:
-            archive = source_dir / (camera + '.zip')
+            archive = io.BytesIO()
             with zipfile.ZipFile(archive, 'w', zipfile.ZIP_STORED) as stream:
                 for index, row in enumerate(history):
                     raw = b'\x89PNG\r\n\x1a\n' + (camera + '-' + str(index)).encode()
@@ -90,10 +88,9 @@ def main() -> None:
                     stream.writestr(f'{index:04d}-{frame}.png', raw)
                     row['camera_frames'][camera] = {'original_frame': frame,
                                                     'source_sha256': sha(raw)}
-            camera_hashes[camera] = sha(archive.read_bytes())
-            source_items.append({'path': 'original-attempt/' + camera + '.zip',
-                                 'source': 'work/' + ROOT.name + '/diagnostic-sources/' + suffix + '/' + camera + '.zip',
-                                 'sha256': camera_hashes[camera]})
+            archive_bytes = archive.getvalue()
+            camera_hashes[camera] = sha(archive_bytes)
+            files['original-attempt/' + camera + '.zip.b64'] = base64.b64encode(archive_bytes).decode() + '\n'
         history_raw = ''.join(text(row) for row in history)
         frame_map_raw = text({'frames': [{'video_frame': index,
                                           'frame': row['native_frame']['frame'],
@@ -126,7 +123,7 @@ def main() -> None:
         recipe = {'format': 'worker-fixture-recipe',
                   'sources': [{'path': 'diagnostic-input.json',
                                'source': 'work/' + ROOT.name + '/' + spec_path.name,
-                               'sha256': digest}] + source_items,
+                               'sha256': digest}],
                   'generator': {'source': 'work/' + ROOT.name + '/' + spec_path.name,
                                 'sha256': digest}}
         (ROOT / f'diagnostic-{suffix}-recipe.json').write_text(json.dumps(recipe, indent=2,

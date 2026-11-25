@@ -23,14 +23,24 @@ class NativeAdapter:
         if hashlib.sha256(data).hexdigest() != highway['sha256'] or source.suffix.lower() != '.xodr':
             raise ValueError('reviewed OpenDRIVE highway source unavailable')
         self.world = self.client.generate_opendrive_world(data.decode('utf-8'))
+        self.map_bytes = data
         self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.recorder_started = False
+        self.restoration_verified = False
         self.owned = []
         self.sensors = {}
         self.old_settings = self.world.get_settings()
         settings = self.world.get_settings()
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = 0.05
-        self.world.apply_settings(settings)
+        try:
+            self.world.apply_settings(settings)
+            self.client.start_recorder(str(self.output_dir / 'carla_recorder.log'))
+            self.recorder_started = True
+        except Exception:
+            self.world.apply_settings(self.old_settings)
+            raise
 
     def place_one_way_sign(self, xy, direction):
         signs = self.world.get_blueprint_library().filter('static.prop.*oneway*')
@@ -82,6 +92,15 @@ class NativeAdapter:
             sensor.listen(q.put)
             self.sensors[name] = q
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        (self.output_dir / 'road.xodr').write_bytes(self.map_bytes)
+        trace = (self.output_dir / 'trace.jsonl').open('x', encoding='utf-8')
+        mapping = (self.output_dir / 'video_frames.jsonl').open('x', encoding='utf-8')
+        evidence = (self.output_dir / 'capture/evidence.jsonl')
+        evidence.parent.mkdir(parents=True, exist_ok=True)
+        evidence_stream = evidence.open('x', encoding='utf-8')
+        native_index = self.output_dir / 'capture/native/frames.jsonl'
+        native_index.parent.mkdir(parents=True, exist_ok=True)
+        native_stream = native_index.open('x', encoding='utf-8')
         with (self.output_dir / 'native-frames.jsonl').open('x', encoding='utf-8') as stream:
             for i in range(900):
                 direction = scene['designated_unit_xy']
@@ -98,6 +117,10 @@ class NativeAdapter:
                     image.save_to_disk(str(folder / f'{i:06d}.png'))
                 position = self.ego.get_location()
                 velocity = self.ego.get_velocity()
+                transform = self.ego.get_transform()
+                heading = transform.rotation.yaw
+                speed = math.hypot(velocity.x, velocity.y)
+                time_s = i / 20
                 row = {'original_frame': frame, 'time_s': i / 20,
                        'ego_id': str(self.ego.id), 'position_xy': [position.x, position.y],
                        'velocity_xy': [velocity.x, velocity.y], 'lane': case.lane,
@@ -110,16 +133,78 @@ class NativeAdapter:
                               'sign_governance'):
                     row[field + '_source_sha256'] = reviewed['source_hashes'][field]
                 stream.write(json.dumps(row) + '\n')
+                trace.write(json.dumps({'frame': frame, 'time_s': time_s,
+                                        'position_m': [position.x, position.y, position.z],
+                                        'position': {'x': position.x, 'y': position.y, 'z': position.z},
+                                        'speed_mps': speed, 'speed_mph': speed / .44704,
+                                        'velocity_mps': [velocity.x, velocity.y, velocity.z],
+                                        'heading_deg': heading, 'control': {}}) + '\n')
+                mapping.write(json.dumps({'video_frame': i, 'carla_frame': frame,
+                                          'native_frame': frame, 'time_s': time_s}) + '\n')
+                bounds = self.ego.bounding_box.get_world_vertices(transform)
+                observed = {'frame': frame, 'time_s': time_s, 'participants': [],
+                            'map_context': {'declared_public_way_road_ids': []}}
+                evidence_stream.write(json.dumps({'original_frame': frame,
+                        'replay_frame': frame, 'actor_id': self.ego.id,
+                        'recording_time_s': time_s, 'replay_simulation_time_s': time_s,
+                        'world': {'weather': {}},
+                        'ego': {'position_m': [position.x, position.y, position.z],
+                                'heading_deg': heading, 'speed_mps': speed,
+                                'speed_provenance': 'original_native_readback',
+                                'body_vertices_m': [[v.x, v.y, v.z] for v in bounds]},
+                        'original_observations': observed}) + '\n')
+                graph_rel = f'graphs/base/{i:08d}.adapter.json'
+                graph = self.output_dir / 'capture/native' / graph_rel
+                graph.parent.mkdir(parents=True, exist_ok=True)
+                graph.write_text(json.dumps({'path': 'capture/native/' + graph_rel,
+                    'attributes': {'frame': frame, 'time_s': time_s,
+                                   'observed_evidence': observed},
+                    'nodes': [], 'edges': []}) + '\n', encoding='utf-8')
+                native_stream.write(json.dumps({'frame': frame, 'simulation_time': time_s,
+                                                'adapter_graph': graph_rel}) + '\n')
+        for handle in (trace, mapping, evidence_stream, native_stream):
+            handle.close()
+        self.output_dir.joinpath('capture/manifest.json').write_text(json.dumps({
+            'status': 'draft', 'acquisition': 'original_native',
+            'case_id': config['selected_case_id'], 'frames': 900,
+            'extraction_confirmed': True, 'complete_driving_lanes': False,
+            'sources': {'road.xodr': hashlib.sha256(self.map_bytes).hexdigest(),
+                        'trace.jsonl': hashlib.sha256((self.output_dir / 'trace.jsonl').read_bytes()).hexdigest()}
+        }) + '\n', encoding='utf-8')
 
     def destroy(self, actor):
         actor.destroy()
 
     def close(self):
+        errors = []
         for actor in reversed(self.owned):
             try:
                 if hasattr(actor, 'stop'):
                     actor.stop()
-                actor.destroy()
-            except Exception:
-                pass
-        self.world.apply_settings(self.old_settings)
+                if actor.destroy() is False:
+                    errors.append('Native actor destruction returned false')
+            except Exception as error:
+                errors.append(repr(error))
+        if self.recorder_started:
+            try:
+                self.client.stop_recorder()
+                self.recorder_started = False
+                details = self.client.show_recorder_file_info(
+                    str(self.output_dir / 'carla_recorder.log'), False)
+                (self.output_dir / 'capture/recorder_info.txt').write_text(
+                    details, encoding='utf-8')
+            except Exception as error:
+                errors.append(repr(error))
+        try:
+            self.world.apply_settings(self.old_settings)
+            restored = self.world.get_settings()
+        except Exception as error:
+            errors.append(repr(error))
+            restored = None
+        self.restoration_verified = (
+            not errors and
+            restored is not None and
+            restored.synchronous_mode == self.old_settings.synchronous_mode and
+            restored.fixed_delta_seconds == self.old_settings.fixed_delta_seconds)
+        if not self.restoration_verified:
+            raise ValueError('original Native actor/settings restoration not verified: ' + repr(errors))

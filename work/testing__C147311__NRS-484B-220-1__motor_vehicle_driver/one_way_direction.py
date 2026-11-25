@@ -69,6 +69,10 @@ def validate_scene(scene: Mapping, case: Case):
     route = scene.get('ego_route_xy')
     require(isinstance(route, list) and len(route) >= 2 and
             all(point(p) for p in route), 'vehicle route missing')
+    displacement = [route[-1][i] - route[0][i] for i in (0, 1)]
+    projected = sum(displacement[i] * direction[i] for i in (0, 1))
+    require(projected > 0 if case.direction == 'designated' else projected < 0,
+            'reviewed route endpoint differs from selected travel direction')
     require(scene.get('lane_ids') and len(scene['lane_ids']) >= 2 and
             case.lane in scene['lane_ids'], 'selected same-direction lane missing')
     return {'case_id': case.name, 'legal_judgment': None}

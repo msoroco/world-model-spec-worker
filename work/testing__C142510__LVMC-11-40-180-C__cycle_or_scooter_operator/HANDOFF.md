@@ -1,5 +1,21 @@
 # C142510 connected-sidewalk pedestrian overtaking
 
+## Current handoff, 2026-11-25
+
+Status: **partial**. The selected CPU draft covers all six exact rider/signal/response cases and three fixed comparisons. Selected manifest SHA-256: `b824ccb7ae6c1d47043cc705e7e4d14ffea77e0b78ea06e0a1e40a95044dbcbb`. Every construction and fixture is explicitly synthetic diagnostic; no physical or legal finding is asserted.
+
+- Six selected and six fallback offline commands passed without starting simulation. Six selected and six fallback pinned compatibility commands passed positive/negative source checks, Native validation, Core decoder, four-camera render and final decode. Six recorded-only process-saved replays passed. Source-specific synthetic analyzer measurements and original-attempt negative rejection are bound to the selected cases.
+- Thirteen focused tests passed. Independent `delivery_audit.py` checks source-sealed original four-camera full decode and exact controlled comparisons; six positive mock-only and six absent-original negative audit probes passed. Six physical diagnostic contracts cover complete, incomplete and missing motion, plus lifecycle ordering. Each case has a tested upstream-start fallback with a measured original-capture trigger.
+- Canonical semantic delivery validated all seven stages. Direct candidate, physical, delivery and compatibility validators are being finalized; the selected execution validator is expected to stop at the unexpanded source-dependent judgment sweeps. Scoped static passes on the truthful partial package.
+
+Original source needed to advance: a reviewed **connected physical sidewalk** in the assigned cell, exact rider/pedestrian blueprint and audible emitter/microphone mechanisms, original source-manifest and site-context with geometry and hashes, 900-frame 20 Hz rider and pedestrian body histories, original emitter-event history, pedestrian microphone PCM16 WAV, capture identity and four original 900-frame videos. The selected `native_overtake.py` and `sidewalk_overtake.py` bind these inputs and reject a synthetic source. The law requires yielding right of way and an audible signal before overtaking; source measurements cannot decide yielding or human/legal audibility from the current synthetic fixture. The two judgment sweeps remain honestly unexpanded. Physical motion, visibility and audio quality require later original capture.
+
+The exact scoped strict command is `.venv-cpu/bin/python worker_check.py --assignment testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator --complete --require-delivery-ready`; it cannot pass while result is truthfully partial. The selected validator also requires original-source judgment sweep expansion. Do not mark ready or publish as original based on these diagnostic receipts.
+
+## Historical notes
+
+# C142510 connected-sidewalk pedestrian overtaking
+
 Status: partial. Six exact targets and three controlled comparisons are planned; no real attempt is claimed ready. The cell is labeled `nonmotorized_trail`, so a reviewed physical connected sidewalk is required before any target is admissible.
 
 ## CPU package

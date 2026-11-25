@@ -12,7 +12,7 @@ from one_way_direction import CASES
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / '.runtime-work/c147311-nov25d'
+SCRATCH = REPO / '.runtime-work/c147311-nov25e'
 ASSIGNMENT = HERE.name
 
 
@@ -33,8 +33,8 @@ def main() -> None:
         raise ValueError('export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work first')
     for case in CASES:
         case_id = ASSIGNMENT + '__' + case.name
-        attempt = SCRATCH / ('pinned-' + case.name + '-v8')
-        saved = SCRATCH / ('saved-' + case.name + '-v8-receipt.json')
+        attempt = SCRATCH / ('pinned-' + case.name + '-v12')
+        saved = SCRATCH / ('saved-' + case.name + '-v12-receipt.json')
         if not saved.is_file() or not attempt.is_dir():
             raise ValueError('pinned selected compatibility/saved source absent: ' + case.name)
         folder = HERE / 'cases' / case.name

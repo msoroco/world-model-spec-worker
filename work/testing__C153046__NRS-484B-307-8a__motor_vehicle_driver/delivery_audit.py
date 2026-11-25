@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import hashlib
+import base64
+import io
 import json
 import zipfile
 from pathlib import Path
@@ -29,8 +31,6 @@ def audit(attempt: Path, expected_case: str) -> dict:
     source_paths = {'site-packet.json': inventory['site_sha256'],
                     'history.jsonl': inventory['history_sha256'],
                     'frame-map.json': inventory['frame_map_sha256']}
-    for camera in CAMERAS:
-        source_paths[camera + '.zip'] = inventory['camera_media_sha256'][camera]
     for relative, expected in source_paths.items():
         if sha(original / relative) != expected:
             raise ValueError('sealed original source changed: ' + relative)
@@ -54,7 +54,18 @@ def audit(attempt: Path, expected_case: str) -> dict:
                 image.get('time_s') != native['time_s']:
             raise ValueError('original delivery frame join differs')
     for camera in CAMERAS:
-        with zipfile.ZipFile(original / (camera + '.zip')) as stream:
+        archive = original / (camera + '.zip')
+        if archive.is_file():
+            archive_bytes = archive.read_bytes()
+        elif inventory.get('diagnostic_fixture') is True:
+            archive_bytes = base64.b64decode(
+                (original / (camera + '.zip.b64')).read_text().strip(), validate=True)
+        else:
+            raise ValueError('missing original camera archive: ' + camera)
+        if hashlib.sha256(archive_bytes).hexdigest() != inventory['camera_media_sha256'][camera]:
+            raise ValueError('sealed original camera changed: ' + camera)
+        source_paths[camera + '.zip'] = inventory['camera_media_sha256'][camera]
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as stream:
             expected_names = [f'{index:04d}-{row["native_frame"]["frame"]}.png'
                               for index, row in enumerate(history)]
             if stream.namelist() != expected_names:

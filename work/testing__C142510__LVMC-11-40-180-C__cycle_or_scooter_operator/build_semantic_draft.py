@@ -65,7 +65,7 @@ def main():
             'observable_requirements': {
                 'observables': [{'name': channel, 'unit': 'source observation', 'description': note}],
                 'context_inputs': [], 'sweep_dimensions': [], 'landmarks': [],
-                'recording_needs': [{'name': channel, 'unit': 'original frame and audio',
+                'recording_needs': [{'name': channel, 'unit': 'm' if channel == 'sidewalk_body_history' else 'synthetic emission event',
                                      'description': note}],
                 'limitations': ['Physical and legal judgment requires original reviewed connected sidewalk and audible source.']}}))
     binding_ref = write('bindings.json', {
@@ -80,9 +80,15 @@ def main():
         construction = json.loads((HERE / ('construction-compatibility-' + name + '.json')).read_text())
         config = json.loads(next(f['content'] for f in construction['files'] if f['path'] == 'config.json'))
         signal = config['case']['signal_frame']
+        primary = 'rider_kind' if name.startswith('electric_') else ('rider_response' if name.endswith('advance') else 'signal_timing')
         cases.append({'case_id': cid, 'target_law_id': LAW,
-                      'target_type': 'connected_sidewalk_pedestrian_overtake',
+                      'target_type': 'boundary_probe',
                       'status': 'draft', 'rationale': 'Exact rider/signal/response alternative; original observations and legal judgments remain open.',
+                      'paired_probe_id': 'sidewalk_overtake_alternatives',
+                      'deliberate_differences': ['rider_kind', 'signal_timing', 'rider_response'],
+                      'probe': {'primary_variable': primary,
+                                'comparison_or_standard': 'Compare original pass, signal, brake and rider-kind source measurements; no legal threshold inferred.',
+                                'target_value_or_branch': name},
                       'variable_assignments': {
                           'rider_kind': {'kind': 'world_setup', 'value': case['rider_kind'], 'unit': 'category'},
                           'signal_timing': {'kind': 'world_setup', 'value': 'silent' if signal is None else ('before_pass' if signal < 300 else 'after_pass'), 'unit': 'category'},
