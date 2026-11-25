@@ -27,7 +27,7 @@ def run(suffix, output):
     from worker_exchange.saved_processing import run as process_saved
     import shutil
 
-    case_id = suffix if suffix in SWEEP_CASES else HERE.name + "__" + suffix
+    case_id = HERE.name + "__" + suffix
     manifest = HERE / "execution-manifest-draft.json"
     scratch = REPO / ".runtime-work/c157964-sub2/lifecycle" / (suffix + "-v2")
     if scratch.exists():

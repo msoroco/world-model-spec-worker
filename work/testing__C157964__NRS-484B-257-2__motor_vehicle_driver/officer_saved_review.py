@@ -18,7 +18,7 @@ from officer_direction import PREFIX
 EXPECTED = {PREFIX + "officer_controls_go": (True, "go"),
             PREFIX + "officer_controls_hold": (True, "stop"),
             PREFIX + "officer_present_inactive": (False, "none")}
-EXPECTED.update({f"c157964_sub2_judgment_{judgment}-{rank:04d}": (True, "go")
+EXPECTED.update({f"{PREFIX}c157964_sub2_judgment_{judgment}-{rank:04d}": (True, "go")
                  for judgment in (3, 5) for rank in range(3)})
 
 

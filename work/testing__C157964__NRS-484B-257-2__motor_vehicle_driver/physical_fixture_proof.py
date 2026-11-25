@@ -26,7 +26,7 @@ def body(x, y=0):
 def run(suffix, kind, output):
     if suffix not in CASES + SWEEP_CASES or kind not in EXPECTED:
         raise ValueError("Unknown selected physical fixture")
-    case_id = suffix if suffix in SWEEP_CASES else HERE.name + "__" + suffix
+    case_id = HERE.name + "__" + suffix
     manifest = json.loads((HERE / "execution-manifest-draft.json").read_text())
     entry = next(item for item in manifest["cases"] if item["case_id"] == case_id)
     construction = json.loads((HERE / entry["construction"]).read_text())

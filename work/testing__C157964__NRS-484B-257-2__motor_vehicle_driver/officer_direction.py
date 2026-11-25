@@ -16,7 +16,7 @@ SUFFIXES = (
     "officer_present_inactive",
 )
 PREFIX = "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__"
-SWEEP_CASE = re.compile(r"c157964_sub2_judgment_[35]-000[0-2]\Z")
+SWEEP_CASE = re.compile(r"testing__C157964__NRS-484B-257-2__motor_vehicle_driver__c157964_sub2_judgment_[35]-000[0-2]\Z")
 
 
 def behavior_suffix(case_id):

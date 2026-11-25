@@ -1,3 +1,7 @@
+## 2026-11-25 C157964 subsection 2 current-runtime checkpoint
+
+`testing__C157964__NRS-484B-257-2__motor_vehicle_driver` remains partial. Two bounded physical judgment grids produced six assignment-qualified selected cases; with the three original officer cases, the current-runtime validated execution manifest contains nine exact cases and 18 primary/fallback bundles. All 18 official offline, compatibility (positive and negative) and independent saved-source audits pass. Nine physical preparation/lifecycle receipts and both original officer comparison audits pass. The package suite passes 47 tests and scoped complete `worker_check.py` passes. Four qualitative judgment grids (1, 2, 4, 6) remain worker-owned CPU work. No synthetic fixture is claimed as Native physical or legal acceptance, and prior-ready assignments were not changed. Proof commands, source bindings and next work are in the assignment `HANDOFF.md`.
+
 ## 2026-11-24 C157964 portable return scan
 
 The final worker-owned portable scan covered 10,129 files under `work/` after removing test-generated `__pycache__` bytecode: zero invalid UTF-8, files above the 2 MiB/5 MiB limits, trailing whitespace, or conflict markers. No `.tar.xz` or `.pyc` remains under `work/`. The whole-batch quick check was rerun; its log is `.runtime-work/c157964-quick-after-diagnostics.log` and completion was still pending at this checkpoint. The preceding whole-batch quick run had already passed UTF-8 decoding and stopped on a retained previous-runtime execution manifest.

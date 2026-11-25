@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
            "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 SUFFIXES = ("officer_controls_go", "officer_controls_hold", "officer_present_inactive")
-SWEEP_CASES = tuple(f"c157964_sub2_judgment_{judgment}-{index:04d}"
+SWEEP_CASES = tuple(f"{HERE.name}__c157964_sub2_judgment_{judgment}-{index:04d}"
                     for judgment in (3, 5) for index in range(3))
 
 

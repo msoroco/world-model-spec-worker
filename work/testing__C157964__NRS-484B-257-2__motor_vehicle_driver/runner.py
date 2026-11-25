@@ -21,7 +21,7 @@ from officer_traffic_sampler import native_sampler
 
 ASSIGNMENT = PREFIX[:-2]
 CASES = {PREFIX + suffix for suffix in SUFFIXES}
-SWEEP_CASES = {f"c157964_sub2_judgment_{judgment}-{rank:04d}"
+SWEEP_CASES = {f"{ASSIGNMENT}__c157964_sub2_judgment_{judgment}-{rank:04d}"
                for judgment in (3, 5) for rank in range(3)}
 
 
