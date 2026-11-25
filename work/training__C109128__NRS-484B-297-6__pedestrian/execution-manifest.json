@@ -1,0 +1,2241 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C109128__NRS-484B-297-6__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_draft",
+  "delivery_ready": false,
+  "cases": [
+    {
+      "case_id": "training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_a",
+      "construction": "native/selected-drafts/condition_a/primary/construction.json",
+      "construction_sha256": "1e15f9df535200ad4bc6bf83f71a174ef935bdc408af830f2037b9d3787afe30",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-drafts/condition_a/fallback1/construction.json",
+          "construction_sha256": "41d0766fa14166ab336203256f4683af0a15bb7796f56f850eb5581083fe01e0",
+          "trigger": {
+            "source": "original pedestrian footprint/map readback",
+            "metric": "minimum distance to sidewalk-side road edge",
+            "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"
+          },
+          "changed_knobs": [
+            "lateral_shift_m: 0.0 to 0.08"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_a --candidate fallback1 --output .runtime-work/c109128/selected-offline-condition_a-fallback1",
+            "construction_sha256": "41d0766fa14166ab336203256f4683af0a15bb7796f56f850eb5581083fe01e0",
+            "exit_code": 0,
+            "log": "selected-offline-refresh-condition_a-fallback1.log",
+            "log_sha256": "39fe0d7dc2926af3244b502f7561813601e0a4358e92524e87691372f5b4c58e"
+          },
+          "compatibility": {
+            "receipt": "selected-refresh-condition_a-fallback1-compatibility.json",
+            "sha256": "c65e5a3d687c8292aae7f09afb0ffbf5293920f9a54db685e9786b64626d5288",
+            "log": "selected-refresh-condition_a-fallback1-analysis.log",
+            "negative_log": "selected-refresh-condition_a-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-condition_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109128__NRS-484B-297-6__pedestrian/diagnostic-condition_a-primary-recipe.json",
+      "id": "condition_a",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.sidewalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.sidewalk.jsonl"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.obstruction.jsonl"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.highway.jsonl"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.road_edge.jsonl"
+          },
+          {
+            "name": "st.bicycle_lane_or_path",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.bicycle_lane_or_path.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.position.jsonl"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.heading.jsonl"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.path_length.jsonl"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.time.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_context",
+            "unit": "source",
+            "method": "original Native map and obstruction readback"
+          }
+        ],
+        "limitations": [
+          "Physical obstruction, due care, immediately adjacent highway public status, side-as-possible and practicable return require independent review"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_a --output .runtime-work/c109128/selected-offline-condition_a",
+        "construction_sha256": "1e15f9df535200ad4bc6bf83f71a174ef935bdc408af830f2037b9d3787afe30",
+        "exit_code": 0,
+        "log": "selected-offline-refresh-condition_a-primary.log",
+        "log_sha256": "2c176b6dd1243db0e870624641ef8bea31d984f9d869e8727337a855aae4414e"
+      },
+      "compatibility": {
+        "receipt": "selected-refresh-condition_a-primary-compatibility.json",
+        "sha256": "30b2315abee3768f6370d24a452c7a88c89f7e147476acc463b393abde817faf",
+        "log": "selected-refresh-condition_a-primary-analysis.log",
+        "negative_log": "selected-refresh-condition_a-primary-negative.log"
+      },
+      "negative": {
+        "expected_error": "Missing required source: sidewalk_context.json",
+        "log": "selected-refresh-condition_a-primary-negative.log",
+        "log_sha256": "62b450aa06051b81d2b1ef4d4f694ad2f9966397e2bb90d56e7318bae7fcbaaa"
+      },
+      "acquisition": {
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109128__NRS-484B-297-6__pedestrian/execution-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_a",
+        "test_log": "process-saved-refresh-condition_a.log",
+        "test_log_sha256": "b70c834d6b957123970b268f2e1a5a33953da5969b011dc465dd2d2cbedef978",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_b",
+      "construction": "native/selected-drafts/condition_b/primary/construction.json",
+      "construction_sha256": "4d65ea5481bb821620802549d5715794ebde2376bd04842347a3a35ba0e054b2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-drafts/condition_b/fallback1/construction.json",
+          "construction_sha256": "4f70b247dbf733b640a7bbb2ee25ea0a78aac09df1e030ab98a6bc87ad8c7deb",
+          "trigger": {
+            "source": "original pedestrian footprint/map readback",
+            "metric": "minimum distance to sidewalk-side road edge",
+            "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"
+          },
+          "changed_knobs": [
+            "lateral_shift_m: 0.0 to 0.08"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_b --candidate fallback1 --output .runtime-work/c109128/selected-offline-condition_b-fallback1",
+            "construction_sha256": "4f70b247dbf733b640a7bbb2ee25ea0a78aac09df1e030ab98a6bc87ad8c7deb",
+            "exit_code": 0,
+            "log": "selected-offline-refresh-condition_b-fallback1.log",
+            "log_sha256": "6ccbefa3a6ec0ea93f3847fa17c06eb28b796e94754fd3e335b49a2338f23fbd"
+          },
+          "compatibility": {
+            "receipt": "selected-refresh-condition_b-fallback1-compatibility.json",
+            "sha256": "db58a8713082a4d1a2d35b5e0ae443a2358481819dd89071cea87c3f1b61a582",
+            "log": "selected-refresh-condition_b-fallback1-analysis.log",
+            "negative_log": "selected-refresh-condition_b-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-condition_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109128__NRS-484B-297-6__pedestrian/diagnostic-condition_b-primary-recipe.json",
+      "id": "condition_b",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.sidewalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.sidewalk.jsonl"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.obstruction.jsonl"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.highway.jsonl"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.road_edge.jsonl"
+          },
+          {
+            "name": "st.bicycle_lane_or_path",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.bicycle_lane_or_path.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.position.jsonl"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.heading.jsonl"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.path_length.jsonl"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.time.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_context",
+            "unit": "source",
+            "method": "original Native map and obstruction readback"
+          }
+        ],
+        "limitations": [
+          "Physical obstruction, due care, immediately adjacent highway public status, side-as-possible and practicable return require independent review"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_b --output .runtime-work/c109128/selected-offline-condition_b",
+        "construction_sha256": "4d65ea5481bb821620802549d5715794ebde2376bd04842347a3a35ba0e054b2",
+        "exit_code": 0,
+        "log": "selected-offline-refresh-condition_b-primary.log",
+        "log_sha256": "ccc1f6e8806fefbfa984f56dc3c890eeb4e9d651da04d8b6e71f0b436d89769b"
+      },
+      "compatibility": {
+        "receipt": "selected-refresh-condition_b-primary-compatibility.json",
+        "sha256": "44b4740790aac26601e0c4edc571bf2da5884a32e68fda3d9e63dad63e2ddfe3",
+        "log": "selected-refresh-condition_b-primary-analysis.log",
+        "negative_log": "selected-refresh-condition_b-primary-negative.log"
+      },
+      "negative": {
+        "expected_error": "Missing required source: sidewalk_context.json",
+        "log": "selected-refresh-condition_b-primary-negative.log",
+        "log_sha256": "d3c6adc305de7c39272125c9c2557d86f341078d6625c0bce02f83c339643e2b"
+      },
+      "acquisition": {
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109128__NRS-484B-297-6__pedestrian/execution-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C109128__NRS-484B-297-6__pedestrian__selected_cab4cd30__condition_b",
+        "test_log": "process-saved-refresh-condition_b.log",
+        "test_log_sha256": "2f41c2d00f20b8bbb65d68dc670699d6b103d2d3414754651a40ab9f8ce4e7b3",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109128__NRS-484B-297-6__pedestrian__direction_east",
+      "construction": "native/selected-drafts/direction_east/primary/construction.json",
+      "construction_sha256": "0a019845fca3479fae112bd1b454426c522ab631593d39b9161afca463dd3dcd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-drafts/direction_east/fallback1/construction.json",
+          "construction_sha256": "cd1875062aa670fd3ec280cc64be0dfcd66a5123bb3b5386a0d3ae239bbfc5d9",
+          "trigger": {
+            "source": "original pedestrian footprint/map readback",
+            "metric": "minimum distance to sidewalk-side road edge",
+            "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"
+          },
+          "changed_knobs": [
+            "lateral_shift_m: 0.0 to 0.08"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__direction_east --candidate fallback1 --output .runtime-work/c109128/selected-offline-direction_east-fallback1",
+            "construction_sha256": "cd1875062aa670fd3ec280cc64be0dfcd66a5123bb3b5386a0d3ae239bbfc5d9",
+            "exit_code": 0,
+            "log": "alt-offline-direction_east-fallback1.log",
+            "log_sha256": "f13e5f02a9aae1e80a605b7cb0876c50e3f99c4d937cbd410f995e8f6e7632e4"
+          },
+          "compatibility": {
+            "receipt": "public-direction_east-fallback1-compatibility.json",
+            "sha256": "0efb1fba24c1b60bf0c9b7a7897aa0b8bf6151bc7043beacc4f8362f806ef12e",
+            "log": "public-direction_east-fallback1-analysis.log",
+            "negative_log": "public-direction_east-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-direction_east.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109128__NRS-484B-297-6__pedestrian/diagnostic-direction_east-primary-recipe.json",
+      "id": "direction_east",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.sidewalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.sidewalk.jsonl"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.obstruction.jsonl"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.highway.jsonl"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.road_edge.jsonl"
+          },
+          {
+            "name": "st.bicycle_lane_or_path",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.bicycle_lane_or_path.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.position.jsonl"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.heading.jsonl"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.path_length.jsonl"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.time.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_context",
+            "unit": "source",
+            "method": "original Native map and obstruction readback"
+          }
+        ],
+        "limitations": [
+          "Physical obstruction, due care, immediately adjacent highway public status, side-as-possible and practicable return require independent review"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__direction_east --output .runtime-work/c109128/selected-offline-direction_east",
+        "construction_sha256": "0a019845fca3479fae112bd1b454426c522ab631593d39b9161afca463dd3dcd",
+        "exit_code": 0,
+        "log": "alt-offline-direction_east-primary.log",
+        "log_sha256": "79f4bde6d25a9c4b287170577f733fc205d681f08c176940112fd491cbc6fa77"
+      },
+      "compatibility": {
+        "receipt": "public-direction_east-primary-compatibility.json",
+        "sha256": "8c4017871c496a496f1136b5a34f2059252105cae1589353eae9827f0a6d661f",
+        "log": "public-direction_east-primary-analysis.log",
+        "negative_log": "public-direction_east-primary-negative.log"
+      },
+      "negative": {
+        "expected_error": "Missing required source: sidewalk_context.json",
+        "log": "public-direction_east-primary-negative.log",
+        "log_sha256": "8f3399212299d4f1633e23457969aafffc6ee017feeb7f6a4cf5383afeb29004"
+      },
+      "acquisition": {
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109128__NRS-484B-297-6__pedestrian/execution-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__direction_east --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C109128__NRS-484B-297-6__pedestrian__direction_east",
+        "test_log": "process-saved-direction_east.log",
+        "test_log_sha256": "5007b4ee7d35ed7b0d1e3babf90ee2d95851de3f099ce5ffdc3afd08470cf71e",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109128__NRS-484B-297-6__pedestrian__direction_west",
+      "construction": "native/selected-drafts/direction_west/primary/construction.json",
+      "construction_sha256": "cddf1be9c7fac2a104b37e7958d0ed1d09e52e23cc8b71faa9917f2b80e2d7d2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-drafts/direction_west/fallback1/construction.json",
+          "construction_sha256": "031a0852d2e9d01c029eb8b6a2d26eaea0642183c77ed3acc16e7bf45cdb7ab3",
+          "trigger": {
+            "source": "original pedestrian footprint/map readback",
+            "metric": "minimum distance to sidewalk-side road edge",
+            "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"
+          },
+          "changed_knobs": [
+            "lateral_shift_m: 0.0 to 0.08"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__direction_west --candidate fallback1 --output .runtime-work/c109128/selected-offline-direction_west-fallback1",
+            "construction_sha256": "031a0852d2e9d01c029eb8b6a2d26eaea0642183c77ed3acc16e7bf45cdb7ab3",
+            "exit_code": 0,
+            "log": "alt-offline-direction_west-fallback1.log",
+            "log_sha256": "7ce6ba99c7b0cdd23f69522cefb449fe79e62469c3f13f44d12c1717b2a36d3b"
+          },
+          "compatibility": {
+            "receipt": "public-direction_west-fallback1-compatibility.json",
+            "sha256": "acd5819738b9a28a2862901d01f5d0379b2d912cbf62c3687b7cad7fcc690f97",
+            "log": "public-direction_west-fallback1-analysis.log",
+            "negative_log": "public-direction_west-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-direction_west.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109128__NRS-484B-297-6__pedestrian/diagnostic-direction_west-primary-recipe.json",
+      "id": "direction_west",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.sidewalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.sidewalk.jsonl"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.obstruction.jsonl"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.highway.jsonl"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.road_edge.jsonl"
+          },
+          {
+            "name": "st.bicycle_lane_or_path",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.bicycle_lane_or_path.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.position.jsonl"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.heading.jsonl"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.path_length.jsonl"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.time.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_context",
+            "unit": "source",
+            "method": "original Native map and obstruction readback"
+          }
+        ],
+        "limitations": [
+          "Physical obstruction, due care, immediately adjacent highway public status, side-as-possible and practicable return require independent review"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__direction_west --output .runtime-work/c109128/selected-offline-direction_west",
+        "construction_sha256": "cddf1be9c7fac2a104b37e7958d0ed1d09e52e23cc8b71faa9917f2b80e2d7d2",
+        "exit_code": 0,
+        "log": "alt-offline-direction_west-primary.log",
+        "log_sha256": "b799772fa03c6ab721a8bf79c5e51447e4e5e1aec93ab0b74ddc73fd3524ebdc"
+      },
+      "compatibility": {
+        "receipt": "public-direction_west-primary-compatibility.json",
+        "sha256": "60242451a4cbd245543e5262977ac846784463bb6b60a853107ffaf442281551",
+        "log": "public-direction_west-primary-analysis.log",
+        "negative_log": "public-direction_west-primary-negative.log"
+      },
+      "negative": {
+        "expected_error": "Missing required source: sidewalk_context.json",
+        "log": "public-direction_west-primary-negative.log",
+        "log_sha256": "2aff378e869c83f84b1654552c1cc226d8cca74fe98d7524e76aa0586c89d725"
+      },
+      "acquisition": {
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109128__NRS-484B-297-6__pedestrian/execution-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__direction_west --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C109128__NRS-484B-297-6__pedestrian__direction_west",
+        "test_log": "process-saved-direction_west.log",
+        "test_log_sha256": "98107e95d04d86e773b936feb2026bb8ac7140d410e192849441c666188c87d1",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109128__NRS-484B-297-6__pedestrian__bike_passable",
+      "construction": "native/selected-drafts/bike_passable/primary/construction.json",
+      "construction_sha256": "641f22ec9e0d19a312a86a673c41ef2b6d967fa94f863783ac824291fb787bb8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-drafts/bike_passable/fallback1/construction.json",
+          "construction_sha256": "e9cee442af1b17267abf6e9e5f270f3e55ed5ab573da3ebdab9bc1f5cd03f8ff",
+          "trigger": {
+            "source": "original pedestrian footprint/map readback",
+            "metric": "minimum distance to sidewalk-side road edge",
+            "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"
+          },
+          "changed_knobs": [
+            "lateral_shift_m: 0.0 to 0.08"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__bike_passable --candidate fallback1 --output .runtime-work/c109128/selected-offline-bike_passable-fallback1",
+            "construction_sha256": "e9cee442af1b17267abf6e9e5f270f3e55ed5ab573da3ebdab9bc1f5cd03f8ff",
+            "exit_code": 0,
+            "log": "alt-offline-bike_passable-fallback1.log",
+            "log_sha256": "9e58cc407a9e8545aadf1b6b0709ca81154de1174d89892e80104e4cae5e4ec6"
+          },
+          "compatibility": {
+            "receipt": "public-bike_passable-fallback1-compatibility.json",
+            "sha256": "a65919f8ef0bf4502bbadb74e707250ecf5495bdfa7998c5bdf675977e2d9318",
+            "log": "public-bike_passable-fallback1-analysis.log",
+            "negative_log": "public-bike_passable-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-bike_passable.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109128__NRS-484B-297-6__pedestrian/diagnostic-bike_passable-primary-recipe.json",
+      "id": "bike_passable",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.sidewalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.sidewalk.jsonl"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.obstruction.jsonl"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.highway.jsonl"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.road_edge.jsonl"
+          },
+          {
+            "name": "st.bicycle_lane_or_path",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.bicycle_lane_or_path.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.position.jsonl"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.heading.jsonl"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.path_length.jsonl"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.time.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_context",
+            "unit": "source",
+            "method": "original Native map and obstruction readback"
+          }
+        ],
+        "limitations": [
+          "Physical obstruction, due care, immediately adjacent highway public status, side-as-possible and practicable return require independent review"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__bike_passable --output .runtime-work/c109128/selected-offline-bike_passable",
+        "construction_sha256": "641f22ec9e0d19a312a86a673c41ef2b6d967fa94f863783ac824291fb787bb8",
+        "exit_code": 0,
+        "log": "alt-offline-bike_passable-primary.log",
+        "log_sha256": "417214cfe63cec239f94183babdbe7860d0f4348a8e216a7d545f95214466ca9"
+      },
+      "compatibility": {
+        "receipt": "public-bike_passable-primary-compatibility.json",
+        "sha256": "85a0e63c3c5c49d00972ad61cc3d8be0387930a6d92c0594bef61a2ac19f0712",
+        "log": "public-bike_passable-primary-analysis.log",
+        "negative_log": "public-bike_passable-primary-negative.log"
+      },
+      "negative": {
+        "expected_error": "Missing required source: sidewalk_context.json",
+        "log": "public-bike_passable-primary-negative.log",
+        "log_sha256": "01d1aeb72270e7e6cc7312e56c8b1e44e0ef7a669002c2a1721697792b2d6f68"
+      },
+      "acquisition": {
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109128__NRS-484B-297-6__pedestrian/execution-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__bike_passable --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C109128__NRS-484B-297-6__pedestrian__bike_passable",
+        "test_log": "process-saved-bike_passable.log",
+        "test_log_sha256": "a2f7202ca5475afe6a486f32f620f278993b26912133223b6e2ebb7823c9d61a",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "training__C109128__NRS-484B-297-6__pedestrian__bike_impassable",
+      "construction": "native/selected-drafts/bike_impassable/primary/construction.json",
+      "construction_sha256": "4dd43a33dad9b40c4127308e90a80fdaafa85c11b64c8404930368b54d53498b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pedestrian tracking could leave the intended surveyed travel strip; fallback shifts the controller target laterally by 8 cm while preserving case identity and comparison variable"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-drafts/bike_impassable/fallback1/construction.json",
+          "construction_sha256": "215e17a4762f4cd0b9c40aeaab11da4f4d88ed8eefa6e5070fc2ea1e738594d5",
+          "trigger": {
+            "source": "original pedestrian footprint/map readback",
+            "metric": "minimum distance to sidewalk-side road edge",
+            "failure_condition": "primary full footprint leaves surveyed target travel strip before obstruction clearance"
+          },
+          "changed_knobs": [
+            "lateral_shift_m: 0.0 to 0.08"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__bike_impassable --candidate fallback1 --output .runtime-work/c109128/selected-offline-bike_impassable-fallback1",
+            "construction_sha256": "215e17a4762f4cd0b9c40aeaab11da4f4d88ed8eefa6e5070fc2ea1e738594d5",
+            "exit_code": 0,
+            "log": "alt-offline-bike_impassable-fallback1.log",
+            "log_sha256": "2018b667bbf4bb42a5d8519f073454014eae346a3bbd0ac9e312c7b07b03fa18"
+          },
+          "compatibility": {
+            "receipt": "public-bike_impassable-fallback1-compatibility.json",
+            "sha256": "22519af0be25d9860fcdb58245acbd1bf9526b7c25e0e9dab6442c4c663fbced",
+            "log": "public-bike_impassable-fallback1-analysis.log",
+            "negative_log": "public-bike_impassable-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract-bike_impassable.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109128__NRS-484B-297-6__pedestrian/diagnostic-bike_impassable-primary-recipe.json",
+      "id": "bike_impassable",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.sidewalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.sidewalk.jsonl"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.obstruction.jsonl"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.highway.jsonl"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.road_edge.jsonl"
+          },
+          {
+            "name": "st.bicycle_lane_or_path",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.bicycle_lane_or_path.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.position.jsonl"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.heading.jsonl"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.path_length.jsonl"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "saved original Native map, body and camera/frame joins",
+            "time_window": "entire 600-frame 30-second attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "50 ms samples; physical and legal judgments pending",
+            "source": "channels/kin.time.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "sidewalk_context",
+            "unit": "source",
+            "method": "original Native map and obstruction readback"
+          }
+        ],
+        "limitations": [
+          "Physical obstruction, due care, immediately adjacent highway public status, side-as-possible and practicable return require independent review"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C109128__NRS-484B-297-6__pedestrian/public-draft-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__bike_impassable --output .runtime-work/c109128/selected-offline-bike_impassable",
+        "construction_sha256": "4dd43a33dad9b40c4127308e90a80fdaafa85c11b64c8404930368b54d53498b",
+        "exit_code": 0,
+        "log": "alt-offline-bike_impassable-primary.log",
+        "log_sha256": "9d98a1daa8f799373e6c1c658da7923516120331d8c57327a8dff83669bf583b"
+      },
+      "compatibility": {
+        "receipt": "public-bike_impassable-primary-compatibility.json",
+        "sha256": "1989f4e92ff58438a3c29b62ef5b3fd8f2f1db923a9fad5d78d3b4d85d500ecf",
+        "log": "public-bike_impassable-primary-analysis.log",
+        "negative_log": "public-bike_impassable-primary-negative.log"
+      },
+      "negative": {
+        "expected_error": "Missing required source: sidewalk_context.json",
+        "log": "public-bike_impassable-primary-negative.log",
+        "log_sha256": "6a9b4e1cd40f805b89ff76bc22b295cab3f8c9de5681e6de9fa44c1242e8ddf6"
+      },
+      "acquisition": {
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.highway": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "pedestrian-original.jsonl",
+            "sidewalk_context.json",
+            "video_frames.jsonl",
+            "camera-sources.jsonl"
+          ],
+          "method": "original Native pedestrian, map and synchronized camera source acquisition"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C109128__NRS-484B-297-6__pedestrian/execution-manifest.json --case training__C109128__NRS-484B-297-6__pedestrian__bike_impassable --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C109128__NRS-484B-297-6__pedestrian__bike_impassable",
+        "test_log": "process-saved-bike_impassable.log",
+        "test_log_sha256": "ea5b23fb152aca162468bb753ca67fe11fe9078cbfe58d715204b84dfd29b760",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}

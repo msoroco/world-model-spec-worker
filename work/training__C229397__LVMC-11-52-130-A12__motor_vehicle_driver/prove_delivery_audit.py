@@ -56,6 +56,18 @@ def main():
         reject(case, attempt, receipt_path, 'Original saved frame join incomplete')
         receipt['timestamp_joins']['frames'] = 600
         receipt_path.write_text(json.dumps(receipt) + '\n')
+        result_path = attempt / 'result.json'
+        original_result = result_path.read_text()
+        altered_result = json.loads(original_result)
+        altered_result['target_checks'][0]['matched'] = False
+        result_path.write_text(json.dumps(altered_result) + '\n')
+        receipt['result_sha256'] = sha(result_path)
+        receipt_path.write_text(json.dumps(receipt) + '\n')
+        reject(case, attempt, receipt_path,
+               'Saved crosswalk measurement or acceptance boundary differs')
+        result_path.write_text(original_result)
+        receipt['result_sha256'] = sha(result_path)
+        receipt_path.write_text(json.dumps(receipt) + '\n')
         try:
             audit(case, attempt, receipt_path, diagnostic=False)
         except ValueError as exc:
@@ -68,7 +80,8 @@ def main():
                'Original source missing or stale: crosswalk-source-review.json')
     print(json.dumps({'passed': True, 'case_id': case,
                       'checks': ['diagnostic source join', 'changed case', 'stale original',
-                                 'short frame receipt', 'missing original source decode',
+                                 'short frame receipt', 'unmatched measured target',
+                                 'missing original source decode',
                                  'missing independent review'],
                       'diagnostic_fixture': True,
                       'physical_acceptance_claimed': False}, sort_keys=True))

@@ -385,5 +385,32 @@
   "legal_analysis_note": "NRS 484B.283(1)(d)(1) facing Walk and (2) flashing Dont Walk/Wait with countdown are distinct entry permissions. (3) and (4) concern continuation after lawful entry and do not create fresh entry permission. Original governance, countdown pixels and timing remain unverified.",
   "readiness": "native_construction_cpu_tested_not_delivery_ready",
   "physical_prerequisites": "Track pedestrian entry onto highway while facing actual steady-red signal; separately represent another device that may permit entry.",
-  "legal_interpretation_limit": "A vehicle signal facing an unrelated approach does not govern the pedestrian."
+  "legal_interpretation_limit": "A vehicle signal facing an unrelated approach does not govern the pedestrian.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "whole intersection, red head, other-device head and walker",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian approach and highway boundary",
+        "interval": "startup through first entry or full no-entry interval"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "facing red head, other-device indication and crosswalk",
+        "interval": "all governing frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "walker footprint and both original heads",
+        "interval": "entry through clearance or full no-entry interval"
+      }
+    ]
+  }
 }

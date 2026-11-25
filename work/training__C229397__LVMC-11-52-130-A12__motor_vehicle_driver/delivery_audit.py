@@ -94,7 +94,8 @@ def audit(case, attempt, processing_path, diagnostic=False, review_path=None):
             result.get('legal_verdict_claimed') is False and
             result.get('video_frame_map_reference') == 'video_frames.jsonl' and
             result.get('behavior_attempted') is True and
-            len(result.get('target_checks', [])) == 1,
+            len(result.get('target_checks', [])) == 1 and
+            result['target_checks'][0].get('matched') is True,
             'Saved crosswalk measurement or acceptance boundary differs')
     require(processing.get('final_video_checks', {}).get('passed') is True and
             processing['final_video_checks'].get('frames') == 600,

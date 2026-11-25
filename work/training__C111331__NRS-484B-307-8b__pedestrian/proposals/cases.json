@@ -1,8 +1,183 @@
 {
+  "format": "worker-case-proposals",
+  "cell_id": "C111331",
+  "actor": "pedestrian",
+  "status": "draft",
+  "sweep_specs": [],
   "cases": [
     {
+      "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__baseline",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "baseline",
+      "rationale": "Shared authored intersection setup; no additional recording",
+      "fixed_context": "Road, facing red head, four cameras and duration",
+      "variable_assignments": {
+        "steady_red_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored steady red"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "dont_walk"
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "dev.pedestrian_signal",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "method": "original Native walker, signal, body and camera source join",
+            "reference_frame": "original 20 Hz Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "uncertainty": "display pixels, head governance and permission need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_red_intersection",
+            "unit": "structured",
+            "method": "authored OpenDRIVE and original head readback"
+          }
+        ],
+        "limitations": [
+          "CPU diagnostics do not establish original physical pixels"
+        ]
+      }
+    },
+    {
       "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_a",
-      "target_type": "planned_delivery_comparison",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "training__C111331__NRS-484B-307-8b__pedestrian__red_entry_contrast",
+      "deliberate_differences": [
+        "pedestrian_highway_entry"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_highway_entry",
+        "comparison_or_standard": "training__C111331__NRS-484B-307-8b__pedestrian__red_entry_contrast",
+        "target_value_or_branch": "condition_a"
+      },
+      "rationale": "Controlled condition_a pedestrian red-entry contrast",
+      "fixed_context": "Hold road, steady-red head, cameras and duration fixed within each comparison.",
+      "variable_assignments": {
+        "steady_red_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored steady red"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "dont_walk"
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native governance, display pixels and statutory device permission need original review"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -119,7 +294,39 @@
     },
     {
       "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__condition_b",
-      "target_type": "planned_delivery_comparison",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "violating_attempt",
+      "paired_probe_id": "training__C111331__NRS-484B-307-8b__pedestrian__red_entry_contrast",
+      "deliberate_differences": [
+        "pedestrian_highway_entry"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_highway_entry",
+        "comparison_or_standard": "training__C111331__NRS-484B-307-8b__pedestrian__red_entry_contrast",
+        "target_value_or_branch": "condition_b"
+      },
+      "rationale": "Controlled condition_b pedestrian red-entry contrast",
+      "fixed_context": "Hold road, steady-red head, cameras and duration fixed within each comparison.",
+      "variable_assignments": {
+        "steady_red_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored steady red"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "dont_walk"
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native governance, display pixels and statutory device permission need original review"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -236,7 +443,39 @@
     },
     {
       "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_absent",
-      "target_type": "planned_delivery_comparison",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "violating_attempt",
+      "paired_probe_id": "training__C111331__NRS-484B-307-8b__pedestrian__other_device_permission_contrast",
+      "deliberate_differences": [
+        "other_device_permission"
+      ],
+      "probe": {
+        "primary_variable": "other_device_permission",
+        "comparison_or_standard": "training__C111331__NRS-484B-307-8b__pedestrian__other_device_permission_contrast",
+        "target_value_or_branch": "exception_absent"
+      },
+      "rationale": "Controlled exception_absent pedestrian red-entry contrast",
+      "fixed_context": "Hold road, steady-red head, cameras and duration fixed within each comparison.",
+      "variable_assignments": {
+        "steady_red_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored steady red"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "dont_walk"
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native governance, display pixels and statutory device permission need original review"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -353,7 +592,39 @@
     },
     {
       "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_permits",
-      "target_type": "planned_delivery_comparison",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "training__C111331__NRS-484B-307-8b__pedestrian__other_device_permission_contrast",
+      "deliberate_differences": [
+        "other_device_permission"
+      ],
+      "probe": {
+        "primary_variable": "other_device_permission",
+        "comparison_or_standard": "training__C111331__NRS-484B-307-8b__pedestrian__other_device_permission_contrast",
+        "target_value_or_branch": "exception_permits"
+      },
+      "rationale": "Controlled exception_permits pedestrian red-entry contrast",
+      "fixed_context": "Hold road, steady-red head, cameras and duration fixed within each comparison.",
+      "variable_assignments": {
+        "steady_red_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored steady red"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native governance, display pixels and statutory device permission need original review"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -470,7 +741,39 @@
     },
     {
       "case_id": "training__C111331__NRS-484B-307-8b__pedestrian__selected_0b864230__exception_countdown",
-      "target_type": "planned_delivery_comparison",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "training__C111331__NRS-484B-307-8b__pedestrian__countdown_permission_contrast",
+      "deliberate_differences": [
+        "other_device_permission"
+      ],
+      "probe": {
+        "primary_variable": "other_device_permission",
+        "comparison_or_standard": "training__C111331__NRS-484B-307-8b__pedestrian__countdown_permission_contrast",
+        "target_value_or_branch": "exception_countdown"
+      },
+      "rationale": "Controlled exception_countdown pedestrian red-entry contrast",
+      "fixed_context": "Hold road, steady-red head, cameras and duration fixed within each comparison.",
+      "variable_assignments": {
+        "steady_red_facing_pedestrian": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "authored steady red"
+        },
+        "other_device_permission": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "flashing_dont_walk_countdown"
+        },
+        "pedestrian_highway_entry": {
+          "kind": "controller",
+          "unit": "bool",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Native governance, display pixels and statutory device permission need original review"
+      ],
       "recording_description": {
         "channels": [
           {

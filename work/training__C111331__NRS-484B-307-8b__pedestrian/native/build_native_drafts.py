@@ -56,7 +56,7 @@ def main():
                                                'method': 'authored OpenDRIVE and original head readback'}],
                            'limitations': ['CPU diagnostics do not establish original physical pixels']}
             config.update(selected_case_id=case_id,
-                          source_packets=[], case=condition,
+                          source_packets=[], case={'case_id': case_id},
                           recording_description=description)
             files = [{'path': name, 'content': value} for name, value in (
                 ('runner.py', (HERE / 'runner.py').read_text()),
