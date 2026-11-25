@@ -14,7 +14,7 @@ MODULES = (
     'native_capture.py', 'native_source_adapter.py', 'native_map.py',
     'crest_geometry.py', 'saved_crest.py', 'analysis.py',
     'derived_audit.py', 'delivery_media.py', 'saved_delivery.py',
-    'delivery_audit.py', 'comparison_audit.py',
+    'delivery_audit.py', 'comparison_audit.py', 'compare_saved.py',
 )
 CHANNELS = (
     'original_lane_directions', 'crest_grade_profile',

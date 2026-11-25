@@ -7,7 +7,7 @@
     {
       "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal",
       "construction": "construction-left_signal.json",
-      "construction_sha256": "22c73e3ac5ad721dabf72ed5469f9f02ac34abb0b14364c5cce8784585439368",
+      "construction_sha256": "2c3a79a7fe718f7c65df415bfd80c26416855a0f0112460430c4c7062e0e66db",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual paved right corridor, footprint clearance and intersection overlap need Native map and collision review; no fallback selected without measured failure."
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "fallback1-construction-left_signal.json",
-          "construction_sha256": "9416c1a1f3ded153b362f1e564bad34ecb9aa3f9f1ffc11f59299721ece53302",
+          "construction_sha256": "0eca59d56112a33e3d47ae2335feef00c73785fa3d2d4c642b94ef7ddb6da815",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-confirmed paved right corridor and actor spawn clearance",
@@ -27,21 +27,27 @@
             "independently reviewed alternate actor starts and camera mounts"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --candidate fallback1 --output .runtime-work/c110264-output/offline6-left_signal-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --candidate fallback1 --output .runtime-work/c110264-output/offline7-left_signal-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-left_signal-fallback1.log",
-            "log_sha256": "f5058c5560a5352f8b8d2012346d3530dcf5dddc365742fc0ec3861d9ec34348",
-            "construction_sha256": "9416c1a1f3ded153b362f1e564bad34ecb9aa3f9f1ffc11f59299721ece53302"
+            "log_sha256": "f9de417d83d91a856e4a4634198c88059cfea54e0d9a6f5a50efa7bb495ebff0",
+            "construction_sha256": "0eca59d56112a33e3d47ae2335feef00c73785fa3d2d4c642b94ef7ddb6da815"
+          },
+          "compatibility": {
+            "receipt": "compat-left_signal-fallback1.json",
+            "sha256": "7fcd80c09eb6954d777d0af49d68c18fcd2deec239aee34928f88ea9bd7f6f00",
+            "log": "cpu-compat-left_signal-fallback1-analysis.log",
+            "negative_log": "cpu-compat-left_signal-fallback1-negative.log"
           }
         }
       ],
       "kind": "delivery",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --output .runtime-work/c110264-output/offline6-left_signal-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_signal --output .runtime-work/c110264-output/offline7-left_signal-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-left_signal-primary.log",
-        "log_sha256": "2e122e4beb76e72cc306402ccf4a7241b1ebfadf2190ef91da8a76150686d373",
-        "construction_sha256": "22c73e3ac5ad721dabf72ed5469f9f02ac34abb0b14364c5cce8784585439368"
+        "log_sha256": "e877a9c30ca2b091f76f004ea290637e39676a272487638b952f13813882b23c",
+        "construction_sha256": "2c3a79a7fe718f7c65df415bfd80c26416855a0f0112460430c4c7062e0e66db"
       },
       "measurement_contract": "cases/left_signal/measurement-contract.json",
       "measurement_procedure": {
@@ -54,12 +60,52 @@
         "port_env_var": "CARLA_PORT"
       },
       "acquisition": {
+        "reviewed_map_packet": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
         "paved_surface_occupation": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "relative_longitudinal_order": {
+        "target_left_motion": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "target_left_turn_motion": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "pass_and_pavement_history": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "ego_target_identity_and_order": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "ego_target_identity": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "target_left_signal_state": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "intersection_bounds": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "reviewed_vehicle_setup": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
@@ -74,52 +120,12 @@
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "ego_target_identity": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "ego_target_identity_and_order": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_signal_state": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "pass_and_pavement_history": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_motion": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "reviewed_map_packet": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "intersection_bounds": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
         "road_direction_and_lane_count": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "reviewed_vehicle_setup": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_turn_motion": {
+        "relative_longitudinal_order": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
@@ -137,13 +143,19 @@
       },
       "physical_preparation": {
         "receipt": "physical-preparation-left_signal.json",
-        "sha256": "28e82faa0d4dd0b48c127861fa1034ed50fb00ac3ec7fadf3e46070581bd433c"
+        "sha256": "d16ec87dac6d170ee0b4b3ad6b57d5bf6ed984e79c240181077697240cd487ee"
+      },
+      "compatibility": {
+        "receipt": "compat-left_signal-primary.json",
+        "sha256": "675d4c39090b35bd096ea10dc86444db6d8b8694c96c5808bcb96539500d72b6",
+        "log": "cpu-compat-left_signal-primary-analysis.log",
+        "negative_log": "cpu-compat-left_signal-primary-negative.log"
       }
     },
     {
       "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn",
       "construction": "construction-left_turn.json",
-      "construction_sha256": "66da8535e81a9ff0042419d090106bbe22e1df35cf8283dcf0c10870d5e64164",
+      "construction_sha256": "1a76f9ce5e1009d51b2aaada9a2f72a178f1d7d74fd45bcc431fbf508b004547",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual paved right corridor, footprint clearance and intersection overlap need Native map and collision review; no fallback selected without measured failure."
@@ -152,7 +164,7 @@
         {
           "id": "fallback1",
           "construction": "fallback1-construction-left_turn.json",
-          "construction_sha256": "117022ce6e5a2dc3acd187aa2e5fd5961f2d00539f92fd81e6879052da0b936a",
+          "construction_sha256": "6c901d72a85f9cb552a52673736e8f70a9eeae9f2380a0708e4d0927b73ebcda",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-confirmed paved right corridor and actor spawn clearance",
@@ -163,21 +175,27 @@
             "independently reviewed alternate actor starts and camera mounts"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --candidate fallback1 --output .runtime-work/c110264-output/offline6-left_turn-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --candidate fallback1 --output .runtime-work/c110264-output/offline7-left_turn-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-left_turn-fallback1.log",
-            "log_sha256": "130876551502f98088ee2b648362d05b741e11c34188841df4013e2ccdb6301b",
-            "construction_sha256": "117022ce6e5a2dc3acd187aa2e5fd5961f2d00539f92fd81e6879052da0b936a"
+            "log_sha256": "295ddb55c9857881877882bf46e77d4820d97d2c7ce010c171d6f54722317725",
+            "construction_sha256": "6c901d72a85f9cb552a52673736e8f70a9eeae9f2380a0708e4d0927b73ebcda"
+          },
+          "compatibility": {
+            "receipt": "compat-left_turn-fallback1.json",
+            "sha256": "595debe554a6c5cf07eec0014dca190094dac6a11cf23651ab8ac6d64c14ba90",
+            "log": "cpu-compat-left_turn-fallback1-analysis.log",
+            "negative_log": "cpu-compat-left_turn-fallback1-negative.log"
           }
         }
       ],
       "kind": "delivery",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --output .runtime-work/c110264-output/offline6-left_turn-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__left_turn --output .runtime-work/c110264-output/offline7-left_turn-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-left_turn-primary.log",
-        "log_sha256": "a45cff0a18279919677828f575eb6d46bfdd671015f81658affbf054f1dc8ee0",
-        "construction_sha256": "66da8535e81a9ff0042419d090106bbe22e1df35cf8283dcf0c10870d5e64164"
+        "log_sha256": "3fb99e9ac77b89cce24b79fd8f13c66f550bdcc2622cbc203f5f68afda90fd1b",
+        "construction_sha256": "1a76f9ce5e1009d51b2aaada9a2f72a178f1d7d74fd45bcc431fbf508b004547"
       },
       "measurement_contract": "cases/left_turn/measurement-contract.json",
       "measurement_procedure": {
@@ -190,12 +208,52 @@
         "port_env_var": "CARLA_PORT"
       },
       "acquisition": {
+        "reviewed_map_packet": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
         "paved_surface_occupation": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "relative_longitudinal_order": {
+        "target_left_motion": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "target_left_turn_motion": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "pass_and_pavement_history": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "ego_target_identity_and_order": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "ego_target_identity": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "target_left_signal_state": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "intersection_bounds": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "reviewed_vehicle_setup": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
@@ -210,52 +268,12 @@
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "ego_target_identity": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "ego_target_identity_and_order": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_signal_state": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "pass_and_pavement_history": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_motion": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "reviewed_map_packet": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "intersection_bounds": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
         "road_direction_and_lane_count": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "reviewed_vehicle_setup": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_turn_motion": {
+        "relative_longitudinal_order": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
@@ -273,13 +291,19 @@
       },
       "physical_preparation": {
         "receipt": "physical-preparation-left_turn.json",
-        "sha256": "50081dfa4dd6bd8feaa88347499c1e9a771a635c947f6691bcfb056abae7e6b0"
+        "sha256": "70854d0695dff719d46a95246e77e04ed5343014c6831535a15521a936b2ba72"
+      },
+      "compatibility": {
+        "receipt": "compat-left_turn-primary.json",
+        "sha256": "c2565fcd10e8be3ecda27d5e48d5ec870c5f49b57cac379f9c7e34ddb54ca947",
+        "log": "cpu-compat-left_turn-primary-analysis.log",
+        "negative_log": "cpu-compat-left_turn-primary-negative.log"
       }
     },
     {
       "case_id": "testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither",
       "construction": "construction-neither.json",
-      "construction_sha256": "18f3abdfa1f36b34fe89da77578509e6e2c7f1efd456d61c68b750f5c9367e88",
+      "construction_sha256": "b945f3bcc6a6a409d98aa6664056dcc2c125860205d1079f9fd087f7aa469e02",
       "candidate_risk": {
         "status": "physical",
         "reason": "Actual paved right corridor, footprint clearance and intersection overlap need Native map and collision review; no fallback selected without measured failure."
@@ -288,7 +312,7 @@
         {
           "id": "fallback1",
           "construction": "fallback1-construction-neither.json",
-          "construction_sha256": "fcb3bc1a444feff0c22a4144506ab97671d0b2bea110a413e6822d3fe598137e",
+          "construction_sha256": "9f001c88c7d682ac9bb4dda3e94c876f853cdbffd79f3496922e02018ce222c7",
           "trigger": {
             "source": "original-attempt/native/capture-receipt.json",
             "metric": "source-confirmed paved right corridor and actor spawn clearance",
@@ -299,21 +323,27 @@
             "independently reviewed alternate actor starts and camera mounts"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --candidate fallback1 --output .runtime-work/c110264-output/offline6-neither-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --candidate fallback1 --output .runtime-work/c110264-output/offline7-neither-fallback1 --python $PWD/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-neither-fallback1.log",
-            "log_sha256": "0a48e59dfc1685f9ae264eccc60fa58f598658351bed6894a3c690daaeb5f701",
-            "construction_sha256": "fcb3bc1a444feff0c22a4144506ab97671d0b2bea110a413e6822d3fe598137e"
+            "log_sha256": "049e7ff240bdbb9a5b8cf1d3ad5cbfc845f5331a4be09830a3cf25f8a01fc41a",
+            "construction_sha256": "9f001c88c7d682ac9bb4dda3e94c876f853cdbffd79f3496922e02018ce222c7"
+          },
+          "compatibility": {
+            "receipt": "compat-neither-fallback1.json",
+            "sha256": "8befc0199cc1b3c2a1b48b6055859df155ac4d0a5032464aa4951ea62ec57c18",
+            "log": "cpu-compat-neither-fallback1-analysis.log",
+            "negative_log": "cpu-compat-neither-fallback1-negative.log"
           }
         }
       ],
       "kind": "delivery",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --output .runtime-work/c110264-output/offline6-neither-primary --python $PWD/.venv-cpu/bin/python",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C110264__NRS-484B-210-1__motor_vehicle_driver/execution-manifest.draft.json --case testing__C110264__NRS-484B-210-1__motor_vehicle_driver__neither --output .runtime-work/c110264-output/offline7-neither-primary --python $PWD/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-neither-primary.log",
-        "log_sha256": "04bce3baec57c1da88154b5373858cde54efc639678bcd8e4785d9632a36a547",
-        "construction_sha256": "18f3abdfa1f36b34fe89da77578509e6e2c7f1efd456d61c68b750f5c9367e88"
+        "log_sha256": "31ac387a9daa60dd7cc20e653adf7d42133d5ffde3162036072091d102615883",
+        "construction_sha256": "b945f3bcc6a6a409d98aa6664056dcc2c125860205d1079f9fd087f7aa469e02"
       },
       "measurement_contract": "cases/neither/measurement-contract.json",
       "measurement_procedure": {
@@ -326,12 +356,52 @@
         "port_env_var": "CARLA_PORT"
       },
       "acquisition": {
+        "reviewed_map_packet": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
         "paved_surface_occupation": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "relative_longitudinal_order": {
+        "target_left_motion": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "target_left_turn_motion": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "pass_and_pavement_history": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "ego_target_identity_and_order": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "ego_target_identity": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "target_left_signal_state": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "intersection_bounds": {
+          "entrypoint": "pass_right_actor.py",
+          "method": "make_actor_sampler",
+          "evidence": "original Native actor snapshot and source-bound road"
+        },
+        "reviewed_vehicle_setup": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
@@ -346,52 +416,12 @@
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "ego_target_identity": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "ego_target_identity_and_order": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_signal_state": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "pass_and_pavement_history": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_motion": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "reviewed_map_packet": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "intersection_bounds": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
         "road_direction_and_lane_count": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
         },
-        "reviewed_vehicle_setup": {
-          "entrypoint": "pass_right_actor.py",
-          "method": "make_actor_sampler",
-          "evidence": "original Native actor snapshot and source-bound road"
-        },
-        "target_left_turn_motion": {
+        "relative_longitudinal_order": {
           "entrypoint": "pass_right_actor.py",
           "method": "make_actor_sampler",
           "evidence": "original Native actor snapshot and source-bound road"
@@ -409,7 +439,13 @@
       },
       "physical_preparation": {
         "receipt": "physical-preparation-neither.json",
-        "sha256": "9ee0f1df8f8088417975a6009dc0c85211316cb5ab93cef5e85d6b0089b17779"
+        "sha256": "02d37ae6052e632a711ae69824c8e8e9b23f00b60f7d31b1aae43d5c5ffe7d2c"
+      },
+      "compatibility": {
+        "receipt": "compat-neither-primary.json",
+        "sha256": "3a1c266c2282219c9b169714d7bd46739859bbf2887076c4c7b1baccb38ee055",
+        "log": "cpu-compat-neither-primary-analysis.log",
+        "negative_log": "cpu-compat-neither-primary-negative.log"
       }
     }
   ]

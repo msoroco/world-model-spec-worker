@@ -48,11 +48,28 @@ class NativeSessionTests(unittest.TestCase):
             ego = Mock()
             session = types.SimpleNamespace(world=object(), carla=object(),
                                              blueprint_library=object(), event_adapter=object(), camera_adapter=object())
+            def fake_capture(_site, _root, _adapter, output, **kwargs):
+                rows = [{'frame': i, 'official_head_id': 'head-17', 'actor_id': 'ego-1'}
+                        for i in range(900)]
+                data = json.dumps(rows) + '\n'
+                Path(output).write_text(data)
+                return {'frame_count': 900, 'actor_id': 'ego-1',
+                        'event_ref': {'path': 'original-events.json',
+                                      'sha256': hashlib.sha256(data.encode()).hexdigest()}}
+            def fake_finish():
+                (attempt / 'media-manifest.json').write_text(json.dumps({
+                    'camera_views': {name: {'source': {'path': name + '.mkv', 'sha256': '0'*64},
+                                            'first_original_frame': 0, 'last_original_frame': 899,
+                                            'width': 16, 'height': 16}
+                                     for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}}))
+                return {'path': 'media-manifest.json', 'sha256': 'a' * 64}
             with patch.object(native_session, 'construct_native', return_value={'ego': ego}) as construct, \
-                    patch.object(native_session, 'capture_original', return_value={'frame_count': 900}) as capture, \
+                    patch.object(native_session, 'capture_original', side_effect=fake_capture) as capture, \
                     patch.object(native_session, 'FourViewRecorder') as recorder, \
                     patch.object(native_session, 'audit_manifest') as audit:
-                recorder.return_value.finish.return_value = {'path': 'media-manifest.json', 'sha256': 'a' * 64}
+                recorder.return_value.finish.side_effect = fake_finish
+                audit.return_value = {'camera_views': {name: {'decoded_frames': 900, 'fps': 20}
+                                  for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}}
                 receipt = native_session.capture_events(session, packet, CASE, attempt)
             construct.assert_called_once()
             self.assertEqual(capture.call_args.args[1], attempt)
@@ -62,6 +79,7 @@ class NativeSessionTests(unittest.TestCase):
                 self.assertEqual((attempt / ref['path']).read_bytes(), (root / ref['path']).read_bytes())
             self.assertEqual(receipt['camera_media_status'], 'four_original_views_recorded_unreviewed')
             self.assertEqual(receipt['media_manifest_ref']['path'], 'media-manifest.json')
+            self.assertEqual(receipt['saved_manifest_ref']['path'], 'saved-manifest.json')
             audit.assert_called_once()
             self.assertEqual(receipt['site_packet_sha256'], hashlib.sha256(packet.read_bytes()).hexdigest())
 

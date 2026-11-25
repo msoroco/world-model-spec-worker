@@ -97,7 +97,7 @@ def build():
             'trace_source': trace_ref, 'frame_map_source': map_clock_ref,
             'delivered_measurement': measured,
             'physical_acceptance_claimed': False})
-        source(folder / 'fixture-sources/original-attempt', 'source-manifest.json', {
+        source(folder / 'original-attempt', 'source-manifest.json', {
             'assignment_id': HERE.name, 'case_id': HERE.name + '__' + variant,
             'variant': variant, 'diagnostic_fixture': True,
             'map': {'path': 'native/map.json', 'sha256': map_ref['sha256']},

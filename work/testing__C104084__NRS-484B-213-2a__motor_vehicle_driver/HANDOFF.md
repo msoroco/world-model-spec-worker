@@ -1,6 +1,33 @@
 # testing__C104084__NRS-484B-213-2a__motor_vehicle_driver
 
-Status: partial CPU construction. Four exact crest cases are planned; no recording has been proposed as physically accepted.
+## 2026-11-24 selected CPU delivery checkpoint
+
+All four exact crest constructions have source-gated primary and distinct alternate-anchor fallback bundles, pinned offline and positive/missing-road-profile compatibility receipts, synthetic complete/incomplete/missing-evidence lifecycle receipts, semantic stages, 20 Hz seven-channel acquisition, four-camera original source media joins, and independent saved/delivery audits. All four diagnostic positives and changed-original road-profile negatives passed. Three planned comparison positives passed with the independent saved attempts; changing a fixed duration was rejected. These are synthetic source-shaped CPU checks, not evidence of actual crest visibility, hazard distance, one-way legal authority or physical capture. The reviewed original hill-crest map/highway authority packet is required at production capture; the Native delegate refuses to select a site without it.
+
+Production original-source audit commands (each attempt must have original `source-hashes.json`, Native seal/exit, 900 frames and four lossless role-named MKVs; scratch outputs go under `.runtime-work/`):
+
+```sh
+AID=testing__C104084__NRS-484B-213-2a__motor_vehicle_driver
+PKG=work/$AID
+# Set CASE to any one exact case below, ATTEMPT to its sealed Native attempt directory.
+.venv-cpu/bin/python "$PKG/saved_delivery.py" --assignment "$AID" --case "$CASE" --attempt "$ATTEMPT" --output "$SAVED_RECEIPT"
+.venv-cpu/bin/python "$PKG/delivery_audit.py" --assignment "$AID" --case "$CASE" --attempt "$ATTEMPT" --receipt "$SAVED_RECEIPT" --output "$DELIVERY_AUDIT"
+```
+
+Exact case IDs: `testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed`, `testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed`, `testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear`, `testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed`.
+
+For each production comparison, set `FIRST_ATTEMPT` and `SECOND_ATTEMPT` to the sealed attempts of the exact pair and `FIRST_AUDIT` and `SECOND_AUDIT` to their independent delivery audit JSONs; no `--diagnostic` flag:
+
+```sh
+.venv-cpu/bin/python "$PKG/compare_saved.py" --assignment "$AID" --comparison left_side_motion --first "$FIRST_ATTEMPT" --first-audit "$FIRST_AUDIT" --second "$SECOND_ATTEMPT" --second-audit "$SECOND_AUDIT" --output .runtime-work/c104084-left-side-comparison.json
+.venv-cpu/bin/python "$PKG/compare_saved.py" --assignment "$AID" --comparison crest_view_obstruction --first "$FIRST_ATTEMPT" --first-audit "$FIRST_AUDIT" --second "$SECOND_ATTEMPT" --second-audit "$SECOND_AUDIT" --output .runtime-work/c104084-crest-view-comparison.json
+.venv-cpu/bin/python "$PKG/compare_saved.py" --assignment "$AID" --comparison one_way_exception --first "$FIRST_ATTEMPT" --first-audit "$FIRST_AUDIT" --second "$SECOND_ATTEMPT" --second-audit "$SECOND_AUDIT" --output .runtime-work/c104084-one-way-comparison.json
+```
+
+Pair order is exact: `left_side_motion` = right_crest_obstructed then left_crest_obstructed; `crest_view_obstruction` = left_crest_obstructed then left_crest_clear; `one_way_exception` = left_crest_obstructed then left_one_way_obstructed. The audits report only source integrity and observed construction differences; statutory hazard and exception conclusions remain unresolved.
+
+
+Status: ready CPU delivery preparation after exact scoped strict gate. Actual reviewed source and physical CARLA capture remain pending. The older checkpoints below are historical. Recheck the current result.json and execution-manifest.json for final bindings.
 
 Exact law: NRS 484B.213(2)(a); with 484B.213(3) — A vehicle must not be driven to the left side of the highway at any time: When approaching the crest of a grade or upon a curve in the highway where the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction. Subsection 2 does not apply upon a one-way highway.
 Assigned branch(es): Approaching a crest; obstructed-view condition; one-way exception absent by setup..
@@ -206,3 +233,5 @@ The focused suite passed 51 tests; pinned preflight and scoped static passed; ex
 The pinned saved-processing path requires `overview.mkv`, `approach.mkv`, `reference_corner.mkv`, and `driver_reference.mkv`. The pinned media checker requires 1920x1080 overview, three 1280x720 detail sources, and 20 Hz. The new direct pinned test generated lossless role-named videos at those sizes, called `saved_processing.prepare_video` to produce `raw.mkv`, and confirmed that a wrong-size source is rejected. `test_canonical_bridge.py` passed a source-shaped three-frame original through the pinned `seal_capture` and rejected an altered graph frame before publication. This is a Native seal and saved-video source-contract proof, not a successful full Core conversion or physical capture acceptance. Earlier MP4 references in this handoff refer to superseded CPU fixtures; current source inventory and delegate use the four role-named MKVs.
 
 Sixty-one focused tests, pinned CPU preflight, and scoped static checks pass. Exact scoped strict exits 1 because the assignment remains partial. SHA256-bound logs and commands are in `result.json` as `cpu-native-media-*`. Remaining CPU package work is the four selected constructions and fallback candidates, canonical manifest and measurement contracts, full recording evidence and source-shaped positive/negative Native/Core/Lean compatibility, saved-only postprocessing, and independent delivery/comparison receipts. No reviewed original crest highway, authority documents or physical 900-frame capture have been supplied; their acquisition and later GPU observation remain separate from these CPU package gaps.
+
+Final CPU verification: all 64 assignment unit tests passed in `cpu-current-tests.log`; the exact assignment command `.venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --complete --require-delivery-ready` exited 0 in `cpu-current-strict.log`. Selected execution manifest SHA256: `6c618be50581f44243b581a6239e6b49a1230b68185c8eaea3046d6128a8fbd1`. This is CPU delivery preparation; production still needs an original reviewed hill-crest OpenDRIVE parcel, public-highway and one-way authority source, and actual 900-frame CARLA source-sealed capture plus independent physical review.

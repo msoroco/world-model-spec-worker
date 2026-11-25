@@ -22,7 +22,8 @@ class SemanticProposalTests(unittest.TestCase):
     def test_exact_law_and_comparison_isolation(self):
         stages = MODULE.prepare(self.assignment, self.plan, self.quote)
         self.assertEqual(stages["template"]["quote"], self.quote)
-        self.assertEqual(len(stages["cases"]["cases"]), 4)
+        self.assertEqual(len(stages["cases"]["cases"]), 5)
+        self.assertEqual(sum(c["target_type"] != "baseline" for c in stages["cases"]["cases"]), 4)
         self.assertEqual({c["changed_variable"] for c in stages["cases"]["comparisons"]}, set(MODULE.PAIR_VARIABLES.values()))
         self.assertTrue(all(c["unresolved_judgment_calls"] for c in stages["cases"]["cases"]))
 

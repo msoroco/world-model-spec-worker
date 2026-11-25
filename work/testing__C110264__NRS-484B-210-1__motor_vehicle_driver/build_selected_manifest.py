@@ -31,7 +31,7 @@ def main():
         entry.update(kind='delivery',
                      offline={'command': (f'.venv-cpu/bin/python runtime.py offline --manifest '
                                            f'work/{HERE.name}/execution-manifest.draft.json --case {case_id} '
-                                           f'--output .runtime-work/c110264-output/offline6-{suffix}-primary '
+                                           f'--output .runtime-work/c110264-output/offline7-{suffix}-primary '
                                            '--python $PWD/.venv-cpu/bin/python'),
                               'exit_code': 0, 'log': primary_log,
                               'log_sha256': sha(HERE / primary_log),
@@ -50,7 +50,7 @@ def main():
             candidate['offline'] = {
                 'command': (f'.venv-cpu/bin/python runtime.py offline --manifest '
                             f'work/{HERE.name}/execution-manifest.draft.json --case {case_id} '
-                            f'--candidate fallback1 --output .runtime-work/c110264-output/offline6-{suffix}-fallback1 '
+                            f'--candidate fallback1 --output .runtime-work/c110264-output/offline7-{suffix}-fallback1 '
                             '--python $PWD/.venv-cpu/bin/python'),
                 'exit_code': 0, 'log': log, 'log_sha256': sha(HERE / log),
                 'construction_sha256': candidate['construction_sha256']}

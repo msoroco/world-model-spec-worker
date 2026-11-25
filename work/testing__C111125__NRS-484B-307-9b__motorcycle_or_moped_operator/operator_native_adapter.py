@@ -41,8 +41,9 @@ def _mount(carla, value):
 
 
 class Session:
-    def __init__(self, world, carla, site, observer):
+    def __init__(self, world, carla, site, observer, client=None):
         self.world, self.carla = world, carla
+        self.client = client
         self.blueprint_library = world.get_blueprint_library()
         self.site, self.observer = site, observer
         self.event_adapter = self
@@ -51,6 +52,21 @@ class Session:
         self.sensors = {}
         self.queues = {}
         self.index = 0
+        self.pipeline_capture = None
+        self.restoration_verified = False
+
+    def start_runtime_capture(self, attempt, case_id):
+        require(self.client is not None and self.ego is not None and self.pipeline_capture is None,
+                "original runtime capture cannot start")
+        from pipeline_capture import PipelineCapture
+        self.pipeline_capture = PipelineCapture(self.client, self.ego, attempt, case_id)
+
+    def close_runtime_capture(self, confirmed):
+        if self.pipeline_capture is not None:
+            try:
+                self.pipeline_capture.close(confirmed=confirmed)
+            finally:
+                self.pipeline_capture = None
 
     def bind_native(self, native, site):
         require(self.ego is None and site == self.site, "Native binding changed")
@@ -125,6 +141,12 @@ class Session:
                "lit_aspects": aspects.get("lit_aspects"),
                "ego_front_station_m": station, "speed_mps": speed,
                "other_users": users}
+        if self.pipeline_capture is not None:
+            self.pipeline_capture.capture(frame, row["time_s"],
+                                          extra={"official_head_id": row["official_head_id"],
+                                                 "lit_aspects": row["lit_aspects"],
+                                                 "ego_front_station_m": row["ego_front_station_m"],
+                                                 "other_users": users})
         self.index += 1
         return row
 
@@ -144,6 +166,7 @@ class Session:
         return result
 
     def close(self):
+        self.close_runtime_capture(confirmed=False)
         for name in reversed(VIEWS):
             sensor = self.sensors.pop(name, None)
             if sensor is not None:
@@ -152,6 +175,7 @@ class Session:
                 finally:
                     sensor.destroy()
         self.queues.clear()
+        self.restoration_verified = not self.sensors and not self.queues
 
 
 @contextmanager
@@ -172,8 +196,15 @@ def open_session(case_id, site_path, host, port):
     require(settings.synchronous_mode and math.isclose(settings.fixed_delta_seconds, 0.05,
                                                       abs_tol=1e-6),
             "reviewed 20 Hz synchronous Native world required")
-    session = Session(world, carla, site, observer)
+    session = Session(world, carla, site, observer, client)
     try:
         yield session
     finally:
         session.close()
+        after = world.get_settings()
+        session.restoration_verified = bool(session.restoration_verified and
+                                            after.synchronous_mode == settings.synchronous_mode and
+                                            math.isclose(after.fixed_delta_seconds,
+                                                         settings.fixed_delta_seconds,
+                                                         abs_tol=1e-9) and
+                                            world.get_map().name == site["native_map_name"])

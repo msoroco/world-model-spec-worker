@@ -2,6 +2,43 @@
   "assignment_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "crest_grade_profile": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed road-profile.json and original OpenDRIVE profile",
+          "method": "analyze"
+        },
+        "driver_view_proxy_and_visibility": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed crest-rays.jsonl plus four-view original pixels",
+          "method": "analyze"
+        },
+        "ego_left_side_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl signed body corners",
+          "method": "analyze"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frame-map.json and four original camera streams",
+          "method": "analyze"
+        },
+        "highway_one_way_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed authority source",
+          "method": "analyze"
+        },
+        "opposing_vehicle_route_and_body": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl opponent body/route samples",
+          "method": "analyze"
+        },
+        "original_lane_directions": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed road designation",
+          "method": "analyze"
+        }
+      },
       "candidate_risk": {
         "reason": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
         "status": "physical"
@@ -15,17 +52,17 @@
             "log": "proof-fallback-compat-right_crest_obstructed.log",
             "negative_log": "proof-fallback-negative-right_crest_obstructed.log",
             "receipt": "proof-fallback-compat-right_crest_obstructed.json",
-            "sha256": "6f470b36effd6deba0f0915581981f50fb38109d9afedd8b90f3b67968c515f8"
+            "sha256": "d00a0808be4460f0c7a49d2703026d43a15e16de2d084288f85baf72a4498feb"
           },
           "construction": "fallback-right_crest_obstructed.json",
-          "construction_sha256": "019ebd097d0a421559a7b7bfdae175eb18d840f327709451eaa9e122c1f50f34",
+          "construction_sha256": "663a7b56b21cc4c00295bd63f3a0ec017a119a5ec2c8655ed9de90149a4fa348",
           "id": "fallback1",
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-right_crest_obstructed-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "019ebd097d0a421559a7b7bfdae175eb18d840f327709451eaa9e122c1f50f34",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-right_crest_obstructed-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "663a7b56b21cc4c00295bd63f3a0ec017a119a5ec2c8655ed9de90149a4fa348",
             "exit_code": 0,
             "log": "proof-fallback-offline-right_crest_obstructed.log",
-            "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
+            "log_sha256": "afd5e2f23a1241766d5937e9d4f133c402c49663e1c826fd9c1eae439ee778c5"
           },
           "trigger": {
             "failure_condition": "primary reviewed anchor does not produce the exact requested blocked or clear view on original frames",
@@ -36,12 +73,37 @@
       ],
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
       "compatibility": {
-        "log": "proof-compatibility-right_crest_obstructed.log",
-        "receipt": "proof-compatibility-right_crest_obstructed.json",
-        "sha256": "76159732a50fb57037aa75b6c7339a51af5b0a2efb591914b74705f11fed85a7"
+        "log": "proof-primary-compat-right_crest_obstructed.log",
+        "receipt": "proof-primary-compat-right_crest_obstructed.json",
+        "sha256": "b859b7992390622ec93a2fb25176c4a3f60e3fa9402f8481384b0466a0dcce09"
       },
       "construction": "construction.json",
-      "construction_sha256": "5ec40faca8c72e3e1871d1fbae2aa5e6c766d97701ec1219516484595884adaf",
+      "construction_sha256": "402c2615f56d2a3e84b8ab050b3ef8e87773da3e946d6a920348a855018245b5",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-right_crest_obstructed-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-compat-right_crest_obstructed-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-right_crest_obstructed-v1.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-right_crest_obstructed-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-negative-right_crest_obstructed-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-negative-right_crest_obstructed-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: road-profile.json",
+        "negative_log": "proof-delivery-negative-right_crest_obstructed.log",
+        "negative_log_sha256": "471d5a45dc4a4d4976e0a16257b6e2fa8c52edbfb91498101e56003695c30312",
+        "script": "delivery_audit.py",
+        "script_sha256": "c13823bae4e7b959bf10e83769b61c4ac57e9c04cbb89acefce42284a17e9b37",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-right_crest_obstructed.log",
+        "test_log_sha256": "af2eeb1cd70ccc21c7e83d0aa3f64d8b235cfa3aab099582b6e9a4debc22db2d"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/diagnostic-right_crest_obstructed-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -54,21 +116,66 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "log": "negative-right_crest_obstructed.log"
+        "log": "proof-primary-negative-right_crest_obstructed.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-offline-right_crest_obstructed-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "5ec40faca8c72e3e1871d1fbae2aa5e6c766d97701ec1219516484595884adaf",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-primary-offline-right_crest_obstructed-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "402c2615f56d2a3e84b8ab050b3ef8e87773da3e946d6a920348a855018245b5",
         "exit_code": 0,
-        "log": "proof-offline-right_crest_obstructed.log",
-        "log_sha256": "1b3ad23ddb6828dfac1a3164bf713c84e8c9c0765b7b934b018b8a73d0f25f3d"
+        "log": "proof-primary-offline-right_crest_obstructed.log",
+        "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
       },
       "physical_preparation": {
         "receipt": "physical-right_crest_obstructed-proof.json",
-        "sha256": "fa16c8a160b3d5290f719b8a37fafd5ff23909f0b64aef2bc81ce2f8061b69ca"
+        "sha256": "ccb17b524a976e8211df84f59e86e66c0840b76092a58ee3f19c9a095343db84"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/saved_delivery.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/right_crest_obstructed-saved.json",
+        "feedback_command": "cat .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/right_crest_obstructed-saved.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-right_crest_obstructed.log",
+        "test_log_sha256": "af2eeb1cd70ccc21c7e83d0aa3f64d8b235cfa3aab099582b6e9a4debc22db2d"
       }
     },
     {
+      "acquisition": {
+        "crest_grade_profile": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed road-profile.json and original OpenDRIVE profile",
+          "method": "analyze"
+        },
+        "driver_view_proxy_and_visibility": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed crest-rays.jsonl plus four-view original pixels",
+          "method": "analyze"
+        },
+        "ego_left_side_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl signed body corners",
+          "method": "analyze"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frame-map.json and four original camera streams",
+          "method": "analyze"
+        },
+        "highway_one_way_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed authority source",
+          "method": "analyze"
+        },
+        "opposing_vehicle_route_and_body": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl opponent body/route samples",
+          "method": "analyze"
+        },
+        "original_lane_directions": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed road designation",
+          "method": "analyze"
+        }
+      },
       "candidate_risk": {
         "reason": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
         "status": "physical"
@@ -82,17 +189,17 @@
             "log": "proof-fallback-compat-left_crest_obstructed.log",
             "negative_log": "proof-fallback-negative-left_crest_obstructed.log",
             "receipt": "proof-fallback-compat-left_crest_obstructed.json",
-            "sha256": "b876b8efdf2c250b0746ee9026469ec456e530befc2997d4da779719d201bfed"
+            "sha256": "d7588f78ee50a88f70e76584cfaf5e60bbc7ad2d2769ef8d1e0ec21065549279"
           },
           "construction": "fallback-left_crest_obstructed.json",
-          "construction_sha256": "c8f7d2f6a3e03e24c943d2b79e06c30243d57524e97865d9ef5a1279dbfe27ba",
+          "construction_sha256": "076f17f8c5b2cf8e46caffad99139bea3b681d200e119fc0eb3aaecc994245d2",
           "id": "fallback1",
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-left_crest_obstructed-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "c8f7d2f6a3e03e24c943d2b79e06c30243d57524e97865d9ef5a1279dbfe27ba",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-left_crest_obstructed-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "076f17f8c5b2cf8e46caffad99139bea3b681d200e119fc0eb3aaecc994245d2",
             "exit_code": 0,
             "log": "proof-fallback-offline-left_crest_obstructed.log",
-            "log_sha256": "fa613ded89f4fccba0a34bf43c1b51f158c615351982ef14ac0436e82ead72a4"
+            "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
           },
           "trigger": {
             "failure_condition": "primary reviewed anchor does not produce the exact requested blocked or clear view on original frames",
@@ -103,12 +210,37 @@
       ],
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
       "compatibility": {
-        "log": "proof-compatibility-left_crest_obstructed.log",
-        "receipt": "proof-compatibility-left_crest_obstructed.json",
-        "sha256": "d38e714898ddad0b8f805676fc52dae7b8b5e99fa34d028d6e41983793bba34a"
+        "log": "proof-primary-compat-left_crest_obstructed.log",
+        "receipt": "proof-primary-compat-left_crest_obstructed.json",
+        "sha256": "0a4471431b89e0c0b937de9c7d7f5f882fb96cc8baeb33f154162e9a5c6b2e65"
       },
       "construction": "cases/left_crest_obstructed/construction.json",
-      "construction_sha256": "2266a49d76009af9acde5600347d7d58218e98d2dca42e50db56b344f63ae51a",
+      "construction_sha256": "77c3bbddee972bbc95463dad3cafbd12e3a481f634c5546a8655b19be7082168",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-left_crest_obstructed-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-compat-left_crest_obstructed-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-left_crest_obstructed-v1.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-left_crest_obstructed-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-negative-left_crest_obstructed-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-negative-left_crest_obstructed-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: road-profile.json",
+        "negative_log": "proof-delivery-negative-left_crest_obstructed.log",
+        "negative_log_sha256": "471d5a45dc4a4d4976e0a16257b6e2fa8c52edbfb91498101e56003695c30312",
+        "script": "delivery_audit.py",
+        "script_sha256": "c13823bae4e7b959bf10e83769b61c4ac57e9c04cbb89acefce42284a17e9b37",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-left_crest_obstructed.log",
+        "test_log_sha256": "1518ccd5028e40f8eaa0bc9ce797123db4625e6278bd8e9ebc844b0b7488270f"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/diagnostic-left_crest_obstructed-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -121,21 +253,66 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "log": "negative-left_crest_obstructed.log"
+        "log": "proof-primary-negative-left_crest_obstructed.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-offline-left_crest_obstructed-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "2266a49d76009af9acde5600347d7d58218e98d2dca42e50db56b344f63ae51a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-primary-offline-left_crest_obstructed-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "77c3bbddee972bbc95463dad3cafbd12e3a481f634c5546a8655b19be7082168",
         "exit_code": 0,
-        "log": "proof-offline-left_crest_obstructed.log",
-        "log_sha256": "afd5e2f23a1241766d5937e9d4f133c402c49663e1c826fd9c1eae439ee778c5"
+        "log": "proof-primary-offline-left_crest_obstructed.log",
+        "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
       },
       "physical_preparation": {
         "receipt": "physical-left_crest_obstructed-proof.json",
-        "sha256": "f604c287c4e0f403bb5a19484c0eb89a2e8016a507ce0d961e12c5ce60773d6d"
+        "sha256": "846ee754d379cb157dfb0db616285bc41f5a2efd276932a56f875d82eb624e43"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/saved_delivery.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/left_crest_obstructed-saved.json",
+        "feedback_command": "cat .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/left_crest_obstructed-saved.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-left_crest_obstructed.log",
+        "test_log_sha256": "1518ccd5028e40f8eaa0bc9ce797123db4625e6278bd8e9ebc844b0b7488270f"
       }
     },
     {
+      "acquisition": {
+        "crest_grade_profile": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed road-profile.json and original OpenDRIVE profile",
+          "method": "analyze"
+        },
+        "driver_view_proxy_and_visibility": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed crest-rays.jsonl plus four-view original pixels",
+          "method": "analyze"
+        },
+        "ego_left_side_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl signed body corners",
+          "method": "analyze"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frame-map.json and four original camera streams",
+          "method": "analyze"
+        },
+        "highway_one_way_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed authority source",
+          "method": "analyze"
+        },
+        "opposing_vehicle_route_and_body": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl opponent body/route samples",
+          "method": "analyze"
+        },
+        "original_lane_directions": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed road designation",
+          "method": "analyze"
+        }
+      },
       "candidate_risk": {
         "reason": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
         "status": "physical"
@@ -149,14 +326,14 @@
             "log": "proof-fallback-compat-left_crest_clear.log",
             "negative_log": "proof-fallback-negative-left_crest_clear.log",
             "receipt": "proof-fallback-compat-left_crest_clear.json",
-            "sha256": "1ea36efe378e093c7fe7f1c44fba6daf215d0e8835d425ecd7df1238ac0e82b5"
+            "sha256": "111f68548aad8151a997b7f411a79b52db649f881d1fd7dec3d7117fd6a91922"
           },
           "construction": "fallback-left_crest_clear.json",
-          "construction_sha256": "650bce54776a4fcf10de4421e74e4de07cdf57219d270322469af5cbca6da348",
+          "construction_sha256": "70cb4f556927ead23cc27d6256e4922803beaecee9d357fc430a19c708144f73",
           "id": "fallback1",
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-left_crest_clear-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "650bce54776a4fcf10de4421e74e4de07cdf57219d270322469af5cbca6da348",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-left_crest_clear-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "70cb4f556927ead23cc27d6256e4922803beaecee9d357fc430a19c708144f73",
             "exit_code": 0,
             "log": "proof-fallback-offline-left_crest_clear.log",
             "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
@@ -170,12 +347,37 @@
       ],
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
       "compatibility": {
-        "log": "proof-compatibility-left_crest_clear.log",
-        "receipt": "proof-compatibility-left_crest_clear.json",
-        "sha256": "1ff888b0d41c30379da7f7949b764bf31b0118d2799c885052628988001e31ec"
+        "log": "proof-primary-compat-left_crest_clear.log",
+        "receipt": "proof-primary-compat-left_crest_clear.json",
+        "sha256": "2f929dc8e9bdeb7657f1b9b09eefc27450cee059eda94867a64c54a2f138301e"
       },
       "construction": "cases/left_crest_clear/construction.json",
-      "construction_sha256": "900413232465691d6a2dd4afc766eeaefb7d73f134be413b9ae314e02245a263",
+      "construction_sha256": "ab24553c7887096677e10bb8271bc29a45699ff6048ca24478533d88e349586f",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-left_crest_clear-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-compat-left_crest_clear-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-left_crest_clear-v1.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-left_crest_clear-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-negative-left_crest_clear-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-negative-left_crest_clear-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: road-profile.json",
+        "negative_log": "proof-delivery-negative-left_crest_clear.log",
+        "negative_log_sha256": "471d5a45dc4a4d4976e0a16257b6e2fa8c52edbfb91498101e56003695c30312",
+        "script": "delivery_audit.py",
+        "script_sha256": "c13823bae4e7b959bf10e83769b61c4ac57e9c04cbb89acefce42284a17e9b37",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-left_crest_clear.log",
+        "test_log_sha256": "be79986c65fd481f055fb6bbe297d3b68033d6acd0694d3a51898c157dd8c8e9"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/diagnostic-left_crest_clear-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -188,21 +390,66 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "log": "negative-left_crest_clear.log"
+        "log": "proof-primary-negative-left_crest_clear.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-offline-left_crest_clear-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "900413232465691d6a2dd4afc766eeaefb7d73f134be413b9ae314e02245a263",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-primary-offline-left_crest_clear-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "ab24553c7887096677e10bb8271bc29a45699ff6048ca24478533d88e349586f",
         "exit_code": 0,
-        "log": "proof-offline-left_crest_clear.log",
+        "log": "proof-primary-offline-left_crest_clear.log",
         "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
       },
       "physical_preparation": {
         "receipt": "physical-left_crest_clear-proof.json",
-        "sha256": "ccee7c8efee7060a48debcaad48b2ef20594557cee9bf448672160d1d3667b28"
+        "sha256": "60fb93f5bc5761dbbc5a1da36ff675c33a7963d506ec671d74f7202a97bab76f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/saved_delivery.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/left_crest_clear-saved.json",
+        "feedback_command": "cat .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/left_crest_clear-saved.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-left_crest_clear.log",
+        "test_log_sha256": "be79986c65fd481f055fb6bbe297d3b68033d6acd0694d3a51898c157dd8c8e9"
       }
     },
     {
+      "acquisition": {
+        "crest_grade_profile": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed road-profile.json and original OpenDRIVE profile",
+          "method": "analyze"
+        },
+        "driver_view_proxy_and_visibility": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed crest-rays.jsonl plus four-view original pixels",
+          "method": "analyze"
+        },
+        "ego_left_side_body_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl signed body corners",
+          "method": "analyze"
+        },
+        "frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frame-map.json and four original camera streams",
+          "method": "analyze"
+        },
+        "highway_one_way_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed authority source",
+          "method": "analyze"
+        },
+        "opposing_vehicle_route_and_body": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed frames.jsonl opponent body/route samples",
+          "method": "analyze"
+        },
+        "original_lane_directions": {
+          "entrypoint": "analysis.py",
+          "evidence": "source-hashed lane-context.json and reviewed road designation",
+          "method": "analyze"
+        }
+      },
       "candidate_risk": {
         "reason": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
         "status": "physical"
@@ -216,14 +463,14 @@
             "log": "proof-fallback-compat-left_one_way_obstructed.log",
             "negative_log": "proof-fallback-negative-left_one_way_obstructed.log",
             "receipt": "proof-fallback-compat-left_one_way_obstructed.json",
-            "sha256": "a9ff708706421b2d3cf79429940027111f42e5d461c8aba1652a871ca369ad98"
+            "sha256": "7664df0c039ac5133d4657e7334ccaec43e4cd8095e6b97c940592b18720ccb2"
           },
           "construction": "fallback-left_one_way_obstructed.json",
-          "construction_sha256": "f94108aeb07b510e8d24a5a56ef82a4be1e0dab3aa2b4b0287da4ebc61005536",
+          "construction_sha256": "09dec60ad9fd5494e5172b6a8731889c89edb2b4caa1c772ff0ebae135432d8c",
           "id": "fallback1",
           "offline": {
-            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-left_one_way_obstructed-v1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "f94108aeb07b510e8d24a5a56ef82a4be1e0dab3aa2b4b0287da4ebc61005536",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-fallback-offline-left_one_way_obstructed-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "09dec60ad9fd5494e5172b6a8731889c89edb2b4caa1c772ff0ebae135432d8c",
             "exit_code": 0,
             "log": "proof-fallback-offline-left_one_way_obstructed.log",
             "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
@@ -237,12 +484,37 @@
       ],
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed",
       "compatibility": {
-        "log": "proof-compatibility-left_one_way_obstructed.log",
-        "receipt": "proof-compatibility-left_one_way_obstructed.json",
-        "sha256": "d8f297c66c0dec700b06f37477df3da1ce60e9bcb3f7669ab9bbbd6c51abb7fe"
+        "log": "proof-primary-compat-left_one_way_obstructed.log",
+        "receipt": "proof-primary-compat-left_one_way_obstructed.json",
+        "sha256": "70fdac895999dd217898d409f1d3ef7f5eaeadea9deabb59f4e240a7a3656a4a"
       },
       "construction": "cases/left_one_way_obstructed/construction.json",
-      "construction_sha256": "a3b772e0081c3fd741656fdc9b61eaf672436bd66d2286d7e73c411fdd99ae4e",
+      "construction_sha256": "21621d5bc2484d897f23adf867ad3c1cbea4ab4b81a0d0369f5d136ace390f18",
+      "delivery_acceptance": {
+        "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-left_one_way_obstructed-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-compat-left_one_way_obstructed-v5 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-left_one_way_obstructed-v1.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --receipt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-saved-left_one_way_obstructed-v1.json --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --expected-frames 9 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-negative-left_one_way_obstructed-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-independent-negative-left_one_way_obstructed-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original source changed: road-profile.json",
+        "negative_log": "proof-delivery-negative-left_one_way_obstructed.log",
+        "negative_log_sha256": "471d5a45dc4a4d4976e0a16257b6e2fa8c52edbfb91498101e56003695c30312",
+        "script": "delivery_audit.py",
+        "script_sha256": "c13823bae4e7b959bf10e83769b61c4ac57e9c04cbb89acefce42284a17e9b37",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-left_one_way_obstructed.log",
+        "test_log_sha256": "5023db6d5f15ef3078408cc6277c387d01aa56c07b1130518efb6a823d3e4e72"
+      },
       "fixture_recipe": "work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/diagnostic-left_one_way_obstructed-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -255,18 +527,26 @@
         "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
-        "log": "negative-left_one_way_obstructed.log"
+        "log": "proof-primary-negative-left_one_way_obstructed.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-offline-left_one_way_obstructed-v4 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "a3b772e0081c3fd741656fdc9b61eaf672436bd66d2286d7e73c411fdd99ae4e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c104084-primary-offline-left_one_way_obstructed-v6 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "21621d5bc2484d897f23adf867ad3c1cbea4ab4b81a0d0369f5d136ace390f18",
         "exit_code": 0,
-        "log": "proof-offline-left_one_way_obstructed.log",
+        "log": "proof-primary-offline-left_one_way_obstructed.log",
         "log_sha256": "a8f69d05d51a64d0d243d80ab4f7e327ab2f3c61c75c29d2f4fb7495599504a9"
       },
       "physical_preparation": {
         "receipt": "physical-left_one_way_obstructed-proof.json",
-        "sha256": "2f854463879e619f95fba2e2afe930adea316d0470bc590969c0977858e4c5bf"
+        "sha256": "404afda2b5ba0ee4bc3cc25ea3180a7b118e5531ddec4d3ac68ed5da11a71769"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/saved_delivery.py --assignment testing__C104084__NRS-484B-213-2a__motor_vehicle_driver --case testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed --attempt ORIGINAL_ATTEMPT --output .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/left_one_way_obstructed-saved.json",
+        "feedback_command": "cat .runtime-work/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/left_one_way_obstructed-saved.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-left_one_way_obstructed.log",
+        "test_log_sha256": "5023db6d5f15ef3078408cc6277c387d01aa56c07b1130518efb6a823d3e4e72"
       }
     }
   ],

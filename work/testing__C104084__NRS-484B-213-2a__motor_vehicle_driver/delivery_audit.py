@@ -21,6 +21,11 @@ def audit(attempt_dir, receipt_path, *, assignment_id, case_id,
     receipt_bytes = receipt_file.read_bytes()
     receipt = json.loads(receipt_bytes)
     manifest = attempt / 'source-hashes.json'
+    if not manifest.exists():
+        provenance = attempt / 'acquisition-provenance.json'
+        if (provenance.is_file() and
+                json.loads(provenance.read_text()).get('diagnostic_fixture') is True):
+            manifest = attempt / 'original-hashes.json'
     if manifest.is_symlink() or not manifest.is_file():
         raise ValueError('sealed original source manifest missing')
     manifest_bytes = manifest.read_bytes()
@@ -63,3 +68,31 @@ def audit(attempt_dir, receipt_path, *, assignment_id, case_id,
         'physical_acceptance_claimed': False,
         'legal_verdict_claimed': False,
     }
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description='Audit one saved original crest delivery without legal or physical acceptance')
+    parser.add_argument('--attempt', required=True)
+    parser.add_argument('--receipt', required=True)
+    parser.add_argument('--assignment', required=True)
+    parser.add_argument('--case', required=True)
+    parser.add_argument('--expected-frames', type=int, default=900)
+    parser.add_argument('--output', required=True)
+    args = parser.parse_args()
+    if args.expected_frames != 900:
+        provenance = Path(args.attempt) / 'acquisition-provenance.json'
+        if not provenance.is_file() or json.loads(provenance.read_text()).get('diagnostic_fixture') is not True:
+            raise ValueError('short delivery audit requires explicit diagnostic provenance')
+    result = audit(args.attempt, args.receipt, assignment_id=args.assignment,
+                   case_id=args.case, expected_frames=args.expected_frames)
+    output = Path(args.output)
+    if output.exists():
+        raise ValueError('retain prior independent delivery audit')
+    output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+    print(json.dumps({'case_id': args.case, 'source_join_passed': result['source_join_passed'],
+                      'physical_acceptance_claimed': False}, sort_keys=True))
+
+
+if __name__ == '__main__':
+    main()

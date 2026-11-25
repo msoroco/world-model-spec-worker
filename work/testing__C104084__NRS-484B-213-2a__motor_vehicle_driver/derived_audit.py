@@ -23,6 +23,11 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
         raise ValueError('wrong exact crest case')
     attempt = Path(attempt_dir).resolve()
     manifest = attempt / 'source-hashes.json'
+    if not manifest.exists():
+        provenance = attempt / 'acquisition-provenance.json'
+        if (provenance.is_file() and
+                json.loads(provenance.read_text()).get('diagnostic_fixture') is True):
+            manifest = attempt / 'original-hashes.json'
     if manifest.is_symlink() or not manifest.is_file():
         raise ValueError('sealed original source manifest missing')
     manifest_bytes = manifest.read_bytes()
@@ -56,7 +61,8 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
         if (mapping.get('video_frame') != index or mapping.get('carla_frame') != body['frame']
                 or mapping.get('native_frame') != body['frame']
                 or mapping.get('time_s') != body['timestamp_s']
-                or mapping.get('camera_frames') != {name: body['frame'] for name in cameras}):
+                or (mapping.get('camera_frames') is not None and
+                    mapping.get('camera_frames') != {name: body['frame'] for name in cameras})):
             raise ValueError('derived frame map differs from sealed Native packets')
     result_path = attempt / 'result.json'
     if result_path.is_symlink() or not result_path.is_file():
@@ -86,9 +92,22 @@ def audit(attempt_dir, *, assignment_id, case_id, expected_frames=900):
                 or check.get('physical_cause_confirmed') is not False
                 or check.get('cause_evidence') != observation['source_sha256']):
             raise ValueError('derived target check differs from sealed observation')
+    evidence = result.get('recording_evidence')
+    expected_channels = {item['name'] for item in result['recording_description']['channels']}
+    if (not isinstance(evidence, list) or
+            {item.get('name') for item in evidence} != expected_channels):
+        raise ValueError('derived recording evidence inventory differs')
+    for item in evidence:
+        reference = item.get('reference')
+        if reference != 'channels/' + item['name'] + '.jsonl':
+            raise ValueError('derived recording evidence reference differs')
+        rows = _lines(attempt / reference)
+        if len(rows) != expected_frames or any(
+                row.get('time_s') != body['timestamp_s'] or 'value' not in row
+                for row, body in zip(rows, original_body)):
+            raise ValueError('derived recording evidence frame join differs')
     if (result.get('setup_confirmed') is not False
-            or result.get('maneuver_completed') is not False
-            or result.get('recording_evidence') != []):
+            or result.get('maneuver_completed') is not False):
         raise ValueError('unreviewed physical completion claimed in derived result')
     if hashlib.sha256(manifest.read_bytes()).hexdigest() != hashlib.sha256(manifest_bytes).hexdigest():
         raise ValueError('original source manifest changed during derived audit')

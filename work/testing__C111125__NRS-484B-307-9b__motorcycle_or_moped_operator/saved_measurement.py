@@ -12,7 +12,7 @@ from delivery_audit import audit_saved
 from signal_exception import SourceError, measure_attempt, require, sealed, verify_site
 
 ASSIGNMENT_ID = 'testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator'
-SUFFIXES = ('two_cycles_clear', 'one_cycle_entry', 'rolling_entry',
+SUFFIXES = ('two_cycles_clear', 'one_cycle_entry', 'three_cycles_clear', 'rolling_entry',
             'no_causal_record', 'pedestrian_crosswalk', 'lawful_traffic')
 SITE_REFS = {'map': 'map_ref', 'route': 'route_ref', 'signal': 'signal_ref',
              'stop_reference': 'stop_ref', 'crosswalk': 'crosswalk_ref'}

@@ -4,11 +4,10 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
-      "target_law_id": "NRS-484B-213-2a",
-      "target_type": "boundary_probe",
-      "status": "draft",
-      "rationale": "Ego remains in right-side assigned lane while approaching a source-measured obstructing crest on a two-way highway. Requested context is not original observed road or view state.",
+      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared reviewed crest route reference before the exact left-side and one-way probes; source review pending.",
       "variable_assignments": {
         "requested_ego_side": {
           "kind": "controller",
@@ -19,7 +18,7 @@
           "value": "obstructed"
         },
         "source_road_direction": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": "two_way"
         }
       },
@@ -95,6 +94,117 @@
           "Public highway and one-way designation require reviewed original records.",
           "Hazard distance remains a legal judgment without an invented cutoff."
         ]
+      },
+      "unresolved_judgment_calls": [
+        "Highway and road-direction authority",
+        "Approaching a crest",
+        "Obstructed view",
+        "Distance creating a hazard if an opposite-direction vehicle might approach"
+      ]
+    },
+    {
+      "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+      "target_law_id": "NRS-484B-213-2a",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Ego remains in right-side assigned lane while approaching a source-measured obstructing crest on a two-way highway. Requested context is not original observed road or view state.",
+      "variable_assignments": {
+        "requested_ego_side": {
+          "kind": "controller",
+          "value": "reference_corner"
+        },
+        "requested_crest_view": {
+          "kind": "world_setup",
+          "value": "obstructed"
+        },
+        "source_road_direction": {
+          "kind": "world_setup",
+          "value": "two_way"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_lane_directions",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          },
+          {
+            "name": "crest_grade_profile",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          },
+          {
+            "name": "ego_left_side_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          },
+          {
+            "name": "opposing_vehicle_route_and_body",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          },
+          {
+            "name": "driver_view_proxy_and_visibility",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          },
+          {
+            "name": "highway_one_way_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          },
+          {
+            "name": "frame_and_camera_join",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, body, ray and camera frame join",
+            "time_window": "entire 45-second crest approach",
+            "reference_frame": "original CARLA world and reviewed road center",
+            "uncertainty": "20 Hz sampling, map geometry and camera perspective"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Proxy rays and sampled grade do not establish actual driver perception.",
+          "Public highway and one-way designation require reviewed original records.",
+          "Hazard distance remains a legal judgment without an invented cutoff."
+        ]
+      },
+      "paired_probe_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__crest_branch_group",
+      "deliberate_differences": [
+        "requested_ego_side",
+        "requested_crest_view",
+        "source_road_direction"
+      ],
+      "probe": {
+        "primary_variable": "requested_ego_side",
+        "comparison_or_standard": "Original source-bound same-frame crest context; no legal hazard cutoff",
+        "target_value_or_branch": "right_crest_obstructed"
       },
       "unresolved_judgment_calls": [
         "Highway and road-direction authority",
@@ -119,7 +229,7 @@
           "value": "obstructed"
         },
         "source_road_direction": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": "two_way"
         }
       },
@@ -195,6 +305,17 @@
           "Public highway and one-way designation require reviewed original records.",
           "Hazard distance remains a legal judgment without an invented cutoff."
         ]
+      },
+      "paired_probe_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__crest_branch_group",
+      "deliberate_differences": [
+        "requested_ego_side",
+        "requested_crest_view",
+        "source_road_direction"
+      ],
+      "probe": {
+        "primary_variable": "requested_ego_side",
+        "comparison_or_standard": "Original source-bound same-frame crest context; no legal hazard cutoff",
+        "target_value_or_branch": "left_crest_obstructed"
       },
       "unresolved_judgment_calls": [
         "Highway and road-direction authority",
@@ -219,7 +340,7 @@
           "value": "clear"
         },
         "source_road_direction": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": "two_way"
         }
       },
@@ -296,6 +417,17 @@
           "Hazard distance remains a legal judgment without an invented cutoff."
         ]
       },
+      "paired_probe_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__crest_branch_group",
+      "deliberate_differences": [
+        "requested_ego_side",
+        "requested_crest_view",
+        "source_road_direction"
+      ],
+      "probe": {
+        "primary_variable": "requested_crest_view",
+        "comparison_or_standard": "Original source-bound same-frame crest context; no legal hazard cutoff",
+        "target_value_or_branch": "left_crest_clear"
+      },
       "unresolved_judgment_calls": [
         "Highway and road-direction authority",
         "Approaching a crest",
@@ -319,7 +451,7 @@
           "value": "obstructed"
         },
         "source_road_direction": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": "one_way"
         }
       },
@@ -396,6 +528,17 @@
           "Hazard distance remains a legal judgment without an invented cutoff."
         ]
       },
+      "paired_probe_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__crest_branch_group",
+      "deliberate_differences": [
+        "requested_ego_side",
+        "requested_crest_view",
+        "source_road_direction"
+      ],
+      "probe": {
+        "primary_variable": "source_road_direction",
+        "comparison_or_standard": "Original source-bound same-frame crest context; no legal hazard cutoff",
+        "target_value_or_branch": "left_one_way_obstructed"
+      },
       "unresolved_judgment_calls": [
         "Highway and road-direction authority",
         "Approaching a crest",
@@ -454,5 +597,71 @@
       ]
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "c104084-judgment-1",
+      "target_law_id": "NRS-484B-213-2a",
+      "judgment_refs": [
+        {
+          "phrase": "Highway and road-direction authority",
+          "note": "Original source review remains required; no legal threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original reviewed road, actor, camera and authority sources are required to bound a physical sweep.",
+      "missing_inputs": [
+        "Source-reviewed Native crest and highway designation",
+        "Original driver-view and opposing-vehicle evidence"
+      ]
+    },
+    {
+      "sweep_id": "c104084-judgment-2",
+      "target_law_id": "NRS-484B-213-2a",
+      "judgment_refs": [
+        {
+          "phrase": "Approaching a crest",
+          "note": "Original source review remains required; no legal threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original reviewed road, actor, camera and authority sources are required to bound a physical sweep.",
+      "missing_inputs": [
+        "Source-reviewed Native crest and highway designation",
+        "Original driver-view and opposing-vehicle evidence"
+      ]
+    },
+    {
+      "sweep_id": "c104084-judgment-3",
+      "target_law_id": "NRS-484B-213-2a",
+      "judgment_refs": [
+        {
+          "phrase": "Obstructed view",
+          "note": "Original source review remains required; no legal threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original reviewed road, actor, camera and authority sources are required to bound a physical sweep.",
+      "missing_inputs": [
+        "Source-reviewed Native crest and highway designation",
+        "Original driver-view and opposing-vehicle evidence"
+      ]
+    },
+    {
+      "sweep_id": "c104084-judgment-4",
+      "target_law_id": "NRS-484B-213-2a",
+      "judgment_refs": [
+        {
+          "phrase": "Distance creating a hazard if an opposite-direction vehicle might approach",
+          "note": "Original source review remains required; no legal threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original reviewed road, actor, camera and authority sources are required to bound a physical sweep.",
+      "missing_inputs": [
+        "Source-reviewed Native crest and highway designation",
+        "Original driver-view and opposing-vehicle evidence"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

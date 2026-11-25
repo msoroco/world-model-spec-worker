@@ -60,5 +60,14 @@ class DeliveryTest(unittest.TestCase):
         with self.assertRaisesRegex(audit.DeliveryError, 'frame count'):
             audit.audit_saved(self.root, self.manifest)
 
+    def test_negative_causal_case_preserves_absence_of_source(self):
+        self.manifest['case_id'] = 'assignment__no_causal_record'
+        self.manifest['sources'].pop('cause')
+        self.manifest['cause_status'] = 'not_established'
+        self.assertEqual(audit.audit_saved(self.root, self.manifest)['original_frames'], 900)
+        self.manifest['cause_status'] = 'failed_detection'
+        with self.assertRaisesRegex(audit.DeliveryError, 'negative causal case'):
+            audit.audit_saved(self.root, self.manifest)
+
 
 if __name__ == '__main__': unittest.main()

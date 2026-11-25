@@ -8,7 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCES = ('signal_exception.py', 'original_capture.py', 'native_session.py', 'camera_capture.py', 'saved_measurement.py',
-           'comparison_audit.py', 'delivery_audit.py', 'media_decode.py', 'operator_native_adapter.py')
+           'comparison_audit.py', 'delivery_audit.py', 'media_decode.py', 'operator_native_adapter.py', 'analysis.py')
 
 
 def recording_description():
@@ -82,8 +82,19 @@ def main():
     if not hasattr(adapter, "open_session"):
         raise ValueError("Operator-owned Native adapter lacks open_session")
     from native_session import capture_events
-    with adapter.open_session(case_id, args.site_packet, args.host, args.port) as session:
-        capture_events(session, args.site_packet, case_id, args.output_dir)
+    try:
+        with adapter.open_session(case_id, args.site_packet, args.host, args.port) as session:
+            capture_events(session, args.site_packet, case_id, args.output_dir)
+        if not session.restoration_verified:
+            raise ValueError("Original Native sensor/world restoration unverified")
+        from worker_exchange.native_output import seal_capture
+        seal_capture(args.output_dir, frames=900,
+                     restoration={"restored": True, "scope": "operator adapter closed four sensors and verified unchanged world settings"},
+                     errors=[])
+    except Exception as error:
+        Path(args.output_dir, "native-run-status.json").write_text(json.dumps({
+            "errors": [str(error)], "case_id": case_id, "capture_sealed": False}, indent=2) + "\\n")
+        raise
 
 
 if __name__ == "__main__":
@@ -111,18 +122,23 @@ class BundleTests(unittest.TestCase):
 
     def test_pinned_capture_dispatch_to_operator_session(self):
         case_id = runner.check()
-        session = object()
+        session = types.SimpleNamespace(restoration_verified=True)
         context = MagicMock()
         context.__enter__.return_value = session
         adapter = types.SimpleNamespace(open_session=MagicMock(return_value=context))
+        exchange = types.ModuleType("worker_exchange")
+        output = types.ModuleType("worker_exchange.native_output")
+        output.seal_capture = MagicMock()
         env = {"SCENARIO_SITE_PACKET": "/reviewed/site.json", "SCENARIO_NATIVE_ADAPTER": "test_native_adapter"}
         args = ["runner.py", "--output-dir", "/materialized/attempt",
                 "--host", "localhost", "--port", "2000"]
-        with patch.dict("os.environ", env), patch.dict(sys.modules, {"test_native_adapter": adapter}), \\
+        with patch.dict("os.environ", env), patch.dict(sys.modules, {"test_native_adapter": adapter,
+                "worker_exchange": exchange, "worker_exchange.native_output": output}), \\
                 patch("native_session.capture_events") as capture, patch("sys.argv", args):
             runner.main()
         adapter.open_session.assert_called_once_with(case_id, "/reviewed/site.json", "localhost", 2000)
         capture.assert_called_once_with(session, "/reviewed/site.json", case_id, "/materialized/attempt")
+        output.seal_capture.assert_called_once()
 
 
 if __name__ == "__main__":
@@ -134,8 +150,8 @@ def build():
     source = (HERE / 'case-plan.json').read_bytes()
     plan = json.loads(source)
     cases = plan['cases']
-    if len(cases) != 6 or len({row['case_id'] for row in cases}) != 6:
-        raise ValueError('Six distinct C111125 exact cases required')
+    if len(cases) != 7 or len({row['case_id'] for row in cases}) != 7:
+        raise ValueError('Seven distinct C111125 exact cases required')
     output_rows = []
     for row in cases:
         case_id = row['case_id']
@@ -146,6 +162,8 @@ def build():
                   'cell_id': 'C111125', 'actor': 'motorcycle_or_moped_operator',
                   'selected_case_id': case_id,
                   'case_parameters': row['scenario_parameters'],
+                  'case': {'case_id': case_id,
+                           'recording_description': recording_description()},
                   'plan_sha256': hashlib.sha256(source).hexdigest(),
                   'fps': 20, 'frame_count': 900, 'duration_s': 45,
                   'cameras': ['overview', 'approach', 'reference_corner',

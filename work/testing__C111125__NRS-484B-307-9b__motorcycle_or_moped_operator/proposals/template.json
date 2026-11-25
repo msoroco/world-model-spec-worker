@@ -1,0 +1,63 @@
+{
+  "template_id": "NRS-484B-307-9b@motorcycle_or_moped_operator",
+  "law_id": "NRS-484B-307-9b",
+  "actor": "motorcycle_or_moped_operator",
+  "status": "draft",
+  "quote": "Where the signal is a steady red with a green turn arrow: A person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter facing the signal may proceed straight through or turn in the direction opposite that indicated by the green turn arrow if: (1) The person stops before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made or, in the absence of any such crosswalk, sign or marking, before entering the intersection; (2) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (3) No other device at the place prohibits the turn, if applicable; and (4) The person yields the right-of-way to pedestrians lawfully within an adjacent crosswalk and to other traffic lawfully using the intersection.",
+  "parameter_refs": [
+    {
+      "name": "full_cycles_after_stop_target",
+      "kind": "controller",
+      "range_or_domain": "one, two or three complete source-observed aspect-return cycles",
+      "unit": "cycles"
+    },
+    {
+      "name": "stop_pattern",
+      "kind": "controller",
+      "range_or_domain": "stopped or rolling",
+      "unit": "categorical stop request"
+    },
+    {
+      "name": "unchanged_signal_cause_target",
+      "kind": "world_setup",
+      "range_or_domain": "source-affirmed failed detection or not established",
+      "unit": "categorical causal source"
+    },
+    {
+      "name": "other_user_region_at_entry",
+      "kind": "world_setup",
+      "range_or_domain": "clear, adjacent crosswalk or intersection with separate lawful-status source",
+      "unit": "categorical participant region"
+    }
+  ],
+  "structure": {
+    "activation": {
+      "source_clause": "Where the signal is a steady red with a green turn arrow"
+    },
+    "obligation": {
+      "source_clause": "The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device",
+      "numeric_conditions": [
+        {
+          "variable": "full_cycles_after_stop_target",
+          "operator": ">=",
+          "value": 2,
+          "unit": "cycles"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "source_clause": "before entering the intersection"
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "pedestrians lawfully within an adjacent crosswalk",
+        "note": "Original crosswalk occupancy alone does not establish lawful status."
+      },
+      {
+        "phrase": "other traffic lawfully using the intersection",
+        "note": "Original intersection occupancy alone does not establish lawful status."
+      }
+    ]
+  }
+}

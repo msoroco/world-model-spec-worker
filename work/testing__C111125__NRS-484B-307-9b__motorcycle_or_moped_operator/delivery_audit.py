@@ -36,12 +36,18 @@ def audit_saved(root, manifest):
     need(manifest.get('law_id') == 'NRS-484B-307-9b', 'law binding mismatch')
     need(manifest.get('actor') == 'motorcycle_or_moped_operator', 'actor binding mismatch')
     need(manifest.get('fps') == 20, 'capture rate mismatch')
-    need(manifest.get('duration_frames', 0) >= 900, '45 second history missing')
+    need(manifest.get('duration_frames') == 900, 'exact 45 second history missing')
     source_refs = manifest.get('sources')
     need(isinstance(source_refs, dict), 'source inventory missing')
-    for key in ('original_events', 'map', 'route', 'signal', 'stop_reference', 'crosswalk', 'cause'):
+    for key in ('original_events', 'map', 'route', 'signal', 'stop_reference', 'crosswalk'):
         need(key in source_refs, 'missing source: ' + key)
         sealed(root, source_refs[key])
+    if manifest['case_id'].endswith('__no_causal_record'):
+        need('cause' not in source_refs and manifest.get('cause_status') == 'not_established',
+             'negative causal case must retain absence of affirmative source')
+    else:
+        need('cause' in source_refs, 'missing source: cause')
+        sealed(root, source_refs['cause'])
     rows = json.loads(sealed(root, source_refs['original_events']).read_text())
     need(isinstance(rows, list) and len(rows) == manifest['duration_frames'], 'original frame count mismatch')
     frames = [r.get('frame') for r in rows]

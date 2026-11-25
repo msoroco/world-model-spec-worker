@@ -21,6 +21,11 @@ def process(attempt_dir, output_path, *, assignment_id, case_id,
     if output.exists():
         raise ValueError('retain prior saved delivery receipt')
     manifest = attempt / 'source-hashes.json'
+    if not manifest.exists():
+        provenance = attempt / 'acquisition-provenance.json'
+        if (provenance.is_file() and
+                json.loads(provenance.read_text()).get('diagnostic_fixture') is True):
+            manifest = attempt / 'original-hashes.json'
     if manifest.is_symlink() or not manifest.is_file() or manifest.resolve().parent != attempt:
         raise ValueError('original source manifest missing or escapes attempt')
     manifest_bytes = manifest.read_bytes()

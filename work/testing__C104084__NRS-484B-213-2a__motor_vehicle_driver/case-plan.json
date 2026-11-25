@@ -1,170 +1,268 @@
 {
-  "assignment_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C104084",
-  "law_id": "NRS-484B-213-2a",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-213-2a",
-      "cell_id": "C104084",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-213-2a",
-      "branch": "Approaching a crest; obstructed-view condition; one-way exception absent by setup.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 343,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "A vehicle must not be driven to the left side of the highway at any time: When approaching the crest of a grade or upon a curve in the highway where the driver’s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction. Subsection 2 does not apply upon a one-way highway.",
-  "law_source": "NRS 484B.213(2)(a); with 484B.213(3)",
-  "topic_inventory": {
-    "crest_or_curve": "Subsection 2(a) offers crest and curve alternatives; the assigned hill_crest cell supports the crest alternative only. Curve needs a compatible cell binding owned by the batch lead.",
-    "left_side": "Driving to the left side is the regulated action.",
-    "obstructed_view_hazard": "Original driver-view obstruction and distance creating hazard if another vehicle might approach from the opposite direction remain distinct observations and judgment. No numeric hazard cutoff is supplied.",
-    "one_way_exception": "Subsection 3 exempts a one-way highway from subsection 2."
+  "assignment_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "full crest approach, ego and other vehicle",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "crest grade and oncoming route",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "ego body position relative to road center",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "original driver proxy view toward approaching vehicle",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
-      "target_law_id": "NRS-484B-213-2a",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
-        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending."
-      },
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
-      "purpose": "Ego remains in right-side assigned lane while approaching a source-measured obstructing crest on a two-way highway."
-    },
-    {
-      "target_law_id": "NRS-484B-213-2a",
       "gap_ids": [
         "no_accepted_evidence"
       ],
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending.",
         "risk": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
-        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending."
+        "status": "physical"
       },
+      "purpose": "Ego remains in right-side assigned lane while approaching a source-measured obstructing crest on a two-way highway.",
+      "target_law_id": "NRS-484B-213-2a"
+    },
+    {
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
-      "purpose": "Ego crosses to the left side while approaching the same obstructing crest on a two-way highway."
-    },
-    {
-      "target_law_id": "NRS-484B-213-2a",
       "gap_ids": [
         "no_accepted_evidence"
       ],
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending.",
         "risk": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
-        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending."
+        "status": "physical"
       },
+      "purpose": "Ego crosses to the left side while approaching the same obstructing crest on a two-way highway.",
+      "target_law_id": "NRS-484B-213-2a"
+    },
+    {
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
-      "purpose": "Ego crosses to the left side on a two-way crest approach with a source-measured clear proxy ray; hazard-distance judgment remains unresolved."
-    },
-    {
-      "target_law_id": "NRS-484B-213-2a",
       "gap_ids": [
         "no_accepted_evidence"
       ],
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending.",
         "risk": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
-        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending."
+        "status": "physical"
       },
+      "purpose": "Ego crosses to the left side on a two-way crest approach with a source-measured clear proxy ray; hazard-distance judgment remains unresolved.",
+      "target_law_id": "NRS-484B-213-2a"
+    },
+    {
       "case_id": "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed",
-      "purpose": "Ego crosses a center reference on a one-way highway with an obstructing grade; subsection 3 exception is tested as authored context, not inferred from absence of opposing traffic."
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "No alternate construction has been validated; keep the primary source-gated map selection pending.",
+        "risk": "An original two-direction Native map with an actual crest high enough to block the source-sampled proxy ray has not yet been selected. The candidate Native map must pass opposing-lane and sampled-grade checks, then actual ray and camera checks.",
+        "status": "physical"
+      },
+      "purpose": "Ego crosses a center reference on a one-way highway with an obstructing grade; subsection 3 exception is tested as authored context, not inferred from absence of opposing traffic.",
+      "target_law_id": "NRS-484B-213-2a"
     }
   ],
+  "cell_id": "C104084",
   "comparisons": [
     {
-      "comparison_id": "left_side_motion",
       "case_ids": [
         "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
         "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed"
+      ],
+      "comparison_id": "left_side_motion",
+      "deliberate_differences": [
+        "ego body remains in assigned right-side lane versus crosses to left side"
       ],
       "fixed_conditions": [
         "same two-way original road and crest geometry",
         "same approaching direction and opposite-direction lane",
         "same opposing vehicle route and timing",
         "same actor, cameras and duration"
-      ],
-      "deliberate_differences": [
-        "ego body remains in assigned right-side lane versus crosses to left side"
       ]
     },
     {
-      "comparison_id": "crest_view_obstruction",
       "case_ids": [
         "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
         "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear"
+      ],
+      "comparison_id": "crest_view_obstruction",
+      "deliberate_differences": [
+        "original sampled road-grade profile and resulting proxy-ray intersection vary; hazard judgment remains unlabelled"
       ],
       "fixed_conditions": [
         "same two-way allocation, actor and left-side ego route",
         "same opposing vehicle route and timing",
         "same cameras and duration"
-      ],
-      "deliberate_differences": [
-        "original sampled road-grade profile and resulting proxy-ray intersection vary; hazard judgment remains unlabelled"
       ]
     },
     {
-      "comparison_id": "one_way_exception",
       "case_ids": [
         "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
         "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
       ],
+      "comparison_id": "one_way_exception",
+      "deliberate_differences": [
+        "original Native lane-direction allocation is two-way versus one-way; other vehicle travels in a compatible lane and has no invented opposite-direction status in the one-way case"
+      ],
       "fixed_conditions": [
         "same hill-crest layout and left-of-reference ego motion",
         "same actor, cameras and duration"
-      ],
-      "deliberate_differences": [
-        "original Native lane-direction allocation is two-way versus one-way; other vehicle travels in a compatible lane and has no invented opposite-direction status in the one-way case"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "Source-bound crest, left-side, view-obstruction and one-way comparison evidence",
+        "source": {
+          "path": "inputs/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/evidence.json",
+          "sha256": "cd7e8eb8820d7890bc55add82f59e8381847c278f1e774ef44f55bbd3b9ba479"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory contains no accepted recordings for this exact assignment."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-213-2a",
+  "law_source": "NRS 484B.213(2)(a); with 484B.213(3)",
+  "law_text": "A vehicle must not be driven to the left side of the highway at any time: When approaching the crest of a grade or upon a curve in the highway where the driver\u2019s view is obstructed within such distance as to create a hazard in the event another vehicle might approach from the opposite direction. Subsection 2 does not apply upon a one-way highway.",
   "observations": [
     {
-      "name": "original_lane_directions",
       "mandatory": true,
+      "name": "original_lane_directions",
       "source": "Native map waypoints and road topology"
     },
     {
-      "name": "crest_grade_profile",
       "mandatory": true,
+      "name": "crest_grade_profile",
       "source": "Native waypoint road elevations and raycast hits"
     },
     {
-      "name": "ego_left_side_body_history",
       "mandatory": true,
+      "name": "ego_left_side_body_history",
       "source": "Native ego bounding box and source-hashed lane/center geometry"
     },
     {
-      "name": "opposing_vehicle_route_and_body",
       "mandatory": true,
+      "name": "opposing_vehicle_route_and_body",
       "source": "Native route, actor identity, transforms and body corners"
     },
     {
-      "name": "driver_view_proxy_and_visibility",
       "mandatory": true,
+      "name": "driver_view_proxy_and_visibility",
       "source": "Native raycasts from declared virtual observer to opposing body"
     },
     {
-      "name": "highway_one_way_context",
       "mandatory": true,
+      "name": "highway_one_way_context",
       "source": "Native map lane direction inventory and public-highway context source"
     },
     {
-      "name": "frame_and_camera_join",
       "mandatory": true,
+      "name": "frame_and_camera_join",
       "source": "Native frame map and synchronized four-camera video"
     }
   ],
+  "planning_status": "partial_exact_case_plan",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
+      ],
+      "evidence_or_gap": "Original signed ego body corners and reviewed center reference remain required; synthetic packets exercise only software joins.",
+      "requirement": "Vehicle driven to the left side of the highway",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
+      ],
+      "evidence_or_gap": "Original OpenDRIVE crest profile and reviewed map placement remain required; diagnostic OpenDRIVE has a synthetic grade.",
+      "requirement": "Approaching the crest of a grade with original sampled road geometry",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
+      ],
+      "evidence_or_gap": "Original four-corner rays and camera views plus independent driver-view/hazard judgment remain required; diagnostic rays do not establish physical obstruction.",
+      "requirement": "Driver view obstructed within distance creating a hazard if another vehicle might approach from the opposite direction; preserve unresolved legal distance judgment",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
+        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
+      ],
+      "evidence_or_gap": "Original highway and one-way designation records remain required; synthetic context does not establish legal authority.",
+      "requirement": "Subsection 2 does not apply upon a one-way highway; require original designation source",
+      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No Native map or physical crest geometry has been bound to the geometry checker.",
+    "No original highway dedication/public access or one-way authority source has been bound.",
+    "Hazard-distance judgment remains unresolved, with no legal numeric cutoff.",
+    "Curve alternative requires a compatible cell binding by the batch lead.",
+    "Runner, case finalizers, proposals, compatibility and delivery/comparison audits are not yet implemented."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Approaching a crest; obstructed-view condition; one-way exception absent by setup.",
+      "cell_id": "C104084",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-213-2a",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-213-2a",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 343,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/assignment.json",
@@ -187,40 +285,18 @@
       "sha256": "d4fa6d8fd7aea7a9a1fe23dcac0361285d25497791c6d4d4077f2a19610b4913"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No Native map or physical crest geometry has been bound to the geometry checker.",
-    "No original highway dedication/public access or one-way authority source has been bound.",
-    "Hazard-distance judgment remains unresolved, with no legal numeric cutoff.",
-    "Curve alternative requires a compatible cell binding by the batch lead.",
-    "Runner, case finalizers, proposals, compatibility and delivery/comparison audits are not yet implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_evidence",
-        "requirement": "Source-bound crest, left-side, view-obstruction and one-way comparison evidence",
-        "source": {
-          "path": "inputs/testing__C104084__NRS-484B-213-2a__motor_vehicle_driver/evidence.json",
-          "sha256": "cd7e8eb8820d7890bc55add82f59e8381847c278f1e774ef44f55bbd3b9ba479"
-        },
-        "why_existing_insufficient": "Frozen evidence inventory contains no accepted recordings for this exact assignment."
-      }
-    ]
+  "topic_inventory": {
+    "crest_or_curve": "Subsection 2(a) offers crest and curve alternatives; the assigned hill_crest cell supports the crest alternative only. Curve needs a compatible cell binding owned by the batch lead.",
+    "left_side": "Driving to the left side is the regulated action.",
+    "obstructed_view_hazard": "Original driver-view obstruction and distance creating hazard if another vehicle might approach from the opposite direction remain distinct observations and judgment. No numeric hazard cutoff is supplied.",
+    "one_way_exception": "Subsection 3 exempts a one-way highway from subsection 2."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_exact_case_plan",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 343,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Approaching a crest; obstructed-view condition; one-way exception absent by setup.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The fixed crest and travel task support obstructed-view observations and left-side travel without requiring a passing goal.",
       "required_context": [
         "Construct a non-one-way highway with opposite-direction allocation, boundaries, centerline, crest profile and a driver viewpoint physically obstructed by the crest.",
         "Construct a non-one-way highway, crest profile, centerline and driver viewpoint with physical view obstruction.",
@@ -232,57 +308,9 @@
         "Retain time-aligned position, footprint, crest-relative motion and visibility observations without imposing a footprint threshold, approach distance or hazard cutoff.",
         "Specify the ego route and left-side motion and the other vehicle's identity, relative position, route, motion, priority and purpose."
       ],
-      "reason": "The fixed crest and travel task support obstructed-view observations and left-side travel without requiring a passing goal."
-    }
-  ],
-  "requirement_dispositions": [
-    {
-      "requirement": "Vehicle driven to the left side of the highway",
-      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
-      ],
-      "evidence_or_gap": "Original signed ego body corners and reviewed center reference remain required; synthetic packets exercise only software joins."
-    },
-    {
-      "requirement": "Approaching the crest of a grade with original sampled road geometry",
-      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
-      ],
-      "evidence_or_gap": "Original OpenDRIVE crest profile and reviewed map placement remain required; diagnostic OpenDRIVE has a synthetic grade."
-    },
-    {
-      "requirement": "Driver view obstructed within distance creating a hazard if another vehicle might approach from the opposite direction; preserve unresolved legal distance judgment",
-      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
-      ],
-      "evidence_or_gap": "Original four-corner rays and camera views plus independent driver-view/hazard judgment remain required; diagnostic rays do not establish physical obstruction."
-    },
-    {
-      "requirement": "Subsection 2 does not apply upon a one-way highway; require original designation source",
-      "source": "NRS 484B.213(2)(a) and subsection 3 exact exported text in case-plan.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__right_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_obstructed",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_crest_clear",
-        "testing__C104084__NRS-484B-213-2a__motor_vehicle_driver__left_one_way_obstructed"
-      ],
-      "evidence_or_gap": "Original highway and one-way designation records remain required; synthetic context does not establish legal authority."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 343,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

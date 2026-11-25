@@ -48,6 +48,7 @@ def build():
                                  'target_left_signal': original['target_left_signal'],
                                  'target_heading_deg': original['target_heading_deg']})
             observed = {'frame': frame, 'time_s': time_s,
+                        'map_context': {'junction_id': 1}, 'participants': [],
                         'target_actor_id': saved['target_id'],
                         'target_left_signal': original['target_left_signal'],
                         'target_heading_deg': original['target_heading_deg']}
