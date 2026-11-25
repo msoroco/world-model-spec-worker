@@ -91,6 +91,11 @@ def audit_delivery(attempt, analysis_path):
                            ('precipitation_percent', row['precipitation_percent'])):
             if not target[key][0] <= value <= target[key][1]:
                 raise ValueError('Condition target differs from original frame: ' + key)
+        for key in ('fog_density_percent', 'fog_distance_m'):
+            if key in target:
+                value = row[key]
+                if sample.get(key) != value or not target[key][0] <= value <= target[key][1]:
+                    raise ValueError('Fog target differs from original frame: ' + key)
     matched = {check['target']: check['matched'] for check in result.get('target_checks', [])}
     if any(not matched.get(key, False) for key in (*target.keys(), 'sampled_peak_speed_mps')):
         raise ValueError('Saved condition or speed target did not match')
@@ -101,10 +106,10 @@ def audit_delivery(attempt, analysis_path):
 
 
 def audit_comparison(attempts):
-    """Check declared dry/wet/dense/narrow changes from source packet values."""
+    """Check declared changes in all six exact constructions."""
     if set(attempts) != {'dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
-                         'narrow_same_traffic'}:
-        raise ValueError('Four exact controlled comparison members required')
+                         'narrow_same_traffic', 'low_visibility', 'ice_or_snow'}:
+        raise ValueError('Six exact controlled comparison members required')
     docs = {}
     for suffix, root in attempts.items():
         root = Path(root)
@@ -113,9 +118,9 @@ def audit_comparison(attempts):
         if config['selected_case_id'] != ASSIGNMENT + '__' + suffix or road['case_id'] != config['selected_case_id']:
             raise ValueError('Controlled comparison case join failed')
         docs[suffix] = (config, road, _json(root / 'surface_packet.json'))
-    dry, wet, dense, narrow = (docs[key] for key in (
-        'dry_open_traffic', 'wet_same_traffic', 'dense_traffic', 'narrow_same_traffic'))
-    for other in (wet, dense):
+    dry, wet, dense, narrow, low, ice = (docs[key] for key in (
+        'dry_open_traffic', 'wet_same_traffic', 'dense_traffic', 'narrow_same_traffic', 'low_visibility', 'ice_or_snow'))
+    for other in (wet, dense, low, ice):
         for key in ('native_map_id', 'road_id', 'lane_id', 'ego_spawn',
                     'ego_target_speed_mps', 'vehicle_blueprint_id', 'lead_blueprint_id'):
             if other[1][key] != dry[1][key]:
@@ -124,7 +129,7 @@ def audit_comparison(attempts):
                 'vehicle_blueprint_id', 'lead_blueprint_id'):
         if narrow[1][key] != dry[1][key]:
             raise ValueError('Undeclared narrow vehicle or control change: ' + key)
-    for other in (wet, dense, narrow):
+    for other in (wet, dense, narrow, low, ice):
         for key in ('rate_hz', 'duration_s', 'cameras', 'requested_speed_mps'):
             if other[0][key] != dry[0][key]:
                 raise ValueError('Undeclared fixed capture change: ' + key)
@@ -136,6 +141,28 @@ def audit_comparison(attempts):
         raise ValueError('Dense case changed fixed surface/weather')
     if dense[1]['lead_spawn'] == dry[1]['lead_spawn'] or dense[1]['lead_target_speed_mps'] == dry[1]['lead_target_speed_mps']:
         raise ValueError('Dense case lacks declared traffic change')
+    for key in ('lead_spawn', 'lead_target_speed_mps'):
+        if low[1][key] != dry[1][key]:
+            raise ValueError('Low-visibility case changed fixed traffic')
+    if low[2] != dry[2]:
+        raise ValueError('Low-visibility case changed fixed surface')
+    dry_weather, low_weather = dry[1]['weather_profile'], low[1]['weather_profile']
+    for key in ('cloudiness', 'precipitation', 'wetness', 'sun_altitude_angle'):
+        if low_weather[key] != dry_weather[key]:
+            raise ValueError('Low-visibility case changed fixed weather: ' + key)
+    if (low_weather['fog_density'] == dry_weather['fog_density'] or
+            low_weather['fog_distance'] == dry_weather['fog_distance'] or
+            low[0]['condition_target'].get('fog_density_percent') != [70, 90] or
+            low[0]['condition_target'].get('fog_distance_m') != [10, 30]):
+        raise ValueError('Low-visibility case lacks declared fog change')
+    for key in ('lead_spawn', 'lead_target_speed_mps'):
+        if ice[1][key] != dry[1][key]:
+            raise ValueError('Ice/snow case changed fixed traffic')
+    if (ice[2]['surface'] != 'ice_or_snow' or
+            ice[2]['road_id'] != ice[1]['road_id'] or
+            ice[1]['weather_profile'] == dry_weather or
+            ice[0]['condition_target']['precipitation_percent'] != [70, 90]):
+        raise ValueError('Ice/snow case lacks declared surface/weather change')
     def relative_gap(packet):
         return [packet['lead_spawn'][axis] - packet['ego_spawn'][axis]
                 for axis in ('x', 'y', 'z')]
@@ -163,16 +190,20 @@ def main():
     parser.add_argument('--wet')
     parser.add_argument('--dense')
     parser.add_argument('--narrow')
+    parser.add_argument('--low')
+    parser.add_argument('--ice')
     args = parser.parse_args()
-    if args.attempt and args.analysis and not any((args.dry, args.wet, args.dense, args.narrow)):
+    if args.attempt and args.analysis and not any((args.dry, args.wet, args.dense, args.narrow, args.low, args.ice)):
         receipt = audit_delivery(args.attempt, args.analysis)
-    elif all((args.dry, args.wet, args.dense, args.narrow)) and not any((args.attempt, args.analysis)):
+    elif all((args.dry, args.wet, args.dense, args.narrow, args.low, args.ice)) and not any((args.attempt, args.analysis)):
         receipt = audit_comparison({'dry_open_traffic': args.dry,
                                     'wet_same_traffic': args.wet,
                                     'dense_traffic': args.dense,
-                                    'narrow_same_traffic': args.narrow})
+                                    'narrow_same_traffic': args.narrow,
+                                    'low_visibility': args.low,
+                                    'ice_or_snow': args.ice})
     else:
-        parser.error('Supply an attempt and analysis, or dry/wet/dense/narrow source roots')
+        parser.error('Supply an attempt and analysis, or six controlled source roots')
     print(json.dumps(receipt, indent=2))
 
 

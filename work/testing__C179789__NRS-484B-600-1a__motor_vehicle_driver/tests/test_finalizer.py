@@ -14,6 +14,10 @@ SPEC.loader.exec_module(MODULE)
 
 def write_fixture(root):
     config = json.loads((ROOT / 'config.json').read_text())
+    config['condition_target'] = {'surface': 'dry', 'lane_width_m': [3, 4],
+                                  'longitudinal_body_gap_m': [10, 35],
+                                  'sight_distance_m': [10, 120],
+                                  'precipitation_percent': [0, 5]}
     (root / 'config.json').write_text(json.dumps(config) + '\n')
     surface = 'Observed dry pavement in source review.\n'
     (root / 'surface.txt').write_text(surface)
@@ -42,6 +46,7 @@ def write_fixture(root):
                      'surface': 'dry', 'surface_source': source,
                      'physical_surface_verified': False,
                      'precipitation_percent': 0,
+                     'fog_density_percent': 0, 'fog_distance_m': 100,
                      'weather_source': 'world.get_weather',
                      'sight_distance_m': 80,
                      'sight_ray_source': 'original Native cast_ray',

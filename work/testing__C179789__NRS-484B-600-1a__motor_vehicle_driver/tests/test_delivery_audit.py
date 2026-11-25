@@ -61,13 +61,15 @@ class DeliveryAuditTests(unittest.TestCase):
             baseline['surface_packet.json']['surface'] = 'dry'
             baseline['surface_packet.json']['road_id'] = 7
             baseline['road_packet.json']['weather_profile']['precipitation'] = 0
+            baseline['road_packet.json']['weather_profile']['fog_density'] = 0
+            baseline['road_packet.json']['weather_profile']['fog_distance'] = 100
             baseline['road_packet.json']['road_id'] = 7
             baseline['road_packet.json']['ego_spawn']['y'] = 0
             baseline['road_packet.json']['lead_spawn']['x'] = 25
             baseline['road_packet.json']['lead_spawn']['y'] = 0
             baseline['road_packet.json']['lead_target_speed_mps'] = 7
             for suffix in ('dry_open_traffic', 'wet_same_traffic', 'dense_traffic',
-                           'narrow_same_traffic'):
+                           'narrow_same_traffic', 'low_visibility', 'ice_or_snow'):
                 root = Path(folder) / suffix
                 root.mkdir()
                 docs = json.loads(json.dumps(baseline))
@@ -85,6 +87,15 @@ class DeliveryAuditTests(unittest.TestCase):
                     docs['surface_packet.json']['road_id'] = 8
                     docs['road_packet.json']['ego_spawn']['y'] = 50
                     docs['road_packet.json']['lead_spawn']['y'] = 50
+                elif suffix == 'low_visibility':
+                    docs['road_packet.json']['weather_profile']['fog_density'] = 80
+                    docs['road_packet.json']['weather_profile']['fog_distance'] = 20
+                    docs['config.json']['condition_target']['fog_density_percent'] = [70, 90]
+                    docs['config.json']['condition_target']['fog_distance_m'] = [10, 30]
+                elif suffix == 'ice_or_snow':
+                    docs['surface_packet.json']['surface'] = 'ice_or_snow'
+                    docs['road_packet.json']['weather_profile']['precipitation'] = 80
+                    docs['config.json']['condition_target']['precipitation_percent'] = [70, 90]
                 for name, doc in docs.items():
                     (root / name).write_text(json.dumps(doc) + '\n')
                 roots[suffix] = root
@@ -94,6 +105,14 @@ class DeliveryAuditTests(unittest.TestCase):
             doc['ego_spawn']['x'] += 1
             road.write_text(json.dumps(doc) + '\n')
             with self.assertRaisesRegex(ValueError, 'Undeclared fixed road'):
+                audit.audit_comparison(roots)
+            doc['ego_spawn']['x'] -= 1
+            road.write_text(json.dumps(doc) + '\n')
+            low_road = roots['low_visibility'] / 'road_packet.json'
+            doc = json.loads(low_road.read_text())
+            doc['weather_profile']['precipitation'] = 30
+            low_road.write_text(json.dumps(doc) + '\n')
+            with self.assertRaisesRegex(ValueError, 'changed fixed weather'):
                 audit.audit_comparison(roots)
 
 

@@ -39,7 +39,10 @@ def _target_checks(config, report):
     target = config['condition_target']
     checks = []
     for key in ('lane_width_m', 'longitudinal_body_gap_m',
-                'sight_distance_m', 'precipitation_percent'):
+                'sight_distance_m', 'precipitation_percent',
+                'fog_density_percent', 'fog_distance_m'):
+        if key.startswith('fog_') and key not in target:
+            continue
         low, high = target[key]
         values = _values(report, key)
         matched = all(low <= value <= high for value in values)

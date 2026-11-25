@@ -35,7 +35,7 @@ class ConditionCaptureTests(unittest.TestCase):
             native_map=NS(get_waypoint=lambda location,project_to_road:waypoint)
             world=NS(get_map=lambda:native_map,
                      cast_ray=lambda eye,target:[NS(location=Location(x=60,y=0,z=1.5))],
-                     get_weather=lambda:NS(precipitation=75))
+                     get_weather=lambda:NS(precipitation=75,fog_density=80,fog_distance=20))
             ego=NS(id=10,get_location=lambda:Location(x=0,y=0,z=0),
                    get_velocity=lambda:NS(x=10,y=0,z=0),bounding_box=NS(extent=NS(x=2)))
             lead=NS(id=20,get_location=lambda:Location(x=25,y=0,z=0),
@@ -46,6 +46,8 @@ class ConditionCaptureTests(unittest.TestCase):
             self.assertEqual(row['frame'],100)
             self.assertEqual(row['surrounding_traffic'][0]['longitudinal_body_gap_m'],21)
             self.assertEqual(row['sight_distance_m'],60)
+            self.assertEqual(row['fog_density_percent'],80)
+            self.assertEqual(row['fog_distance_m'],20)
             self.assertEqual(row['surface'],'wet')
             self.assertFalse(row['physical_surface_verified'])
             self.assertGreater(row['curvature_per_m'],0)

@@ -75,6 +75,13 @@ def analyze(root:Path)->dict:
         sight=_number(row.get("sight_distance_m"),"sight distance")
         curvature=_number(row.get("curvature_per_m"),"curvature")
         precip=_number(row.get("precipitation_percent"),"precipitation")
+        fog={}
+        if 'fog_density_percent' in row or 'fog_distance_m' in row:
+            density=_number(row.get('fog_density_percent'),'fog density')
+            distance=_number(row.get('fog_distance_m'),'fog distance')
+            if not 0<=density<=100 or distance<0:
+                raise ValueError('Invalid frame-specific fog readback')
+            fog={'fog_density_percent':density,'fog_distance_m':distance}
         if lane_width<=0 or sight<0 or curvature<0 or not 0<=precip<=100:
             raise ValueError("Invalid frame-specific highway condition")
         if row.get("surface") not in ("dry","wet","ice_or_snow"):
@@ -96,6 +103,7 @@ def analyze(root:Path)->dict:
         samples.append({"frame":fid,"time_s":time,"ego_speed_mps":speed,
                         "lane_width_m":lane_width,"surface":row["surface"],
                         "precipitation_percent":precip,"sight_distance_m":sight,
+                        **fog,
                         "curvature_per_m":curvature,"surrounding_traffic":actors,
                         "diagnostic_stopping_distance_m":stop_distance,
                         "diagnostic_stop_distance_exceeds_sight":stop_distance>sight})

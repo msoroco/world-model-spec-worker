@@ -72,6 +72,11 @@ def sample_frame(world, ego, lead, snapshot, surface_review, eye,
     precipitation = float(weather.precipitation)
     if not math.isfinite(precipitation) or not 0 <= precipitation <= 100:
         raise ValueError('Native precipitation readback invalid')
+    fog_density = float(weather.fog_density)
+    fog_distance = float(weather.fog_distance)
+    if (not math.isfinite(fog_density) or not 0 <= fog_density <= 100 or
+            not math.isfinite(fog_distance) or fog_distance < 0):
+        raise ValueError('Native fog readback invalid')
     following = waypoint.next(5.0)
     if not following:
         raise ValueError('Native road curvature source missing')
@@ -85,6 +90,7 @@ def sample_frame(world, ego, lead, snapshot, surface_review, eye,
             'lane_width_m': probe['lane_width_m'], 'surface': surface_review['surface'],
             'surface_source': surface_review['source'], 'physical_surface_verified': False,
             'precipitation_percent': precipitation, 'weather_source': 'world.get_weather',
+            'fog_density_percent': fog_density, 'fog_distance_m': fog_distance,
             'sight_distance_m': probe['sight_distance_m'], 'sight_ray_source': ray_source,
             'curvature_per_m': curvature, 'curvature_source': 'native-waypoint.next(5.0)',
             'surrounding_traffic': [{'actor_id': int(lead.id), 'velocity_source': 'actor.get_velocity',

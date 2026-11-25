@@ -51,6 +51,13 @@ class RunnerEntryTests(unittest.TestCase):
         row['surface']='ice_or_snow'
         with self.assertRaisesRegex(ValueError,'surface differs'):
             RUNNER.verify_observed_target(row,target)
+        row['surface']='dry'
+        fog_target=dict(target,fog_density_percent=[70,90],fog_distance_m=[10,30])
+        row.update(fog_density_percent=80,fog_distance_m=20)
+        self.assertTrue(RUNNER.verify_observed_target(row,fog_target))
+        row['fog_density_percent']=0
+        with self.assertRaisesRegex(ValueError,'fog_density_percent'):
+            RUNNER.verify_observed_target(row,fog_target)
 
     def test_site_source_hashes_required(self):
         with tempfile.TemporaryDirectory() as folder:

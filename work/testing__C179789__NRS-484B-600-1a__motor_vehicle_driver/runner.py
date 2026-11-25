@@ -46,7 +46,9 @@ def validate_config(config):
     if not isinstance(target, dict) or target.get('surface') not in ('dry', 'wet', 'ice_or_snow'):
         raise ValueError('Exact sourced condition target required')
     for key in ('lane_width_m', 'longitudinal_body_gap_m', 'sight_distance_m',
-                'precipitation_percent'):
+                'precipitation_percent', 'fog_density_percent', 'fog_distance_m'):
+        if key.startswith('fog_') and key not in target:
+            continue
         bounds = target.get(key)
         if (not isinstance(bounds, list) or len(bounds) != 2 or
                 any(type(v) not in (int, float) or not math.isfinite(v) for v in bounds) or
@@ -62,6 +64,9 @@ def verify_observed_target(row, target):
               'longitudinal_body_gap_m': row['surrounding_traffic'][0]['longitudinal_body_gap_m'],
               'sight_distance_m': row['sight_distance_m'],
               'precipitation_percent': row['precipitation_percent']}
+    for key in ('fog_density_percent', 'fog_distance_m'):
+        if key in target:
+            values[key] = row[key]
     for key, value in values.items():
         low, high = target[key]
         if not low <= value <= high:

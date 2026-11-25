@@ -9,6 +9,20 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BASE=json.loads((ROOT/'construction.json').read_text())
 VARIANTS={
+ 'ice_or_snow':{'surface':'ice_or_snow','weather':(90,80,80,10,100,5),
+                'target':{'surface':'ice_or_snow','lane_width_m':[3,4],
+                          'longitudinal_body_gap_m':[10,35],
+                          'sight_distance_m':[10,120],
+                          'precipitation_percent':[70,90]},
+                'lead_spawn_x':25,'lead_target_speed_mps':7},
+ 'low_visibility':{'surface':'dry','weather':(10,0,0,80,20,30),
+                   'target':{'surface':'dry','lane_width_m':[3,4],
+                             'longitudinal_body_gap_m':[10,35],
+                             'sight_distance_m':[10,120],
+                             'precipitation_percent':[0,5],
+                             'fog_density_percent':[70,90],
+                             'fog_distance_m':[10,30]},
+                   'lead_spawn_x':25,'lead_target_speed_mps':7},
  'narrow_same_traffic':{'surface':'dry','weather':(10,0,0,0,100,30),
                         'target':{'surface':'dry','lane_width_m':[2.5,2.9],
                                   'longitudinal_body_gap_m':[10,35],
@@ -37,7 +51,7 @@ def build(suffix, variant):
     config['selected_case_id']=case
     config['condition_target']=variant['target']
     files['config.json']=json.dumps(config,indent=2)+'\n'
-    source=(files['surface.txt'] if suffix=='dense_traffic' else
+    source=(files['surface.txt'] if suffix in ('dense_traffic','low_visibility') else
             f'Synthetic {suffix} surface planning note; no original Native site review.\n')
     files['surface.txt']=source
     surface=json.loads(files['surface_packet.json'])
@@ -48,7 +62,7 @@ def build(suffix, variant):
     files['surface_packet.json']=json.dumps(surface,indent=2)+'\n'
     weather=dict(zip(('cloudiness','precipitation','wetness','fog_density',
                       'fog_distance','sun_altitude_angle'),variant['weather']))
-    weather_doc=(files['weather.json'] if suffix!='wet_same_traffic' else
+    weather_doc=(files['weather.json'] if suffix not in ('wet_same_traffic','low_visibility','ice_or_snow') else
                  json.dumps({'native_map_id':'TownX','weather_profile':weather,
                              'status':'synthetic diagnostic'},indent=2)+'\n')
     files['weather.json']=weather_doc
@@ -67,7 +81,9 @@ def build(suffix, variant):
     package['files']=[{'path':row['path'],'content':files[row['path']]} for row in BASE['files']]
     change={'wet_same_traffic':'wet surface/weather',
             'dense_traffic':'lead speed/body gap',
-            'narrow_same_traffic':'Native waypoint route width survey'}[suffix]
+            'narrow_same_traffic':'Native waypoint route width survey',
+            'low_visibility':'Native fog profile and frame readback; camera visibility review pending',
+            'ice_or_snow':'sourced ice/snow surface review and Native weather profile; physical traction review pending'}[suffix]
     package['mechanisms']=dict(BASE['mechanisms'],controlled_change=change)
     path=ROOT/'cases'/(suffix+'-construction.json')
     path.write_text(json.dumps(package,indent=2)+'\n')
