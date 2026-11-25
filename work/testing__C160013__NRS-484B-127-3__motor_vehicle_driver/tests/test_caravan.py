@@ -20,6 +20,35 @@ class Tests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);self.fixture(root,10);large=measure.analyze(root);self.fixture(root,5);small=measure.analyze(root)
    self.assertGreater(large['samples'][0]['gaps'][0]['body_clearance_m'],small['samples'][0]['gaps'][0]['body_clearance_m']);self.assertEqual(large['legal_conclusion'],'unresolved')
+ def test_complete_body_occupancy_and_original_entry_transition(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root,10)
+   rows=[json.loads(s) for s in (root/'caravan_history.jsonl').read_text().splitlines()]
+   rows[0]['entering_vehicle']['body_vertices_xy_m']=body(3)
+   rows[1]['entering_vehicle']['body_vertices_xy_m']=body(16)
+   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+   result=measure.analyze(root)
+   self.assertFalse(result['samples'][0]['gaps'][0]['entering_body_wholly_between_member_bodies'])
+   self.assertTrue(result['samples'][1]['gaps'][0]['entering_body_wholly_between_member_bodies'])
+   self.assertTrue(result['gap_occupancy'][0]['observed_entry_transition'])
+   self.fixture(root,3)
+   narrow=measure.analyze(root)
+   self.assertFalse(narrow['samples'][0]['gaps'][0]['entering_body_wholly_between_member_bodies'])
+   self.assertEqual(narrow['gap_occupancy'],[])
+   self.assertEqual(narrow['legal_conclusion'],'unresolved')
+ def test_entrant_must_be_distinct_and_collision_is_not_occupancy(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);self.fixture(root,10)
+   rows=[json.loads(s) for s in (root/'caravan_history.jsonl').read_text().splitlines()]
+   rows[0]['entering_vehicle']['actor_id']=1
+   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+   with self.assertRaisesRegex(ValueError,'Distinct entering vehicle'):measure.analyze(root)
+   rows[0]['entering_vehicle']['actor_id']=9
+   rows[0]['entering_vehicle']['body_vertices_xy_m']=body(10)
+   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(s)+'\n' for s in rows))
+   result=measure.analyze(root)
+   self.assertTrue(result['samples'][0]['gaps'][0]['entering_body_touches_member'])
+   self.assertFalse(result['samples'][0]['gaps'][0]['entering_body_wholly_between_member_bodies'])
  def test_activation_and_frame_source_required(self):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);self.fixture(root);ctx=json.loads((root/'road_context.json').read_text());ctx['outside_business_district']=False;(root/'road_context.json').write_text(json.dumps(ctx))

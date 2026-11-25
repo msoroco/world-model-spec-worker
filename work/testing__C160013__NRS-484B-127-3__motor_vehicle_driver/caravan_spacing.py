@@ -40,14 +40,29 @@ def analyze(root:Path)->dict:
   if row.get('road_id')!=ctx.get('road_id'):raise ValueError('Wrong caravan road')
   members=row.get('caravan_members')
   if not isinstance(members,list) or len(members)<3 or len({m.get('actor_id') for m in members})!=len(members):raise ValueError('Three distinct caravan vehicles required')
-  bodies=[_body(m) for m in members];other=_body(row.get('entering_vehicle'))
+  entrant=row.get('entering_vehicle')
+  if not isinstance(entrant,dict) or type(entrant.get('actor_id')) is not int or entrant['actor_id'] in {m.get('actor_id') for m in members}:
+   raise ValueError('Distinct entering vehicle required')
+  bodies=[_body(m) for m in members];other=_body(entrant)
   if not all(road.covers(b) for b in bodies+[other]):raise ValueError('Vehicle outside sourced highway')
   ordered=sorted(zip(members,bodies),key=lambda mb:mb[1].centroid.x*fx+mb[1].centroid.y*fy)
   gaps=[]
+  def extent(poly):
+   values=[x*fx+y*fy for x,y in poly.exterior.coords]
+   return min(values),max(values)
+  entrant_min,entrant_max=extent(other)
   for (rear,rb),(front,fb) in zip(ordered,ordered[1:]):
    along=(fb.centroid.x-rb.centroid.x)*fx+(fb.centroid.y-rb.centroid.y)*fy
    clearance=rb.distance(fb)
+   rear_edge=extent(rb)[1];front_edge=extent(fb)[0]
+   occupied=(front_edge>rear_edge and entrant_min>=rear_edge and entrant_max<=front_edge and
+             not rb.intersects(other) and not fb.intersects(other))
    midpoint=((fb.centroid.x+rb.centroid.x)/2,(fb.centroid.y+rb.centroid.y)/2)
-   gaps.append({'rear_actor_id':rear['actor_id'],'front_actor_id':front['actor_id'],'along_center_distance_m':along,'body_clearance_m':clearance,'gap_midpoint_distance_to_entering_body_m':other.distance(Point(midpoint))})
+   gaps.append({'rear_actor_id':rear['actor_id'],'front_actor_id':front['actor_id'],'along_center_distance_m':along,'body_clearance_m':clearance,'longitudinal_opening_m':max(0.0,front_edge-rear_edge),'gap_midpoint_distance_to_entering_body_m':other.distance(Point(midpoint)),'entering_body_wholly_between_member_bodies':occupied,'entering_body_touches_member':rb.intersects(other) or fb.intersects(other)})
   samples.append({'frame':fid,'time_s':t,'gaps':gaps,'entering_vehicle_body_area_m2':other.area})
- return {'format':'worker-caravan-spacing-observations','sources':hashes,'samples':samples,'sufficient_space_without_danger_judgment':'unresolved; no statutory numeric gap','legal_conclusion':'unresolved'}
+ occupied_pairs={(g['rear_actor_id'],g['front_actor_id']) for sample in samples for g in sample['gaps'] if g['entering_body_wholly_between_member_bodies']}
+ transitions=[]
+ for pair in sorted(occupied_pairs):
+  states=[next((g['entering_body_wholly_between_member_bodies'] for g in sample['gaps'] if (g['rear_actor_id'],g['front_actor_id'])==pair),False) for sample in samples]
+  transitions.append({'rear_actor_id':pair[0],'front_actor_id':pair[1],'occupied_on_original_frame':True,'observed_entry_transition':any(not a and b for a,b in zip(states,states[1:]))})
+ return {'format':'worker-caravan-spacing-observations','sources':hashes,'samples':samples,'gap_occupancy':transitions,'sufficient_space_without_danger_judgment':'unresolved; no statutory numeric gap','legal_conclusion':'unresolved'}
