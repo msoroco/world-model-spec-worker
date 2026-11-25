@@ -6,33 +6,76 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111125__NRS-484B-307-2b__pedestrian/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/prove_selected_compatibility.py",
       "exit_code": 0,
-      "log": "cpu-selected-source-tests.log",
-      "sha256": "2be5f04f3641a224abebf8b4c89dbc90210522a9bef9eebb8feabc1eaaa0772b"
+      "log": "cpu-selected-v7-compat.log",
+      "sha256": "f515cc151f29220941909c224f6ec377b3b0915d13e34c9b4d534da62a966355"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/build_physical_receipts.py",
+      "exit_code": 0,
+      "log": "cpu-selected-v7-physical.log",
+      "sha256": "347b49ccaffb1ab22722ffe6e3cc664c055f806200dbf6f985822da754cab186"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/build_delivery_acceptance.py",
+      "exit_code": 0,
+      "log": "cpu-selected-v7-delivery.log",
+      "sha256": "2dc88281d3b5bdfad85e888af8ff95cce40efc507769067fe5a54bebafe22081"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111125__NRS-484B-307-2b__pedestrian/build_comparison_receipts.py",
+      "exit_code": 0,
+      "log": "cpu-selected-v7-comparison.log",
+      "sha256": "e9597af36ee6eab67ed2fd2119562053ac3a3b0f1f5da26c9fda787a33a34db2"
+    },
+    {
+      "command": "Direct pinned candidate, compatibility, physical and delivery validators for all 10 selected cases",
+      "exit_code": 0,
+      "log": "cpu-selected-v7-bound.log",
+      "sha256": "fea03c5799445303c6b00af401a37b808e4e22176a0f65aa671b6719ea667d04"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2b__pedestrian --complete",
       "exit_code": 0,
-      "log": "cpu-selected-source-static.log",
+      "log": "cpu-selected-v7-static.log",
       "sha256": "2bb5e878a32673b6ed56fa67c0b3fe2f1495c1c375de7720970a62222e2fd721"
+    },
+    {
+      "command": "Direct pinned execution_manifest.validate of selected canonical partial manifest",
+      "exit_code": 1,
+      "log": "cpu-selected-v7-manifest.log",
+      "sha256": "eb9b1923a67a745e3a0f1e478da4c48c387c0961322bf7cf2c2c37bc7b1d2a0a"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest work/testing__C111125__NRS-484B-307-2b__pedestrian/tests/test_crossing.py -k test_reviewed_owner_runs_full_900_frame_wait_capture_and_rejects_fixture",
+      "exit_code": 0,
+      "log": "cpu-selected-v7-full-saved.log",
+      "sha256": "b39e68c0da7c2c27bdf53f8b621fb2921b7c389a4414e39e889db71828c84289"
+    },
+    {
+      "command": "Assignment unittest discovery excluding the separately run 900-frame saved case",
+      "exit_code": 0,
+      "log": "cpu-selected-v7-focused.log",
+      "sha256": "be9faed6bebcc569176cdecbe2704217c7afc91dc6e4e54e114506fe15432709"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "cpu-selected-source-preflight.log",
-      "sha256": "c987f49864f9e911afc06b8dc4b8f67709aefea44d6f64c09cef486211d9ec35"
+      "log": "cpu-selected-v7-preflight.log",
+      "sha256": "13261b653b11796f6f54086559cd89c59570a37e8dd39aba7ca5f978aec6d973"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2b__pedestrian --complete --require-delivery-ready",
       "exit_code": 1,
-      "log": "cpu-selected-source-strict.log",
+      "log": "cpu-selected-v7-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
-    "Reviewed Native public-highway map, crosswalk geometry, official facing circular-green head and applicable pedestrian-device inventory",
-    "Actual CARLA motion and four-camera visibility after CPU package preparation"
+    "Reviewed original Native public-highway map, crosswalk geometry and official facing circular-green head",
+    "Reviewed NRS 484B.283 pedestrian-device inventory and applicability source for the selected site",
+    "Original Native pedestrian motion, 900-frame camera visibility and lifecycle closure after source binding"
   ],
-  "reason": "Ten exact diagnostic cases and their current-runtime compatibility remain source-honest. Independent comparison logic now covers all eight plan pairs; a reviewed-source-gated Native owner runs a 900-frame four-camera fake capture and saved pixel audit over 3,600 original PNGs, rejects a diagnostic site, and binds copied site sources. The 36-test assignment suite, pinned preflight and scoped static check pass. A selected delivery construction/manifest, actual Native graph and FFV1 publication, process-saved fixture, tested fallback candidates and independent delivery/comparison receipts remain CPU implementation work. Frozen accepted evidence contains no reviewed physical site, official facing head or applicable device inventory. Exact scoped strict gate exits 1 on truthful partial status; no legal or physical acceptance is claimed."
+  "reason": "All 10 selected source-gated constructions and their 18 primary/fallback current-runtime positive and negative compatibility proofs pass. Ten synthetic physical/lifecycle and independent delivery audits, eight comparison audits, and direct pinned candidate/physical/delivery validators pass. One full 900-frame fake Native publication and pinned saved Core/Lean process passes with 3,600 original camera PNGs and four FFV1 streams; 37 other assignment tests pass. The canonical selected manifest remains partial because the pinned judgment sweep requires reviewed NRS 484B.283 device applicability evidence and original site sources absent from frozen accepted inputs; execution_manifest.validate rejects the unexpanded sweep. No reviewed physical or legal acceptance is claimed. Exact scoped strict gate exits 1 on truthful partial status."
 }

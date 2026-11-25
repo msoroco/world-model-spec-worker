@@ -43,9 +43,8 @@ def dispatch(*, owner_factory, opendrive: Path, authority: Path,
             signal_observer=owner.signal_observer,
             camera_observer=owner.camera_observer,
             destination_street_id=packet['intersecting_street_id'],
-            output_dir=attempt, control_applier=owner.control_applier)
-        if native_export_fn is not None:
-            native_export_fn(owner, attempt, capture)
+            output_dir=attempt, control_applier=owner.control_applier,
+            graph_observer=getattr(owner, 'graph_observer', None))
     release = owner.release_receipt()
     if (release.get('format') != 'native-owner-release-v1' or
             release.get('case_id') != case_id or
@@ -54,6 +53,8 @@ def dispatch(*, owner_factory, opendrive: Path, authority: Path,
             release.get('sensors_released') is not True or
             release.get('readback_passed') is not True):
         raise ValueError('Native owner release and restoration readback required')
+    if native_export_fn is not None:
+        native_export_fn(owner, attempt, capture)
     if (capture.get('case_id') != case_id or
             capture.get('sample_count') != expected_frames or
             capture.get('physical_acceptance_claimed') is not False):

@@ -102,6 +102,14 @@ class NativeCaptureTests(unittest.TestCase):
         self.assertFalse(receipt['physical_acceptance_claimed'])
         self.assertEqual(ego.controls[-1]['brake'], 1.0)
 
+    def test_live_graph_callback_uses_same_original_frame(self):
+        observed = []
+        receipt, trace, _ = self.run_capture([[-3, 5], [5, 5], [13, 5]],
+            graph_observer=lambda frame, time_s: observed.append((frame, time_s)))
+        self.assertEqual(len(observed), receipt['sample_count'])
+        self.assertEqual(observed, [(row['frame'], row['time_s'])
+                                    for row in trace['ego']])
+
     def test_ordinary_crossing_uses_source_bound_roadway_route(self):
         p = packet()
         p['roadway_route'] = [[-3, -2], [5, -2], [13, -2]]

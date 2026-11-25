@@ -9,7 +9,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work/c102642-selected"
+SCRATCH = REPO / ".runtime-work/c102642-owner"
 
 
 def sha(path: Path) -> str:
@@ -22,8 +22,8 @@ def record() -> None:
     for entry in draft["cases"]:
         kind = entry["case_id"].rsplit("__", 1)[1]
         case = HERE / "cases" / kind
-        offline = SCRATCH / f"offline-{kind}-v4/offline.log"
-        output = SCRATCH / f"compat-{kind}-v4"
+        offline = SCRATCH / f"offline-{kind}-v5/offline.log"
+        output = SCRATCH / f"compat-{kind}-v5"
         for filename, source in (("offline.log", offline),
                                  ("positive-analysis.log", output / "compatibility-analysis.log"),
                                  ("negative-analysis.log", output / "negative-analysis.log"),
@@ -40,7 +40,7 @@ def record() -> None:
         entry["kind"] = "delivery"
         entry["measurement_procedure"] = {"entrypoint": "analysis.py"}
         entry["offline"] = {
-            "command": f".venv-cpu/bin/python runtime.py offline --manifest {manifest.relative_to(REPO)} --case {entry['case_id']} --output .runtime-work/c102642-selected/offline-{kind}-v4 --python .venv-cpu/bin/python",
+            "command": f".venv-cpu/bin/python runtime.py offline --manifest {manifest.relative_to(REPO)} --case {entry['case_id']} --output .runtime-work/c102642-owner/offline-{kind}-v5 --python .venv-cpu/bin/python",
             "construction_sha256": entry["construction_sha256"],
             "exit_code": 0,
             "log": f"cases/{kind}/offline.log",

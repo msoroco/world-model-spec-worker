@@ -12,7 +12,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work/c102642-selected"
+SCRATCH = REPO / ".runtime-work/c102642-owner"
 KINDS = ("open_near_overlap", "open_near_clear", "open_far_side",
          "board_near", "alight_near")
 
@@ -27,8 +27,8 @@ def prove() -> None:
     for kind in KINDS:
         case = HERE / "cases" / kind
         case_id = HERE.name + "__" + kind
-        positive = SCRATCH / f"compat-{kind}-v4"
-        negative = SCRATCH / f"independent-negative-{kind}-v2"
+        positive = SCRATCH / f"compat-{kind}-v5"
+        negative = SCRATCH / f"independent-negative-{kind}-v5"
         if negative.exists():
             raise ValueError("Use a fresh negative attempt: " + str(negative))
         shutil.copytree(positive, negative, copy_function=os.link)

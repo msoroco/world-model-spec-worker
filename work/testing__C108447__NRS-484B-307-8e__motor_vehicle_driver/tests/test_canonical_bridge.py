@@ -56,6 +56,12 @@ class CanonicalBridgeTests(unittest.TestCase):
                                          tiny_png(32 + i * 100))
             for name in ('map-packet.json', 'authority.json', 'road.xodr'):
                 (original / name).write_text('{}\n')
+            (root / 'road.xodr').write_text('{}\n')
+            original_core_trace = ''.join(json.dumps({
+                'frame': body['frame'], 'time_s': body['time_s'],
+                'position': {'x': body['x'], 'y': body['y'], 'z': 0}}) + '\n'
+                for body in ego)
+            (root / 'trace.jsonl').write_text(original_core_trace)
             native = root / 'capture'
             (native / 'native').mkdir(parents=True)
             (native / 'manifest.json').write_text(json.dumps({
@@ -82,6 +88,7 @@ class CanonicalBridgeTests(unittest.TestCase):
             self.assertEqual(result['capture_seal'], {'sealed': True})
             native_output.seal_capture.assert_called_once()
             self.assertEqual(len((root / 'trace.jsonl').read_text().splitlines()), 2)
+            self.assertEqual((root / 'trace.jsonl').read_text(), original_core_trace)
             self.assertEqual(len((root / 'video_frames.jsonl').read_text().splitlines()), 2)
             for camera in CAMERAS:
                 self.assertGreater((root / (camera + '.mkv')).stat().st_size, 0)

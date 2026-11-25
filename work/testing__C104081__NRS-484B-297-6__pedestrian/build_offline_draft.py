@@ -165,6 +165,7 @@ def build():
             "plan_sha256": hashlib.sha256(plan_data).hexdigest(),
             "construction_parameters": item["construction_parameters"],
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
+            "requested_speed_mps": 1.4,
             "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
             "required_atoms": [], "diagnostic_only": True,
         }

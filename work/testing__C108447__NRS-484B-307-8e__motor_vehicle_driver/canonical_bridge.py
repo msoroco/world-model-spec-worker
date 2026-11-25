@@ -69,7 +69,10 @@ def bridge(root: Path, original: Path, *, release: dict,
                  'Native graph/evidence frame identity differs')
     for name in ('trace.json', 'map-packet.json', 'authority.json', 'road.xodr'):
         destination = root / name
-        _require(not destination.exists(), 'canonical source destination exists: ' + name)
+        if destination.exists():
+            _require(name == 'road.xodr' and _sha(destination) == _sha(original / name),
+                     'canonical source destination differs: ' + name)
+            continue
         shutil.copyfile(original / name, destination)
         _require(_sha(original / name) == _sha(destination),
                  'canonical source copy differs: ' + name)
@@ -78,9 +81,18 @@ def bridge(root: Path, original: Path, *, release: dict,
                for index, row in enumerate(frame_rows)]
     (root / 'video_frames.jsonl').write_text(''.join(
         json.dumps(row, sort_keys=True) + '\n' for row in mapping))
-    (root / 'trace.jsonl').write_text(''.join(
-        json.dumps(row, sort_keys=True) + '\n'
-        for row in canonical_trace_rows(ego)))
+    core_trace = root / 'trace.jsonl'
+    if core_trace.exists():
+        core_rows = [json.loads(line) for line in core_trace.read_text().splitlines()]
+        _require(len(core_rows) == expected_frames and all(
+            row.get('frame') == body['frame'] and
+            abs(row.get('time_s', -1) - body['time_s']) < 1e-6
+            for row, body in zip(core_rows, ego)),
+            'original Core trace frame identity differs')
+    else:
+        core_trace.write_text(''.join(
+            json.dumps(row, sort_keys=True) + '\n'
+            for row in canonical_trace_rows(ego)))
     for camera in CAMERAS:
         archive = original / (camera + '.zip')
         _require(archive.is_file(), 'original camera archive missing: ' + camera)

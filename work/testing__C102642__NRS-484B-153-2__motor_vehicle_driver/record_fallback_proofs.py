@@ -9,7 +9,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work/c102642-selected"
+SCRATCH = REPO / ".runtime-work/c102642-owner"
 
 
 def sha(path: Path) -> str:
@@ -23,8 +23,8 @@ def record() -> None:
         kind = entry["case_id"].rsplit("__", 1)[1]
         candidate = entry["candidates"][0]
         case = HERE / "cases" / kind
-        offline = SCRATCH / f"offline-{kind}-fallback1-v2/offline.log"
-        output = SCRATCH / f"compat-{kind}-fallback1-v2"
+        offline = SCRATCH / f"offline-{kind}-fallback1-v5/offline.log"
+        output = SCRATCH / f"compat-{kind}-fallback1-v5"
         for name, source in (("fallback1-offline.log", offline),
                              ("fallback1-compatibility-analysis.log", output / "compatibility-analysis.log"),
                              ("fallback1-negative-analysis.log", output / "negative-analysis.log"),
@@ -39,7 +39,7 @@ def record() -> None:
                 sha(case / "fallback1-negative-analysis.log") != receipt["negative_log_sha256"]):
             raise ValueError("fallback receipt changed: " + kind)
         candidate["offline"] = {
-            "command": f".venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/execution-manifest.json --case {entry['case_id']} --candidate fallback1 --output .runtime-work/c102642-selected/offline-{kind}-fallback1-v2 --python .venv-cpu/bin/python",
+            "command": f".venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/execution-manifest.json --case {entry['case_id']} --candidate fallback1 --output .runtime-work/c102642-owner/offline-{kind}-fallback1-v5 --python .venv-cpu/bin/python",
             "exit_code": 0,
             "construction_sha256": candidate["construction_sha256"],
             "log": f"cases/{kind}/fallback1-offline.log",

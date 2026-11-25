@@ -42,7 +42,8 @@ def check() -> dict:
 
 def capture_original(*, world, ego, map_packet, property_id, purpose,
                      actor_source, signal_observer, camera_observer,
-                     destination_street_id, output_dir: Path, control_applier):
+                     destination_street_id, output_dir: Path, control_applier,
+                     graph_observer=None):
     """Run the selected exact case with original owner-held Native objects."""
     selected = check()['case_id']
     output_dir = Path(output_dir)
@@ -56,7 +57,8 @@ def capture_original(*, world, ego, map_packet, property_id, purpose,
                    target_speed_mps=json.loads(Path('config.json').read_text())['target_speed_mps'],
                    control_applier=control_applier,
                    camera_observer=camera_observer,
-                   media_directory=output_dir)
+                   media_directory=output_dir,
+                   graph_observer=graph_observer)
 
 
 def run_capture(output_dir: Path, host: str, port: int) -> dict:
@@ -69,12 +71,14 @@ def run_capture(output_dir: Path, host: str, port: int) -> dict:
     if not root.is_dir() or not (root / 'construction.json').is_file():
         raise ValueError('materialized canonical capture directory required')
     environment = ('C108447_ORIGINAL_OPENDRIVE', 'C108447_PARCEL_AUTHORITY',
-                   'C108447_SITE_REVIEW', 'C108447_NATIVE_OWNER_MODULE')
+                   'C108447_SITE_REVIEW')
     if any(not os.environ.get(name) for name in environment):
-        raise ValueError('original site files and local Native owner module required: ' +
+        raise ValueError('original site files required with separate review: ' +
                          ', '.join(environment))
-    road, authority, review_path, owner_module = [Path(os.environ[name]).resolve()
-                                                   for name in environment]
+    road, authority, review_path = [Path(os.environ[name]).resolve()
+                                    for name in environment]
+    owner_module = Path(os.environ.get('C108447_NATIVE_OWNER_MODULE',
+                                    root / 'native_owner_adapter.py')).resolve()
     if not owner_module.is_file():
         raise ValueError('local Native owner module file required')
     review = json.loads(review_path.read_text())
@@ -92,7 +96,8 @@ def run_capture(output_dir: Path, host: str, port: int) -> dict:
         raise ValueError('Native owner_factory and original export_graph callables required')
     original = root / 'original-attempt'
     dispatched = dispatch(
-        owner_factory=lambda packet, case: module.owner_factory(host, port, packet, case),
+        owner_factory=lambda packet, case: module.owner_factory(
+            host, port, packet, case, root, context),
         opendrive=road, authority=authority, review_receipt=review_path,
         property_id=review['property_id'], case_id=selected,
         purpose=purpose, actor_source=actor_source, attempt=original,

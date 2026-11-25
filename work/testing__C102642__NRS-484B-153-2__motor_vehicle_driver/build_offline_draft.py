@@ -172,7 +172,9 @@ def build() -> None:
                   "plan_sha256": hashlib.sha256(plan_bytes).hexdigest(),
                   "rate_hz": 20, "frame_count": 900,
                   "cameras": ["front", "rear", "left", "right"],
-                  "diagnostic_only": True, "required_atoms": []}
+                  "diagnostic_only": True, "required_atoms": [],
+                  "case": {"case_id": case,
+                           "recording_description": RECORDING_DESCRIPTION}}
         files = {"runner.py": RUNNER,
                  "site_contract.py": (HERE / "site_contract.py").read_text(),
                  "native_capture.py": (HERE / "native_capture.py").read_text(),

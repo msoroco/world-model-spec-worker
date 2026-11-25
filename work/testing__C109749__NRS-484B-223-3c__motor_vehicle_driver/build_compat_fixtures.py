@@ -50,7 +50,7 @@ def site(root):
 def build():
     scratch = REPO / ".runtime-work/c109749-fixture-build"
     scratch.mkdir(parents=True, exist_ok=True)
-    road = json.loads((REPO / "work/testing__C110969__NRS-484B-450-1c__motor_vehicle_driver/cases/inside_stop/diagnostic.json").read_text())["files"]["road.xodr"]
+    road = (HERE / "diagnostic-road.xodr").read_text().rstrip("\n")
     plan = json.loads((HERE / "case-plan.json").read_text())
     for case in plan["cases"]:
         case_id = case["case_id"]

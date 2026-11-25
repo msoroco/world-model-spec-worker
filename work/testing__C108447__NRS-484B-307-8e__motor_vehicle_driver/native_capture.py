@@ -59,6 +59,7 @@ def capture(
     control_applier: Callable[[Any, dict[str, float]], None] = apply_carla_control,
     camera_observer: Callable[[int, str], bytes] | None = None,
     media_directory: Path | None = None,
+    graph_observer: Callable[[int, float], None] | None = None,
 ) -> dict[str, Any]:
     """Drive one 20 Hz episode and write observed route/phase source, or fail closed.
 
@@ -116,6 +117,8 @@ def capture(
             sample = {'frame': frame, 'time_s': time_s, 'x': location[0], 'y': location[1],
                       'speed_mps': speed, 'velocity_mps': velocity_mps, 'yaw_rad': yaw}
             samples.append(sample)
+            if graph_observer is not None:
+                graph_observer(frame, time_s)
             approach = _signal(signal_observer, frame, 'approach_signal')
             destination = _signal(signal_observer, frame, 'destination_signal')
             approach_history.append(approach)
