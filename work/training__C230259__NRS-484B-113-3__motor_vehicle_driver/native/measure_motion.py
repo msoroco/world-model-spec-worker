@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 FRAMES=600
-CAMERAS=('overview','backing_view','traffic_view','conflict_side')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -43,10 +43,13 @@ def measure(attempt):
     context=json.loads(context_path.read_text());region=context.get('conflict_region')
     if context.get('source_kind')!='original_native' or context.get('other_highway_use_reviewed') is not True or context.get('driver_control_reviewed') is not True:
         raise ValueError('Original highway-use or driver-control source unreviewed')
+    if context.get('section_stem_recovered') is not True:
+        raise ValueError('Parent statutory section source unreviewed')
     if not isinstance(region,dict) or any(type(region.get(k)) not in (int,float) for k in ('x_min_m','x_max_m','y_min_m','y_max_m')):
         raise ValueError('Original conflict region missing')
     motion,frames=rows(motion_path),rows(frames_path)
     previous=-1;backing=[];other_moving=[];joint=[];ego_entry=None;other_entry=None;min_gap=None
+    actor_ids=None
     for index,(row,frame) in enumerate(zip(motion,frames)):
         native=row.get('native_frame')
         if type(native) is not int or native<=previous or frame.get('native_frame')!=native:
@@ -56,7 +59,15 @@ def measure(attempt):
             raise ValueError('Original video frame/time join differs')
         if frame.get('camera_native_frames')!={name:native for name in CAMERAS}:
             raise ValueError('Original four-camera join differs')
-        ego,ev=xy(row.get('ego',{}));other,ov=xy(row.get('other',{}))
+        ego_row,other_row=row.get('ego',{}),row.get('other',{})
+        ego,ev=xy(ego_row);other,ov=xy(other_row)
+        if context.get('fixture_kind')!='synthetic_diagnostic_only':
+            ids=(ego_row.get('actor_id'),other_row.get('actor_id'))
+            if any(type(v) is not int for v in ids) or ids[0]==ids[1] or (actor_ids is not None and ids!=actor_ids):
+                raise ValueError('Distinct original vehicle actor identity missing or changed')
+            actor_ids=ids
+            if not all(str(v.get('blueprint_id','')).startswith('vehicle.') for v in (ego_row,other_row)):
+                raise ValueError('Original vehicle classification missing')
         if ev[0]<-.1:backing.append(index)
         if math.hypot(*ov)>.1:other_moving.append(index)
         if inside(ego,region) and ego_entry is None:ego_entry=index

@@ -32,7 +32,18 @@
         "training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1",
         "training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Selected original Native CPU drafts and pinned offline checks pass for both timing cases; synthetic saved-shape diagnostics show 55 versus 90 frames of simultaneous backing and other-vehicle motion and reject unreviewed highway use/missing camera. Full parent activation stem, four distinct candidates, original Native execution, moving-traffic route and driver attribution review, pedestrian branch, accepted measurements, independent audit and strict ready gate remain incomplete."
+      "evidence_or_gap": "Selected exact original Native drafts and offline checks pass for two backing-onset timing cases; source-shaped measurement/audit fixtures reject stale source, missing camera, unreviewed parent section and comparison changes. Actual physical precedence, canonical compatibility and delivery evidence remain pending."
+    },
+    {
+      "requirement": "NRS-484B-113-3",
+      "source": "NRS 484B.113(3)",
+      "branch": "pedestrians",
+      "status": "selected_required",
+      "evidence_or_gap": "Separate pedestrian Native drafts and pinned offline checks authored; saved-shaped diagnostic positive/negative tests pass. Actual pedestrian motion/visibility, compatibility, delivery and legal precedence remain unverified.",
+      "case_ids": [
+        "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1",
+        "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2"
+      ]
     }
   ],
   "neutral_baseline": {
@@ -67,6 +78,34 @@
       ],
       "construction": "native/bundles/controlled_2/construction.json",
       "offline_passed": true
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1",
+      "target_law_id": "NRS-484B-113-3",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "pedestrians",
+      "physical_target": "wait until walking person passes before backing",
+      "comparison_variable": "backing onset timing relative to pedestrian motion",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/pedestrian_1/construction.json",
+      "offline_passed": true
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2",
+      "target_law_id": "NRS-484B-113-3",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "pedestrians",
+      "physical_target": "begin backing while walking person approaches",
+      "comparison_variable": "backing onset timing relative to pedestrian motion",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/pedestrian_2/construction.json",
+      "offline_passed": true
     }
   ],
   "comparisons": [
@@ -77,12 +116,27 @@
         "training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2"
       ],
       "deliberate_differences": [
-        "precedence to moving traffic and pedestrians"
+        "backing onset timing relative to moving highway vehicle"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
-        "route and controller policy except requested comparison variable",
-        "capture channels, rate, camera policy and recording duration"
+        "frozen road cell, motor-vehicle driver, authored highway geometry and participant blueprints",
+        "other-vehicle route, commanded speed and backing command policy except onset timing",
+        "capture cameras, 20 Hz rate and 30 s duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_comparison",
+      "case_ids": [
+        "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1",
+        "training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2"
+      ],
+      "deliberate_differences": [
+        "backing onset timing relative to pedestrian motion"
+      ],
+      "fixed_conditions": [
+        "frozen road cell, motor-vehicle driver, authored highway geometry, separate other vehicle and pedestrian blueprint",
+        "pedestrian walking route, direction and commanded speed; ego backing command except onset timing",
+        "four cameras, 20 Hz rate and 30 s duration"
       ]
     }
   ],
@@ -173,10 +227,9 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Selected original Native CPU drafts and pinned offline checks pass for both timing cases; synthetic saved-shape diagnostics show 55 versus 90 frames of simultaneous backing and other-vehicle motion and reject unreviewed highway use/missing camera. Full parent activation stem, four distinct candidates, original Native execution, moving-traffic route and driver attribution review, pedestrian branch, accepted measurements, independent audit and strict ready gate remain incomplete.",
     "No CARLA execution or accepted recording is claimed.",
-    "The exported clause lacks its parent activation text; the backing phase is a provisional witness-compatible draft, not a legal scope determination.",
-    "Arrival order, proximity and braking are retained as facts, not substituted for right-of-way."
+    "Arrival order, proximity and braking are retained as facts, not substituted for right-of-way.",
+    "Physical vehicle motion, route, camera visibility and whether any road user actually received precedence remain unverified without CARLA and independent review."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -184,7 +237,68 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "Selected original Native CPU drafts and pinned offline checks pass for both timing cases; synthetic saved-shape diagnostics show 55 versus 90 frames of simultaneous backing and other-vehicle motion and reject unreviewed highway use/missing camera. Full parent activation stem, four distinct candidates, original Native execution, moving-traffic route and driver attribution review, pedestrian branch, accepted measurements, independent audit and strict ready gate remain incomplete."
+    "Canonical Native/Core finalizer, positive/negative compatibility, recorded-only processing, semantic proposals, delivery/comparison audit receipts and execution manifest remain unfinished.",
+    "Physical motion, visibility and legal right-of-way remain unverified."
   ],
-  "source_context_review": "Backing phase is provisionally authored per conditional witness, while full section stem remains unresolved. Moving highway use, driver control, pedestrian presence and legal precedence require original source review."
+  "source_context_review": "Official Nevada Legislature NRS 484B.113 reviewed 2026-11-25: title Limitations on backing; common stem identifies driver and parallel subsections 1\u20133 establish backing context. No extra hidden stem phrase. Separate moving traffic and pedestrian alternatives remain distinct; legal precedence is unresolved.",
+  "statutory_source_review": "statutory-source-review.json",
+  "source_observation_mapping": {
+    "drv.backing": {
+      "evidence": "Raw source facts and/or measurement retained; legal conclusion unresolved",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Raw source facts and/or measurement retained; legal conclusion unresolved",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl",
+        "traffic-context.json",
+        "overview.mkv",
+        "conflict_side.mkv"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Pedestrian actor/body/velocity in pedestrian cases and explicit absence in moving-traffic cases",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl",
+        "traffic-context.json",
+        "backing_view.mkv"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Raw source facts and/or measurement retained; legal conclusion unresolved",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl"
+      ]
+    },
+    "drv.arrival_order": {
+      "evidence": "Raw source facts and/or measurement retained; legal conclusion unresolved",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl",
+        "traffic-context.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Raw source facts and/or measurement retained; legal conclusion unresolved",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl",
+        "traffic-context.json"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Raw source facts and/or measurement retained; legal conclusion unresolved",
+      "channels": [],
+      "source_refs": [
+        "native-motion.jsonl"
+      ]
+    }
+  }
 }

@@ -6,8 +6,8 @@ from pathlib import Path
 from measure_absolute_speed import AID, CAMERAS, CAP_MPH, sha
 
 PROBES = ('probe_01', 'probe_02', 'probe_03')
-FIXED = ('route_source', 'vehicle_identity_source', 'driving_state_source')
-SOURCES = {'road_context.json', 'video_frames.jsonl', 'native_motion.jsonl'} | {'camera_'+name+'.mkv' for name in CAMERAS}
+FIXED = ('route_source', 'vehicle_identity_source', 'other_vehicle_source', 'driving_state_source')
+SOURCES = {'road_context.json', 'video_frames.jsonl', 'native_motion.jsonl'} | {name+'.mkv' for name in CAMERAS}
 
 
 def audit(source_dirs, observation_paths):

@@ -17,6 +17,7 @@ class ComparisonAuditTest(unittest.TestCase):
             source.mkdir()
             context = {'assignment_id': AID, 'case_id': AID+f'__probe_{index:02d}',
                        'route_source': 'reviewed route A', 'vehicle_identity_source': 'same blueprint',
+                       'other_vehicle_source': 'separate original actor',
                        'driving_state_source': 'Native control'}
             context_path = source/'road_context.json'
             context_path.write_text(json.dumps(context)+'\n')

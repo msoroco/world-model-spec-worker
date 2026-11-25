@@ -1,0 +1,981 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_draft_partial",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "source_law_sha256": "9241d1e338fc52dc9d744182b1535b92bfd064b3be00ddac896b70189ba0bd31",
+  "paragraph_b_binding": null,
+  "paragraph_b_binding_proof_sha256": "a543029a3bbdff6ddbda99d13891d5db76f1afbfd1b05a5a873f572abb6daf38",
+  "selected_semantic_index_sha256": "7730eb6a76dd366550491eb02e06706182f7f828c904e0a4dcc01c98a389bd0c",
+  "selected_comparison_cpu_sha256": "855de98a43f65321962ae8e66b049d5e44682cae40a99c4e43715f34872ebf3f",
+  "cases": [
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "native/selected-paragraph-d/witness_1/primary/construction.json",
+      "construction_sha256": "e5d04617c1a67bf24011d50875c452c610da2ebea1c69b8c53e46c4229e55873",
+      "measurement_contract": "native/selected-paragraph-d/witness_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-paragraph-d/witness_1/fallback1/construction.json",
+          "construction_sha256": "bf6ed35e893ebc21ed4a62e92a9b5b54289062c41307d7e5d00145ca84a9cc2d",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-witness_1",
+            "construction_sha256": "bf6ed35e893ebc21ed4a62e92a9b5b54289062c41307d7e5d00145ca84a9cc2d",
+            "exit_code": 0,
+            "log": "native/selected-paragraph-d/witness_1/fallback1/offline.log",
+            "log_sha256": "9205fc4bce6e944682d6cada81d1425f69fc9b8a2b0e566bbe0985d83ecffc13"
+          },
+          "compatibility": {
+            "receipt": "native/selected-paragraph-d/witness_1/fallback1/compatibility.json",
+            "sha256": "1a1ccb9203a2d71da4aa678716ece7f7526ebc51ec9daaa51197951000a26411",
+            "log": "native/selected-paragraph-d/witness_1/fallback1/public-analysis.log",
+            "negative_log": "native/selected-paragraph-d/witness_1/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/selected-paragraph-d/witness_1/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-execution-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_1 --output .runtime-work/c146314-210-1/selected-paragraph-d-witness_1",
+        "construction_sha256": "e5d04617c1a67bf24011d50875c452c610da2ebea1c69b8c53e46c4229e55873",
+        "exit_code": 0,
+        "log": "native/selected-paragraph-d/witness_1-offline-refresh.log",
+        "log_sha256": "c27c20ac0f607c2bbbdcb3f62df2a338e30451fff1708042e4a8052edcef37e1"
+      },
+      "compatibility": {
+        "receipt": "native/selected-paragraph-d/witness_1/compatibility.json",
+        "sha256": "ac6e8db6e3794b59e45a9089cd78a2de9ca34c7ddb8336ebe4177cf14960d96d",
+        "log": "native/selected-paragraph-d/witness_1/public-analysis.log",
+        "negative_log": "native/selected-paragraph-d/witness_1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/selected-paragraph-d/witness_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-execution-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/selected-paragraph-d/witness_1/saved-processing.json",
+        "test_log_sha256": "0d15892334906362c704478caf3eb2897ae2764a976131da9c01b21dd706db9b"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/witness_1-positive.log",
+        "negative_log": "native/delivery-cpu/witness_1-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "native/selected-paragraph-d/witness_2/primary/construction.json",
+      "construction_sha256": "c0657b423bd6bfa89d965318db06504c2c18930d96f5b8a6333dd8e4bb65f959",
+      "measurement_contract": "native/selected-paragraph-d/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-paragraph-d/witness_2/fallback1/construction.json",
+          "construction_sha256": "1b8101af8195ac369a3b244ccbf06338ad0e527db4489231f4a641026824bead",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-witness_2",
+            "construction_sha256": "1b8101af8195ac369a3b244ccbf06338ad0e527db4489231f4a641026824bead",
+            "exit_code": 0,
+            "log": "native/selected-paragraph-d/witness_2/fallback1/offline.log",
+            "log_sha256": "a893d3c391b456c5bd1d91a66d6dd68556a51febb12d5b06a7d85b447405250d"
+          },
+          "compatibility": {
+            "receipt": "native/selected-paragraph-d/witness_2/fallback1/compatibility.json",
+            "sha256": "2fb6463bb06e638de2c8d9adf23162223eed065fb780097121a49535529f1e84",
+            "log": "native/selected-paragraph-d/witness_2/fallback1/public-analysis.log",
+            "negative_log": "native/selected-paragraph-d/witness_2/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/selected-paragraph-d/witness_2/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-execution-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_2 --output .runtime-work/c146314-210-1/selected-paragraph-d-witness_2",
+        "construction_sha256": "c0657b423bd6bfa89d965318db06504c2c18930d96f5b8a6333dd8e4bb65f959",
+        "exit_code": 0,
+        "log": "native/selected-paragraph-d/witness_2-offline-refresh.log",
+        "log_sha256": "7e14372f6da3c37ed22a1eb2b406e8c350194a63f029a55678c7ba98028aa4a0"
+      },
+      "compatibility": {
+        "receipt": "native/selected-paragraph-d/witness_2/compatibility.json",
+        "sha256": "59472d660892a2558f60a9582a5ca76f7db3b3f0145cd81eee7cb2372eb041ba",
+        "log": "native/selected-paragraph-d/witness_2/public-analysis.log",
+        "negative_log": "native/selected-paragraph-d/witness_2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/selected-paragraph-d/witness_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-execution-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__witness_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/selected-paragraph-d/witness_2/saved-processing.json",
+        "test_log_sha256": "1bd42dfe96491197134ed7afdc8e158f656a31d085cc5881851f3a58910a9342"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/witness_2-positive.log",
+        "negative_log": "native/delivery-cpu/witness_2-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_1",
+      "kind": "delivery",
+      "construction": "native/exception-1/exception_1_1/primary/construction.json",
+      "construction_sha256": "7fdd3d10437bdf892f097c0ea6010bca9fefe9e9d25d0afd737c4a4f8dca6650",
+      "measurement_contract": "native/exception-1/exception_1_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/exception-1/exception_1_1/fallback1/construction.json",
+          "construction_sha256": "6d0649da902bb599ceb3bf52a87c8e1720f16d65e5a10784fce52c5a69da4731",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-exception_1_1",
+            "construction_sha256": "6d0649da902bb599ceb3bf52a87c8e1720f16d65e5a10784fce52c5a69da4731",
+            "exit_code": 0,
+            "log": "native/exception-1/exception_1_1/fallback1/offline.log",
+            "log_sha256": "030c385f22142694d32613984cf61a28b8d5400a81ce704f6a8cedeb30170ff5"
+          },
+          "compatibility": {
+            "receipt": "native/exception-1/exception_1_1/fallback1/compatibility.json",
+            "sha256": "f9bc235168df65f1df998cef76748c75f857cb9a42ceefe1edbb7cee57b090a1",
+            "log": "native/exception-1/exception_1_1/fallback1/public-analysis.log",
+            "negative_log": "native/exception-1/exception_1_1/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/exception-1/exception_1_1/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_1 --output .runtime-work/c146314-210-1/exception-1-exception_1_1",
+        "construction_sha256": "7fdd3d10437bdf892f097c0ea6010bca9fefe9e9d25d0afd737c4a4f8dca6650",
+        "exit_code": 0,
+        "log": "native/exception-1/exception_1_1-offline-refresh.log",
+        "log_sha256": "5548a63b2fb4d9d04b80cad566f0554ef474f088339e4a54d69a97c5cc629061"
+      },
+      "compatibility": {
+        "receipt": "native/exception-1/exception_1_1/compatibility.json",
+        "sha256": "c8c08089c05104ee86fd2b51f11e5a3890e3a7240fded6e1c187e1a2893c2e66",
+        "log": "native/exception-1/exception_1_1/public-analysis.log",
+        "negative_log": "native/exception-1/exception_1_1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/exception-1/exception_1_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/exception-1/exception_1_1/saved-processing.json",
+        "test_log_sha256": "a3be17cc7ff0737cdc3d910201b893eb215cbc6b824b03f0e176957a77589df8"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_1_1-positive.log",
+        "negative_log": "native/delivery-cpu/exception_1_1-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_2",
+      "kind": "delivery",
+      "construction": "native/exception-1/exception_1_2/primary/construction.json",
+      "construction_sha256": "85e190921efbcd21ab3e4577fd8ca00e084f07975c306881e7352c587048a789",
+      "measurement_contract": "native/exception-1/exception_1_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/exception-1/exception_1_2/fallback1/construction.json",
+          "construction_sha256": "4342ad1a3923e420896e25f46ff4fc14e568cdb3cc299dd89f67a8db2d3fba43",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-exception_1_2",
+            "construction_sha256": "4342ad1a3923e420896e25f46ff4fc14e568cdb3cc299dd89f67a8db2d3fba43",
+            "exit_code": 0,
+            "log": "native/exception-1/exception_1_2/fallback1/offline.log",
+            "log_sha256": "70d0264d68eb32cc1ff9e5cc241e55fb20ff8250854b28da8f0a2be5e2d27816"
+          },
+          "compatibility": {
+            "receipt": "native/exception-1/exception_1_2/fallback1/compatibility.json",
+            "sha256": "e5b8aa0dd0b0397e49c30447fd454cd9bf3b8fda4b7e557a1a03fb6e74af266a",
+            "log": "native/exception-1/exception_1_2/fallback1/public-analysis.log",
+            "negative_log": "native/exception-1/exception_1_2/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/exception-1/exception_1_2/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_2 --output .runtime-work/c146314-210-1/exception-1-exception_1_2",
+        "construction_sha256": "85e190921efbcd21ab3e4577fd8ca00e084f07975c306881e7352c587048a789",
+        "exit_code": 0,
+        "log": "native/exception-1/exception_1_2-offline-refresh.log",
+        "log_sha256": "84ff1366aa2dd91605d83bacb4c7e11860ef7e7b7bf333ea44b5971cc810fdb0"
+      },
+      "compatibility": {
+        "receipt": "native/exception-1/exception_1_2/compatibility.json",
+        "sha256": "6a763d7773aca429b8b25a0f8151e11924f8cb3da346e14b82d9897c62f06cea",
+        "log": "native/exception-1/exception_1_2/public-analysis.log",
+        "negative_log": "native/exception-1/exception_1_2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/exception-1/exception_1_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_1_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/exception-1/exception_1_2/saved-processing.json",
+        "test_log_sha256": "616245592ddabf23827aeb7cfce73a74ba03766bbe1dc5a3b1b4964055a3ceeb"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_1_2-positive.log",
+        "negative_log": "native/delivery-cpu/exception_1_2-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_1",
+      "kind": "delivery",
+      "construction": "native/current-c1/exception_3_1/primary/construction.json",
+      "construction_sha256": "100834018e8f4fb515bb1b2d5c8472e56c8c708bef3497c5cf0542bfc149787d",
+      "measurement_contract": "native/current-c1/exception_3_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/current-c1/exception_3_1/fallback1/construction.json",
+          "construction_sha256": "543c3c20fecaf025b1e99e3705d69f364203adbdc90cbd9ff09f5ad6332f25a6",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-exception_3_1",
+            "construction_sha256": "543c3c20fecaf025b1e99e3705d69f364203adbdc90cbd9ff09f5ad6332f25a6",
+            "exit_code": 0,
+            "log": "native/current-c1/exception_3_1/fallback1/offline.log",
+            "log_sha256": "7f0349a6f7ebd925460b693d20714b3ae23ec9b8b6c4e73f96c27d2f2a3d24b3"
+          },
+          "compatibility": {
+            "receipt": "native/current-c1/exception_3_1/fallback1/compatibility.json",
+            "sha256": "fdabd759cd0bc3320494e8caa305c9d01ff28201e45e6d8460b94449c8e300c6",
+            "log": "native/current-c1/exception_3_1/fallback1/public-analysis.log",
+            "negative_log": "native/current-c1/exception_3_1/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/current-c1/exception_3_1/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-current-c1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_1 --output .runtime-work/c146314-210-1/current-c1-exception_3_1",
+        "construction_sha256": "100834018e8f4fb515bb1b2d5c8472e56c8c708bef3497c5cf0542bfc149787d",
+        "exit_code": 0,
+        "log": "native/current-c1/exception_3_1-selected-offline.log",
+        "log_sha256": "0aa85f403d1aae3aa98d761963255d5980e528e0e8d80e2e40e347adc7e54e37"
+      },
+      "compatibility": {
+        "receipt": "native/current-c1/exception_3_1/compatibility.json",
+        "sha256": "30e3af848692ac8cf7eeea6cf16d36333edbb58e7eaaf0433d665cf99fc8362b",
+        "log": "native/current-c1/exception_3_1/public-analysis.log",
+        "negative_log": "native/current-c1/exception_3_1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/current-c1/exception_3_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-current-c1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/current-c1/exception_3_1/saved-processing.json",
+        "test_log_sha256": "d71cebe1ebd46b991f0cd09ee9b777ed10781584a9d4ec0e91ddb78e3c1775d1"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_3_1-positive.log",
+        "negative_log": "native/delivery-cpu/exception_3_1-negative.log",
+        "original_native_accepted": false
+      },
+      "physical_preparation_cpu": {
+        "receipt": "native/physical-fixtures/proof.json",
+        "sha256": "03539eaac3705bd2553663b68280e6b6acff6b26087d91c0014748915f235c76"
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_2",
+      "kind": "delivery",
+      "construction": "native/current-c1/exception_3_2/primary/construction.json",
+      "construction_sha256": "171a80de2182fb35e5cc2eda868472104465fd7f6e1aa8cfcc455b656ec6a357",
+      "measurement_contract": "native/current-c1/exception_3_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/current-c1/exception_3_2/fallback1/construction.json",
+          "construction_sha256": "41e4dc7c4613fceae4d6db68ed79710d07fce369e6e3a84085b6320907906214",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-exception_3_2",
+            "construction_sha256": "41e4dc7c4613fceae4d6db68ed79710d07fce369e6e3a84085b6320907906214",
+            "exit_code": 0,
+            "log": "native/current-c1/exception_3_2/fallback1/offline.log",
+            "log_sha256": "335fe1dc3a17f4d6633829bcd05cb5b6457b615d8cb6dc9a9a69f2ccd01dd02b"
+          },
+          "compatibility": {
+            "receipt": "native/current-c1/exception_3_2/fallback1/compatibility.json",
+            "sha256": "3f88f0fc604c42f68f166fec11c8a28b17015a61a59fe9f827eec92eeb872989",
+            "log": "native/current-c1/exception_3_2/fallback1/public-analysis.log",
+            "negative_log": "native/current-c1/exception_3_2/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/current-c1/exception_3_2/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-current-c1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_2 --output .runtime-work/c146314-210-1/current-c1-exception_3_2",
+        "construction_sha256": "171a80de2182fb35e5cc2eda868472104465fd7f6e1aa8cfcc455b656ec6a357",
+        "exit_code": 0,
+        "log": "native/current-c1/exception_3_2-selected-offline.log",
+        "log_sha256": "1dcf2bd783e933a43c91fa66f8e91537a34ad5e022cb62519becdb2e66c0979d"
+      },
+      "compatibility": {
+        "receipt": "native/current-c1/exception_3_2/compatibility.json",
+        "sha256": "8c699dd633b7b5b975b2253f900ea71a029cf83829fd50d6a6e95fb334dfa5c0",
+        "log": "native/current-c1/exception_3_2/public-analysis.log",
+        "negative_log": "native/current-c1/exception_3_2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/current-c1/exception_3_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-current-c1-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_3_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/current-c1/exception_3_2/saved-processing.json",
+        "test_log_sha256": "6109168b8ab0d3bf971fb5d15e4797a5975041ad05c273913fafdf083346d09a"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_3_2-positive.log",
+        "negative_log": "native/delivery-cpu/exception_3_2-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_1",
+      "kind": "delivery",
+      "construction": "native/exception-4/exception_4_1/primary/construction.json",
+      "construction_sha256": "f6c9da27cd8ee03c5dce4eb17f39c9a9e35669bbebd5d9cf84f4bde8e3ee75ce",
+      "measurement_contract": "native/exception-4/exception_4_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/exception-4/exception_4_1/fallback1/construction.json",
+          "construction_sha256": "a80ec056960c048580da42a9ad7d2e2a965b5439468722e66cd4aecf0cb4937c",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_1 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-exception_4_1",
+            "construction_sha256": "a80ec056960c048580da42a9ad7d2e2a965b5439468722e66cd4aecf0cb4937c",
+            "exit_code": 0,
+            "log": "native/exception-4/exception_4_1/fallback1/offline.log",
+            "log_sha256": "cb3a621076721a61dd610e54b228c8b88d2e3af3d3bde45fa5c2f73753d131ae"
+          },
+          "compatibility": {
+            "receipt": "native/exception-4/exception_4_1/fallback1/compatibility.json",
+            "sha256": "3a759fe0cd3fd1320e43c88696dd113941c140b64f3cc037093efe4b31ba210c",
+            "log": "native/exception-4/exception_4_1/fallback1/public-analysis.log",
+            "negative_log": "native/exception-4/exception_4_1/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/exception-4/exception_4_1/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_1 --output .runtime-work/c146314-210-1/exception-4-exception_4_1",
+        "construction_sha256": "f6c9da27cd8ee03c5dce4eb17f39c9a9e35669bbebd5d9cf84f4bde8e3ee75ce",
+        "exit_code": 0,
+        "log": "native/exception-4/exception_4_1-offline.log",
+        "log_sha256": "37b3b38694923a40d722ed92f4db1a8069809a73ab2f116ac9c93eb7897f6e65"
+      },
+      "compatibility": {
+        "receipt": "native/exception-4/exception_4_1/compatibility.json",
+        "sha256": "f202b1d7b7bb6321a33fd57ac798c16483165079cc3496e2c0898967b1d5078c",
+        "log": "native/exception-4/exception_4_1/public-analysis.log",
+        "negative_log": "native/exception-4/exception_4_1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/exception-4/exception_4_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/exception-4/exception_4_1/saved-processing.json",
+        "test_log_sha256": "a49dc60ac16afc29bc7993f59f2faa344b851d8cb2de212bce967fb7e023d44f"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_4_1-positive.log",
+        "negative_log": "native/delivery-cpu/exception_4_1-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_2",
+      "kind": "delivery",
+      "construction": "native/exception-4/exception_4_2/primary/construction.json",
+      "construction_sha256": "4a98e948e47387708e9c4b4fed2d826c8a7beff304245e3bd72c516882f13da7",
+      "measurement_contract": "native/exception-4/exception_4_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original right-pass completion is unverified; a small common speed-control adjustment can address an incomplete pass without changing the branch request."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/exception-4/exception_4_2/fallback1/construction.json",
+          "construction_sha256": "2b9ea85bb166fa7f91ecda125071ea0798408a425784374d67e43f45664ce450",
+          "trigger": {
+            "source": "original Native saved physical-completion feedback",
+            "metric": "maneuver_completed",
+            "failure_condition": "Original right-side pass is incomplete after source review"
+          },
+          "changed_knobs": [
+            "requested_ego_speed_mps: 8.0 to 8.5 m/s, common to linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-fallback-compatibility-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_2 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c146314-210-1/fallback-v3-offline-exception_4_2",
+            "construction_sha256": "2b9ea85bb166fa7f91ecda125071ea0798408a425784374d67e43f45664ce450",
+            "exit_code": 0,
+            "log": "native/exception-4/exception_4_2/fallback1/offline.log",
+            "log_sha256": "83cd238207e953e9ad3e81f617840f583ef8014d33a7a5926e4e355bb681869a"
+          },
+          "compatibility": {
+            "receipt": "native/exception-4/exception_4_2/fallback1/compatibility.json",
+            "sha256": "c0c5c887fe68a358d5e1d92f8b056557f4bce1d490c4f88ce8e9ae79d6aed0cc",
+            "log": "native/exception-4/exception_4_2/fallback1/public-analysis.log",
+            "negative_log": "native/exception-4/exception_4_2/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/exception-4/exception_4_2/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_2 --output .runtime-work/c146314-210-1/exception-4-exception_4_2",
+        "construction_sha256": "4a98e948e47387708e9c4b4fed2d826c8a7beff304245e3bd72c516882f13da7",
+        "exit_code": 0,
+        "log": "native/exception-4/exception_4_2-offline.log",
+        "log_sha256": "ca2aa98b1f68fcf063bfb01ed5da14f6420eea1162d6a3cafa9ad186ad710386"
+      },
+      "compatibility": {
+        "receipt": "native/exception-4/exception_4_2/compatibility.json",
+        "sha256": "f86394f137168256cb67c99657ba01eec63dcd23b2a453e2560fbdc34f999223",
+        "log": "native/exception-4/exception_4_2/public-analysis.log",
+        "negative_log": "native/exception-4/exception_4_2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/exception-4/exception_4_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-exception-4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_4_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/exception-4/exception_4_2/saved-processing.json",
+        "test_log_sha256": "88075f3db18cb91a90b7d63742801624ae828f491a374aa4e47e85363f8a639a"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_4_2-positive.log",
+        "negative_log": "native/delivery-cpu/exception_4_2-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_5_1",
+      "kind": "delivery",
+      "construction": "native/subsection-4/exception_5_1/primary/construction.json",
+      "construction_sha256": "1033995f1409c45e2203c2edf11c1de72c5e5cae1a7ed245620fa49745564841",
+      "measurement_contract": "native/subsection-4/exception_5_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Vehicle qualification, original shoulder passage and statutory conditions need source review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/subsection-4/exception_5_1/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-subsection4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_5_1 --output .runtime-work/c146314-210-1/subsection-4-exception_5_1",
+        "construction_sha256": "1033995f1409c45e2203c2edf11c1de72c5e5cae1a7ed245620fa49745564841",
+        "exit_code": 0,
+        "log": "native/subsection-4/exception_5_1-selected-offline.log",
+        "log_sha256": "3c5c27394ab0a1dde980e843c07bc44e4b964d56e42321d92118d59910d57f6f"
+      },
+      "compatibility": {
+        "receipt": "native/subsection-4/exception_5_1/compatibility.json",
+        "sha256": "10d9f2a448dbf5d0fd3ae4d26a5d87b90babc754532ac2570414b335abfebd7d",
+        "log": "native/subsection-4/exception_5_1/public-analysis.log",
+        "negative_log": "native/subsection-4/exception_5_1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/subsection-4/exception_5_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-subsection4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_5_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/subsection-4/exception_5_1/saved-processing.json",
+        "test_log_sha256": "96139249a980796b45fc32ab9ebc38fc24d154685548f131843a22af724b3059"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_5_1-positive.log",
+        "negative_log": "native/delivery-cpu/exception_5_1-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "risk_fallbacks",
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_5_2",
+      "kind": "delivery",
+      "construction": "native/subsection-4/exception_5_2/primary/construction.json",
+      "construction_sha256": "00599465c7fd0e24e424f0077e4f8222606c574f84d2e34268652895a294071d",
+      "measurement_contract": "native/subsection-4/exception_5_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Vehicle qualification, original shoulder passage and statutory conditions need source review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/subsection-4/exception_5_2/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-subsection4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_5_2 --output .runtime-work/c146314-210-1/subsection-4-exception_5_2",
+        "construction_sha256": "00599465c7fd0e24e424f0077e4f8222606c574f84d2e34268652895a294071d",
+        "exit_code": 0,
+        "log": "native/subsection-4/exception_5_2-selected-offline.log",
+        "log_sha256": "7c00d9fc62fd52954e5e2b706b705bf16a710d9dfefb185ea4219c93c56511e7"
+      },
+      "compatibility": {
+        "receipt": "native/subsection-4/exception_5_2/compatibility.json",
+        "sha256": "0347f355752e37c7eb3f2d334df33fe7ff80b54de0e07af2af4ef6e0f2ed6b55",
+        "log": "native/subsection-4/exception_5_2/public-analysis.log",
+        "negative_log": "native/subsection-4/exception_5_2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/subsection-4/exception_5_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-subsection4-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__exception_5_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/subsection-4/exception_5_2/saved-processing.json",
+        "test_log_sha256": "fa76bd9106b96960c7b6e54b63c5ce26f96090e2eca3b75c682c6343d9108ed7"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/exception_5_2-positive.log",
+        "negative_log": "native/delivery-cpu/exception_5_2-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "risk_fallbacks",
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_0",
+      "kind": "delivery",
+      "construction": "native/numeric-boundary/numeric_1_0/primary/construction.json",
+      "construction_sha256": "680f5da50b6ac2c1204b0486243f96a41b4632d5b3f78f9a0ead65a550f1d472",
+      "measurement_contract": "native/numeric-boundary/numeric_1_0/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual unmarked pavement, source span and legal result need independent review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/numeric-boundary/numeric_1_0/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-numeric-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_0 --output .runtime-work/c146314-210-1/numeric-boundary-numeric_1_0",
+        "construction_sha256": "680f5da50b6ac2c1204b0486243f96a41b4632d5b3f78f9a0ead65a550f1d472",
+        "exit_code": 0,
+        "log": "native/numeric-boundary/numeric_1_0-selected-offline.log",
+        "log_sha256": "6865dab02c3ab0734cd3e5076c7a11fb86c5a3dcdb75d308248f91a9d9c53b64"
+      },
+      "compatibility": {
+        "receipt": "native/numeric-boundary/numeric_1_0/compatibility.json",
+        "sha256": "3b74924f0437e71460cf0356132131c57fca6ef0d9c9ae05c329d4ea089f5d7e",
+        "log": "native/numeric-boundary/numeric_1_0/public-analysis.log",
+        "negative_log": "native/numeric-boundary/numeric_1_0/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/numeric-boundary/numeric_1_0/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-numeric-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_0 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/numeric-boundary/numeric_1_0/saved-processing.json",
+        "test_log_sha256": "63eea241d14569c3836b6aaba5a95b08f0689fc511da7be169cc925d8d129c54"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/numeric_1_0-positive.log",
+        "negative_log": "native/delivery-cpu/numeric_1_0-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "risk_fallbacks",
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_1",
+      "kind": "delivery",
+      "construction": "native/numeric-boundary/numeric_1_1/primary/construction.json",
+      "construction_sha256": "4d644303c35092a70f140ae0b47208057b6360a7039ef7f44281a23d2655201e",
+      "measurement_contract": "native/numeric-boundary/numeric_1_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual unmarked pavement, source span and legal result need independent review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/numeric-boundary/numeric_1_1/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-numeric-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_1 --output .runtime-work/c146314-210-1/numeric-boundary-numeric_1_1",
+        "construction_sha256": "4d644303c35092a70f140ae0b47208057b6360a7039ef7f44281a23d2655201e",
+        "exit_code": 0,
+        "log": "native/numeric-boundary/numeric_1_1-selected-offline.log",
+        "log_sha256": "981e2c2a2667b14c16504bdf75d3a9e3426ef8eb294600b5a850ad7b6dd584f3"
+      },
+      "compatibility": {
+        "receipt": "native/numeric-boundary/numeric_1_1/compatibility.json",
+        "sha256": "d1b133af5a72bcd07eb357030fbe9ab9f0ccd83a06d5bc3d37344b494b8b171b",
+        "log": "native/numeric-boundary/numeric_1_1/public-analysis.log",
+        "negative_log": "native/numeric-boundary/numeric_1_1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/numeric-boundary/numeric_1_1/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-numeric-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_1 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/numeric-boundary/numeric_1_1/saved-processing.json",
+        "test_log_sha256": "9df9ae5273d07bb6d7bafaeb1a702a97426231bec4602d117ccf717b76d8d054"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/numeric_1_1-positive.log",
+        "negative_log": "native/delivery-cpu/numeric_1_1-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "risk_fallbacks",
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    },
+    {
+      "case_id": "training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_2",
+      "kind": "delivery",
+      "construction": "native/numeric-boundary/numeric_1_2/primary/construction.json",
+      "construction_sha256": "da7dd85c71256d59cb5ea293423f9cdd223ee138fc9eaec5dfa7663d3891bdd7",
+      "measurement_contract": "native/numeric-boundary/numeric_1_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual unmarked pavement, source span and legal result need independent review."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/native/numeric-boundary/numeric_1_2/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-numeric-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_2 --output .runtime-work/c146314-210-1/numeric-boundary-numeric_1_2",
+        "construction_sha256": "da7dd85c71256d59cb5ea293423f9cdd223ee138fc9eaec5dfa7663d3891bdd7",
+        "exit_code": 0,
+        "log": "native/numeric-boundary/numeric_1_2-selected-offline.log",
+        "log_sha256": "7e34052882792e4620869f35751134885a21d4e4f33c017dd718e2228e8c58b6"
+      },
+      "compatibility": {
+        "receipt": "native/numeric-boundary/numeric_1_2/compatibility.json",
+        "sha256": "5b22eb50663b0f523f5df310e5a5a901bc2152c9603673449a2db95651925153",
+        "log": "native/numeric-boundary/numeric_1_2/public-analysis.log",
+        "negative_log": "native/numeric-boundary/numeric_1_2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/numeric-boundary/numeric_1_2/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C146314__NRS-484B-210-1__motor_vehicle_driver/preview-numeric-manifest.json --case training__C146314__NRS-484B-210-1__motor_vehicle_driver__numeric_1_2 --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "native/numeric-boundary/numeric_1_2/saved-processing.json",
+        "test_log_sha256": "cc8efb191584401853b914fcdab0a80d67505aa68d9d40e66874430b5e326dcb"
+      },
+      "delivery_acceptance_cpu": {
+        "audit_script": "delivery_audit.py",
+        "audit_script_sha256": "0374c316c85ab93859bd0cefa353156c74d7b6e3352f9c9b8f827ece4353fdd5",
+        "selftest_log": "native/delivery-cpu/numeric_1_2-positive.log",
+        "negative_log": "native/delivery-cpu/numeric_1_2-negative.log",
+        "original_native_accepted": false
+      },
+      "remaining_cpu_bindings": [
+        "risk_fallbacks",
+        "per_case_physical_preparation",
+        "delivery_acceptance_positive_and_negative",
+        "independent_physical_comparison"
+      ]
+    }
+  ]
+}

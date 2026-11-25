@@ -55,12 +55,20 @@ def main():
             constructions.append(construction)
             compatibility = case_dir / 'compatibility.json'
             saved = case_dir / 'saved-processing.json'
-            assert read(saved)['recorded_only'] is True
+            processing = read(saved)
+            assert processing['recorded_only'] is True
+            result_path = Path(processing['result'])
+            assert result_path.is_file() and sha(result_path) == processing['result_sha256']
+            measured = read(result_path)['measured_values']
+            assert measured['frames_joined'] == 600
+            assert measured['original_native_observed'] is False
             cases.append({'case_id': entry['case_id'],
                           'construction': str(construction_path.relative_to(ROOT)),
                           'construction_sha256': sha(construction_path),
                           'compatibility_sha256': sha(compatibility),
-                          'saved_processing_sha256': sha(saved)})
+                          'saved_processing_sha256': sha(saved),
+                          'saved_result_sha256': sha(result_path),
+                          'source_measured_values': measured})
         assert len({item['construction_sha256'] for item in cases}) == len(cases)
         channels = [[(item['name'], item['sampling_rate_hz'])
                      for item in c['recording_description']['channels']]
@@ -68,6 +76,12 @@ def main():
         assert all(channel == channels[0] for channel in channels)
         assert all(c['mechanisms']['road'] == constructions[0]['mechanisms']['road']
                    for c in constructions)
+        if name == 'exception_3_comparison':
+            assert [item['source_measured_values']['observed_shoulder_centerline_span_m']
+                    for item in cases] == [61.06, 60.96]
+        if name == 'numeric_1_comparison':
+            assert [item['source_measured_values']['observed_shoulder_centerline_span_m']
+                    for item in cases] == [60.86, 60.96, 61.06]
         rows.append({'comparison_id': comparison_id,
                      'status': 'cpu_construction_and_saved_join_checked',
                      'fixed_conditions_checked': ['assignment_id', 'cell_id', 'actor',

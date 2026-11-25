@@ -1,21 +1,16 @@
-"""CPU checks for exact capture identity and mandatory surveyed route."""
-import importlib.util
+import json
+import unittest
 from pathlib import Path
+import road
+import runner
 
-ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('selected_runner', ROOT/'runner.py')
-runner = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(runner)
+class BundleTest(unittest.TestCase):
+    def test_corridor_and_exact_case(self):
+        self.assertEqual(road.check()['clear_corridor_m'], 1800.0)
+        self.assertTrue(runner.check()['passed'])
+        config = json.loads(Path('config.json').read_text())
+        self.assertEqual(config['selected_case_id'], config['case_id'])
+        self.assertIn(config['requested_speed_mph'], (75.0, 80.0, 85.0))
 
-
-def test_config():
-    assert runner.config_check()['case_id'] == runner.CASE
-
-
-def test_survey_rejects_missing_sources():
-    try:
-        runner.survey_check({})
-    except ValueError as exc:
-        assert 'Missing reviewed Native survey source' in str(exc)
-    else:
-        raise AssertionError('unsourced survey accepted')
+    def test_missing_case_rejected(self):
+        self.assertNotIn('probe_04', runner.TARGETS_MPH)

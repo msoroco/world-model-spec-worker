@@ -52,8 +52,8 @@ def main():
         root = Path(tmp)
         for name in CAMERAS:
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=64x48:r=20',
-                            '-frames:v', str(COUNT), '-c:v', 'ffv1', str(root/('camera_'+name+'.mkv'))], check=True)
-        hashes = {('camera_'+name+'.mkv'): hashlib.sha256((root/('camera_'+name+'.mkv')).read_bytes()).hexdigest()
+                            '-frames:v', str(COUNT), '-c:v', 'ffv1', str(root/(name+'.mkv'))], check=True)
+        hashes = {(name+'.mkv'): hashlib.sha256((root/(name+'.mkv')).read_bytes()).hexdigest()
                   for name in CAMERAS}
         frames = [{'video_frame': i, 'native_frame': 1000+i, 'time_s': round(i*.05, 4)} for i in range(COUNT)]
         save(root/'video_frames.jsonl', frames)

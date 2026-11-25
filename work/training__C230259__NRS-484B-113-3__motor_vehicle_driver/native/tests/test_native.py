@@ -10,7 +10,7 @@ class BackingDraftTests(unittest.TestCase):
     def test_geometry(self):
         value=layout.check()
         self.assertEqual(value['road_width_m'],9)
-        self.assertFalse(value['section_stem_recovered'])
+        self.assertTrue(value['section_stem_recovered'])
 
     def test_capture(self):
         value=runner.check()

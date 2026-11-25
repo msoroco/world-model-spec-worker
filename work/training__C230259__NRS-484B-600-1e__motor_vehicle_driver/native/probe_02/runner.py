@@ -1,4 +1,4 @@
-"""Survey-gated Native absolute-speed attempt; --check needs no CARLA."""
+"""Native straight-road speed sweep with a separately sourced other vehicle."""
 import argparse
 import json
 import math
@@ -6,175 +6,197 @@ import queue
 import subprocess
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-AID = 'training__C230259__NRS-484B-600-1e__motor_vehicle_driver'
-CASE = AID + '__probe_02'
-CAMERAS = ('forward', 'rear', 'left', 'right')
-COUNT = 600
-MPS_PER_MPH = .44704
+from road import EGO_LANE_ID, OTHER_LANE_ID, LENGTH_M, check as road_check, open_drive
+
+FRAMES = 600
+RATE_HZ = 20
+TARGETS_MPH = {'probe_01': 75.0, 'probe_02': 80.0, 'probe_03': 85.0}
+CAMERAS = (('overview', 1920, 1080), ('approach', 1280, 720),
+           ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))
 
 
-def config_check():
-    cfg = json.loads((HERE/'config.json').read_text())
-    if (cfg.get('assignment_id') != AID or cfg.get('case_id') != CASE or cfg.get('selected_case_id') != CASE or
-            cfg.get('cell_id') != 'C230259' or cfg.get('law_id') != 'NRS-484B-600-1e' or
-            cfg.get('actor') != 'motor_vehicle_driver' or cfg.get('candidate_id') != 'primary' or
-            cfg.get('rate_hz') != 20 or cfg.get('duration_s') != 30 or cfg.get('frames') != COUNT or
-            [c.get('name') for c in cfg.get('cameras', [])] != list(CAMERAS) or
-            [(c.get('width'), c.get('height')) for c in cfg['cameras']] !=
-            [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)] or
-            cfg.get('physical_acceptance_claimed') is not False or cfg.get('legal_verdict') is not None):
-        raise ValueError('Exact absolute-speed capture contract differs')
-    return cfg
+def check():
+    road = road_check()
+    if len(CAMERAS) != 4 or FRAMES / RATE_HZ != 30 or LENGTH_M < 1500:
+        raise ValueError('Speed sweep capture geometry or cadence differs')
+    if not (TARGETS_MPH['probe_01'] < 80 == TARGETS_MPH['probe_02'] < TARGETS_MPH['probe_03']):
+        raise ValueError('Requested speed probes do not bracket the statutory boundary')
+    return {'passed': True, 'road': road, 'frames': FRAMES,
+            'cameras': [row[0] for row in CAMERAS], 'carla_imported': False,
+            'physical_acceptance_claimed': False}
 
 
-def survey_check(survey):
-    for key in ('map_name', 'survey_source', 'route_source', 'vehicle_capability_source',
-                'vehicle_blueprint', 'spawn_xyz_m', 'spawn_yaw_deg', 'road_id',
-                'travel_unit_xy', 'minimum_clear_route_length_m', 'camera_world_transforms'):
-        if not survey.get(key) and survey.get(key) != 0:
-            raise ValueError('Missing reviewed Native survey source: '+key)
-    xyz = survey['spawn_xyz_m']
-    axis = survey['travel_unit_xy']
-    if len(xyz) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in xyz):
-        raise ValueError('Invalid surveyed spawn')
-    if len(axis) != 2 or any(type(v) not in (int, float) or not math.isfinite(v) for v in axis) or abs(math.hypot(*axis)-1) > .01:
-        raise ValueError('Surveyed travel direction must be unit length')
-    if type(survey['minimum_clear_route_length_m']) not in (int, float) or survey['minimum_clear_route_length_m'] < 1100:
-        raise ValueError('Insufficient surveyed clear route length for requested high speed')
-    if set(survey['camera_world_transforms']) != set(CAMERAS):
-        raise ValueError('Four surveyed source cameras required')
-    for item in survey['camera_world_transforms'].values():
-        if len(item.get('xyz_m', [])) != 3 or len(item.get('rotation_deg', [])) != 3:
-            raise ValueError('Invalid surveyed camera transform')
-    return survey
+def _camera_pose(carla, name):
+    if name == 'driver_reference':
+        return carla.Transform(carla.Location(x=0.7, y=0, z=1.4), carla.Rotation(pitch=-10)), True
+    positions = {'overview': (600, -35, 65, -60),
+                 'approach': (100, -20, 15, -20),
+                 'reference_corner': (1000, -20, 15, -20)}
+    x, y, z, pitch = positions[name]
+    return carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch)), False
 
 
-def transform(carla, xyz, rotation):
-    return carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2]),
-                           carla.Rotation(pitch=rotation[0], yaw=rotation[1], roll=rotation[2]))
-
-
-def capture(survey, output, host, port):
+def execute(case_id, output_dir, host, port):
     import carla
-    cfg = config_check()
-    survey_check(survey)
-    output.mkdir(parents=True, exist_ok=True)
-    if any(output.iterdir()):
-        raise ValueError('Retain prior Native source attempt; use empty output directory')
-    client = carla.Client(host, port)
-    client.set_timeout(120)
-    world = client.get_world()
-    if world.get_map().name != survey['map_name']:
-        raise ValueError('Live CARLA map differs from reviewed survey')
-    settings = world.get_settings()
-    old_sync, old_step = settings.synchronous_mode, settings.fixed_delta_seconds
-    actors, encoders = [], {}
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
+    suffix = case_id.rsplit('__', 1)[-1]
+    if suffix not in TARGETS_MPH or not case_id.startswith('training__C230259__NRS-484B-600-1e__motor_vehicle_driver__'):
+        raise ValueError('Unknown exact speed case')
+    check()
+    output = Path(output_dir).resolve()
+    if any((output/name).exists() for name in ('video_frames.jsonl', 'native_motion.jsonl', 'road.xodr')):
+        raise ValueError('Retain prior Native source; use a fresh attempt')
+    client = carla.Client(host, int(port))
+    client.set_timeout(180)
+    prior = snapshot(client)
+    old_world = client.get_world()
+    if prior['settings'].synchronous_mode or any(actor.type_id.startswith(('vehicle.', 'walker.', 'sensor.', 'controller.')) for actor in old_world.get_actors()):
+        raise RuntimeError('Requires an exclusive idle asynchronous Native world')
+    owned, encoders, queues = [], {}, {}
+    changed = False
     try:
+        world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
+            vertex_distance=1, max_road_length=50, wall_height=0, additional_width=0,
+            smooth_junctions=False, enable_mesh_visibility=True, enable_pedestrian_navigation=False))
+        changed = True
+        settings = world.get_settings()
         settings.synchronous_mode = True
-        settings.fixed_delta_seconds = .05
+        settings.fixed_delta_seconds = 1/RATE_HZ
+        settings.substepping = True
+        settings.max_substep_delta_time = .01
+        settings.max_substeps = 10
         world.apply_settings(settings)
-        lib = world.get_blueprint_library()
-        ego = world.try_spawn_actor(lib.find(survey['vehicle_blueprint']),
-                                    transform(carla, survey['spawn_xyz_m'], [0, survey['spawn_yaw_deg'], 0]))
-        if ego is None:
-            raise RuntimeError('Surveyed vehicle spawn failed')
-        actors.append(ego)
-        waypoint = world.get_map().get_waypoint(ego.get_location(), project_to_road=True,
-                                                lane_type=carla.LaneType.Driving)
-        if waypoint is None or waypoint.road_id != survey['road_id']:
-            raise ValueError('Live vehicle road differs from reviewed route')
-        queues = {}
-        for spec in cfg['cameras']:
-            camera = lib.find('sensor.camera.rgb')
-            camera.set_attribute('image_size_x', str(spec['width']))
-            camera.set_attribute('image_size_y', str(spec['height']))
-            camera.set_attribute('fov', '80')
-            loc = survey['camera_world_transforms'][spec['name']]
-            sensor = world.spawn_actor(camera, transform(carla, loc['xyz_m'], loc['rotation_deg']))
-            actors.append(sensor)
+        mapping = world.get_map()
+        ego_wp = mapping.get_waypoint_xodr(1, EGO_LANE_ID, 5)
+        other_wp = mapping.get_waypoint_xodr(1, OTHER_LANE_ID, 100)
+        far_wp = mapping.get_waypoint_xodr(1, EGO_LANE_ID, 1500)
+        if any(wp is None for wp in (ego_wp, other_wp, far_wp)):
+            raise RuntimeError('Native clear corridor or separate other-vehicle lane unavailable')
+        output.mkdir(parents=True, exist_ok=True)
+        (output/'road.xodr').write_text(mapping.to_opendrive())
+        library = world.get_blueprint_library()
+        ego_bp = library.find('vehicle.tesla.model3')
+        ego_bp.set_attribute('role_name', 'c230259_speed_subject')
+        other_bp = library.find('vehicle.tesla.model3')
+        other_bp.set_attribute('role_name', 'c230259_other_vehicle')
+        ego_pose = ego_wp.transform
+        ego_pose.location.z += 1
+        other_pose = other_wp.transform
+        other_pose.location.z += 1
+        ego = world.try_spawn_actor(ego_bp, ego_pose)
+        other = world.try_spawn_actor(other_bp, other_pose)
+        if ego is None or other is None or ego.id == other.id:
+            raise RuntimeError('Separate Native vehicles did not spawn')
+        owned.extend((ego, other))
+        other.set_simulate_physics(False)
+        for name, width, height in CAMERAS:
+            camera_bp = library.find('sensor.camera.rgb')
+            camera_bp.set_attribute('image_size_x', str(width))
+            camera_bp.set_attribute('image_size_y', str(height))
+            camera_bp.set_attribute('sensor_tick', '.05')
+            camera_bp.set_attribute('fov', '85')
+            pose, attached = _camera_pose(carla, name)
+            camera = world.spawn_actor(camera_bp, pose, attach_to=ego if attached else None)
+            owned.append(camera)
             q = queue.Queue()
-            sensor.listen(q.put)
-            queues[spec['name']] = q
-            encoders[spec['name']] = subprocess.Popen(
-                ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
-                 '-video_size', f"{spec['width']}x{spec['height']}", '-framerate', '20',
-                 '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                 str(output/('camera_'+spec['name']+'.mkv'))], stdin=subprocess.PIPE)
-        target_mps = 80.0*MPS_PER_MPH
-        first_elapsed = None
-        with (output/'video_frames.jsonl').open('w') as frame_file, (output/'native_motion.jsonl').open('w') as motion_file:
-            for i in range(COUNT):
-                velocity = ego.get_velocity()
-                speed = math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
-                error = target_mps-speed
-                ego.apply_control(carla.VehicleControl(throttle=max(0.0, min(1.0, .35+.14*error)),
-                                                       brake=max(0.0, min(1.0, -.2*error)), steer=0.0))
-                native_frame = world.tick()
-                snapshot = world.get_snapshot()
-                if snapshot.frame != native_frame:
-                    raise RuntimeError('Native world frame mismatch')
-                if first_elapsed is None:
-                    first_elapsed = snapshot.timestamp.elapsed_seconds
+            camera.listen(q.put)
+            queues[name] = q
+            encoders[name] = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
+                                               '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', f'{width}x{height}',
+                                               '-r', str(RATE_HZ), '-i', '-', '-frames:v', str(FRAMES),
+                                               '-c:v', 'ffv1', '-level', '1', str(output/(name+'.mkv'))],
+                                              stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        target = TARGETS_MPH[suffix]*.44704
+        with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'native_motion.jsonl').open('x') as stream:
+            start = None
+            for index in range(FRAMES):
+                pose = ego.get_transform()
+                wp = mapping.get_waypoint(pose.location, project_to_road=True, lane_type=carla.LaneType.Driving)
+                if wp is None or wp.road_id != 1 or wp.lane_id != EGO_LANE_ID:
+                    raise RuntimeError('Native ego left surveyed speed lane')
+                speed = ego.get_velocity().length()
+                error = target-speed
+                ego.apply_control(carla.VehicleControl(throttle=min(1, max(0, .35+.14*error)),
+                                                       brake=min(1, max(0, -.2*error)), steer=0))
+                frame = world.tick()
+                snap = world.get_snapshot()
+                if snap.frame != frame:
+                    raise RuntimeError('Native snapshot frame mismatch')
+                if start is None:
+                    start = snap.timestamp.elapsed_seconds
+                elapsed = snap.timestamp.elapsed_seconds-start
                 pose = ego.get_transform()
                 velocity = ego.get_velocity()
-                road = world.get_map().get_waypoint(pose.location, project_to_road=True,
-                                                    lane_type=carla.LaneType.Driving)
-                if road is None or road.road_id != survey['road_id']:
-                    raise RuntimeError('Native vehicle left reviewed road')
-                if velocity.x*survey['travel_unit_xy'][0]+velocity.y*survey['travel_unit_xy'][1] < -.1:
-                    raise RuntimeError('Native motion opposes reviewed direction')
-                frame_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
-                                             'time_s': snapshot.timestamp.elapsed_seconds-first_elapsed})+'\n')
-                motion_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
-                                              'source_kind': 'original_native_velocity', 'ego_actor_id': ego.id,
-                                              'driving_state': True, 'velocity_x_mps': velocity.x,
-                                              'velocity_y_mps': velocity.y, 'velocity_z_mps': velocity.z})+'\n')
+                other_pose = other.get_transform()
+                measured_wp = mapping.get_waypoint(pose.location, project_to_road=True, lane_type=carla.LaneType.Driving)
+                if measured_wp is None or measured_wp.road_id != 1 or measured_wp.lane_id != EGO_LANE_ID:
+                    raise RuntimeError('Native ego left surveyed speed lane after tick')
+                joined = {}
                 for name, q in queues.items():
                     image = q.get(timeout=30)
-                    if image.frame != native_frame:
-                        raise RuntimeError('Camera frame does not join Native frame')
+                    while image.frame < frame:
+                        image = q.get(timeout=30)
+                    if image.frame != frame:
+                        raise RuntimeError('Native camera source frame mismatch: '+name)
                     encoders[name].stdin.write(image.raw_data)
-        for proc in encoders.values():
-            proc.stdin.close()
-            if proc.wait(timeout=120):
-                raise RuntimeError('Source camera encoding failed')
+                    joined[name] = frame
+                frame_map.append(frame, elapsed, camera_native_frames=joined)
+                stream.write(json.dumps({'video_frame': index, 'native_frame': frame, 'time_s': elapsed,
+                                         'source_kind': 'original_native_velocity', 'ego_actor_id': ego.id,
+                                         'other_actor_id': other.id, 'ego_blueprint': ego.type_id,
+                                         'other_blueprint': other.type_id, 'driving_state': True,
+                                         'position_xyz_m': [pose.location.x, pose.location.y, pose.location.z],
+                                         'other_position_xyz_m': [other_pose.location.x, other_pose.location.y, other_pose.location.z],
+                                         'road_id': measured_wp.road_id, 'lane_id': measured_wp.lane_id,
+                                         'controller_request_mps': target, 'velocity_x_mps': velocity.x,
+                                         'velocity_y_mps': velocity.y, 'velocity_z_mps': velocity.z})+'\n')
+        for name, process in encoders.items():
+            process.stdin.close()
+            stderr = process.stderr.read()
+            if process.wait(timeout=180):
+                raise RuntimeError('Native source camera encoding failed: '+name+': '+stderr.decode()[-400:])
         (output/'road_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'case_id': CASE, 'review_kind': 'original_source_review',
-            'ego_actor_id': ego.id, 'camera_sha256': {}, 'review_required': True,
-            'route_source': survey['route_source'],
-            'vehicle_identity_source': survey['vehicle_capability_source'],
+            'assignment_id': case_id.rsplit('__', 1)[0], 'case_id': case_id,
+            'review_kind': 'original_source_review', 'ego_actor_id': ego.id,
+            'other_actor_id': other.id, 'camera_sha256': {}, 'review_required': True,
+            'route_source': 'Native OpenDRIVE road.xodr plus original lane history',
+            'vehicle_identity_source': 'Native vehicle blueprint and actor identity in original motion',
+            'other_vehicle_source': 'Separate Native other vehicle actor and original relative pose',
             'driving_state_source': 'Original Native per-frame controlled vehicle state'}, indent=2)+'\n')
-        return {'case_id': CASE, 'source_frames': COUNT, 'requested_target_mps': target_mps,
-                'physical_acceptance_claimed': False}
+        return {'case_id': case_id, 'frames': FRAMES, 'separate_other_vehicle': True,
+                'requested_speed_mph': TARGETS_MPH[suffix], 'physical_acceptance_claimed': False}
     finally:
-        for actor in reversed(actors):
+        for process in encoders.values():
+            if process.poll() is None:
+                process.kill()
+                process.wait()
+        for actor in reversed(owned):
             try:
+                if hasattr(actor, 'stop'):
+                    actor.stop()
                 actor.destroy()
             except Exception:
                 pass
-        for proc in encoders.values():
-            if proc.poll() is None:
-                proc.kill()
-                proc.wait()
-        settings.synchronous_mode = old_sync
-        settings.fixed_delta_seconds = old_step
-        world.apply_settings(settings)
+        if changed:
+            restore(client, prior)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--survey', type=Path)
-    parser.add_argument('--output-dir', type=Path)
+    parser.add_argument('--case-id')
+    parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
-    cfg = config_check()
     if args.check:
-        print(json.dumps({'case_id': CASE, 'frames': COUNT, 'cameras': list(CAMERAS),
-                          'carla_imported': False, 'physical_acceptance_claimed': False}, sort_keys=True))
+        print(json.dumps(check()))
+    elif args.output_dir:
+        config = json.loads((Path(__file__).parent/'config.json').read_text())
+        case_id = args.case_id or config.get('selected_case_id')
+        if case_id != config.get('selected_case_id'):
+            raise ValueError('Native case differs from exact materialized bundle')
+        print(json.dumps(execute(case_id, args.output_dir, args.host, args.port)))
     else:
-        if args.survey is None or args.output_dir is None:
-            parser.error('Supply reviewed --survey and --output-dir')
-        print(json.dumps(capture(json.loads(args.survey.read_text()), args.output_dir, args.host, args.port)))
+        parser.error('Supply --output-dir for Native capture')

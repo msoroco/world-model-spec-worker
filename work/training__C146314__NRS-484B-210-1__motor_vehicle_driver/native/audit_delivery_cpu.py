@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 
@@ -27,9 +28,12 @@ def main():
     temp_root = Path(os.environ['TMPDIR'])
     for case in selected:
         suffix = case.split('__')[-1]
-        delivery_audit.selftest(case)
         good_log = out / (suffix + '-positive.log')
-        good_log.write_text('PASS exact-case audit identity and synthetic/lifecycle rejection: ' + case + '\n')
+        good_cmd = [sys.executable, str(ROOT / 'delivery_audit.py'), '--case', case,
+                    '--selftest']
+        good = subprocess.run(good_cmd, cwd=ROOT, text=True, capture_output=True)
+        assert good.returncode == 0 and good.stdout.startswith('PASS ')
+        good_log.write_text(good.stdout.rstrip() + '\n')
         with tempfile.TemporaryDirectory(prefix='c146314-delivery-', dir=temp_root) as tmp:
             tmp = Path(tmp)
             attempt, saved = tmp / 'attempt', tmp / 'saved'
@@ -43,12 +47,21 @@ def main():
             except ValueError as error:
                 assert str(error) == 'Synthetic fixture cannot establish original Native delivery'
         bad_log = out / (suffix + '-negative.log')
-        bad_log.write_text('REJECT Synthetic fixture cannot establish original Native delivery: ' + case + '\n')
+        bad_cmd = [sys.executable, str(ROOT / 'delivery_audit.py'), '--case', case,
+                   '--negative-selftest']
+        bad = subprocess.run(bad_cmd, cwd=ROOT, text=True, capture_output=True)
+        assert bad.returncode == 3
+        assert bad.stdout.strip() == 'Synthetic fixture cannot establish original Native delivery'
+        bad_log.write_text(bad.stdout.rstrip() + '\n')
         rows.append({'case_id': case,
                      'script': 'delivery_audit.py',
                      'script_sha256': sha(ROOT / 'delivery_audit.py'),
+                     'positive_command': ' '.join(good_cmd),
+                     'positive_exit_code': good.returncode,
                      'positive_log': str(good_log.relative_to(ROOT)),
                      'positive_log_sha256': sha(good_log),
+                     'negative_command': ' '.join(bad_cmd),
+                     'negative_exit_code': bad.returncode,
                      'negative_log': str(bad_log.relative_to(ROOT)),
                      'negative_log_sha256': sha(bad_log),
                      'physical_delivery_accepted': False})

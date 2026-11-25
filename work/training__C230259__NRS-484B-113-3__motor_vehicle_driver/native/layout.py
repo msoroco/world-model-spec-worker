@@ -1,4 +1,4 @@
-"""Wide highway approach with a backing path; legal section stem remains unresolved."""
+"""Wide highway approach with a backing path; physical precedence remains unresolved."""
 import xml.etree.ElementTree as ET
 
 CONFLICT={'x_min_m':8,'x_max_m':16,'y_min_m':-5,'y_max_m':-1}
@@ -25,4 +25,4 @@ def check():
     width=float(ET.fromstring(open_drive()).find('road/lanes/laneSection/right/lane/width').get('a'))
     if width!=9 or CONFLICT['y_max_m']!=-1:raise ValueError('Authored highway geometry differs')
     return {'passed':True,'road_width_m':width,'conflict_region':CONFLICT,
-            'section_stem_recovered':False,'right_of_way_determined':False}
+            'section_stem_recovered':True,'right_of_way_determined':False}

@@ -5,7 +5,9 @@ CPU self-tests exercise rejection. Synthetic fixture success is never delivery.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+import tempfile
 
 
 HERE = Path(__file__).resolve().parent
@@ -109,10 +111,29 @@ def selftest(case):
     print('PASS exact-case original-source audit identity and synthetic/lifecycle rejection')
 
 
+def negative_selftest(case):
+    require(case.startswith(PREFIX), 'Unselected or unknown exact delivery case')
+    with tempfile.TemporaryDirectory(prefix='c146314-delivery-', dir=os.environ['TMPDIR']) as tmp:
+        tmp = Path(tmp)
+        attempt, saved = tmp / 'attempt', tmp / 'saved'
+        attempt.mkdir()
+        saved.mkdir()
+        (attempt / 'capture-seal.json').write_text('{"diagnostic_fixture":true}\n')
+        (attempt / 'acquisition-provenance.json').write_text(
+            '{"provenance_kind":"synthetic_fixture","diagnostic_fixture":true}\n')
+        try:
+            validate(case, attempt, saved, tmp / 'pixel-review.json')
+        except ValueError as error:
+            print(str(error))
+            raise SystemExit(3)
+    raise AssertionError('Synthetic attempt passed independent audit')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--case', required=True)
     parser.add_argument('--selftest', action='store_true')
+    parser.add_argument('--negative-selftest', action='store_true')
     parser.add_argument('--attempt')
     parser.add_argument('--saved')
     parser.add_argument('--pixel-review')
@@ -120,6 +141,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.selftest:
         selftest(args.case)
+    elif args.negative_selftest:
+        negative_selftest(args.case)
     else:
         receipt = validate(args.case, args.attempt, args.saved, args.pixel_review)
         Path(args.output).write_text(json.dumps(receipt, indent=2) + '\n')
