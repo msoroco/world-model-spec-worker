@@ -4,6 +4,96 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared C111278 comparison reference; no delivery recording.",
+      "variable_assignments": {
+        "requested_traversal_speed_mph": {
+          "kind": "controller",
+          "value": 15
+        },
+        "requested_occluder": {
+          "kind": "world_setup",
+          "value": "west_building"
+        },
+        "through_designation": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "traffic_controlled_intersection": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
+        "limitations": [
+          "requested speed and spawned occluder do not prove measured speed or realized obstruction",
+          "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Municipal jurisdiction and qualifying street intersection",
+        "Original all-entering-arm 100-foot sight evidence",
+        "Actual traversal speed and view",
+        "Source through-street or traffic-control designation"
+      ]
+    },
+    {
       "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below",
       "target_law_id": "LVMC-11-16-040",
       "target_type": "boundary_probe",
@@ -19,24 +109,69 @@
           "value": "west_building"
         },
         "through_designation": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         },
         "traffic_controlled_intersection": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         }
       },
       "recording_description": {
-        "streams": [
-          "20 Hz original frame and ego body speed history",
-          "map-hashed intersection boundary and route arc-length station",
-          "all entering street/highway arm inventory and 100-foot ray extents",
-          "intersection and traffic ray hits from virtual observer on every entering arm",
-          "through designation and all qualifying intersection controls from source packets",
-          "four named camera streams and synchronized frame map"
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
         ],
-        "window": "full 45-second original episode, including last 100 feet of approach and complete traversal",
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
         "limitations": [
           "requested speed and spawned occluder do not prove measured speed or realized obstruction",
           "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
@@ -47,7 +182,25 @@
         "Original all-entering-arm 100-foot sight evidence",
         "Actual traversal speed and view",
         "Source through-street or traffic-control designation"
-      ]
+      ],
+      "paired_probe_id": "c111278-speed_boundary",
+      "deliberate_differences": [
+        "requested_traversal_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_traversal_speed_mph",
+        "comparison_or_standard": "same-site blocked-at reference and exact LVMC clause",
+        "target_value_or_branch": "blocked_below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "mph",
+        "test_value": 14
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "mph",
+        "rationale": "Physical probe spacing; no legal tolerance."
+      }
     },
     {
       "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at",
@@ -65,24 +218,69 @@
           "value": "west_building"
         },
         "through_designation": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         },
         "traffic_controlled_intersection": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         }
       },
       "recording_description": {
-        "streams": [
-          "20 Hz original frame and ego body speed history",
-          "map-hashed intersection boundary and route arc-length station",
-          "all entering street/highway arm inventory and 100-foot ray extents",
-          "intersection and traffic ray hits from virtual observer on every entering arm",
-          "through designation and all qualifying intersection controls from source packets",
-          "four named camera streams and synchronized frame map"
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
         ],
-        "window": "full 45-second original episode, including last 100 feet of approach and complete traversal",
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
         "limitations": [
           "requested speed and spawned occluder do not prove measured speed or realized obstruction",
           "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
@@ -93,7 +291,25 @@
         "Original all-entering-arm 100-foot sight evidence",
         "Actual traversal speed and view",
         "Source through-street or traffic-control designation"
-      ]
+      ],
+      "paired_probe_id": "c111278-speed_boundary",
+      "deliberate_differences": [
+        "requested_traversal_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_traversal_speed_mph",
+        "comparison_or_standard": "same-site blocked-at reference and exact LVMC clause",
+        "target_value_or_branch": "blocked_at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "mph",
+        "test_value": 15
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "mph",
+        "rationale": "Physical probe spacing; no legal tolerance."
+      }
     },
     {
       "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_above",
@@ -111,24 +327,69 @@
           "value": "west_building"
         },
         "through_designation": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         },
         "traffic_controlled_intersection": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         }
       },
       "recording_description": {
-        "streams": [
-          "20 Hz original frame and ego body speed history",
-          "map-hashed intersection boundary and route arc-length station",
-          "all entering street/highway arm inventory and 100-foot ray extents",
-          "intersection and traffic ray hits from virtual observer on every entering arm",
-          "through designation and all qualifying intersection controls from source packets",
-          "four named camera streams and synchronized frame map"
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
         ],
-        "window": "full 45-second original episode, including last 100 feet of approach and complete traversal",
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
         "limitations": [
           "requested speed and spawned occluder do not prove measured speed or realized obstruction",
           "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
@@ -139,7 +400,25 @@
         "Original all-entering-arm 100-foot sight evidence",
         "Actual traversal speed and view",
         "Source through-street or traffic-control designation"
-      ]
+      ],
+      "paired_probe_id": "c111278-speed_boundary",
+      "deliberate_differences": [
+        "requested_traversal_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_traversal_speed_mph",
+        "comparison_or_standard": "same-site blocked-at reference and exact LVMC clause",
+        "target_value_or_branch": "blocked_above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "mph",
+        "test_value": 16
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "mph",
+        "rationale": "Physical probe spacing; no legal tolerance."
+      }
     },
     {
       "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__clear_at",
@@ -157,24 +436,69 @@
           "value": null
         },
         "through_designation": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         },
         "traffic_controlled_intersection": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         }
       },
       "recording_description": {
-        "streams": [
-          "20 Hz original frame and ego body speed history",
-          "map-hashed intersection boundary and route arc-length station",
-          "all entering street/highway arm inventory and 100-foot ray extents",
-          "intersection and traffic ray hits from virtual observer on every entering arm",
-          "through designation and all qualifying intersection controls from source packets",
-          "four named camera streams and synchronized frame map"
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
         ],
-        "window": "full 45-second original episode, including last 100 feet of approach and complete traversal",
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
         "limitations": [
           "requested speed and spawned occluder do not prove measured speed or realized obstruction",
           "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
@@ -185,7 +509,16 @@
         "Original all-entering-arm 100-foot sight evidence",
         "Actual traversal speed and view",
         "Source through-street or traffic-control designation"
-      ]
+      ],
+      "paired_probe_id": "c111278-clear_at",
+      "deliberate_differences": [
+        "requested_occluder"
+      ],
+      "probe": {
+        "primary_variable": "requested_occluder",
+        "comparison_or_standard": "same-site blocked-at reference and exact LVMC clause",
+        "target_value_or_branch": "clear_at"
+      }
     },
     {
       "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__through_blocked",
@@ -203,24 +536,69 @@
           "value": "west_building"
         },
         "through_designation": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": true
         },
         "traffic_controlled_intersection": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         }
       },
       "recording_description": {
-        "streams": [
-          "20 Hz original frame and ego body speed history",
-          "map-hashed intersection boundary and route arc-length station",
-          "all entering street/highway arm inventory and 100-foot ray extents",
-          "intersection and traffic ray hits from virtual observer on every entering arm",
-          "through designation and all qualifying intersection controls from source packets",
-          "four named camera streams and synchronized frame map"
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
         ],
-        "window": "full 45-second original episode, including last 100 feet of approach and complete traversal",
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
         "limitations": [
           "requested speed and spawned occluder do not prove measured speed or realized obstruction",
           "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
@@ -231,7 +609,16 @@
         "Original all-entering-arm 100-foot sight evidence",
         "Actual traversal speed and view",
         "Source through-street or traffic-control designation"
-      ]
+      ],
+      "paired_probe_id": "c111278-through_blocked",
+      "deliberate_differences": [
+        "through_designation"
+      ],
+      "probe": {
+        "primary_variable": "through_designation",
+        "comparison_or_standard": "same-site blocked-at reference and exact LVMC clause",
+        "target_value_or_branch": "through_blocked"
+      }
     },
     {
       "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__controlled_blocked",
@@ -249,24 +636,69 @@
           "value": "west_building"
         },
         "through_designation": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": false
         },
         "traffic_controlled_intersection": {
-          "kind": "source_context",
+          "kind": "world_setup",
           "value": true
         }
       },
       "recording_description": {
-        "streams": [
-          "20 Hz original frame and ego body speed history",
-          "map-hashed intersection boundary and route arc-length station",
-          "all entering street/highway arm inventory and 100-foot ray extents",
-          "intersection and traffic ray hits from virtual observer on every entering arm",
-          "through designation and all qualifying intersection controls from source packets",
-          "four named camera streams and synchronized frame map"
+        "channels": [
+          {
+            "name": "ego_body_speed_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 20 Hz ego body speed and traversal occupancy",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "approach_route_station",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original route station and eight-vertex body crossing",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "entering_arm_sight_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original 100-foot intersection and traffic ray trace on every entering arm",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "exception_source_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed through designation and complete control inventory",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "last 100 feet of approach through full intersection traversal",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "Native sampling and reviewed source geometry"
+          }
         ],
-        "window": "full 45-second original episode, including last 100 feet of approach and complete traversal",
+        "context_inputs": [
+          {
+            "name": "municipal_site_context",
+            "unit": "structured record",
+            "method": "Reviewed citation, SHA and map-bound intersection and exception source packet"
+          }
+        ],
         "limitations": [
           "requested speed and spawned occluder do not prove measured speed or realized obstruction",
           "virtual-observer rays do not settle legal driver visibility or prima facie compliance"
@@ -277,7 +709,16 @@
         "Original all-entering-arm 100-foot sight evidence",
         "Actual traversal speed and view",
         "Source through-street or traffic-control designation"
-      ]
+      ],
+      "paired_probe_id": "c111278-controlled_blocked",
+      "deliberate_differences": [
+        "traffic_controlled_intersection"
+      ],
+      "probe": {
+        "primary_variable": "traffic_controlled_intersection",
+        "comparison_or_standard": "same-site blocked-at reference and exact LVMC clause",
+        "target_value_or_branch": "controlled_blocked"
+      }
     }
   ],
   "comparisons": [
@@ -367,5 +808,67 @@
       ]
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "c111278-source-review-1",
+      "target_law_id": "LVMC-11-16-040",
+      "judgment_refs": [
+        {
+          "phrase": "Municipal jurisdiction and qualifying street intersection",
+          "note": "Requires reviewed original Native and municipal sources."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original physical and municipal evidence must bound this judgment before a sweep can be specified.",
+      "missing_inputs": [
+        "Reviewed source-bound Native capture and municipal site authority"
+      ]
+    },
+    {
+      "sweep_id": "c111278-source-review-2",
+      "target_law_id": "LVMC-11-16-040",
+      "judgment_refs": [
+        {
+          "phrase": "Original all-entering-arm 100-foot sight evidence",
+          "note": "Requires reviewed original Native and municipal sources."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original physical and municipal evidence must bound this judgment before a sweep can be specified.",
+      "missing_inputs": [
+        "Reviewed source-bound Native capture and municipal site authority"
+      ]
+    },
+    {
+      "sweep_id": "c111278-source-review-3",
+      "target_law_id": "LVMC-11-16-040",
+      "judgment_refs": [
+        {
+          "phrase": "Actual traversal speed and view",
+          "note": "Requires reviewed original Native and municipal sources."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original physical and municipal evidence must bound this judgment before a sweep can be specified.",
+      "missing_inputs": [
+        "Reviewed source-bound Native capture and municipal site authority"
+      ]
+    },
+    {
+      "sweep_id": "c111278-source-review-4",
+      "target_law_id": "LVMC-11-16-040",
+      "judgment_refs": [
+        {
+          "phrase": "Source through-street or traffic-control designation",
+          "note": "Requires reviewed original Native and municipal sources."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original physical and municipal evidence must bound this judgment before a sweep can be specified.",
+      "missing_inputs": [
+        "Reviewed source-bound Native capture and municipal site authority"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

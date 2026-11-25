@@ -114,6 +114,26 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "claim mismatch: boundary"):
             runner.read_reviewed_site(self.packet, case_key="clear_at", world=self.world)
 
+    def test_blocked_case_requires_independent_occluder_claim(self):
+        packet = json.loads(self.packet.read_text())
+        packet["case_id"] = "blocked_at"
+        packet["occluder_sites"] = {"west_building": {
+            "source_sha256": "a" * 64, "blueprint_id": "static.prop.test",
+            "transform": {"x": -5, "y": 2}, "affected_arm": "west"}}
+        self.packet.write_text(json.dumps(packet))
+        with self.assertRaisesRegex(ValueError, "placement source missing"):
+            runner.read_reviewed_site(self.packet, case_key="blocked_at", world=self.world)
+        doc = {"source_kind": "occluder_sites", "reviewer": "test reviewer",
+               "source_citation": "synthetic fixture only", "value": packet["occluder_sites"]}
+        raw = json.dumps(doc, sort_keys=True).encode()
+        (self.root / "occluder.json").write_bytes(raw)
+        digest = hashlib.sha256(raw).hexdigest()
+        packet["source_files"]["occluder_sites"] = {"path": "occluder.json", "sha256": digest}
+        packet["occluder_sites_source_sha256"] = digest
+        self.packet.write_text(json.dumps(packet))
+        self.assertEqual(runner.read_reviewed_site(
+            self.packet, case_key="blocked_at", world=self.world)["case_id"], "blocked_at")
+
     def test_camera_start_failure_stops_partial_listeners(self):
         class FailingCamera(Camera):
             def start(self):
@@ -126,6 +146,56 @@ class RunnerTests(unittest.TestCase):
                             ray_reader=None, brake=None, camera_adapter=cam,
                             output=self.root / "attempt")
         self.assertTrue(cam.stopped)
+
+    def test_reviewed_route_reader_is_bound_before_acquisition(self):
+        packet = json.loads(self.packet.read_text())
+        route = {"source_kind": "ego_route_geometry", "reviewer": "test reviewer",
+                 "source_citation": "fixture only", "route_xy": packet["ego_route_xy"],
+                 "intersection_boundary_xy": [0, 0], "traversal_exit_xy": [0, 10]}
+        raw = json.dumps(route, sort_keys=True).encode()
+        (self.root / "route.json").write_bytes(raw)
+        digest = hashlib.sha256(raw).hexdigest()
+        packet["ego_route_xy_source_sha256"] = digest
+        packet["source_files"]["ego_route_geometry"] = {"path": "route.json", "sha256": digest}
+        self.packet.write_text(json.dumps(packet))
+        with patch.object(runner, "run_case", return_value={"bound": True}) as acquire:
+            receipt = runner.run_case_with_reviewed_route(
+                case_key="clear_at", packet_path=self.packet, world=self.world,
+                ego=object(), ray_reader=lambda *args: {}, brake=None,
+                camera_adapter=Camera(), output=self.root / "attempt")
+        self.assertEqual(receipt, {"bound": True})
+        self.assertEqual(type(acquire.call_args.kwargs["route_reader"]).__name__,
+                         "ReviewedRouteReader")
+        arm_geometry = {"source_kind": "arm_sight_geometry", "reviewer": "test reviewer",
+                        "source_citation": "fixture only", "entering_arms": packet["entering_arms"],
+                        "arm_geometry": {arm: {"sampled_extent_m": 31,
+                                               "intersection_xyz": [0, 0, 1.4],
+                                               "traffic_corridor_xyz": [
+                                                   {"station_m": i * 30.48 / 8,
+                                                    "xyz": [0, i * 31 / 8, 1.4]}
+                                                   for i in range(9)]}
+                                         for arm in packet["entering_arms"]}}
+        ray_raw = json.dumps(arm_geometry, sort_keys=True).encode()
+        (self.root / "arm-geometry.json").write_bytes(ray_raw)
+        ray_digest = hashlib.sha256(ray_raw).hexdigest()
+        packet["arm_sight_geometry_source_sha256"] = ray_digest
+        packet["source_files"]["arm_sight_geometry"] = {
+            "path": "arm-geometry.json", "sha256": ray_digest}
+        self.packet.write_text(json.dumps(packet))
+        with patch.object(runner, "run_case", return_value={"bound": True}) as acquire:
+            runner.run_case_with_reviewed_route(
+                case_key="clear_at", packet_path=self.packet, world=self.world,
+                ego=object(), ray_reader=None, brake=None, camera_adapter=Camera(),
+                output=self.root / "attempt", traffic_reader=lambda *args: {},
+                location_factory=lambda *args: object())
+        self.assertEqual(type(acquire.call_args.kwargs["ray_reader"]).__name__,
+                         "ReviewedRayReader")
+        (self.root / "route.json").write_text("{}")
+        with self.assertRaisesRegex(ValueError, "inventory hash mismatch"):
+            runner.run_case_with_reviewed_route(
+                case_key="clear_at", packet_path=self.packet, world=self.world,
+                ego=object(), ray_reader=lambda *args: {}, brake=None,
+                camera_adapter=Camera(), output=self.root / "attempt")
 
 
 if __name__ == "__main__":

@@ -81,3 +81,47 @@ Remaining CPU work: review and bind the original map/site and exception sources,
 `live_crosswalk.py:run` now leases a Native world for 20 Hz synchronous capture, requires the injected source-reviewed scene factory to register six distinct ego/pedestrian/four-camera actors, connects `CarlaNativeAdapter` to the complete 600-frame `native_capture.capture` source writer, and restores world settings and destroys registered actors even when the factory fails partway through. The factory itself still must provide a reviewed site, concrete sensor configuration and controller; this wrapper does not assert physical completion.
 
 The 35-test suite, pinned preflight and scoped static pass, including a full fake-world 600-frame capture and partial-factory cleanup. Exact scoped strict exits 1 on truthful partial. Four SHA-bound logs are in `result.json`. Remaining CPU: concrete reviewed-site scene/sensor/controller factory, seven canonical bundles/manifest, semantic proposals and pinned offline/compatibility/process-saved and independent delivery proofs. Actual motion and pixels remain unverified.
+
+## 2026-11-24 concrete live scene factory checkpoint
+
+`carla_scene_factory.py` connects the synchronous wrapper to a source-gated original map/site packet, case-specific source-reviewed pedestrian route, original exception review, two distinct CARLA participants, and four 20 Hz RGB sensors. Its camera readers bind each original sensor frame and decode complete BGRA payloads to PNG. The controller follows original turn and pedestrian route waypoints with bounded speed; it holds the ego for an occupied destination-half crosswalk, an operating official device, unresolved exception, or opposite-half danger that lacks an independent review. These are engineering controls, not a legal yield verdict. `live_entrypoint.py` imports CARLA only on execution and requires reviewed site and exception files.
+
+The new factory tests exercise four sensor creation, participant control, missing source route, contradictory device condition, original frame mismatch and BGRA channel decoding. The full 38-test assignment suite passed (`cpu-scene-factory-tests.log`); scoped static `worker_check.py --assignment ... --complete` passed (`cpu-scene-factory-static.log`). Both log hashes are in `result.json`. All generated test media stayed under `.runtime-work/`. Status remains partial.
+
+Next CPU work is to seal and test a dynamic original official-device readback for every Native frame, finish seven exact inline constructions and finalizer/diagnostic recipes, then bind semantic proposals, official offline/compatibility/saved proofs and independent delivery/comparison audits. An original reviewed map/site packet and exception source must be supplied for a live attempt. Physical camera coverage, movement and any legal result remain unverified.
+
+## 2026-11-24 canonical runner bootstrap
+
+`runner.py`, root `config.json` and `scene.json` now bind the first selected destination-occupied/absent exact case, the seven-case support inventory and the 20 Hz, 600-frame, 30-second, four-view capture profile. The runner hashes the selected scene and validates the fixed law/cell/actor before lazy CARLA import. Runtime materialization still requires per-case inline constructions, finalizer and canonical manifest; these root files are bootstrap artifacts, not a delivery claim.
+
+`carla_scene_factory.py` now also checks that the source-reviewed pedestrian route starts in the planned crosswalk and directional-half region. Two new runner tests and a wrong-region rejection test bring the full suite to 41 passing tests (`cpu-runner-factory-tests.log`). Scoped static check passed (`cpu-runner-factory-static.log`). Both logs are SHA-bound in `result.json`; status is partial.
+
+## 2026-11-24 seven exact inline offline constructions
+
+`build_inline.py` authored seven separate exact-case `construction.json` files, with root `construction.json` for `destination_occupied_absent`, and a partial `execution-manifest.json`. Each construction embeds the current source modules, its own sealed `scene.json`, selected `config.json`, eight observation channels, 20 Hz/600-frame/four-view profile and a materialized bundle test. The offline bundle test checks exact selected identity and capture contract; it does not simulate the crossing or establish physical completion.
+
+Pinned `runtime.py offline --manifest ... --case CASE --output .runtime-work/c111610-283/offline-v2-SUFFIX` passed separately for all seven exact case IDs. `proof-offline-SUFFIX.log` files and their SHA-256 bindings appear in the manifest and `result.json`. No scratch was returned under `work/`. Scoped partial `worker_check.py --assignment ... --complete` still passes. The selected manifest remains partial because it does not yet bind finalizer, semantic proposals, compatibility/saved proofs, physical preparation, risk-based fallbacks or independent delivery/comparison acceptance.
+
+## 2026-11-24 canonical semantic proposal proof
+
+- Nine-stage direct validator passed for seven exact case IDs; proof: `proof-semantic.log`; proposal index SHA `4c5cfe65ac579c8da7f623f822cbf5e9956787c851e118a43e48f5ec26d9a2d5`.
+- Four judgment phrases and the source-dependent judgment sweep remain explicitly unresolved. No legal or physical acceptance was inferred.
+- Status remains partial while saved analysis finalizer and selected diagnostic compatibility remain unfinished.
+
+## 2026-11-24 saved analyzer milestone
+
+- Added selected `analysis.py` to all seven exact inline constructions. It joins sealed actor, crosswalk, device, exception and 2,400 original camera frame sources; derives 600 trace/map rows, ten recording evidence channels/contexts and four lossless camera video streams without changing capture bytes.
+- `proof-saved-analysis.log` records a synthetic 600-frame diagnostic that passed the existing native result validator. Its result has `rebuild_required=true`, `setup_confirmed=false`, `maneuver_completed=false` and no legal verdict. This is software evidence only.
+- Regenerated and reran all seven pinned offline proofs after embedding the analyzer. Forty-two assignment tests passed in `cpu-finalizer-tests.log`.
+- Compatibility recipe/measurement contract and negative case-source proof, genuine original site and Native motion proof, same-case physical fallback, saved processing and independent delivery/comparison bindings still remain. Status is partial.
+
+## 2026-11-24 same-case physical fallbacks
+
+- Every exact case now has one distinct `fallback1` construction. It keeps law, cell, actor, pedestrian condition, exception/device branch, four cameras, 20 Hz and 30 seconds fixed, while reducing the same turn-route engineering target speed from 4.0 to 2.5 m/s if original frame evidence shows insufficient pedestrian observation overlap or blur. This is a predeclared physical repair trigger, not a legal outcome choice.
+- The pinned candidate-construction invariant validator passed for all seven entries (`proof-fallback-structure.log`). Primary and fallback each passed pinned offline proof, 14 total. Positive/negative compatibility for both candidates is still required; no fallback is ready.
+
+## 2026-11-24 selected measurement contracts
+
+- `build_measurement_contracts.py` writes seven case-specific contracts for every selected frozen requirement (3–5 per case). Each binds a named `analysis.py` method, output type, and exact retained source files. All seven passed the pinned measurement contract structure validator.
+- `proof-measurement-contracts.log` verifies the occupied-destination diagnostic report against exact source hashes and confirms removing `capture/exception_review.json` fails with the required case-source error. This is diagnostic software evidence; other exact cases still need their generated positive/negative compatibility and saved processing proofs.
+- After adding the methods, all 14 primary/fallback inline bundles were regenerated and reran pinned offline proof. The 42-test assignment suite passed again in `cpu-measurement-tests.log`.

@@ -7,6 +7,8 @@ or missing incoming arms remain unknown rather than being treated as clear.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from math import isfinite
 
 from sight_construction import FEET_100_M, MPH_15_MPS
@@ -49,7 +51,9 @@ def evaluate(packet: dict) -> dict:
                 raise MeasurementError("every entering arm needs a ray packet per approach frame")
             for arm in arms:
                 r = rays[arm]
-                if r.get("observer_convention") != "lane_waypoint_1.4m_bbox_9":
+                if r.get("observer_convention") not in (
+                    "lane_waypoint_1.4m_bbox_9", "ego_reference_1.4m_arm_rays"
+                ):
                     raise MeasurementError("undeclared observer convention")
                 if r.get("sampled_extent_m", 0) < FEET_100_M:
                     raise MeasurementError("100-foot arm extent not sampled")
@@ -59,6 +63,23 @@ def evaluate(packet: dict) -> dict:
                     raise MeasurementError("traffic view unknown")
                 if not r.get("ray_frame_source_sha256"):
                     raise MeasurementError("ray-to-frame source binding missing")
+                if r.get("observer_convention") == "ego_reference_1.4m_arm_rays":
+                    trace = r.get("ray_hit_trace")
+                    if (not isinstance(trace, dict) or trace.get("frame") != f["frame"] or
+                            trace.get("arm") != arm or
+                            not isinstance(trace.get("census"), dict)):
+                        raise MeasurementError("original ray hit trace or census missing")
+                    def digest(value):
+                        return hashlib.sha256(json.dumps(value, sort_keys=True,
+                            separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+                    if digest(trace) != r["ray_frame_source_sha256"]:
+                        raise MeasurementError("original ray hit trace hash mismatch")
+                    census = dict(trace["census"])
+                    sealed = census.pop("source_sha256", None)
+                    if (sealed != digest(census) or census.get("frame") != f["frame"] or
+                            census.get("arm") != arm or
+                            census.get("source_kind") != "original_native_actor_census"):
+                        raise MeasurementError("original traffic census seal mismatch")
             approaching.append(f)
         if f.get("traversing_intersection") is True:
             crossing.append(f)

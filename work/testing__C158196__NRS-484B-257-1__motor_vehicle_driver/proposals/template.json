@@ -1,0 +1,72 @@
+{
+  "template_id": "NRS-484B-257-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-257-1",
+  "actor": "motor_vehicle_driver",
+  "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-257-1",
+    "activation": {
+      "condition": "Proper stop or yield sign erected and governs the driver's approach; neither an officer nor a traffic-control signal actually controls traffic.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "At the ordered reference location, stop or yield; after stopping or slowing at a yield sign, yield to through-highway vehicles during the complete crossing interval.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Traffic is controlled by a police officer.",
+        "effect": "This subsection does not govern that controlled traffic.",
+        "replacement_obligation": "Other applicable direction requires separate review.",
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal"
+      },
+      {
+        "trigger": "Traffic is controlled by a traffic-control signal.",
+        "effect": "This subsection does not govern that controlled traffic.",
+        "replacement_obligation": "Other signal duties require separate review.",
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal"
+      }
+    ],
+    "timing": {
+      "description": "Original approach, first view, slowing or stop, entry and continuous intersection crossing joined by Native frame.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "note": "The exact view-opening point requires original map and raycast observations; no assumed sight-distance cutoff."
+      },
+      {
+        "phrase": "approaching so closely on such through highway as to constitute an immediate hazard",
+        "note": "Immediate hazard has no numerical legal threshold in this subsection."
+      },
+      {
+        "phrase": "yield the right-of-way to other vehicles",
+        "note": "Right of way requires source-backed entry and approach context across the whole crossing interval."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "governing_signal",
+      "kind": "world_setup",
+      "range_or_domain": "observed governing traffic-control signal present or absent"
+    },
+    {
+      "name": "through_traffic_occupancy",
+      "kind": "world_setup",
+      "range_or_domain": "original through-highway body occupied or clear during crossing"
+    },
+    {
+      "name": "ego_response_policy",
+      "kind": "controller",
+      "range_or_domain": "hold or continue as an engineering probe, not legal outcome"
+    },
+    {
+      "name": "yield_sign_site",
+      "kind": "world_setup",
+      "range_or_domain": "same surveyed proper yield sign and nearest-view geometry"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "template_id": "NRS-484B-283-1a@motor_vehicle_driver",
+  "law_id": "NRS-484B-283-1a",
+  "actor": "motor_vehicle_driver",
+  "quote": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: When official traffic-control devices are not in place or not in operation, the driver of a vehicle shall yield the right-of-way, slowing down or stopping if need be so to yield, to a pedestrian crossing the highway within a crosswalk when the pedestrian is upon the half of the highway upon which the vehicle is traveling or onto which the vehicle is turning, or when the pedestrian is approaching so closely from the opposite half of the highway as to be in danger. As used in this section, \u201chalf of the highway\u201d means all traffic lanes of a highway which are designated for traffic traveling in one direction, and includes the entire highway in the case of a one-way highway.",
+  "structure": {
+    "law_id": "NRS-484B-283-1a",
+    "activation": {
+      "condition": "Official traffic-control devices are not in place or not in operation, and a pedestrian crosses within a crosswalk on the destination half or approaches from the opposite half so closely as to be in danger.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Turning driver yields right of way, slowing or stopping if need be, subject to the stated exceptions.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "A source-reviewed NRS 484B.287, 484B.290 or 484B.350 exception applies.",
+        "effect": "The exact overlapping provision governs after independent review.",
+        "replacement_obligation": "No categorical legal verdict is inferred from this construction.",
+        "source_clause": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      }
+    ],
+    "timing": {
+      "description": "Original Native frames join device state, pedestrian crossing position and ego turn/brake throughout the attempt.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "not in place or not in operation",
+        "note": "Complete relevant official-device inventory and original state history are required; absence of one actor is insufficient."
+      },
+      {
+        "phrase": "slowing down or stopping if need be so to yield",
+        "note": "Original ego brake/motion and pedestrian crossing context are measured; need and right of way receive independent review."
+      },
+      {
+        "phrase": "approaching so closely from the opposite half of the highway as to be in danger",
+        "note": "Original relative motion and geometry are retained without a numeric legal danger cutoff."
+      },
+      {
+        "phrase": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]",
+        "note": "Independent source-backed applicability review controls the introductory exceptions."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "pedestrian_half",
+      "kind": "world_setup",
+      "range_or_domain": "destination, opposite, or outside directional half"
+    },
+    {
+      "name": "crosswalk_position",
+      "kind": "world_setup",
+      "range_or_domain": "in crosswalk, outside crosswalk, or clear"
+    },
+    {
+      "name": "official_device_condition",
+      "kind": "world_setup",
+      "range_or_domain": "absent, not operating, or operating"
+    },
+    {
+      "name": "pedestrian_approach",
+      "kind": "controller",
+      "range_or_domain": "source-reviewed relative route timing; no legal cutoff"
+    },
+    {
+      "name": "ego_turn_route",
+      "kind": "world_setup",
+      "range_or_domain": "same connected original left turn"
+    }
+  ]
+}

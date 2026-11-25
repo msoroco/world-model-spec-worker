@@ -1,0 +1,609 @@
+{
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared surveyed nearest-view reference.",
+      "variable_assignments": {
+        "governing_signal": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "through_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "occupied",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "ego_response_policy": {
+          "kind": "controller",
+          "value": "hold",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "yield_sign_site": {
+          "kind": "world_setup",
+          "value": "original_survey_pending",
+          "note": "Planned source-gated physical setup; no legal label."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_ego_body_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original body corners, velocity and front station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_through_body",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original through-highway body and center station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_view_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original raycast from observed ego body to observed through vehicle.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_device_control",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original sign and per-frame governing signal or officer readback.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_geometry",
+            "unit": "structured record",
+            "method": "Surveyed connected routes, through-highway status and intersection polygon."
+          },
+          {
+            "name": "reference_exclusions",
+            "unit": "structured record",
+            "method": "Surveyed absence of marked stop line and near-side or sidewalk-derived crosswalk."
+          },
+          {
+            "name": "governing_device",
+            "unit": "structured record",
+            "method": "Observed proper yield sign and absence or presence of actual controlling signal."
+          }
+        ],
+        "limitations": [
+          "Physical site, motion and camera visibility remain unverified.",
+          "Immediate hazard and right of way remain legal judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way to other vehicles"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Yield-sign approach, no stop line/crosswalk, through vehicle occupies intersection; ego slows/holds at source-confirmed nearest-view point",
+      "variable_assignments": {
+        "governing_signal": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "through_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "occupied",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "ego_response_policy": {
+          "kind": "controller",
+          "value": "hold",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "yield_sign_site": {
+          "kind": "world_setup",
+          "value": "original_survey_pending",
+          "note": "Planned source-gated physical setup; no legal label."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_ego_body_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original body corners, velocity and front station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_through_body",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original through-highway body and center station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_view_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original raycast from observed ego body to observed through vehicle.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_device_control",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original sign and per-frame governing signal or officer readback.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_geometry",
+            "unit": "structured record",
+            "method": "Surveyed connected routes, through-highway status and intersection polygon."
+          },
+          {
+            "name": "reference_exclusions",
+            "unit": "structured record",
+            "method": "Surveyed absence of marked stop line and near-side or sidewalk-derived crosswalk."
+          },
+          {
+            "name": "governing_device",
+            "unit": "structured record",
+            "method": "Observed proper yield sign and absence or presence of actual controlling signal."
+          }
+        ],
+        "limitations": [
+          "Physical site, motion and camera visibility remain unverified.",
+          "Immediate hazard and right of way remain legal judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way to other vehicles"
+      ],
+      "paired_probe_id": "nearest-view-nearest_view_hold",
+      "deliberate_differences": [
+        "ego_response_policy"
+      ],
+      "probe": {
+        "primary_variable": "ego_response_policy",
+        "comparison_or_standard": "same-site occupied hold reference",
+        "target_value_or_branch": "nearest_view_hold"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Same governing yield sign, nearest-view geometry and occupied through vehicle; ego continues as diagnostic contrast",
+      "variable_assignments": {
+        "governing_signal": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "through_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "occupied",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "ego_response_policy": {
+          "kind": "controller",
+          "value": "continue",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "yield_sign_site": {
+          "kind": "world_setup",
+          "value": "original_survey_pending",
+          "note": "Planned source-gated physical setup; no legal label."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_ego_body_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original body corners, velocity and front station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_through_body",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original through-highway body and center station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_view_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original raycast from observed ego body to observed through vehicle.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_device_control",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original sign and per-frame governing signal or officer readback.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_geometry",
+            "unit": "structured record",
+            "method": "Surveyed connected routes, through-highway status and intersection polygon."
+          },
+          {
+            "name": "reference_exclusions",
+            "unit": "structured record",
+            "method": "Surveyed absence of marked stop line and near-side or sidewalk-derived crosswalk."
+          },
+          {
+            "name": "governing_device",
+            "unit": "structured record",
+            "method": "Observed proper yield sign and absence or presence of actual controlling signal."
+          }
+        ],
+        "limitations": [
+          "Physical site, motion and camera visibility remain unverified.",
+          "Immediate hazard and right of way remain legal judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way to other vehicles"
+      ],
+      "paired_probe_id": "nearest-view-nearest_view_continue",
+      "deliberate_differences": [
+        "ego_response_policy"
+      ],
+      "probe": {
+        "primary_variable": "ego_response_policy",
+        "comparison_or_standard": "same-site occupied hold case",
+        "target_value_or_branch": "nearest_view_continue"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Same governing yield sign and nearest-view geometry; no through vehicle occupies the crossing interval",
+      "variable_assignments": {
+        "governing_signal": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "through_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "ego_response_policy": {
+          "kind": "controller",
+          "value": "continue",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "yield_sign_site": {
+          "kind": "world_setup",
+          "value": "original_survey_pending",
+          "note": "Planned source-gated physical setup; no legal label."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_ego_body_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original body corners, velocity and front station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_through_body",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original through-highway body and center station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_view_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original raycast from observed ego body to observed through vehicle.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_device_control",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original sign and per-frame governing signal or officer readback.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_geometry",
+            "unit": "structured record",
+            "method": "Surveyed connected routes, through-highway status and intersection polygon."
+          },
+          {
+            "name": "reference_exclusions",
+            "unit": "structured record",
+            "method": "Surveyed absence of marked stop line and near-side or sidewalk-derived crosswalk."
+          },
+          {
+            "name": "governing_device",
+            "unit": "structured record",
+            "method": "Observed proper yield sign and absence or presence of actual controlling signal."
+          }
+        ],
+        "limitations": [
+          "Physical site, motion and camera visibility remain unverified.",
+          "Immediate hazard and right of way remain legal judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way to other vehicles"
+      ],
+      "paired_probe_id": "nearest-view-nearest_view_clear",
+      "deliberate_differences": [
+        "through_traffic_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "through_traffic_occupancy",
+        "comparison_or_standard": "same-site occupied continuation case",
+        "target_value_or_branch": "nearest_view_clear"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception",
+      "target_law_id": "NRS-484B-257-1",
+      "target_type": "boundary_probe",
+      "rationale": "Same cell with traffic-control signal actually governing approach; yield-sign subsection exception applicability probe",
+      "variable_assignments": {
+        "governing_signal": {
+          "kind": "world_setup",
+          "value": "present",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "through_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "ego_response_policy": {
+          "kind": "controller",
+          "value": "continue",
+          "note": "Planned source-gated physical setup; no legal label."
+        },
+        "yield_sign_site": {
+          "kind": "world_setup",
+          "value": "original_survey_pending",
+          "note": "Planned source-gated physical setup; no legal label."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_ego_body_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original body corners, velocity and front station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_through_body",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original through-highway body and center station by Native frame.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_view_rays",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original raycast from observed ego body to observed through vehicle.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "original_device_control",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original sign and per-frame governing signal or officer readback.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities.",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sample and source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_geometry",
+            "unit": "structured record",
+            "method": "Surveyed connected routes, through-highway status and intersection polygon."
+          },
+          {
+            "name": "reference_exclusions",
+            "unit": "structured record",
+            "method": "Surveyed absence of marked stop line and near-side or sidewalk-derived crosswalk."
+          },
+          {
+            "name": "governing_device",
+            "unit": "structured record",
+            "method": "Observed proper yield sign and absence or presence of actual controlling signal."
+          }
+        ],
+        "limitations": [
+          "Physical site, motion and camera visibility remain unverified.",
+          "Immediate hazard and right of way remain legal judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "approaching so closely on such through highway as to constitute an immediate hazard",
+        "yield the right-of-way to other vehicles"
+      ],
+      "paired_probe_id": "nearest-view-active_signal_exception",
+      "deliberate_differences": [
+        "governing_signal"
+      ],
+      "probe": {
+        "primary_variable": "governing_signal",
+        "comparison_or_standard": "same-site clear continuation case",
+        "target_value_or_branch": "active_signal_exception"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c158196-nearest-view-judgment-1",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "at the point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+          "note": "The exact view-opening point requires original map and raycast observations; no assumed sight-distance cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original C158196 sign, signal, near-side geometry and through-route feasibility are not exported.",
+      "missing_inputs": [
+        "Reviewed original Native site and device inventory",
+        "Feasible source-backed controller and through-traffic sweep ranges"
+      ]
+    },
+    {
+      "sweep_id": "c158196-nearest-view-judgment-2",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "approaching so closely on such through highway as to constitute an immediate hazard",
+          "note": "Immediate hazard has no numerical legal threshold in this subsection."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original C158196 sign, signal, near-side geometry and through-route feasibility are not exported.",
+      "missing_inputs": [
+        "Reviewed original Native site and device inventory",
+        "Feasible source-backed controller and through-traffic sweep ranges"
+      ]
+    },
+    {
+      "sweep_id": "c158196-nearest-view-judgment-3",
+      "target_law_id": "NRS-484B-257-1",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to other vehicles",
+          "note": "Right of way requires source-backed entry and approach context across the whole crossing interval."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original C158196 sign, signal, near-side geometry and through-route feasibility are not exported.",
+      "missing_inputs": [
+        "Reviewed original Native site and device inventory",
+        "Feasible source-backed controller and through-traffic sweep ranges"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

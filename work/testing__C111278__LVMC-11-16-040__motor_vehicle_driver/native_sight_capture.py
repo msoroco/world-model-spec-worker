@@ -45,6 +45,7 @@ def capture(
     brake: Callable[[Any], None],
     output: Path,
     camera_reader: Callable[[int, Any], dict] | None = None,
+    before_tick: Callable[[Any], None] | None = None,
 ) -> dict:
     """Record 900 real 20 Hz ticks and seal the exact sight and speed samples.
 
@@ -68,6 +69,8 @@ def capture(
         if camera_reader is not None:
             stage = Path(tempfile.mkdtemp(prefix="sight-cameras-", dir=output.parent))
         for i in range(900):
+            if before_tick is not None:
+                before_tick(ego)
             frame_id = world.tick()
             snapshot = world.get_snapshot()
             if type(frame_id) is not int or snapshot.frame != frame_id:

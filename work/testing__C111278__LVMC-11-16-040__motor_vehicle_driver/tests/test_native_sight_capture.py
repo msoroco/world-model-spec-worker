@@ -86,5 +86,23 @@ class NativeSightCaptureTests(unittest.TestCase):
                 capture("blocked_at", site(), World(), Ego(), route, rays,
                         lambda ego: None, output)
 
+    def test_engineering_control_runs_before_each_tick_and_brakes_on_failure(self):
+        with tempfile.TemporaryDirectory() as temp:
+            world = World()
+            controls = []
+            brakes = []
+            receipt = capture("blocked_at", site(), world, Ego(), route, rays,
+                              lambda ego: brakes.append(ego), Path(temp) / "attempt",
+                              before_tick=lambda ego: controls.append(world.frame))
+            self.assertEqual(len(controls), 900)
+            self.assertEqual(controls[:3], [0, 1, 2])
+            self.assertEqual(receipt["frame_count"], 900)
+            self.assertEqual(len(brakes), 1)
+            with self.assertRaisesRegex(RuntimeError, "control failed"):
+                capture("blocked_at", site(), World(), Ego(), route, rays,
+                        lambda ego: brakes.append(ego), Path(temp) / "failed",
+                        before_tick=lambda ego: (_ for _ in ()).throw(RuntimeError("control failed")))
+            self.assertEqual(len(brakes), 2)
+
 
 if __name__ == "__main__": unittest.main()

@@ -1,0 +1,1165 @@
+{
+  "cell_id": "C111610",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Reference left-turn geometry; no selected recording.",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "reference",
+          "note": "No legal result inferred."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "reference",
+          "note": "No legal result inferred."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "reference",
+          "note": "No legal result inferred."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "reference",
+          "note": "No legal result inferred."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "reference",
+          "note": "No legal result inferred."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ]
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_absent",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Pedestrian body occupies the destination directional half within the marked crosswalk; complete official-device inventory absent",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "destination",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "in_crosswalk",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "destination_occupied_absent",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Pedestrian body occupies the destination directional half within the marked crosswalk; complete official-device inventory absent"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_nonoperating",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Same turn and occupied destination half; relevant official device exists but original states are not operating",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "destination",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "in_crosswalk",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "not_operating",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "destination_occupied_nonoperating",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Same turn and occupied destination half; relevant official device exists but original states are not operating"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_clear_absent",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Same turn with pedestrian outside the destination half and crosswalk clear",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "outside",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "destination_clear_absent",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Same turn with pedestrian outside the destination half and crosswalk clear"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_close_absent",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Pedestrian crosses from opposite half and proximity may place the person in danger; retain original motion and independent judgment",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "opposite",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "in_crosswalk",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "opposite_close_absent",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Pedestrian crosses from opposite half and proximity may place the person in danger; retain original motion and independent judgment"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_far_absent",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Pedestrian remains on opposite half with separated approach; distance is an engineering probe, not a legal safe cutoff",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "opposite",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "in_crosswalk",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "opposite_far_absent",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Pedestrian remains on opposite half with separated approach; distance is an engineering probe, not a legal safe cutoff"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__outside_crosswalk_absent",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Pedestrian at destination half but outside the source-classified crosswalk",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "destination",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "outside_crosswalk",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "outside_crosswalk_absent",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Pedestrian at destination half but outside the source-classified crosswalk"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating",
+      "target_law_id": "NRS-484B-283-1a",
+      "target_type": "boundary_probe",
+      "rationale": "Same occupied destination half but relevant official device originally operating; identify governing-control exception rather than infer this provision",
+      "variable_assignments": {
+        "pedestrian_half": {
+          "kind": "world_setup",
+          "value": "destination",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "crosswalk_position": {
+          "kind": "world_setup",
+          "value": "in_crosswalk",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "official_device_condition": {
+          "kind": "world_setup",
+          "value": "operating",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "pedestrian_approach": {
+          "kind": "controller",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        },
+        "ego_turn_route": {
+          "kind": "world_setup",
+          "value": "same reviewed left turn",
+          "note": "Source-bound physical setup; legal judgment unresolved."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_map_and_highway_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map name, intersection, road/lane geometry and local highway review",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "crosswalk_vertices_and_classification",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native map markings or intersection geometry, original crosswalk vertices",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "all_destination_direction_lanes",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Native lane polygons and travel-direction designation",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "official_device_inventory_and_state",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original map and actor scan across relevant approaches, full state history",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "ego_turn_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego body, velocity, brake, route and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "pedestrian_body_and_entry_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian body, classification, crossing path and frame",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "exception_review",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-backed review of NRS 484B.287, 484B.290 and 484B.350 contexts",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original CARLA camera frame identities",
+            "time_window": "entire 30-second original attempt",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling, actor geometry and source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Source-gated map, crosswalk, directional-half and device survey"
+          },
+          {
+            "name": "reviewed_exception_context",
+            "unit": "structured record",
+            "method": "Independent source-backed applicability review"
+          }
+        ],
+        "limitations": [
+          "Physical motion and four-camera pixel visibility need original Native review.",
+          "Legal yielding, opposite-half danger and statutory exceptions remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "not in place or not in operation",
+        "slowing down or stopping if need be so to yield",
+        "approaching so closely from the opposite half of the highway as to be in danger",
+        "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]"
+      ],
+      "paired_probe_id": "destination_occupied_operating",
+      "deliberate_differences": [
+        "pedestrian_half",
+        "crosswalk_position",
+        "official_device_condition"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_half",
+        "comparison_or_standard": "controlled exact crosswalk case plan",
+        "target_value_or_branch": "Same occupied destination half but relevant official device originally operating; identify governing-control exception rather than infer this provision"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "crosswalk_original_sources_pending",
+      "target_law_id": "NRS-484B-283-1a",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "not in place or not in operation",
+          "note": "Complete relevant official-device inventory and original state history are required; absence of one actor is insufficient."
+        },
+        {
+          "phrase": "slowing down or stopping if need be so to yield",
+          "note": "Original ego brake/motion and pedestrian crossing context are measured; need and right of way receive independent review."
+        },
+        {
+          "phrase": "approaching so closely from the opposite half of the highway as to be in danger",
+          "note": "Original relative motion and geometry are retained without a numeric legal danger cutoff."
+        },
+        {
+          "phrase": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]",
+          "note": "Independent source-backed applicability review controls the introductory exceptions."
+        }
+      ],
+      "rationale": "Original physical site, device states, exception applicability and motion are required before freezing judgment sweep axes.",
+      "missing_inputs": [
+        "Original reviewed crosswalk and directional-half geometry",
+        "Complete original official-device state history",
+        "Source-reviewed exception applicability",
+        "Original native turn and pedestrian trajectories"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

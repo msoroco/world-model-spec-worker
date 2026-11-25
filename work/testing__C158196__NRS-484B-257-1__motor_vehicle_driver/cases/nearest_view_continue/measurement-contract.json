@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Proper yield sign governs; no clearly marked stop line or near-side crosswalk, including sidewalk-derived crosswalk, so the stopping reference is the nearest point with a view of through-highway traffic",
+      "source": "NRS 484B.257(1) exact text",
+      "output_key": "nearest_view_location_observation",
+      "method": "report",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "nearest-view-original.json",
+        "camera-frame-map.json",
+        "camera-sources.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "At the yield sign the driver slows or stops before entering, with original speed and front-body station measured at the source-confirmed view point",
+      "source": "NRS 484B.257(1) exact text",
+      "output_key": "yield_approach_observation",
+      "method": "report",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "nearest-view-original.json",
+        "camera-frame-map.json",
+        "camera-sources.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Yield to vehicles entered from the through highway or approaching so closely as to be an immediate hazard throughout movement across or within the intersection",
+      "source": "NRS 484B.257(1) exact text",
+      "output_key": "through_traffic_crossing_observation",
+      "method": "report",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "nearest-view-original.json",
+        "camera-frame-map.json",
+        "camera-sources.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "nearest-view-original.json"
+    ],
+    "error_contains": "Missing required source: nearest-view-original.json"
+  }
+}

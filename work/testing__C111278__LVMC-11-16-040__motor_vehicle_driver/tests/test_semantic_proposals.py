@@ -21,7 +21,8 @@ class SemanticTests(unittest.TestCase):
 
     def test_exact_cases_and_independent_exceptions(self):
         stages = MODULE.prepare(self.assignment, self.plan, self.quote)
-        self.assertEqual(len(stages["cases"]["cases"]), 6)
+        self.assertEqual(len([case for case in stages["cases"]["cases"]
+                              if case["target_type"] != "baseline"]), 6)
         self.assertEqual(len(stages["cases"]["comparisons"]), 4)
         self.assertEqual({row["changed_variable"] for row in stages["cases"]["comparisons"]}, set(MODULE.VARS))
         self.assertEqual(len(stages["template"]["structure"]["exceptions"]), 2)

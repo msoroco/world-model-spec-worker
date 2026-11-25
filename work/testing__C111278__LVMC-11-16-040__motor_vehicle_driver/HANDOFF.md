@@ -89,3 +89,23 @@ Five new runner tests and the complete 33-test assignment suite pass; pinned pre
 ## 2026-11-24 reviewed intersection boundary coordinate join
 
 `native_case_runner.read_reviewed_site` now requires the independent cited boundary source document to equal `intersection_boundary_xy` in the reviewed site packet, and requires two finite numeric coordinates before sensor or occluder acquisition. The prior boundary check verified only the hash and citation, allowing a rehashed contradictory boundary value. A focused negative test changes the source coordinate and updates both hashes; the runner still rejects the contradiction. Six focused runner tests and the full 34-test assignment suite pass, as do pinned preflight and scoped static. Exact scoped strict exits 1 on truthful partial. Five SHA-bound logs are in `result.json`. Remaining CPU work is reviewed real municipal site and route/ray readers, six canonical bundles and pinned compatibility/saved delivery proofs.
+
+## 2026-11-24 source readers and six-bundle checkpoint
+
+Reviewed-route reader independently checks cited route geometry, original frame continuity, signed center and eight-vertex body traversal, and the 30.48 m approach. Reviewed ray reader binds every entering-arm 30.48 m corridor, original Native ray hit trace and eight-vertex actor census; saved measurement rehashes both. Blocked occluder placements require their own cited source. These are engineering sight proxies, not legal driver-visibility findings.
+
+Full assignment suite passed 49 tests, including the 3,600-camera full-decode fixture. Scoped static check passed after six case-specific construction bundles and source-gated runner were built. The blocked_below exact offline bundle passed. Five more exact offline bundles, pinned compatibility, saved-only delivery, physical-preparation and strict gate are next CPU work. No real municipal site packet or physical Native capture has been reviewed.
+
+- `cpu-source-readers-sealed-all-tests.log` SHA256 `41ccc31e04fc562f3e828979d7fc00df0d5ab7b96c707502de9a2e1dcb294f7a`.
+- `cpu-six-bundle-static.log` SHA256 `72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca`.
+
+## 2026-11-24 canonical semantic, physical and offline checkpoint
+
+Six exact C111278 construction bundles and one case-preserving bounded speed-controller fallback per case are current. Nine semantic stages validate, including six selected cases, four isolated comparisons and four explicitly incomplete source-judgment sweep plans. The incomplete sweeps preserve municipal and original Native uncertainty. All twelve current primary/fallback offline checks pass and their construction/log hashes are pinned in `execution-manifest.json`. Six synthetic physical proofs independently classify complete motion, incomplete motion and missing evidence and verify capture/owner-release ordering; no physical Native acceptance is claimed. The complete assignment suite passed 54 tests, including 3,600 full camera PNG decodes, in 84.343 seconds. The current scoped static check passed.
+
+The exact scoped strict gate was run and still exits 1 on truthful partial/missing package acceptance. Direct execution-manifest validation reaches `Fallback lacks positive/negative compatibility receipt` after semantic, physical and offline checks. Next CPU work is to author source-hashed diagnostic fixture recipes, positive/negative primary and fallback compatibility, selected saved-only result production, acquisition mappings and independent delivery receipts. Actual reviewed municipal site sources and Native sight/motion/cameras remain unverified.
+
+- Current scoped static log: `cpu-current-static.log`.
+- Current scoped strict log: `cpu-current-strict.log`.
+- Physical outcome and lifecycle receipts: `physical-<case>-proof.json`.
+- Exact offline logs: `proof-offline-<case>-<candidate>.log`.

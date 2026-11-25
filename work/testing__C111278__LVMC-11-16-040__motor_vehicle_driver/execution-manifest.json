@@ -1,0 +1,427 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below",
+      "kind": "delivery",
+      "construction": "construction-blocked_below.json",
+      "construction_sha256": "7b4f4e9ae888a473145479cb8e06d872ed188d6b78b7630e3829f3b37f723043",
+      "measurement_contract": "cases/blocked_below/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A source-complete primary Native traversal may overshoot the requested engineering speed by more than 0.5 m/s; a predeclared 0.75 controller-gain fallback reduces positive throttle response while preserving requested speed, sight setup, route, source context and camera contract. Overshoot is checked only from saved original body speed.",
+        "candidates": []
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-blocked_below-construction.json",
+          "construction_sha256": "7caea246461faf00a9c08295b6340f0f8ab550291cc47e476690b2e657107076",
+          "changed_knobs": [
+            "controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved original traversal-speed observation",
+            "metric": "maximum traversal speed in m/s",
+            "failure_condition": "source-complete primary overshoots requested speed by more than 0.5 m/s"
+          },
+          "risk_note": "Only bounded engineering throttle response changes; law, site, requested speed, rays and camera plan remain fixed.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7caea246461faf00a9c08295b6340f0f8ab550291cc47e476690b2e657107076",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-blocked_below-fallback1-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "log": "proof-offline-blocked_below-fallback1.log",
+            "log_sha256": "5eab187e2745f1c7c18d56cad2b38bfd4d1dddb5c717d2241c6af11a1c0240fc"
+          },
+          "compatibility": {
+            "receipt": "compat-blocked_below-fallback1-receipt.json",
+            "sha256": "288adf68ae2ac31dde50c5823c9046fab3de0ba1b54db93bd9c728fb92be9a01",
+            "log": "compat-blocked_below-fallback1-analysis.log",
+            "negative_log": "compat-blocked_below-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-blocked_below-fallback1-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111278_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/diagnostic-blocked_below-recipe.json",
+      "physical_preparation": {
+        "receipt": "physical-blocked_below-proof.json",
+        "sha256": "5d0c4b8fb894bcd5fe4030b9ce51cc28dec990ddb9c1355e26e2eb2828375ced"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "7b4f4e9ae888a473145479cb8e06d872ed188d6b78b7630e3829f3b37f723043",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-blocked_below-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "log": "proof-offline-blocked_below-primary.log",
+        "log_sha256": "967a2301c61bac124710d0d6ae4a47334b8c819fa12dc35a57e919cce75bea91"
+      },
+      "compatibility": {
+        "receipt": "compat-blocked_below-primary-receipt.json",
+        "sha256": "e129293240bb474bc43bf9b06452d9c5d9c80281059d4d285dd224790e3ff2cb",
+        "log": "compat-blocked_below-primary-analysis.log",
+        "negative_log": "compat-blocked_below-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-blocked_below-primary-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      }
+    },
+    {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at",
+      "kind": "delivery",
+      "construction": "construction-blocked_at.json",
+      "construction_sha256": "ae1d0c24003bfa1dc2cce63640767d51e6c6b9e977da81fa6761ebe5e2e192b8",
+      "measurement_contract": "cases/blocked_at/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A source-complete primary Native traversal may overshoot the requested engineering speed by more than 0.5 m/s; a predeclared 0.75 controller-gain fallback reduces positive throttle response while preserving requested speed, sight setup, route, source context and camera contract. Overshoot is checked only from saved original body speed.",
+        "candidates": []
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-blocked_at-construction.json",
+          "construction_sha256": "c73805cabf74247e1e5f35a70d48baca3766c93ebf305ad8f0d79334ea25ca7a",
+          "changed_knobs": [
+            "controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved original traversal-speed observation",
+            "metric": "maximum traversal speed in m/s",
+            "failure_condition": "source-complete primary overshoots requested speed by more than 0.5 m/s"
+          },
+          "risk_note": "Only bounded engineering throttle response changes; law, site, requested speed, rays and camera plan remain fixed.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c73805cabf74247e1e5f35a70d48baca3766c93ebf305ad8f0d79334ea25ca7a",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-blocked_at-fallback1-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "log": "proof-offline-blocked_at-fallback1.log",
+            "log_sha256": "aa44621368f8faa0573e9a4e66585f96fdaba6d99f714c1f5e193cc7011e0b66"
+          },
+          "compatibility": {
+            "receipt": "compat-blocked_at-fallback1-receipt.json",
+            "sha256": "e210ff4ae8c23f2f3afda25ecb0bbf9b4796a25f9d8e96ecac85fa51eedc06b1",
+            "log": "compat-blocked_at-fallback1-analysis.log",
+            "negative_log": "compat-blocked_at-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-blocked_at-fallback1-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111278_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/diagnostic-blocked_at-recipe.json",
+      "physical_preparation": {
+        "receipt": "physical-blocked_at-proof.json",
+        "sha256": "aacb37c7eefa048826f6e91be3d28360df1827d376ff489742d048bb61c42164"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ae1d0c24003bfa1dc2cce63640767d51e6c6b9e977da81fa6761ebe5e2e192b8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-blocked_at-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "log": "proof-offline-blocked_at-primary.log",
+        "log_sha256": "aa44621368f8faa0573e9a4e66585f96fdaba6d99f714c1f5e193cc7011e0b66"
+      },
+      "compatibility": {
+        "receipt": "compat-blocked_at-primary-receipt.json",
+        "sha256": "a795fd5cb25c5a9db230c0ffafa9d8a5189c4d60b0671329d9580789438e45ac",
+        "log": "compat-blocked_at-primary-analysis.log",
+        "negative_log": "compat-blocked_at-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-blocked_at-primary-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      }
+    },
+    {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_above",
+      "kind": "delivery",
+      "construction": "construction-blocked_above.json",
+      "construction_sha256": "715b638064453bbecce24ee573f5e82fcec722139819b382a319e494d557dd63",
+      "measurement_contract": "cases/blocked_above/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A source-complete primary Native traversal may overshoot the requested engineering speed by more than 0.5 m/s; a predeclared 0.75 controller-gain fallback reduces positive throttle response while preserving requested speed, sight setup, route, source context and camera contract. Overshoot is checked only from saved original body speed.",
+        "candidates": []
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-blocked_above-construction.json",
+          "construction_sha256": "be2b5e7dcdcc9286f7b33d6e92a25b54447ca2fdc37f52ed075312dced26c000",
+          "changed_knobs": [
+            "controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved original traversal-speed observation",
+            "metric": "maximum traversal speed in m/s",
+            "failure_condition": "source-complete primary overshoots requested speed by more than 0.5 m/s"
+          },
+          "risk_note": "Only bounded engineering throttle response changes; law, site, requested speed, rays and camera plan remain fixed.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "be2b5e7dcdcc9286f7b33d6e92a25b54447ca2fdc37f52ed075312dced26c000",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_above --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-blocked_above-fallback1-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "log": "proof-offline-blocked_above-fallback1.log",
+            "log_sha256": "7cb33cc0adcfa7ecdc256aa2c3f6bdfaa6a38d3039eabe7f2d39428b599a69c7"
+          },
+          "compatibility": {
+            "receipt": "compat-blocked_above-fallback1-receipt.json",
+            "sha256": "ee9dffad0dc694a3bff1b717b13e62b6f2d572affbc082b29d2ae56862447ae6",
+            "log": "compat-blocked_above-fallback1-analysis.log",
+            "negative_log": "compat-blocked_above-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-blocked_above-fallback1-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111278_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/diagnostic-blocked_above-recipe.json",
+      "physical_preparation": {
+        "receipt": "physical-blocked_above-proof.json",
+        "sha256": "442cb16e4057328dd9ae31f5036092450162bc2f89d9fb017364231d42576c25"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "715b638064453bbecce24ee573f5e82fcec722139819b382a319e494d557dd63",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_above --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-blocked_above-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "log": "proof-offline-blocked_above-primary.log",
+        "log_sha256": "6271d3722cb9f8379cbcb9148203e838b78396c18849ada1e772e708d896f943"
+      },
+      "compatibility": {
+        "receipt": "compat-blocked_above-primary-receipt.json",
+        "sha256": "b640fca820171e6faa7a4cfeb2d7ed7ee8e4536f0474754981ab059911587d4d",
+        "log": "compat-blocked_above-primary-analysis.log",
+        "negative_log": "compat-blocked_above-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_above --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-blocked_above-primary-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      }
+    },
+    {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__clear_at",
+      "kind": "delivery",
+      "construction": "construction-clear_at.json",
+      "construction_sha256": "e2d4e068d7a5fef2650ba3b3a9b94ad130edb1f84630190fb503464dc4d55871",
+      "measurement_contract": "cases/clear_at/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A source-complete primary Native traversal may overshoot the requested engineering speed by more than 0.5 m/s; a predeclared 0.75 controller-gain fallback reduces positive throttle response while preserving requested speed, sight setup, route, source context and camera contract. Overshoot is checked only from saved original body speed.",
+        "candidates": []
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-clear_at-construction.json",
+          "construction_sha256": "0d89e1e57be2d72a1ba5316057930308eb8b25fd946e3edff3b3fbd4a0e555fb",
+          "changed_knobs": [
+            "controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved original traversal-speed observation",
+            "metric": "maximum traversal speed in m/s",
+            "failure_condition": "source-complete primary overshoots requested speed by more than 0.5 m/s"
+          },
+          "risk_note": "Only bounded engineering throttle response changes; law, site, requested speed, rays and camera plan remain fixed.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "0d89e1e57be2d72a1ba5316057930308eb8b25fd946e3edff3b3fbd4a0e555fb",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__clear_at --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-clear_at-fallback1-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "log": "proof-offline-clear_at-fallback1.log",
+            "log_sha256": "f6dd8df706005157ed6e33ef7aa202b4e96d8ff7ab27033683213b2f263907c4"
+          },
+          "compatibility": {
+            "receipt": "compat-clear_at-fallback1-receipt.json",
+            "sha256": "39bacdcd3a09ee0c8deae13e78f23bfa13f5b2a461b929b9567cf05fb599bf11",
+            "log": "compat-clear_at-fallback1-analysis.log",
+            "negative_log": "compat-clear_at-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__clear_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-clear_at-fallback1-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111278_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/diagnostic-clear_at-recipe.json",
+      "physical_preparation": {
+        "receipt": "physical-clear_at-proof.json",
+        "sha256": "6c23f9b1fb0e8d3fdd6c14804d586b3e39ec9a80301823aaf166aac7c3249894"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "e2d4e068d7a5fef2650ba3b3a9b94ad130edb1f84630190fb503464dc4d55871",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__clear_at --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-clear_at-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "log": "proof-offline-clear_at-primary.log",
+        "log_sha256": "f6dd8df706005157ed6e33ef7aa202b4e96d8ff7ab27033683213b2f263907c4"
+      },
+      "compatibility": {
+        "receipt": "compat-clear_at-primary-receipt.json",
+        "sha256": "2ee33aee240b06959512dfd94e3477ededcb0d3212b63e47b7deeeb5c0cefb55",
+        "log": "compat-clear_at-primary-analysis.log",
+        "negative_log": "compat-clear_at-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__clear_at --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-clear_at-primary-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      }
+    },
+    {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__through_blocked",
+      "kind": "delivery",
+      "construction": "construction-through_blocked.json",
+      "construction_sha256": "179f48105fd731d75a5fa7099118177f6da616791e9aa010dfb7c1e131bd9f5b",
+      "measurement_contract": "cases/through_blocked/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A source-complete primary Native traversal may overshoot the requested engineering speed by more than 0.5 m/s; a predeclared 0.75 controller-gain fallback reduces positive throttle response while preserving requested speed, sight setup, route, source context and camera contract. Overshoot is checked only from saved original body speed.",
+        "candidates": []
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-through_blocked-construction.json",
+          "construction_sha256": "3b668ad6718320e24f66b3137804dc84826ae516a4fa0c1fc448ef5f6630f087",
+          "changed_knobs": [
+            "controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved original traversal-speed observation",
+            "metric": "maximum traversal speed in m/s",
+            "failure_condition": "source-complete primary overshoots requested speed by more than 0.5 m/s"
+          },
+          "risk_note": "Only bounded engineering throttle response changes; law, site, requested speed, rays and camera plan remain fixed.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "3b668ad6718320e24f66b3137804dc84826ae516a4fa0c1fc448ef5f6630f087",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__through_blocked --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-through_blocked-fallback1-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "log": "proof-offline-through_blocked-fallback1.log",
+            "log_sha256": "056d2d276b1ee9329b25c70cd4883d03be821d8983a837ea19a4f407310e779d"
+          },
+          "compatibility": {
+            "receipt": "compat-through_blocked-fallback1-receipt.json",
+            "sha256": "150b9f26adfe5110de3a78db027cc9d149bb054c8107270abd8daf2168b16792",
+            "log": "compat-through_blocked-fallback1-analysis.log",
+            "negative_log": "compat-through_blocked-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__through_blocked --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-through_blocked-fallback1-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111278_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/diagnostic-through_blocked-recipe.json",
+      "physical_preparation": {
+        "receipt": "physical-through_blocked-proof.json",
+        "sha256": "0bd8aef1f835986611f1db7dbddb04a0330251bd81b09aa65856d04c79e8c7fa"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "179f48105fd731d75a5fa7099118177f6da616791e9aa010dfb7c1e131bd9f5b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__through_blocked --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-through_blocked-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "log": "proof-offline-through_blocked-primary.log",
+        "log_sha256": "9db9767d267ceef7d260a36db10634ff027b8cca60288a4eb511f2f9414f763b"
+      },
+      "compatibility": {
+        "receipt": "compat-through_blocked-primary-receipt.json",
+        "sha256": "2f690a658c68adab733b473a7b063f9cbcdc17d209a8de94998e304d13e23c39",
+        "log": "compat-through_blocked-primary-analysis.log",
+        "negative_log": "compat-through_blocked-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__through_blocked --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-through_blocked-primary-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      }
+    },
+    {
+      "case_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver__controlled_blocked",
+      "kind": "delivery",
+      "construction": "construction-controlled_blocked.json",
+      "construction_sha256": "013c24bd5fb0df11c45925ebd3d8d5998f9a3d0d18ed98c32aebaf1b207adabe",
+      "measurement_contract": "cases/controlled_blocked/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A source-complete primary Native traversal may overshoot the requested engineering speed by more than 0.5 m/s; a predeclared 0.75 controller-gain fallback reduces positive throttle response while preserving requested speed, sight setup, route, source context and camera contract. Overshoot is checked only from saved original body speed.",
+        "candidates": []
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-controlled_blocked-construction.json",
+          "construction_sha256": "7eb0a5289ab76909e402c694fa3a07b75cf019b8980893f5720750c92c61cc43",
+          "changed_knobs": [
+            "controller_gain: 1.0 to 0.75"
+          ],
+          "trigger": {
+            "source": "selected saved original traversal-speed observation",
+            "metric": "maximum traversal speed in m/s",
+            "failure_condition": "source-complete primary overshoots requested speed by more than 0.5 m/s"
+          },
+          "risk_note": "Only bounded engineering throttle response changes; law, site, requested speed, rays and camera plan remain fixed.",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7eb0a5289ab76909e402c694fa3a07b75cf019b8980893f5720750c92c61cc43",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__controlled_blocked --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-controlled_blocked-fallback1-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "log": "proof-offline-controlled_blocked-fallback1.log",
+            "log_sha256": "5a26002d5e9fb9b1debd77bb7cbde8a4d4ece7df08c1da327610c8fed5d0fbdf"
+          },
+          "compatibility": {
+            "receipt": "compat-controlled_blocked-fallback1-receipt.json",
+            "sha256": "8724cb2096493ef878419ce00cc679bba39060e84d1f2721e828007d9869ed83",
+            "log": "compat-controlled_blocked-fallback1-analysis.log",
+            "negative_log": "compat-controlled_blocked-fallback1-negative.log",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__controlled_blocked --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-controlled_blocked-fallback1-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate fallback1"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111278_SITE_ROOT"
+      },
+      "fixture_recipe": "work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/diagnostic-controlled_blocked-recipe.json",
+      "physical_preparation": {
+        "receipt": "physical-controlled_blocked-proof.json",
+        "sha256": "215455a0d65a95ea16494cac837dc4d196da0d5baff312c71dada0b574d4fbb9"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "013c24bd5fb0df11c45925ebd3d8d5998f9a3d0d18ed98c32aebaf1b207adabe",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__controlled_blocked --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/offline-controlled_blocked-primary-2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "log": "proof-offline-controlled_blocked-primary.log",
+        "log_sha256": "5a26002d5e9fb9b1debd77bb7cbde8a4d4ece7df08c1da327610c8fed5d0fbdf"
+      },
+      "compatibility": {
+        "receipt": "compat-controlled_blocked-primary-receipt.json",
+        "sha256": "ea894a09a283ce624f5e8021fabe65716ffc34b9c83cfee3b18cfe54cc644838",
+        "log": "compat-controlled_blocked-primary-analysis.log",
+        "negative_log": "compat-controlled_blocked-primary-negative.log",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/execution-manifest.json --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__controlled_blocked --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111278-owner/compat-controlled_blocked-primary-0 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck --candidate primary"
+      }
+    }
+  ]
+}

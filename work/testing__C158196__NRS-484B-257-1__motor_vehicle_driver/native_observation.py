@@ -44,7 +44,7 @@ def _station(point: tuple[float, float], origin: tuple[float, float],
     return (point[0] - origin[0]) * axis[0] + (point[1] - origin[1]) * axis[1]
 
 
-def derive(raw: dict, geometry: dict) -> dict:
+def derive(raw: dict, geometry: dict, *, expect_signal: bool = False) -> dict:
     frame = raw.get("frame")
     if isinstance(frame, bool) or not isinstance(frame, int) or frame < 0:
         raise ValueError("original snapshot frame missing")
@@ -66,7 +66,7 @@ def derive(raw: dict, geometry: dict) -> dict:
         raise ValueError("raycast endpoint differs from observed bodies")
     if raw.get("yield_sign_readback") is not True:
         raise ValueError("original yield sign readback required")
-    if raw.get("signal_controlling") is not False or raw.get("officer_controlling") is not False:
+    if raw.get("signal_controlling") is not expect_signal or raw.get("officer_controlling") is not False:
         raise ValueError("original controlling exception state differs")
     ego_origin = _point(geometry.get("ego_route_origin_xy_m"), "ego route origin")
     ego_axis = _axis(geometry.get("ego_route_axis_xy"), "ego route axis")

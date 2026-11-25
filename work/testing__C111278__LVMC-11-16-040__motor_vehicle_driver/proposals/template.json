@@ -5,25 +5,58 @@
   "status": "draft",
   "quote": "The prima facie speed limit shall be fifteen miles per hour when traversing any intersection or street or highway if during the last one hundred feet of his approach to such intersection the driver does not have a clear and unobstructed view of such intersection and of any traffic upon all of the streets or highways entering such intersection for a distance of one hundred feet along all such streets or highways, except on a through street or highway or at a traffic-controlled intersection.",
   "structure": {
+    "law_id": "LVMC-11-16-040",
     "activation": {
-      "condition": "During the last 100 feet of approach, the driver lacks a clear unobstructed view of the intersection and traffic on every entering street/highway for 100 feet."
+      "condition": "During the last 100 feet of approach, the driver lacks a clear unobstructed view of the intersection and traffic on every entering street/highway for 100 feet.",
+      "numeric_conditions": []
     },
     "obligation": {
-      "type": "prima_facie_speed_limit",
-      "description": "Fifteen miles per hour when traversing the intersection under that condition."
+      "type": "must",
+      "description": "The exact text gives a fifteen-mile-per-hour prima facie traversal value under the sight condition; no legal verdict follows from the probe.",
+      "numeric_conditions": [
+        {
+          "variable": "traversal_speed_mph",
+          "operator": "<=",
+          "value": 15,
+          "unit": "mph"
+        }
+      ]
     },
     "exceptions": [
-      "Through street or highway",
-      "Traffic-controlled intersection"
+      {
+        "trigger": "Reviewed through street or highway designation",
+        "effect": "This fifteen-mile-per-hour prima facie clause is excepted.",
+        "replacement_obligation": "No replacement obligation is asserted from this clause.",
+        "source_clause": "except on a through street or highway"
+      },
+      {
+        "trigger": "Reviewed traffic-controlled intersection inventory",
+        "effect": "This fifteen-mile-per-hour prima facie clause is excepted.",
+        "replacement_obligation": "No replacement obligation is asserted from this clause.",
+        "source_clause": "or at a traffic-controlled intersection"
+      }
     ],
     "timing": {
-      "description": "Observe approach sight during the final 100 feet and speed during traversal as separate intervals."
+      "description": "Observe approach sight during the final 100 feet and speed during traversal as separate intervals.",
+      "numeric_conditions": []
     },
     "judgment_calls_needed": [
-      "Municipal jurisdiction and qualifying street intersection",
-      "Original all-entering-arm 100-foot sight evidence",
-      "Actual traversal speed and view",
-      "Source through-street or traffic-control designation"
+      {
+        "phrase": "Municipal jurisdiction and qualifying street intersection",
+        "note": "Requires reviewed original Native and municipal sources."
+      },
+      {
+        "phrase": "Original all-entering-arm 100-foot sight evidence",
+        "note": "Requires reviewed original Native and municipal sources."
+      },
+      {
+        "phrase": "Actual traversal speed and view",
+        "note": "Requires reviewed original Native and municipal sources."
+      },
+      {
+        "phrase": "Source through-street or traffic-control designation",
+        "note": "Requires reviewed original Native and municipal sources."
+      }
     ]
   },
   "parameter_refs": [
@@ -46,7 +79,7 @@
     },
     {
       "name": "through_designation",
-      "kind": "source_context",
+      "kind": "world_setup",
       "range_or_domain": [
         false,
         true
@@ -54,7 +87,7 @@
     },
     {
       "name": "traffic_controlled_intersection",
-      "kind": "source_context",
+      "kind": "world_setup",
       "range_or_domain": [
         false,
         true

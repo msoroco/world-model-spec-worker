@@ -1,0 +1,74 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Uncontrolled or nonoperating official-device condition",
+      "source": "NRS 484B.283(1)(a) exact text",
+      "output_key": "device_condition",
+      "method": "measure_device",
+      "value_type": "text",
+      "kind": "measured",
+      "inputs": [
+        "capture/site.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Crosswalk and highway directional-half geometry, including all destination-direction lanes",
+      "source": "NRS 484B.283(1)(a), (4) exact text",
+      "output_key": "directional_half_geometry",
+      "method": "measure_geometry",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "capture/site.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Driver yields to pedestrian crossing on half onto which vehicle turns",
+      "source": "NRS 484B.283(1)(a) exact text",
+      "output_key": "destination_occupancy_frames",
+      "method": "measure_destination",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "capture/site.json",
+        "capture/ego.json",
+        "capture/pedestrian.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Introductory exceptions in NRS 484B.287, 484B.290 and 484B.350",
+      "source": "NRS 484B.283(1)(a) exact text",
+      "output_key": "exception_applicability_review",
+      "method": "measure_exceptions",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "capture/exception_review.json"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "Operating official device diverts governing control review",
+      "source": "NRS 484B.283(1)(a) exact text",
+      "output_key": "operating_device_context",
+      "method": "measure_governing",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "capture/site.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "capture/exception_review.json"
+    ],
+    "error_contains": "Missing required source: capture/exception_review.json"
+  }
+}
