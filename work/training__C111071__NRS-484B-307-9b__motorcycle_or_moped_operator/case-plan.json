@@ -29,7 +29,9 @@
       "status": "selected_required",
       "case_ids": [
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
-        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2"
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+        "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
       ],
       "evidence_or_gap": "Two unselected exact 600-frame/four-camera Native-shaped construction drafts pass current pinned offline validation; saved source-only synthetic proof rerun passes 2 measurements and 11 negative mutations. Native capture, physical detector causation, source video, selected compatibility/process-saved and audits remain unverified."
     },
@@ -53,12 +55,12 @@
       "requirement": "NRS-484B-307-9b",
       "source": "NRS 484B.307(9)(b)",
       "branch": "yield to pedestrians and lawful traffic",
-      "status": "alternative_pending",
+      "status": "selected_required",
       "case_ids": [
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
         "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
       ],
-      "evidence_or_gap": "Two 600-frame authored source requests measure entry during versus after requested pedestrian/traffic occupation and reject four missing/forged source changes. Native original presence, lawful status, causation, selected compatibility and saved audit remain unproven."
+      "evidence_or_gap": "Current-v2 authored 600-frame yield pair selected for source-bound CPU measurement only. Original Native actor/participant capture, lawful status, physical detector causation and pixel review remain unverified."
     },
     {
       "requirement": "NRS-484B-307-9b",
@@ -156,7 +158,7 @@
         "yield_after_two_cycles"
       ],
       "fixed_conditions": [
-        "motorcycle, nearest-side crosswalk, red with green right arrow, two complete unchanged cycles, no prohibiting device"
+        "motorcycle, nearest-side crosswalk, circular red with green left arrow, two complete unchanged cycles, no prohibiting device, identical pedestrian and traffic occupation schedule"
       ]
     }
   ],
@@ -248,81 +250,161 @@
   "blockers": [
     "Native spawn/tick/camera capture, signal/detector physical readback and original full-length source remain absent; selected exact compatibility/process-saved, fallback, independent audit and statutory branch proofs remain unfinished."
   ],
-  "selected_branch": null,
+  "selected_branch": "Failed-detection straight movement",
   "observations": [
     {
-      "name": "dev.traffic_signal",
+      "name": "ego_body_pose",
       "mandatory": true,
-      "reason": "state circular_red with green_arrow(dir), and its cycling"
+      "reason": "Original-source derived 600-frame channel needed for the cycle/stop/entry comparison"
     },
     {
-      "name": "st.lane_enters",
+      "name": "signal_phase_readback",
       "mandatory": true,
-      "reason": "the subject's lane enters the intersection the signal controls"
+      "reason": "Original-source derived 600-frame channel needed for the cycle/stop/entry comparison"
     },
     {
-      "name": "drv.signal_cycles",
+      "name": "frame_join",
       "mandatory": true,
-      "reason": "the two complete cycles waited"
-    },
-    {
-      "name": "ru.motorcycle",
-      "mandatory": true,
-      "reason": "the subject's class"
-    },
-    {
-      "name": "ru.moped",
-      "mandatory": true,
-      "reason": "or a moped"
-    },
-    {
-      "name": "ru.bicycle",
-      "mandatory": true,
-      "reason": "or a bicycle"
-    },
-    {
-      "name": "ru.electric_bicycle",
-      "mandatory": true,
-      "reason": "or an electric bicycle"
-    },
-    {
-      "name": "ru.electric_scooter",
-      "mandatory": true,
-      "reason": "or an electric scooter"
-    },
-    {
-      "name": "st.crosswalk",
-      "mandatory": true,
-      "reason": "(1) the nearest-side crosswalk where the stop is made"
-    },
-    {
-      "name": "st.stop_line",
-      "mandatory": true,
-      "reason": "or the pavement marking"
-    },
-    {
-      "name": "dev.regulatory_sign",
-      "mandatory": true,
-      "reason": "or the sign indicating where to stop; and (3) a device prohibiting the turn"
-    },
-    {
-      "name": "drv.stopped",
-      "mandatory": true,
-      "reason": "the stop before that reference"
-    },
-    {
-      "name": "drv.turning",
-      "mandatory": true,
-      "reason": "the movement then made, opposite the arrow or straight"
-    },
-    {
-      "name": "drv.yields_to",
-      "mandatory": true,
-      "reason": "(4) the yield owed"
+      "reason": "Original-source derived 600-frame channel needed for the cycle/stop/entry comparison"
     }
   ],
   "runtime_uncertainties": [
     "Native spawn/tick/camera capture, signal/detector physical readback and original full-length source remain absent; selected exact compatibility/process-saved, fallback, independent audit and statutory branch proofs remain unfinished."
   ],
-  "draft_manifest": "draft-manifest.json"
+  "draft_manifest": "draft-manifest.json",
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "evidence": "Original sampled governing face and cross-signal phase stream; two complete cycles derive from phase transitions, not the requested controller count.",
+      "channels": [
+        "signal_phase_readback"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "current-v2-probe-1-fixture/road_geometry.json"
+      ]
+    },
+    "st.lane_enters": {
+      "evidence": "Road survey and body position source needed for the stop-reference hierarchy; unobserved sign/marking alternatives remain authority context, not synthetic measurements.",
+      "channels": [
+        "ego_body_pose"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/road_geometry.json",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "drv.signal_cycles": {
+      "evidence": "Original sampled governing face and cross-signal phase stream; two complete cycles derive from phase transitions, not the requested controller count.",
+      "channels": [
+        "signal_phase_readback"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "current-v2-probe-1-fixture/road_geometry.json"
+      ]
+    },
+    "ru.motorcycle": {
+      "evidence": "Motorcycle blueprint/sample class is requested; actual Native actor class remains to verify.",
+      "channels": [
+        "frame_join"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "ru.moped": {
+      "evidence": "Alternative qualified class appears in exact law; this motorcycle assignment does not claim to have observed that class.",
+      "channels": [],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "ru.bicycle": {
+      "evidence": "Alternative qualified class appears in exact law; this motorcycle assignment does not claim to have observed that class.",
+      "channels": [],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "Alternative qualified class appears in exact law; this motorcycle assignment does not claim to have observed that class.",
+      "channels": [],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "Alternative qualified class appears in exact law; this motorcycle assignment does not claim to have observed that class.",
+      "channels": [],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Road survey and body position source needed for the stop-reference hierarchy; unobserved sign/marking alternatives remain authority context, not synthetic measurements.",
+      "channels": [
+        "ego_body_pose"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/road_geometry.json",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "st.stop_line": {
+      "evidence": "Road survey and body position source needed for the stop-reference hierarchy; unobserved sign/marking alternatives remain authority context, not synthetic measurements.",
+      "channels": [
+        "ego_body_pose"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/road_geometry.json",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Road survey and body position source needed for the stop-reference hierarchy; unobserved sign/marking alternatives remain authority context, not synthetic measurements.",
+      "channels": [
+        "ego_body_pose"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/road_geometry.json",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original body and speed joined to Native frames; current straight-case movement only, no opposite turn inferred.",
+      "channels": [
+        "ego_body_pose",
+        "frame_join"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original body and speed joined to Native frames; current straight-case movement only, no opposite turn inferred.",
+      "channels": [
+        "ego_body_pose",
+        "frame_join"
+      ],
+      "source_refs": [
+        "current-v2-probe-1-fixture/native_samples.jsonl"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Source-joined participant occupation at straight entry distinguishes two authored requests; actual Native participant presence, lawful status and physical yield remain review fields.",
+      "channels": [
+        "frame_join"
+      ],
+      "source_refs": [
+        "current-v2-yield-wait-for-clearance-fixture/native_samples.jsonl",
+        "current-v2-yield-enter-during-occupancy-fixture/native_samples.jsonl",
+        "inputs/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/assignment.json"
+      ]
+    }
+  }
 }

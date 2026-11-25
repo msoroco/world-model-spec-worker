@@ -37,7 +37,7 @@ def main():
          'range_or_domain': ['island_on_left', 'island_on_right']},
         {'name': 'observed_island_side', 'kind': 'subject_behavior',
          'range_or_domain': 'source-derived island bearing and original body position at each joined frame, initially unknown'},
-        {'name': 'observed_island_identity', 'kind': 'context',
+        {'name': 'observed_island_identity', 'kind': 'world_setup',
          'range_or_domain': 'original map, geometry and pixel review of physical rotary traffic island, initially unknown'}]
     template = {'template_id': TEMPLATE, 'law_id': LAW['id'], 'actor': ASSIGNMENT['actor'],
                 'quote': LAW['text'], 'status': 'draft',
@@ -66,7 +66,7 @@ def main():
     def values(side):
         return {'requested_island_side': variable('controller', side, 'categorical'),
                 'observed_island_side': variable('subject_behavior', None, 'categorical per frame'),
-                'observed_island_identity': variable('context', None, 'source review')}
+                'observed_island_identity': variable('world_setup', None, 'source review')}
 
     cases = [{'case_id': AID + '__baseline', 'target_law_id': None,
               'target_type': 'baseline',

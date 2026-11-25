@@ -11,8 +11,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CASE = HERE.name + '__probe_1'
 MANIFEST = HERE / 'current-v2-probe-1-primary-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c111294-v2/saved-probe-1'
-VALIDATOR = ROOT / '.runtime-work/c104538-decoder/.lake/build/bin/adapterCheck'
+SCRATCH = ROOT / '.runtime-work/c111294-geometry-output/saved-probe-1'
+VALIDATOR = ROOT / '.runtime-work/c111250-current-decoder/.lake/build/bin/adapterCheck'
 
 
 def sha(path):
@@ -20,7 +20,7 @@ def sha(path):
 
 
 def main():
-    source = ROOT / '.runtime-work/c111294-v2/compat-probe-1d'
+    source = ROOT / '.runtime-work/c111294-geometry-output/compat-probe-1'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')
@@ -41,7 +41,7 @@ def main():
     before = {relative: sha(attempt / relative) for relative in compatibility['fixture_manifest']}
     command = [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
                '--manifest', str(MANIFEST), '--case', CASE, '--attempt', str(attempt),
-               '--output', str(output), '--library', str(ROOT / 'runtime/pipeline/library'),
+               '--output', str(output), '--library', str(ROOT / 'runtime/library'),
                '--validator', str(VALIDATOR)]
     run = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT, timeout=1800)

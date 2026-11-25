@@ -46,9 +46,9 @@ def rows(yield_case):
         through_speed = 5.6 if index < 142 else (0 if yield_case and index < 300 else 8)
         result.append({'video_frame': index, 'native_frame': 100 + index,
                        'time_s': index / 20, 'source_kind': 'synthetic_native_sample',
-                       'through': {'x_m': 0.0, 'y_m': y, 'speed_mps': through_speed,
-                                   'road_id': 1 if y > 7 else (13 if y >= -7 else 4), 'lane_id': -1},
-                       'entrant': {'x_m': x, 'y_m': 0.0, 'speed_mps': entrant_speed,
+                       'through': {'x_m': -1.75, 'y_m': y, 'speed_mps': through_speed,
+                                   'road_id': 4 if y > 7 else (13 if y >= -7 else 1), 'lane_id': 1},
+                       'entrant': {'x_m': x, 'y_m': -1.75, 'speed_mps': entrant_speed,
                                    'road_id': 3 if x < -7 else (14 if x <= 7 else 2), 'lane_id': -1}})
     return result
 

@@ -1,0 +1,48 @@
+{
+  "format": "c102951-left-of-center-pass-contract-v1",
+  "assignment_id": "training__C102951__NRS-484B-213-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-213-1",
+  "entrypoint": "measure_pass.py",
+  "original_preparation_entrypoint": "prepare_pass.py",
+  "saved_response_entrypoint": "measure_response.py",
+  "vehicle_response": {
+    "actors": ["oncoming", "overtaken"],
+    "baseline": "median speed over the first 20 saved frames before left entry",
+    "phase": "inclusive first left-of-center frame through first return-after-pass frame",
+    "speed_drop": "nonnegative baseline median minus minimum left-phase speed, separately for each actor",
+    "acceleration": "saved speed difference over five frames (0.25 s), evaluated at each left-phase frame",
+    "hard_deceleration_engineering_threshold_mps2": -3.0,
+    "interpretation": "observed kinematics only; no causal attribution, interference or legal safe-distance conclusion"
+  },
+  "controlled_response_comparison": {
+    "design": "synthetic 2x2 factorial: no slowdown, oncoming only, overtaken only, both",
+    "fixed": "same 170 m road readback, 600 frame/time identities, ego path and speed, driver-eye sightline, actor identities and lateral placement",
+    "varied": "oncoming and overtaken speed and longitudinal position pairs only; changed positions follow changed speeds",
+    "outcome": "separate measured left-phase speed drops and five-frame acceleration diagnostics",
+    "limit": "synthetic intervention contrast only; no original Native actor reaction, causal inference, interference judgment or legal acceptance"
+  },
+  "cases": [70, 120, 170],
+  "sampling_rate_hz": 20,
+  "frames": 600,
+  "source_binding": "SHA-256 of exact saved Native actor rows and two-lane, two-direction road readback",
+  "events": {
+    "left_of_center_entry": "first frame with any ego body width extending above Native centerline y=0",
+    "full_left": "first frame with entire ego body width above centerline",
+    "abreast": "first overlapping longitudinal body extents of ego and same-direction overtaken actor",
+    "pass_return": "first frame after full longitudinal overtake with ego body wholly right of centerline",
+    "oncoming_gap": "opposing actor body rear minus ego body front in the saved longitudinal frame",
+    "clear_sight": "saved driver-eye visible flag and measured clear distance throughout left phase"
+  },
+  "time_uncertainty": "one 50 ms frame bracket; no subframe event or physical sightline claim",
+  "spatial_uncertainty": "synthetic longitudinal body gap uses 2.2 m half-length per actor; original Native rows require each actor's observed body vertices and map readback",
+  "original_source_join": "prepare_pass.py binds raw Native actor rows, map readback, synchronized video-frame map, four 600-frame FFV1 cameras (overview 1920x1080; approach, reference_corner and driver_reference 1280x720), sightline review packet and exact candidate config by SHA-256; output preserves source hashes and does not assert highway or legal review",
+  "sightline_review": "original mode requires a human_frame_review packet with a per-frame visible flag and clear distance linked to the exact Native and video frames; pixel-truth and legal acceptance remain independent review tasks",
+  "fallback_routing": {
+    "fallback1": "measured entry oncoming body gap < 100 m routes to delayed left entry",
+    "fallback2": "measured minimum pre-return oncoming body gap < 20 m routes to shorter exposure request",
+    "fallback3": "any saved driver-eye sightline flag false during left-of-center phase routes to abort and rejoin request",
+    "interpretation": "engineering routing triggers on source-bound saved observations; thresholds do not establish statutory sufficient distance or safety"
+  },
+  "statutory_limit": "No numeric sufficient-distance threshold is stated in the frozen text; safe operation, actual interference, highway status, hill-crest sightline and legal verdict remain pending original evidence and review",
+  "status": "cpu_prototype_unselected"
+}

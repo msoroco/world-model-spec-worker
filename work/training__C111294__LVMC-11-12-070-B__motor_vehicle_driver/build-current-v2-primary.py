@@ -42,30 +42,32 @@ def main():
         entrant = row['entrant']
         speed = ego['speed_mps']
         y = ego['y_m']
-        body = [[-1, y-2, 0], [1, y-2, 0], [-1, y, 0], [1, y, 0]]
+        body = [[ego['x_m']-1, y-2, 0], [ego['x_m']+1, y-2, 0],
+                [ego['x_m']-1, y, 0], [ego['x_m']+1, y, 0]]
         mapping.append({'video_frame': index, 'native_frame': frame,
                         'carla_frame': frame, 'time_s': time})
         trace.append({'frame': frame, 'time_s': time,
-                      'position': {'x': 0.0, 'y': y-1, 'z': 0.5},
-                      'position_m': [0.0, y-1, 0.5], 'heading_deg': 270.0,
+                      'position': {'x': ego['x_m'], 'y': y-1, 'z': 0.5},
+                      'position_m': [ego['x_m'], y-1, 0.5], 'heading_deg': 270.0,
+                      'velocity_mps': [0.0, -speed, 0.0],
                       'speed_mps': speed, 'speed_mph': speed / .44704,
                       'control': {'throttle': 0, 'brake': 0, 'hand_brake': False}})
         evidence.append({'original_frame': frame, 'recording_time_s': time,
                          'replay_frame': frame, 'replay_simulation_time_s': time,
                          'actor_id': 107,
-                         'ego': {'body_vertices_m': body, 'position_m': [0.0, y-1, 0.5],
+                         'ego': {'body_vertices_m': body, 'position_m': [ego['x_m'], y-1, 0.5],
                                  'heading_deg': 270.0, 'speed_mps': speed,
                                  'speed_provenance': 'synthetic_native_sample'},
                          'world': {'weather': {}, 'road_projection': {
                              'road_id': ego['road_id'], 'section_id': 0,
-                             'lane_id': -1, 's_m': float(index) / 10}}})
+                             'lane_id': ego['lane_id'], 's_m': float(index) / 10}}})
         frames.append({'frame': frame, 'simulation_time': time, 'time_s': time,
                        'adapter_graph': f'graphs/base/{frame:08d}.adapter.json',
                        'synthetic_diagnostic': True})
         graphs.append({'path': f'capture/native/graphs/base/{frame:08d}.adapter.json',
                        'attributes': {'frame': frame, 'simulation_time_s': time},
                        'nodes': [{'id': 'ego', 'attributes': {
-                           'vertex': [0.0, y-1, 0.5], 'sem_class': 'ego',
+                           'vertex': [ego['x_m'], y-1, 0.5], 'sem_class': 'ego',
                            'forward': [0.0, -1.0, 0.0], 'entity_id': 107,
                            'carla_speed': speed, 'special_class': 'ego'}},
                           {'id': 'entrant', 'attributes': {

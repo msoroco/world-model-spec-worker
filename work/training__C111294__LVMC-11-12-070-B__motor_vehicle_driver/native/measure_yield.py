@@ -56,8 +56,12 @@ def measure(root, expected_case):
         ego, entrant = row.get('through'), row.get('entrant')
         if not isinstance(ego, dict) or not isinstance(entrant, dict):
             raise ValueError('Two participant histories required')
-        if (ego.get('road_id') not in (1, 13, 4) or entrant.get('road_id') not in (3, 14, 2)
-                or ego.get('lane_id') != -1 or entrant.get('lane_id') != -1):
+        expected_through_road = 4 if ego.get('y_m', -math.inf) > 7 else (13 if ego.get('y_m', -math.inf) >= -7 else 1)
+        expected_entrant_road = 3 if entrant.get('x_m', math.inf) < -7 else (14 if entrant.get('x_m', math.inf) <= 7 else 2)
+        if (ego.get('road_id') != expected_through_road or entrant.get('road_id') != expected_entrant_road
+                or ego.get('lane_id') != 1 or entrant.get('lane_id') != -1
+                or not math.isclose(ego.get('x_m', math.inf), -1.75, abs_tol=.25)
+                or not math.isclose(entrant.get('y_m', math.inf), -1.75, abs_tol=.25)):
             raise ValueError('Native road/lane roles differ')
         if any(not isinstance(actor.get(key), (int, float)) or not math.isfinite(actor[key])
                for actor in (ego, entrant) for key in ('x_m', 'y_m', 'speed_mps')):

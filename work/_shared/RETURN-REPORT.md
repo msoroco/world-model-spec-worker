@@ -1,8 +1,22 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 76 of 253 assignments are ready and 177 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 77 of 253 assignments are ready and 176 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
+
+## 2026-11-25 C234827 NRS 220(2) ready integration
+
+Newly ready on the current runtime: `training__C234827__NRS-484B-220-2__motor_vehicle_driver`. Its exact `reference` and `contrast` cases each have primary and fallback1 constructions. The owner and lead independently ran the exact assignment-scoped `worker_check.py --complete --require-delivery-ready`; both exited 0 with `static_checks_passed: true`. Four exact offline/public positive and missing-source negative chains, two recorded-only saved chains, six synthetic physical diagnostics, canonical semantic stages, and independent delivery/comparison positives and negatives are bound in `execution-manifest.json` (SHA-256 `954cff0b868b60572b7cb26a2bd7ab4fd78f5d6552ae6b0a3061a651b6de0e27`). The lead corrected result counters to two selected cases and four proven candidate constructions, then repeated the exact strict gate successfully. Original island geometry, Native motion, accepted-row equivalence and legal outcome remain unverified.
+
+The ordered shared GPU intent queue was rebuilt, checked and independently audited: 820 case rows, 387 comparison rows, zero dispatchable, SHA-256 `b70d45b39d2a83850817ffef041956f9105ff6251f63cf824dd500d0aa0fbddd`. The independent return audit passes with 253 packages, **77 ready / 176 partial**, 358 selected delivery cases, 743 proven candidates and zero errors. The whole-batch strict delivery gate remains unpassed with partial packages. The freed owner now owns `training__C111250__NRS-484B-213-2b__motor_vehicle_driver` in partition 06. The separate timer owns Git checkpoint publication; no Git command was run here.
+
+## 2026-11-25 controlled intersection CPU continuation
+
+Current inventory remains 76 ready / 177 partial of 253. Pinned `runtime.py verify --runtime runtime`, `runtime.py preflight`, and `worker_check.py --updates` passed; update version 16 has no pauses. The whole-batch strict delivery gate remains unpassed while partial packages remain.
+
+Lead-owned `training__C111294__LVMC-11-12-070-B__motor_vehicle_driver` now has both exact 600-frame, four-camera synthetic source diagnostics through the current runtime. Newly constructed `probe_2` passes public positive and removed-`road.xodr` negative compatibility, Native validation, Core/Lean conversion, full camera decode and final render. Its current-library decoder was used after an older scratch decoder rejected a current class. Recorded-only `process-saved` also passed with 613 original source hashes preserved. The public receipt is `work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/current-v2-probe-2-compatibility.json`; saved proof is `current-v2-probe-2-saved-proof.json`. The assignment-scoped `--complete` check exits 0. Status stays partial: these cases are not selected delivery cases, and original Native construction, highway designation, prior lawful yielding, risk fallbacks, semantic and independent delivery/comparison audits remain CPU work. No original physical or legal outcome is claimed.
+
+The C234827/NRS-484B-220-2 owner has four selected public compatibility/offline chains passing and is running recorded-only saved proofs. The C102951/NRS-484B-213-1 owner has six selected public compatibility and six recorded-only saved chains passing and continues canonical semantic and delivery/physical audits. The C111071/NRS-484B-307-9b owner has the two cycle-wait public and saved diagnostics passing and is expanding the yield pair; the frozen straight cell does not establish the law's opposite-turn alternative. Each retains truthful partial status until its exact scoped strict gate passes.
 
 ## 2026-11-24 current-runtime ready integration
 

@@ -45,6 +45,9 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "continuous-right-of-island"
       ]
     },
     {
@@ -60,6 +63,9 @@
       "fixed_context": "Hold cell geometry, actors, traffic controls, weather, and all noncompared controller settings constant; verify activation and exceptions before use.",
       "source_topic_ids": [
         "text-0"
+      ],
+      "gap_ids": [
+        "continuous-right-of-island"
       ]
     }
   ],
@@ -87,65 +93,65 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "kin.position",
+      "unit": "m",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Original Native body center and vertices on every passage frame"
     },
     {
-      "name": "ego_speed",
-      "unit": "m/s",
+      "name": "kin.heading",
+      "unit": "deg",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Original Native direction and island-side bearing"
     },
     {
       "name": "island_side_passage",
-      "unit": "right_or_left",
+      "unit": "left/right/ambiguous",
       "mandatory": true,
-      "purpose": "path right versus left of rotary island"
+      "purpose": "Continuous source-derived island side and physical island review status"
     }
   ],
   "source_observation_mapping": {
     "st.roundabout": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Selected original Native 600-frame body/map/camera channel; physical island and pixels pending local review",
       "channels": [
-        "island_side_passage"
+        "st.roundabout"
       ],
       "source_refs": [
         "inputs/training__C234827__NRS-484B-220-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.bearing": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Selected original Native 600-frame body/map/camera channel; physical island and pixels pending local review",
       "channels": [
-        "island_side_passage"
+        "rel.bearing"
       ],
       "source_refs": [
         "inputs/training__C234827__NRS-484B-220-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Selected original Native 600-frame body/map/camera channel; physical island and pixels pending local review",
       "channels": [
-        "island_side_passage"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C234827__NRS-484B-220-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Selected original Native 600-frame body/map/camera channel; physical island and pixels pending local review",
       "channels": [
-        "island_side_passage"
+        "kin.heading"
       ],
       "source_refs": [
         "inputs/training__C234827__NRS-484B-220-2__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.position": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Selected original Native 600-frame body/map/camera channel; physical island and pixels pending local review",
       "channels": [
-        "island_side_passage"
+        "kin.position"
       ],
       "source_refs": [
         "inputs/training__C234827__NRS-484B-220-2__motor_vehicle_driver/assignment.json"
@@ -182,5 +188,45 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "island, ego body and rotary roadway",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "island approach and entrance",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "island and ego body on both passage sides",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view of island and rotary lane",
+        "interval": "full 30 s"
+      }
+    ]
+  },
+  "evidence_review": {
+    "method": "Frozen accepted memberships inspected without replay; no source-hashed original equivalence receipt supplied",
+    "reviewer": "worker source inventory",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "continuous-right-of-island",
+        "requirement": "NRS 484B.220(2) continuous right-of-island passage",
+        "source": "inputs/training__C234827__NRS-484B-220-2__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Three accepted membership rows have no supplied original frame/map/pixel equivalence receipt"
+      }
+    ]
+  }
 }
