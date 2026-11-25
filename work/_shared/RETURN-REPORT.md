@@ -1,3 +1,9 @@
+### 2026-11-25 15:01 UTC independent camera-review delivery audit
+
+Added `review_camera_delivery.py`, an independent saved-attempt audit of `channels/original_camera_review.json`. It verifies the four original MKV hashes and frame-map hash, exact sequential frame references, four-camera native frame joins, record shape, and unresolved visual/legal status. Two negative tests reject changed camera bytes and an altered derived frame identity; the focused package suite passes 50 tests with its renewed `cpu-tests.log` SHA in `result.json`. The audit passed on an actual staged compatibility attempt. It is a software source-integrity check, not a claim about original pixels or a legal outcome.
+
+Selected camera-review integration remains **partial** while corrected compatibility and saved-only reproof finish and independent delivery acceptance is rebound.
+
 ### 2026-11-25 14:53 UTC selected camera-review integration in progress
 
 `promote_review_draft.py` moved the twelve selected manifest construction paths and recording descriptions to the source-bound camera-review bundles, bound staged offline/compatibility/saved/physical receipt locations, and synchronized the root finalizer/config/fixture sources. Direct `semantic_delivery.validate` now passes for all twelve selected cases. Direct `execution_manifest.validate` found absolute source references in the draft bundles. All 24 staged constructions were repaired to repo-relative source paths; their old proof hashes became stale, so they are being renewed before the selected manifest is rebound. All 24 corrected offline constructions passed; all twelve corrected physical preparation receipts pass the pinned validator. Compatibility is still running and readiness remains **partial**.
