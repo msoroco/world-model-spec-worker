@@ -11,6 +11,8 @@ from native_scene import (CAMERAS, FRAMES, RATE_HZ, SIDEWALK_CENTER_Y,
                           apply_control, check, open_drive, request,
                           spawn_obstruction, survey)
 
+HERE = Path(__file__).resolve().parent
+
 
 def _write(path, value):
     with Path(path).open("x") as stream:
@@ -30,8 +32,8 @@ def execute(config, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
-    from scenario_pipeline.worker_exchange.native_output import FrameMap
-    from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.native_output import FrameMap
+    from worker_exchange.world_restore import snapshot, restore
 
     check()
     if config.get("case_suffix") not in ("condition_a", "condition_b"):
@@ -41,8 +43,11 @@ def execute(config, output, host, port):
     if config.get("rate_hz") != RATE_HZ or config.get("duration_s") != 30:
         raise ValueError("exact 20 Hz, 30-second capture required")
     output = Path(output).resolve()
-    if output.exists():
-        raise ValueError("fresh original Native attempt required")
+    if not output.is_dir() or not (output / "config.json").is_file():
+        raise ValueError("fresh materialized exact Native attempt required")
+    if any((output / name).exists() for name in
+           ("pedestrian-original.jsonl", "video_frames.jsonl", "result.json")):
+        raise ValueError("retain previous original Native attempt")
     client = carla.Client(host, int(port))
     client.set_timeout(180)
     old = client.get_world()
@@ -70,8 +75,6 @@ def execute(config, output, host, port):
         settings.max_substep_delta_time = .01
         settings.max_substeps = 10
         world.apply_settings(settings)
-        output.mkdir(parents=True)
-        _write(output / "config.json", config)
         (output / "road.xodr").write_text(world.get_map().to_opendrive())
         scene = survey(world, carla)
         obstruction = spawn_obstruction(world, carla,
@@ -86,6 +89,13 @@ def execute(config, output, host, port):
                              actor.bounding_box.extent.y,
                              actor.bounding_box.extent.z]} for actor in obstruction]
         scene["obstruction_physical_review_pending"] = True
+        scene["sidewalk_context"] = {
+            "source_kind": "original_native_map_readback",
+            "roadway_lane_count": len(scene["lanes"]["roadway"]),
+            "sidewalk_lane_count": len(scene["lanes"]["sidewalk"]),
+            "obstruction_actor_count": len(scene["obstruction_actors"]),
+            "legal_status_review_pending": True,
+        }
         _write(output / "sidewalk_context.json", scene)
         library = world.get_blueprint_library()
         walker_blueprints = sorted(library.filter("walker.pedestrian.*"), key=lambda bp: bp.id)
@@ -212,7 +222,7 @@ def execute(config, output, host, port):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--config", type=Path)
+    parser.add_argument("--config", type=Path, default=HERE / "config.json")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
@@ -220,7 +230,7 @@ def main():
     if args.check:
         print(json.dumps(check(), sort_keys=True))
     else:
-        if not args.config or not args.output_dir:
+        if not args.output_dir:
             raise ValueError("exact config and fresh Native output required")
         execute(json.loads(args.config.read_text()), args.output_dir, args.host, args.port)
 

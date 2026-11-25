@@ -91,7 +91,7 @@ def build():
             graph["path"] = f"capture/native/graphs/base/{frame:08d}.adapter.json"
             mapping[index].update(video_frame=index, native_frame=frame, carla_frame=frame,
                                   time_s=time, source_rgb_sha256=pixel_hashes)
-            people.append({"native_frame": frame, "time_s": time,
+            people.append({"frame": frame, "native_frame": frame, "time_s": time,
                            "walker_actor_id": 107, "center_xy_m": [x, y],
                            "footprint_xy_m": body(x, y), "roadway_entry_observed": entry})
             controls.append({"native_frame": frame, "time_s": time,

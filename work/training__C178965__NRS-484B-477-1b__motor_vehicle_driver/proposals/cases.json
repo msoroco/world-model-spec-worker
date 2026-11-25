@@ -2,65 +2,162 @@
   "cell_id": "C178965",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [
-    {
-      "sweep_id": "ten-foot-exact-boundary",
-      "target_law_id": "NRS-484B-477-1b",
-      "judgment_refs": [
-        {
-          "phrase": "less than 10 feet",
-          "note": "The exact equality boundary is not less than ten feet."
-        }
-      ],
-      "status": "expanded",
-      "rationale": "Below, equal and above saved width probes.",
-      "missing_inputs": []
-    },
-    {
-      "sweep_id": "alley-and-ordinance-review",
-      "target_law_id": "NRS-484B-477-1b",
-      "judgment_refs": [
-        {
-          "phrase": "any other alley",
-          "note": "Alley identity and antecedent need independent review."
-        },
-        {
-          "phrase": "Unless otherwise provided by ordinance",
-          "note": "Local authority and ordinance effect are not inferred from a scene."
-        }
-      ],
-      "status": "incomplete",
-      "rationale": "Original geometry is separate from legal site and ordinance status.",
-      "missing_inputs": [
-        "Independent site/ordinance source packet for the Native attempt."
-      ]
-    }
-  ],
-  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
-      "target_law_id": "NRS-484B-477-1b",
-      "target_type": "boundary_probe",
-      "rationale": "park in alley leaving at least 10 feet clear",
-      "deliberate_differences": [
-        "unobstructed alley width"
-      ],
+      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral context; no park requested.",
       "variable_assignments": {
         "alley_width_m": {
           "kind": "world_setup",
           "value": 7.5
         },
         "parking_request": {
-          "kind": "subject_behavior",
+          "kind": "controller",
+          "value": "no park"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Unless otherwise provided by ordinance of the local authority having jurisdiction",
+        "any other alley",
+        "Stop, stand or park a vehicle",
+        "for the free movement of vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_and_other_vehicle_poses",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native transforms, velocities and extents",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling",
+            "source": "channels/subject_and_other_vehicle_poses.jsonl"
+          },
+          {
+            "name": "alley_lateral_boundaries",
+            "unit": "meters",
+            "sampling_rate_hz": 20,
+            "method": "OpenDRIVE and original Native lane-width readback",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "pending Native readback",
+            "source": "channels/alley_lateral_boundaries.jsonl"
+          },
+          {
+            "name": "st.alley",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original pose, extent and alley inventory",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling; legal identity remains independently reviewed",
+            "source": "channels/st.alley.jsonl"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original pose, extent and alley inventory",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling; legal identity remains independently reviewed",
+            "source": "channels/drv.standing_or_parked.jsonl"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original pose, extent and alley inventory",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling; legal identity remains independently reviewed",
+            "source": "channels/st.lane_width.jsonl"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original pose, extent and alley inventory",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling; legal identity remains independently reviewed",
+            "source": "channels/kin.extent.jsonl"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original pose, extent and alley inventory",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling; legal identity remains independently reviewed",
+            "source": "channels/rel.surface_gap.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original pose, extent and alley inventory",
+            "time_window": "600 frames",
+            "reference_frame": "authored paved road",
+            "uncertainty": "50 ms sampling; legal identity remains independently reviewed",
+            "source": "channels/rel.occupies.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "independent_alley_review",
+            "unit": "structured",
+            "method": "source-bound alley identity, jurisdiction, ordinance and purpose review",
+            "source": "alley-context.json"
+          }
+        ],
+        "limitations": [
+          "Legal alley definition, local jurisdiction and ordinance, and free movement require independent review"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "rationale": "Requested width boundary for the selected park branch; actual free width remains measured.",
+      "variable_assignments": {
+        "alley_width_m": {
+          "kind": "world_setup",
+          "value": 7.5
+        },
+        "parking_request": {
+          "kind": "controller",
           "value": "park beside a distinct other vehicle"
         }
       },
       "unresolved_judgment_calls": [
-        "qualifying alley and any other alley antecedent",
-        "local ordinance effect",
-        "actual parking purpose and free movement"
+        "Unless otherwise provided by ordinance of the local authority having jurisdiction",
+        "any other alley",
+        "Stop, stand or park a vehicle",
+        "for the free movement of vehicular traffic"
       ],
+      "paired_probe_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__ten_foot_boundary",
+      "deliberate_differences": [
+        "alley_width_m"
+      ],
+      "epsilon_used": {
+        "basis": "engineering width choices only",
+        "legal_threshold_m": 3.048
+      },
+      "probe": {
+        "primary_variable": "alley_width_m",
+        "comparison_or_standard": "source-bound minimum free width versus exact 10 feet",
+        "target_value_or_branch": "controlled_1",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "meters",
+        "test_value": 3.9
+      },
       "recording_description": {
         "channels": [
           {
@@ -161,25 +258,40 @@
       "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
       "target_law_id": "NRS-484B-477-1b",
       "target_type": "boundary_probe",
-      "rationale": "park in alley leaving exactly 10 feet clear",
-      "deliberate_differences": [
-        "unobstructed alley width"
-      ],
+      "rationale": "Requested width boundary for the selected park branch; actual free width remains measured.",
       "variable_assignments": {
         "alley_width_m": {
           "kind": "world_setup",
           "value": 6.648
         },
         "parking_request": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "park beside a distinct other vehicle"
         }
       },
       "unresolved_judgment_calls": [
-        "qualifying alley and any other alley antecedent",
-        "local ordinance effect",
-        "actual parking purpose and free movement"
+        "Unless otherwise provided by ordinance of the local authority having jurisdiction",
+        "any other alley",
+        "Stop, stand or park a vehicle",
+        "for the free movement of vehicular traffic"
       ],
+      "paired_probe_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__ten_foot_boundary",
+      "deliberate_differences": [
+        "alley_width_m"
+      ],
+      "epsilon_used": {
+        "basis": "engineering width choices only",
+        "legal_threshold_m": 3.048
+      },
+      "probe": {
+        "primary_variable": "alley_width_m",
+        "comparison_or_standard": "source-bound minimum free width versus exact 10 feet",
+        "target_value_or_branch": "controlled_at_10",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "meters",
+        "test_value": 3.048
+      },
       "recording_description": {
         "channels": [
           {
@@ -280,25 +392,40 @@
       "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-477-1b",
       "target_type": "boundary_probe",
-      "rationale": "park in alley leaving less than 10 feet clear",
-      "deliberate_differences": [
-        "unobstructed alley width"
-      ],
+      "rationale": "Requested width boundary for the selected park branch; actual free width remains measured.",
       "variable_assignments": {
         "alley_width_m": {
           "kind": "world_setup",
           "value": 6.0
         },
         "parking_request": {
-          "kind": "subject_behavior",
+          "kind": "controller",
           "value": "park beside a distinct other vehicle"
         }
       },
       "unresolved_judgment_calls": [
-        "qualifying alley and any other alley antecedent",
-        "local ordinance effect",
-        "actual parking purpose and free movement"
+        "Unless otherwise provided by ordinance of the local authority having jurisdiction",
+        "any other alley",
+        "Stop, stand or park a vehicle",
+        "for the free movement of vehicular traffic"
       ],
+      "paired_probe_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__ten_foot_boundary",
+      "deliberate_differences": [
+        "alley_width_m"
+      ],
+      "epsilon_used": {
+        "basis": "engineering width choices only",
+        "legal_threshold_m": 3.048
+      },
+      "probe": {
+        "primary_variable": "alley_width_m",
+        "comparison_or_standard": "source-bound minimum free width versus exact 10 feet",
+        "target_value_or_branch": "controlled_2",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "meters",
+        "test_value": 2.4
+      },
       "recording_description": {
         "channels": [
           {
@@ -394,6 +521,36 @@
           "Legal alley definition, local jurisdiction and ordinance, and free movement require independent review"
         ]
       }
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "alley-ordinance-purpose-review",
+      "target_law_id": "NRS-484B-477-1b",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "Unless otherwise provided by ordinance of the local authority having jurisdiction",
+          "note": "Identify the actual jurisdiction and ordinance legal effect from independent source records."
+        },
+        {
+          "phrase": "any other alley",
+          "note": "Verify statutory alley identity, public highway, city block, rear access, abutting property and antecedent scope."
+        },
+        {
+          "phrase": "Stop, stand or park a vehicle",
+          "note": "The frozen cell selects park; original rest duration, purpose, occupant activity and alternative stop/stand status remain source reviewed."
+        },
+        {
+          "phrase": "for the free movement of vehicular traffic",
+          "note": "Retain continuous body and other-vehicle footprint evidence; do not infer legal free movement from width alone."
+        }
+      ],
+      "rationale": "Original legal site, ordinance, parking purpose and free movement review remains.",
+      "missing_inputs": [
+        "Reviewed original Native site and ordinance source packet."
+      ]
     }
   ]
 }

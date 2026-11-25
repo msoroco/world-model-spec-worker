@@ -2,28 +2,55 @@
   "cell_id": "C109166",
   "actor": "pedestrian",
   "status": "draft",
-  "sweep_specs": [],
-  "sweeps_expanded": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c109166-adjacent-controls-crossing-review",
+      "target_law_id": "NRS-484B-287-1c",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "Between adjacent intersections",
+          "note": "Original Native junction and lane topology plus independent adjacency review; distance alone cannot establish adjacency."
+        },
+        {
+          "phrase": "at which official traffic-control devices are in operation",
+          "note": "Both official control actors must be operating at original pedestrian roadway entry."
+        },
+        {
+          "phrase": "except in a marked crosswalk",
+          "note": "Original marked polygon and full pedestrian footprint at roadway entry require independent pixel review."
+        },
+        {
+          "phrase": "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]",
+          "note": "Exact exception text and person-specific applicability are absent from the frozen package."
+        }
+      ],
+      "rationale": "Controlled marked versus unmarked crossing locations; original authority remains for review.",
+      "missing_inputs": [
+        "Independently reviewed Native map adjacency and original lane topology",
+        "Original official control operation and marked-crossing pixels",
+        "NRS 484B.290 exact source and person-specific applicability"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__marked_crosswalk",
-      "target_law_id": "NRS-484B-287-1c",
-      "target_type": "attempt",
-      "rationale": "Source-bound crossing-location contrast under the same two operating controls",
+      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral fixed-cell reference; no selected recording",
       "variable_assignments": {
         "crossing_location": {
           "kind": "world_setup",
-          "value": "marked_crosswalk"
-        },
-        "exception_484b_290": {
-          "kind": "sourced_context",
-          "value": "independent review pending"
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "adjacent intersections",
-        "official devices in operation",
-        "NRS 484B.290 person-specific exception"
+        "Between adjacent intersections",
+        "at which official traffic-control devices are in operation",
+        "except in a marked crosswalk",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
       ],
       "recording_description": {
         "channels": [
@@ -131,24 +158,21 @@
       }
     },
     {
-      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__unmarked_midblock",
+      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__marked_crosswalk",
       "target_law_id": "NRS-484B-287-1c",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Source-bound crossing-location contrast under the same two operating controls",
       "variable_assignments": {
         "crossing_location": {
           "kind": "world_setup",
-          "value": "unmarked_midblock"
-        },
-        "exception_484b_290": {
-          "kind": "sourced_context",
-          "value": "independent review pending"
+          "value": "marked_crosswalk"
         }
       },
       "unresolved_judgment_calls": [
-        "adjacent intersections",
-        "official devices in operation",
-        "NRS 484B.290 person-specific exception"
+        "Between adjacent intersections",
+        "at which official traffic-control devices are in operation",
+        "except in a marked crosswalk",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
       ],
       "recording_description": {
         "channels": [
@@ -253,6 +277,146 @@
         "limitations": [
           "Actual local map adjacency, official device applicability and NRS 484B.290 require independent review"
         ]
+      },
+      "paired_probe_id": "c109166-between-intersections-crossing-location",
+      "deliberate_differences": [
+        "crossing_location"
+      ],
+      "probe": {
+        "primary_variable": "crossing_location",
+        "comparison_or_standard": "original full-body roadway entry relative to marked crosswalk",
+        "target_value_or_branch": "marked_crosswalk"
+      }
+    },
+    {
+      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__unmarked_midblock",
+      "target_law_id": "NRS-484B-287-1c",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound crossing-location contrast under the same two operating controls",
+      "variable_assignments": {
+        "crossing_location": {
+          "kind": "world_setup",
+          "value": "unmarked_midblock"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Between adjacent intersections",
+        "at which official traffic-control devices are in operation",
+        "except in a marked crosswalk",
+        "Except as provided in NRS 484B.290 [LVMC-11-30-140-B]"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/ru.pedestrian.jsonl"
+          },
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/st.intersection.jsonl"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/st.lane_enters.jsonl"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/dev.traffic_signal.jsonl"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/st.crosswalk.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/st.roadway.jsonl"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "joined original Native frame, survey and pedestrian footprint",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "50 ms sampled intervals; actual pixels and legal exception pending independent review",
+            "source": "channels/kin.position.jsonl"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "nrs_484b_290_exception",
+            "unit": "source",
+            "method": "retain unavailable exact statute and person-specific applicability as unknown"
+          }
+        ],
+        "limitations": [
+          "Actual local map adjacency, official device applicability and NRS 484B.290 require independent review"
+        ]
+      },
+      "paired_probe_id": "c109166-between-intersections-crossing-location",
+      "deliberate_differences": [
+        "crossing_location"
+      ],
+      "probe": {
+        "primary_variable": "crossing_location",
+        "comparison_or_standard": "original full-body roadway entry relative to marked crosswalk",
+        "target_value_or_branch": "unmarked_midblock"
       }
     }
   ]

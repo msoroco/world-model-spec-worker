@@ -117,9 +117,20 @@ def finalize(attempt, output):
     config = json.loads(required(attempt, "config.json").read_text())
     analysis = report(attempt, config["case_id"])
     _channels(attempt, config)
+    (attempt / "exception-context.json").write_text(json.dumps({
+        "nrs_484b_290_exception": {
+            "measurement": analysis["measurements"]["nrs_484b_290_exception"]["value"],
+            "source_sha256": sha(required(attempt, "exception-applicability-source.json"))}},
+        indent=2, allow_nan=False) + "\n")
     measured = analysis["measurements"]["between_intersections_crossing"]["value"]
     observed = measured["roadway_entry"]
     physical = assess_physical(attempt, config)
+    positions = rows(attempt, "pedestrian-original.jsonl")
+    progress = positions[-1]["center_xy_m"][1] - positions[0]["center_xy_m"][1]
+    realized = {"pedestrian_progress_m": {"value": progress, "unit": "m",
+        "method": "end minus start original pedestrian center y",
+        "time_window": "600 original frames", "statistic": "end_minus_start",
+        "reference": "pedestrian-original.jsonl"}}
     requested = config["requested_crossing_location"]
     actual = "marked_crosswalk" if observed["within_marked_crosswalk_polygon"] else "unmarked_midblock"
     evidence = [{"name": name, "unit": "source", "reference": name}
@@ -129,6 +140,8 @@ def finalize(attempt, output):
     evidence += [{"name": item["name"], "unit": item["unit"],
                   "reference": item["source"]}
                  for item in config["recording_description"]["channels"]]
+    evidence.append({"name": "nrs_484b_290_exception", "unit": "source",
+                     "reference": "exception-context.json"})
     result = {"case_id": config["case_id"],
               "measured_values": {"roadway_entry_native_frame": observed["native_frame"],
                                   "crossing_location": actual,
@@ -152,7 +165,7 @@ def finalize(attempt, output):
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": config["recording_description"],
               "recording_evidence": evidence,
-              "realized_observables": physical["realized_observables"],
+              "realized_observables": realized,
               **provenance_record(attempt),
               "accepted": False, "legal_verdict_claimed": False}
     validate_result(result)

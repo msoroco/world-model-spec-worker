@@ -262,7 +262,7 @@ def execute(config, output, survey_path, host, port):
                 entry_y = survey["roadway_boundary"]["entry_y_m"]
                 entered = previous_y is not None and previous_y < entry_y <= pose.y
                 previous_y = pose.y
-                walker_row = {"native_frame": frame, "time_s": time_s,
+                walker_row = {"frame": frame, "native_frame": frame, "time_s": time_s,
                               "walker_actor_id": walker.id, "center_xy_m": [pose.x, pose.y],
                               "footprint_xy_m": footprint, "roadway_entry_observed": entered}
                 device_row = {"native_frame": frame, "time_s": time_s,

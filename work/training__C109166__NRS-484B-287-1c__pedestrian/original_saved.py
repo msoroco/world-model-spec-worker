@@ -82,15 +82,26 @@ def _decode_video(path, width, height, expected_hashes):
 
 def measure(attempt, *, decode_video=True):
     attempt = Path(attempt)
-    names = ("config.json", "native-survey.json", "native-survey-provenance.json",
+    names = ("config.json", "acquisition-provenance.json", "native-survey.json", "native-survey-provenance.json",
              "native-capture-report.json", "video_frames.jsonl", "trace.jsonl",
              "pedestrian-original.jsonl", "controls-original.jsonl", "camera-sources.jsonl")
     source_hashes = {name: sha(required(attempt, name)) for name in names}
     config = json.loads(required(attempt, "config.json").read_text())
     check_config(config)
+    acquisition = json.loads(required(attempt, "acquisition-provenance.json").read_text())
     survey = json.loads(required(attempt, "native-survey.json").read_text())
     provenance = json.loads(required(attempt, "native-survey-provenance.json").read_text())
     report = json.loads(required(attempt, "native-capture-report.json").read_text())
+    if acquisition.get("provenance_kind") == "native":
+        if (acquisition.get("diagnostic_fixture") is not False
+                or survey.get("review_status") != "independently_reviewed"
+                or not required(attempt, "capture-seal.json").is_file()):
+            raise ValueError("Native crossing requires reviewed original survey and capture seal")
+    elif acquisition.get("provenance_kind") == "synthetic_fixture":
+        if acquisition.get("diagnostic_fixture") is not True or survey.get("review_status") != "synthetic_diagnostic":
+            raise ValueError("Diagnostic crossing must identify synthetic fixture provenance")
+    else:
+        raise ValueError("Original acquisition provenance missing")
     if (provenance.get("copied_sha256") != source_hashes["native-survey.json"]
             or report.get("case_id") != config.get("case_id")
             or report.get("frames") != FRAMES

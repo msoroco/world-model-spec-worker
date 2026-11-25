@@ -21,13 +21,19 @@ def write(path, value):
 
 def build(root, case):
     config = {"assignment_id": ASSIGNMENT, "case_id": ASSIGNMENT + "__" + case,
+              "cell_id": "C109166", "law_id": "NRS-484B-287-1c", "actor": "pedestrian",
               "requested_crossing_location": case, "candidate_id": "primary",
               "rate_hz": 20, "duration_s": 30, "frames": 600,
+              "required_atoms": ["ru.pedestrian", "kin.position"],
+              "physical_completion": {"criterion": "travel_progress", "minimum_progress_m": 12},
               "camera_dimensions": {name: [width, height] for name, width, height in CAMERAS},
               "detail_camera_height_m": 5.0}
     write(root / "config.json", config)
     write(root / "acquisition-provenance.json", {
         "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True})
+    write(root / "exception-applicability-source.json", {
+        "format": "c109166-287-1c-exception-context-v1", "statute": "NRS 484B.290",
+        "review_status": "pending_independent_review", "applicability": "undetermined"})
     survey = {"review_status": "synthetic_diagnostic",
               "controls": [{"native_actor_id": 201}, {"native_actor_id": 202}],
               "roadway_boundary": {"entry_y_m": -4.0},
@@ -61,7 +67,7 @@ def build(root, case):
             identities = {"video_frame": index, "carla_frame": frame,
                           "native_frame": frame, "time_s": time,
                           "source_rgb_sha256": {name: PIXEL_SHA for name, _, _ in CAMERAS}}
-            person = {"native_frame": frame, "time_s": time,
+            person = {"frame": frame, "native_frame": frame, "time_s": time,
                       "center_xy_m": [x, y],
                       "footprint_xy_m": [[x - 0.2, y - 0.2], [x + 0.2, y - 0.2],
                                          [x + 0.2, y + 0.2], [x - 0.2, y + 0.2]],
