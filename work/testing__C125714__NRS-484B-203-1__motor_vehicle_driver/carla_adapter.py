@@ -21,7 +21,7 @@ def _xyz(vector):
 
 class CarlaOpposingAdapter:
     def __init__(self, world, ego, other, camera_readers, map_path,
-                 *, native_map_name, source_ref, controller=None):
+                 *, native_map_name, source_ref, controller=None, observer=None):
         if not isinstance(camera_readers, dict) or set(camera_readers) != set(CAMERAS) or not all(
                 callable(camera_readers[name]) for name in CAMERAS):
             raise ValueError('four original camera readers required')
@@ -35,6 +35,7 @@ class CarlaOpposingAdapter:
         self.map_sha256 = hashlib.sha256(self.map_path.read_bytes()).hexdigest()
         self.native_map_name, self.source_ref = native_map_name, source_ref
         self.controller = controller
+        self.observer = observer
         settings = world.get_settings()
         if settings.synchronous_mode is not True or not math.isclose(
                 settings.fixed_delta_seconds, .05, abs_tol=1e-6):
@@ -80,9 +81,11 @@ class CarlaOpposingAdapter:
                 raise ValueError('original camera frame or PNG missing: ' + name)
             timestamp = image.get('timestamp')
             if not isinstance(timestamp, (int, float)) or not math.isfinite(timestamp) or not math.isclose(
-                    timestamp, elapsed, abs_tol=.001):
+                    timestamp, elapsed, rel_tol=0.0, abs_tol=.001):
                 raise ValueError('original camera timestamp differs from world tick: ' + name)
             images[name] = image['png_bytes']
+        if self.observer is not None:
+            self.observer(frame, elapsed)
         return {'native_frame': frame, 'native_elapsed_s': elapsed,
                 'ego': self._actor(self.ego), 'other': self._actor(self.other),
                 'cameras': images}

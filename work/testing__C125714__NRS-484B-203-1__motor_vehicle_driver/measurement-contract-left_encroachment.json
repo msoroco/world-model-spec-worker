@@ -1,0 +1,50 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Opposing vehicles pass keeping to the direction-relative right",
+      "source": "NRS 484B.203(1), first clause",
+      "output_key": "opposing_motion",
+      "method": "opposing_motion_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "opposing-actor-trace.json",
+        "opposing-camera-frames/camera-manifest.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "On a highway with width for not more than one line of traffic in each direction, each driver gives at least one-half of the paved portion",
+      "source": "NRS 484B.203(1), second clause",
+      "output_key": "paved_allocation",
+      "method": "paved_allocation_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "opposing-actor-trace.json",
+        "reviewed-map.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "As nearly as possible in the physical context of the encounter",
+      "source": "NRS 484B.203(1), qualifying phrase",
+      "output_key": "constraint_context",
+      "method": "constraint_context_measurement",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "reviewed-map.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "reviewed-map.json"
+    ],
+    "error_contains": "Missing required source: reviewed-map.json"
+  }
+}

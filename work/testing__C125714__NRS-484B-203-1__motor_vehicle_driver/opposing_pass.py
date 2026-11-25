@@ -74,6 +74,19 @@ def construct(map_packet: dict, variant: str) -> dict:
         raise ValueError("actor body exceeds paved portion")
     if abs(other_y - ego_y) <= ego_half + other_half:
         raise ValueError("opposing bodies do not clear one another")
+    constraint = None
+    if variant == "right_constrained":
+        constraint = map_packet.get("physical_constraint")
+        if (not isinstance(constraint, dict) or
+                constraint.get("source_kind") != "original_native_map_geometry" or
+                not constraint.get("source_id")):
+            raise ValueError("right-constrained case requires source-recorded physical constraint")
+        station_start, station_end = map(_number, constraint["station_range_m"])
+        lateral_start, lateral_end = map(_number, constraint["lateral_range_m"])
+        if not (station_start < 0 < station_end and lateral_start < lateral_end <= ego_y-ego_half):
+            raise ValueError("right-side physical constraint does not bound encounter route")
+        if ego_y-ego_half-lateral_end > 1.0:
+            raise ValueError("right-side physical constraint is too remote from body route")
     return {
         "variant": variant,
         "coordinate_frame": "s_ego_forward_y_ego_left",
@@ -84,6 +97,7 @@ def construct(map_packet: dict, variant: str) -> dict:
         "paved_y_bounds_m": [lo, hi],
         "single_line_capacity_source": map_packet.get("capacity_source"),
         "native_recheck_required": True,
+        "physical_constraint_source": constraint,
     }
 
 
@@ -181,8 +195,8 @@ def measure(trace: dict) -> dict:
             raise ValueError("20 Hz frame or time continuity failed")
         if row.get("ego_id") != ego_id or row.get("other_id") != other_id:
             raise ValueError("actor identity changed")
-        if _number(row["ego_speed_s_mps"]) <= 0 or _number(row["other_speed_s_mps"]) >= 0:
-            raise ValueError("opposing actual travel not established")
+        ego_speed = _number(row["ego_speed_s_mps"])
+        other_speed = _number(row["other_speed_s_mps"])
         lo, hi = map(_number, row["paved_y_bounds_m"])
         if lo >= hi:
             raise ValueError("invalid paved boundary")
@@ -193,6 +207,8 @@ def measure(trace: dict) -> dict:
         if not (es <= ee and os <= oe and ey0 <= ey1 and oy0 <= oy1):
             raise ValueError("invalid measured body envelope")
         if max(es, os) <= min(ee, oe):
+            if ego_speed <= 0 or other_speed >= 0:
+                raise ValueError("opposing actual travel not established during passing")
             midpoint = (lo + hi) / 2
             contacts.append({
                 "frame": i,

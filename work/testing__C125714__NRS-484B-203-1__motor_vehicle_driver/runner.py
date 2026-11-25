@@ -6,11 +6,14 @@ requires a separately reviewed map packet and its exact SHA256 at launch.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 
 from native_session import open_session
+from media_encode import encode
 from opposing_pass import VARIANTS
 
 
@@ -49,12 +52,38 @@ def run(output, host, port, map_packet, map_sha256):
     if not map_packet or not map_sha256:
         raise ValueError("separately reviewed original median-opening map source required")
     with open_session(host, port, map_packet, map_sha256, config["variant"]) as session:
+        source = Path(map_packet)
+        if source.is_symlink() or hashlib.sha256(source.read_bytes()).hexdigest() != map_sha256:
+            raise ValueError("original reviewed site changed before source retention")
+        retained = output / "reviewed-map.json"
+        if retained.exists():
+            raise ValueError("reviewed original source already retained")
+        shutil.copyfile(source, retained)
+        if hashlib.sha256(retained.read_bytes()).hexdigest() != map_sha256:
+            raise ValueError("retained original site differs")
         receipt = session.capture(output / "opposing-actor-trace.json",
                                   output / "opposing-camera-frames")
     if not session.restoration_verified:
         raise ValueError("original Native world restoration unverified")
+    encoder_codes = encode(output / "opposing-camera-frames", output)
+    (output / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "native", "diagnostic_fixture": False,
+        "reviewed_map_sha256": map_sha256,
+        "method": "original 20 Hz CARLA world, actor bodies, four sensor views and PipelineCapture"},
+        indent=2, sort_keys=True) + "\n")
+    names = ("reviewed-map.json", "opposing-actor-trace.json", "trace.jsonl",
+             "video_frames.jsonl", "road.xodr", "carla_recorder.log",
+             "overview.mkv", "approach.mkv", "reference_corner.mkv",
+             "driver_reference.mkv", "raw.mkv")
+    (output / "acquisition.json").write_text(json.dumps({name: {
+        "kind": "original_native", "sha256": hashlib.sha256((output / name).read_bytes()).hexdigest()}
+        for name in names}, indent=2, sort_keys=True) + "\n")
     (output / "opposing-capture-receipt.json").write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    from worker_exchange.native_output import seal_capture
+    seal_capture(output, frames=900, restoration={"restored": True,
+        "scope": "four cameras and two owned actors destroyed; synchronous settings read back"},
+        errors=[], encoder_exit_codes=encoder_codes)
     return receipt
 
 

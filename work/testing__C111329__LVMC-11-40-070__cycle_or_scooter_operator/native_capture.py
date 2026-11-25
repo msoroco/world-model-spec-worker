@@ -16,7 +16,7 @@ from native_cameras import FourCameraCapture
 
 def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
             device_reader, officer_reader, output: Path,
-            camera_readers=None, camera_dimensions=None) -> dict:
+            camera_readers=None, camera_dimensions=None, control_step=None) -> dict:
     if output.exists():
         raise ValueError("original instruction output already exists")
     if not callable(device_reader) or not callable(officer_reader):
@@ -28,7 +28,9 @@ def capture(world, bike, device, case: dict, site: dict, site_sha256: str,
                if camera_readers is not None else None)
     published = False
     try:
-        for _ in range(FRAME_COUNT):
+        for step in range(FRAME_COUNT):
+            if control_step is not None:
+                control_step(step / 20.0)
             tick_frame = world.tick()
             snapshot = world.get_snapshot()
             if snapshot.frame != tick_frame:

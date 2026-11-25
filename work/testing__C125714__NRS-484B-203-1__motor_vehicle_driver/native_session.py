@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import json
 import math
 import queue
 from pathlib import Path
@@ -86,7 +87,7 @@ class CameraReaders:
         image = self.queues[name].get(timeout=15)
         if (image.frame != frame or image.width != width or image.height != height or
                 not isinstance(image.timestamp, (int, float)) or
-                not math.isclose(image.timestamp, elapsed, abs_tol=.001)):
+                not math.isclose(image.timestamp, elapsed, rel_tol=0.0, abs_tol=.001)):
             raise ValueError("original camera frame, time or dimensions differ: " + name)
         raw = image.raw_data
         if not isinstance(raw, (bytes, bytearray, memoryview)) or len(raw) != width * height * 4:
@@ -111,8 +112,9 @@ class CameraReaders:
 
 
 class OpposingSession:
-    def __init__(self, world, carla, map_path, map_sha256, variant):
+    def __init__(self, world, carla, map_path, map_sha256, variant, client=None):
         self.world, self.carla = world, carla
+        self.client = client
         self.map_path, self.map_sha256, self.variant = Path(map_path), map_sha256, variant
         self.original_settings = world.get_settings()
         self.actors = {}
@@ -168,8 +170,29 @@ class OpposingSession:
                 steer=steer))
 
     def capture(self, output, media_output):
-        receipt = capture(self.adapter, self.map_path, self.map_sha256, self.variant,
-                          output, frames=900, media_output=media_output)
+        pipeline = frame_map = None
+        attempt = Path(output).parent
+        if self.client is not None:
+            from pipeline_capture import PipelineCapture
+            from worker_exchange.native_output import FrameMap
+            case_id = json.loads((attempt / "config.json").read_text())["selected_case_id"]
+            pipeline = PipelineCapture(self.client, self.actors["ego"], attempt, case_id)
+            frame_map = FrameMap(attempt / "video_frames.jsonl")
+            def observe(frame, elapsed):
+                pipeline.capture(frame, elapsed)
+                frame_map.append(frame, elapsed)
+            self.adapter.observer = observe
+        succeeded = False
+        try:
+            receipt = capture(self.adapter, self.map_path, self.map_sha256, self.variant,
+                              output, frames=900, media_output=media_output)
+            succeeded = True
+        finally:
+            self.adapter.observer = None
+            if frame_map is not None:
+                frame_map.close()
+            if pipeline is not None:
+                pipeline.close(confirmed=succeeded)
         receipt["media_audit"] = audit_media(output, receipt["sha256"], media_output,
                                               receipt["camera_manifest"]["sha256"])
         return receipt
@@ -202,4 +225,5 @@ def open_session(host, port, map_path, map_sha256, variant):
     import carla
     client = carla.Client(host, port)
     client.set_timeout(30)
-    return OpposingSession(client.get_world(), carla, map_path, map_sha256, variant)
+    return OpposingSession(client.get_world(), carla, map_path, map_sha256, variant,
+                           client=client)

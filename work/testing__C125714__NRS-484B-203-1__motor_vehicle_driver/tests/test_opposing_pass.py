@@ -26,7 +26,10 @@ def site():
                 "wrong_side": {"ego": 1.7, "other": -1.7},
                 "left_encroachment": {"ego": -0.7, "other": 1.7},
                 "right_constrained": {"ego": -1.5, "other": 1.7},
-            }}
+            },
+            "physical_constraint": {"source_kind": "original_native_map_geometry",
+                "source_id": "diagnostic-right-edge-feature",
+                "station_range_m": [-4, 4], "lateral_range_m": [-3.5, -2.4]}}
 
 
 def history(ego_y=-1.7, other_y=1.7):
@@ -123,6 +126,16 @@ class SiteTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.construct(packet, "right_half")
 
+    def test_right_constrained_requires_constructed_source_feature(self):
+        packet = site()
+        del packet["physical_constraint"]
+        with self.assertRaisesRegex(ValueError, "source-recorded physical constraint"):
+            module.construct(packet, "right_constrained")
+        packet = site()
+        packet["physical_constraint"]["lateral_range_m"] = [-3.5, -3.4]
+        with self.assertRaisesRegex(ValueError, "too remote"):
+            module.construct(packet, "right_constrained")
+
     def test_sealed_source_rejects_mutation(self):
         import hashlib
         with tempfile.TemporaryDirectory() as tmp:
@@ -166,6 +179,16 @@ class MeasurementTests(unittest.TestCase):
         for row in packet["samples"]:
             row["other_body_s_bounds_m"] = [10, 12]
         with self.assertRaises(ValueError):
+            module.measure(packet)
+
+    def test_stop_outside_pass_does_not_erase_measured_encounter(self):
+        packet = history()
+        packet["samples"].append({**packet["samples"][-1], "frame": 3,
+            "time_s": .15, "ego_speed_s_mps": 0, "other_speed_s_mps": 0,
+            "ego_body_s_bounds_m": [10, 12], "other_body_s_bounds_m": [-12, -10]})
+        self.assertEqual(module.measure(packet)["passing_frames"], [0, 1, 2])
+        packet["samples"][1]["ego_speed_s_mps"] = 0
+        with self.assertRaisesRegex(ValueError, "during passing"):
             module.measure(packet)
 
     def test_reject_nonoriginal_gap_identity_and_transient(self):

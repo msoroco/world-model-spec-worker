@@ -114,6 +114,20 @@ class CarlaOpposingAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'distinct original actors'):
             self.adapter()
 
+    def test_converter_observer_uses_same_joined_original_tick(self):
+        observed = []
+        adapter = self.adapter()
+        adapter.observer = lambda frame, elapsed: observed.append((frame, elapsed))
+        sample = adapter.tick()
+        self.assertEqual(observed, [(sample['native_frame'], sample['native_elapsed_s'])])
+        self.readers['approach'] = lambda frame, elapsed: {
+            'frame': frame, 'timestamp': elapsed-.05, 'png_bytes': b'png'}
+        failing = self.adapter()
+        failing.observer = lambda frame, elapsed: observed.append((frame, elapsed))
+        with self.assertRaisesRegex(ValueError, 'camera timestamp'):
+            failing.tick()
+        self.assertEqual(len(observed), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
