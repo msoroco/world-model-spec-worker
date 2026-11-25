@@ -8,6 +8,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 from zipfile import ZIP_STORED, ZipFile
 
 from PIL import Image, UnidentifiedImageError
@@ -28,7 +29,8 @@ def _write_json(root, name, value):
     return {"path": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
-def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_original=False):
+def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_original=False,
+                    site_source=None):
     """Capture exactly 900 synchronous ticks and seal original camera images.
 
     tick returns the original world frame; sample returns original actor state for
@@ -43,6 +45,21 @@ def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_ori
     if not isinstance(site, dict) or len(site.get("map_sha256", "")) != 64:
         raise ValueError("source-bound site required")
     _SAVED.ENCOUNTER.validate_site(site, kind)
+    native_site_ref = None
+    if attest_original:
+        if not isinstance(site_source, dict) or set(site_source) != {"root", "ref"}:
+            raise ValueError("attested capture requires sealed Native site survey")
+        spec = importlib.util.spec_from_file_location("native_site", Path(__file__).with_name("native_site.py"))
+        native_site = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(native_site)
+        source_root = Path(site_source["root"]).resolve()
+        original = native_site.verify(source_root, site_source["ref"], expected_kind=kind)
+        if site != original:
+            raise ValueError("capture site differs from sealed Native survey")
+        for name in ("native-map.xodr", "rider-asset-review.json", "site-survey.json"):
+            shutil.copyfile(source_root / name, root / name)
+        native_site_ref = {"path": "site-survey.json", "sha256":
+                           hashlib.sha256((root / "site-survey.json").read_bytes()).hexdigest()}
     rows = []
     frames = {camera: [] for camera in CAMERAS}
     archives = {}
@@ -91,6 +108,7 @@ def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_ori
         "camera_frames": _write_json(root, "camera-frames.json", frames),
         "media": _write_json(root, "media.json", media),
         "capture_origin": "native_adapter_attested" if attest_original else "unreviewed_adapter",
+        "native_site": native_site_ref,
         "physical_review": "pending",
         "legal_judgment": "unresolved",
     }

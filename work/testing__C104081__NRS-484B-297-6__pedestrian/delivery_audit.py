@@ -162,15 +162,36 @@ def audit_saved(root: Path, case_id: str, *, diagnostic: bool = False,
     }
 
 
+def audit_delivery(root: Path, case_id: str, review_path: Path) -> dict:
+    """Require independent original-pixel review and sealed physical completion."""
+    from original_review import audit_original_review
+    source = audit_saved(root, case_id, decode_media=True)
+    reviewed = audit_original_review(root, case_id, source, review_path)
+    source["checks"] = reviewed["checks"]
+    source["independent_review"] = {
+        "pixel_review_sha256": reviewed["pixel_review_sha256"],
+        "participant_census": reviewed["participant_census"],
+    }
+    source["physical_acceptance"] = "source_reviewed_pending_canonical_acceptance"
+    return source
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit exact saved pedestrian bypass sources")
     parser.add_argument("--attempt", required=True, type=Path)
     parser.add_argument("--case", required=True)
     parser.add_argument("--decode-media", action="store_true")
     parser.add_argument("--diagnostic", action="store_true")
+    parser.add_argument("--review", type=Path,
+                        help="independent original-pixel review after Native owner release")
     args = parser.parse_args()
-    receipt = audit_saved(args.attempt, args.case, diagnostic=args.diagnostic,
-                          decode_media=args.decode_media)
+    if args.review:
+        if args.diagnostic:
+            raise ValueError("diagnostic fixture cannot enter original pixel review")
+        receipt = audit_delivery(args.attempt, args.case, args.review)
+    else:
+        receipt = audit_saved(args.attempt, args.case, diagnostic=args.diagnostic,
+                              decode_media=args.decode_media)
     print(json.dumps(receipt, sort_keys=True))
 
 

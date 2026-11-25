@@ -18,7 +18,7 @@ def main() -> None:
         negative = subprocess.run(command + ["--negative"], capture_output=True,
                                   text=True, check=False)
         if (positive.returncode != 0 or
-                "diagnostic protocol positive and three negatives passed" not in positive.stdout or
+                "diagnostic protocol positive and five negatives passed" not in positive.stdout or
                 negative.returncode != 1 or
                 "original pixel review missing or stale" not in negative.stderr):
             raise AssertionError("independent exact acceptance proof failed: " + case_id)

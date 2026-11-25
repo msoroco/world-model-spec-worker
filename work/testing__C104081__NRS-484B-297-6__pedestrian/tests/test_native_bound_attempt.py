@@ -58,7 +58,12 @@ class BoundAttemptTest(unittest.TestCase):
             self.assertEqual(run.call_args.kwargs["camera_profile_sha256"], profile_sha)
             self.assertEqual(run.call_args.kwargs["traffic_plan_sha256"], traffic_sha)
             self.assertTrue(callable(run.call_args.kwargs["camera_rig_factory"]))
+            self.assertEqual(run.call_args.kwargs["walking_speed_m_s"], 1.4)
             self.assertIsNone(run.call_args.args[8])
+            with patch("native_bound_attempt.run_native_attempt", return_value={"fallback": True}) as fallback:
+                run_bound_attempt(client, object(), {}, "exact", survey, camera,
+                    traffic, base / "fallback", restore_api=object(), walking_speed_m_s=1.2)
+            self.assertEqual(fallback.call_args.kwargs["walking_speed_m_s"], 1.2)
             write(traffic, {"actor_ids": [43]})
             with self.assertRaisesRegex(ValueError, "differs from site survey"):
                 run_bound_attempt(client, object(), {}, "exact", survey,
@@ -70,6 +75,19 @@ class BoundAttemptTest(unittest.TestCase):
                 run_bound_attempt(NS(get_world=lambda: wrong_world), object(), {},
                     "exact", survey, camera, traffic, base / "capture",
                     restore_api=object())
+            unreviewed = json.loads(survey.read_text())
+            unreviewed.pop("reviewed_original_site")
+            write(survey, unreviewed)
+            with self.assertRaisesRegex(ValueError, "site review is missing"):
+                run_bound_attempt(client, object(), {}, "exact", survey,
+                    camera, traffic, base / "capture", restore_api=object())
+            unreviewed["reviewed_original_site"] = {
+                "reviewer": "CPU test fixture only", "method": "path containment",
+                "source_refs": [{"path": "../outside.xodr", "sha256": "a" * 64}]}
+            write(survey, unreviewed)
+            with self.assertRaisesRegex(ValueError, "source bytes differ"):
+                run_bound_attempt(client, object(), {}, "exact", survey,
+                    camera, traffic, base / "capture", restore_api=object())
 
 
 if __name__ == "__main__":

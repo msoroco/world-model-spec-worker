@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import tempfile
 
-from delivery_audit import CHECKS, OBSERVATIONS, ROOT, SOURCE, sha, verify_inputs
+from delivery_audit import CHECKS, OBSERVATIONS, ROOT, SOURCE, sha, verify_exact_case, verify_inputs
 
 
 def fixture(attempt: Path, case_id: str):
@@ -70,6 +70,26 @@ def main() -> None:
         audit = verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
         if audit["checks"] != {name: True for name in CHECKS}:
             raise AssertionError("required acceptance check omitted")
+        (attempt / "scene.json").write_text(json.dumps({"case_id": args.case_id}))
+        (attempt / "capture-seal.json").write_text(json.dumps({"sources": {
+            "scene.json": sha(attempt / "scene.json")}}))
+        verify_exact_case(args.case_id, attempt)
+        wrong_case = ROOT.name + "__adjacent_travel" if not args.case_id.endswith("__adjacent_travel") else ROOT.name + "__lateral_entry"
+        try:
+            verify_exact_case(wrong_case, attempt)
+        except ValueError as error:
+            if str(error) != "sealed original exact case differs":
+                raise
+        else:
+            raise AssertionError("wrong original case accepted")
+        (attempt / "scene.json").write_text(json.dumps({"case_id": wrong_case}))
+        try:
+            verify_exact_case(args.case_id, attempt)
+        except ValueError as error:
+            if str(error) != "sealed original exact scene missing or changed":
+                raise
+        else:
+            raise AssertionError("changed original scene accepted")
         pixels["observations"]["red_x_head"]["visible"] = False
         try:
             verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
@@ -96,7 +116,7 @@ def main() -> None:
                 raise
         else:
             raise AssertionError("changed physical source accepted")
-        print(args.case_id + ": diagnostic protocol positive and three negatives passed; no original acceptance")
+        print(args.case_id + ": diagnostic protocol positive and five negatives passed; no original acceptance")
 
 
 if __name__ == "__main__":

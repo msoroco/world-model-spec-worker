@@ -90,18 +90,29 @@ class OriginalPixelAuditTest(unittest.TestCase):
         self.packet['observations'][2]['frame_index'] = 399
         self.save()
         sources = {}
-        for name in ('scene.json', 'reviewed-site-audit.json',
-                     'native-crosswalk-readback.json', 'walker-body-history.jsonl'):
+        for name in ('scene.json', 'reviewed-site.json', 'reviewed-site-audit.json',
+                     'native-crosswalk-readback.json', 'walker-body-history.jsonl',
+                     'camera-frame-joins.jsonl', *(camera + '.mkv' for camera in pixel.CAMERAS)):
             path = self.root / name
-            path.write_text('{}\n')
+            if name == 'scene.json':
+                path.write_text(json.dumps({'map_source_sha256': 'm' * 64}) + '\n')
+            elif name == 'native-crosswalk-readback.json':
+                path.write_text(json.dumps({'case_id': 'case', 'loaded_map_sha256': 'm' * 64,
+                                            'authored_polygon_readbacks': [{'vertices': 4}]}) + '\n')
+            else:
+                path.write_text('{}\n')
             sources[name] = pixel.sha(path)
+        self.saved['sources_sha256'] = {name: sources[name] for name in self.source}
+        self.packet['source_sha256'] = self.saved['sources_sha256']
+        self.save()
         (self.root / 'capture-seal.json').write_text(json.dumps({
             'format': 'worker-sealed-capture', 'provenance_kind': 'native',
             'frames': 400, 'restoration': {'restored': True},
             'events': ['capture_finished', 'encoders_closed', 'restoration_verified'],
             'sources': sources}) + '\n')
         with patch.object(pixel, 'evaluate_crossing_completion',
-                          return_value={'physical_checks': {'maneuver': {'status': 'met'}}}):
+                          return_value={'physical_checks': {'maneuver': {'status': 'met'}}}), \
+             patch.object(pixel, 'audit_reviewed_site', return_value={}):
             return self.check(diagnostic=False)
 
     def test_native_source_lifecycle_and_review_join(self):
@@ -114,7 +125,8 @@ class OriginalPixelAuditTest(unittest.TestCase):
 
     def native_check_after_tamper(self):
         with patch.object(pixel, 'evaluate_crossing_completion',
-                          return_value={'physical_checks': {'maneuver': {'status': 'met'}}}):
+                          return_value={'physical_checks': {'maneuver': {'status': 'met'}}}), \
+             patch.object(pixel, 'audit_reviewed_site', return_value={}):
             return self.check(diagnostic=False)
 
     def test_native_missing_independent_visibility_rejected(self):
@@ -122,6 +134,25 @@ class OriginalPixelAuditTest(unittest.TestCase):
         self.packet['observations'][2]['walker_body_visible'] = 'unknown'
         self.save()
         with self.assertRaisesRegex(ValueError, 'walker pixel visibility missing'):
+            self.native_check_after_tamper()
+
+    def test_native_forged_site_receipt_rejected(self):
+        self.native_check()
+        with patch.object(pixel, 'evaluate_crossing_completion',
+                          return_value={'physical_checks': {'maneuver': {'status': 'met'}}}), \
+             patch.object(pixel, 'audit_reviewed_site', return_value={'forged': True}):
+            with patch.object(pixel, 'read_attempt', return_value=self.saved):
+                with self.assertRaisesRegex(ValueError, 'site receipt differs'):
+                    pixel.audit(self.root, self.review, 'case', diagnostic=False,
+                                media_auditor=lambda _: self.media,
+                                crop_decoder=lambda *_: self.data)
+
+    def test_native_unsealed_video_hash_rejected(self):
+        self.native_check()
+        self.saved['sources_sha256']['overview.mkv'] = 'f' * 64
+        self.packet['source_sha256'] = self.saved['sources_sha256']
+        self.save()
+        with self.assertRaisesRegex(ValueError, 'sealed source differs'):
             self.native_check_after_tamper()
 
 

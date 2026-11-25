@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C111706__NRS-484B-403-3__motor_vehicle_driver",
   "input_sha256": "9fbbfa138edaa7336c22f0f79c2266ed404dda2a4e77789a973d1c2685a4ee74",
-  "status": "partial",
-  "readiness_kind": "partial_saved_uturn_delivery_and_exact_comparison_source_audit",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -24,12 +24,6 @@
       "sha256": "01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "assignment-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-source-join-tests.log",
@@ -48,14 +42,20 @@
       "sha256": "01ad5d30d246f5e2dc03312ef2864192d2cec4034b1b8708cf8b87e9a4fae9eb"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-source-join-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "command": "cd work/testing__C111706__NRS-484B-403-3__motor_vehicle_driver && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD:$PWD/../../runtime/scenario_pipeline:$PWD/../../runtime/python\" ../../.venv-cpu/bin/python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "cpu-live-entrypoint-tests.log",
+      "sha256": "53f3b873c20463e49ef7bb89ea980a6d9a7f51490cb8037f2fa44808d29676e9"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-current-preflight.log",
+      "sha256": "c22a5a4c50735fbb54828b06ff0de166c8aff6d1b9e4e723e6ff56831fc604e2"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Three exact U-turn cases and two comparisons remain partial. The independent comparison audit now requires the two exact planned case pairs and binds each Native packet to its sealed site, map and route sources. Forty-six focused CPU tests pass, pinned preflight and scoped static pass. Strict scoped delivery gate fails on truthful partial status. Reviewed physical site, exact bundles/manifest, semantic proposals, positive/negative compatibility, saved-only process and owner-release proof remain CPU work; physical/legal classification unverified."
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --case testing__C111706__NRS-484B-403-3__motor_vehicle_driver__intersection_vehicle_near --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -16,7 +16,7 @@ SOURCE_FILES = (
     "compare_saved.py",
 )
 
-RUNNER = '''"""Exact sidewalk-bypass diagnostic bundle entrypoint."""
+RUNNER = '''"""Exact sidewalk-bypass source-gated Native bundle entrypoint."""
 import argparse
 import hashlib
 import json
@@ -41,7 +41,8 @@ def check():
         raise ValueError("Case parameters changed")
     if config["rate_hz"] != FPS or config["frame_count"] != 900 or config["duration_s"] != 45:
         raise ValueError("Original frame contract changed")
-    if config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]:
+    cameras = [item.get("name") if isinstance(item, dict) else item for item in config["cameras"]]
+    if cameras != ["overview", "approach", "reference_corner", "driver_reference"]:
         raise ValueError("Four-camera contract changed")
     p = config["construction_parameters"]
     scene = construct(case, direction=p["direction"], area_blocked=p["area_blocked"],
@@ -109,7 +110,8 @@ def main():
     plan = json.loads((output / "case-plan.json").read_text())
     run_bound_attempt(client, carla, plan, case, output / names[0],
                       output / names[1], output / names[2], output,
-                      restore_api=world_restore)
+                      restore_api=world_restore,
+                      walking_speed_m_s=json.loads((Path(__file__).resolve().parent / "config.json").read_text())["requested_speed_mps"])
     publish_original(output, case)
 
 

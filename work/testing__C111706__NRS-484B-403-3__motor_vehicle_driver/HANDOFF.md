@@ -83,3 +83,11 @@ Pinned suite passes 46 tests; preflight and scoped static pass. Exact scoped str
 - `cpu-source-join-strict.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
 
 Next CPU work remains reviewed site/map/district/boundary and per-case routes, exact production bundles/manifest and finalizers, semantic proposals, saved positive/negative compatibility, process receipts and independent owner-release audit.
+
+## 2026-11-24 exact delivery preparation and pixel review gate
+
+Three exact primary and three fallback U-turn constructions passed fresh offline proofs. All six passed pinned positive and negative compatibility, and all three cases passed synthetic physical/lifecycle probes plus saved-only processing. Production capture uses reviewed site documents, same-run Native/trace/camera acquisition, restoration readback and a sealed original tree that includes the source index and all four full videos. These original paths await an actual CARLA run.
+
+Independent delivery audit joins Native, trace, frame map, decoded full video hashes, and a separate pixel review. Production acceptance requires each required view visible, all 900 reviewed frame identities/time values and the required view role, with review bound to the original RGB sequence and decode receipt. CPU proof rejects missing site, missing or stale review, unresolved or occluded review, and a tampered encoded video for each of the three exact diagnostic cases. Four focused production review tests reject unresolved/occluded/not-visible statuses, changed frame identity/time/role, and stale RGB hashes. These diagnostic proofs do not claim physical or statutory acceptance.
+
+The focused suite passed 62 tests. Scoped strict command: `.venv-cpu/bin/python worker_check.py --assignment testing__C111706__NRS-484B-403-3__motor_vehicle_driver --complete --require-delivery-ready`. First canonical GPU delivery command is in `result.json`. Original CARLA motion, visibility and source review remain delivery-time checks.

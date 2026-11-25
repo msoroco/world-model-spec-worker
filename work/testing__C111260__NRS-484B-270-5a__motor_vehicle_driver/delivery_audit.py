@@ -37,6 +37,15 @@ def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False,
     if packet.get("physical_review") != "pending" or packet.get("legal_judgment") != "unresolved":
         raise ValueError("acquisition packet may not assert physical or legal acceptance")
     saved = _module("saved_encounter").finalize_saved(root)
+    if require_attested:
+        native_ref = packet.get("native_site")
+        if not native_ref:
+            raise ValueError("sealed Native site survey missing")
+        original = _module("native_site").verify(root, native_ref, expected_kind=saved["kind"])
+        site_ref = packet["site"]
+        site_path = root / site_ref["path"]
+        if json.loads(site_path.read_text(encoding="utf-8")) != original:
+            raise ValueError("captured site differs from sealed Native survey")
     pixels = _module("native_capture").audit_original_pixels(root)
     if saved["case_id"] != pixels["case_id"] or saved["case_id"] != case_id:
         raise ValueError("saved actor and pixel case join differs")

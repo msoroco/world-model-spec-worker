@@ -13,6 +13,12 @@ from pathlib import Path
 from analysis import source
 
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
+VIEW_ROLES = {
+    "overview": "both_routes_and_intersection_boundary",
+    "approach": "ego_turn_initiation",
+    "reference_corner": "intersection_boundary_and_swept_body",
+    "driver_reference": "ego_other_vehicle_and_destination_lane",
+}
 
 
 def sha(path):
@@ -25,6 +31,28 @@ def read(path):
 
 def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
+
+
+def validate_review_view(item, view, video_hash, receipt_hash, rgb_hash,
+                         mapping, diagnostic):
+    expected_status = "diagnostic_only" if diagnostic else "visible"
+    if (item.get("video_sha256") != video_hash or
+            item.get("decode_receipt_sha256") != receipt_hash or
+            item.get("rgb_sequence_sha256") != rgb_hash or
+            item.get("visibility_status") != expected_status or
+            item.get("required_role") != VIEW_ROLES[view] or
+            item.get("inspected_frame_count") != len(mapping)):
+        raise ValueError("independent original pixel review absent or stale: " + view)
+    reviewed = item.get("reviewed_frames")
+    if not isinstance(reviewed, list) or len(reviewed) != len(mapping):
+        raise ValueError("independent original pixel frame identities incomplete: " + view)
+    for actual, expected in zip(reviewed, mapping):
+        if (actual.get("video_frame") != expected["video_frame"] or
+                actual.get("carla_frame") != expected["carla_frame"] or
+                actual.get("time_s") != expected["time_s"] or
+                actual.get("observed_role") != VIEW_ROLES[view] or
+                actual.get("visibility_status") != expected_status):
+            raise ValueError("independent original pixel frame role or time differs: " + view)
 
 
 def audit(attempt, processing_path, case_id, *, pixel_review_path, diagnostic=False):
@@ -70,6 +98,11 @@ def audit(attempt, processing_path, case_id, *, pixel_review_path, diagnostic=Fa
                 seal.get("restoration", {}).get("restored") is not True or
                 seal.get("diagnostic_fixture") is True):
             raise ValueError("Native capture closure incomplete")
+        required_sealed = {"capture/source-index.json", "capture/site.json",
+                           "capture/native-uturn.json", "video_frames.jsonl",
+                           "trace.jsonl", *(view + ".mkv" for view in VIEWS)}
+        if not required_sealed.issubset(seal.get("sources", {})):
+            raise ValueError("Native seal omits an original source or full video")
         for rel, digest in seal.get("sources", {}).items():
             if not (attempt / rel).is_file() or sha(attempt / rel) != digest:
                 raise ValueError("Native sealed original missing or changed: " + rel)
@@ -102,17 +135,8 @@ def audit(attempt, processing_path, case_id, *, pixel_review_path, diagnostic=Fa
         decoded = verify_receipt(video, receipt, len(frames), mapping_sha256=frame_map_hash)
         if not decoded.get("rgb_sequence_sha256"):
             raise ValueError("decoded original pixels missing: " + view)
-        item = review["views"][view]
-        if (item.get("video_sha256") != sha(video) or
-                item.get("decode_receipt_sha256") != sha(receipt) or
-                item.get("rgb_sequence_sha256") != decoded["rgb_sequence_sha256"] or
-                item.get("inspected_frame_count") != len(frames) or
-                item.get("visibility_status") not in (
-                    ("diagnostic_only",) if diagnostic else
-                    ("visible", "not_visible", "occluded", "unresolved"))):
-            raise ValueError("independent original pixel review absent or stale: " + view)
-        if not diagnostic and not item.get("reviewed_frames"):
-            raise ValueError("independent original pixel sample review missing: " + view)
+        validate_review_view(review["views"][view], view, sha(video), sha(receipt),
+                             decoded["rgb_sequence_sha256"], mapping, diagnostic)
         decodes[view] = sha(receipt)
     return {"format": "c111706-independent-delivery-audit-v1", "case_id": case_id,
             "passed": True, "scope": "diagnostic software only" if diagnostic else "original Native delivery",

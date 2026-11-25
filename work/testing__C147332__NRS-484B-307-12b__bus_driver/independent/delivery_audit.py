@@ -30,6 +30,19 @@ def read(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+def verify_exact_case(case_id: str, attempt: Path) -> None:
+    """Join the requested case to original scene bytes captured in the Native seal."""
+    scene_path = attempt / "scene.json"
+    seal_path = attempt / "capture-seal.json"
+    if not scene_path.is_file() or not seal_path.is_file():
+        raise ValueError("sealed original exact scene missing")
+    seal = read(seal_path)
+    if seal.get("sources", {}).get("scene.json") != sha(scene_path):
+        raise ValueError("sealed original exact scene missing or changed")
+    if read(scene_path).get("case_id") != case_id:
+        raise ValueError("sealed original exact case differs")
+
+
 def verify_inputs(case_id: str, source: dict, physical: dict, pixels: dict,
                   decode: dict, core: dict, attempt: Path) -> dict:
     """Rejoin physical and human observations to original captured bytes."""
@@ -116,6 +129,7 @@ def main() -> None:
         raise ValueError("unknown exact case")
     if args.physical_receipt.resolve() != (args.attempt / "result.json").resolve():
         raise ValueError("physical receipt must be the sealed Native result")
+    verify_exact_case(args.case_id, args.attempt)
     source = SOURCE.audit_attempt(args.attempt)
     decode = read(args.decode_receipt)
     if decode.get("auditor_sha256") != sha(args.media_auditor):

@@ -13,6 +13,7 @@ from pathlib import Path
 from saved_media_audit import audit_media
 from saved_measurement import read_attempt
 from physical_geometry_audit import evaluate_crossing_completion
+from reviewed_site import audit_reviewed_site
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
@@ -101,8 +102,22 @@ def audit(attempt, review_path, case_id, *, diagnostic=False, media_auditor=audi
                 raise ValueError('sealed original source differs')
         if not {'reviewed-site-audit.json', 'native-crosswalk-readback.json'} <= set(seal['sources']):
             raise ValueError('reviewed Native site and crosswalk sources missing')
-        rows = [json.loads(line) for line in (root / 'walker-body-history.jsonl').read_text().splitlines()]
+        required_sources = {'scene.json', 'reviewed-site.json', 'reviewed-site-audit.json',
+                            'native-crosswalk-readback.json', 'walker-body-history.jsonl',
+                            'camera-frame-joins.jsonl', *(name + '.mkv' for name in CAMERAS)}
+        if not required_sources <= set(seal['sources']):
+            raise ValueError('sealed original source inventory incomplete')
+        if any(seal['sources'][name] != digest for name, digest in saved['sources_sha256'].items()):
+            raise ValueError('sealed source differs from original acquisition index')
         scene = json.loads((root / 'scene.json').read_text())
+        if json.loads((root / 'reviewed-site-audit.json').read_text()) != audit_reviewed_site(scene, root):
+            raise ValueError('reviewed original site receipt differs from source documents')
+        readback = json.loads((root / 'native-crosswalk-readback.json').read_text())
+        if (readback.get('case_id') != case_id or
+                readback.get('loaded_map_sha256') != scene.get('map_source_sha256') or
+                not readback.get('authored_polygon_readbacks')):
+            raise ValueError('Native crosswalk readback differs from exact scene')
+        rows = [json.loads(line) for line in (root / 'walker-body-history.jsonl').read_text().splitlines()]
         completion = evaluate_crossing_completion(scene, rows)
         if completion['physical_checks']['maneuver']['status'] != 'met':
             raise ValueError('original walker physical completion missing')
