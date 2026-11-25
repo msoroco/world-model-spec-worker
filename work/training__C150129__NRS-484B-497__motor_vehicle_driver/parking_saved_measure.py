@@ -8,7 +8,7 @@ import json
 import math
 
 ASSIGNMENT = 'training__C150129__NRS-484B-497__motor_vehicle_driver'
-CAMERAS = ('overview', 'sign_approach', 'sign_face', 'parking_side')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def require(ok, reason):

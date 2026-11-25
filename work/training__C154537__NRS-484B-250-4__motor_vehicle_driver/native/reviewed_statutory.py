@@ -21,6 +21,27 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def apply_review(attempt, survey):
+    """Use separate confirmed observations without mutating sealed sources."""
+    if survey.get('source_kind') != 'original_native':
+        return dict(survey), None
+    attempt = Path(attempt)
+    review_path = attempt / 'source-review.json'
+    if not review_path.is_file():
+        raise ValueError('Separate original source review missing')
+    binding = validate(attempt, review_path)
+    annotation = json.loads(review_path.read_text())
+    for topic, required in REQUIRED_REFS.items():
+        entry = annotation['topics'][topic]
+        if entry['status'] != 'confirmed' or not required <= set(entry['source_refs']):
+            raise ValueError('Original review topic or source refs incomplete: ' + topic)
+    reviewed = dict(survey)
+    reviewed['sidewalk_derived_crosswalk_reviewed'] = True
+    reviewed['official_device_provenance_reviewed'] = True
+    reviewed['through_highway_provenance_reviewed'] = True
+    return reviewed, binding
+
+
 def derive(attempt, review):
     attempt, review = Path(attempt), Path(review)
     binding = validate(attempt, review)

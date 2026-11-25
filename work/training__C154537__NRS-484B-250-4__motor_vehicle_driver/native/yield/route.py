@@ -12,7 +12,7 @@ def other_y(case, frame):
         if frame < 60:
             return -27.0
         return min(35.0, -27 + (frame - 60) * .3)
-    if case == 'controlled_6':
+    if case in ('controlled_6', 'controlled_7'):
         # Other vehicle pauses inside the junction during ego entry.
         if frame < 175:
             return -35 + frame * .2
@@ -23,10 +23,11 @@ def other_y(case, frame):
 
 
 def requested_rows(case):
-    if case not in ('controlled_5', 'controlled_6'):
+    if case not in ('controlled_5', 'controlled_6', 'controlled_7'):
         raise ValueError('Unknown exact yielding case')
     for frame in range(FRAMES):
-        x = -35 + min(frame, 130) * .2 + max(0, frame - 220) * .2
+        release = 300 if case == 'controlled_7' else 220
+        x = -35 + min(frame, 130) * .2 + max(0, frame - release) * .2
         x = min(x, 35)
         y = other_y(case, frame)
         yield {'frame': frame, 'time_s': frame / RATE_HZ,

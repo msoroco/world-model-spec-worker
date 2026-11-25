@@ -665,6 +665,102 @@
           "value": "within_intersection_at_ego_entry"
         }
       }
+    },
+    {
+      "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_7",
+      "deliberate_differences": [
+        "commanded_release_order"
+      ],
+      "paired_probe_id": "reference_controlled_7",
+      "probe": {
+        "comparison_or_standard": "same-other-occupancy yielding response comparison",
+        "primary_variable": "commanded_release_order",
+        "target_value_or_branch": "hold_ego_until_other_clears"
+      },
+      "rationale": "Same other-vehicle occupancy request as controlled_6 with extended ego hold; original physical yielding remains unobserved.",
+      "recording_description": {
+        "limitations": [
+          "Authored OpenDRIVE and imported lane/device survey require physical review",
+          "Through-highway and official-device source review pending"
+        ],
+        "channels": [
+          {
+            "name": "ego_front",
+            "unit": "m",
+            "method": "original ego body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "m/s",
+            "method": "original Native velocity vector",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "governing_signal",
+            "unit": "structured",
+            "method": "original CARLA head/lane/state readback",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "other_vehicle",
+            "unit": "structured",
+            "method": "original actor body and motion history",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          },
+          {
+            "name": "driver_view_rays",
+            "unit": "structured",
+            "method": "sampled original Native world.cast_ray",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+          }
+        ],
+        "context_inputs": []
+      },
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "point nearest the intersection where the driver has a view of approaching traffic on the through highway",
+        "proceed cautiously",
+        "yielding to vehicles which have previously completed a stop or are within the intersection"
+      ],
+      "variable_assignments": {
+        "commanded_release_order": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "hold_until_other_clear"
+        },
+        "commanded_stop_response": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stop"
+        },
+        "governing_stop_reference": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "visible_point_no_line_or_crosswalk"
+        },
+        "other_vehicle_context": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "within_intersection_at_ego_entry"
+        }
+      }
     }
   ]
 }

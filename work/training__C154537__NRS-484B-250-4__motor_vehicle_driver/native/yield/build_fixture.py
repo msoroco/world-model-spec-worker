@@ -148,4 +148,9 @@ def build(case):
 
 
 if __name__ == '__main__':
-    print(json.dumps([build(case) for case in ('controlled_5', 'controlled_6')]))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', choices=('controlled_5', 'controlled_6', 'controlled_7'))
+    args = parser.parse_args()
+    print(json.dumps([build(case) for case in ((args.case,) if args.case else
+                     ('controlled_5', 'controlled_6', 'controlled_7'))]))

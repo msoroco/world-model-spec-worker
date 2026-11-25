@@ -1,18 +1,27 @@
 {
+  "cell_id": "C111071",
+  "actor": "motorcycle_or_moped_operator",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
-      "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_draft",
-      "target_type": "below",
-      "physical_target": "stop before hierarchy boundary, wait two complete unchanged cycles, then proceed straight after yielding",
-      "comparison_variable": "red_arrow_cycle_wait",
-      "source_branch": "Failed-detection straight movement",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "construction_manifest": "draft-manifest.json",
+      "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored map and camera context; no neutral recording selected.",
+      "variable_assignments": {
+        "requested_wait_cycles": {
+          "kind": "controller",
+          "value": 2
+        },
+        "requested_conflict_hold": {
+          "kind": "controller",
+          "value": "hold_until_clear"
+        },
+        "motorcycle_body_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -47,21 +56,106 @@
         "limitations": [
           "Physical signal causation, actor and four-camera acquisition unverified"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "signal failed to detect the presence"
+      ]
+    },
+    {
+      "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
+      "target_law_id": "NRS-484B-307-9b",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed straight-cell request contrast with original physical cause and lawful status left for review.",
+      "paired_probe_id": "c111071_two_cycle_wait",
+      "deliberate_differences": [
+        "requested_wait_cycles"
+      ],
+      "probe": {
+        "primary_variable": "requested_wait_cycles",
+        "comparison_or_standard": "source-observed requested cycle count and conflict hold, without a legal label",
+        "target_value_or_branch": 2
+      },
+      "variable_assignments": {
+        "requested_wait_cycles": {
+          "kind": "controller",
+          "value": 2
+        },
+        "requested_conflict_hold": {
+          "kind": "controller",
+          "value": "hold_until_clear"
+        },
+        "motorcycle_body_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved source join from original Native samples and frame map",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "signal_phase_readback",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved source join from original Native samples and frame map",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Saved source join from original Native samples and frame map",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Physical signal causation, actor and four-camera acquisition unverified"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "signal failed to detect the presence"
+      ]
     },
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_draft",
-      "target_type": "controlled_attempt",
-      "physical_target": "proceed straight before two complete cycles",
-      "comparison_variable": "red_arrow_cycle_wait",
-      "source_branch": "Failed-detection straight movement",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed straight-cell request contrast with original physical cause and lawful status left for review.",
+      "paired_probe_id": "c111071_two_cycle_wait",
+      "deliberate_differences": [
+        "requested_wait_cycles"
       ],
-      "construction_manifest": "draft-manifest.json",
+      "probe": {
+        "primary_variable": "requested_wait_cycles",
+        "comparison_or_standard": "source-observed requested cycle count and conflict hold, without a legal label",
+        "target_value_or_branch": 1
+      },
+      "variable_assignments": {
+        "requested_wait_cycles": {
+          "kind": "controller",
+          "value": 1
+        },
+        "requested_conflict_hold": {
+          "kind": "controller",
+          "value": "hold_until_clear"
+        },
+        "motorcycle_body_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -96,21 +190,39 @@
         "limitations": [
           "Physical signal causation, actor and four-camera acquisition unverified"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "signal failed to detect the presence"
+      ]
     },
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_request",
-      "target_type": "below",
-      "physical_target": "straight movement after pedestrians and lawful traffic clear",
-      "comparison_variable": "yield_after_two_cycles",
-      "source_branch": "yield to pedestrians and lawful traffic",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed straight-cell request contrast with original physical cause and lawful status left for review.",
+      "paired_probe_id": "c111071_yield_clearance",
+      "deliberate_differences": [
+        "requested_conflict_hold"
       ],
-      "native_construction": "native/yield_request.py",
+      "probe": {
+        "primary_variable": "requested_conflict_hold",
+        "comparison_or_standard": "source-observed requested cycle count and conflict hold, without a legal label",
+        "target_value_or_branch": "hold_until_clear"
+      },
+      "variable_assignments": {
+        "requested_wait_cycles": {
+          "kind": "controller",
+          "value": 2
+        },
+        "requested_conflict_hold": {
+          "kind": "controller",
+          "value": "hold_until_clear"
+        },
+        "motorcycle_body_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -145,21 +257,39 @@
         "limitations": [
           "Physical signal causation, actor and four-camera acquisition unverified"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "signal failed to detect the presence"
+      ]
     },
     {
       "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy",
       "target_law_id": "NRS-484B-307-9b",
-      "kind": "unselected_native_request",
-      "target_type": "controlled_attempt",
-      "physical_target": "straight movement during occupied crosswalk/conflict traffic",
-      "comparison_variable": "yield_after_two_cycles",
-      "source_branch": "yield to pedestrians and lawful traffic",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed straight-cell request contrast with original physical cause and lawful status left for review.",
+      "paired_probe_id": "c111071_yield_clearance",
+      "deliberate_differences": [
+        "requested_conflict_hold"
       ],
-      "native_construction": "native/yield_request.py",
+      "probe": {
+        "primary_variable": "requested_conflict_hold",
+        "comparison_or_standard": "source-observed requested cycle count and conflict hold, without a legal label",
+        "target_value_or_branch": "request_entry_during_occupancy"
+      },
+      "variable_assignments": {
+        "requested_wait_cycles": {
+          "kind": "controller",
+          "value": 2
+        },
+        "requested_conflict_hold": {
+          "kind": "controller",
+          "value": "request_entry_during_occupancy"
+        },
+        "motorcycle_body_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -194,7 +324,29 @@
         "limitations": [
           "Physical signal causation, actor and four-camera acquisition unverified"
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "signal failed to detect the presence"
+      ]
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111071_original_detector_cause_pending",
+      "target_law_id": "NRS-484B-307-9b",
+      "judgment_refs": [
+        {
+          "phrase": "signal failed to detect the presence",
+          "note": "Original detector and governing signal history are needed to distinguish nondetection from other causes."
+        }
+      ],
+      "rationale": "Original detector response and signal history require physical source review before a cause sweep can be fixed.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "original Native detector request and service history",
+        "physical governing-face and phase review"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

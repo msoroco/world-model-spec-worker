@@ -64,6 +64,21 @@ class ReviewedStatutory(unittest.TestCase):
         self.assertFalse(result['facts']['yield_judgment_proven'])
         self.assertFalse(result['legal_verdict_claimed'])
 
+    def test_selected_measurement_uses_separate_review(self):
+        survey = json.loads((self.root / 'scene-survey.json').read_text())
+        with self.assertRaisesRegex(ValueError, 'Separate original source review missing'):
+            module.apply_review(self.root, survey)
+        (self.root / 'source-review.json').write_text(self.review_path.read_text())
+        reviewed, binding = module.apply_review(self.root, survey)
+        self.assertTrue(reviewed['sidewalk_derived_crosswalk_reviewed'])
+        self.assertTrue(reviewed['official_device_provenance_reviewed'])
+        self.assertTrue(reviewed['through_highway_provenance_reviewed'])
+        self.assertFalse(survey['sidewalk_derived_crosswalk_reviewed'])
+        self.assertEqual(len(binding['confirmed_topics']), 6)
+        (self.root / 'overview.mkv').write_text('mutated')
+        with self.assertRaisesRegex(ValueError, 'hash differs: overview'):
+            module.apply_review(self.root, survey)
+
     def test_changed_original_camera_rejected(self):
         (self.root / 'overview.mkv').write_text('mutated')
         with self.assertRaisesRegex(ValueError, 'hash differs: overview'):

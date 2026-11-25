@@ -77,7 +77,7 @@ def main():
     reject(packet, changed, 'missing_device_authority_source', negatives)
     changed = json.loads(wire(context)); changed['device_governs_road_id'] = '2'
     reject(packet, changed, 'non_governing_permission_device', negatives)
-    changed = json.loads(wire(packet)); changed['frames'][280]['camera_native_frames']['sign_face'] += 1
+    changed = json.loads(wire(packet)); changed['frames'][280]['camera_native_frames']['reference_corner'] += 1
     reject(changed, context, 'changed_third_camera_join', negatives)
     changed = json.loads(wire(packet)); changed['frames'][310]['footprint_corners_xy_m'] = None
     reject(changed, context, 'missing_footprint', negatives)

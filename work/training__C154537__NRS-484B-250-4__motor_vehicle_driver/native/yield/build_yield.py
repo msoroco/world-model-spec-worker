@@ -1,4 +1,5 @@
 """Build selected same-cell yielding constructions from the proven base shape."""
+import argparse
 import copy
 import hashlib
 import json
@@ -15,14 +16,14 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build():
+def build(cases):
     base = json.loads((ASSIGNMENT / 'native/native-bundles/controlled_1/construction.json').read_text())
     manifest_path = ASSIGNMENT / 'draft-native-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     manifest['cases'] = [entry for entry in manifest['cases']
-                         if not entry['case_id'].endswith(('controlled_5', 'controlled_6'))]
+                         if not entry['case_id'].endswith(cases)]
     built = []
-    for suffix in ('controlled_5', 'controlled_6'):
+    for suffix in cases:
         case_id = ASSIGNMENT.name + '__' + suffix
         request = HERE / ('request-' + suffix + '.jsonl')
         request.write_text(''.join(json.dumps(row, separators=(',', ':')) + '\n'
@@ -67,4 +68,8 @@ def build():
 
 
 if __name__ == '__main__':
-    print(json.dumps(build()))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', choices=('controlled_5', 'controlled_6', 'controlled_7'))
+    args = parser.parse_args()
+    print(json.dumps(build((args.case,) if args.case else
+                           ('controlled_5', 'controlled_6', 'controlled_7'))))

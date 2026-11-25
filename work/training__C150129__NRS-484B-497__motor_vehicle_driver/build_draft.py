@@ -24,15 +24,16 @@ def main():
         case_id = ASSIGNMENT + '__' + suffix
         config = {
             'case_id': case_id, 'selected_case_id': case_id,
-            'supported_case_ids': [case_id], 'candidate_id': 'primary',
+            'supported_case_ids': [ASSIGNMENT + '__' + name for name, _ in CASES],
+            'candidate_id': 'primary',
             'law_id': 'NRS-484B-497', 'cell_id': 'C150129',
             'actor': 'motor_vehicle_driver',
             'assignment_sha256': sha(assignment), 'case_plan_sha256': sha(plan),
             'permission_device_requested': permission,
             'parking_side': 'left', 'rate_hz': 20, 'duration_s': 30,
             'required_atoms': [], 'source_packets': [], 'case': {'case_id': case_id},
-            'cameras': [{'name': name, 'width': 1280, 'height': 720} for name in
-                        ('overview', 'sign_approach', 'sign_face', 'parking_side')],
+            'cameras': [{'name': name, 'width': width, 'height': height, 'pose_strategy': 'fixed roadside map survey; target and governed sign in view', 'fov_deg': 85} for name, width, height in
+                        (('overview', 1920, 1080), ('approach', 1280, 720), ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))],
             'recording_description': {
                 'channels': [
                     {'name': 'vehicle_footprint', 'unit': 'structured',
@@ -43,7 +44,20 @@ def main():
                      'sampling_rate_hz': 20,
                      'method': 'OpenDRIVE readback plus separately sourced official permission and one-way designation',
                      'time_window': '600 frames', 'reference_frame': 'governed road',
-                     'uncertainty': 'authority and image review pending'}],
+                     'uncertainty': 'authority and image review pending'}] + [
+                    {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                     'method': method, 'time_window': '600 original Native frames',
+                     'reference_frame': 'directed one-way roadway and governed curb',
+                     'uncertainty': 'original source review and physical camera pixels remain pending'}
+                    for name, method in (
+                        ('drv.laned_roadway', 'OpenDRIVE lane readback and independent laned-roadway source'),
+                        ('st.one_way_roadway', 'independent one-way designation joined to original map'),
+                        ('st.lane_direction', 'sourced permitted direction and original roadway geometry'),
+                        ('drv.standing_or_parked', 'original actor speed and footprint at each Native frame'),
+                        ('rel.occupies', 'original footprint projected against directed left curb'),
+                        ('dev.regulatory_sign', 'original signal inventory and independently sourced authority'),
+                        ('dev.governs', 'original signal road ID and independently sourced governance'))],
+                'context_inputs': [],
                 'limitations': ['map signal does not prove official status or erection',
                                 'one-way legal designation needs independent source',
                                 'standing/parking purpose and actual pixels need independent review']},
@@ -51,8 +65,8 @@ def main():
         }
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'geometry.py', 'tests/test_native.py')]
-        files.append({'path': 'parking_saved_measure.py',
-                      'content': (HERE / 'parking_saved_measure.py').read_text()})
+        for name in ('parking_saved_measure.py', 'source_review.py', 'finalize.py'):
+            files.append({'path': name, 'content': (HERE / name).read_text()})
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         construction = {
             'case_id': case_id, 'law_id': 'NRS-484B-497', 'cell_id': 'C150129',
@@ -65,7 +79,11 @@ def main():
                                  'source_review_required': True},
             'static_checks': ['120 m laned one-way road request',
                               'permission device present or absent by case',
-                              'four 1280x720 cameras at 20 Hz for 600 frames'],
+                              '1920x1080 overview plus three 1280x720 detail views at 20 Hz for 600 frames'],
+            'mechanisms': ['OpenDRIVE one-way lane and left curb with Native lane readback',
+                           'subject vehicle approaches left curb, brakes and is measured at rest',
+                           'device presence differs by selected case; authority is independently sourced',
+                           'original footprint, speed, camera frame joins and road review feed saved measurement'],
             'termination_rules': ['600 original frames',
                                   'restore Native world and destroy owned actors'],
             'status': 'partial_native_execution_cpu_checked_physical_unverified',

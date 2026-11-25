@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from reviewed_statutory import apply_review
 
 FRAMES = 600
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -31,6 +32,7 @@ def measure(attempt):
         if not path.is_file():
             raise ValueError('Missing required source: ' + path.name)
     survey = json.loads(survey_path.read_text())
+    survey, source_review = apply_review(attempt, survey)
     if survey.get('source_kind') not in ('original_native', 'synthetic_original_shape') or survey.get('stop_line_present') is not True or survey.get('stop_line_front_x_m') != -9.0 or survey.get('near_side_crosswalk_present') is not False:
         raise ValueError('Original marked stop-line and crosswalk hierarchy not established')
     if survey.get('sidewalk_derived_crosswalk_reviewed') is not True:
@@ -116,6 +118,7 @@ def measure(attempt):
     before_entry_stops = [frame for frame in stop_frames if frame < entry_frame]
     return {'format': 'c154537-original-stop-reference-measurement-v1',
             'source_kind': survey['source_kind'],
+            'source_review': source_review,
             'diagnostic_fixture': survey['source_kind'] == 'synthetic_original_shape',
             'frame_count': FRAMES, 'entry_frame': entry_frame,
             'complete_cessation_sample_before_entry': bool(before_entry_stops),

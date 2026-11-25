@@ -24,6 +24,36 @@ def measure_one_way_parking(metric):
             'device_id': metric['device_id'], 'legal_result': None}
 
 
+def channel_value(name, index, pose, context, metric, summary):
+    if name == 'drv.laned_roadway':
+        return {'laned': context['roadway_is_laned'], 'road_id': context['road_id'],
+                'map_sha256': context['map_source_sha256']}
+    if name == 'st.one_way_roadway':
+        return {'restricted_one_direction': context['roadway_is_one_way'],
+                'designation_sha256': context['one_way_designation_source_sha256']}
+    if name == 'st.lane_direction':
+        return {'permitted_direction_xy': context['permitted_direction_xy'],
+                'centerline_origin_xy_m': context['centerline_origin_xy_m']}
+    if name == 'drv.standing_or_parked':
+        return {'speed_mps': pose['speed_mps'], 'rest_candidate':
+                index in metric['rest_candidate_frames'],
+                'purpose_unverified': True}
+    if name == 'rel.occupies':
+        return {'vehicle_footprint_corners_xy_m': pose['footprint_corners_xy_m'],
+                'fully_left_rest_candidate': index in metric['fully_left_rest_candidate_frames'],
+                'street_boundary_sha256': context['street_boundary_source_sha256']}
+    if name == 'dev.regulatory_sign':
+        return {'permission_device_present': context['permission_device_present'],
+                'device_id': context.get('device_id'),
+                'inventory_sha256': context['device_inventory_source_sha256'],
+                'official_source_sha256': context.get('device_authority_source_sha256')}
+    if name == 'dev.governs':
+        return {'governs_road_id': context.get('device_governs_road_id'),
+                'governance_source_sha256': context.get('device_governance_source_sha256'),
+                'governance_unverified_on_original': True}
+    return summary
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists():
@@ -68,8 +98,10 @@ def finalize(attempt, output):
         name = channel['name']
         path = channels / (name + '.jsonl')
         with path.open('x') as stream:
-            for frame in mapped:
-                stream.write(json.dumps({'time_s': frame['time_s'], 'value': value}) + '\n')
+            for index, (frame, pose) in enumerate(zip(mapped, poses)):
+                stream.write(json.dumps({'time_s': frame['time_s'],
+                                         'value': channel_value(name, index, pose,
+                                                                context, metric, value)}) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': 'channels/' + path.name})
     result = {'case_id': case_id, 'measured_values': value,
               'target_checks': [{'target': 'full vehicle footprint at rest on left side',

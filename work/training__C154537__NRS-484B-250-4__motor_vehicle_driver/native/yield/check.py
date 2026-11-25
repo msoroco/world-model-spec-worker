@@ -16,7 +16,7 @@ def check():
     assignment = json.loads((root / 'assignment-source.json').read_text())
     rows = [json.loads(line) for line in (root / 'request.jsonl').read_text().splitlines()]
     case = config['case_suffix']
-    if case not in ('controlled_5', 'controlled_6') or \
+    if case not in ('controlled_5', 'controlled_6', 'controlled_7') or \
             sha(root / 'assignment-source.json') != config['assignment_sha256'] or \
             sha(root / 'request.jsonl') != config['request_sha256'] or \
             assignment['law']['text'] != config['law_text'] or \
@@ -34,9 +34,12 @@ def check():
                                          for row in rows[40:60]) and
                                          rows[225]['other_center_xy_m'][1] > 8):
         raise ValueError('Prior-stop and clearance request differs')
-    if case == 'controlled_6' and not all(row['other_center_xy_m'][1] == 0.0
-                                          for row in rows[175:260]):
+    if case in ('controlled_6', 'controlled_7') and not all(
+            row['other_center_xy_m'][1] == 0.0 for row in rows[175:260]):
         raise ValueError('Inside-intersection request differs')
+    if case == 'controlled_7' and not all(row['ego_center_xy_m'][0] == -9.0
+                                          for row in rows[220:301]):
+        raise ValueError('Ego yielding hold request differs')
     return {'passed': True, 'case_id': config['case_id'], 'frames': FRAMES,
             'rate_hz': RATE_HZ, 'native_observed': False,
             'original_native_observed': False,

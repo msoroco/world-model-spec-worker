@@ -65,12 +65,13 @@ def finalize(attempt, output):
                                          'value': get_value(row)}, allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': units[name],
                          'reference': 'channels/' + path.name})
-    wanted_stop = case.endswith(('controlled_5', 'controlled_6'))
+    wanted_stop = case.endswith(('controlled_5', 'controlled_6', 'controlled_7'))
     observed_stop = metric['complete_cessation_sample_before_entry']
     facts = metric['statutory_source_facts']
     wanted_branch = ('other_stopped_before_ego' if case.endswith('controlled_5')
                      else 'other_within_intersection_at_ego_entry')
     observed_branch = facts[wanted_branch]
+    requested_branch = not case.endswith('controlled_7')
     result = {'case_id': case, 'measured_values': metric,
               'target_checks': [{'target': 'complete cessation before surveyed visible point',
                   'requested': wanted_stop, 'measured': observed_stop,
@@ -78,9 +79,9 @@ def finalize(attempt, output):
                   'matched': wanted_stop == observed_stop,
                   'physical_cause_confirmed': False,
                   'cause_evidence': list(SOURCES)},
-                 {'target': wanted_branch, 'requested': True,
+                 {'target': wanted_branch, 'requested': requested_branch,
                   'measured': observed_branch, 'method': 'measure_reference',
-                  'tolerance': None, 'matched': observed_branch is True,
+                  'tolerance': None, 'matched': observed_branch is requested_branch,
                   'physical_cause_confirmed': False,
                   'cause_evidence': list(SOURCES)}],
               'setup_confirmed': False,
