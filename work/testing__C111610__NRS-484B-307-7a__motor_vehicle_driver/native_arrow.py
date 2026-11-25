@@ -81,7 +81,22 @@ def verify_site(site, root):
 def construct_native(site, root, world, carla, ego_blueprint, other_blueprint=None, other_kind=None):
     """CARLA-lazy source-surveyed spawn; caller owns actors after success."""
     verify_site(site,root)
-    require(world.get_map().name==site['native_map_name'], 'map readback mismatch')
+    native_map=world.get_map()
+    require(native_map.name==site['native_map_name'], 'map readback mismatch')
+    routes=[site['ego_route_xy']]
+    if str(site.get('case_id','')).endswith('__arrow_concurrent_movement'):
+        routes.append(site['concurrent_route_xy'])
+    for route in routes:
+        for xy in route:
+            waypoint=native_map.get_waypoint(carla.Location(x=float(xy[0]),y=float(xy[1]),z=0))
+            require(waypoint is not None, 'surveyed route absent from Native map')
+            location=waypoint.transform.location
+            require(math.hypot(location.x-xy[0],location.y-xy[1])<=2,
+                    'surveyed route differs from Native map')
+    crosswalks=native_map.get_crosswalks()
+    require(crosswalks and sum(in_polygon([v.x,v.y],site['adjacent_crosswalk_polygon_xy'])
+                                for v in crosswalks)>=4,
+            'surveyed adjacent crosswalk absent from Native map')
     heads={str(h.id):h for h in world.get_actors().filter('traffic.traffic_light*')}
     require(str(site['official_head_id']) in heads, 'official head missing')
     require(site['signal_source_mode']=='native_head_plus_external_aspect_packet', 'signal adapter declaration missing')

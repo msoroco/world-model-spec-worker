@@ -7,11 +7,33 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from native_camera_capture import CAMERAS
 from saved_camera_audit import audit as audit_cameras
 from saved_finalizer import ASSIGNMENT, finalize_saved
+
+
+def measure_ego_history(rows: list, *, diagnostic: bool) -> list:
+    """Retain original ego motion; never turn an engineering value into a verdict."""
+    history = []
+    for row in rows:
+        values = [row.get("ego_speed_mps"), row.get("ego_brake"),
+                  row.get("ego_heading_deg")]
+        if all(value is None for value in values) and diagnostic:
+            history.append({"frame": row["frame"], "speed_mps": None,
+                            "brake": None, "heading_deg": None})
+            continue
+        if any(type(value) not in (int, float) or not math.isfinite(value)
+               for value in values):
+            raise ValueError("original ego kinematic source missing or nonfinite")
+        speed, brake, heading = values
+        if speed < 0 or not 0 <= brake <= 1:
+            raise ValueError("original ego speed or brake range invalid")
+        history.append({"frame": row["frame"], "speed_mps": speed,
+                        "brake": brake, "heading_deg": heading})
+    return history
 
 
 def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
@@ -34,6 +56,8 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
             camera["decoded_frames"] != final["frame_count"] or
             camera["decoded_images"] != final["frame_count"] * len(CAMERAS)):
         raise ValueError("saved arrow and camera original sources do not join")
+    original_events = json.loads((attempt / "arrow-events-original.json").read_text())
+    ego_history = measure_ego_history(original_events, diagnostic=diagnostic)
     camera_receipt = attempt / "arrow-camera-receipt.json"
     sources = {"site.json": hashlib.sha256(site_path.read_bytes()).hexdigest(),
                "arrow-aspect-original.json": final["original_aspect_sha256"],
@@ -46,8 +70,8 @@ def report(attempt: Path, *, diagnostic=False, dimensions=None) -> dict:
         "arrow_display_observation": {"frame_count": final["frame_count"],
             "observed_arrow_transitions": final["observed_arrow_transitions"]},
         "ego_movement_observation": {"event_aspect_join": final["event_aspect_join"],
-            "case_id": case_id},
-        "participant_region_observation": final["observed_participant_regions"],
+            "case_id": case_id, "ego_kinematics": ego_history},
+        "participant_region_observation": {"observed_regions": final["observed_participant_regions"]},
         "camera_decode_observation": {"decoded_frames": camera["decoded_frames"],
             "decoded_images": camera["decoded_images"]},
     }

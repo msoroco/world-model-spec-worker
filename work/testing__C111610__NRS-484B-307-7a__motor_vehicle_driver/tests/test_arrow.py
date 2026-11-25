@@ -54,6 +54,20 @@ class ArrowTests(unittest.TestCase):
         self.assertEqual(control.command(self.site,packet,'yield_to_present')['target'],'turn_route')
         packet['lit_aspects']=[]
         with self.assertRaises(control.ControlError): control.command(self.site,packet,'yield_to_present')
+    def test_concurrent_control_requires_display_and_distinct_route(self):
+        packet={'official_head_id':'17','facing_approach_id':'north',
+                'lit_aspects':['flashing_yellow_turn_arrow'],
+                'ego_movement':'straight','concurrently_permitted_movement':'straight',
+                'frame':2,'ego_xy':[0,-4],'other_users':[]}
+        with self.assertRaisesRegex(control.ControlError,'indication or route'):
+            control.command(self.site,packet,'yield_to_present')
+        self.site['concurrent_route_xy']=[[0,-8],[0,0],[0,8]]
+        packet['concurrent_indications']=['straight_green']
+        with self.assertRaisesRegex(control.ControlError,'indication or route'):
+            control.command(self.site,packet,'yield_to_present')
+        packet['concurrent_permission_source']='reviewed-concurrent-controller'
+        self.assertEqual(control.command(self.site,packet,'yield_to_present')['target'],
+                         'concurrent_route')
     def test_native_spawn_and_cleanup(self):
         class Actor:
             def __init__(self, ident): self.id=ident; self.destroyed=False
@@ -63,7 +77,15 @@ class ArrowTests(unittest.TestCase):
             def filter(self, pattern): return [Head(17)]
         class World:
             def __init__(self): self.spawned=[]; self.fail_second=False
-            def get_map(self): return type('Map',(),{'name':'TownTest'})()
+            def get_map(self):
+                class Map:
+                    name='TownTest'
+                    def get_waypoint(self, location):
+                        point=type('Point',(),{'x':location['x'],'y':location['y']})()
+                        return type('Waypoint',(),{'transform':type('Transform',(),{'location':point})()})()
+                    def get_crosswalks(self): return [type('Point',(),{'x':x,'y':y})()
+                                                       for x,y in ((3,-3),(6,-3),(6,3),(3,3))]
+                return Map()
             def get_actors(self): return Actors()
             def try_spawn_actor(self, blueprint, transform):
                 if self.fail_second and self.spawned: return None

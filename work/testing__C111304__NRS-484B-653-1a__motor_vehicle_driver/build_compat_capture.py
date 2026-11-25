@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import sys
 
 HERE = Path(__file__).resolve().parent
 SOURCE = HERE / 'fixtures/person_north_early'
@@ -20,7 +21,11 @@ def write_rows(name: str, values: list[dict]) -> None:
                               for value in values), encoding='utf-8')
 
 
-def main() -> None:
+def main(case_suffix: str = 'person_north_early') -> None:
+    global SOURCE
+    SOURCE = HERE / 'fixtures' / case_suffix
+    if not SOURCE.is_dir():
+        raise ValueError('diagnostic case fixture directory missing: ' + case_suffix)
     identifiers = {'ego': 101, 'crossing_vehicle': 102,
                    'occupant': 103, 'property': 104}
     blueprints = {'ego': 'vehicle.lincoln.mkz_2020',
@@ -51,6 +56,7 @@ def main() -> None:
         raise ValueError('diagnostic source needs 900 sealed Native frames')
     for sample in trace:
         sample.setdefault('control', {})
+        sample['velocity_mps'] = [sample['speed_mps'], 0.0, 0.0]
     write_rows('trace.jsonl', trace)
     receipt_path = SOURCE / 'native-receipt.json'
     receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
@@ -83,6 +89,7 @@ def main() -> None:
                 'position_m': [*actor['xy'], actor['z']],
                 'heading_deg': actor['heading_deg'],
                 'speed_mps': actor['speed_mps'],
+                'velocity_mps': [actor['speed_mps'], 0.0, 0.0],
                 'body_vertices_m': diagnostic_body(actor['xy'], actor['z']),
                 'diagnostic_source': 'sealed synthetic original-packets.jsonl',
             })
@@ -127,7 +134,7 @@ def main() -> None:
         return hashlib.sha256((SOURCE / name).read_bytes()).hexdigest()
     manifest = {
         'status': 'diagnostic_fixture', 'acquisition': 'synthetic_fixture',
-        'case_id': 'testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early',
+        'case_id': HERE.name + '__' + case_suffix,
         'source_run': 'diagnostic:sealed-synthetic-native-fixture',
         'map': 'diagnostic-example-OpenDRIVE', 'frames': len(events),
         'required_observations': ['kin.speed', 'kin.velocity', 'ru.subject'],
@@ -140,7 +147,7 @@ def main() -> None:
     }
     (SOURCE / 'capture/manifest.json').write_text(
         json.dumps(manifest, sort_keys=True, indent=2) + '\n', encoding='utf-8')
-    generator_path = HERE / 'fixture-generator-person_north_early.json'
+    generator_path = HERE / ('fixture-generator-' + case_suffix + '.json')
     generator = json.loads(generator_path.read_text(encoding='utf-8'))
     generator['graphs'] = []
     for event in events:
@@ -164,7 +171,7 @@ def main() -> None:
                               encoding='utf-8')
     if generator_path.stat().st_size > 2 * 1024 * 1024:
         raise ValueError('diagnostic graph generator exceeds return size limit')
-    recipe_path = HERE / 'fixture-recipe-person_north_early.json'
+    recipe_path = HERE / ('fixture-recipe-' + case_suffix + '.json')
     recipe = json.loads(recipe_path.read_text(encoding='utf-8'))
     for name in ('capture/evidence.jsonl', 'capture/native/frames.jsonl',
                  'capture/manifest.json', 'capture/recorder_info.txt',
@@ -174,7 +181,7 @@ def main() -> None:
         source = SOURCE / name
         if source.stat().st_size > 2 * 1024 * 1024:
             raise ValueError('diagnostic source exceeds return size limit: ' + name)
-        row = {'path': name, 'source': 'work/' + HERE.name + '/fixtures/person_north_early/' + name,
+        row = {'path': name, 'source': 'work/' + HERE.name + '/fixtures/' + case_suffix + '/' + name,
                'sha256': hashlib.sha256(source.read_bytes()).hexdigest()}
         recipe['sources'] = [item for item in recipe['sources'] if item['path'] != name]
         recipe['sources'].append(row)
@@ -185,4 +192,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1] if len(sys.argv) == 2 else 'person_north_early')

@@ -12,7 +12,8 @@ from PIL import Image
 HERE = Path(__file__).resolve().parents[1]
 REPO = HERE.parents[1]
 sys.path.insert(0, str(HERE))
-from analysis import report
+from analysis import measure_ego_history, report
+from delivery_audit import audit as audit_delivery_sources
 from native_camera_capture import CAMERAS, capture_with_cameras
 
 
@@ -82,6 +83,40 @@ class AnalysisTests(unittest.TestCase):
     def test_delivery_rejects_diagnostic_sources(self):
         with self.assertRaisesRegex(ValueError, "original reviewed Native arrow site"):
             report(self.root)
+
+    def test_original_kinematics_required_for_delivery_measurement(self):
+        original = [{"frame": 100, "ego_speed_mps": 1.2,
+                     "ego_brake": 0.0, "ego_heading_deg": 90.0}]
+        self.assertEqual(measure_ego_history(original, diagnostic=False)[0]["speed_mps"], 1.2)
+        original[0].pop("ego_brake")
+        with self.assertRaisesRegex(ValueError, "kinematic source missing"):
+            measure_ego_history(original, diagnostic=False)
+        original[0]["ego_brake"] = 1.2
+        with self.assertRaisesRegex(ValueError, "brake range invalid"):
+            measure_ego_history(original, diagnostic=False)
+
+    def test_pinned_measurement_contract_positive_and_missing_site(self):
+        sys.path.insert(0, str(REPO / "runtime/scenario_pipeline"))
+        from worker_exchange.measurement_contract import verify_report
+        contract = json.loads((HERE / "cases/arrow_ped_crosswalk/measurement-contract.json").read_text())
+        checked = verify_report(contract, report(self.root, diagnostic=True,
+                                                  dimensions=self.dims), self.root)
+        self.assertEqual(set(checked), {row["output_key"] for row in contract["requirements"]})
+        (self.root / "site.json").unlink()
+        with self.assertRaisesRegex(ValueError, "Missing required source: site.json"):
+            report(self.root, diagnostic=True, dimensions=self.dims)
+
+    def test_independent_saved_source_audit_and_event_tamper(self):
+        checked = audit_delivery_sources(self.root, self.case,
+                                         diagnostic=True, dimensions=self.dims)
+        self.assertTrue(checked["software_source_checks_passed"])
+        self.assertEqual(checked["decoded_images"], 12)
+        self.assertFalse(checked["physical_acceptance"])
+        event = self.root / "arrow-events-original.json"
+        event.write_text(event.read_text() + "tamper")
+        with self.assertRaisesRegex(ValueError, "event source hash mismatch"):
+            audit_delivery_sources(self.root, self.case,
+                                   diagnostic=True, dimensions=self.dims)
 
 
 if __name__ == "__main__":

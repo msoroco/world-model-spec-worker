@@ -33,7 +33,8 @@ class SavedFinalizerTests(unittest.TestCase):
             "adjacent_crosswalk_polygon_xy": [[3,-3],[6,-3],[6,3],[3,3]]}
         self.site_path = self.root / "site.json"
 
-    def build(self, suffix, *, users=None, movement="left", concurrent=None):
+    def build(self, suffix, *, users=None, movement="left", concurrent=None,
+              permission_source=True):
         self.site["case_id"] = ASSIGNMENT + "__" + suffix
         if suffix == "arrow_concurrent_movement":
             route = self.root / "concurrent_route.json"
@@ -57,6 +58,7 @@ class SavedFinalizerTests(unittest.TestCase):
                 "concurrent_indications": concurrent,
                 "ego_movement": movement,
                 "concurrently_permitted_movement": movement if concurrent else None,
+                "concurrent_permission_source": "reviewed-concurrent-controller" if concurrent and permission_source else None,
                 "ego_xy": [[0,-8],[0,0],[-8,0]][i],
                 "other_users": users or []}
             return aspect, event
@@ -78,6 +80,11 @@ class SavedFinalizerTests(unittest.TestCase):
         result = self.build("arrow_concurrent_movement", movement="straight",
                             concurrent=["straight_green"])
         self.assertTrue(result["event_aspect_join"])
+
+    def test_concurrent_movement_rejects_unsourced_permission(self):
+        with self.assertRaisesRegex(ValueError, "concurrently permitted alternate movement"):
+            self.build("arrow_concurrent_movement", movement="straight",
+                       concurrent=["straight_green"], permission_source=False)
 
     def test_wrong_region_rejected(self):
         user = {"id": "p1", "kind": "pedestrian", "xy": [0,0],

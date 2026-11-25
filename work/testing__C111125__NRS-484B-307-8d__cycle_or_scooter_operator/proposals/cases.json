@@ -1,0 +1,999 @@
+{
+  "cell_id": "C111125",
+  "actor": "cycle_or_scooter_operator",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source observation definition; no separate recording.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 2
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stopped"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "suppressed"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+      "target_law_id": "NRS-484B-307-8d",
+      "target_type": "boundary_probe",
+      "rationale": "A bicycle stops before the sourced stop boundary, occupies the source-bound detection zone without a detector output, observes two complete applicable-device cycles while facing steady red alone, yields to signal-directed traffic, then proceeds straight.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 2
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stopped"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "suppressed"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "paired_probe_id": "complete_cycle_count",
+      "deliberate_differences": [
+        "full_cycles_after_stop_target"
+      ],
+      "probe": {
+        "primary_variable": "full_cycles_after_stop_target",
+        "comparison_or_standard": "Original source measurements only; no legal verdict",
+        "target_value_or_branch": 2,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "cycles",
+        "test_value": 2
+      },
+      "epsilon_used": 1
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle",
+      "target_law_id": "NRS-484B-307-8d",
+      "target_type": "boundary_probe",
+      "rationale": "Same bicycle, device and detector failure, but proceeds after only one complete observed applicable-device cycle.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 1
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stopped"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "suppressed"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "paired_probe_id": "complete_cycle_count",
+      "deliberate_differences": [
+        "full_cycles_after_stop_target"
+      ],
+      "probe": {
+        "primary_variable": "full_cycles_after_stop_target",
+        "comparison_or_standard": "Original source measurements only; no legal verdict",
+        "target_value_or_branch": 1,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "cycles",
+        "test_value": 1
+      },
+      "epsilon_used": 1
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles",
+      "target_law_id": "NRS-484B-307-8d",
+      "target_type": "boundary_probe",
+      "rationale": "Same sourced bicycle, stop, failed detection, official device and yield as the two-cycle case, but proceeds straight only after three complete observed applicable-device cycles; provides the above-threshold measurement.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 3
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stopped"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "suppressed"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "paired_probe_id": "complete_cycle_count",
+      "deliberate_differences": [
+        "full_cycles_after_stop_target"
+      ],
+      "probe": {
+        "primary_variable": "full_cycles_after_stop_target",
+        "comparison_or_standard": "Original source measurements only; no legal verdict",
+        "target_value_or_branch": 3,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "cycles",
+        "test_value": 3
+      },
+      "epsilon_used": 1
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes",
+      "target_law_id": "NRS-484B-307-8d",
+      "target_type": "judgment_sweep",
+      "rationale": "Same bicycle and intersection with working detection and a changed subject signal after two complete applicable-device cycles.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 2
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stopped"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "responsive"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "paired_probe_id": "signal_changes",
+      "deliberate_differences": [
+        "detector_output_target"
+      ],
+      "probe": {
+        "primary_variable": "detector_output_target",
+        "comparison_or_standard": "Original source measurements only; no legal verdict",
+        "target_value_or_branch": "signal_changes"
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop",
+      "target_law_id": "NRS-484B-307-8d",
+      "target_type": "judgment_sweep",
+      "rationale": "Same failure and two complete observed cycles, but the bicycle creeps without a stationary sample before the sourced stop boundary.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 2
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "rolling"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "suppressed"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "paired_probe_id": "no_prior_stop",
+      "deliberate_differences": [
+        "stop_pattern"
+      ],
+      "probe": {
+        "primary_variable": "stop_pattern",
+        "comparison_or_standard": "Original source measurements only; no legal verdict",
+        "target_value_or_branch": "no_prior_stop"
+      }
+    },
+    {
+      "case_id": "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield",
+      "target_law_id": "NRS-484B-307-8d",
+      "target_type": "judgment_sweep",
+      "rationale": "Same stop, failed detection and two complete cycles, but enters while a signal-directed participant occupies the conflict area.",
+      "variable_assignments": {
+        "full_cycles_after_stop_target": {
+          "kind": "controller",
+          "unit": "cycles",
+          "value": 2
+        },
+        "stop_pattern": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "stopped"
+        },
+        "detector_output_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "suppressed"
+        },
+        "participant_conflict_target": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "occupied"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "bicycle and rider identity",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original blueprint and rider source with Native actor readback",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "official facing red signal",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original official device aspect history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "stop boundary and bicycle motion",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original body station and speed history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "applicable device cycles",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "20 Hz original phase history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "detector zone and output",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "source-bound original loop occupancy/output history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "signal-directed pedestrians and traffic",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original participant conflict history",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          },
+          {
+            "name": "four synchronized camera views",
+            "unit": "source observation",
+            "sampling_rate_hz": 20,
+            "method": "original Native RGB sensors",
+            "time_window": "original 45-second episode",
+            "reference_frame": "same original Native frame and simulation time",
+            "uncertainty": "Physical device causality, rider visibility and right-of-way status await original-source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed map, official device, detector, bicycle and rider authority",
+            "unit": "source record",
+            "method": "SHA-256-sealed source packets and original Native readback"
+          }
+        ],
+        "limitations": [
+          "The selected cell fixes straight movement; turns are not claimed.",
+          "Diagnostic fixture phases do not prove a detector fault or physical visibility."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        },
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "paired_probe_id": "fails_to_yield",
+      "deliberate_differences": [
+        "participant_conflict_target"
+      ],
+      "probe": {
+        "primary_variable": "participant_conflict_target",
+        "comparison_or_standard": "Original source measurements only; no legal verdict",
+        "target_value_or_branch": "fails_to_yield"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "source_pending_0",
+      "target_law_id": "NRS-484B-307-8d",
+      "judgment_refs": [
+        {
+          "phrase": "because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter",
+          "note": "Original detector output and subject red alone do not establish causation or malfunction."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original causal or right-of-way source variation has not been reviewed.",
+      "missing_inputs": [
+        "Original detector output and subject red alone do not establish causation or malfunction."
+      ]
+    },
+    {
+      "sweep_id": "source_pending_1",
+      "target_law_id": "NRS-484B-307-8d",
+      "judgment_refs": [
+        {
+          "phrase": "yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection",
+          "note": "Physical occupancy alone does not establish directed or lawful right-of-way status."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original causal or right-of-way source variation has not been reviewed.",
+      "missing_inputs": [
+        "Physical occupancy alone does not establish directed or lawful right-of-way status."
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "two_vs_one_complete_cycles",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__one_cycle"
+      ],
+      "fixed_conditions": [
+        "same C111125 intersection and sourced map/device/detector/blueprint identities",
+        "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
+        "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
+      ],
+      "deliberate_differences": [
+        "number of complete observed applicable-device cycles before straight entry"
+      ]
+    },
+    {
+      "comparison_id": "failed_detection_vs_signal_change",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__signal_changes"
+      ],
+      "fixed_conditions": [
+        "same C111125 intersection and sourced map/device/detector/blueprint identities",
+        "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
+        "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
+      ],
+      "deliberate_differences": [
+        "detector output and causally linked subject-signal change"
+      ]
+    },
+    {
+      "comparison_id": "stop_antecedent",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__no_prior_stop"
+      ],
+      "fixed_conditions": [
+        "same C111125 intersection and sourced map/device/detector/blueprint identities",
+        "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
+        "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
+      ],
+      "deliberate_differences": [
+        "stationary behavior before applicable stop boundary"
+      ]
+    },
+    {
+      "comparison_id": "yield_to_directed_participant",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__fails_to_yield"
+      ],
+      "fixed_conditions": [
+        "same C111125 intersection and sourced map/device/detector/blueprint identities",
+        "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
+        "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
+      ],
+      "deliberate_differences": [
+        "signal-directed participant conflict at straight entry"
+      ]
+    },
+    {
+      "comparison_id": "two_vs_three_complete_cycles",
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__two_cycles_failed_detection",
+        "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator__three_cycles"
+      ],
+      "fixed_conditions": [
+        "same C111125 intersection and sourced map/device/detector/blueprint identities",
+        "same bicycle role, straight route, official steady-red-alone approach and four-camera 20 Hz duration",
+        "same detector occupancy, stop boundary and signal-directed participant route except the stated deliberate difference"
+      ],
+      "deliberate_differences": [
+        "number of complete observed applicable-device cycles before straight entry"
+      ]
+    }
+  ],
+  "source_law_text": "Where the signal is a steady red signal alone: After complying with the requirement to stop, a person driving a motorcycle, moped or trimobile or riding a bicycle, an electric bicycle or an electric scooter may proceed straight through or turn right or left if: (1) The person waits for two complete cycles of the lights or lighted arrows of the applicable official traffic-control device and the signal does not change because of a malfunction or because the signal failed to detect the presence of the motorcycle, moped, trimobile, bicycle, electric bicycle or electric scooter; (2) No other device at the place prohibits either or both such turns, if applicable; and (3) The person yields the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
+  "source_assignment": "inputs/testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator/assignment.json"
+}

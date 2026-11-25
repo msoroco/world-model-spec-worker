@@ -28,6 +28,24 @@ def main() -> None:
         construction = HERE / row['construction']
         if sha(construction) != row['construction_sha256']:
             raise ValueError('selected construction changed: ' + case_id)
+        compatibility_receipt = HERE / ('receipt-compat-' + suffix + '.json')
+        compatibility_log = HERE / ('analysis-compat-' + suffix + '.log')
+        negative_log = HERE / ('negative-' + suffix + '.log')
+        if compatibility_receipt.is_file() and compatibility_log.is_file():
+            proof = json.loads(compatibility_receipt.read_text(encoding='utf-8'))
+            if (proof.get('passed') is not True or proof.get('case_id') != case_id or
+                    proof.get('construction_sha256') != row['construction_sha256'] or
+                    proof.get('log_sha256') != sha(compatibility_log) or
+                    proof.get('fixture_recipe_sha256') != sha(
+                        HERE / ('fixture-recipe-' + suffix + '.json'))):
+                raise ValueError('selected compatibility receipt is stale: ' + case_id)
+            if not negative_log.is_file() or proof.get('negative_log_sha256') != sha(negative_log):
+                raise ValueError('selected negative compatibility proof is stale: ' + case_id)
+            compatibility = {'receipt': compatibility_receipt.name,
+                             'sha256': sha(compatibility_receipt),
+                             'log': compatibility_log.name}
+        else:
+            compatibility = {'status': 'pending_cpu_positive_and_negative'}
         cases.append({
             'case_id': case_id, 'kind': 'delivery', 'preparation_status': 'partial',
             'construction': row['construction'],
@@ -59,7 +77,9 @@ def main() -> None:
                              'person_encounter', 'property_encounter',
                              'original_camera_frame_join')
             },
-            'compatibility': {'status': 'pending_cpu_positive_and_negative'},
+            'compatibility': compatibility,
+            **({'negative': {'log': negative_log.name}}
+               if compatibility_receipt.is_file() else {}),
             'delivery_acceptance': {'status': 'pending_independent_saved_proof'},
         })
     manifest = {
@@ -70,7 +90,9 @@ def main() -> None:
     }
     (HERE / 'execution-manifest.json').write_text(
         json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
-    print('pinned', len(cases), 'selected C111304 cases; compatibility remains pending')
+    proven = sum('receipt' in case['compatibility'] for case in cases)
+    print('pinned', len(cases), 'selected C111304 cases;', proven,
+          'diagnostic compatibility receipts verified')
 
 
 if __name__ == '__main__':

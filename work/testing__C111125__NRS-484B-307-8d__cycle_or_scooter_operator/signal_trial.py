@@ -249,5 +249,5 @@ def measure_attempt(packet: dict, root: Path, plan: dict) -> dict:
         "complete_device_cycles_before_entry": cycles,
         "conflict_at_entry": conflict_at_entry,
         "straight_route_observed": True,
-        "physical_acceptance": False, "legal_verdict": None,
+        "physical_acceptance": False,
     }

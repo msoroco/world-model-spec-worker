@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from aspect_capture import AspectError, capture as capture_aspects, validate_rows
@@ -50,6 +51,19 @@ def capture_pair(site, attempt_root, step, *, frames=900, diagnostic=False):
             len(event["ego_xy"]) != 2 or
             not isinstance(event.get("other_users"), list)):
             raise AspectError("original actor event source missing")
+        if not diagnostic:
+            values = [event.get("ego_speed_mps"), event.get("ego_brake"),
+                      event.get("ego_heading_deg")]
+            if any(type(value) not in (int, float) or not math.isfinite(value)
+                   for value in values):
+                raise AspectError("original ego kinematic source missing")
+            if values[0] < 0 or not 0 <= values[1] <= 1:
+                raise AspectError("original ego speed or brake range invalid")
+            if (event.get("ego_movement") != site["arrow_movement"] and
+                    (not event.get("concurrent_indications") or
+                     not event.get("concurrent_permission_source") or
+                     event.get("concurrently_permitted_movement") != event.get("ego_movement"))):
+                raise AspectError("original concurrent movement permission source missing")
     encoded = (json.dumps(events, sort_keys=True, separators=(",", ":")) + "\n").encode()
     if len(encoded) > 2 * 1024 * 1024:
         raise AspectError("event source exceeds return file limit")

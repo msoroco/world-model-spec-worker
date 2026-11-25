@@ -136,9 +136,9 @@ def finalize(root):
                                 for row in frames), encoding="utf-8")
         channels.append({"name": channel["name"], "unit": channel["unit"],
                          "reference": path.name})
-    context_path = root / "recording-site-context.json"
-    context_path.write_text(json.dumps({"source_hashes": report["measurements"]["bicycle_actor"]["sources"]}) + "\n")
     context = description["context_inputs"][0]
+    context_path = root / "recording-site-context.json"
+    context_path.write_text(json.dumps({context["name"]: {"source_hashes": report["measurements"]["bicycle_actor"]["sources"]}}) + "\n")
     channels.append({"name": context["name"], "unit": context["unit"],
                      "reference": context_path.name})
     measured = report["measured_values"]

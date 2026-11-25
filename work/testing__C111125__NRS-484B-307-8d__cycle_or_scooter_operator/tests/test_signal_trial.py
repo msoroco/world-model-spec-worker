@@ -76,7 +76,7 @@ class SignalTrialTests(unittest.TestCase):
                 **{k + "_ref": self.refs[k] for k in ("native_trace", "device_trace", "detector_trace", "geometry")}}
 
     def test_construct_all_cases_with_source_readback(self):
-        for suffix in ("two_cycles_failed_detection", "one_cycle", "signal_changes", "no_prior_stop", "fails_to_yield"):
+        for suffix in ("two_cycles_failed_detection", "one_cycle", "three_cycles", "signal_changes", "no_prior_stop", "fails_to_yield"):
             with self.subTest(suffix=suffix):
                 plan = mod.construct_plan(self.site, self.root, suffix)
                 self.assertEqual(plan["blueprint_class"], "bicycle")
@@ -120,6 +120,7 @@ class SignalTrialTests(unittest.TestCase):
     def test_measure_negative_variants(self):
         for suffix, kwargs, expected in (
             ("one_cycle", {"cycles": 1}, (1, True, True, False)),
+            ("three_cycles", {"cycles": 3}, (3, True, True, False)),
             ("signal_changes", {"detector_failure": False}, (2, True, False, False)),
             ("no_prior_stop", {"stop": False}, (2, False, True, False)),
             ("fails_to_yield", {"conflict": True}, (2, True, True, True)),
@@ -202,6 +203,10 @@ class SignalTrialTests(unittest.TestCase):
         self.assertEqual(mod.control_step(base, observed)["target"], "hold_before_boundary")
         observed["complete_device_cycles"] = 2
         self.assertEqual(mod.control_step(base, observed)["target"], "straight_route")
+        three = mod.construct_plan(self.site, self.root, "three_cycles")
+        self.assertEqual(mod.control_step(three, observed)["target"], "hold_before_boundary")
+        observed["complete_device_cycles"] = 3
+        self.assertEqual(mod.control_step(three, observed)["target"], "straight_route")
         observed["directed_participant_conflict"] = True
         self.assertEqual(mod.control_step(base, observed)["target"], "hold_before_boundary")
         nonyield = mod.construct_plan(self.site, self.root, "fails_to_yield")

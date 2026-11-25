@@ -40,18 +40,21 @@ class EventCaptureTests(unittest.TestCase):
         return aspect, event
 
     def test_one_tick_pair_and_saved_replay(self):
-        receipt = event_capture.capture_pair(self.site, self.root, self.step)
+        receipt = event_capture.capture_pair(self.site, self.root, self.step,
+                                             diagnostic=True)
         self.assertEqual(self.calls, list(range(900)))
         self.assertTrue(receipt["event_aspect_join"])
         self.assertEqual(receipt["frame_count"], 900)
         self.assertTrue(saved_aspect.join_event_history(
-            self.site, self.root, receipt["event_ref"])["event_aspect_join"])
+            self.site, self.root, receipt["event_ref"],
+            delivery=False)["event_aspect_join"])
         with self.assertRaisesRegex(aspect_capture.AspectError, "already exists"):
-            event_capture.capture_pair(self.site, self.root, self.step)
+            event_capture.capture_pair(self.site, self.root, self.step,
+                                       diagnostic=True)
         (self.root / receipt["event_ref"]["path"]).write_text("tampered")
         with self.assertRaisesRegex(aspect_capture.AspectError, "hash mismatch"):
             saved_aspect.join_event_history(self.site, self.root,
-                                            receipt["event_ref"])
+                                            receipt["event_ref"], delivery=False)
 
     def test_rejects_display_mismatch_before_writing(self):
         def wrong(i):
@@ -60,7 +63,16 @@ class EventCaptureTests(unittest.TestCase):
                 event["lit_aspects"] = ["flashing_yellow_turn_arrow"]
             return aspect, event
         with self.assertRaisesRegex(aspect_capture.AspectError, "display mismatch"):
-            event_capture.capture_pair(self.site, self.root, wrong)
+            event_capture.capture_pair(self.site, self.root, wrong,
+                                       diagnostic=True)
+        self.assertFalse((self.root / "arrow-events-original.json").exists())
+        self.assertFalse((self.root / "arrow-aspect-original.json").exists())
+
+    def test_production_rejects_missing_original_ego_kinematics(self):
+        with self.assertRaisesRegex(aspect_capture.AspectError,
+                                    "original ego kinematic source missing"):
+            event_capture.capture_pair(self.site, self.root, self.step,
+                                       diagnostic=False)
         self.assertFalse((self.root / "arrow-events-original.json").exists())
         self.assertFalse((self.root / "arrow-aspect-original.json").exists())
 

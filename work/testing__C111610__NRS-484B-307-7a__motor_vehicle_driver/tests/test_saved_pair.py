@@ -66,6 +66,7 @@ class SavedPairTests(unittest.TestCase):
                      "lit_aspects": ["flashing_yellow_turn_arrow"] if lit else [],
                      "concurrent_indications": indications, "ego_movement": movement,
                      "concurrently_permitted_movement": movement if indications else None,
+                     "concurrent_permission_source": "reviewed-concurrent-controller" if indications else None,
                      "ego_xy": [[0, -8], [0, 0], [-8, 0]][i],
                      "other_users": users}
             return aspect, event

@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C111304__NRS-484B-653-1a__motor_vehicle_driver",
   "input_sha256": "14e3671aa1bbf6b91db9a2f99f9cd4a36e9aa62f72aabadd5809a86cb8c36209",
-  "readiness_kind": "partial_selected_semantic_native_capture_projection_pending",
-  "reason": "Eight exact selected constructions pass offline, canonical semantic validation passes six stages and eight cases, and 43 CPU tests pass. The first diagnostic compatibility fixture reaches Core after Native and video validation but lacks the source-derived capture evidence and graph. Native runner now invokes PipelineCapture during each original CARLA tick. Positive and missing-source compatibility, independent saved delivery/comparison and original physical capture remain incomplete. Exact strict gate rejects truthful partial status.",
+  "readiness_kind": "partial_selected_semantic_first_compatibility_proven",
+  "reason": "Eight exact selected constructions pass offline, canonical semantic validation passes six stages and eight cases, and 43 CPU tests pass. The first exact selected case has an official passing diagnostic compatibility receipt through Native validation, Core, Lean, render, full decode, selected measurements and missing-source negative; its receipt independently re-verifies. Seven case-specific compatibility receipts, physical fallbacks, independent saved delivery/comparison and original CARLA physical capture remain incomplete. Exact strict gate rejects truthful partial status.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -74,6 +74,18 @@
       "exit_code": 0,
       "log": "cpu-semantic-static.log",
       "sha256": "474d50a70a3c70eb63d92525483a56f036392efa4cd4bd434fe9f4b3e25ab296"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C111304__NRS-484B-653-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111304__NRS-484B-653-1a__motor_vehicle_driver__person_north_early --output .runtime-work/c111304-compat-v14 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "receipt-compat-person_north_early.json",
+      "sha256": "7b080a7153674f30d8d535f4fa82ec982c06b7c4c8bde07262fcf985514ab674"
+    },
+    {
+      "command": "check_receipts on first selected execution-manifest.json case with re-materialized diagnostic fixture",
+      "exit_code": 0,
+      "log": "cpu-first-compatibility-receipt-check.log",
+      "sha256": "48a1c63e4fd46b508d556015d1e4405b421ba491708a7e79d8106f1c6805d87e"
     }
   ]
 }

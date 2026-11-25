@@ -28,6 +28,9 @@ class OfflineBundleTests(unittest.TestCase):
                 data = json.loads(path.read_text())
                 self.assertEqual(data["case_id"], row["case_id"])
                 self.assertTrue(data["diagnostic_only"])
+                self.assertEqual(row["measurement_procedure"], {"entrypoint": "analysis.py"})
+                self.assertEqual(row["measurement_contract"],
+                                 "cases/" + row["case_id"].removeprefix(AID + "__") + "/measurement-contract.json")
                 files = {x["path"]: x["content"] for x in data["files"]}
                 config = json.loads(files["config.json"])
                 self.assertEqual(config["construction_plan"], source_cases[row["case_id"]]["construction"])

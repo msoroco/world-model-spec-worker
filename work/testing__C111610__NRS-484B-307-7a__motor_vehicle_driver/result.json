@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111610__NRS-484B-307-7a__motor_vehicle_driver",
   "input_sha256": "7849b3f79ded9ca0946ccb914924986ae950a1c6b9b003495300df870fc85bdf",
   "status": "partial",
-  "readiness_kind": "partial_source_bound_analysis_and_semantic_chain",
+  "readiness_kind": "partial_native_source_gated_900_frame_runner_offline_checked",
   "applied_update": 0,
   "tests": [
     {
@@ -292,10 +292,280 @@
       "exit_code": 1,
       "log": "cpu-analysis-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/build_measurement_contracts.py",
+      "exit_code": 0,
+      "log": "cpu-contract-build.log",
+      "sha256": "4d21360faa71d94027dc61ad95cb0fe571dcbbd1a210766a632e7fbfe2dbb050"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/build_semantic_proposals.py",
+      "exit_code": 0,
+      "log": "cpu-contract-semantic-build.log",
+      "sha256": "ce56ea9ec1e746f12a064126c2ca65316f9e861712032b5577686a8e96fdab6d"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-contract-bundle-build.log",
+      "sha256": "f3f9dd61726aa0194a0c87ffead9c10034ebe1eccbfded26b3cff35b6a3dea51"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/check_semantic.py",
+      "exit_code": 0,
+      "log": "cpu-contract-stage-check.log",
+      "sha256": "a959117d8f1f7e241c5d459e422a7d3d118c73ef86f28422a3be6ea9194002f9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/check_measurements.py",
+      "exit_code": 0,
+      "log": "cpu-contract-check.log",
+      "sha256": "10c79bfff154b9115cd4354816208cdfa8228c639204c9e13a6fd03757e7d26e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --output .runtime-work/c111610-nov24-owner/offline-v5-arrow_clear",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-arrow_clear.log",
+      "sha256": "ccf4b413e6e14e3bc8da0c776787ec9899dbc60d0849f9e814f98aa873416368"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --output .runtime-work/c111610-nov24-owner/offline-v5-arrow_ped_crosswalk",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-arrow_ped_crosswalk.log",
+      "sha256": "007dc795ffc9d76bb84ccf1038db30091e8f5571fea6b9287858baf5f1e4db10"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --output .runtime-work/c111610-nov24-owner/offline-v5-arrow_ped_intersection",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-arrow_ped_intersection.log",
+      "sha256": "1ab6118f24db66743458ac6570f0c1c86be0a8eab55f0b5e9f09cde89a94d32c"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --output .runtime-work/c111610-nov24-owner/offline-v5-arrow_vehicle_intersection",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-arrow_vehicle_intersection.log",
+      "sha256": "0de403f6e8cd377a4f6570bf94b8f3bba9cd9ebae15a9427b1618571b375b46f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --output .runtime-work/c111610-nov24-owner/offline-v5-arrow_concurrent_movement",
+      "exit_code": 0,
+      "log": "cpu-contract-offline-arrow_concurrent_movement.log",
+      "sha256": "efabf56bd6a5b87cc02e70ee3adcf49b0796d1d19870b01e0afe007d08ac2581"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-contract-tests.log",
+      "sha256": "da8492bf5591133dde8a0c4d70ffce23115ae7f6c4828467505f0514995fee76"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-contract-static.log",
+      "sha256": "815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-contract-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-kinematics-bundle-build.log",
+      "sha256": "f3f9dd61726aa0194a0c87ffead9c10034ebe1eccbfded26b3cff35b6a3dea51"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/check_semantic.py",
+      "exit_code": 0,
+      "log": "cpu-kinematics-stage-check.log",
+      "sha256": "a959117d8f1f7e241c5d459e422a7d3d118c73ef86f28422a3be6ea9194002f9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/check_measurements.py",
+      "exit_code": 0,
+      "log": "cpu-kinematics-contract-check.log",
+      "sha256": "10c79bfff154b9115cd4354816208cdfa8228c639204c9e13a6fd03757e7d26e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --output .runtime-work/c111610-nov24-owner/offline-v6-arrow_clear",
+      "exit_code": 0,
+      "log": "cpu-kinematics-offline-arrow_clear.log",
+      "sha256": "c991a6f4931a250e96147129eedf57bc41d5479c971db22107f7d89836049c87"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --output .runtime-work/c111610-nov24-owner/offline-v6-arrow_ped_crosswalk",
+      "exit_code": 0,
+      "log": "cpu-kinematics-offline-arrow_ped_crosswalk.log",
+      "sha256": "f865f4998684fc99de87ebeaa2c8a05f8f7bc258fc782ad21edd75ab3315b597"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --output .runtime-work/c111610-nov24-owner/offline-v6-arrow_ped_intersection",
+      "exit_code": 0,
+      "log": "cpu-kinematics-offline-arrow_ped_intersection.log",
+      "sha256": "a7f64a924ba2465d8c338def695a8a3946741d3af48c9cf917110d1ad5988ba4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --output .runtime-work/c111610-nov24-owner/offline-v6-arrow_vehicle_intersection",
+      "exit_code": 0,
+      "log": "cpu-kinematics-offline-arrow_vehicle_intersection.log",
+      "sha256": "c4d64e60269e8a2241134e47808ea3d63e14f9da4105218a41ffbb8002725dc3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --output .runtime-work/c111610-nov24-owner/offline-v6-arrow_concurrent_movement",
+      "exit_code": 0,
+      "log": "cpu-kinematics-offline-arrow_concurrent_movement.log",
+      "sha256": "9de717e2933d7095fdde70d0183a0c6b33210ca88e06df4fcff140a4b4250a76"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-kinematics-tests.log",
+      "sha256": "c92d03f73f947b7eaab78ece4b7714aae0f7ec486833f4479bc5766b996a9bc1"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-kinematics-static.log",
+      "sha256": "815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-kinematics-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/build_offline_draft.py",
+      "exit_code": 0,
+      "log": "cpu-permission-bundle-build.log",
+      "sha256": "f3f9dd61726aa0194a0c87ffead9c10034ebe1eccbfded26b3cff35b6a3dea51"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/check_semantic.py",
+      "exit_code": 0,
+      "log": "cpu-permission-stage-check.log",
+      "sha256": "a959117d8f1f7e241c5d459e422a7d3d118c73ef86f28422a3be6ea9194002f9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/check_measurements.py",
+      "exit_code": 0,
+      "log": "cpu-permission-contract-check.log",
+      "sha256": "10c79bfff154b9115cd4354816208cdfa8228c639204c9e13a6fd03757e7d26e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --output .runtime-work/c111610-nov24-owner/offline-v7-arrow_clear",
+      "exit_code": 0,
+      "log": "cpu-permission-offline-arrow_clear.log",
+      "sha256": "121dba33830d4fbcc661f4327ecc2fc6d5257e0873b3a0d4f085e50676ecc196"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --output .runtime-work/c111610-nov24-owner/offline-v7-arrow_ped_crosswalk",
+      "exit_code": 0,
+      "log": "cpu-permission-offline-arrow_ped_crosswalk.log",
+      "sha256": "0381d96c3602207b5ad94b42b7aec16394709ca109a29c210d85641bfe6c52ef"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --output .runtime-work/c111610-nov24-owner/offline-v7-arrow_ped_intersection",
+      "exit_code": 0,
+      "log": "cpu-permission-offline-arrow_ped_intersection.log",
+      "sha256": "db69ce518e281f4d01d9fb90abe9fdfef92cbf4866f88aae8eea7d28dc8bd692"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --output .runtime-work/c111610-nov24-owner/offline-v7-arrow_vehicle_intersection",
+      "exit_code": 0,
+      "log": "cpu-permission-offline-arrow_vehicle_intersection.log",
+      "sha256": "ca9e0d7d42117486332cc3910b24180d31083d8d8541192b23d3820a83593188"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --output .runtime-work/c111610-nov24-owner/offline-v7-arrow_concurrent_movement",
+      "exit_code": 0,
+      "log": "cpu-permission-offline-arrow_concurrent_movement.log",
+      "sha256": "dc9d989a29dc8b7354715004b846b95b05d6debc706bf9a46ea97d3c6bf8c9ba"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-permission-tests.log",
+      "sha256": "3de224b6730ef1a99a37ef4a5da611fedc4c38fcbc89b7b7a94a312cf30eae3e"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-permission-static.log",
+      "sha256": "815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-permission-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-current-preflight.log",
+      "sha256": "9536de2c5cf110009b28c8a62f23a61f145b3d5b9f039b08b938b0445f5dab0c"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-current-static.log",
+      "sha256": "815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-current-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_clear --output .runtime-work/c111610-nov24-owner/offline-native-map-arrow_clear",
+      "exit_code": 0,
+      "log": "cpu-native-map-offline-arrow_clear.log",
+      "sha256": "3780e8ccc9d25a8e0c90c60926b2561aebea74a4fd5189d91157c71eb35a3e26"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_crosswalk --output .runtime-work/c111610-nov24-owner/offline-native-map-arrow_ped_crosswalk",
+      "exit_code": 0,
+      "log": "cpu-native-map-offline-arrow_ped_crosswalk.log",
+      "sha256": "75f1a9cf3ec4982eff75d46f35f254ba844ab95174f569e3fa3b4ce76daf1595"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_ped_intersection --output .runtime-work/c111610-nov24-owner/offline-native-map-arrow_ped_intersection",
+      "exit_code": 0,
+      "log": "cpu-native-map-offline-arrow_ped_intersection.log",
+      "sha256": "ded6069e22e27b0f65a546617c8cd8cbbea3bf50c121a6d28a1080d5c68249ea"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_vehicle_intersection --output .runtime-work/c111610-nov24-owner/offline-native-map-arrow_vehicle_intersection",
+      "exit_code": 0,
+      "log": "cpu-native-map-offline-arrow_vehicle_intersection.log",
+      "sha256": "9347410b3719aef5ee9096bef76dbaa50fcb215250444e35627a7f9b6d30aecf"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/execution-manifest.draft.json --case testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement --output .runtime-work/c111610-nov24-owner/offline-native-map-arrow_concurrent_movement",
+      "exit_code": 0,
+      "log": "cpu-native-map-offline-arrow_concurrent_movement.log",
+      "sha256": "03278ca04659685a8f539b2273d6ff658be0ac4b2938becc3a0db756e0caa0f7"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111610__NRS-484B-307-7a__motor_vehicle_driver/tests -p test*.py -q",
+      "exit_code": 0,
+      "log": "cpu-native-map-tests.log",
+      "sha256": "34b4355b3951d52fad4eac112e35f5f18624b899b6ef98e15c916b64c42c29f7"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-307-7a__motor_vehicle_driver",
+      "exit_code": 0,
+      "log": "cpu-native-map-static.log",
+      "sha256": "815083c395127cb06ceda824de4084d0e0758516ee679d43861bf23187a18a27"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Five exact arrow bundles with pinned descriptions and saved-only analysis pass offline checks. Nine-stage semantic chain validates; four judgment sweep ranges remain source-incomplete. Analysis joins sealed aspect, actor and four-camera original sources and rejects stale camera bytes or diagnostic input in delivery mode; 30 focused tests pass. Canonical production runner/manifest, source-bound positive/negative compatibility, process-saved integration and independent delivery audit remain CPU work. Original surveyed site, official display adapter and physical/legal judgments remain unresolved; strict gate remains partial."
+  "reason": "Five exact arrow bundles pass current offline checks; Native runner source-gates an original surveyed site and reviewed display/camera adapter, tests same-tick capture and restores the world. Canonical selected compatibility, saved processing and physical delivery receipts remain to be built and proven. Original CARLA map/head/display and actor sources remain required for physical execution."
 }

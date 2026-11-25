@@ -64,6 +64,7 @@ def finalize_saved(site_path: Path, attempt: Path, case_id: str, *,
         events = json.loads(event_path.read_text())
         if not any(row.get("concurrent_indications") and
                    row.get("ego_movement") != site["arrow_movement"] and
+                   row.get("concurrent_permission_source") and
                    row.get("ego_movement") == row.get("concurrently_permitted_movement")
                    for row in events):
             raise ValueError("concurrently permitted alternate movement not observed")
