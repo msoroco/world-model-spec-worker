@@ -47,10 +47,21 @@ def prove() -> dict:
                                      "signal_continuity"),
         "regardless_weather": compare(measured["continuous100"], measured["rain"],
                                       "regardless_weather")}
+    try:
+        compare(measured["short80"], measured["continuous100"],
+                "business_right_distance", measured["above101"])
+    except ValueError as error:
+        if "above-100-foot measured contrast missing" not in str(error):
+            raise
+        triple_distinct = False
+    else:
+        triple_distinct = True
     return {"format": "diagnostic-turn-signal-sampling-proof",
             "sample_rate_hz": 20, "speed_m_s": 8.0,
             "continuous_distances_ft": {case: measured[case]["continuous_distance_ft"] for case in CASES},
-            "comparisons": comparisons, "physical_acceptance_claimed": False}
+            "comparisons": comparisons,
+            "business_right_numeric_triple_measured_distinct": triple_distinct,
+            "physical_acceptance_claimed": False}
 
 
 if __name__ == "__main__":

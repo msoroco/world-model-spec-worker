@@ -1,0 +1,106 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cameras": [
+    {
+      "fov_deg": 75,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "reviewed original roundabout entry and circulating path",
+      "width": 1920
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "reviewed original roundabout entry and circulating path",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "reviewed original roundabout entry and circulating path",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "reviewed original roundabout entry and circulating path",
+      "width": 1280
+    }
+  ],
+  "case": {
+    "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter",
+    "physical_target": "source-grounded multilane entry and already-present circulating vehicle",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "original ego body vertices and ring occupancy at 20 Hz",
+          "name": "ego_roundabout_entry",
+          "reference_frame": "reviewed Native map XY",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "physical realization pending",
+          "unit": "frame"
+        },
+        {
+          "method": "original opponent route lane and ring occupancy",
+          "name": "circulating_vehicle_presence",
+          "reference_frame": "reviewed Native map XY",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "physical realization pending",
+          "unit": "state"
+        },
+        {
+          "method": "original eight-vertex body separation and conflict occupancy",
+          "name": "entry_conflict_motion",
+          "reference_frame": "reviewed Native map XY",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "legal right-of-way unresolved",
+          "unit": "m"
+        },
+        {
+          "method": "original synchronized body and speed histories before entry",
+          "name": "observed_preentry_gap",
+          "reference_frame": "reviewed Native map XY",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "no legal numeric gap threshold",
+          "unit": "s"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "source-hashed jurisdiction, map, lanes and routes",
+          "name": "reviewed_roundabout_source",
+          "unit": "source"
+        }
+      ],
+      "limitations": [
+        "Source-backed motion is not a legal gap judgment."
+      ]
+    }
+  },
+  "cell_id": "C130864",
+  "duration_s": 45,
+  "law_id": "LVMC-11-43-010-B",
+  "physical_completion": {
+    "completion_goal_method": "original ring occupancy and full 900-frame source trace; legal gap remains independent",
+    "criterion": "roundabout_entry_or_observed_wait"
+  },
+  "rate_hz": 20,
+  "required_atoms": [],
+  "selected_case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter",
+  "source_packets": [],
+  "supported_case_ids": [
+    "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_wait",
+    "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_enter",
+    "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_wait",
+    "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_enter",
+    "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_wait",
+    "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__connected_gap_enter"
+  ]
+}

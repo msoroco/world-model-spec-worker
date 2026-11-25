@@ -18,9 +18,9 @@ from PIL import Image
 from native_roundabout import load_case
 from roundabout_measurements import ASSIGNMENT_ID
 
-CAMERAS = ("overview", "approach", "entry_conflict", "driver_reference")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 CAMERA_DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
-                     "entry_conflict": (1280, 720), "driver_reference": (1280, 720)}
+                     "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _sha(path):
@@ -57,12 +57,14 @@ def _camera_image(reader, frame, dimensions):
 
 def capture(world, ego, opponent, map_path, map_sha256, case_id, output_dir,
             ego_control, opponent_control, body_reader, brake,
-            *, ticks=900, camera_readers=None, camera_dimensions=None):
+            *, ticks=900, camera_readers=None, camera_dimensions=None,
+            after_tick=None):
     """Write complete trace and receipt only after all source frames pass."""
     packet = load_case(map_path, map_sha256, case_id)
     if (not isinstance(ticks, int) or ticks < 2 or
             not all(callable(fn) for fn in (ego_control, opponent_control,
-                                            body_reader, brake))):
+                                            body_reader, brake)) or
+            (after_tick is not None and not callable(after_tick))):
         raise ValueError("complete capture callbacks and tick count required")
     settings = world.get_settings()
     if (not settings.synchronous_mode or
@@ -74,7 +76,7 @@ def capture(world, ego, opponent, map_path, map_sha256, case_id, output_dir,
         raise ValueError("distinct original actor identities required")
     output = Path(output_dir)
     trace = output / "original-trace.jsonl"
-    receipt = output / "source-receipt.json"
+    receipt = output / "original-receipt.json"
     if trace.exists() or receipt.exists():
         raise ValueError("original roundabout output exists")
     dimensions = camera_dimensions or CAMERA_DIMENSIONS
@@ -125,6 +127,8 @@ def capture(world, ego, opponent, map_path, map_sha256, case_id, output_dir,
                     archives[name].writestr(member, payload)
                     row["camera_frames"][name] = {"member": member,
                         "sha256": hashlib.sha256(payload).hexdigest()}
+            if after_tick is not None:
+                after_tick(frame, time_s, row)
             rows.append(row)
             prior = frame, time_s
     except Exception:

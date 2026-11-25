@@ -78,6 +78,16 @@ class SignalMeasurementTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fixed context differs"):
             MODULE.compare(left, right, "business_right_distance")
 
+    def test_numeric_triple_requires_measured_above_difference(self):
+        left = self.read(self.packet(signal_start=12))
+        middle = self.read(self.packet())
+        middle["case_id"] = "case-middle"
+        above = {**middle, "case_id": "case-above"}
+        with self.assertRaisesRegex(ValueError, "above-100-foot measured contrast missing"):
+            MODULE.compare(left, middle, "business_right_distance", above)
+        above = {**above, "continuous_distance_ft": middle["continuous_distance_ft"] + 1.0}
+        self.assertEqual(len(MODULE.compare(left, middle, "business_right_distance", above)["case_ids"]), 3)
+
     def test_missing_source_file_rejected(self):
         with self.assertRaises(FileNotFoundError):
             MODULE.measure(self.path, "case-a")

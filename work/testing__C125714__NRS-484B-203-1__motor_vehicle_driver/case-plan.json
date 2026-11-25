@@ -1,51 +1,38 @@
 {
-  "assignment_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C125714",
-  "law_id": "NRS-484B-203-1",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-203-1",
-      "cell_id": "C125714",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-203-1",
-      "branch": "Opposing pass on an undivided approach in a median-opening scene",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 335,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Drivers of vehicles proceeding in opposite directions shall pass each other keeping to the right, and upon highways having width for not more than one line of traffic in each direction, each driver shall give to the other at least one-half of the paved portion of the highway as nearly as possible.",
-  "law_source": "NRS 484B.203(1)",
-  "topic_inventory": {
-    "exact-text": "Drivers of vehicles proceeding in opposite directions shall pass each other keeping to the right, and upon highways having width for not more than one line of traffic in each direction, each driver shall give to the other at least one-half of the paved portion of the highway as nearly as possible."
+  "assignment_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "both vehicle bodies, paved midpoint and median opening",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "opposing approach trajectories and body clearance",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "paved boundaries and physical constraint context",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original frames at 20 Hz",
+        "subject": "ego relative passing side and opposing actor",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
-      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
-      "target_law_id": "NRS-484B-203-1",
-      "target_type": "deterministic_observation",
       "branch": "Opposing pass on undivided approach of median-opening scene",
-      "gap_ids": [
-        "G1",
-        "G2",
-        "G3"
-      ],
+      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
       "draft_variables": {
-        "world_setup": {
-          "layout": "median_opening",
-          "maneuver": "travel",
-          "control": "other_vehicle",
-          "encounter_location": "source-verified undivided approach",
-          "traffic_line_capacity_each_direction": [
-            1,
-            1
-          ]
-        },
         "controller": {
           "ego_route": "increasing road station",
           "other_route": "decreasing road station",
@@ -55,39 +42,39 @@
           "actual_passing_side": null,
           "ego_body_midpoint_overrun_m": null,
           "other_body_midpoint_overrun_m": null
+        },
+        "world_setup": {
+          "control": "other_vehicle",
+          "encounter_location": "source-verified undivided approach",
+          "layout": "median_opening",
+          "maneuver": "travel",
+          "traffic_line_capacity_each_direction": [
+            1,
+            1
+          ]
         }
       },
-      "intended_observation": "Ego keeps to its direction-relative right; both body envelopes leave the other at least half the measured paved width.",
-      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture."
-      },
-      "physical_acceptance_claimed": false,
-      "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
-    },
-    {
-      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
-      "target_law_id": "NRS-484B-203-1",
-      "target_type": "deterministic_observation",
-      "branch": "Opposing pass on undivided approach of median-opening scene",
       "gap_ids": [
         "G1",
         "G2",
         "G3"
       ],
+      "intended_observation": "Ego keeps to its direction-relative right; both body envelopes leave the other at least half the measured paved width.",
+      "legal_outcome": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture.",
+        "status": "physical"
+      },
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
+      "target_law_id": "NRS-484B-203-1",
+      "target_type": "deterministic_observation"
+    },
+    {
+      "branch": "Opposing pass on undivided approach of median-opening scene",
+      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
       "draft_variables": {
-        "world_setup": {
-          "layout": "median_opening",
-          "maneuver": "travel",
-          "control": "other_vehicle",
-          "encounter_location": "source-verified undivided approach",
-          "traffic_line_capacity_each_direction": [
-            1,
-            1
-          ]
-        },
         "controller": {
           "ego_route": "increasing road station",
           "other_route": "decreasing road station",
@@ -97,39 +84,39 @@
           "actual_passing_side": null,
           "ego_body_midpoint_overrun_m": null,
           "other_body_midpoint_overrun_m": null
+        },
+        "world_setup": {
+          "control": "other_vehicle",
+          "encounter_location": "source-verified undivided approach",
+          "layout": "median_opening",
+          "maneuver": "travel",
+          "traffic_line_capacity_each_direction": [
+            1,
+            1
+          ]
         }
       },
-      "intended_observation": "Opposing encounter with ego body on direction-relative left, preserving actual opposing travel and passing interval.",
-      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture."
-      },
-      "physical_acceptance_claimed": false,
-      "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
-    },
-    {
-      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
-      "target_law_id": "NRS-484B-203-1",
-      "target_type": "deterministic_observation",
-      "branch": "Opposing pass on undivided approach of median-opening scene",
       "gap_ids": [
         "G1",
         "G2",
         "G3"
       ],
+      "intended_observation": "Opposing encounter with ego body on direction-relative left, preserving actual opposing travel and passing interval.",
+      "legal_outcome": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture.",
+        "status": "physical"
+      },
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
+      "target_law_id": "NRS-484B-203-1",
+      "target_type": "deterministic_observation"
+    },
+    {
+      "branch": "Opposing pass on undivided approach of median-opening scene",
+      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
       "draft_variables": {
-        "world_setup": {
-          "layout": "median_opening",
-          "maneuver": "travel",
-          "control": "other_vehicle",
-          "encounter_location": "source-verified undivided approach",
-          "traffic_line_capacity_each_direction": [
-            1,
-            1
-          ]
-        },
         "controller": {
           "ego_route": "increasing road station",
           "other_route": "decreasing road station",
@@ -139,39 +126,39 @@
           "actual_passing_side": null,
           "ego_body_midpoint_overrun_m": null,
           "other_body_midpoint_overrun_m": null
+        },
+        "world_setup": {
+          "control": "other_vehicle",
+          "encounter_location": "source-verified undivided approach",
+          "layout": "median_opening",
+          "maneuver": "travel",
+          "traffic_line_capacity_each_direction": [
+            1,
+            1
+          ]
         }
       },
-      "intended_observation": "Ego remains right of the other body but extends across the measured midpoint of the paved portion.",
-      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture."
-      },
-      "physical_acceptance_claimed": false,
-      "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
-    },
-    {
-      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained",
-      "target_law_id": "NRS-484B-203-1",
-      "target_type": "deterministic_observation",
-      "branch": "Opposing pass on undivided approach of median-opening scene",
       "gap_ids": [
         "G1",
         "G2",
         "G3"
       ],
+      "intended_observation": "Ego remains right of the other body but extends across the measured midpoint of the paved portion.",
+      "legal_outcome": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture.",
+        "status": "physical"
+      },
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
+      "target_law_id": "NRS-484B-203-1",
+      "target_type": "deterministic_observation"
+    },
+    {
+      "branch": "Opposing pass on undivided approach of median-opening scene",
+      "case_id": "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained",
       "draft_variables": {
-        "world_setup": {
-          "layout": "median_opening",
-          "maneuver": "travel",
-          "control": "other_vehicle",
-          "encounter_location": "source-verified undivided approach",
-          "traffic_line_capacity_each_direction": [
-            1,
-            1
-          ]
-        },
         "controller": {
           "ego_route": "increasing road station",
           "other_route": "decreasing road station",
@@ -181,112 +168,259 @@
           "actual_passing_side": null,
           "ego_body_midpoint_overrun_m": null,
           "other_body_midpoint_overrun_m": null
+        },
+        "world_setup": {
+          "control": "other_vehicle",
+          "encounter_location": "source-verified undivided approach",
+          "layout": "median_opening",
+          "maneuver": "travel",
+          "traffic_line_capacity_each_direction": [
+            1,
+            1
+          ]
         }
       },
+      "gap_ids": [
+        "G1",
+        "G2",
+        "G3"
+      ],
       "intended_observation": "Right-side pass with a source-recorded physical constraint and measured paved allocation; reasonableness unresolved.",
-      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture."
-      },
-      "physical_acceptance_claimed": false,
       "legal_outcome": "unresolved",
-      "preparation_status": "case_and_measurement_cpu_draft"
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "reason": "The median opening may introduce a divider or incompatible lane geometry at the encounter; map cross sections and actual actor bodies must be checked before capture.",
+        "status": "physical"
+      },
+      "preparation_status": "case_and_measurement_cpu_draft",
+      "source_measurement": "opposing_pass.py construct/measure on sealed Native map and original actor history",
+      "target_law_id": "NRS-484B-203-1",
+      "target_type": "deterministic_observation"
     }
   ],
+  "cell_id": "C125714",
   "comparisons": [
     {
-      "comparison_id": "direction_relative_right_side",
       "case_ids": [
         "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
         "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side"
+      ],
+      "comparison_id": "direction_relative_right_side",
+      "deliberate_differences": [
+        "ego lateral route and observed direction-relative passing side"
       ],
       "fixed_conditions": [
         "same public highway and undivided approach",
         "same paved boundary source and line capacity",
         "same opposing actor blueprints and nominal speeds",
         "same cameras and duration"
-      ],
-      "deliberate_differences": [
-        "ego lateral route and observed direction-relative passing side"
       ]
     },
     {
-      "comparison_id": "half_paved_allocation",
       "case_ids": [
         "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
         "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment"
+      ],
+      "comparison_id": "half_paved_allocation",
+      "deliberate_differences": [
+        "ego lateral route and measured body extension across paved midpoint"
       ],
       "fixed_conditions": [
         "same public highway and undivided approach",
         "same paved boundary source and line capacity",
         "same opposing actor route and actor blueprints",
         "same cameras and duration"
-      ],
-      "deliberate_differences": [
-        "ego lateral route and measured body extension across paved midpoint"
       ]
     },
     {
-      "comparison_id": "physical_constraint_context",
       "case_ids": [
         "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
         "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
+      ],
+      "comparison_id": "physical_constraint_context",
+      "deliberate_differences": [
+        "source-recorded physical constraint and achievable allocation"
       ],
       "fixed_conditions": [
         "same public highway and undivided approach",
         "same source-confirmed line capacity",
         "same actor blueprints, cameras and duration"
-      ],
-      "deliberate_differences": [
-        "source-recorded physical constraint and achievable allocation"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "G1",
+        "requirement": "Opposing passing side on a public highway",
+        "source": "Full NRS 484B.203(1), first clause",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G2",
+        "requirement": "Conditional half-paved-width allocation on a highway with width for not more than one line each direction",
+        "source": "Full NRS 484B.203(1), second clause",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this exact assignment."
+      },
+      {
+        "id": "G3",
+        "requirement": "Physical constraints and as-nearly-as-possible context",
+        "source": "Full NRS 484B.203(1), qualifying phrase",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this exact assignment."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-203-1",
+  "law_source": "NRS 484B.203(1)",
+  "law_text": "Drivers of vehicles proceeding in opposite directions shall pass each other keeping to the right, and upon highways having width for not more than one line of traffic in each direction, each driver shall give to the other at least one-half of the paved portion of the highway as nearly as possible.",
   "observations": [
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history"
+      ],
+      "mandatory": false,
+      "method": "Highway status, median opening and encounter location from source packet",
       "name": "highway_and_undivided_approach",
-      "mandatory": true,
-      "source": "original Native map review",
-      "method": "Highway status, median opening and encounter location from source packet"
+      "source": "original Native map review"
     },
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history",
+        "four_camera_views"
+      ],
+      "mandatory": false,
+      "method": "Distinct actor IDs, opposite signed along-route speeds throughout encounter",
       "name": "opposing_travel",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Distinct actor IDs, opposite signed along-route speeds throughout encounter"
+      "source": "original Native actor history"
     },
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history",
+        "four_camera_views"
+      ],
+      "mandatory": false,
+      "method": "Longitudinal body-envelope overlap over continuous 20 Hz frames",
       "name": "passing_interval",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Longitudinal body-envelope overlap over continuous 20 Hz frames"
+      "source": "original Native actor history"
     },
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history",
+        "four_camera_views"
+      ],
+      "mandatory": false,
+      "method": "Direction-relative lateral body-envelope ordering during overlap",
       "name": "relative_right_side",
-      "mandatory": true,
-      "source": "original Native actor history",
-      "method": "Direction-relative lateral body-envelope ordering during overlap"
+      "source": "original Native actor history"
     },
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history",
+        "four_camera_views"
+      ],
+      "mandatory": false,
+      "method": "Signed paved boundaries and both occupied lateral envelopes by frame",
       "name": "paved_portion",
-      "mandatory": true,
-      "source": "original Native map review and actor history",
-      "method": "Signed paved boundaries and both occupied lateral envelopes by frame"
+      "source": "original Native map review and actor history"
     },
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history"
+      ],
+      "mandatory": false,
+      "method": "Source-confirmed traffic-line capacity, retained without numeric legal width cutoff",
       "name": "one_line_capacity_each_direction",
-      "mandatory": true,
-      "source": "original Native map review",
-      "method": "Source-confirmed traffic-line capacity, retained without numeric legal width cutoff"
+      "source": "original Native map review"
     },
     {
+      "derived_from_recorded_channels": [
+        "opposing_actor_body_history",
+        "four_camera_views"
+      ],
+      "mandatory": false,
+      "method": "Obstacle/edge context retained for as-nearly-as-possible review, without legal label",
       "name": "physical_constraints",
+      "source": "original Native map and actor history"
+    },
+    {
       "mandatory": true,
-      "source": "original Native map and actor history",
-      "method": "Obstacle/edge context retained for as-nearly-as-possible review, without legal label"
+      "method": "Original 20 Hz two-actor body and clock history",
+      "name": "opposing_actor_body_history",
+      "source": "original Native actor history"
+    },
+    {
+      "mandatory": true,
+      "method": "Four synchronized original camera views and pixels",
+      "name": "four_camera_views",
+      "source": "original Native camera history"
     }
   ],
+  "planning_status": "case_and_measurement_cpu_draft",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
+      ],
+      "evidence_or_gap": "Source-gated Native geometry and original saved actor/camera evidence required; reviewed median-opening source remains absent.",
+      "requirement": "Opposing vehicles pass keeping to the direction-relative right",
+      "source": "NRS 484B.203(1), first clause",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
+      ],
+      "evidence_or_gap": "Source-gated Native geometry and original saved actor/camera evidence required; reviewed median-opening source remains absent.",
+      "requirement": "On a highway with width for not more than one line of traffic in each direction, each driver gives at least one-half of the paved portion",
+      "source": "NRS 484B.203(1), second clause",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
+        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
+      ],
+      "evidence_or_gap": "Source-gated Native geometry and original saved actor/camera evidence required; reviewed median-opening source remains absent.",
+      "requirement": "As nearly as possible in the physical context of the encounter",
+      "source": "NRS 484B.203(1), qualifying phrase",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Physical realization, exact route clearance and camera coverage remain to be checked in CARLA.",
+    "Case-specific canonical proposals, compatibility and saved-only delivery receipts remain CPU work."
+  ],
+  "selected_branch": "Opposing pass on an undivided approach in a median-opening scene",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Opposing pass on an undivided approach in a median-opening scene",
+      "cell_id": "C125714",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-203-1",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-203-1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 335,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C125714__NRS-484B-203-1__motor_vehicle_driver/assignment.json",
@@ -309,46 +443,15 @@
       "sha256": "c1ac7d818e4f3a006b0965fc675ee72ef32358e786673f2604e831744d4bd955"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization, exact route clearance and camera coverage remain to be checked in CARLA.",
-    "Case-specific canonical proposals, compatibility and saved-only delivery receipts remain CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "G1",
-        "requirement": "Opposing passing side on a public highway",
-        "source": "Full NRS 484B.203(1), first clause",
-        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this exact assignment."
-      },
-      {
-        "id": "G2",
-        "requirement": "Conditional half-paved-width allocation on a highway with width for not more than one line each direction",
-        "source": "Full NRS 484B.203(1), second clause",
-        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this exact assignment."
-      },
-      {
-        "id": "G3",
-        "requirement": "Physical constraints and as-nearly-as-possible context",
-        "source": "Full NRS 484B.203(1), qualifying phrase",
-        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this exact assignment."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Drivers of vehicles proceeding in opposite directions shall pass each other keeping to the right, and upon highways having width for not more than one line of traffic in each direction, each driver shall give to the other at least one-half of the paved portion of the highway as nearly as possible."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "case_and_measurement_cpu_draft",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 335,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Opposing pass on an undivided approach in a median-opening scene",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "A median-opening scene can contain an undivided two-way approach supporting opposing passing and the conditional allocation duty.",
       "required_context": [
         "Establish public highway status and paved boundaries.",
         "Establish public-highway status and distinguish paved boundaries from roadway, shoulders and highway boundaries.",
@@ -361,46 +464,9 @@
         "Retain the condition 'width for not more than one line of traffic in each direction' without a numerical threshold.",
         "Retain width and traffic-line capacity context without declaring a numerical criterion for the conditional allocation duty."
       ],
-      "reason": "A median-opening scene can contain an undivided two-way approach supporting opposing passing and the conditional allocation duty."
-    }
-  ],
-  "selected_branch": "Opposing pass on an undivided approach in a median-opening scene",
-  "requirement_dispositions": [
-    {
-      "requirement": "Opposing vehicles pass keeping to the direction-relative right",
-      "source": "NRS 484B.203(1), first clause",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
-      ],
-      "evidence_or_gap": "Source-gated Native geometry and original saved actor/camera evidence required; reviewed median-opening source remains absent."
-    },
-    {
-      "requirement": "On a highway with width for not more than one line of traffic in each direction, each driver gives at least one-half of the paved portion",
-      "source": "NRS 484B.203(1), second clause",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
-      ],
-      "evidence_or_gap": "Source-gated Native geometry and original saved actor/camera evidence required; reviewed median-opening source remains absent."
-    },
-    {
-      "requirement": "As nearly as possible in the physical context of the encounter",
-      "source": "NRS 484B.203(1), qualifying phrase",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_half",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__wrong_side",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__left_encroachment",
-        "testing__C125714__NRS-484B-203-1__motor_vehicle_driver__right_constrained"
-      ],
-      "evidence_or_gap": "Source-gated Native geometry and original saved actor/camera evidence required; reviewed median-opening source remains absent."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 335,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

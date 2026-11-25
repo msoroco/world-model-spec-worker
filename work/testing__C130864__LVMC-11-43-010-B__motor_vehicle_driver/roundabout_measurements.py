@@ -85,13 +85,14 @@ def _minimum_distance(a, b):
     return min(math.dist(x, y) for x in a for y in b)
 
 
-def measure(*, case_id, map_path, trace_path, receipt_path):
+def measure(*, case_id, map_path, trace_path, receipt_path,
+            allow_diagnostic=False):
     if case_id not in {ASSIGNMENT_ID + "__" + suffix for suffix in SUFFIXES}:
         raise ValueError("unknown exact case ID")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if (receipt.get("assignment_id"), receipt.get("case_id")) != (ASSIGNMENT_ID, case_id):
         raise ValueError("source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture"):
+    if receipt.get("diagnostic_fixture") and not allow_diagnostic:
         raise ValueError("diagnostic fixture is not delivery evidence")
     if _sha(map_path) != receipt.get("map_sha256") or _sha(trace_path) != receipt.get("trace_sha256"):
         raise ValueError("original source bytes changed")
@@ -143,7 +144,8 @@ def measure(*, case_id, map_path, trace_path, receipt_path):
             "body_separation_at_entry_m": first_entry["body_vertex_separation_m"] if first_entry else None,
             "minimum_sampled_body_separation_m": min(r["body_vertex_separation_m"] for r in observations),
             "observations": observations, "legal_gap_judgment": "unresolved",
-            "physical_acceptance": "unverified"}
+            "physical_acceptance": "unverified",
+            "diagnostic_fixture": bool(receipt.get("diagnostic_fixture"))}
 
 
 def main():

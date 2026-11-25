@@ -79,6 +79,20 @@ def audit(attempt, case, *, diagnostic=False):
                 original_review.get("map_sha256") != sha(map_path) or
                 original_review.get("physical_pixel_review") != "reviewed_original_pixels"):
             raise ValueError("original site acquisition and pixel review absent")
+        seal_path = required(root, "capture-seal.json")
+        native_exit_path = required(root, "native-exit.json")
+        owner_path = required(root, "owner-release.json")
+        seal = json.loads(seal_path.read_text())
+        native_exit = json.loads(native_exit_path.read_text())
+        owner = json.loads(owner_path.read_text())
+        if (seal.get("events") != ["capture_finished", "encoders_closed", "restoration_verified"] or
+                native_exit.get("event") != "native_exit" or
+                native_exit.get("capture_seal_sha256") != sha(seal_path) or
+                owner.get("event") != "owner_released" or
+                owner.get("operator_attested") is not True or
+                owner.get("native_exit_sha256") != sha(native_exit_path) or
+                owner.get("native_construction_sha256") != sha(required(root, "construction.json"))):
+            raise ValueError("Native closure and owner release receipt absent")
     manifest = json.loads(manifest_path.read_text())
     png_count = 0
     if diagnostic:

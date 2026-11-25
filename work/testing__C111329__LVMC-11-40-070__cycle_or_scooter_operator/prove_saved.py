@@ -45,6 +45,9 @@ def main() -> None:
         work.mkdir(parents=True)
         attempt, fixture, versions = (work / part for part in ("attempt", "fixture", "versions"))
         materialize(MANIFEST, case_id, attempt)
+        # Primary diagnostic processing may omit candidate selection. This avoids
+        # a manifest hash cycle while post_capture receipts are being bound.
+        (attempt / "candidate-selection.json").unlink()
         materialize_fixture(REPO, REPO / entry["fixture_recipe"], fixture)
         copy_sources(fixture, attempt)
         command = [sys.executable, "runtime.py", "process-saved", "--manifest",
@@ -75,8 +78,9 @@ def main() -> None:
         entry["post_capture"] = {
             "recorded_only": True,
             "command": " ".join(command).replace(str(attempt.relative_to(REPO)), "/external/attempt")
-                       .replace(str(versions.relative_to(REPO)), "/external/derived"),
-            "feedback_command": "cat /external/derived/v0001/feedback.json",
+                       .replace(str(versions.relative_to(REPO)), "/external/derived")
+                       + " --owner-release-receipt /external/owner-release.json",
+            "feedback_command": "cat /external/derived/v*/feedback.json",
             "test_log": log_path.name, "test_log_sha256": sha(log_path),
             "test_exit_code": 0, "test_receipt": receipt_path.name,
             "test_receipt_sha256": sha(receipt_path),

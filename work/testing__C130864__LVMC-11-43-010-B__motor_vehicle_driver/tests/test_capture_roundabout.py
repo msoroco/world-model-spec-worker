@@ -122,7 +122,7 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "camera frame identity"):
             self.run_capture(3, **options)
         self.assertEqual(self.brakes, [10, 11])
-        self.assertFalse((self.output / "source-receipt.json").exists())
+        self.assertFalse((self.output / "original-receipt.json").exists())
         self.assertFalse(list(self.output.glob("*.png.zip")))
 
     def test_frame_failure_brakes_both_and_leaves_no_source(self):
@@ -132,7 +132,7 @@ class CaptureTests(unittest.TestCase):
             self.run_capture(3)
         self.assertEqual(self.brakes, [10, 11])
         self.assertFalse((self.output / "original-trace.jsonl").exists())
-        self.assertFalse((self.output / "source-receipt.json").exists())
+        self.assertFalse((self.output / "original-receipt.json").exists())
 
     def test_wrong_world_rate_rejected_before_control(self):
         self.world.get_settings = lambda: type("Settings", (), {
@@ -146,7 +146,7 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "eight original body vertices"):
             self.run_capture(3)
         self.assertEqual(self.brakes, [10, 11])
-        self.assertFalse((self.output / "source-receipt.json").exists())
+        self.assertFalse((self.output / "original-receipt.json").exists())
 
 
 if __name__ == "__main__":

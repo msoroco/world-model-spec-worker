@@ -78,12 +78,15 @@ def spawn(world, packet, transform_factory):
 
 class TimedRoute:
     """Follow original route samples after a configured release tick."""
-    def __init__(self, points, release_tick, control_factory):
+    def __init__(self, points, release_tick, control_factory, *, throttle=0.35):
         self.points = _route(points, "vehicle")
         if not isinstance(release_tick, int) or not 0 <= release_tick < 900:
             raise ValueError("invalid release tick")
         self.release_tick = release_tick
         self.factory = control_factory
+        if type(throttle) not in (int, float) or not 0 < throttle <= .5:
+            raise ValueError("bounded engineering throttle required")
+        self.throttle = float(throttle)
         self.index = 1
 
     def __call__(self, actor, tick):
@@ -114,4 +117,4 @@ class TimedRoute:
         heading = math.atan2(target["y"]-y, target["x"]-x)
         error = (heading-yaw+math.pi)%(2*math.pi)-math.pi
         steer = max(-1.0,min(1.0,math.atan(2.7*2*math.sin(error)/max(distance,.8))/.65))
-        actor.apply_control(self.factory(throttle=.35, steer=steer, brake=0.0))
+        actor.apply_control(self.factory(throttle=self.throttle, steer=steer, brake=0.0))

@@ -1,0 +1,68 @@
+{
+  "case_id": "testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver__adjacent_enter",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-map.json",
+    "remove": [
+      "original-map.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-map.json",
+        "original-trace.jsonl",
+        "original-receipt.json"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_lane_connectivity",
+      "output_key": "lane_connectivity",
+      "requirement": "Original multilane roundabout entry lane and connected circulating lane",
+      "source": "frozen C130864 conditional witness and original map review",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-map.json",
+        "original-trace.jsonl",
+        "original-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_roundabout_entry",
+      "output_key": "roundabout_entry",
+      "requirement": "Original entering operator and sampled entry or wait motion",
+      "source": "LVMC 11.43.010(B) and original vehicle trace",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "original-map.json",
+        "original-trace.jsonl",
+        "original-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_circulating_presence",
+      "output_key": "circulating_presence",
+      "requirement": "Another motor vehicle already circulating in an identified lane",
+      "source": "frozen C130864 conditional witness and original opponent route",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 3,
+      "inputs": [
+        "original-map.json",
+        "original-trace.jsonl",
+        "original-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_gap_observation",
+      "output_key": "gap_observation",
+      "requirement": "Observed pre-entry traffic spacing and potential conflict without legal cutoff",
+      "source": "LVMC 11.43.010(B) and original body histories",
+      "value_type": "object"
+    }
+  ]
+}

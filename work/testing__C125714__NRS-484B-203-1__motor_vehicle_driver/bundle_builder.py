@@ -26,7 +26,9 @@ def config(variant):
         "selected_case_id": ASSIGNMENT + "__" + variant, "variant": variant,
         "supported_case_ids": [ASSIGNMENT + "__" + name for name in VARIANTS],
         "rate_hz": 20, "duration_s": 45,
-        "cameras": [{"name": name, "width": width, "height": height}
+        "cameras": [{"name": name, "width": width, "height": height,
+                     "pose_strategy": "source-reviewed Native camera pose packet",
+                     "fov_deg": 90}
             for name, width, height in (("overview", 1920, 1080), ("approach", 1280, 720),
                 ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))],
         "recording_description": {

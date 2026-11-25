@@ -34,15 +34,36 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
     _require(context.get("maneuver") == "right_turn", "wrong maneuver")
     rows = packet.get("samples")
     _require(isinstance(rows, list) and len(rows) >= 3, "missing sampled history")
+    if packet.get("source_kind") == "original_native":
+        _require(packet.get("diagnostic_fixture") is False, "diagnostic original source conflict")
+        _require(packet.get("sampling_hz") == 20 and packet.get("frame_count") == 900
+                 and len(rows) == 900, "incomplete original 20 Hz signal history")
+        _require(isinstance(packet.get("site_sha256"), str)
+                 and len(packet["site_sha256"]) == 64, "missing original site binding")
+        archives = packet.get("camera_archives", {})
+        _require(set(archives) == {"overview", "approach", "reference_corner", "driver_reference"},
+                 "missing original four-camera source")
+        for name, archive in archives.items():
+            _require(archive.get("frame_count") == 900 and isinstance(archive.get("sha256"), str)
+                     and len(archive["sha256"]) == 64, "incomplete original camera source: " + name)
     frames = []
+    times = []
     for row in rows:
         _require(all(k in row for k in ("frame", "x_m", "y_m", "right_signal", "course_change")), "missing source sample")
         _require(type(row["frame"]) is int and row["frame"] >= 0, "bad frame")
         _require(type(row["right_signal"]) is bool and type(row["course_change"]) is bool, "bad source state")
         _require(all(math.isfinite(float(row[k])) for k in ("x_m", "y_m")), "bad position")
         frames.append(row["frame"])
+        if packet.get("source_kind") == "original_native":
+            _require(math.isfinite(float(row.get("time_s")))
+                     and set(row.get("camera_frames", {})) == set(archives),
+                     "missing original time or camera join")
+            times.append(float(row["time_s"]))
     _require(frames == sorted(set(frames)), "nonmonotonic or duplicate frames")
     _require(all(b - a == 1 for a, b in zip(frames, frames[1:])), "missing frames")
+    if times:
+        _require(all(abs(b - a - .05) <= 1e-4 for a, b in zip(times, times[1:])),
+                 "original 20 Hz time gap")
     changes = [i for i, row in enumerate(rows) if row["course_change"]]
     _require(changes and changes[0] > 0, "missing course-change onset")
     onset = changes[0]
@@ -78,11 +99,19 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
     }
 
 
-def compare(left: dict, right: dict, comparison: str) -> dict:
+def compare(left: dict, right: dict, comparison: str, above: dict | None = None) -> dict:
     _require(left["case_id"] != right["case_id"], "comparison duplicates a case")
     _require(left["context_sources"] == right["context_sources"], "fixed context differs")
     if comparison == "business_right_distance":
         _require(left["continuous_distance_ft"] < 100 <= right["continuous_distance_ft"], "distance contrast missing")
+        if above is not None:
+            _require(above["case_id"] not in (left["case_id"], right["case_id"]),
+                     "numeric triple duplicates a case")
+            _require(above["context_sources"] == right["context_sources"]
+                     and above["weather_source"] == right["weather_source"],
+                     "numeric triple fixed context differs")
+            _require(above["continuous_distance_ft"] > right["continuous_distance_ft"],
+                     "above-100-foot measured contrast missing")
     elif comparison == "signal_continuity":
         _require(left["sampled_threshold_reached"] and not right["sampled_threshold_reached"], "continuity contrast missing")
         _require(right["prior_inactive_frames"], "interruption absent")
@@ -91,7 +120,9 @@ def compare(left: dict, right: dict, comparison: str) -> dict:
         _require(left["weather_source"] != right["weather_source"], "weather contrast missing")
     else:
         raise ValueError("unknown comparison")
-    return {"comparison_id": comparison, "case_ids": [left["case_id"], right["case_id"]], "software_measurement_passed": True}
+    return {"comparison_id": comparison,
+            "case_ids": [left["case_id"], right["case_id"]] + ([above["case_id"]] if above is not None else []),
+            "software_measurement_passed": True}
 
 
 if __name__ == "__main__":

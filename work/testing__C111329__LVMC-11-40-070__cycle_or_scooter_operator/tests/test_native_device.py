@@ -45,6 +45,10 @@ class TestDevice(unittest.TestCase):
    with self.assertRaisesRegex(ValueError,"hash mismatch"):read_site(p,"0"*64)
    bad=dict(SITE);bad.pop("device_authority_source");p.write_text(json.dumps(bad))
    with self.assertRaisesRegex(ValueError,"missing Native site field"):read_site(p,hashlib.sha256(p.read_bytes()).hexdigest())
+   for participant in ("electric_bicycle", "electric_scooter"):
+    p.write_text(json.dumps({**SITE,"participant_class":participant}))
+    with self.assertRaisesRegex(ValueError,"selected witness requires a human-powered bicycle"):
+     read_site(p,hashlib.sha256(p.read_bytes()).hexdigest())
  def test_construct_and_cleanup(self):
   world=World();result=construct(world,CARLA,SITE,CASE);self.assertEqual(result["bike"].type_id,"vehicle.bicycle")
   world.fail=True

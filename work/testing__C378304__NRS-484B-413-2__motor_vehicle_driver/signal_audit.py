@@ -37,9 +37,18 @@ def audit_measurement(measurement_path: str | Path, source_path: str | Path) -> 
 
 def audit_comparison(left_measurement: str | Path, left_source: str | Path,
                      right_measurement: str | Path, right_source: str | Path,
-                     comparison_id: str) -> dict:
+                     comparison_id: str, above_measurement: str | Path | None = None,
+                     above_source: str | Path | None = None) -> dict:
     audit_measurement(left_measurement, left_source)
     audit_measurement(right_measurement, right_source)
     left = json.loads(Path(left_measurement).read_text())
     right = json.loads(Path(right_measurement).read_text())
-    return MEASURE.compare(left, right, comparison_id)
+    if (above_measurement is None) != (above_source is None):
+        raise ValueError("numeric triple needs both above measurement and source")
+    above = None
+    if above_measurement is not None:
+        if comparison_id != "business_right_distance":
+            raise ValueError("numeric triple applies only to business distance")
+        audit_measurement(above_measurement, above_source)
+        above = json.loads(Path(above_measurement).read_text())
+    return MEASURE.compare(left, right, comparison_id, above)
