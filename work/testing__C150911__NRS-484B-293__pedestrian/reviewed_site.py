@@ -92,6 +92,11 @@ def verify_native_map(world, reviewed):
         if not any(math.hypot(x - ox, y - oy) <= 0.25 for ox, oy in observed):
             raise ValueError("reviewed crosswalk vertex absent from Native readback")
     road_id = int(reviewed["site"]["one_way_road_id"])
-    if not any(w.road_id == road_id for pair in mapping.get_topology() for w in pair):
+    roads = [w for pair in mapping.get_topology() for w in pair if w.road_id == road_id]
+    if not roads:
         raise ValueError("reviewed one-way road absent from Native topology")
+    driving = [w for w in roads if str(getattr(w, "lane_type", "Driving")).endswith("Driving")]
+    signs = {1 if w.lane_id > 0 else -1 for w in driving if w.lane_id != 0}
+    if len(signs) != 1:
+        raise ValueError("reviewed one-way road has opposing or absent Native driving lanes")
     return True

@@ -9,6 +9,9 @@ from pathlib import Path
 from crosswalk_delivery import measure
 from delivery_audit import CAMERAS, audit_saved
 
+NATIVE_MEDIA = {"overview": (1920, 1080), "approach": (1280, 720),
+                "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+
 
 def required(root, name):
     path = root / name
@@ -23,6 +26,26 @@ def sha(path):
 
 def lines(path):
     return [json.loads(s) for s in path.read_text().splitlines() if s]
+
+
+def probe_media(path, camera, frame_count, diagnostic):
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
+        "-count_frames", "-show_entries",
+        "stream=nb_read_frames,codec_name,width,height,r_frame_rate,avg_frame_rate",
+        "-of", "json", str(path)], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, timeout=60)
+    if probe.returncode:
+        raise ValueError("four-camera ffprobe failed: " + camera)
+    streams = json.loads(probe.stdout).get("streams", [])
+    if len(streams) != 1 or int(streams[0]["nb_read_frames"]) != frame_count:
+        raise ValueError("four-camera decoded frame count differs: " + camera)
+    stream = streams[0]
+    if not diagnostic and (stream.get("codec_name") != "ffv1" or
+            (stream.get("width"), stream.get("height")) != NATIVE_MEDIA[camera] or
+            stream.get("r_frame_rate") != "20/1" or
+            stream.get("avg_frame_rate") != "20/1"):
+        raise ValueError("original Native media codec/rate/dimensions differ: " + camera)
+    return stream
 
 
 def audit(attempt, case_id, diagnostic=False):
@@ -42,6 +65,8 @@ def audit(attempt, case_id, diagnostic=False):
     measurement = measure(site, samples, obstacles, participants)
     measurement["case_id"] = case_id
     mapping = lines(required(attempt, "video_frames.jsonl"))
+    if not diagnostic and receipt.get("frame_count") != 900:
+        raise ValueError("original 900-frame passage required")
     if len(mapping) != receipt["frame_count"] or len(samples) != len(mapping):
         raise ValueError("original frame count differs")
     for i, (sample, frame) in enumerate(zip(samples, mapping)):
@@ -59,20 +84,15 @@ def audit(attempt, case_id, diagnostic=False):
     media = {}
     for camera in CAMERAS:
         path = attempt / (camera + ".mkv")
-        probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0",
-            "-count_frames", "-show_entries", "stream=nb_read_frames", "-of", "json", str(path)],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
-        if probe.returncode:
-            raise ValueError("four-camera ffprobe failed: " + camera)
-        streams = json.loads(probe.stdout).get("streams", [])
-        if len(streams) != 1 or int(streams[0]["nb_read_frames"]) != len(mapping):
-            raise ValueError("four-camera decoded frame count differs: " + camera)
+        stream = probe_media(path, camera, len(mapping), diagnostic)
         decoded = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin",
             "-i", str(path), "-f", "null", "-"], stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, timeout=120)
         if decoded.returncode:
             raise ValueError("four-camera full decode failed: " + camera)
-        media[camera] = {"sha256": sha(path), "decoded_frames": len(mapping)}
+        media[camera] = {"sha256": sha(path), "decoded_frames": len(mapping),
+                         "codec": stream.get("codec_name"), "width": stream.get("width"),
+                         "height": stream.get("height"), "rate": stream.get("avg_frame_rate")}
     result.update({"format": "c150911-independent-cpu-delivery",
         "diagnostic_only": diagnostic, "full_video_decode": media,
         "physical_acceptance": False, "legal_practicability": "unresolved"})

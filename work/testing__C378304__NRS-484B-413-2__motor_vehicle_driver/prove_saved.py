@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
@@ -18,8 +19,8 @@ def main() -> None:
     parser.add_argument("--case", required=True)
     args = parser.parse_args()
     tag = args.case.rsplit("__", 1)[-1]
-    scratch = REPO / ".runtime-work" / "c378304" / ("saved-proof-" + tag)
-    scratch.mkdir(parents=True, exist_ok=False)
+    scratch = Path(tempfile.mkdtemp(prefix="saved-proof-" + tag + "-",
+                                     dir=REPO / ".runtime-work/c378304"))
     attempt = scratch / "attempt"
     derived = scratch / "derived"
     validator = REPO / ".runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck"

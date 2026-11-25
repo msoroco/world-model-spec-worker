@@ -14,9 +14,7 @@ REPO = ROOT.parents[1]
 
 
 def main():
-    manifest = ROOT / "execution-manifest.json"
-    if not manifest.exists():
-        manifest = ROOT / "execution-manifest.draft.json"
+    manifest = ROOT / "execution-manifest.draft.json"
     entries = json.loads(manifest.read_text())["cases"]
     output_root = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "/nonexistent")).resolve()
     if REPO / ".runtime-work" not in output_root.parents:

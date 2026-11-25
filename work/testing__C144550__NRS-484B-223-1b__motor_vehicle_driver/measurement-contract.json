@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-driver-input.jsonl",
+    "remove": [
+      "original-driver-input.jsonl"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "reviewed-site.json"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_lanes",
+      "output_key": "marked_lane_context_measurement",
+      "requirement": "Highway has two or more clearly marked lanes for traffic traveling in one direction",
+      "source": "NRS 484B.223(1)(b) exact text",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "frame_map.json",
+        "ego_pose.json",
+        "native_signal.json"
+      ],
+      "kind": "measured",
+      "method": "measure_signal",
+      "output_key": "signal_timing_measurement",
+      "requirement": "Vehicle is not moved from its lane until the driver has given the appropriate turn signal",
+      "source": "NRS 484B.223(1)(b) exact text",
+      "value_type": "boolean"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "frame_map.json",
+        "ego_pose.json",
+        "driver_check.json",
+        "original-driver-input.jsonl",
+        "target-traffic-history.jsonl"
+      ],
+      "kind": "measured",
+      "method": "measure_check",
+      "output_key": "driver_check_and_traffic_measurement",
+      "requirement": "Vehicle is not moved until the driver has ascertained that movement can be made with safety",
+      "source": "NRS 484B.223(1)(b) exact text",
+      "value_type": "object"
+    }
+  ]
+}

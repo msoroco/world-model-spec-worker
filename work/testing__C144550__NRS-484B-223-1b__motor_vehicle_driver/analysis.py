@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import subprocess
 
 from PIL import Image
 
@@ -25,6 +26,31 @@ def sha(path):
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True,
                                      separators=(",", ":")).encode()).hexdigest()
+
+
+def measure_lanes(site, sources):
+    return {"method": "measure_lanes", "value": {
+        "source_lane_id": site["lanes"]["source"]["lane_id"],
+        "destination_lane_id": site["lanes"]["destination"]["lane_id"],
+        "reviewed_provenance": site["reviewed_provenance"]},
+        "sources": {"reviewed-site.json": sources["reviewed-site.json"]}}
+
+
+def measure_signal(measured, sources):
+    return {"method": "measure_signal",
+        "value": measured["signal_precedes_center_departure"],
+        "sources": {name: sources[name] for name in (
+            "frame_map.json", "ego_pose.json", "native_signal.json")}}
+
+
+def measure_check(measured, sources):
+    return {"method": "measure_check", "value": {
+        "independent_check_observed_before_departure":
+            measured["driver_check_observed_before_departure"],
+        "legal_ascertainment_and_safety": "unresolved"},
+        "sources": {name: sources[name] for name in (
+            "frame_map.json", "ego_pose.json", "driver_check.json",
+            "original-driver-input.jsonl", "target-traffic-history.jsonl")}}
 
 
 def required(root, name):
@@ -48,6 +74,9 @@ def audit_camera_sources(root, capture, frame_map):
     cameras = json.loads(source.read_text())
     if not isinstance(cameras, list) or len(cameras) != 900:
         raise ValueError("original four-camera history incomplete")
+    provenance = json.loads(required(root, "acquisition-provenance.json").read_text())
+    diagnostic = (provenance.get("provenance_kind") == "synthetic_fixture" and
+                  provenance.get("diagnostic_fixture") is True)
     for index, (camera, clock) in enumerate(zip(cameras, frame_map)):
         if (camera.get("frame") != index or
                 camera.get("native_frame") != clock.get("frame") or
@@ -56,6 +85,10 @@ def audit_camera_sources(root, capture, frame_map):
             raise ValueError("original camera and Native frame/time join differs")
         for name, (width, height) in SIZES.items():
             entry = camera["views"][name]
+            if diagnostic:
+                if entry.get("path") != name + ".mkv":
+                    raise ValueError("diagnostic four-view source differs")
+                continue
             if entry.get("path") != f"{name}-{index:06d}.png":
                 raise ValueError("original camera frame path differs")
             png = required(root, "original-camera-frames/" + entry["path"])
@@ -65,6 +98,24 @@ def audit_camera_sources(root, capture, frame_map):
                 decoded.load()
                 if decoded.format != "PNG" or decoded.size != (width, height):
                     raise ValueError("original camera pixel profile differs")
+    if diagnostic:
+        for name, (width, height) in SIZES.items():
+            path = required(root, name + ".mkv")
+            probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames",
+                "-select_streams", "v:0", "-show_entries",
+                "stream=nb_read_frames,width,height", "-of", "json", str(path)],
+                capture_output=True, text=True)
+            if probe.returncode:
+                raise ValueError("diagnostic camera source probe failed")
+            streams = json.loads(probe.stdout).get("streams", [])
+            if (len(streams) != 1 or streams[0].get("nb_read_frames") != "900" or
+                    (streams[0].get("width"), streams[0].get("height")) !=
+                    (width, height)):
+                raise ValueError("diagnostic four-view frame profile differs")
+        return {"camera_manifest_sha256": sha(source), "joined_frames": 900,
+                "decoded_original_png_frames": 0,
+                "diagnostic_four_view_frames": 3600,
+                "physical_pixel_review": "unresolved"}
     return {"camera_manifest_sha256": sha(source), "joined_frames": 900,
             "decoded_original_png_frames": 3600,
             "physical_pixel_review": "unresolved"}
@@ -104,6 +155,9 @@ def build_report(attempt):
                 driver.get("source_id") != source_id):
             raise ValueError("independent driver-input Native frame/time join differs")
     camera = audit_camera_sources(root, capture, frame_map)
+    provenance = json.loads(required(root, "acquisition-provenance.json").read_text())
+    diagnostic = (provenance.get("provenance_kind") == "synthetic_fixture" and
+                  provenance.get("diagnostic_fixture") is True)
     site = required(root, "reviewed-site.json")
     site_packet = json.loads(site.read_text())
     if not site_packet.get("reviewed_provenance"):
@@ -124,6 +178,12 @@ def build_report(attempt):
         "frame_map.json", "ego_pose.json", "native_signal.json", "driver_check.json",
         "original-driver-input.jsonl", "target-traffic-history.jsonl",
         "original-camera-frames/camera-manifest.json", "reviewed-site.json")}
+    if diagnostic:
+        sources.update({name + ".mkv": sha(required(root, name + ".mkv"))
+                        for name in SIZES})
+    measured["marked_lane_context_measurement"] = measure_lanes(site_packet, sources)
+    measured["signal_timing_measurement"] = measure_signal(measured, sources)
+    measured["driver_check_and_traffic_measurement"] = measure_check(measured, sources)
     return {"format": "c144550-saved-lane-change-report-v1", "case_id": case,
         "analysis_complete": True, "measurements": measured,
         "original_source_hashes": sources,

@@ -71,6 +71,8 @@ class SavedAuditsTests(unittest.TestCase):
             manifest[0]["native_elapsed_s"] = .1
             path = root / "original-camera-frames/camera-manifest.json"
             path.write_text(json.dumps(manifest) + "\n")
+            (root / "acquisition-provenance.json").write_text(json.dumps({
+                "provenance_kind": "native", "diagnostic_fixture": False}) + "\n")
             from hashlib import sha256
             with self.assertRaisesRegex(ValueError, "frame/time join"):
                 audit_camera_sources(root, {"camera_manifest": {

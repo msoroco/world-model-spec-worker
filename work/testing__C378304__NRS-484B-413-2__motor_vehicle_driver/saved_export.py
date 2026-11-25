@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -26,11 +25,7 @@ def export(attempt: str | Path, case_id: str, *, allow_diagnostic: bool = False)
                  "acquisition-provenance.json", *[view + ".mkv" for view in CAMERAS]):
         if (root / name).exists():
             raise ValueError("saved source projection already exists: " + name)
-    scratch = next((parent for parent in root.parents if parent.name == ".runtime-work"), None)
-    if scratch is None:
-        scratch = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ""))
-    if not scratch.is_dir() or ".runtime-work" not in scratch.parts:
-        raise ValueError("saved video encoding scratch must be under .runtime-work")
+    scratch = root
     for name in CAMERAS:
         archive = root / packet["camera_archives"][name]["path"]
         with tempfile.TemporaryDirectory(prefix="c378304-frames-", dir=scratch) as temporary:

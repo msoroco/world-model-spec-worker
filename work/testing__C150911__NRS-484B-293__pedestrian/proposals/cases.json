@@ -2,29 +2,87 @@
   "actor": "pedestrian",
   "cases": [
     {
+      "case_id": "testing__C150911__NRS-484B-293__pedestrian__baseline",
+      "rationale": "Shared directional crosswalk reference.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-bound original walker position and passage station",
+            "name": "pedestrian_crosswalk_motion",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical passage pending",
+            "unit": "m"
+          },
+          {
+            "method": "source-bound original obstacle and available-space readback",
+            "name": "right_half_space",
+            "reference_frame": "direction-relative right half",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "legal practicability unresolved",
+            "unit": "m"
+          },
+          {
+            "method": "original participant actor and pose readback",
+            "name": "nearby_participants",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "participant visibility pending",
+            "unit": "inventory"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed map, crosswalk, access, signal, obstacle and pedestrian source hashes",
+            "name": "crosswalk_source",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "No legal practicability threshold is adopted."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "whenever practicable"
+      ],
+      "variable_assignments": {
+        "direction": {
+          "kind": "world_setup",
+          "value": "forward"
+        },
+        "obstacle_context": {
+          "kind": "world_setup",
+          "value": "clear"
+        },
+        "target_half": {
+          "kind": "world_setup",
+          "value": "right"
+        }
+      }
+    },
+    {
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right",
+      "deliberate_differences": [
+        "direction",
+        "target_half",
+        "obstacle_context"
+      ],
+      "paired_probe_id": "source-gated-direction-and-obstruction",
       "probe": {
         "comparison_or_standard": "same reviewed crosswalk, participants and four-camera policy",
-        "primary_variable": "direction_relative_half",
+        "primary_variable": "target_half",
         "target_value_or_branch": {
           "direction": "forward",
           "obstacle_context": "clear",
           "target_half": "right"
         }
       },
-      "rationale": {
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ],
-        "streams": [
-          "20 Hz original pedestrian location and elapsed time",
-          "Native crosswalk geometry, pedestrian access and signal readback",
-          "20 Hz obstacles, available right width and participant inventory",
-          "Four synchronized camera views and original frame map"
-        ],
-        "window": "Full original approach and passage, including entry and exit"
-      },
+      "rationale": "{'streams': ['20 Hz original pedestrian location and elapsed time', 'Native crosswalk geometry, pedestrian access and signal readback', '20 Hz obstacles, available right width and participant inventory', 'Four synchronized camera views and original frame map'], 'window': 'Full original approach and passage, including entry and exit', 'limitations': ['Target half is commanded, not measured success.', 'Practicability remains unresolved and cannot be inferred solely from congestion.']}",
       "recording_description": {
         "channels": [
           {
@@ -67,7 +125,7 @@
         ]
       },
       "target_law_id": "NRS-484B-293",
-      "target_type": "judgment_observation",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "whenever practicable"
       ],
@@ -88,28 +146,22 @@
     },
     {
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_left",
+      "deliberate_differences": [
+        "direction",
+        "target_half",
+        "obstacle_context"
+      ],
+      "paired_probe_id": "source-gated-direction-and-obstruction",
       "probe": {
         "comparison_or_standard": "same reviewed crosswalk, participants and four-camera policy",
-        "primary_variable": "direction_relative_half",
+        "primary_variable": "target_half",
         "target_value_or_branch": {
           "direction": "forward",
           "obstacle_context": "clear",
           "target_half": "left"
         }
       },
-      "rationale": {
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ],
-        "streams": [
-          "20 Hz original pedestrian location and elapsed time",
-          "Native crosswalk geometry, pedestrian access and signal readback",
-          "20 Hz obstacles, available right width and participant inventory",
-          "Four synchronized camera views and original frame map"
-        ],
-        "window": "Full original approach and passage, including entry and exit"
-      },
+      "rationale": "{'streams': ['20 Hz original pedestrian location and elapsed time', 'Native crosswalk geometry, pedestrian access and signal readback', '20 Hz obstacles, available right width and participant inventory', 'Four synchronized camera views and original frame map'], 'window': 'Full original approach and passage, including entry and exit', 'limitations': ['Target half is commanded, not measured success.', 'Practicability remains unresolved and cannot be inferred solely from congestion.']}",
       "recording_description": {
         "channels": [
           {
@@ -152,7 +204,7 @@
         ]
       },
       "target_law_id": "NRS-484B-293",
-      "target_type": "judgment_observation",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "whenever practicable"
       ],
@@ -173,28 +225,22 @@
     },
     {
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
+      "deliberate_differences": [
+        "direction",
+        "target_half",
+        "obstacle_context"
+      ],
+      "paired_probe_id": "source-gated-direction-and-obstruction",
       "probe": {
         "comparison_or_standard": "same reviewed crosswalk, participants and four-camera policy",
-        "primary_variable": "direction_relative_half",
+        "primary_variable": "target_half",
         "target_value_or_branch": {
           "direction": "reverse",
           "obstacle_context": "clear",
           "target_half": "right"
         }
       },
-      "rationale": {
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ],
-        "streams": [
-          "20 Hz original pedestrian location and elapsed time",
-          "Native crosswalk geometry, pedestrian access and signal readback",
-          "20 Hz obstacles, available right width and participant inventory",
-          "Four synchronized camera views and original frame map"
-        ],
-        "window": "Full original approach and passage, including entry and exit"
-      },
+      "rationale": "{'streams': ['20 Hz original pedestrian location and elapsed time', 'Native crosswalk geometry, pedestrian access and signal readback', '20 Hz obstacles, available right width and participant inventory', 'Four synchronized camera views and original frame map'], 'window': 'Full original approach and passage, including entry and exit', 'limitations': ['Target half is commanded, not measured success.', 'Practicability remains unresolved and cannot be inferred solely from congestion.']}",
       "recording_description": {
         "channels": [
           {
@@ -237,7 +283,7 @@
         ]
       },
       "target_law_id": "NRS-484B-293",
-      "target_type": "judgment_observation",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "whenever practicable"
       ],
@@ -258,28 +304,22 @@
     },
     {
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_left",
+      "deliberate_differences": [
+        "direction",
+        "target_half",
+        "obstacle_context"
+      ],
+      "paired_probe_id": "source-gated-direction-and-obstruction",
       "probe": {
         "comparison_or_standard": "same reviewed crosswalk, participants and four-camera policy",
-        "primary_variable": "direction_relative_half",
+        "primary_variable": "target_half",
         "target_value_or_branch": {
           "direction": "reverse",
           "obstacle_context": "clear",
           "target_half": "left"
         }
       },
-      "rationale": {
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ],
-        "streams": [
-          "20 Hz original pedestrian location and elapsed time",
-          "Native crosswalk geometry, pedestrian access and signal readback",
-          "20 Hz obstacles, available right width and participant inventory",
-          "Four synchronized camera views and original frame map"
-        ],
-        "window": "Full original approach and passage, including entry and exit"
-      },
+      "rationale": "{'streams': ['20 Hz original pedestrian location and elapsed time', 'Native crosswalk geometry, pedestrian access and signal readback', '20 Hz obstacles, available right width and participant inventory', 'Four synchronized camera views and original frame map'], 'window': 'Full original approach and passage, including entry and exit', 'limitations': ['Target half is commanded, not measured success.', 'Practicability remains unresolved and cannot be inferred solely from congestion.']}",
       "recording_description": {
         "channels": [
           {
@@ -322,7 +362,7 @@
         ]
       },
       "target_law_id": "NRS-484B-293",
-      "target_type": "judgment_observation",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "whenever practicable"
       ],
@@ -343,28 +383,22 @@
     },
     {
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed",
+      "deliberate_differences": [
+        "direction",
+        "target_half",
+        "obstacle_context"
+      ],
+      "paired_probe_id": "source-gated-direction-and-obstruction",
       "probe": {
         "comparison_or_standard": "same reviewed crosswalk, participants and four-camera policy",
-        "primary_variable": "direction_relative_half",
+        "primary_variable": "target_half",
         "target_value_or_branch": {
           "direction": "forward",
           "obstacle_context": "right_half_obstruction",
           "target_half": "right"
         }
       },
-      "rationale": {
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ],
-        "streams": [
-          "20 Hz original pedestrian location and elapsed time",
-          "Native crosswalk geometry, pedestrian access and signal readback",
-          "20 Hz obstacles, available right width and participant inventory",
-          "Four synchronized camera views and original frame map"
-        ],
-        "window": "Full original approach and passage, including entry and exit"
-      },
+      "rationale": "{'streams': ['20 Hz original pedestrian location and elapsed time', 'Native crosswalk geometry, pedestrian access and signal readback', '20 Hz obstacles, available right width and participant inventory', 'Four synchronized camera views and original frame map'], 'window': 'Full original approach and passage, including entry and exit', 'limitations': ['Target half is commanded, not measured success.', 'Practicability remains unresolved and cannot be inferred solely from congestion.']}",
       "recording_description": {
         "channels": [
           {
@@ -407,7 +441,7 @@
         ]
       },
       "target_law_id": "NRS-484B-293",
-      "target_type": "judgment_observation",
+      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "whenever practicable"
       ],
@@ -434,7 +468,7 @@
     {
       "judgment_refs": [
         {
-          "note": "Legal meaning unresolved.",
+          "note": "No legal numeric practicability cutoff is supplied.",
           "phrase": "whenever practicable"
         }
       ],

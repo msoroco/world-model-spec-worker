@@ -46,6 +46,8 @@ class ReviewSiteTest(unittest.TestCase):
 
         class Waypoint:
             road_id = 7
+            lane_id = -1
+            lane_type = "Driving"
 
         class Map:
             def to_opendrive(self):

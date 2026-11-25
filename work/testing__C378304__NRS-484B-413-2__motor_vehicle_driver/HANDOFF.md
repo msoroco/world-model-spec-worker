@@ -1,6 +1,6 @@
 # testing__C378304__NRS-484B-413-2__motor_vehicle_driver
 
-Status: partial. Five exact case targets and three controlled comparisons are proposed; no new recording is claimed accepted.
+Status: CPU delivery prepared. Five exact case targets and three controlled comparisons are packaged; no new recording is claimed accepted.
 
 Exact law: NRS 484B.413(2) — A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.
 Assigned branch(es): Business-district right-turn signaling.
@@ -62,3 +62,23 @@ The earlier next-step paragraph above is superseded by this checkpoint. `build_c
 `prove_physical.py` ran three synthetic outcomes per exact case: measured right turn with destination road readback, incomplete turn, and missing motion evidence. `prove_lifecycle.py` exercised capture sealing, restoration, Native exit, owner release and saved-processing ordering. Five source-hashed physical preparation receipts are bound to the selected manifest. The 4 m/s 20 Hz diagnostic in `prove_sampling.py` resolves measured 100/101-foot requests, whereas its 8 m/s diagnostic aliases them; neither is an original vehicle speed or legal tolerance.
 
 Twenty-eight focused tests pass when `TMPDIR` and `SCENARIO_PIPELINE_OUTPUT_ROOT` point under `.runtime-work/c378304`. Scoped `worker_check.py --complete` passes. Strict ready remains partial. The next gate is `delivery_handoff.validate_case`: add independent exact-case `delivery_audit.py` positive/rejected-source CPU receipts, `post_capture` saved-only proofs, and source-bound comparison audit receipts for `business_right_distance`, `signal_continuity`, and `regardless_weather`. Original site documents and CARLA motion remain local acquisition prerequisites; no original physical or legal acceptance is claimed.
+
+## 2026-11-25 completed CPU delivery package
+
+The historical partial steps above are superseded. The exact selected case IDs are `testing__C378304__NRS-484B-413-2__motor_vehicle_driver__short80`, `__continuous100`, `__above101`, `__interrupted`, and `__rain`, with that prefix on each suffix. `execution-manifest.json` binds five primary and five fallback constructions, their exact current-runtime offline and positive/missing-source compatibility receipts, and five three-outcome synthetic physical/lifecycle receipts. `proposals/semantic-index.json` binds the canonical draft semantic stages. `delivery_audit.py` independently rechecks the original PNG ZIP source hashes, every decoded PNG frame, 20 Hz joins, all four full video decodes and source-bound physical completion; `prove_delivery.py` supplies exact-case positive and tampered-archive rejection tests. `prove_saved.py` runs `runtime.py process-saved` for each exact case and verifies originals preserved and the full final decode; the production saved-only and feedback commands are in each manifest entry. `comparison_audit.py` recomputes all three controlled comparisons from saved source bytes, rejects a changed fixed camera contract, and records source hashes in `comparison-audit-receipts.json`.
+
+The 4 m/s diagnostic sampling design distinguishes requested 100 ft and 101 ft signal onset at 20 Hz, while 8 m/s aliases them. The original captured distances remain authoritative. The four frozen accepted metadata entries document prior membership and authored labels only; the actual original videos and traces are unavailable in this worker export, so no existing physical coverage or legal outcome is inferred. The reviewed site packet must be supplied locally with original source citations and SHA-256 before CARLA import; it must establish highway status, business-district frontage/building use, loading-zone designation, driver/vehicle identity and right-turn route. The package does not invent an original site speed or legal tolerance.
+
+`TMPDIR=$PWD/.runtime-work/c378304 PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c378304 .venv-cpu/bin/python -m unittest discover -s work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/tests -v` passes 28 focused tests (`cpu-current-tests.log`). `.venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` passes (`cpu-current-strict.log`); both hashes are in `result.json`. The first exact GPU dispatch command is in `result.json`. Local execution must still independently review original site documents, realized route/signal/weather, original pixels, physical completion and canonical acceptance before claiming recording or statutory coverage.
+
+The production supplemental audit commands, after the original attempt has closed and exported four videos, are:
+
+```sh
+.venv-cpu/bin/python work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/source_audit.py --attempt "$ATTEMPT" --case-id "$CASE_ID" --output "$SOURCE_AUDIT_JSON"
+PYTHONPATH="$PWD/runtime/scenario_pipeline" .venv-cpu/bin/python work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/delivery_audit.py --attempt "$ATTEMPT" --case "$CASE_ID"
+PYTHONPATH="$PWD/runtime/scenario_pipeline" .venv-cpu/bin/python work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison business_right_distance --attempt "$SHORT80_ATTEMPT" --attempt "$CONTINUOUS100_ATTEMPT" --attempt "$ABOVE101_ATTEMPT"
+PYTHONPATH="$PWD/runtime/scenario_pipeline" .venv-cpu/bin/python work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison signal_continuity --attempt "$CONTINUOUS100_ATTEMPT" --attempt "$INTERRUPTED_ATTEMPT"
+PYTHONPATH="$PWD/runtime/scenario_pipeline" .venv-cpu/bin/python work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/comparison_audit.py --comparison regardless_weather --attempt "$CONTINUOUS100_ATTEMPT" --attempt "$RAIN_ATTEMPT"
+```
+
+These commands audit original saved sources; they do not register, accept or relabel a recording. The manifest SHA-256 at this checkpoint is `44a90f96ca2dcc5ba64f6b8dd15ac32d5ff29c7fc63d9001b801769efe4b09e8`.

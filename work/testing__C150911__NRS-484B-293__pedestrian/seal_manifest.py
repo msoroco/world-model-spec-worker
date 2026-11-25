@@ -23,6 +23,7 @@ def main():
     offline = {(r["case_id"], r["candidate"]): r for r in read("cpu-offline-proofs.json")}
     compatibility = {(r["case_id"], r["candidate"]): r for r in read("cpu-compatibility-proofs.json")}
     independent = {r["case_id"]: r for r in read("cpu-independent-proofs.json")}
+    saved = {r["case_id"]: r for r in read("cpu-saved-proofs.json")}
     for entry in manifest["cases"]:
         cid = entry["case_id"]
         short = cid.split("__")[-1]
@@ -61,6 +62,18 @@ def main():
             "negative_expected_error": p["negative_expected_error"],
             "negative_log": p["negative_log"],
             "negative_log_sha256": p["negative_log_sha256"]}
+        saved_proof = saved[cid]
+        if saved_proof["exit_code"]:
+            raise ValueError("saved-only fixture failed: " + cid)
+        command = (".venv-cpu/bin/python runtime.py process-saved --manifest work/" +
+            ROOT.name + "/execution-manifest.json --case " + cid +
+            ' --attempt "$ATTEMPT" --output "$SAVED_OUTPUT" --library "$LIBRARY"' +
+            ' --validator "$VALIDATOR" --owner-release-receipt "$OWNER_RELEASE_RECEIPT"')
+        entry["post_capture"] = {"recorded_only": True,
+            "command": command, "feedback_command": command,
+            "test_exit_code": 0, "test_log": saved_proof["log"],
+            "test_log_sha256": saved_proof["log_sha256"],
+            "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending"}
     (ROOT / "execution-manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     print("canonical exact-case manifest", len(manifest["cases"]))

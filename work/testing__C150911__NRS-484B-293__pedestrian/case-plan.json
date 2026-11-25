@@ -1,287 +1,369 @@
 {
-  "assignment_id": "testing__C150911__NRS-484B-293__pedestrian",
   "actor": "pedestrian",
-  "cell_id": "C150911",
-  "law_id": "NRS-484B-293",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-293",
-      "cell_id": "C150911",
-      "actor": "pedestrian",
-      "requirement": "NRS-484B-293",
-      "branch": "Crosswalk passage during one-way-road travel",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 393,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Pedestrians shall move whenever practicable upon the right half of crosswalks.",
-  "law_source": "NRS 484B.293",
-  "topic_inventory": {
-    "exact-text": "Pedestrians shall move whenever practicable upon the right half of crosswalks.",
-    "pedestrian": "Only a person afoot is the subject of this selected assignment.",
-    "crosswalk": "Qualified crosswalk geometry and pedestrian access must be read back, not inferred from a travel task.",
-    "right_half": "Right is relative to each pedestrian crossing direction; opposing approaches swap geometric halves.",
-    "whenever_practicable": "Practicability remains a contextual judgment; retain obstacles, available space, signals and participants without a numeric legal cutoff."
+  "assignment_id": "testing__C150911__NRS-484B-293__pedestrian",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original 20 Hz crossing frames",
+        "subject": "whole qualified crosswalk, walker and obstructions",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original 20 Hz crossing frames",
+        "subject": "pedestrian approach and directional right half",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original 20 Hz crossing frames",
+        "subject": "crosswalk boundary and available right-half passage",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original 20 Hz crossing frames",
+        "subject": "walker, participants and governing signal context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right",
-      "target_law_id": "NRS-484B-293",
-      "kind": "delivery",
+      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
       "direction": "forward",
-      "target_half": "right",
-      "obstacle_context": "clear",
       "gap_ids": [
         "no_accepted_recording"
       ],
-      "physical_status": "unverified",
-      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
+      "kind": "delivery",
       "measurement": "crosswalk_delivery.py measure; original 20 Hz pedestrian position and joined obstacles/participants",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
-        "candidates": []
-      },
+      "obstacle_context": "clear",
+      "physical_status": "unverified",
       "recording_description": {
+        "limitations": [
+          "Target half is commanded, not measured success.",
+          "Practicability remains unresolved and cannot be inferred solely from congestion."
+        ],
         "streams": [
           "20 Hz original pedestrian location and elapsed time",
           "Native crosswalk geometry, pedestrian access and signal readback",
           "20 Hz obstacles, available right width and participant inventory",
           "Four synchronized camera views and original frame map"
         ],
-        "window": "Full original approach and passage, including entry and exit",
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ]
-      }
+        "window": "Full original approach and passage, including entry and exit"
+      },
+      "target_half": "right",
+      "target_law_id": "NRS-484B-293"
     },
     {
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_left",
-      "target_law_id": "NRS-484B-293",
-      "kind": "delivery",
+      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
       "direction": "forward",
-      "target_half": "left",
-      "obstacle_context": "clear",
       "gap_ids": [
         "no_accepted_recording"
       ],
-      "physical_status": "unverified",
-      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
+      "kind": "delivery",
       "measurement": "crosswalk_delivery.py measure; original 20 Hz pedestrian position and joined obstacles/participants",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
-        "candidates": []
-      },
+      "obstacle_context": "clear",
+      "physical_status": "unverified",
       "recording_description": {
+        "limitations": [
+          "Target half is commanded, not measured success.",
+          "Practicability remains unresolved and cannot be inferred solely from congestion."
+        ],
         "streams": [
           "20 Hz original pedestrian location and elapsed time",
           "Native crosswalk geometry, pedestrian access and signal readback",
           "20 Hz obstacles, available right width and participant inventory",
           "Four synchronized camera views and original frame map"
         ],
-        "window": "Full original approach and passage, including entry and exit",
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ]
-      }
+        "window": "Full original approach and passage, including entry and exit"
+      },
+      "target_half": "left",
+      "target_law_id": "NRS-484B-293"
     },
     {
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
-      "target_law_id": "NRS-484B-293",
-      "kind": "delivery",
+      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
       "direction": "reverse",
-      "target_half": "right",
-      "obstacle_context": "clear",
       "gap_ids": [
         "no_accepted_recording"
       ],
-      "physical_status": "unverified",
-      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
+      "kind": "delivery",
       "measurement": "crosswalk_delivery.py measure; original 20 Hz pedestrian position and joined obstacles/participants",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
-        "candidates": []
-      },
+      "obstacle_context": "clear",
+      "physical_status": "unverified",
       "recording_description": {
+        "limitations": [
+          "Target half is commanded, not measured success.",
+          "Practicability remains unresolved and cannot be inferred solely from congestion."
+        ],
         "streams": [
           "20 Hz original pedestrian location and elapsed time",
           "Native crosswalk geometry, pedestrian access and signal readback",
           "20 Hz obstacles, available right width and participant inventory",
           "Four synchronized camera views and original frame map"
         ],
-        "window": "Full original approach and passage, including entry and exit",
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ]
-      }
+        "window": "Full original approach and passage, including entry and exit"
+      },
+      "target_half": "right",
+      "target_law_id": "NRS-484B-293"
     },
     {
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__reverse_left",
-      "target_law_id": "NRS-484B-293",
-      "kind": "delivery",
+      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
       "direction": "reverse",
-      "target_half": "left",
-      "obstacle_context": "clear",
       "gap_ids": [
         "no_accepted_recording"
       ],
-      "physical_status": "unverified",
-      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
+      "kind": "delivery",
       "measurement": "crosswalk_delivery.py measure; original 20 Hz pedestrian position and joined obstacles/participants",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
-        "candidates": []
-      },
+      "obstacle_context": "clear",
+      "physical_status": "unverified",
       "recording_description": {
+        "limitations": [
+          "Target half is commanded, not measured success.",
+          "Practicability remains unresolved and cannot be inferred solely from congestion."
+        ],
         "streams": [
           "20 Hz original pedestrian location and elapsed time",
           "Native crosswalk geometry, pedestrian access and signal readback",
           "20 Hz obstacles, available right width and participant inventory",
           "Four synchronized camera views and original frame map"
         ],
-        "window": "Full original approach and passage, including entry and exit",
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ]
-      }
+        "window": "Full original approach and passage, including entry and exit"
+      },
+      "target_half": "left",
+      "target_law_id": "NRS-484B-293"
     },
     {
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed",
-      "target_law_id": "NRS-484B-293",
-      "kind": "delivery",
+      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
       "direction": "forward",
-      "target_half": "right",
-      "obstacle_context": "right_half_obstruction",
       "gap_ids": [
         "no_accepted_recording"
       ],
-      "physical_status": "unverified",
-      "construction": "crosswalk_delivery.py validate_site, waypoints, spawn_walk; Native source readback required",
+      "kind": "delivery",
       "measurement": "crosswalk_delivery.py measure; original 20 Hz pedestrian position and joined obstacles/participants",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Pedestrian spawn, path tracking and four-view footprint may miss the crosswalk target; measurable Native and pixel review required.",
-        "candidates": []
-      },
+      "obstacle_context": "right_half_obstruction",
+      "physical_status": "unverified",
       "recording_description": {
+        "limitations": [
+          "Target half is commanded, not measured success.",
+          "Practicability remains unresolved and cannot be inferred solely from congestion."
+        ],
         "streams": [
           "20 Hz original pedestrian location and elapsed time",
           "Native crosswalk geometry, pedestrian access and signal readback",
           "20 Hz obstacles, available right width and participant inventory",
           "Four synchronized camera views and original frame map"
         ],
-        "window": "Full original approach and passage, including entry and exit",
-        "limitations": [
-          "Target half is commanded, not measured success.",
-          "Practicability remains unresolved and cannot be inferred solely from congestion."
-        ]
-      }
+        "window": "Full original approach and passage, including entry and exit"
+      },
+      "target_half": "right",
+      "target_law_id": "NRS-484B-293"
     }
   ],
+  "cell_id": "C150911",
   "comparisons": [
     {
-      "comparison_id": "forward_half",
+      "audit": "comparison_audit.py: source-hashed original attempts, complete four-view Native media and 900-frame production profiles",
       "case_ids": [
         "testing__C150911__NRS-484B-293__pedestrian__forward_right",
         "testing__C150911__NRS-484B-293__pedestrian__forward_left"
       ],
-      "fixed_conditions": [
-        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
-      ],
+      "comparison_id": "forward_half",
       "deliberate_differences": [
         "target_half"
       ],
-      "audit": "crosswalk_delivery.py audit_pair; fixed-site check and original frame continuity"
+      "diagnostic_proof": {
+        "receipt": "cpu-original-comparison-proofs.json",
+        "report_sha256": "59cc4858ebb31ecb9a6a2774f80d92400de461f0860d473d12367a3d5d4b5918"
+      },
+      "fixed_conditions": [
+        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
+      ],
+      "original_attempt_command": ".venv-cpu/bin/python work/testing__C150911__NRS-484B-293__pedestrian/comparison_audit.py --comparison forward_half --first-attempt \"$FIRST_ATTEMPT\" --second-attempt \"$SECOND_ATTEMPT\" --output \"$COMPARISON_REPORT\""
     },
     {
-      "comparison_id": "reverse_half",
+      "audit": "comparison_audit.py: source-hashed original attempts, complete four-view Native media and 900-frame production profiles",
       "case_ids": [
         "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
         "testing__C150911__NRS-484B-293__pedestrian__reverse_left"
       ],
-      "fixed_conditions": [
-        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
-      ],
+      "comparison_id": "reverse_half",
       "deliberate_differences": [
         "target_half"
       ],
-      "audit": "crosswalk_delivery.py audit_pair; fixed-site check and original frame continuity"
+      "diagnostic_proof": {
+        "receipt": "cpu-original-comparison-proofs.json",
+        "report_sha256": "13d8d1bb25509d01d5525847c418e85aab0619b47aa0e39ebd1b150a12e74729"
+      },
+      "fixed_conditions": [
+        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
+      ],
+      "original_attempt_command": ".venv-cpu/bin/python work/testing__C150911__NRS-484B-293__pedestrian/comparison_audit.py --comparison reverse_half --first-attempt \"$FIRST_ATTEMPT\" --second-attempt \"$SECOND_ATTEMPT\" --output \"$COMPARISON_REPORT\""
     },
     {
-      "comparison_id": "directional_right",
+      "audit": "comparison_audit.py: source-hashed original attempts, complete four-view Native media and 900-frame production profiles",
       "case_ids": [
         "testing__C150911__NRS-484B-293__pedestrian__forward_right",
         "testing__C150911__NRS-484B-293__pedestrian__reverse_right"
       ],
-      "fixed_conditions": [
-        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
-      ],
+      "comparison_id": "directional_right",
       "deliberate_differences": [
         "direction",
         "entry_exit_order"
       ],
-      "audit": "crosswalk_delivery.py audit_pair; fixed-site check and original frame continuity"
+      "diagnostic_proof": {
+        "receipt": "cpu-original-comparison-proofs.json",
+        "report_sha256": "9798b63c243f3f1bb7d499b26a621c17229e5a2a9001e5be54b8632070b65a8a"
+      },
+      "fixed_conditions": [
+        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
+      ],
+      "original_attempt_command": ".venv-cpu/bin/python work/testing__C150911__NRS-484B-293__pedestrian/comparison_audit.py --comparison directional_right --first-attempt \"$FIRST_ATTEMPT\" --second-attempt \"$SECOND_ATTEMPT\" --output \"$COMPARISON_REPORT\""
     },
     {
-      "comparison_id": "right_half_obstruction",
+      "audit": "comparison_audit.py: source-hashed original attempts, complete four-view Native media and 900-frame production profiles",
       "case_ids": [
         "testing__C150911__NRS-484B-293__pedestrian__forward_right",
         "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed"
       ],
-      "fixed_conditions": [
-        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
-      ],
+      "comparison_id": "right_half_obstruction",
       "deliberate_differences": [
         "obstacle_context",
         "obstacle_source_sha256"
       ],
-      "audit": "crosswalk_delivery.py audit_pair; fixed-site check and original frame continuity"
+      "diagnostic_proof": {
+        "receipt": "cpu-original-comparison-proofs.json",
+        "report_sha256": "9114e0e6a4f16caa1197d7dd3f311d622ca11e61cbb76fff499832cae411d983"
+      },
+      "fixed_conditions": [
+        "Same Native crosswalk, one-way-road identity, access, signal, width, participants, camera contract and passage duration; compare original source readback."
+      ],
+      "original_attempt_command": ".venv-cpu/bin/python work/testing__C150911__NRS-484B-293__pedestrian/comparison_audit.py --comparison right_half_obstruction --first-attempt \"$FIRST_ATTEMPT\" --second-attempt \"$SECOND_ATTEMPT\" --output \"$COMPARISON_REPORT\""
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_recording",
+        "requirement": "Selected crosswalk-passage branch and contextual practicability observations",
+        "source": "NRS 484B.293 exact text and frozen witness index 393",
+        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-293",
+  "law_source": "NRS 484B.293",
+  "law_text": "Pedestrians shall move whenever practicable upon the right half of crosswalks.",
   "observations": [
     {
-      "name": "pedestrian_position",
       "mandatory": true,
-      "method": "Original Native actor transform at 20 Hz"
+      "method": "Original Native actor transform at 20 Hz",
+      "name": "pedestrian_crosswalk_motion"
     },
     {
+      "context_input": "crosswalk_source",
+      "mandatory": false,
+      "method": "Native crosswalk readback and map source",
       "name": "crosswalk_geometry",
-      "mandatory": true,
-      "method": "Native crosswalk readback and map source"
+      "source_file": "original-site.json"
     },
     {
+      "context_input": "crosswalk_source",
+      "mandatory": false,
+      "method": "Native walkway access readback",
       "name": "pedestrian_access",
-      "mandatory": true,
-      "method": "Native walkway access readback"
+      "source_file": "original-site.json"
     },
     {
+      "context_input": "crosswalk_source",
+      "mandatory": false,
+      "method": "Native signal inventory/readback",
       "name": "governing_signal",
-      "mandatory": true,
-      "method": "Native signal inventory/readback"
+      "source_file": "original-site.json"
     },
     {
-      "name": "obstacle_available_width",
       "mandatory": true,
-      "method": "Original-frame obstacle geometry and right-half available space"
+      "method": "Original-frame obstacle geometry and right-half available space",
+      "name": "right_half_space"
     },
     {
-      "name": "nearby_participants",
       "mandatory": true,
-      "method": "Original-frame actor inventory and positions"
+      "method": "Original-frame actor inventory and positions",
+      "name": "nearby_participants"
     }
   ],
+  "planning_status": "partial_executable_geometry_and_measurement",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C150911__NRS-484B-293__pedestrian__forward_right",
+        "testing__C150911__NRS-484B-293__pedestrian__forward_left",
+        "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
+        "testing__C150911__NRS-484B-293__pedestrian__reverse_left",
+        "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed"
+      ],
+      "evidence_or_gap": "no_accepted_recording",
+      "requirement": "NRS-484B-293 crosswalk passage, directional right-half behavior and practicability context",
+      "source": "inputs/testing__C150911__NRS-484B-293__pedestrian/assignment.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Exact Native crosswalk map selection, geometry readback, source-bound compatible diagnostics, semantic delivery proposals, full four-camera capture, saved-only delivery/compare auditors and strict receipts remain CPU work.",
+    "Actual CARLA motion, practicability context, camera visibility and capture quality require later original recording review."
+  ],
+  "selected_branches": [
+    {
+      "actor": "pedestrian",
+      "branch": "Crosswalk passage during one-way-road travel",
+      "cell_id": "C150911",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-293",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-293",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 393,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C150911__NRS-484B-293__pedestrian/assignment.json",
@@ -304,34 +386,19 @@
       "sha256": "b529912fc6068813ad4d41d2817da2dccf51bf9fd9789fc1036be4c6718ee3ed"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Exact Native crosswalk map selection, geometry readback, source-bound compatible diagnostics, semantic delivery proposals, full four-camera capture, saved-only delivery/compare auditors and strict receipts remain CPU work.",
-    "Actual CARLA motion, practicability context, camera visibility and capture quality require later original recording review."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_recording",
-        "requirement": "Selected crosswalk-passage branch and contextual practicability observations",
-        "source": "NRS 484B.293 exact text and frozen witness index 393",
-        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings."
-      }
-    ]
+  "topic_inventory": {
+    "crosswalk": "Qualified crosswalk geometry and pedestrian access must be read back, not inferred from a travel task.",
+    "exact-text": "Pedestrians shall move whenever practicable upon the right half of crosswalks.",
+    "pedestrian": "Only a person afoot is the subject of this selected assignment.",
+    "right_half": "Right is relative to each pedestrian crossing direction; opposing approaches swap geometric halves.",
+    "whenever_practicable": "Practicability remains a contextual judgment; retain obstacles, available space, signals and participants without a numeric legal cutoff."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_executable_geometry_and_measurement",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 393,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Crosswalk passage during one-way-road travel",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The travel task permits pedestrian passage across the one-way road upon its crosswalk.",
       "required_context": [
         "Construct a pedestrian crossing route separately from longitudinal roadway and device routes.",
         "Establish crosswalk qualification, boundaries, pedestrian access and governing signals when present.",
@@ -340,22 +407,9 @@
         "Retain available passage space, obstacles and other participants throughout passage.",
         "Retain direction, position, available passage space, obstacles and other participants throughout crossing."
       ],
-      "reason": "The travel task permits pedestrian passage across the one-way road upon its crosswalk."
-    }
-  ],
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS-484B-293 crosswalk passage, directional right-half behavior and practicability context",
-      "source": "inputs/testing__C150911__NRS-484B-293__pedestrian/assignment.json",
-      "status": "selected_required",
-      "evidence_or_gap": "no_accepted_recording",
-      "case_ids": [
-        "testing__C150911__NRS-484B-293__pedestrian__forward_right",
-        "testing__C150911__NRS-484B-293__pedestrian__forward_left",
-        "testing__C150911__NRS-484B-293__pedestrian__reverse_right",
-        "testing__C150911__NRS-484B-293__pedestrian__reverse_left",
-        "testing__C150911__NRS-484B-293__pedestrian__forward_right_obstructed"
-      ]
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 393,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

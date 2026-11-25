@@ -1,25 +1,26 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C378304__NRS-484B-413-2__motor_vehicle_driver",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --case testing__C378304__NRS-484B-413-2__motor_vehicle_driver__short80 --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "587ffe4fae90daaaafa083cf75342ee439ca301b1d2ab24d9f498a21660ddc6f",
-  "readiness_kind": "exact_construction_and_compatibility_partial",
-  "reason": "All five exact primary and five fallback bundles pass current-runtime offline and positive/missing-source compatibility; five synthetic physical outcome and lifecycle receipts are bound. Execution manifest and semantic validators pass, and 28 focused tests pass. Delivery acceptance audit, saved-only post_capture proof and comparison audit receipts remain CPU work; original site/vehicle source and CARLA physical evidence are not claimed. Strict scoped gate rejects truthful partial status.",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "remaining_gpu_checks": [
-    "After CPU package preparation: original CARLA right-turn motion, actual signal onset and continuity, source-reviewed business district/highway/loading-zone scene, synchronized pixels and final physical acceptance."
+    "Original source-reviewed highway/business-district/loading-zone site and vehicle capability; actual 20 Hz CARLA right turn and signal distance/continuity; original four-view pixel visibility, physical completion, and independent local canonical acceptance."
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "command": "TMPDIR=$PWD/.runtime-work/c378304 .venv-cpu/bin/python -m unittest discover -s work/testing__C378304__NRS-484B-413-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-current-tests.log",
-      "sha256": "ac62f4e488df321523a9ada3925a7b503a806727322f9a6ecc6e93da83274ede"
+      "sha256": "7415c9e6dab46841598cc003dc18f8424bbb960be7e88c56bf5b948cccd73d0f"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C378304__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 0,
-      "log": "cpu-current-static.log",
-      "sha256": "56f7f142c56ec43f9bdb5a62d6f7f6a89966f2162c58c546ac49949dbce3d4c1"
+      "log": "cpu-current-strict.log",
+      "sha256": "f630d94dcbd66e2cdb6473c8d37213e464a48a2d5e5f2c819299c5520d5767d9"
     }
   ]
 }

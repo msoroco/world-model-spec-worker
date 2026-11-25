@@ -46,21 +46,25 @@ def build():
                 "note": "No legal numeric practicability cutoff is supplied."}]}})
     judgment_ref = write("judgment-1.json", {"status": "draft",
         "template_id": TEMPLATE, "phrase": "whenever practicable",
-        "note": "Physical space and motion do not decide legal practicability.",
+        "note": "No legal numeric practicability cutoff is supplied.",
         "observable_requirements": {"observables": [
             {"name": "direction_relative_lateral_position", "unit": "m",
              "description": "Original walker position relative to passage direction and qualified crosswalk."},
             {"name": "available_right_width", "unit": "m",
              "description": "Original obstacle and open-passage geometry over time."}],
-            "context_inputs": [{"name": "reviewed_crosswalk_source", "unit": "source",
+            "context_inputs": [{"name": "crosswalk_source", "unit": "source",
                 "description": "Map, crosswalk, access, signal, pedestrian and participant source."}],
-            "recording_needs": [{"name": "full_crosswalk_passage", "unit": "frame",
-                "description": "Original 20 Hz walker, obstacles, participants and four camera views."}],
+            "recording_needs": [{"name": "pedestrian_crosswalk_motion", "unit": "m",
+                "description": "Original 20 Hz walker motion across a qualified crosswalk."},
+                {"name": "right_half_space", "unit": "m",
+                "description": "Original obstacle and available passage geometry."},
+                {"name": "nearby_participants", "unit": "inventory",
+                "description": "Original same-frame participant inventory."}],
             "sweep_dimensions": [], "landmarks": [],
             "limitations": ["Original site and legal practicability interpretation pending."]}})
     bindings_ref = write("bindings.json", dict(common,
-        law_refs=[{"template_id": TEMPLATE, "binding_kind": "requires_context"}],
-        context_refs=["qualified_crosswalk", "pedestrian_access"],
+        law_refs=[{"template_id": TEMPLATE, "binding_kind": "direct"}],
+        context_refs=[],
         established_contexts=["Frozen one-way road/crosswalk cell; original site pending."],
         fixed_parameters=[{"name": "assigned_cell", "value": "C150911",
             "rationale": "Frozen catalog identity, not Native qualification."}],
@@ -69,23 +73,33 @@ def build():
                 ("direction", "forward or reverse"), ("target_half", "right or left"),
                 ("obstacle_context", "clear or obstructed"))]))
     cases = []
+    baseline_description = json.loads((ROOT / "cases/forward_right/construction.json").read_text())["recording_description"]
+    cases.append({"case_id": ROOT.name + "__baseline", "target_law_id": None,
+        "target_type": "baseline", "rationale": "Shared directional crosswalk reference.",
+        "variable_assignments": {name: {"kind": "world_setup", "value": value}
+            for name, value in (("direction", "forward"), ("target_half", "right"),
+                                ("obstacle_context", "clear"))},
+        "recording_description": baseline_description,
+        "unresolved_judgment_calls": ["whenever practicable"]})
     for case in plan["cases"]:
         short = case["case_id"].split("__")[-1]
         construction = json.loads((ROOT / "cases" / short / "construction.json").read_text())
         recording_description = construction["recording_description"]
         values = {key: case[key] for key in ("direction", "target_half", "obstacle_context")}
         cases.append({"case_id": case["case_id"], "target_law_id": LAW,
-            "target_type": "judgment_observation", "rationale": case["recording_description"],
+            "target_type": "judgment_sweep", "rationale": str(case["recording_description"]),
             "variable_assignments": {key: {"kind": "world_setup", "value": value}
                                      for key, value in values.items()},
+            "paired_probe_id": "source-gated-direction-and-obstruction",
+            "deliberate_differences": ["direction", "target_half", "obstacle_context"],
             "unresolved_judgment_calls": ["whenever practicable"],
             "recording_description": recording_description,
-            "probe": {"primary_variable": "direction_relative_half",
+            "probe": {"primary_variable": "target_half",
                 "comparison_or_standard": "same reviewed crosswalk, participants and four-camera policy",
                 "target_value_or_branch": values}})
     sweep = {"sweep_id": "source-gated-practicability-context",
         "target_law_id": LAW, "judgment_refs": [{"phrase": "whenever practicable",
-            "note": "Legal meaning unresolved."}], "status": "incomplete",
+            "note": "No legal numeric practicability cutoff is supplied."}], "status": "incomplete",
         "rationale": "Obstruction and direction are physical probes, not a legal cutoff.",
         "missing_inputs": ["reviewed original qualified crosswalk and obstruction geometry",
             "source-bound full pedestrian passage and camera readback",

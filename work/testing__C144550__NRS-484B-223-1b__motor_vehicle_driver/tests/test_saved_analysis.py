@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path.cwd() / "runtime" / "scenario_pipeline"))
 
 from analysis import build_report, write_selected_result
 from native_construction import ASSIGNMENT
+from worker_exchange.measurement_contract import verify_report
 
 
 def put(path, value):
@@ -30,6 +31,8 @@ class SavedAnalysisTests(unittest.TestCase):
         config = json.loads((ROOT / "config.json").read_text())
         config["selected_case_id"] = self.case
         put(self.root / "config.json", config)
+        put(self.root / "acquisition-provenance.json", {
+            "provenance_kind": "synthetic_fixture", "diagnostic_fixture": True})
         anchors = [{"frame": i + 100, "t_s": i * .05} for i in range(900)]
         packets = {
             "frame_map": {"samples": anchors},
@@ -97,6 +100,9 @@ class SavedAnalysisTests(unittest.TestCase):
         self.assertTrue(report["measurements"]["signal_precedes_center_departure"])
         self.assertTrue(report["measurements"]["driver_check_observed_before_departure"])
         self.assertFalse(report["legal_verdict_claimed"])
+        contract = json.loads((ROOT / "measurement-contract.json").read_text())
+        measured = verify_report(contract, report, self.root)
+        self.assertEqual(len(measured), 3)
         result = write_selected_result(self.root, report)
         self.assertEqual(result["case_id"], self.case)
         self.assertFalse(result["legal_acceptance_claimed"])
