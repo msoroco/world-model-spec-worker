@@ -10,6 +10,7 @@ from officer_capture_step import CAMERAS
 from officer_direction import REFERENCE_SUFFIXES, behavior_suffix
 from officer_reference_plan import SITES
 from reference_saved_measure import measure
+from original_camera_review import write as write_camera_review
 
 
 def _sha(path):
@@ -148,6 +149,9 @@ def finalize(attempt, output, site_path=None, review_path=None):
     context_path.write_text(json.dumps({
         'authored_reference': report['reference_measurement'],
         'site_sha256': capture['site_sha256']}, sort_keys=True) + '\n')
+    review_path_out = channel_dir / 'original_camera_review.json'
+    write_camera_review(attempt, _rows(attempt / 'video_frames.jsonl'),
+                        report['source_sha256'], review_path_out)
     stopped = report['reference_measurement']['first_engineering_stop_before_reference']
     checks = [{'target': 'engineering_stop_before_authored_reference',
                'requested': True, 'measured': stopped is not None,
@@ -185,7 +189,9 @@ def finalize(attempt, output, site_path=None, review_path=None):
                   {'name': 'ego_body_front_at_reference', 'unit': 'm',
                    'reference': 'channels/ego_body_front_at_reference.jsonl'},
                   {'name': 'authored_reference', 'unit': 'structured record',
-                   'reference': 'channels/authored_reference.json'}],
+                   'reference': 'channels/authored_reference.json'},
+                  {'name': 'original_camera_review', 'unit': 'structured record',
+                   'reference': 'channels/original_camera_review.json'}],
               'source_evidence_hashes': report['source_sha256'],
               'realized_observables': {}}
     from worker_exchange.native_output import physical_result, write_result

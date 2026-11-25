@@ -39,7 +39,7 @@ def stage(entry, construction_reference, proposal):
             config_source = ROOT / 'review-draft/sources' / (source.stem + '-config.json')
             config_source.parent.mkdir(parents=True, exist_ok=True)
             config_source.write_text(file['content'])
-            file['source'] = str(config_source)
+            file['source'] = str(config_source.relative_to(ROOT.parents[1]))
         if file['path'] == 'tests/test_officer_reference_saved_finalizer.py':
             old = "frames.append({'video_frame': i, 'carla_frame': fid, 'time_s': time_s})"
             new = ("frames.append({'video_frame': i, 'carla_frame': fid, 'time_s': time_s, "
@@ -52,7 +52,7 @@ def stage(entry, construction_reference, proposal):
     if any(file['path'] == helper.name for file in construction['files']):
         raise ValueError('Review helper already in source bundle')
     construction['files'].append({'path': helper.name, 'content': helper.read_text(),
-                                  'source': str(helper)})
+                                  'source': str(helper.relative_to(ROOT.parents[1]))})
     target = ROOT / 'review-draft' / source.name
     write_json(target, construction)
     return str(target.relative_to(ROOT)), sha(target)

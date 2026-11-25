@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from intersection_yield_measure import CAMERAS, SOURCES, analyze
+from original_camera_review import write as write_camera_review
 
 
 PREFIX = "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__"
@@ -103,6 +104,10 @@ def finalize(attempt, output):
     context_path = channels / "entrance_inventory.json"
     context_path.write_text(json.dumps({"entrance_inventory": json.loads((attempt / "entrance_inventory.json").read_text())}, allow_nan=False) + "\n")
     evidence.append({"name": "entrance_inventory", "unit": "structured record", "reference": "channels/entrance_inventory.json"})
+    review_path = channels / "original_camera_review.json"
+    write_camera_review(attempt, frames, hashes, review_path)
+    evidence.append({"name": "original_camera_review", "unit": "structured record",
+                     "reference": "channels/original_camera_review.json"})
     case_id = config["selected_case_id"]
     suffix = case_id[len(PREFIX):]
     entry_control = report["operative_signal_controls_ego_at_entry_observed"]

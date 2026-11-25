@@ -51,7 +51,7 @@ class OfficerReferenceSavedFinalizerTests(unittest.TestCase):
                                     'ego_body_vertices_xy_m': body,
                                     'ego_front_x_m': x + 1, 'ego_speed_mps': 0.0,
                                     'camera_raw_sources': cameras})
-            frames.append({'video_frame': i, 'carla_frame': fid, 'time_s': time_s})
+            frames.append({'video_frame': i, 'carla_frame': fid, 'time_s': time_s, 'camera_frames': {name: fid for name in finalizer.CAMERAS}})
             history.append({'frame': fid, 'time_s': time_s,
                             'ego_body_vertices_xy_m': body, 'ego_speed_mps': 0.0})
             trace.append({'frame': fid, 'time_s': time_s})

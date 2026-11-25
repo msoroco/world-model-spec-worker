@@ -1,8 +1,17 @@
 # C158196 CPU handoff — NRS 484B.257(2) signal cell
 
+## 2026-11-25 14:53 UTC selected camera-review integration in progress
+
+`promote_review_draft.py` moved the twelve selected manifest construction paths and recording descriptions to the source-bound camera-review bundles, bound staged offline/compatibility/saved/physical receipt locations, and synchronized the root finalizer/config/fixture sources. Direct `semantic_delivery.validate` now passes for all twelve selected cases. Direct `execution_manifest.validate` found absolute source references in the draft bundles. All 24 staged constructions were repaired to repo-relative source paths; their old proof hashes became stale, so they are being renewed before the selected manifest is rebound. All 24 corrected offline constructions passed; all twelve corrected physical preparation receipts pass the pinned validator. Compatibility is still running and readiness remains **partial**.
+
+No prior-ready assignment, frozen input, runtime or batch file was changed. The next required step is complete compatibility and recorded-only renewal against the corrected bundles, rerun `promote_review_draft.py`, and validate the selected execution manifest. Independent delivery/comparison audits and executable baseline/sweep cases remain worker-owned CPU work after that.
+
+
 ## 2026-11-25 14:44 UTC staged physical preparation matrix
 
 `prove_review_draft_physical.py` renewed complete-motion, incomplete-motion and missing-evidence fixture outcomes against the staged source-bound primary construction for each of the 12 C158196 cases. All 36 fixture commands exited 0 with the expected measured maneuver status. Each staged receipt binds its construction, three result files and proof logs, and the existing case-specific capture lifecycle log. `review-draft/draft-physical-proofs/index.json` binds all 12 receipts to the staged manifest. Direct invocation of the pinned runtime `physical_preparation.validate` accepted all 12 staged receipts. The 48-test package suite passed after the proof-script additions, with `cpu-tests.log` SHA bound in `result.json`.
+
+Final verification: runtime source verification, CPU preflight, the 48-test package suite and assignment-scoped complete static check exit 0. Direct returned-tree scan covers 13,119 files with zero invalid UTF-8, oversize, trailing-whitespace or conflict-marker errors. Five assignments remain partial, so the full strict delivery gate is still open.
 
 This is synthetic CPU evidence and leaves actual Native motion and visual/legal judgments open. The selected execution manifest and earlier active receipts remain unchanged. C158196 stays **partial** pending coherent active promotion, independent delivery/comparison receipts, executable baseline and qualitative sweep members, and its scoped strict gate.
 

@@ -10,7 +10,7 @@ import sys
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'review-draft-manifest.json'
-OUTPUT = REPO / '.runtime-work/c158196-review-offline-all-r2'
+OUTPUT = REPO / '.runtime-work/c158196-review-offline-all-r3'
 LOGS = ROOT / 'review-draft/draft-offline-proofs'
 
 

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'review-draft-manifest.json'
 VALIDATOR = REPO / '.runtime-work/c158196-current-decoder/.lake/build/bin/adapterCheck'
-OUTPUT = REPO / '.runtime-work/c158196-review-compat-all'
+OUTPUT = REPO / '.runtime-work/c158196-review-compat-all-r2'
 LOGS = ROOT / 'review-draft/draft-compat-proofs'
 INDEX = LOGS / 'index.json'
 
@@ -57,7 +57,7 @@ def main():
             if ident != 'primary':
                 command += ['--candidate', ident]
             env = dict(os.environ,
-                       SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work/c158196-review-compat-all'),
+                       SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work/c158196-review-compat-all-r2'),
                        PYTHONDONTWRITEBYTECODE='1')
             with log_path.open('w') as stream:
                 result = subprocess.run(command, cwd=REPO, env=env,
