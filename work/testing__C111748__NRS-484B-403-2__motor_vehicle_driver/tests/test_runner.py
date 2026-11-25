@@ -102,3 +102,58 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "OpenDRIVE"):
             self.run_case(world, self.sample)
         self.assertEqual(world.actors, [])
+
+    def test_production_requires_original_review_before_world_mutation(self):
+        world = World(self.source)
+        with self.assertRaisesRegex(mod.RunnerError, "original reviewed site packet"):
+            mod.run(world, self.path, self.sha, CASE, Path(self.tmp.name) / "native.json",
+                    ego_transform="ego", device_transform="device",
+                    camera_sample=self.sample, control_factory=lambda d: d,
+                    snapshot_world=lambda w: "state",
+                    restore_world=lambda w, state: None)
+        self.assertEqual(world.actors, [])
+
+    def test_production_review_is_bound_into_native_attempt(self):
+        world = World(self.source)
+        site = json.loads(self.path.read_text())
+        names = {"highway": ("highway_status", "source_sha256"),
+                 "placement_authority": ("device", "authority_source_sha256"),
+                 "legal_consistency": ("device", "legal_consistency_source_sha256"),
+                 "display_direction": ("device", "display_source_sha256")}
+        sources = {}
+        for name, (section, key) in names.items():
+            path = Path(self.tmp.name) / (name + ".txt")
+            path.write_text("Reviewed original " + name + " source\n")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            site[section][key] = digest
+            sources[name] = {"path": path.name, "sha256": digest,
+                             "review_note": "Reviewed exact governed approach"}
+        self.path.write_text(json.dumps(site))
+        self.sha = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        review = Path(self.tmp.name) / "review.json"
+        review.write_text(json.dumps({"source_kind": "original_reviewed_native_site",
+            "diagnostic_fixture": False, "case_id": CASE, "site_sha256": self.sha,
+            "reviewer": "local independent reviewer", "reviewed_at": "2026-11-25T00:00:00Z",
+            "governed_approach_reviewed": True, "route_envelope_reviewed": True,
+            "sources": sources}))
+
+        def sample(world, actors, frame, source_site):
+            row = self.sample(world, actors, frame, source_site)
+            if frame == 999:
+                row["ego"]["lane_id"] = -1
+                row["ego"]["yaw_deg"] = 180
+            return row
+
+        result = mod.run(world, self.path, self.sha, CASE,
+                         Path(self.tmp.name) / "native.json",
+                         ego_transform="ego", device_transform="device",
+                         camera_sample=sample, control_factory=lambda d: d,
+                         snapshot_world=lambda w: "state",
+                         restore_world=lambda w, state: setattr(self, "restored", state == "state"),
+                         review_path=review, review_source_root=Path(self.tmp.name))
+        self.assertEqual(result["frame_count"], 900)
+        self.assertEqual(result["site_review_binding"]["site_sha256"], self.sha)
+        packet = json.loads((Path(self.tmp.name) / "native.json").read_text())
+        self.assertEqual(packet["site_review_binding"]["review_sha256"],
+                         hashlib.sha256(review.read_bytes()).hexdigest())
+        self.assertTrue(self.restored)

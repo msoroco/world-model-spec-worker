@@ -7,109 +7,289 @@
       "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "259746b2c964765dbe06469afe368401b8529630a26637211f8c7275e1e059b8",
+      "construction_sha256": "7ddbf2426e3a1f479c9c5a3ae8d5fd5e34e86d94c837b2c71c227973b28b9f8e",
       "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-maintain_clearance-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "7ddbf2426e3a1f479c9c5a3ae8d5fd5e34e86d94c837b2c71c227973b28b9f8e",
         "exit_code": 0,
-        "construction_sha256": "259746b2c964765dbe06469afe368401b8529630a26637211f8c7275e1e059b8",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-eight-maintain_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "log": "proof-offline-maintain_clearance.log",
-        "log_sha256": "c9a91f20412d028f223a24f9f460b6ac5abd367c444afe979bec07e2300822ac"
+        "log": "proof-offline-maintain_clearance-primary.log",
+        "log_sha256": "29b3c78befe6b88680571b8554bda9053da46ad0ae31dbb6beb5cdc47a232138"
       },
       "measurement_contract": "cases/maintain_clearance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/maintain_clearance/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/maintain_clearance/fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/maintain_clearance/physical-preparation.json",
+        "sha256": "515aa8be6536ce5ff9a856f83c8e66fe9dd193bbbf41eab19693c98855c25ce3"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Source-reviewed rider may move too slowly to traverse the observed crossing during the 900-frame encounter; local Native motion review determines whether to select a bounded throttle increase."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/maintain_clearance/fallback1-construction.json",
+          "construction_sha256": "7df5050325ffb055797af3c0c519e9423e2652b7367abee3cc00f7000dce6184",
+          "trigger": {
+            "source": "original 900-frame rider position and time history plus independent physical review",
+            "metric": "rider route progress and crossing timing in the recorded encounter",
+            "failure_condition": "rider progress or crossing timing insufficient for the planned encounter despite source-reviewed route and identity"
+          },
+          "changed_knobs": [
+            "rider_throttle_scale from 1.0 to 1.15, bounded to throttle <= 1.0; same setting for both response cases of this rider modality"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__maintain_clearance --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-maintain_clearance-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "7df5050325ffb055797af3c0c519e9423e2652b7367abee3cc00f7000dce6184",
+            "exit_code": 0,
+            "log": "proof-offline-maintain_clearance-fallback1.log",
+            "log_sha256": "792b56a19d79b3e31477f0c827dbb1780958d2227f6f24b6e8043c2f231966ed"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path",
       "kind": "delivery",
       "construction": "cases/cross_rider_path/construction.json",
-      "construction_sha256": "9754d9416532877fd12549b9356cbeb507a2d889071a8b0c86c9ae772d8aecaf",
+      "construction_sha256": "0b55d625966cdad4457a5f23d0306b0e5346a8ba39fa0b43289ccab13208c101",
       "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-cross_rider_path-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "0b55d625966cdad4457a5f23d0306b0e5346a8ba39fa0b43289ccab13208c101",
         "exit_code": 0,
-        "construction_sha256": "9754d9416532877fd12549b9356cbeb507a2d889071a8b0c86c9ae772d8aecaf",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-eight-cross_rider_path --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "log": "proof-offline-cross_rider_path.log",
-        "log_sha256": "71dcf4ad3f2ec848d65cbada6d9985226a53d2b1f5eee8906a6773901abf20e5"
+        "log": "proof-offline-cross_rider_path-primary.log",
+        "log_sha256": "2cdccbe4f0c49b48447fac86923cdf3149ef606b07bc8e956e8ad040305ba20d"
       },
       "measurement_contract": "cases/cross_rider_path/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/cross_rider_path/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/cross_rider_path/fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/cross_rider_path/physical-preparation.json",
+        "sha256": "9aea5e3269df4839d8750364d76c775bea54586b777598cdaa97fc181e8b7ef2"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Source-reviewed rider may move too slowly to traverse the observed crossing during the 900-frame encounter; local Native motion review determines whether to select a bounded throttle increase."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/cross_rider_path/fallback1-construction.json",
+          "construction_sha256": "c3700d99438633f7f69a56a2e41bf7e21833d771f3afe54e16c59af2c982c20d",
+          "trigger": {
+            "source": "original 900-frame rider position and time history plus independent physical review",
+            "metric": "rider route progress and crossing timing in the recorded encounter",
+            "failure_condition": "rider progress or crossing timing insufficient for the planned encounter despite source-reviewed route and identity"
+          },
+          "changed_knobs": [
+            "rider_throttle_scale from 1.0 to 1.15, bounded to throttle <= 1.0; same setting for both response cases of this rider modality"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__cross_rider_path --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-cross_rider_path-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "c3700d99438633f7f69a56a2e41bf7e21833d771f3afe54e16c59af2c982c20d",
+            "exit_code": 0,
+            "log": "proof-offline-cross_rider_path-fallback1.log",
+            "log_sha256": "310eea2cdb8888dec1dbecb3ff41ec176b410918e1012c39e5984d4cb6396744"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__maintain_clearance",
       "kind": "delivery",
       "construction": "cases/electric_bicycle__maintain_clearance/construction.json",
-      "construction_sha256": "549a5252a1d844f8a5b4914c4cf8c540179c2f789a5633a09f762ee4d88b459c",
+      "construction_sha256": "46fb6222fd009e1451477cf98c95b3d1e38eebf572882ad4dc1ed30a22463fac",
       "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__maintain_clearance --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_bicycle__maintain_clearance-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "46fb6222fd009e1451477cf98c95b3d1e38eebf572882ad4dc1ed30a22463fac",
         "exit_code": 0,
-        "construction_sha256": "549a5252a1d844f8a5b4914c4cf8c540179c2f789a5633a09f762ee4d88b459c",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__maintain_clearance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-eight-electric_bicycle__maintain_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "log": "proof-offline-electric_bicycle-maintain_clearance.log",
-        "log_sha256": "96d2d9dbae9f0a7a908580c5efc96bc085a890e289442f0ebd7bc7a1f946ebe4"
+        "log": "proof-offline-electric_bicycle__maintain_clearance-primary.log",
+        "log_sha256": "4d63adc0bcb3877d518961bc833b6f8be45432f5721d4a54064c282e74e53fca"
       },
       "measurement_contract": "cases/electric_bicycle__maintain_clearance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_bicycle__maintain_clearance/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_bicycle__maintain_clearance/fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/electric_bicycle__maintain_clearance/physical-preparation.json",
+        "sha256": "25d280586c7cf4de4995d64d677739a6568dff432b7e27a85311afb2d03369e1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Source-reviewed rider may move too slowly to traverse the observed crossing during the 900-frame encounter; local Native motion review determines whether to select a bounded throttle increase."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_bicycle__maintain_clearance/fallback1-construction.json",
+          "construction_sha256": "db13a4140f54b66c062850e1fdbe83e49c59d945245af12e2c977a6471357abc",
+          "trigger": {
+            "source": "original 900-frame rider position and time history plus independent physical review",
+            "metric": "rider route progress and crossing timing in the recorded encounter",
+            "failure_condition": "rider progress or crossing timing insufficient for the planned encounter despite source-reviewed route and identity"
+          },
+          "changed_knobs": [
+            "rider_throttle_scale from 1.0 to 1.15, bounded to throttle <= 1.0; same setting for both response cases of this rider modality"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__maintain_clearance --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_bicycle__maintain_clearance-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "db13a4140f54b66c062850e1fdbe83e49c59d945245af12e2c977a6471357abc",
+            "exit_code": 0,
+            "log": "proof-offline-electric_bicycle__maintain_clearance-fallback1.log",
+            "log_sha256": "2f330d3a8c787a8b47a8555010cb5ccc6cd0ed2fd4ac8519842778627960ed7a"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__cross_rider_path",
       "kind": "delivery",
       "construction": "cases/electric_bicycle__cross_rider_path/construction.json",
-      "construction_sha256": "c1ad39abe013aed09a98bad7d09731159c8f81bc9bfc70e757494996f1509d12",
+      "construction_sha256": "9d63fc3657549af3a7e4e997c9ce42df4d38ae71ebf2937d3cbcd9711ec32728",
       "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__cross_rider_path --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_bicycle__cross_rider_path-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "9d63fc3657549af3a7e4e997c9ce42df4d38ae71ebf2937d3cbcd9711ec32728",
         "exit_code": 0,
-        "construction_sha256": "c1ad39abe013aed09a98bad7d09731159c8f81bc9bfc70e757494996f1509d12",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__cross_rider_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-eight-electric_bicycle__cross_rider_path --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "log": "proof-offline-electric_bicycle-cross_rider_path.log",
-        "log_sha256": "d98fcfbc4cfba99687c8883cd5304451d568a03867b4928690f777a1aafea288"
+        "log": "proof-offline-electric_bicycle__cross_rider_path-primary.log",
+        "log_sha256": "3904c635264b56ba8fb26ff6b0f2ccfea88408892645864e5b8c3b5b864a24ef"
       },
       "measurement_contract": "cases/electric_bicycle__cross_rider_path/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_bicycle__cross_rider_path/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_bicycle__cross_rider_path/fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/electric_bicycle__cross_rider_path/physical-preparation.json",
+        "sha256": "a1638d31041ec3a5b9ac9139c509c7643de2fb592dfa95e61114aaa826662a10"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Source-reviewed rider may move too slowly to traverse the observed crossing during the 900-frame encounter; local Native motion review determines whether to select a bounded throttle increase."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_bicycle__cross_rider_path/fallback1-construction.json",
+          "construction_sha256": "c8f31d069e2fec8fc81c24ab25aadea19ebd30b9367c46a3a6fa1315b9f0da07",
+          "trigger": {
+            "source": "original 900-frame rider position and time history plus independent physical review",
+            "metric": "rider route progress and crossing timing in the recorded encounter",
+            "failure_condition": "rider progress or crossing timing insufficient for the planned encounter despite source-reviewed route and identity"
+          },
+          "changed_knobs": [
+            "rider_throttle_scale from 1.0 to 1.15, bounded to throttle <= 1.0; same setting for both response cases of this rider modality"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_bicycle__cross_rider_path --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_bicycle__cross_rider_path-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "c8f31d069e2fec8fc81c24ab25aadea19ebd30b9367c46a3a6fa1315b9f0da07",
+            "exit_code": 0,
+            "log": "proof-offline-electric_bicycle__cross_rider_path-fallback1.log",
+            "log_sha256": "b65eb6e1835a9a9b55709b56c37c201f406bc6e36577fbd0bf5bf9be8180194a"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__maintain_clearance",
       "kind": "delivery",
       "construction": "cases/electric_scooter__maintain_clearance/construction.json",
-      "construction_sha256": "fb0ca9ac12292b912a3664a75dd35d04eca562fa64f3ba15d051e552d2e33f58",
+      "construction_sha256": "545c703c2ab2d7344462d49a77a2bab9e2d94229d7d9ddde5f0b96a8b4d52853",
       "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__maintain_clearance --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_scooter__maintain_clearance-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "545c703c2ab2d7344462d49a77a2bab9e2d94229d7d9ddde5f0b96a8b4d52853",
         "exit_code": 0,
-        "construction_sha256": "fb0ca9ac12292b912a3664a75dd35d04eca562fa64f3ba15d051e552d2e33f58",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__maintain_clearance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-eight-electric_scooter__maintain_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "log": "proof-offline-electric_scooter-maintain_clearance.log",
-        "log_sha256": "ddc3558d74025afbde5548e945f565d7e7830a1a2f5e282b76e4297822ef3cbf"
+        "log": "proof-offline-electric_scooter__maintain_clearance-primary.log",
+        "log_sha256": "60f0af94119e62f3ed112e1a249b8f0da8d16c1bddfc715b73c32f2ba9f3a090"
       },
       "measurement_contract": "cases/electric_scooter__maintain_clearance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_scooter__maintain_clearance/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_scooter__maintain_clearance/fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/electric_scooter__maintain_clearance/physical-preparation.json",
+        "sha256": "8c4786023e387eaaa5b43631555be85bd567c110ec9c38a0b058acc46bf0f849"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Source-reviewed rider may move too slowly to traverse the observed crossing during the 900-frame encounter; local Native motion review determines whether to select a bounded throttle increase."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_scooter__maintain_clearance/fallback1-construction.json",
+          "construction_sha256": "019f3f16add86f4164d46204464d9f3826df1c118410b937720cc5f6af1a9ed6",
+          "trigger": {
+            "source": "original 900-frame rider position and time history plus independent physical review",
+            "metric": "rider route progress and crossing timing in the recorded encounter",
+            "failure_condition": "rider progress or crossing timing insufficient for the planned encounter despite source-reviewed route and identity"
+          },
+          "changed_knobs": [
+            "rider_throttle_scale from 1.0 to 1.15, bounded to throttle <= 1.0; same setting for both response cases of this rider modality"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__maintain_clearance --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_scooter__maintain_clearance-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "019f3f16add86f4164d46204464d9f3826df1c118410b937720cc5f6af1a9ed6",
+            "exit_code": 0,
+            "log": "proof-offline-electric_scooter__maintain_clearance-fallback1.log",
+            "log_sha256": "212816b54a82c1c6b2ee0f9d0bfe5ac6d5e0f2965d7d08e6dcdbfaa99a684f9d"
+          }
+        }
+      ]
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__cross_rider_path",
       "kind": "delivery",
       "construction": "cases/electric_scooter__cross_rider_path/construction.json",
-      "construction_sha256": "40ea68fd17d034436cb98a8afb8dc9f48fc3b62a936aa2fd2b077aceac3ce1fd",
+      "construction_sha256": "391336efe3e7eac3654aa4c6c6eafcfad00e2962e1275bb54e90f7e476356954",
       "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__cross_rider_path --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_scooter__cross_rider_path-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "391336efe3e7eac3654aa4c6c6eafcfad00e2962e1275bb54e90f7e476356954",
         "exit_code": 0,
-        "construction_sha256": "40ea68fd17d034436cb98a8afb8dc9f48fc3b62a936aa2fd2b077aceac3ce1fd",
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__cross_rider_path --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-eight-electric_scooter__cross_rider_path --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "log": "proof-offline-electric_scooter-cross_rider_path.log",
-        "log_sha256": "e2c959574b8f15addf2e8d863c35202b58e92d00c52ae24ec6e63348e3a86d1c"
+        "log": "proof-offline-electric_scooter__cross_rider_path-primary.log",
+        "log_sha256": "7a61c6b974727816c93905f31e46dfb644e10a301ebc0687e9dbd2c13b699fbe"
       },
       "measurement_contract": "cases/electric_scooter__cross_rider_path/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
-      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_scooter__cross_rider_path/fixture-recipe.json"
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/diagnostics/electric_scooter__cross_rider_path/fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "cases/electric_scooter__cross_rider_path/physical-preparation.json",
+        "sha256": "82616736d36da814d9ef48cf21c9a1281d4cb0dd25dfe8650fc2cddad3da4818"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Source-reviewed rider may move too slowly to traverse the observed crossing during the 900-frame encounter; local Native motion review determines whether to select a bounded throttle increase."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_scooter__cross_rider_path/fallback1-construction.json",
+          "construction_sha256": "643a6f2b5f9ad0cb87e312a9496b0b6877416fab6d60d7e66241e7355b85f6a9",
+          "trigger": {
+            "source": "original 900-frame rider position and time history plus independent physical review",
+            "metric": "rider route progress and crossing timing in the recorded encounter",
+            "failure_condition": "rider progress or crossing timing insufficient for the planned encounter despite source-reviewed route and identity"
+          },
+          "changed_knobs": [
+            "rider_throttle_scale from 1.0 to 1.15, bounded to throttle <= 1.0; same setting for both response cases of this rider modality"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__cross_rider_path --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-owner/offline-fallback-v1-electric_scooter__cross_rider_path-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "643a6f2b5f9ad0cb87e312a9496b0b6877416fab6d60d7e66241e7355b85f6a9",
+            "exit_code": 0,
+            "log": "proof-offline-electric_scooter__cross_rider_path-fallback1.log",
+            "log_sha256": "fcb4851bb22c6f42b1ef34c0f23046833e7149c847af079732b3dab8ba2823de"
+          }
+        }
+      ]
     }
   ]
 }

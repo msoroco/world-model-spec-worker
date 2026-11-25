@@ -39,7 +39,7 @@ def require(ok, reason):
 
 def capture(site_path: Path, site_sha256: str, case_id: str, output: Path,
             *, tick, apply_control, sample, brake, frames: int = DELIVERY_FRAMES,
-            diagnostic: bool = False) -> dict:
+            diagnostic: bool = False, review_binding: dict | None = None) -> dict:
     """Record a case through injected live callbacks and seal original readbacks.
 
     tick() returns (original_frame, original_seconds). apply_control(i, site)
@@ -51,6 +51,11 @@ def capture(site_path: Path, site_sha256: str, case_id: str, output: Path,
     require(site["device"].get("device_id") is not None, "reviewed device identity missing")
     require(site.get("camera_plan_sha256"), "camera plan source missing")
     require(frames == DELIVERY_FRAMES or diagnostic, "short capture requires diagnostic flag")
+    require(diagnostic or (isinstance(review_binding, dict) and
+            review_binding.get("case_id") == case_id and
+            review_binding.get("site_sha256") == site_sha256 and
+            len(review_binding.get("verified_sources", {})) == 4),
+            "original reviewed source binding required")
     require(isinstance(frames, int) and frames >= 3, "invalid frame count")
     require(callable(tick) and callable(apply_control) and callable(sample) and callable(brake), "live callbacks missing")
     route_raw = json.dumps(site["u_turn_route"], sort_keys=True, separators=(",", ":")).encode()
@@ -61,6 +66,7 @@ def capture(site_path: Path, site_sha256: str, case_id: str, output: Path,
         "highway_status": site["highway_status"],
         "device": dict(site["device"]), "ego_id": site["ego_id"],
         "camera_plan_sha256": site["camera_plan_sha256"],
+        "site_review_binding": review_binding,
         "duration_s": frames / FPS, "diagnostic": bool(diagnostic), "frames": [],
     }
     first_frame = None

@@ -250,15 +250,19 @@ def audit_saved(attempt, *, diagnostic=False):
             "physical_acceptance_claimed": False}
 
 
-def audit_pair(first, second, comparison, *, diagnostic=False):
+def audit_pair(first, second, comparison, *, diagnostic=False,
+               first_processing=None, second_processing=None):
     """Compare original histories with only declared source changes."""
     roots = [Path(first).resolve(), Path(second).resolve()]
     if diagnostic:
         saved = [audit_saved(root, diagnostic=True) for root in roots]
     else:
         from delivery_audit import audit as audit_delivery
-        saved = [audit_delivery(root, pixel_review=root/'original-pixel-review.json')
-                 for root in roots]
+        if first_processing is None or second_processing is None:
+            raise ValueError('both saved processing receipts required for original comparison')
+        saved = [audit_delivery(root, pixel_review=root/'original-pixel-review.json',
+                                processing_receipt=receipt)
+                 for root, receipt in zip(roots, (first_processing, second_processing))]
     scenes = [json.loads((root/"scene.json").read_text()) for root in roots]
     if diagnostic:
         first_map = saved[0]['source_hashes']['map']
@@ -325,8 +329,12 @@ def main():
     parser.add_argument('--first', required=True)
     parser.add_argument('--second', required=True)
     parser.add_argument('--comparison', required=True, choices=('entry_timing', 'designated_exception'))
+    parser.add_argument('--first-processing', required=True)
+    parser.add_argument('--second-processing', required=True)
     args = parser.parse_args()
-    print(json.dumps(audit_pair(args.first, args.second, args.comparison), indent=2))
+    print(json.dumps(audit_pair(args.first, args.second, args.comparison,
+                                first_processing=args.first_processing,
+                                second_processing=args.second_processing), indent=2))
 
 
 if __name__ == '__main__':

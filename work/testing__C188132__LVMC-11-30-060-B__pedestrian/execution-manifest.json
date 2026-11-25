@@ -6,13 +6,27 @@
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
       "construction": "cases/yield_before_vehicle/construction.json",
-      "construction_sha256": "32bd1f3d6023cbbedd49f4eb48280ddfdfcc7cc4ab9df92c957297909fd48022",
+      "construction_sha256": "e4357a3b1048365e81991fd38841f6c0a5cd85e93ff8a4574dcc699f69c7f4b1",
       "kind": "delivery",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native bridge rendering or access may fail; no fallback yet"
+        "reason": "Primary camera placement may occlude the reviewed deck or roadway subjects; alternate fixed viewpoints are preplanned."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/yield_before_vehicle/fallback1/construction.json",
+          "construction_sha256": "da88b01e9e499bf59f09f61016deb77907bf2d403961d5bfb3b40a909a1153b1",
+          "trigger": {
+            "source": "original-pixel-review.json",
+            "metric": "overpass_structure_visible and participant visibility in all four camera views",
+            "failure_condition": "any required original view has false visibility after primary capture"
+          },
+          "changed_knobs": [
+            "four fixed camera world poses while retaining the same camera names, resolutions, FOV, rate and duration"
+          ]
+        }
+      ],
       "measurement_contract": "measurement-contract-yield_before_vehicle.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -24,56 +38,35 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C188132_REVIEWED_SITE_PACKET"
       },
-      "offline": {
-        "construction_sha256": "32bd1f3d6023cbbedd49f4eb48280ddfdfcc7cc4ab9df92c957297909fd48022",
-        "exit_code": 0,
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --output .runtime-work/c188132-delivery-offline-yield_before_vehicle --python .venv-cpu/bin/python",
-        "log": "proof-delivery-offline-yield_before_vehicle.log",
-        "log_sha256": "5fd207b7c956f24d832c12c30a9c82df34b997eada1e8251f7dcc7fa00cff100"
-      },
-      "compatibility": {
-        "receipt": "proof-compat-yield_before_vehicle.json",
-        "sha256": "ccaab302d9c8036dad0ec95aef9cea446d176dedfdf64a2433da75b81e8905fb",
-        "log": "proof-analysis-yield_before_vehicle.log"
-      },
-      "negative": {
-        "log": "proof-negative-yield_before_vehicle.log",
-        "exit_code": 1,
-        "expected_error": "Missing required source: body-history.jsonl"
-      },
-      "acquisition": {
-        "crossing_order": {
-          "entrypoint": "analysis.py",
-          "method": "measure_crossing_order",
-          "evidence": "body-history.jsonl"
-        },
-        "roadway_vehicle_inventory": {
-          "entrypoint": "analysis.py",
-          "method": "measure_roadway_vehicle_inventory",
-          "evidence": "body-history.jsonl"
-        },
-        "provided_overhead_crossing": {
-          "entrypoint": "analysis.py",
-          "method": "measure_provided_overhead_crossing",
-          "evidence": "reviewed-site.json"
-        },
-        "designated_place_prohibition": {
-          "entrypoint": "analysis.py",
-          "method": "measure_designated_place",
-          "evidence": "municipal-designation-source.txt"
-        }
+      "physical_preparation": {
+        "receipt": "cases/yield_before_vehicle/physical-preparation.json",
+        "sha256": "8ba31109fcde60d367d99b7856760cf1c840aa2201675888a1210b13827a57cd"
       }
     },
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
       "construction": "cases/enter_ahead_of_vehicle/construction.json",
-      "construction_sha256": "534e959b56c5f4344c5bba44bbf04ad6094201ba022f28b4227bffeddf461ca8",
+      "construction_sha256": "0f1347f8b8f724f9208cdc6261ae22c51b07933387cd8f9f0d6bfaf80fb71f5e",
       "kind": "delivery",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native bridge rendering or access may fail; no fallback yet"
+        "reason": "Primary camera placement may occlude the reviewed deck or roadway subjects; alternate fixed viewpoints are preplanned."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/enter_ahead_of_vehicle/fallback1/construction.json",
+          "construction_sha256": "18fe8dbe0275b5b3bbc2b8222480d4ae957dd23f1d08accda5b300598ba285ee",
+          "trigger": {
+            "source": "original-pixel-review.json",
+            "metric": "overpass_structure_visible and participant visibility in all four camera views",
+            "failure_condition": "any required original view has false visibility after primary capture"
+          },
+          "changed_knobs": [
+            "four fixed camera world poses while retaining the same camera names, resolutions, FOV, rate and duration"
+          ]
+        }
+      ],
       "measurement_contract": "measurement-contract-enter_ahead_of_vehicle.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -85,56 +78,35 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C188132_REVIEWED_SITE_PACKET"
       },
-      "offline": {
-        "construction_sha256": "534e959b56c5f4344c5bba44bbf04ad6094201ba022f28b4227bffeddf461ca8",
-        "exit_code": 0,
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --output .runtime-work/c188132-delivery-offline-enter_ahead_of_vehicle --python .venv-cpu/bin/python",
-        "log": "proof-delivery-offline-enter_ahead_of_vehicle.log",
-        "log_sha256": "440cc5b69f473bc85c0e0cbf54d886b7044a2a5ccbbae37ba329e7a141e9d153"
-      },
-      "compatibility": {
-        "receipt": "proof-compat-enter_ahead_of_vehicle.json",
-        "sha256": "ed63f30f5d50273dcf94a59b37bd6c28a0288cb31ac6437e5c38add8b51ad7c2",
-        "log": "proof-analysis-enter_ahead_of_vehicle.log"
-      },
-      "negative": {
-        "log": "proof-negative-enter_ahead_of_vehicle.log",
-        "exit_code": 1,
-        "expected_error": "Missing required source: body-history.jsonl"
-      },
-      "acquisition": {
-        "crossing_order": {
-          "entrypoint": "analysis.py",
-          "method": "measure_crossing_order",
-          "evidence": "body-history.jsonl"
-        },
-        "roadway_vehicle_inventory": {
-          "entrypoint": "analysis.py",
-          "method": "measure_roadway_vehicle_inventory",
-          "evidence": "body-history.jsonl"
-        },
-        "provided_overhead_crossing": {
-          "entrypoint": "analysis.py",
-          "method": "measure_provided_overhead_crossing",
-          "evidence": "reviewed-site.json"
-        },
-        "designated_place_prohibition": {
-          "entrypoint": "analysis.py",
-          "method": "measure_designated_place",
-          "evidence": "municipal-designation-source.txt"
-        }
+      "physical_preparation": {
+        "receipt": "cases/enter_ahead_of_vehicle/physical-preparation.json",
+        "sha256": "5ec7cba8f859b01f54a08d8038f88027ffcb0092e9d15ae41ead4d9ead6f017c"
       }
     },
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition",
       "construction": "cases/designated_prohibition/construction.json",
-      "construction_sha256": "da5477969b0084fb39b9e579fa00b4e91fa078de2e7aadb002fc4c2d05e829b3",
+      "construction_sha256": "cf0acb195607f502928e179e0fe830bcbf10564d5d17e6cc2ddfe23ba3905a1e",
       "kind": "delivery",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native bridge rendering or access may fail; no fallback yet"
+        "reason": "Primary camera placement may occlude the reviewed deck or roadway subjects; alternate fixed viewpoints are preplanned."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/designated_prohibition/fallback1/construction.json",
+          "construction_sha256": "893b17958ef7a370df2105a3f2b4185ebe3abd538b55f753bd6aff0c6811ef63",
+          "trigger": {
+            "source": "original-pixel-review.json",
+            "metric": "overpass_structure_visible and participant visibility in all four camera views",
+            "failure_condition": "any required original view has false visibility after primary capture"
+          },
+          "changed_knobs": [
+            "four fixed camera world poses while retaining the same camera names, resolutions, FOV, rate and duration"
+          ]
+        }
+      ],
       "measurement_contract": "measurement-contract-designated_prohibition.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -146,44 +118,9 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "C188132_REVIEWED_SITE_PACKET"
       },
-      "offline": {
-        "construction_sha256": "da5477969b0084fb39b9e579fa00b4e91fa078de2e7aadb002fc4c2d05e829b3",
-        "exit_code": 0,
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/draft-offline-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --output .runtime-work/c188132-delivery-offline-designated_prohibition --python .venv-cpu/bin/python",
-        "log": "proof-delivery-offline-designated_prohibition.log",
-        "log_sha256": "ec48d6a11489e6b8183b637f094a7fa1c4d3252db8fb1a43e39f72845e0f35ad"
-      },
-      "compatibility": {
-        "receipt": "proof-compat-designated_prohibition.json",
-        "sha256": "8846ae4f0a146169afc6b9ddbe5bba0afae8df2205f04b4a2970b0f83806d96d",
-        "log": "proof-analysis-designated_prohibition.log"
-      },
-      "negative": {
-        "log": "proof-negative-designated_prohibition.log",
-        "exit_code": 1,
-        "expected_error": "Missing required source: body-history.jsonl"
-      },
-      "acquisition": {
-        "crossing_order": {
-          "entrypoint": "analysis.py",
-          "method": "measure_crossing_order",
-          "evidence": "body-history.jsonl"
-        },
-        "roadway_vehicle_inventory": {
-          "entrypoint": "analysis.py",
-          "method": "measure_roadway_vehicle_inventory",
-          "evidence": "body-history.jsonl"
-        },
-        "provided_overhead_crossing": {
-          "entrypoint": "analysis.py",
-          "method": "measure_provided_overhead_crossing",
-          "evidence": "reviewed-site.json"
-        },
-        "designated_place_prohibition": {
-          "entrypoint": "analysis.py",
-          "method": "measure_designated_place",
-          "evidence": "municipal-designation-source.txt"
-        }
+      "physical_preparation": {
+        "receipt": "cases/designated_prohibition/physical-preparation.json",
+        "sha256": "ba7468dd98248f5de42b1c2a621334cdc66c5823a3d9e0ee041c90e6f953b44f"
       }
     }
   ]

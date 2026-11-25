@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from overpass_source import (CASES, FRAMES, audit_pair, audit_saved, measure_original,
                              native_sample, request_controls, sha, spawn_pair,
@@ -267,6 +268,26 @@ class OverpassSourceTests(unittest.TestCase):
                 'comparison_id'], 'designated_exception')
             with self.assertRaisesRegex(ValueError, 'wrong entry-timing pair'):
                 audit_pair(roots[1], roots[2], 'entry_timing', diagnostic=True)
+
+    def test_production_pair_reaudits_both_originals(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            first, second = Path(tmp)/'first', Path(tmp)/'second'
+            write_attempt(first, CASES[0])
+            write_attempt(second, CASES[1])
+            for root in (first, second):
+                shutil.copy(root/'map.xodr', root/'candidate-overpass.xodr')
+            def reviewed(root, *, pixel_review, processing_receipt):
+                self.assertEqual(pixel_review, root/'original-pixel-review.json')
+                self.assertTrue(str(processing_receipt).endswith('.json'))
+                return audit_saved(root, diagnostic=True)
+            with patch('delivery_audit.audit', side_effect=reviewed) as original:
+                answer = audit_pair(first, second, 'entry_timing',
+                                    first_processing=first/'processing.json',
+                                    second_processing=second/'processing.json')
+                self.assertEqual(answer['comparison_id'], 'entry_timing')
+                self.assertEqual(original.call_count, 2)
+            with self.assertRaisesRegex(ValueError, 'both saved processing receipts required'):
+                audit_pair(first, second, 'entry_timing')
 
     def test_comparison_rejects_changed_vehicle(self):
         with tempfile.TemporaryDirectory() as tmp:

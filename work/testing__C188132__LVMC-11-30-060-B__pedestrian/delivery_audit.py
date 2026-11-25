@@ -19,7 +19,7 @@ def _inside(root, name):
     return path
 
 
-def audit(attempt, *, pixel_review):
+def audit(attempt, *, pixel_review, processing_receipt):
     root = Path(attempt).resolve()
     seal_path = _inside(root, 'capture-seal.json')
     seal = json.loads(seal_path.read_text())
@@ -48,11 +48,42 @@ def audit(attempt, *, pixel_review):
     for name, expected in sources.items():
         if sha(_inside(root, name)) != expected:
             raise ValueError('sealed Native source hash differs: ' + name)
+    processing_path = Path(processing_receipt).resolve()
+    safe = (Path(__file__).resolve().parents[2] / '.runtime-work').resolve()
+    if not processing_path.is_relative_to(safe) or not processing_path.is_file():
+        raise ValueError('saved processing receipt under .runtime-work required')
+    processing = json.loads(processing_path.read_text())
+    if (processing.get('format') != 'worker-saved-processing' or
+            processing.get('passed') is not True or processing.get('recorded_only') is not True or
+            processing.get('originals_preserved') is not True or
+            processing.get('missing_evidence') is not False or
+            processing.get('timestamp_joins', {}).get('frames') != 900 or
+            processing.get('timestamp_joins', {}).get('passed') is not True or
+            any(processing.get('original_source_hashes', {}).get(name) != expected
+                for name, expected in sources.items())):
+        raise ValueError('saved physical processing does not bind sealed original sources')
+    result_path = Path(processing.get('result', '')).resolve()
+    if not result_path.is_relative_to(processing_path.parent) or not result_path.is_file():
+        raise ValueError('saved physical result is missing or escaped')
+    if sha(result_path) != processing.get('result_sha256'):
+        raise ValueError('saved physical result hash differs')
+    physical_result = json.loads(result_path.read_text())
+    if (physical_result.get('provenance_kind') != 'native' or
+            physical_result.get('diagnostic_fixture') is not False or
+            physical_result.get('maneuver_completed') is not True or
+            physical_result.get('physical_checks', {}).get('setup', {}).get('status') != 'met' or
+            physical_result.get('physical_checks', {}).get('maneuver', {}).get('status') != 'met'):
+        raise ValueError('original saved physical completion is not met')
+    for name, expected in physical_result['physical_checks']['maneuver'].get('sources', {}).items():
+        if name in sources and expected != sources[name]:
+            raise ValueError('physical result source differs from sealed original: ' + name)
     original = audit_saved(root)
     media = audit_media(root)
     if media['frames'] != seal['frames']:
         raise ValueError('media and seal frame counts differ')
     case_id = original['measurement']['case_id']
+    if physical_result.get('case_id') != case_id or processing.get('case_id') != case_id:
+        raise ValueError('saved physical case identity differs')
     if media['case_id'] != case_id:
         raise ValueError('media and Native case identity differ')
     review_path = Path(pixel_review).resolve()
@@ -84,6 +115,8 @@ def audit(attempt, *, pixel_review):
     return {'format': 'worker-delivery-audit', 'case_id': case_id,
             'capture_seal_sha256': sha(seal_path), 'source_digest': digest,
             'pixel_review_sha256': sha(review_path), 'frame_count': 900,
+            'processing_receipt_sha256': sha(processing_path),
+            'physical_result_sha256': sha(result_path),
             'measurement': original['measurement'],
             'checks': {'native_source': True, 'all_participants': True,
                        'time_join': True, 'full_video_decode': True,
@@ -96,8 +129,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--pixel-review', required=True)
+    parser.add_argument('--processing-receipt', required=True)
     args = parser.parse_args()
-    print(json.dumps(audit(args.attempt, pixel_review=args.pixel_review), indent=2))
+    print(json.dumps(audit(args.attempt, pixel_review=args.pixel_review,
+                           processing_receipt=args.processing_receipt), indent=2))
 
 
 if __name__ == '__main__':

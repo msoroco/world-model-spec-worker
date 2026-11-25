@@ -60,6 +60,14 @@ def audit(attempt: Path, *, case_id: str, diagnostic_allowed: bool = False) -> d
     measurement = native.analyze(native_path, case_id=case_id, sha256=native_ref["sha256"])
     packet = json.loads(native_path.read_text(encoding="utf-8"))
     require(not packet.get("diagnostic") or diagnostic_allowed, "diagnostic acquisition cannot support delivery")
+    if not packet.get("diagnostic"):
+        binding = packet.get("site_review_binding")
+        require(isinstance(binding, dict) and binding.get("case_id") == case_id and
+                binding.get("site_sha256") == packet.get("site_sha256") and
+                binding.get("review_sha256") and
+                set(binding.get("verified_sources", {})) == {
+                    "highway", "placement_authority", "legal_consistency", "display_direction"},
+                "original reviewed site binding missing or changed")
     frames = packet["frames"]
     require(len(frames) == 900 and abs(packet.get("duration_s", 0) - 45.0) < 1e-9,
             "delivery needs 900 original frames at 20 Hz")
@@ -91,7 +99,8 @@ def audit(attempt: Path, *, case_id: str, diagnostic_allowed: bool = False) -> d
             "frame_count": len(frames), "native_source": True, "time_join": True,
             "all_participants": False, "full_video_decode": False,
             "actual_pixels": False, "physical_completion": False,
-            "legal_device_status": "requires_independent_source_review"}
+            "legal_device_status": "requires_independent_source_review",
+            "site_review_binding": packet.get("site_review_binding")}
 
 
 def audit_complete(attempt: Path, *, case_id: str, profile: dict | None = None) -> dict:

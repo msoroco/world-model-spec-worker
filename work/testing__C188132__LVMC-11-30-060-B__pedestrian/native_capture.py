@@ -47,7 +47,7 @@ def spawn_native_cameras(world, scene, carla):
             if blueprint is None:
                 raise ValueError("Native RGB camera blueprint missing")
             for key, value in (("image_size_x", width), ("image_size_y", height),
-                               ("fov", 75)):
+                               ("fov", 90)):
                 blueprint.set_attribute(key, str(value))
             placement = placements[name]
             x, y, z = placement["location_xyz_m"]

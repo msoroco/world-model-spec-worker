@@ -103,7 +103,7 @@ class ExactConstruction(unittest.TestCase):
                 'construction':'cases/'+variant+'/construction.json',
                 'construction_sha256':sha(construction_path),
                 'candidate_risk':{'status':'physical',
-                    'reason':'Native bridge rendering or access may fail; no fallback yet'},
+                    'reason':'Primary camera placement may occlude the reviewed deck or roadway subjects; alternate fixed viewpoints are preplanned.'},
                 'candidates':[]})
     write(ROOT/'draft-offline-manifest.json',manifest)
 

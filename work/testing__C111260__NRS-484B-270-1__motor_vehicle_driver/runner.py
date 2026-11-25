@@ -41,6 +41,9 @@ def check(root=ROOT):
             ('overview', 1920, 1080), ('approach', 1280, 720),
             ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]:
         raise ValueError('four original camera profile mismatch')
+    scale = config.get('rider_throttle_scale', 1.0)
+    if not isinstance(scale, (int, float)) or not 1.0 <= scale <= 1.25:
+        raise ValueError('candidate rider throttle scale outside bounded engineering range')
     return selected
 
 
@@ -96,8 +99,10 @@ def run(output_dir, host, port, selected):
     if hashlib.sha256(world.get_map().to_opendrive().encode('utf-8')).hexdigest() != raw['sha256']:
         raise ValueError('live Native OpenDRIVE differs from reviewed source')
     capture = attempt / 'capture'
+    config = json.loads((ROOT / 'config.json').read_text(encoding='utf-8'))
     receipt = capture_native(world, carla, site, site_root, capture,
-                             mode, frames=900, case_id=selected)
+                             mode, frames=900, case_id=selected,
+                             rider_throttle_scale=config.get('rider_throttle_scale', 1.0))
     for name in ('trace.jsonl', 'video_frames.jsonl'):
         shutil.copyfile(capture / name, attempt / name)
     codes = encode_originals(attempt, capture, receipt['first_native_frame'])

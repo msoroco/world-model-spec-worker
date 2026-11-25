@@ -64,6 +64,13 @@ class Tests(unittest.TestCase):
                          "cameras": {name: 100 + i for name in video.PROFILE}})
         native = {"case_id": CASE, "actor": "motor_vehicle_driver", "map_sha256": "map",
                   "route_sha256": "route", "ego_id": 42,
+                  "site_sha256": "site-diagnostic-hash",
+                  "site_review_binding": {"case_id": CASE,
+                      "site_sha256": "site-diagnostic-hash",
+                      "review_sha256": "review-diagnostic-hash",
+                      "verified_sources": {name: {"sha256": "source-diagnostic-hash"}
+                          for name in ("highway", "placement_authority",
+                                       "legal_consistency", "display_direction")}},
                   "highway_status": {"source_sha256": "highway"}, "device": device,
                   "duration_s": 45.0, "diagnostic": False, "frames": rows}
         native_path = self.root / "native.json"

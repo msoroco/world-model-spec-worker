@@ -61,6 +61,7 @@ def analyze(root):
     site = json.loads(site_path.read_text(encoding='utf-8'))
     require(site.get('case_id') == case, 'original bicycle site case differs')
     verify_site(site, capture)
+    required(root, 'capture/events.json')
     cameras = {view: refs[view] for view in VIEWS}
     measurement = finalize_delivery(site, capture, refs['events'], cameras,
                                     mode, config['frame_count'])

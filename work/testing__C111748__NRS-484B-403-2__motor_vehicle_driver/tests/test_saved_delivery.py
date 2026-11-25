@@ -32,6 +32,13 @@ class Tests(unittest.TestCase):
                            "cameras": {name: 100 + i for name in mod.CAMERAS}})
         self.native = {"case_id": CASE, "actor": "motor_vehicle_driver",
                        "map_sha256": "map", "route_sha256": "route", "ego_id": 42,
+                       "site_sha256": "site-diagnostic-hash",
+                       "site_review_binding": {
+                           "case_id": CASE, "site_sha256": "site-diagnostic-hash",
+                           "review_sha256": "review-diagnostic-hash",
+                           "verified_sources": {name: {"sha256": "source-diagnostic-hash"}
+                               for name in ("highway", "placement_authority",
+                                            "legal_consistency", "display_direction")}},
                        "highway_status": {"source_sha256": "highway"},
                        "device": device, "duration_s": 45.0, "diagnostic": False,
                        "frames": frames}
@@ -97,4 +104,12 @@ class Tests(unittest.TestCase):
         self.manifest["case_id"] = "foreign"
         self.write_manifest()
         with self.assertRaisesRegex(mod.DeliverySourceError, "saved case"):
+            mod.audit(self.attempt, case_id=CASE)
+
+    def test_reject_missing_original_review_binding(self):
+        self.native.pop("site_review_binding")
+        self.write_native()
+        self.manifest["native"]["sha256"] = mod.sha_file(self.path)
+        self.write_manifest()
+        with self.assertRaisesRegex(mod.DeliverySourceError, "reviewed site binding"):
             mod.audit(self.attempt, case_id=CASE)

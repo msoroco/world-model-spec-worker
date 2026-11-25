@@ -74,7 +74,8 @@ def _speed(actor):
 
 
 def run(world, carla, site, site_root, attempt, mode, camera_builder=build_cameras,
-        *, frames=900, camera_timeout_s=5.0, case_id=None):
+        *, frames=900, camera_timeout_s=5.0, case_id=None,
+        rider_throttle_scale=1.0):
     """Capture one original 20 Hz attempt; restore settings and owned actors.
 
     The caller must encode the saved PNGs, create the sealed source index and
@@ -96,6 +97,10 @@ def run(world, carla, site, site_root, attempt, mode, camera_builder=build_camer
     require(isinstance(site.get('rider_throttle'), (int, float)) and
             0 < site['rider_throttle'] <= 1,
             'source-reviewed rider control missing')
+    require(isinstance(rider_throttle_scale, (int, float)) and
+            math.isfinite(rider_throttle_scale) and
+            1.0 <= rider_throttle_scale <= 1.25,
+            'candidate rider throttle scale outside bounded engineering range')
     verify_site(site, site_root)
     attempt = Path(attempt)
     require(not attempt.exists(), 'new Native attempt directory required')
@@ -140,7 +145,8 @@ def run(world, carla, site, site_root, attempt, mode, camera_builder=build_camer
             actors[0].apply_control(carla.VehicleControl(throttle=throttle,
                                                          brake=brake, steer=0.0))
             actors[1].apply_control(carla.VehicleControl(
-                throttle=float(site['rider_throttle']), brake=0.0, steer=0.0))
+                throttle=min(1.0, float(site['rider_throttle']) * rider_throttle_scale),
+                brake=0.0, steer=0.0))
             frame = int(world.tick())
             timestamp = float(world.get_snapshot().timestamp.elapsed_seconds)
             if first_time is None:

@@ -460,6 +460,18 @@ class EncounterTests(unittest.TestCase):
         self.assertFalse(world.get_settings().synchronous_mode)
         self.assertTrue(all(actor.destroyed for actor in world.spawned))
         self.assertTrue(all(sensor.destroyed for sensor in world.sensors))
+        self.assertEqual(world.spawned[1].last_control['throttle'], .25)
+        scaled_world=LiveWorld()
+        scaled_capture=self.root/'scaled-capture'
+        run_native_capture(scaled_world,NativeCarla,self.site,self.root,
+                           scaled_capture,'cross_rider_path',cameras,frames=3,
+                           rider_throttle_scale=1.15)
+        self.assertAlmostEqual(scaled_world.spawned[1].last_control['throttle'], .2875)
+        self.assertTrue(all(actor.destroyed for actor in scaled_world.spawned))
+        with self.assertRaisesRegex(ValueError,'candidate rider throttle scale'):
+            run_native_capture(LiveWorld(),NativeCarla,self.site,self.root,
+                               self.root/'invalid-scale','cross_rider_path',
+                               cameras,frames=3,rider_throttle_scale=1.5)
         for view in ('overview','approach','reference_corner','driver_reference'):
             video=capture_root/(view+'.mkv')
             subprocess.run(['ffmpeg','-v','error','-framerate','20','-start_number','1',
