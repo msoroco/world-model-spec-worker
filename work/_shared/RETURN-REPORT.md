@@ -1791,3 +1791,13 @@ The six-case canonical `execution-manifest.json`, `proposals/` and `case-plan.js
 C160013 passed its scoped strict delivery-ready gate; five batch assignments remain partial. The next owned package is `testing__C158196__NRS-484B-257-2__motor_vehicle_driver`. Added `intersection_yield_measure.py` and focused CPU tests for complete entrance inventory, original frame joins, complete-body intersection geometry, pre-entry stop observation and per-frame conflict times. Six package tests pass; runtime verify/preflight pass. No legal immediate-hazard cutoff or physical success is claimed. Exact Native construction, cameras, finalizer integration, source-bound runtime proofs, proposals and audits remain worker-owned; status remains partial.
 
 C158196 subsection 2 also gained a CARLA-lazy original crossing sampler and two CPU tests. It reads complete Native body vertices, speeds, affected-lane signal state and conflict distances; the caller still owns a sourced conflict point and synchronized capture. The eight-test package suite passes; status remains partial.
+
+C158196 subsection 2 scoped static check exits 0. The current `work/` scan finds 12,145 UTF-8 files and no size, trailing-whitespace or conflict-marker errors; test-created bytecode was removed. Future tests should set `PYTHONDONTWRITEBYTECODE=1`. The ordinary quick batch check is running.
+
+The ordinary whole-batch quick `worker_check.py` finished exit 1 at an older retained execution manifest bound to the prior runtime. The earlier binary `UnicodeDecodeError` is gone. `START_HERE.md` directs assignment-scoped checks while retained completions remain; no prior-ready package was changed or bulk migrated. The full strict delivery gate has not passed because five assignments remain partial.
+
+C158196 subsection 2 acquired a four-camera original frame-map writer, with stale-packet and saved-frame negative checks. Nine CPU tests pass with bytecode disabled. Native actor control, encoder integration and exact selected delivery remain unfinished; result stays partial.
+
+C158196 subsection 2 now also has CPU-tested two-actor control calls for a fixed hold-then-proceed contrast. Eleven package tests pass. This does not establish a stop at the correct line or physical actor movement; exact geometry and runtime integration remain worker-owned. Result stays partial.
+
+Final turn check: C158196 subsection 2 scoped static check exits 0; full `work/` text/size/whitespace/conflict scan finds 12,147 files and zero errors. Five assignments remain partial, so the batch strict delivery gate is still open.

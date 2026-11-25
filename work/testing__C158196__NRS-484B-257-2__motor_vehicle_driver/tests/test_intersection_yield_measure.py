@@ -34,7 +34,8 @@ def fixture(root, *, other_device="none", stale=False, entering_signal="Off"):
                      "ego_speed_mps": (3, 0, 2, 2)[i], "other_speed_mps": 4,
                      "ego_distance_to_conflict_m": (8, 7, 5, 3)[i],
                      "other_distance_to_conflict_m": (10, 8, 6, 4)[i]})
-    frames = [{"video_frame": i, "carla_frame": r["frame"], "time_s": r["time_s"]}
+    frames = [{"video_frame": i, "carla_frame": r["frame"], "time_s": r["time_s"],
+               "camera_frames": {name:r["frame"] for name in measure.CAMERAS}}
               for i, r in enumerate(rows)]
     if stale:
         frames[2]["carla_frame"] = 99
@@ -60,6 +61,12 @@ class YieldMeasureTests(unittest.TestCase):
             root = Path(tmp)
             fixture(root, stale=True)
             with self.assertRaisesRegex(ValueError, "frame join"):
+                measure.analyze(root)
+            fixture(root)
+            frames = [json.loads(line) for line in (root / "video_frames.jsonl").read_text().splitlines()]
+            frames[2]["camera_frames"]["approach"] = 99
+            (root / "video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
+            with self.assertRaisesRegex(ValueError, "camera frame identities"):
                 measure.analyze(root)
             fixture(root, other_device="yield")
             with self.assertRaisesRegex(ValueError, "non-obligated"):

@@ -14,6 +14,7 @@ from shapely.geometry import MultiPoint, Polygon
 
 SOURCES = ("entrance_inventory.json", "crossing_history.jsonl", "video_frames.jsonl")
 DEVICES = {"stop", "yield", "none"}
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _finite(value, name):
@@ -84,6 +85,9 @@ def analyze(root: Path) -> dict:
         previous = (fid, time)
         if frame.get("video_frame") != index or frame.get("carla_frame") != fid or frame.get("time_s") != time:
             raise ValueError("Original frame join failed")
+        camera_frames = frame.get("camera_frames")
+        if not isinstance(camera_frames, dict) or set(camera_frames) != set(CAMERAS) or any(camera_frames[name] != fid for name in CAMERAS):
+            raise ValueError("Four original camera frame identities missing")
         if row.get("ego_lane_key") != ego_lane or row.get("other_lane_key") != other_lane:
             raise ValueError("Entrance identity changed")
         bodies = []

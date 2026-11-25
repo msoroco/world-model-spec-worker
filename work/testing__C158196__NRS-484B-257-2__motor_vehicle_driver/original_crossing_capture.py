@@ -5,6 +5,11 @@ No CARLA module is imported here, so source acquisition can be CPU tested.
 """
 
 import math
+import json
+from pathlib import Path
+
+
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _vector_length(vector):
@@ -69,3 +74,47 @@ def sample(world, ego, other, light, conflict_point, frame, time_s,
             "other_speed_mps": _vector_length(other.get_velocity()),
             "ego_distance_to_conflict_m": _distance_to_conflict(ego, conflict_point),
             "other_distance_to_conflict_m": _distance_to_conflict(other, conflict_point)}
+
+
+class CrossingSourceWriter:
+    """Append the source packet and synchronized four-camera frame identity."""
+
+    def __init__(self, root, entrance_inventory):
+        self.root = Path(root)
+        self.root.mkdir(parents=True, exist_ok=True)
+        self.history = self.root / "crossing_history.jsonl"
+        self.frames = self.root / "video_frames.jsonl"
+        inventory_path = self.root / "entrance_inventory.json"
+        if any(path.exists() for path in (self.history, self.frames, inventory_path)):
+            raise ValueError("Original crossing sources already exist")
+        self.inventory = entrance_inventory
+        if (not isinstance(entrance_inventory, dict) or
+                not entrance_inventory.get("all_entrances_inventoried") or
+                not entrance_inventory.get("ego_lane_key") or
+                not entrance_inventory.get("other_lane_key")):
+            raise ValueError("Missing complete entrance inventory")
+        inventory_path.write_text(json.dumps(entrance_inventory, sort_keys=True) + "\n")
+        self.previous_frame = -1
+        self.previous_time = -math.inf
+        self.count = 0
+
+    def add_tick(self, world, ego, other, light, conflict_point, frame, time_s, packets):
+        if type(frame) is not int or not isinstance(time_s, (int, float)) or not math.isfinite(time_s):
+            raise ValueError("Invalid original crossing frame")
+        if frame <= self.previous_frame or time_s <= self.previous_time:
+            raise ValueError("Nonmonotone original crossing frame")
+        if not isinstance(packets, dict) or set(packets) != set(CAMERAS):
+            raise ValueError("Four original camera packets required")
+        if any(getattr(packets[name], "frame", None) != frame for name in CAMERAS):
+            raise ValueError("Stale or future original camera frame")
+        row = sample(world, ego, other, light, conflict_point, frame, time_s,
+                     self.inventory["ego_lane_key"], self.inventory["other_lane_key"])
+        joined = {"video_frame": self.count, "carla_frame": frame, "time_s": float(time_s),
+                  "camera_frames": {name: packets[name].frame for name in CAMERAS}}
+        with self.history.open("a") as output:
+            output.write(json.dumps(row, sort_keys=True, allow_nan=False) + "\n")
+        with self.frames.open("a") as output:
+            output.write(json.dumps(joined, sort_keys=True, allow_nan=False) + "\n")
+        self.previous_frame, self.previous_time = frame, time_s
+        self.count += 1
+        return row
