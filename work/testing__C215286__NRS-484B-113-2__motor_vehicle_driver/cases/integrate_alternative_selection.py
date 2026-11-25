@@ -25,6 +25,9 @@ def sha(path):
 
 def integrate():
     selected = read(PACKAGE / "execution-manifest.json")
+    if len(selected.get("cases", [])) == 6:
+        print("Six exact cases already selected; preserving their later proof revisions")
+        return
     staged = read(CASES / "alternative-offline-manifest.json")
     compatibility = read(CASES / "alternative-full-compatibility-index.json")
     saved = read(CASES / "alternative-full-saved-processing-index.json")

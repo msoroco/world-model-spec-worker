@@ -20,6 +20,10 @@ def write(path, value):
 def build():
     manifest_path = PACKAGE / "execution-manifest.json"
     manifest = json.loads(manifest_path.read_text())
+    alternatives = [row for row in manifest["cases"] if "crosswalk" not in row["case_id"]]
+    if len(alternatives) == 4 and all(row.get("candidates") for row in alternatives):
+        print("Four exact fallback constructions already bound; preserving their proof revisions")
+        return
     changed = 0
     for entry in manifest["cases"]:
         if "crosswalk" in entry["case_id"]:
