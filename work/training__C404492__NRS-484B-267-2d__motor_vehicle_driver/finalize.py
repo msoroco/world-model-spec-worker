@@ -6,11 +6,15 @@ from pathlib import Path
 from measure_emergency import AID, CAMERAS, measure, rows, sha
 
 CASES=tuple(AID+'__'+suffix for suffix in
-            ('controlled_1','controlled_2','official_1','official_2'))
+            ('controlled_1','controlled_2','official_1','official_2','preparing_movement'))
 
 
 def statutory_branch(case_id):
-    return 'regulatory_moving' if case_id.endswith(('__official_1','__official_2')) else 'emergency_moving'
+    if case_id.endswith(('__official_1','__official_2')):
+        return 'regulatory_moving'
+    if case_id.endswith('__preparing_movement'):
+        return 'emergency_preparing_movement'
+    return 'emergency_moving'
 
 
 def reviewed_authority(context, case_id):
@@ -101,6 +105,13 @@ def finalize_attempt(attempt, output):
         'source_review_kind':context['review_kind'],
         'source_sha256':sha(attempt/'emergency_context.json')},
         'officer_direction_context':context['officer_directed_otherwise']}
+    if statutory_branch(case_id)=='emergency_preparing_movement':
+        review_context['preparing_to_move_context']={
+            'reviewed':context['preparing_to_move_reviewed'],
+            'preparing_to_move_source':context['preparing_to_move_source'],
+            'visible_vehicle_movement_source':context['visible_vehicle_movement_source'],
+            'visible_preparation_frames':measured['visible_preparation_frames'],
+            'source_sha256':sha(attempt/'emergency_context.json')}
     (channels/'context-review.json').write_text(json.dumps(review_context,indent=2,allow_nan=False)+'\n')
     for descriptor in construction['recording_description']['context_inputs']:
         evidence.append({'name':descriptor['name'],'unit':descriptor['unit'],
@@ -132,6 +143,8 @@ def finalize_attempt(attempt, output):
     measurement_sources=('video_frames.jsonl','vehicle_poses.jsonl','trace.jsonl',
                          'emergency_context.json',*(name+'.mkv' for name in CAMERAS))
     report={'format':'source-bound-emergency-finalization-v1','case_id':case_id,
+            'statutory_branch':statutory_branch(case_id),
+            'visible_preparation_frames':measured['visible_preparation_frames'],
             'measurements':{'per_frame_geometry':{'method':'source_joined_same_direction_abreast_and_order',
                 'value':source_joined_same_direction_abreast_and_order(measured),
                 'sources':{name:sha(attempt/name) for name in measurement_sources}}},

@@ -23,9 +23,17 @@ def replace_once(value: str, old: str, new: str) -> str:
     return value.replace(old, new)
 
 
-def build(machine_class: str, source_case: str, behavior: str) -> dict:
-    source = ROOT / ("cases" if source_case != "controlled_1" else "")
-    source = source / (source_case if source_case != "controlled_1" else "") / "construction.json"
+def build(machine_class: str, source_case: str, behavior: str,
+          candidate: str = "primary") -> dict:
+    if candidate == "fallback1":
+        name = {"controlled_1": "mounted_obey", "controlled_2": "mounted_turn",
+                "controlled_3": "dismounted_turn"}[source_case]
+        source = ROOT / "current-candidates" / name / "fallback1/construction.json"
+    elif candidate == "primary":
+        source = ROOT / ("cases" if source_case != "controlled_1" else "")
+        source = source / (source_case if source_case != "controlled_1" else "") / "construction.json"
+    else:
+        raise ValueError("Unknown candidate")
     construction = json.loads(source.read_text())
     old_case_id = construction["case_id"]
     new_case_id = f"{ASSIGNMENT}__{machine_class}_{behavior}"
@@ -116,6 +124,18 @@ class AssetSource(unittest.TestCase):
                                  for a in config["required_atoms"]]
     config["asset_review_source"] = "C104538_ELECTRIC_ASSET_REVIEW"
     config["physical_asset_status"] = "reviewed_source_required_at_native_capture"
+    for channel in config["recording_description"]["channels"]:
+        if channel["name"] == "ru.bicycle":
+            channel["method"] = "Reviewed electric asset source and original pixels leave ordinary bicycle unselected"
+        elif channel["name"] == f"ru.{machine_class}":
+            channel["method"] = f"Reviewed exact Native {machine_class} asset, actor identity and original machine pixels"
+        elif channel["name"] in ("ru.electric_bicycle", "ru.electric_scooter"):
+            channel["method"] = f"Class review and original pixels leave this alternative unselected in the {machine_class} case"
+    config["recording_description"]["limitations"] = [
+        "Reviewed exact electric asset is required at Native capture",
+        "Asset identity alone does not prove mounted rider posture or original class pixels",
+        "Requested turn does not prove physical movement or a legal outcome",
+    ]
     file_map["config.json"]["content"] = json.dumps(config, indent=2, sort_keys=True) + "\n"
     finalizer = file_map["finalize.py"]["content"]
     finalizer = finalizer.replace('r["machine_class"] != "bicycle"',
@@ -157,6 +177,7 @@ class AssetSource(unittest.TestCase):
     file_map["finalize.py"]["content"] = finalizer
     construction["files"] = list(file_map.values())
     construction["case_id"] = new_case_id
+    construction["recording_description"] = config["recording_description"]
     construction["measurement_plan"]["method"] = (
         f"reviewed Native {machine_class} asset and original rider/sign/geometry review")
     construction["measurement_plan"]["status"] = "unselected_asset_and_original_native_pending"
@@ -171,14 +192,19 @@ def main() -> None:
     entries = []
     for machine_class in CLASSES:
         for source_case, behavior in BEHAVIORS:
-            construction = build(machine_class, source_case, behavior)
-            destination = ROOT / "electric-drafts" / f"{machine_class}_{behavior}"
-            destination.mkdir(parents=True, exist_ok=True)
-            path = destination / "construction.json"
-            path.write_text(json.dumps(construction, indent=2, sort_keys=True) + "\n")
-            entries.append({"case_id": construction["case_id"],
-                            "construction": str(path.relative_to(ROOT / "electric-drafts")),
-                            "construction_sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+            selected = {}
+            for candidate in ("primary", "fallback1"):
+                construction = build(machine_class, source_case, behavior, candidate)
+                destination = ROOT / "electric-drafts" / f"{machine_class}_{behavior}"
+                if candidate != "primary":
+                    destination = destination / candidate
+                destination.mkdir(parents=True, exist_ok=True)
+                path = destination / "construction.json"
+                path.write_text(json.dumps(construction, indent=2, sort_keys=True) + "\n")
+                selected[candidate] = {"construction": str(path.relative_to(ROOT / "electric-drafts")),
+                                       "construction_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            entries.append({"case_id": construction["case_id"], **selected["primary"],
+                            "candidates": [{"id": "fallback1", **selected["fallback1"]}]})
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
                 "cases": entries, "scope": "unselected_cpu_electric_asset_contract"}
     (ROOT / "electric-drafts/manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")

@@ -17,7 +17,7 @@ def config():
     cfg=json.loads((Path(__file__).resolve().parent/'config.json').read_text())
     case=AID+'__'+cfg.get('case_suffix','')
     if (cfg.get('assignment_id')!=AID or cfg.get('case_id')!=case or cfg.get('selected_case_id')!=case
-            or cfg.get('case_suffix') not in ('controlled_1','controlled_2','official_1','official_2')
+            or cfg.get('case_suffix') not in ('controlled_1','controlled_2','official_1','official_2','preparing_movement')
             or cfg.get('candidate_id') not in ('primary','fallback1','fallback2')
             or cfg.get('law_id')!='NRS-484B-267-2d' or cfg.get('cell_id')!='C404492'
             or cfg.get('actor')!='motor_vehicle_driver' or cfg.get('frames')!=COUNT
@@ -32,6 +32,10 @@ def config():
             or cfg.get('camera_height_offset_m') not in (0,1.0)
             or cfg.get('camera_fov_deg') not in (90,105)):
         raise ValueError('Exact emergency construction contract differs')
+    if cfg['case_suffix']=='preparing_movement' and cfg.get('reference_motion_request')!={
+            'stopped_frames':[0,79],'visible_preparation_frames':[80,119],
+            'subsequent_moving_frames':[120,599]}:
+        raise ValueError('Visible preparation phase contract differs')
     expected={'primary':(-20,0,90),'fallback1':(-25,0,90),'fallback2':(-20,1.0,105)}
     if (cfg['engineering_initial_ego_gap_m'],cfg['camera_height_offset_m'],cfg['camera_fov_deg'])!=expected[cfg['candidate_id']]:
         raise ValueError('Candidate engineering knobs differ')
@@ -39,7 +43,8 @@ def config():
 
 
 def survey_check(s):
-    official=config()['case_suffix'].startswith('official_')
+    suffix=config()['case_suffix']
+    official=suffix.startswith('official_')
     authority_source=('regulatory_agency_vehicle_source' if official
                       else 'emergency_authorization_source')
     for key in ('map_name','map_source','lane_boundaries_source',authority_source,
@@ -52,6 +57,10 @@ def survey_check(s):
         raise ValueError('Reference vehicle authority or light equipment not reviewed')
     if type(s.get('officer_directed_otherwise')) is not bool:
         raise ValueError('Officer direction exception missing')
+    if suffix=='preparing_movement' and (not s.get('preparing_to_move_source')
+            or not s.get('visible_vehicle_movement_source')
+            or s.get('preparing_to_move_reviewed') is not True):
+        raise ValueError('Reviewed visible vehicle preparation source missing')
     if len(s['ego_spawn_xyz_m'])!=3 or len(s['emergency_spawn_xyz_m'])!=3:
         raise ValueError('Original vehicle transforms missing')
     heading=s.get('travel_heading_deg')
@@ -95,6 +104,14 @@ def validate_native_lane_pair(ego_waypoint, emergency_waypoint, travel_heading_d
 def transform(carla,xyz,rotation):
     return carla.Transform(carla.Location(x=xyz[0],y=xyz[1],z=xyz[2]),
                            carla.Rotation(pitch=rotation[0],yaw=rotation[1],roll=rotation[2]))
+
+
+def reference_motion_request(frame,case_suffix):
+    if type(frame) is not int or not 0<=frame<COUNT:
+        raise ValueError('Exact source motion frame required')
+    if case_suffix=='preparing_movement':
+        return 0.0 if frame<80 else 0.5 if frame<120 else 4.0
+    return 4.0
 
 
 def execute(output,survey,host,port):
@@ -151,8 +168,14 @@ def execute(output,survey,host,port):
                 emergency.set_light_state(carla.VehicleLightState(special if phase else 0))
                 travel_rad=math.radians(heading)
                 travel_x,travel_y=math.cos(travel_rad),math.sin(travel_rad)
-                emergency.set_target_velocity(carla.Vector3D(x=4*travel_x,y=4*travel_y,z=0))
-                ego_requested=5 if cfg['case_suffix'] in ('controlled_2','official_2') and i<380 else 4
+                if cfg['case_suffix']=='preparing_movement':
+                    reference_requested=reference_motion_request(i,cfg['case_suffix'])
+                    ego_requested=reference_requested
+                else:
+                    reference_requested=reference_motion_request(i,cfg['case_suffix'])
+                    ego_requested=5 if cfg['case_suffix'] in ('controlled_2','official_2') and i<380 else 4
+                emergency.set_target_velocity(carla.Vector3D(x=reference_requested*travel_x,
+                    y=reference_requested*travel_y,z=0))
                 ego.set_target_velocity(carla.Vector3D(x=ego_requested*travel_x,y=ego_requested*travel_y,z=0))
                 native=world.tick();snap=world.get_snapshot()
                 if snap.frame!=native:raise RuntimeError('Original Native frame mismatch')
@@ -173,6 +196,8 @@ def execute(output,survey,host,port):
                         'speed_mps':math.sqrt(vel.x*vel.x+vel.y*vel.y+vel.z*vel.z),
                         'half_length_m':bbox.x,'half_width_m':bbox.y})
                 records[1]['flashing_light_phase_on']=bool(emergency.get_light_state() & special)
+                if cfg['case_suffix']=='preparing_movement':
+                    records[1]['visible_vehicle_movement']=bool(80<=i<120 and records[1]['speed_mps']>0)
                 out.write(json.dumps({'video_frame':i,'native_frame':native,
                     'source_kind':'original_native_pose','ego':records[0],
                     'emergency':records[1]})+'\n')
@@ -187,6 +212,7 @@ def execute(output,survey,host,port):
             'emergency_actor_id':emergency.id,'qualification_review_required':True,
             'reference_vehicle_kind':('official_regulatory_vehicle' if cfg['case_suffix'].startswith('official_')
                                       else 'authorized_emergency_vehicle'),
+            'preparation_review_required':cfg['case_suffix']=='preparing_movement',
             'native_lane_pair':native_lanes,
             'camera_sha256':{}},indent=2)+'\n')
     finally:

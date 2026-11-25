@@ -56,6 +56,9 @@ def measure_stop(attempt):
 
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
+    if (attempt/'native-raw-actors.jsonl').is_file():
+        from original_finalize import finalize_original
+        return finalize_original(attempt,output,CASE)
     if output.exists() or (attempt/'result.json').exists():
         raise ValueError('Retain prior analysis; use a fresh attempt')
     for name in (*SOURCES, *VIDEOS, 'config.json','construction.json'):

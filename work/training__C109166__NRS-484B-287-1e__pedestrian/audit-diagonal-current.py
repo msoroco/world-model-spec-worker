@@ -48,6 +48,7 @@ def main():
                 sources['diagonal-context.json'] != (folder / 'context.json').read_text() or
                 sources['case-plan.json'] != (HERE / 'case-plan.json').read_text() or
                 sources['native_request.py'] != (HERE / 'native/native_request.py').read_text() or
+                sources['runner.py'] != (HERE / 'native/capture_runner.py').read_text() or
                 sources['native-acquisition-contract.json'] !=
                 (HERE / 'native/native-acquisition-contract.json').read_text()):
             raise AssertionError('Runtime package differs from reviewed source')

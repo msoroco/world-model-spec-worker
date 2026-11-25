@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from native_request import camera_plan
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
@@ -19,6 +20,7 @@ import json
 from pathlib import Path
 from diagonal import measure, sha, synthetic_rows
 from native_request import validate_pair, camera_plan
+from runner import check as check_runner
 
 HERE = Path.cwd()
 
@@ -45,6 +47,9 @@ def check():
     pair = validate_pair()
     if pair['changed_device_frame_count'] != 60 or len(camera_plan()) != 4:
         raise ValueError('Native request/camera contract changed')
+    runner = check_runner(config)
+    if runner['frames'] != 600 or runner['native_executed']:
+        raise ValueError('Executable Native runner contract changed')
     return result
 
 if __name__ == '__main__':
@@ -77,10 +82,17 @@ def build():
         context = folder / 'context.json'
         config = {'case_id': ASSIGNMENT.name + '__' + suffix,
                   'case_suffix': suffix, 'candidate_id': 'primary',
+                  'cell_id': 'C109166', 'law_id': 'NRS-484B-287-1e',
+                  'actor': 'pedestrian',
                   'assignment_sha256': sha(SOURCE), 'plan_sha256': sha(plan),
                   'source_sha256': sha(source), 'context_sha256': sha(context),
                   'law_sha256': LAW_SHA, 'first_entry_state': expected,
                   'frames': 600, 'rate_hz': 20, 'duration_s': 30,
+                  'cameras': [{'name': item['name'], 'width': item['width'], 'height': item['height']}
+                              for item in camera_plan()],
+                  'opendrive_signal_id': 'candidate-unverified-203',
+                  'entry_proxy_x_m': -5.5,
+                  'driver_reference_fov_deg': 90,
                   'selected': False, 'original_native_observed': False}
         files = [{'path': name, 'content': content} for name, content in (
             ('assignment-source.json', SOURCE.read_text()),
@@ -88,13 +100,14 @@ def build():
             ('diagonal-source.jsonl', source.read_text()),
             ('diagonal-context.json', context.read_text()),
             ('diagonal.py', (HERE / 'diagonal.py').read_text()),
+            ('runner.py', (HERE / 'capture_runner.py').read_text()),
             ('native_request.py', (HERE / 'native_request.py').read_text()),
             ('native-acquisition-contract.json', (HERE / 'native-acquisition-contract.json').read_text()),
             ('check.py', CHECK), ('tests/test_exact.py', TEST),
             ('config.json', json.dumps(config, indent=2) + '\n'))]
         construction = {'case_id': config['case_id'], 'cell_id': 'C109166',
                         'law_id': 'NRS-484B-287-1e', 'actor': 'pedestrian',
-                        'entrypoint': 'check.py', 'files': files,
+                        'entrypoint': 'runner.py', 'files': files,
                         'status': 'unselected_cpu_diagnostic',
                         'recording_description': 'Authored diagonal first-entry device-state request; no original official-device review.'}
         target = HERE / 'runtime-drafts' / suffix / 'construction.json'

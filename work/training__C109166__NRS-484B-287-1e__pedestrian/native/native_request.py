@@ -6,6 +6,9 @@ device survey are required before any physical or legal finding.
 from __future__ import annotations
 
 import math
+import hashlib
+import json
+from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
@@ -17,7 +20,7 @@ CAMERAS = (
     ("overview", 1920, 1080, (0.0, 0.0, 24.0), (-90.0, 0.0, 0.0)),
     ("approach", 1280, 720, (-12.0, -12.0, 5.0), (-18.0, 45.0, 0.0)),
     ("reference_corner", 1280, 720, (8.0, -8.0, 5.0), (-17.0, 135.0, 0.0)),
-    ("device_face", 1280, 720, (-8.0, -8.0, 3.0), (-10.0, 45.0, 0.0)),
+    ("driver_reference", 1280, 720, (-8.0, -8.0, 3.0), (-10.0, 45.0, 0.0)),
 )
 
 
@@ -44,6 +47,68 @@ def apply_walker_control(walker, carla, case: str, frame: int) -> dict:
     walker.apply_control(carla.WalkerControl(carla.Vector3D(*row["walker_direction_xyz"]),
                                           row["walker_speed_mps"], False))
     return row
+
+
+def apply_device_and_readback(controller, case: str, frame: int, native_frame=None) -> dict:
+    """Command the physical head, then retain a separately observed state.
+
+    The controller must own the actual signal device and expose command and
+    observation independently. A request echo cannot qualify as observation.
+    """
+    row = request(case, frame)
+    controller.command(row["device_id"], row["device_display_request"])
+    observed = controller.observe(row["device_id"])
+    if not isinstance(observed, dict) or observed.get("source_kind") != "native_device_readback":
+        raise ValueError("original Native device readback required")
+    if observed.get("device_id") != row["device_id"]:
+        raise ValueError("governing device identity differs")
+    if observed.get("displayed_instruction") != row["device_display_request"]:
+        raise ValueError("physical device instruction differs from request")
+    if observed.get("native_frame") != (frame if native_frame is None else native_frame) or not observed.get("source_ref"):
+        raise ValueError("device readback frame/source missing")
+    return {"frame": frame, "time_s": row["time_s"],
+            "device_id": row["device_id"],
+            "displayed_instruction": observed["displayed_instruction"],
+            "source_ref": observed["source_ref"],
+            "source_kind": "native_device_readback",
+            "official_status_verified": False,
+            "diagonal_authorization_verified": False}
+
+
+def verify_authority_sources(folder, receipt) -> dict:
+    """Verify source bytes and reviewer bindings without accepting a bare flag.
+
+    Physical official status and diagonal applicability require original survey
+    evidence and a later independent review. This gate verifies provenance only.
+    """
+    folder = Path(folder)
+    required = ("authorization", "official_status", "movement_applicability")
+    if not isinstance(receipt, dict) or set(receipt) != set(required):
+        raise ValueError("three independent diagonal authority sources required")
+    hashes = {}
+    for field in required:
+        source = receipt[field]
+        if not isinstance(source, dict) or set(source) != {"path", "sha256", "device_id", "movement_id", "review_status"}:
+            raise ValueError("incomplete original authority source: " + field)
+        relative = Path(source["path"])
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+            raise ValueError("authority source path escapes attempt")
+        path = (folder / relative).resolve()
+        if not path.is_relative_to(folder.resolve()) or not path.is_file():
+            raise ValueError("original authority source missing: " + field)
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != source["sha256"]:
+            raise ValueError("original authority source hash differs: " + field)
+        if source["device_id"] != "c109166-diagonal-crossing-head" or source["movement_id"] != "c109166-diagonal-sw-ne":
+            raise ValueError("authority source refers to another device or movement")
+        if source["review_status"] != "pending_independent_review":
+            raise ValueError("worker cannot assert official authorization")
+        hashes[field] = digest
+    if len(set(hashes.values())) != len(required):
+        raise ValueError("independent authority sources share identical bytes")
+    return {"source_sha256": hashes, "official_status_verified": False,
+            "diagonal_authorization_verified": False,
+            "movement_applicability_verified": False}
 
 
 def camera_plan() -> list[dict]:
@@ -76,7 +141,7 @@ def install_cameras(world, carla, on_frame):
         raise
 
 
-def validate_source_frames(rows: list[dict]) -> dict:
+def validate_source_frames(rows: list[dict], frame_map=None) -> dict:
     expected = {item["name"]: item for item in camera_plan()}
     if len(rows) != FRAMES * len(expected):
         raise ValueError("four complete source-camera streams required")
@@ -89,7 +154,9 @@ def validate_source_frames(rows: list[dict]) -> dict:
         if key in seen:
             raise ValueError("duplicate source-camera frame")
         seen.add(key)
-        if (row.get("native_frame") != frame or row.get("time_s") != frame / RATE_HZ or
+        expected_native = frame if frame_map is None else frame_map[frame]["native_frame"]
+        expected_time = frame / RATE_HZ if frame_map is None else frame_map[frame]["time_s"]
+        if (row.get("native_frame") != expected_native or row.get("time_s") != expected_time or
                 row.get("width") != expected[name]["width"] or
                 row.get("height") != expected[name]["height"] or
                 not row.get("source_path") or not row.get("source_sha256")):

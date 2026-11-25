@@ -55,7 +55,7 @@ def main():
         speed=0 if frame>0 and row['ego_center_xy_m']==request[frame-1]['ego_center_xy_m'] else 4.0
         trace.append({'frame':frame,'time_s':time,'position':{'x':x,'y':y,'z':.5},
                       'position_m':[x,y,.5],'heading_deg':0,'speed_mps':speed,
-                      'speed_mph':speed*2.2369362920544,
+                      'speed_mph':speed*2.2369362920544,'velocity_mps':[speed,0,0],
                       'control':{'throttle':0,'brake':0,'hand_brake':False}})
         frame_map.append({'carla_frame':frame,'native_frame':frame,'time_s':time,'video_frame':frame})
         evidence.append({'original_frame':frame,'recording_time_s':time,
@@ -91,7 +91,8 @@ def main():
                     ('overview','approach','reference_corner','driver_reference')]}
     spec_path=HERE/'selected-v3-contrast-fixture-spec.json';write(spec_path,spec)
     sources=[{'path':str(p.relative_to(SOURCE)),'source':str(p.relative_to(REPO)),
-              'sha256':sha(p)} for p in sorted(SOURCE.rglob('*')) if p.is_file()]
+              'sha256':sha(p)} for p in sorted(SOURCE.rglob('*'))
+              if p.is_file() and p.name!='road.xodr']
     recipe=HERE/'selected-v3-contrast-fixture-recipe.json'
     write(recipe,{'format':'worker-fixture-recipe','sources':sources,
                   'generator':{'source':str(spec_path.relative_to(REPO)),'sha256':sha(spec_path)}})

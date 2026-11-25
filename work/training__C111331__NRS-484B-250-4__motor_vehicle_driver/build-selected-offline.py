@@ -17,7 +17,7 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
 
 
-RUNNER = '''"""Verify repaired C111331 request; Native capture is not integrated yet."""
+RUNNER = '''"""Verify repaired C111331 request and execute original Native capture."""
 import argparse
 import json
 from pathlib import Path
@@ -49,10 +49,15 @@ def check():
             'native_signals_observed':False,'physical_stop_observed':False}
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');p.add_argument('--output-dir')
+    p=argparse.ArgumentParser();p.add_argument('--check',action='store_true')
+    p.add_argument('--output-dir');p.add_argument('--host',default='localhost')
+    p.add_argument('--port',type=int,default=2000)
     args=p.parse_args()
     if args.check:print(json.dumps(check()))
-    else:raise RuntimeError('Original Native capture integration pending')
+    else:
+        if not args.output_dir:raise ValueError('Fresh materialized Native output required')
+        from capture_selected import capture
+        capture(Path(__file__).resolve().parent,Path(args.output_dir),args.host,args.port)
 '''
 
 TEST = '''import unittest
@@ -92,6 +97,9 @@ def build():
                 ('road.xodr',road),('request.jsonl',request),('runner.py',RUNNER),
                 ('native_signal.py',(HERE/'native/signal_readback.py').read_text()),
                 ('original_measure.py',(HERE/'native/original_measure.py').read_text()),
+                ('capture_selected.py',(HERE/'native/capture_selected.py').read_text()),
+                ('assemble_selected.py',(HERE/'native/assemble_selected.py').read_text()),
+                ('original_finalize.py',(HERE/'native/original_finalize.py').read_text()),
                 ('tests/test_repaired.py',TEST))]
             construction={'case_id':case_id,'cell_id':'C111331','law_id':'NRS-484B-250-4',
                           'actor':'motor_vehicle_driver','entrypoint':'runner.py',
