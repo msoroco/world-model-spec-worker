@@ -65,9 +65,9 @@ def build(suffix, variant):
     if 'ego_target_speed_mps' in variant:
         config['requested_speed_mps']=variant['ego_target_speed_mps']
     files['config.json']=json.dumps(config,indent=2)+'\n'
-    source=(files['surface.txt'] if suffix in ('dense_traffic','low_visibility','dry_4mps','dry_6mps') else
+    source=((ROOT/'surface.txt').read_text() if suffix in ('dense_traffic','low_visibility','dry_4mps','dry_6mps') else
             f'Synthetic {suffix} surface planning note; no original Native site review.\n')
-    files['surface.txt']=source
+    (ROOT/'cases'/(suffix+'-surface.txt')).write_text(source)
     surface=json.loads(files['surface_packet.json'])
     surface['surface']=variant['surface']
     if suffix=='narrow_same_traffic':

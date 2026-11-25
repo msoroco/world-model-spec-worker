@@ -7,44 +7,197 @@
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
       "kind": "delivery",
       "construction": "cases/dry_4mps-construction.json",
-      "construction_sha256": "c4f9d7f6f789fa540c695929a3b1d38143b8a346339d3ce4f8a393a832eae5af",
+      "construction_sha256": "49fa292f34694c01ab7be8417f4589bb1fb5a9717a6ef084a7e8d9c20da62576",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dry_4mps/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps --output .runtime-work/c179789-sweep/dry_4mps/offline-attempt-c4f9d7f6f789",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dry_4mps/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps --output .runtime-work/c179789-sweep/dry_4mps/offline-attempt-49fa292f3469",
         "exit_code": 0,
-        "construction_sha256": "c4f9d7f6f789fa540c695929a3b1d38143b8a346339d3ce4f8a393a832eae5af",
+        "construction_sha256": "49fa292f34694c01ab7be8417f4589bb1fb5a9717a6ef084a7e8d9c20da62576",
         "log": "cases/dry_4mps-current-offline.log",
-        "log_sha256": "02152b02ac6cf181502889b7114ba6222bdfeb5d770162ef1e18c81884b5c99f"
+        "log_sha256": "ae235e610b9e934c303b87993f6998ad37980c9a4b5390c4daf955b38f856929"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/dry_4mps-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/dry_4mps-physical-preparation.json",
-        "sha256": "917ce2d9339b5ea5361c8013e7ec5d75e998a9d52225041bb3518e071dfdb79e"
+        "sha256": "a2380d9d031272ede95811501cef8928508a6f01609bd7212add599d9298d491"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/dry_4mps-compatibility.json",
+        "sha256": "9b568e0bbb69ff470d82fa270e050c31c570e4b2f3e2ea4b95fb0156e53f0ccc",
+        "log": "cases/selected-proofs/dry_4mps-analysis.log",
+        "negative_log": "cases/selected-proofs/dry_4mps-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/dry_4mps-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dry_4mps-compatibility.json",
+        "sha256": "9b568e0bbb69ff470d82fa270e050c31c570e4b2f3e2ea4b95fb0156e53f0ccc",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dry_4mps-saved.json",
+        "sha256": "b9f4ce30588b53786cdfbd1a3001152197e5d44249e58c559d1ccabe75f56ca1",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/dry_4mps-fallback1-construction.json",
+          "construction_sha256": "314fe0b1372119b591376bdcf21635691353ac2f0881fb0300fb94b9dc34faac",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-dry_4mps/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps --output .runtime-work/c179789-fallback-dry_4mps/offline-314fe0b13721",
+            "exit_code": 0,
+            "construction_sha256": "314fe0b1372119b591376bdcf21635691353ac2f0881fb0300fb94b9dc34faac",
+            "log": "cases/dry_4mps-fallback1-offline.log",
+            "log_sha256": "ea7037c76c4a32f59992cd6c561e2afe51d24d9d3a78785c1f146464281311d6"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/dry_4mps-fallback1-compatibility.json",
+            "sha256": "9c06b50117a48a39ffe8e02e622b5061ddbb88807816da0f4752f87b8fbad477",
+            "log": "cases/selected-proofs/dry_4mps-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/dry_4mps-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/dry_4mps-fallback1-saved.json",
+            "sha256": "bca16f468c8dabb2b86d23f42260f8cf695896d6c6f92892a3c815530f5e3cda",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps --mode positive",
+        "test_log": "cases/selected-proofs/dry_4mps-acceptance-positive.log",
+        "test_log_sha256": "bb20f7f24be7144df640ce5d7e89d71f7881ee8b99a86c5d414732b637fd34f9",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_4mps --mode negative",
+        "negative_log": "cases/selected-proofs/dry_4mps-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "be4cdcc7a8d01b1d0dfa24224b80b5c9228e80bd7067911163b60ac66a455b49",
+      "construction_sha256": "de42096dbb4d3a1245090b8f9101ca0c70f377d75ff2ae3b5a00e9160c652ffc",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dry_open_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --output .runtime-work/c179789-sweep/dry_open_traffic/offline-attempt-be4cdcc7a8d0",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dry_open_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --output .runtime-work/c179789-sweep/dry_open_traffic/offline-attempt-de42096dbb4d",
         "exit_code": 0,
-        "construction_sha256": "be4cdcc7a8d01b1d0dfa24224b80b5c9228e80bd7067911163b60ac66a455b49",
+        "construction_sha256": "de42096dbb4d3a1245090b8f9101ca0c70f377d75ff2ae3b5a00e9160c652ffc",
         "log": "cases/dry_open_traffic-current-offline.log",
-        "log_sha256": "cebd8d79dad1adf894aacfcc62e114f6f34feca0cd9e1d0f9d1b4b7821c27e01"
+        "log_sha256": "e41964763f0e326c8ba57941de543d556a2ea135eb89ea1aec18020152e47b5d"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
@@ -53,202 +206,1273 @@
       "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/dry_open_traffic-physical-preparation.json",
-        "sha256": "659a2af6ba1f741401bcdd449fe5745d8f89d095cbdb70905787b03090762409"
+        "sha256": "4ac43f004f930b87c947ef929a74b9df0ea6ee207e4079f686e495c00e9ad356"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/dry_open_traffic-compatibility.json",
+        "sha256": "6003e50ae1f139589beba14d05350cb904a55ab62a5273ac2f226f17aed5ec08",
+        "log": "cases/selected-proofs/dry_open_traffic-analysis.log",
+        "negative_log": "cases/selected-proofs/dry_open_traffic-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/dry_open_traffic-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dry_open_traffic-compatibility.json",
+        "sha256": "6003e50ae1f139589beba14d05350cb904a55ab62a5273ac2f226f17aed5ec08",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dry_open_traffic-saved.json",
+        "sha256": "860617d4df7f8b737481530b9a44bf1335151f9ebaa98a73604f52c84fbca699",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/dry_open_traffic-fallback1-construction.json",
+          "construction_sha256": "c8f1a931b1b66bc0390612c9cace8ced5882f1dbb43e41dcf25bcd94796fd553",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-dry_open_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --output .runtime-work/c179789-fallback-dry_open_traffic/offline-c8f1a931b1b6",
+            "exit_code": 0,
+            "construction_sha256": "c8f1a931b1b66bc0390612c9cace8ced5882f1dbb43e41dcf25bcd94796fd553",
+            "log": "cases/dry_open_traffic-fallback1-offline.log",
+            "log_sha256": "81a993ef3d40b640920af414c730613d6ca0d3a2c1f45842c10c5f79f0437c22"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/dry_open_traffic-fallback1-compatibility.json",
+            "sha256": "89d46b4d8c19bb98ee9d0641a456fd345c9b3929301d39f441fc1bf696d13b42",
+            "log": "cases/selected-proofs/dry_open_traffic-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/dry_open_traffic-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/dry_open_traffic-fallback1-saved.json",
+            "sha256": "8fc58717a76e64c42d9d817685b7b8e4f388ad6961c2eff14d671b69ad328c27",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --mode positive",
+        "test_log": "cases/selected-proofs/dry_open_traffic-acceptance-positive.log",
+        "test_log_sha256": "d92aac55bd7fea418a277e43052600842f132070ffffdcae47fb0f9731b75d87",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --mode negative",
+        "negative_log": "cases/selected-proofs/dry_open_traffic-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps",
       "kind": "delivery",
       "construction": "cases/dry_6mps-construction.json",
-      "construction_sha256": "1dbe77a45739636bea36981fce9f93c300b8c854a1765a650e8c8d9664d5a5f1",
+      "construction_sha256": "595deb5b442744f1dd0f443032299434ed1e3deb37b495d31a138037aa3d273d",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dry_6mps/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps --output .runtime-work/c179789-sweep/dry_6mps/offline-attempt-1dbe77a45739",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dry_6mps/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps --output .runtime-work/c179789-sweep/dry_6mps/offline-attempt-595deb5b4427",
         "exit_code": 0,
-        "construction_sha256": "1dbe77a45739636bea36981fce9f93c300b8c854a1765a650e8c8d9664d5a5f1",
+        "construction_sha256": "595deb5b442744f1dd0f443032299434ed1e3deb37b495d31a138037aa3d273d",
         "log": "cases/dry_6mps-current-offline.log",
-        "log_sha256": "355fce8e56dd2b899640db1c06ada6aa8250078b9e642ddb1a26347cc82bbd96"
+        "log_sha256": "ebe1e1a51ef1dbea1dbce11174b4f93aad76918e5cec9621605ae7f493e48ac4"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/dry_6mps-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/dry_6mps-physical-preparation.json",
-        "sha256": "32cbb8fe075ab21b8be21f6ebea3418272fdc6f095ecb2f8fbb55cbd91dd32fa"
+        "sha256": "69483b61b67afc5beb54de7413a80eff74b0fdedf2c95a9ecefade34fa963327"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/dry_6mps-compatibility.json",
+        "sha256": "23a6f32b48182490c69077b3aa3eb6053e2877adeb3885e695f2288b870a0e0b",
+        "log": "cases/selected-proofs/dry_6mps-analysis.log",
+        "negative_log": "cases/selected-proofs/dry_6mps-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/dry_6mps-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dry_6mps-compatibility.json",
+        "sha256": "23a6f32b48182490c69077b3aa3eb6053e2877adeb3885e695f2288b870a0e0b",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dry_6mps-saved.json",
+        "sha256": "862cf307f1533d5b2c15f04c96fb95fd73b2b6061d88dc46c21d404d62ca54e7",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/dry_6mps-fallback1-construction.json",
+          "construction_sha256": "fd56c7d6d1af216d2b0b689171c045c6f1e6ee3a0020a9e947553c9ad0618ea8",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-dry_6mps/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps --output .runtime-work/c179789-fallback-dry_6mps/offline-fd56c7d6d1af",
+            "exit_code": 0,
+            "construction_sha256": "fd56c7d6d1af216d2b0b689171c045c6f1e6ee3a0020a9e947553c9ad0618ea8",
+            "log": "cases/dry_6mps-fallback1-offline.log",
+            "log_sha256": "ff0909aa257192ceaef579b4a439b969daf46924fa64be48eab225c730c68965"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/dry_6mps-fallback1-compatibility.json",
+            "sha256": "0ee14f4556bc42397c4778ab0f2a6b4643aff7bfe0debf0a2cf95e5ec28e6823",
+            "log": "cases/selected-proofs/dry_6mps-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/dry_6mps-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/dry_6mps-fallback1-saved.json",
+            "sha256": "45ff128296af61a08a387cd7e950b7ed31e3057c1e61969823f50815aa8dbdb7",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps --mode positive",
+        "test_log": "cases/selected-proofs/dry_6mps-acceptance-positive.log",
+        "test_log_sha256": "dd985fb7fe318dd0be0bb4f6b792e7ff45b93ff0289cde2863b92617d360427a",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_6mps --mode negative",
+        "negative_log": "cases/selected-proofs/dry_6mps-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
       "kind": "delivery",
       "construction": "cases/wet_same_traffic-construction.json",
-      "construction_sha256": "0766c57dcfda50af92d32ddb2c7b8df68a9e14c21fada2c3da37da47ad9fb7ec",
+      "construction_sha256": "76efa7b9d454188c8385e77918602e90af040e907e208a656ebedbea458a491a",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/wet_same_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --output .runtime-work/c179789-sweep/wet_same_traffic/offline-attempt-0766c57dcfda",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/wet_same_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --output .runtime-work/c179789-sweep/wet_same_traffic/offline-attempt-76efa7b9d454",
         "exit_code": 0,
-        "construction_sha256": "0766c57dcfda50af92d32ddb2c7b8df68a9e14c21fada2c3da37da47ad9fb7ec",
+        "construction_sha256": "76efa7b9d454188c8385e77918602e90af040e907e208a656ebedbea458a491a",
         "log": "cases/wet_same_traffic-current-offline.log",
-        "log_sha256": "af324f8c814199f55b1795b64fdbcb9c072fd91ad4a56ebdc0d81eb543f1e555"
+        "log_sha256": "5e561d8f0d1e23db51dbf4e8184c524266f36099ec2177880c7e22db6538af36"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/wet_same_traffic-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/wet_same_traffic-physical-preparation.json",
-        "sha256": "0747ae512075b937e5026bf7afe1978848593be050689737c27177d79b18f3f9"
+        "sha256": "57ea5f672ebc5de758f76f255606d4568931b8345580f483b72af094c51662ae"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/wet_same_traffic-compatibility.json",
+        "sha256": "be731bc2edf144c2bd328bd6cdd349aaaa893f9c4b0e9225c71dd31c96db7f80",
+        "log": "cases/selected-proofs/wet_same_traffic-analysis.log",
+        "negative_log": "cases/selected-proofs/wet_same_traffic-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/wet_same_traffic-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/wet_same_traffic-compatibility.json",
+        "sha256": "be731bc2edf144c2bd328bd6cdd349aaaa893f9c4b0e9225c71dd31c96db7f80",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/wet_same_traffic-saved.json",
+        "sha256": "7e79318a92395c8fefc8f6ee2cfbe1defa295233bfe38e00c685f402387326cd",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/wet_same_traffic-fallback1-construction.json",
+          "construction_sha256": "f74b7a31f8ca553d75c78cf6c77ddcfb6311a79a91e76c8bbf55eb599456ffea",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-wet_same_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --output .runtime-work/c179789-fallback-wet_same_traffic/offline-f74b7a31f8ca",
+            "exit_code": 0,
+            "construction_sha256": "f74b7a31f8ca553d75c78cf6c77ddcfb6311a79a91e76c8bbf55eb599456ffea",
+            "log": "cases/wet_same_traffic-fallback1-offline.log",
+            "log_sha256": "85b45874e7d15e4183fd19bb1b9676595ec1c3649097b7563b859e6783e5eb87"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/wet_same_traffic-fallback1-compatibility.json",
+            "sha256": "b1c83ee99561e506b3496421f5aa8c252c1ae6d0e64dd091c952dc7115361816",
+            "log": "cases/selected-proofs/wet_same_traffic-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/wet_same_traffic-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/wet_same_traffic-fallback1-saved.json",
+            "sha256": "af592a1f1eee7458f57a062732e5c6273366f112a3de8b248bd9473a3fb06676",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --mode positive",
+        "test_log": "cases/selected-proofs/wet_same_traffic-acceptance-positive.log",
+        "test_log_sha256": "cfd5c9a205c4663ca3fe2f679f903e99df9cc7cc8f3ba9143cc12b1f5a251a73",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --mode negative",
+        "negative_log": "cases/selected-proofs/wet_same_traffic-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
       "kind": "delivery",
       "construction": "cases/narrow_same_traffic-construction.json",
-      "construction_sha256": "364d8c70ede393f9fcc73930061436eba71c8bf673d86d3004115adfe546e401",
+      "construction_sha256": "7d5a16453fb620bcb670bb8f60745b5295813253d299482e912dd5bb4cca706d",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/narrow_same_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic --output .runtime-work/c179789-sweep/narrow_same_traffic/offline-attempt-364d8c70ede3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/narrow_same_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic --output .runtime-work/c179789-sweep/narrow_same_traffic/offline-attempt-7d5a16453fb6",
         "exit_code": 0,
-        "construction_sha256": "364d8c70ede393f9fcc73930061436eba71c8bf673d86d3004115adfe546e401",
+        "construction_sha256": "7d5a16453fb620bcb670bb8f60745b5295813253d299482e912dd5bb4cca706d",
         "log": "cases/narrow_same_traffic-current-offline.log",
-        "log_sha256": "48ed98dce8baa40e8b83dca398c7ecd0d2bb8adab29b2a78d8b33c4d5db3c495"
+        "log_sha256": "b3937e86b30cfa8d3b3c5bb16b4f981b23899b6f6fca58bd43abbfef1111ecd1"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/narrow_same_traffic-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/narrow_same_traffic-physical-preparation.json",
-        "sha256": "d804d7851ff3eba71fd171d23f37bb8bc4238c7b14b777d76b2d01b8d74faa32"
+        "sha256": "5ef4f2230692c33adbb3a87e95ebd06455fcb8da0b5b89e5235f6678e86c72cc"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/narrow_same_traffic-compatibility.json",
+        "sha256": "7705b492eae9a4c2d5209d781bf626b6a40f806939c415eb238e2a7a9b3d1527",
+        "log": "cases/selected-proofs/narrow_same_traffic-analysis.log",
+        "negative_log": "cases/selected-proofs/narrow_same_traffic-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/narrow_same_traffic-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/narrow_same_traffic-compatibility.json",
+        "sha256": "7705b492eae9a4c2d5209d781bf626b6a40f806939c415eb238e2a7a9b3d1527",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/narrow_same_traffic-saved.json",
+        "sha256": "8cf47276e10c3da3a292e35007675c586381d82427a9e35c386065de96220065",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/narrow_same_traffic-fallback1-construction.json",
+          "construction_sha256": "6760bc6d23a0d1c6bb5647cd764a155f3450733b95c83bfbe744050b2e76f663",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-narrow_same_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic --output .runtime-work/c179789-fallback-narrow_same_traffic/offline-6760bc6d23a0",
+            "exit_code": 0,
+            "construction_sha256": "6760bc6d23a0d1c6bb5647cd764a155f3450733b95c83bfbe744050b2e76f663",
+            "log": "cases/narrow_same_traffic-fallback1-offline.log",
+            "log_sha256": "dfd12006f5906781f904f32d749e41e1e41b5631a86346cbbff7395792ff289b"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/narrow_same_traffic-fallback1-compatibility.json",
+            "sha256": "ba7183a444fe63d5f7225f7508fee6d2f419c31167abefc391e270cd8bb7cf43",
+            "log": "cases/selected-proofs/narrow_same_traffic-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/narrow_same_traffic-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/narrow_same_traffic-fallback1-saved.json",
+            "sha256": "51dd995a99ea53ab71911b2013c5eec2d2a5e72f1bb769cffa3a607274f42b57",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic --mode positive",
+        "test_log": "cases/selected-proofs/narrow_same_traffic-acceptance-positive.log",
+        "test_log_sha256": "6e3dd8f7c18b60dfa5c4308a9013388ce5a0d0330e968df83a675eba570ee3c4",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic --mode negative",
+        "negative_log": "cases/selected-proofs/narrow_same_traffic-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
       "kind": "delivery",
       "construction": "cases/dense_traffic-construction.json",
-      "construction_sha256": "b67c83bb5e949c59d7a51ef7c57e2dadf7304efd2dc89c16502c5c88ee6be62f",
+      "construction_sha256": "77740f51dde7b806ee302768eab31a1b7264c750139a5c4d3d76a1f027950416",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dense_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --output .runtime-work/c179789-sweep/dense_traffic/offline-attempt-b67c83bb5e94",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/dense_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --output .runtime-work/c179789-sweep/dense_traffic/offline-attempt-77740f51dde7",
         "exit_code": 0,
-        "construction_sha256": "b67c83bb5e949c59d7a51ef7c57e2dadf7304efd2dc89c16502c5c88ee6be62f",
+        "construction_sha256": "77740f51dde7b806ee302768eab31a1b7264c750139a5c4d3d76a1f027950416",
         "log": "cases/dense_traffic-current-offline.log",
-        "log_sha256": "c15e5a9110cfa311617f54c13ec9fef17c589bd48f0497fc5f72adbdda253d16"
+        "log_sha256": "7f1362d08ed9b85fd24697074a2d25a4649c41776ecc88f4f7f4ab91f5326732"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/dense_traffic-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/dense_traffic-physical-preparation.json",
-        "sha256": "bdd3c92d3f6e062488e90a72812ab66b6ddfe107734c5a2c558807ebdb37f5fd"
+        "sha256": "7d50678d49cd1e81a7f81bb2cfaf361a721b9eb968dd5b49c686564cb30e9b5e"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/dense_traffic-compatibility.json",
+        "sha256": "e4163603186bcfa855fd33cd1d2e5b3c4915ae342de33fc34a6dec4c2c920c13",
+        "log": "cases/selected-proofs/dense_traffic-analysis.log",
+        "negative_log": "cases/selected-proofs/dense_traffic-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/dense_traffic-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dense_traffic-compatibility.json",
+        "sha256": "e4163603186bcfa855fd33cd1d2e5b3c4915ae342de33fc34a6dec4c2c920c13",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/dense_traffic-saved.json",
+        "sha256": "ae766bdcd1537ecf0cd7f270dd1b08168d40064759f51e8ce1c52bb81c292271",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/dense_traffic-fallback1-construction.json",
+          "construction_sha256": "76fda7c7d9e2cf701ae251d21657bea22cdbd6048837b94d4c3419b64354bc6a",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-dense_traffic/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --output .runtime-work/c179789-fallback-dense_traffic/offline-76fda7c7d9e2",
+            "exit_code": 0,
+            "construction_sha256": "76fda7c7d9e2cf701ae251d21657bea22cdbd6048837b94d4c3419b64354bc6a",
+            "log": "cases/dense_traffic-fallback1-offline.log",
+            "log_sha256": "96270c2fae414bbe323aac27210033a46e379f7033399e00ded950e6d3f613e8"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/dense_traffic-fallback1-compatibility.json",
+            "sha256": "ca4f17924b2394bd0e13a732615035dc03da88c886acddb6d9cd9a89cbc5051a",
+            "log": "cases/selected-proofs/dense_traffic-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/dense_traffic-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/dense_traffic-fallback1-saved.json",
+            "sha256": "92c597c2096c1ce9c4bc6d74f27191b4bc874af835f272d8b249e8c512164edc",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --mode positive",
+        "test_log": "cases/selected-proofs/dense_traffic-acceptance-positive.log",
+        "test_log_sha256": "bb59efce11074ded2a22d8d560cb2b1f2a20759ca71c40a157150bd1833e4676",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --mode negative",
+        "negative_log": "cases/selected-proofs/dense_traffic-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
       "kind": "delivery",
       "construction": "cases/low_visibility-construction.json",
-      "construction_sha256": "7cf092e55492d42d34c5abfaddf4cbf134cb4f8c0168e6bee085e19e9793f45f",
+      "construction_sha256": "0d014e528159f6627e5949d3c1843c6f744d7c5c5aeea73d727e77731ba7e3e6",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/low_visibility/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility --output .runtime-work/c179789-sweep/low_visibility/offline-attempt-7cf092e55492",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/low_visibility/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility --output .runtime-work/c179789-sweep/low_visibility/offline-attempt-0d014e528159",
         "exit_code": 0,
-        "construction_sha256": "7cf092e55492d42d34c5abfaddf4cbf134cb4f8c0168e6bee085e19e9793f45f",
+        "construction_sha256": "0d014e528159f6627e5949d3c1843c6f744d7c5c5aeea73d727e77731ba7e3e6",
         "log": "cases/low_visibility-current-offline.log",
-        "log_sha256": "a3760b2aa569ce14ee533eedb7a85d5ad0d90e8e307d261116cc18fe8c80aa06"
+        "log_sha256": "2ba843954aa009cf1df34e79544c459e5f984370df2afe45f00a831a1fa8cf5e"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/low_visibility-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/low_visibility-physical-preparation.json",
-        "sha256": "5eb8064cac201cb5dbf472a597d55e1e7435ea01be6c992608e15af8ced356f8"
+        "sha256": "b7ff84eca0a3d0f3d938f8c772c70e98c592e2fcd4e17beeb432d09577ffe362"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/low_visibility-compatibility.json",
+        "sha256": "52109d71fd505231f73bbee4033c0435e8057ad18c1ef1997beb65107581805b",
+        "log": "cases/selected-proofs/low_visibility-analysis.log",
+        "negative_log": "cases/selected-proofs/low_visibility-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/low_visibility-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/low_visibility-compatibility.json",
+        "sha256": "52109d71fd505231f73bbee4033c0435e8057ad18c1ef1997beb65107581805b",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/low_visibility-saved.json",
+        "sha256": "db649f762a4ad70dee9ee3377dd9d83be2590c99c69286d257977e40a85c0ccb",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/low_visibility-fallback1-construction.json",
+          "construction_sha256": "0816f37982e635079036edb01c9ab4bba40823d21ef687caa190dbd78cbe40eb",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-low_visibility/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility --output .runtime-work/c179789-fallback-low_visibility/offline-0816f37982e6",
+            "exit_code": 0,
+            "construction_sha256": "0816f37982e635079036edb01c9ab4bba40823d21ef687caa190dbd78cbe40eb",
+            "log": "cases/low_visibility-fallback1-offline.log",
+            "log_sha256": "2d4cd1a86a40327b8377cc935531ea1eeef2b42e0f44f5c5cdde64ebac722c6e"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/low_visibility-fallback1-compatibility.json",
+            "sha256": "f2b16deb9eb5e8e6b09e09ae647ed461f951727c4037fc8fa932bc0ac3ad69da",
+            "log": "cases/selected-proofs/low_visibility-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/low_visibility-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/low_visibility-fallback1-saved.json",
+            "sha256": "de6a539c72284e9e305767e4fc19931b6c4a354e19cc05981830e87631e2ed7b",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility --mode positive",
+        "test_log": "cases/selected-proofs/low_visibility-acceptance-positive.log",
+        "test_log_sha256": "30cc6fa1e8864e4de71c78b301c2adb5abbbb90fec0c933136cb97be617462d8",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility --mode negative",
+        "negative_log": "cases/selected-proofs/low_visibility-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     },
     {
       "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow",
       "kind": "delivery",
       "construction": "cases/ice_or_snow-construction.json",
-      "construction_sha256": "33ecb16a69c8a5f3947bc64f67d6a4e0f1bdd63e9415d47b95750ce29bc04d15",
+      "construction_sha256": "b843b5d1d9a88b8f073f0cde48fac6aa79268a8da7545a7192b3c1c69f98aeb8",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/ice_or_snow/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow --output .runtime-work/c179789-sweep/ice_or_snow/offline-attempt-33ecb16a69c8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-sweep/ice_or_snow/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow --output .runtime-work/c179789-sweep/ice_or_snow/offline-attempt-b843b5d1d9a8",
         "exit_code": 0,
-        "construction_sha256": "33ecb16a69c8a5f3947bc64f67d6a4e0f1bdd63e9415d47b95750ce29bc04d15",
+        "construction_sha256": "b843b5d1d9a88b8f073f0cde48fac6aa79268a8da7545a7192b3c1c69f98aeb8",
         "log": "cases/ice_or_snow-current-offline.log",
-        "log_sha256": "e686c12842f108c6be5b80e997f885734633355003a41c97808437aeaab989be"
+        "log_sha256": "10165491df74b13bc80ac6fdb034bb94aa680a6d7eb5db7fb3f32c29ecd6e3f0"
       },
       "measurement_procedure": {
         "entrypoint": "finalizer.py"
       },
       "measurement_contract": "measurement-contract.json",
-      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/fixture-recipe.json",
+      "fixture_recipe": "work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/ice_or_snow-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "cases/ice_or_snow-physical-preparation.json",
-        "sha256": "2b131a6a429041c94b074b0b627ae2cd864c2f052007e456a045c29a6dc86435"
+        "sha256": "79d6e3291290c76ce1f61bc064e0e97af195380b41855703d83bc17213464f5a"
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native road condition, lead gap and camera coverage require review."
+        "reason": "Original Native lead spawn or body gap can fail on the reviewed lane."
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/selected-proofs/ice_or_snow-compatibility.json",
+        "sha256": "1e46c1e8120dc17dd8b2e5c95a54c7bd9c9a5e7981e5274351a14d001ad546b1",
+        "log": "cases/selected-proofs/ice_or_snow-analysis.log",
+        "negative_log": "cases/selected-proofs/ice_or_snow-negative.log"
+      },
+      "negative": {
+        "log": "cases/selected-proofs/ice_or_snow-negative.log"
+      },
+      "compatibility_diagnostic": {
+        "command": "runtime.py compatibility --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/ice_or_snow-compatibility.json",
+        "sha256": "1e46c1e8120dc17dd8b2e5c95a54c7bd9c9a5e7981e5274351a14d001ad546b1",
+        "scope": "synthetic positive and missing-surface diagnostic"
+      },
+      "saved_processing_diagnostic": {
+        "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow",
+        "exit_code": 0,
+        "receipt": "cases/selected-proofs/ice_or_snow-saved.json",
+        "sha256": "8745313458e39c8c22d29e7b410d5aceda5b3f08e8e7dce4b411b6f9177dc3f7",
+        "recorded_only": true,
+        "scope": "synthetic saved sources, no Native replay"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Native actor transform and velocity",
+          "evidence": "capture/evidence.jsonl"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lead_speed_mps": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "longitudinal_body_gap_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "lane_width_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "surface": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "precipitation_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "sight_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "curvature_per_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_density_percent": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        },
+        "fog_distance_m": {
+          "entrypoint": "condition_capture.py",
+          "method": "frame-specific Native condition and source packet sampling",
+          "evidence": "condition_history.jsonl"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/ice_or_snow-fallback1-construction.json",
+          "construction_sha256": "b962517569c33db4cff8fcf3512d73c90811a60e0981939b249c9bad7b19c94a",
+          "trigger": {
+            "source": "original Native spawn status and joined body-gap history",
+            "metric": "lead spawn success and positive body gap",
+            "failure_condition": "Lead fails to spawn or overlaps ego at initial frame"
+          },
+          "changed_knobs": [
+            "road_packet.lead_spawn.x"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-fallback-ice_or_snow/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow --output .runtime-work/c179789-fallback-ice_or_snow/offline-b962517569c3",
+            "exit_code": 0,
+            "construction_sha256": "b962517569c33db4cff8fcf3512d73c90811a60e0981939b249c9bad7b19c94a",
+            "log": "cases/ice_or_snow-fallback1-offline.log",
+            "log_sha256": "6874121282f65cb67a8ad31c98327f702223f19dc88d70fe686fb8ef7baca6db"
+          },
+          "compatibility": {
+            "receipt": "cases/selected-proofs/ice_or_snow-fallback1-compatibility.json",
+            "sha256": "f586aae862d6600f0bd516c9da9cf0f1974ad2df3a900cc4889e39be201ef736",
+            "log": "cases/selected-proofs/ice_or_snow-fallback1-analysis.log",
+            "negative_log": "cases/selected-proofs/ice_or_snow-fallback1-negative.log"
+          },
+          "saved_processing_diagnostic": {
+            "command": "runtime.py process-saved --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow --candidate fallback1",
+            "exit_code": 0,
+            "receipt": "cases/selected-proofs/ice_or_snow-fallback1-saved.json",
+            "sha256": "d20e5ec78cefda14d7257bcfce8598a7dc9f2a359153271d1325a9579bd72364",
+            "recorded_only": true
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "dd503bd4be133c5afad4888303c75b9a21a237925a96d43e523332dec38abb0b",
+        "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow --mode positive",
+        "test_log": "cases/selected-proofs/ice_or_snow-acceptance-positive.log",
+        "test_log_sha256": "712dd08b08e96fae7c504dfd5f3e47efe79271334b25b2ea250f07b36998fad1",
+        "test_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow --mode negative",
+        "negative_log": "cases/selected-proofs/ice_or_snow-acceptance-negative.log",
+        "negative_log_sha256": "591d43fa205488e36f84f31aa046e5c83cb8df542df73500b9e153662fa75670",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "proof_scope": "CPU diagnostic boundary; Native and pixel review pending"
       }
     }
   ],

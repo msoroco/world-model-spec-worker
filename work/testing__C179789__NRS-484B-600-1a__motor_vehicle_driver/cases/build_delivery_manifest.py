@@ -15,6 +15,9 @@ def build():
     index = json.loads((ROOT / 'cases/condition-offline-index.json').read_text())
     cases = []
     for row in index['cases']:
+        suffix = row['case_id'].split('__')[-1]
+        recipe = ROOT / ('fixture-recipe.json' if suffix == 'dry_open_traffic'
+                         else 'cases/' + suffix + '-fixture-recipe.json')
         cases.append({
             'case_id': row['case_id'], 'kind': 'delivery',
             'construction': row['construction'],
@@ -24,7 +27,7 @@ def build():
                         'log': row['log'], 'log_sha256': row['log_sha256']},
             'measurement_procedure': {'entrypoint': 'finalizer.py'},
             'measurement_contract': 'measurement-contract.json',
-            'fixture_recipe': (ROOT / 'fixture-recipe.json').relative_to(REPO).as_posix(),
+            'fixture_recipe': recipe.relative_to(REPO).as_posix(),
             'physical_preparation': {
                 'receipt': 'cases/' + row['case_id'].split('__')[-1] + '-physical-preparation.json',
                 'sha256': sha(ROOT / 'cases' / (row['case_id'].split('__')[-1] + '-physical-preparation.json'))},

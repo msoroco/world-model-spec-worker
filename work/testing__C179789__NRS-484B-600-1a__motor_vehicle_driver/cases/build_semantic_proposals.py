@@ -23,7 +23,7 @@ SUFFIXES = ('dry_4mps', 'dry_open_traffic', 'dry_6mps',
             'low_visibility', 'ice_or_snow')
 PARAMETERS = [
     ('requested_speed_mps', 'controller', 'authored finite ego speed target, m/s'),
-    ('ego_speed', 'subject_behavior', 'original sampled ego speed, m/s'),
+    ('ego_speed_mps', 'subject_behavior', 'original sampled ego speed, m/s'),
     ('surface_condition', 'world_setup', 'source reviewed dry, wet, or ice/snow roadway'),
     ('lane_width_target_m', 'world_setup', 'sourced Native lane width, m'),
     ('lead_gap_target_m', 'controller', 'authored complete-body lead gap range, m'),
@@ -54,10 +54,10 @@ def assignments(suffix):
     elif suffix == 'ice_or_snow':
         weather, surface = 'cold_precipitation', 'ice_or_snow'
     speed = {'dry_4mps': 4, 'dry_6mps': 6}.get(suffix, 8)
-    values = {'requested_speed_mps': speed, 'ego_speed': None,
+    values = {'requested_speed_mps': speed, 'ego_speed_mps': None,
               'surface_condition': surface, 'lane_width_target_m': width,
               'lead_gap_target_m': gap, 'weather_profile': weather}
-    units = {'requested_speed_mps': 'm/s', 'ego_speed': 'm/s',
+    units = {'requested_speed_mps': 'm/s', 'ego_speed_mps': 'm/s',
              'surface_condition': 'categorical', 'lane_width_target_m': 'm',
              'lead_gap_target_m': 'm', 'weather_profile': 'categorical'}
     return {name: {'kind': kind, 'value': values[name], 'unit': units[name]}
@@ -99,7 +99,7 @@ def main():
                      ('sight_distance_m', 'm', 'first obstruction ray distance; not optical visibility'))],
              'context_inputs': [{'name': 'road_context', 'unit': 'structured record',
                                  'description': 'source-hashed roadway, traffic and weather context'}],
-             'sweep_dimensions': [{'name': 'ego_speed', 'unit': 'm/s',
+             'sweep_dimensions': [{'name': 'ego_speed_mps', 'unit': 'm/s',
                                    'description': 'sampled physical ego speed across an authored numeric grid'}],
              'landmarks': [],
              'recording_needs': [{'name': 'ego_speed_mps', 'unit': 'm/s',
@@ -142,7 +142,7 @@ def main():
             'judgment_refs': [{'phrase': PHRASE, 'note': judgment['note']}],
             'status': 'complete', 'mode': 'one_dimensional',
             'rationale': 'Finite 4, 6 and 8 m/s authored speed targets on the same dry road and traffic; measured ego speed and independent judgment remain separate.',
-            'axes': [{'variable': 'requested_speed_mps', 'observable': 'ego_speed',
+            'axes': [{'variable': 'requested_speed_mps', 'observable': 'ego_speed_mps',
                       'unit': 'm/s', 'min': 4, 'max': 8, 'spacing': 2,
                       'range_rationale': 'Three feasible diagnostic controller setpoints below, near and above the fixed 7 m/s lead target; no legal boundary is implied.',
                       'spacing_rationale': '2 m/s separates the three authored controller targets for later original speed measurement.',
@@ -184,7 +184,7 @@ def main():
                          'selection_rank': spec['selection_order'].index(packet['case_id']),
                          'judgment_refs': spec['judgment_refs'],
                          'sweep_measurements': [{'variable': 'requested_speed_mps',
-                                                 'observable': 'ego_speed', 'unit': 'm/s',
+                                                 'observable': 'ego_speed_mps', 'unit': 'm/s',
                                                  'measurement': spec['axes'][0]['measurement']}]})
             case['probe']['comparison_or_standard'] = 'physical speed coverage; legal judgment unresolved'
             case['probe']['target_value_or_branch'] = point

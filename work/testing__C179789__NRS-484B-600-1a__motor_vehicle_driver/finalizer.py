@@ -95,15 +95,41 @@ def finalize(attempt, output):
     report['surface_source_path'] = json.loads((attempt / 'road_context.json').read_text())[
         'road_surface_source']['path']
     checks = _target_checks(config, report)
-    channel = attempt / 'speed-channel.jsonl'
-    content = ''.join(json.dumps({'time_s': row['time_s'],
-                                  'value': row['ego_speed_mps']}, allow_nan=False) + '\n'
-                      for row in report['samples'])
-    if channel.exists():
-        if channel.read_text() != content:
-            raise ValueError('Prior derived speed channel differs from original sources')
+    channel_values = {
+        'ego_speed_mps': lambda row: row['ego_speed_mps'],
+        'lead_speed_mps': lambda row: row['surrounding_traffic'][0]['speed_mps'],
+        'longitudinal_body_gap_m': lambda row: row['surrounding_traffic'][0]['longitudinal_body_gap_m'],
+        'lane_width_m': lambda row: row['lane_width_m'],
+        'surface': lambda row: row['surface'],
+        'precipitation_percent': lambda row: row['precipitation_percent'],
+        'sight_distance_m': lambda row: row['sight_distance_m'],
+        'curvature_per_m': lambda row: row['curvature_per_m'],
+        'fog_density_percent': lambda row: row.get('fog_density_percent', 0.0),
+        'fog_distance_m': lambda row: row.get('fog_distance_m', 0.0),
+    }
+    units = {channel['name']: channel['unit'] for channel in config['recording_description']['channels']}
+    recording_evidence = []
+    for name, value in channel_values.items():
+        reference = 'speed-channel.jsonl' if name == 'ego_speed_mps' else name + '-channel.jsonl'
+        channel = attempt / reference
+        content = ''.join(json.dumps({'time_s': row['time_s'], 'value': value(row)},
+                                     allow_nan=False) + '\n' for row in report['samples'])
+        if channel.exists():
+            if channel.read_text() != content:
+                raise ValueError('Prior derived channel differs from original sources: ' + name)
+        else:
+            channel.write_text(content)
+        recording_evidence.append({'name': name, 'unit': units[name], 'reference': reference})
+    context = attempt / 'road-context-channel.json'
+    context_content = json.dumps({'road_context': json.loads((attempt / 'road_context.json').read_text())},
+                                 indent=2, allow_nan=False) + '\n'
+    if context.exists():
+        if context.read_text() != context_content:
+            raise ValueError('Prior derived road context differs from original source')
     else:
-        channel.write_text(content)
+        context.write_text(context_content)
+    recording_evidence.append({'name': 'road_context', 'unit': 'structured record',
+                               'reference': 'road-context-channel.json'})
     peak = measure_peak_speed(report)
     result = {'case_id': config['selected_case_id'],
               'measured_values': {'sampled_peak_speed_mps': peak,
@@ -121,12 +147,22 @@ def finalize(attempt, output):
               'trace_reference': 'trace.jsonl', 'video_references': list(CAMERAS),
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['recording_description'],
-              'recording_evidence': [{'name': 'kin.speed', 'unit': 'm/s',
-                                      'reference': 'speed-channel.jsonl'}],
+              'recording_evidence': recording_evidence,
               'source_hashes': report['sources'],
               'capture_evidence_sha256': _sha(attempt / 'capture/evidence.jsonl'),
-              'realized_observables': {}}
+              'realized_observables': {'ego_speed_mps': {
+                  'unit': 'm/s', 'method': 'original Native ego velocity samples',
+                  'time_window': 'entire captured interval', 'statistic': 'max',
+                  'reference': 'speed-channel.jsonl', 'value': peak,
+                  'sample_window_s': [report['samples'][0]['time_s'],
+                                      report['samples'][-1]['time_s']]}}}
     result = physical_result(attempt, result)
+    result['realized_observables']['ego_speed_mps'] = {
+        'unit': 'm/s', 'method': 'original Native ego velocity samples',
+        'time_window': 'entire captured interval', 'statistic': 'max',
+        'reference': 'speed-channel.jsonl', 'value': peak,
+        'sample_window_s': [report['samples'][0]['time_s'],
+                            report['samples'][-1]['time_s']]}
     analysis = {'format': 'worker-basic-speed-conditions-analysis',
                 'case_id': config['selected_case_id'],
                 'measurements': {'sampled_peak_speed_mps': {
