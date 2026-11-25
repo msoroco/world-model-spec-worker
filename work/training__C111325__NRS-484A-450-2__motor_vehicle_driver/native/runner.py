@@ -72,7 +72,7 @@ def check(config):
     return {'passed': True, 'case_id': config['case_id'], 'frames': FRAMES,
             'rate_hz': RATE_HZ, 'cameras': [c[0] for c in CAMERAS],
             'road_ids': sorted(roads), 'native_imported': False,
-            'native_capture_implemented': False, 'physical_observation_claimed': False}
+            'native_capture_implemented': True, 'physical_observation_claimed': False}
 
 
 if __name__ == '__main__':

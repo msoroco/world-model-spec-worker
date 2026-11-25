@@ -97,7 +97,8 @@ def finalize(attempt, output):
                                           'reference': 'native_samples.jsonl'}},
         'provenance_kind': observed['source_kind'], 'accepted': False,
         'legal_verdict_claimed': False}
-    from worker_exchange.native_output import validate_result
+    from worker_exchange.native_output import physical_result, validate_result
+    result = physical_result(attempt, result)
     validate_result(result)
     report = {'format': 'c111325-saved-analysis-v1', 'case_id': case,
               'measurements': {'crosswalk_stop': measure_crosswalk_stop(observed)},

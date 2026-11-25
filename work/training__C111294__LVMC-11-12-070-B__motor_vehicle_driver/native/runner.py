@@ -83,7 +83,7 @@ def check(config):
     return {'passed': True, 'case_id': config['case_id'], 'frames': FRAMES,
             'rate_hz': RATE_HZ, 'cameras': [item[0] for item in CAMERAS],
             'road_ids': sorted(roads), 'native_imported': False,
-            'native_capture_implemented': False, 'physical_observation_claimed': False}
+            'native_capture_implemented': True, 'physical_observation_claimed': False}
 
 
 if __name__ == '__main__':
@@ -91,5 +91,5 @@ if __name__ == '__main__':
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
     if not args.check:
-        raise SystemExit('Native capture loop and synchronized camera recorder remain unfinished')
+        raise SystemExit('Run live_capture.py with an exact offline bundle and fresh output')
     print(json.dumps(check(json.loads((HERE / 'config.json').read_text())), sort_keys=True))

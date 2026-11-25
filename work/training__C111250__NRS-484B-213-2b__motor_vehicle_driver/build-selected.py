@@ -32,7 +32,8 @@ def sha(value):
 
 def build(suffix):
     case_id = ASSIGNMENT + '__' + suffix
-    source = json.loads((HERE / f'current-v2-{suffix_to_name(suffix)}-construction.json').read_text())
+    diagnostic_name = suffix_to_name(suffix)
+    source = json.loads((HERE / f'current-v2-{diagnostic_name}-construction.json').read_text())
     files = {item['path']: item['content'] for item in source['files']}
     config = json.loads(files['config.json'])
     interval = {'probe_01': [], 'probe_02': [240, 359], 'probe_03': [400, 450]}[suffix]
@@ -99,10 +100,22 @@ def build(suffix):
     contract['status'] = 'selected_delivery_cpu_prepared'
     contract_path = HERE / f'measurement-contract-{suffix}.json'
     contract_path.write_text(encode(contract))
+    fixture = json.loads((HERE / f'current-v2-{diagnostic_name}-fixture-recipe.json').read_text())
+    context = json.loads((HERE / f'current-v2-{diagnostic_name}-sources/road-context.json').read_text())
+    context['two_way_intersection_source'] = True
+    selected_context = HERE / f'selected-source/{suffix}/road-context.json'
+    selected_context.parent.mkdir(parents=True, exist_ok=True)
+    selected_context.write_text(encode(context))
+    for item in fixture['sources']:
+        if item['path'] == 'road-context.json':
+            item['source'] = str(selected_context.relative_to(REPO))
+            item['sha256'] = hashlib.sha256(selected_context.read_bytes()).hexdigest()
+    selected_recipe = HERE / f'selected-recipe-{suffix}.json'
+    selected_recipe.write_text(encode(fixture))
     return {'case_id': case_id, 'kind': 'delivery', 'id': 'primary',
             'construction': construction_path.name,
             'construction_sha256': hashlib.sha256(construction_path.read_bytes()).hexdigest(),
-            'fixture_recipe': f'work/{ASSIGNMENT}/current-v2-{suffix_to_name(suffix)}-fixture-recipe.json',
+            'fixture_recipe': f'work/{ASSIGNMENT}/{selected_recipe.name}',
             'measurement_contract': contract_path.name,
             'measurement_procedure': {'entrypoint': 'finalize.py', 'output_schema': 'c111250-zone-measurement-v1'},
             'candidate_risk': {'status': 'physical',

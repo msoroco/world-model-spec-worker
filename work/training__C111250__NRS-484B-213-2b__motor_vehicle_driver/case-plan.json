@@ -5,7 +5,7 @@
   "actor": "motor_vehicle_driver",
   "source_law_text": "A vehicle must not be driven to the left side of the highway at any time: When approaching within 100 feet or traversing any intersection or railroad grade crossing. Subsection 2 does not apply upon a one-way highway.",
   "source_law_citation": "NRS 484B.213(2)(b); with 484B.213(3)",
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "selected_delivery_cpu_prepared",
   "selected_branch": "left side near intersection or rail crossing",
   "cell_fixed_facts": {
     "layout": "intersection",
@@ -40,35 +40,44 @@
     {
       "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-213-2b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "two-way approach stays right within 100 ft",
       "comparison_variable": "left-side occupancy relative to boundary",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "cpu_prepared",
+      "gap_ids": [
+        "intersection-approach-traversal"
+      ]
     },
     {
       "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-213-2b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "same approach uses left side within 100 ft",
       "comparison_variable": "left-side occupancy relative to boundary",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "cpu_prepared",
+      "gap_ids": [
+        "intersection-approach-traversal"
+      ]
     },
     {
       "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-213-2b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "left-side travel while traversing intersection",
       "comparison_variable": "left-side occupancy relative to boundary",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "cpu_prepared",
+      "gap_ids": [
+        "intersection-approach-traversal"
+      ]
     }
   ],
   "comparisons": [
@@ -222,50 +231,122 @@
         "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_02",
         "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Three selected source-bound current-v2 CPU packages and comparison; original physical roadway, pixels and legal outcome pending GPU delivery"
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "st.intersection",
-      "method": "Original reviewed intersection entry and exit geometry in road-context.json; current fixture geometry is diagnostic",
-      "source": "road-context.json"
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "st.railway_crossing",
-      "method": "Separate physically present grade crossing branch required; unavailable in fixed intersection fixture",
-      "source": "unresolved_physical_context"
+    "st.railway_crossing": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "st.railway_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "drv.approaching",
-      "method": "Footprint front entering proposed straight-line 30.48 m zone before entry",
-      "source": "vehicle-footprints.jsonl"
+    "drv.approaching": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "drv.approaching"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "rel.centre_distance",
-      "method": "Original footprint extremum relative to reviewed intersection boundary; legal datum unresolved",
-      "source": "road-context.json and vehicle-footprints.jsonl"
+    "rel.centre_distance": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "rel.centre_distance"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "st.centre_line",
-      "method": "Source reviewed physical centerline, represented by y=0 only in diagnostic",
-      "source": "road-context.json"
+    "st.centre_line": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "st.centre_line"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "rel.occupies",
-      "method": "Any original full-body footprint corner on left side of centerline per frame",
-      "source": "vehicle-footprints.jsonl"
+    "rel.occupies": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "drv.in_intersection",
-      "method": "Full footprint interval overlaps reviewed intersection entry and exit",
-      "source": "road-context.json and vehicle-footprints.jsonl"
+    "drv.in_intersection": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "drv.in_intersection"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     },
-    {
-      "term": "st.one_way_roadway",
-      "method": "Explicit roadway direction context; positive one-way excludes subsection 2 applicability",
-      "source": "road-context.json"
+    "st.one_way_roadway": {
+      "evidence": "Original 20 Hz Native body/map/camera source channel; physical highway and legal interpretation pending",
+      "channels": [
+        "st.one_way_roadway"
+      ],
+      "source_refs": [
+        "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json"
+      ]
     }
-  ],
-  "cpu_measurement_contract": "zone-measurement-contract.json"
+  },
+  "cpu_measurement_contract": "zone-measurement-contract.json",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full vehicle, centerline and two-way intersection",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "100-foot approach and intersection entry",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "full vehicle footprint across intersection",
+        "interval": "full 30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view of lane direction and crossing",
+        "interval": "full 30 s"
+      }
+    ]
+  },
+  "evidence_review": {
+    "method": "Frozen accepted membership and witness review",
+    "reviewer": "worker source inventory",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "intersection-approach-traversal",
+        "requirement": "NRS 484B.213(2)(b) intersection approach and traversal",
+        "source": "inputs/training__C111250__NRS-484B-213-2b__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No accepted source-bound original recording membership supplied"
+      }
+    ]
+  }
 }

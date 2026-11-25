@@ -1,12 +1,23 @@
 {
-  "status": "unselected_cpu_drafts",
+  "cell_id": "C111294",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
-      "target_law_id": "NRS-484B-603-1",
-      "target_type": "compliant_attempt",
-      "cell_id": "C111294",
-      "actor": "motor_vehicle_driver",
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored intersection geometry and cross-traffic context for the controlled pair.",
+      "variable_assignments": {
+        "hazard_approach_speed_profile": {
+          "kind": "controller",
+          "value": null
+        },
+        "other_traffic": {
+          "kind": "world_setup",
+          "value": "same source-bound cross-traffic trajectory"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -14,7 +25,7 @@
             "unit": "metres",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           },
@@ -23,7 +34,7 @@
             "unit": "metres/second",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           },
@@ -32,7 +43,7 @@
             "unit": "miles/hour",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           },
@@ -41,7 +52,7 @@
             "unit": "metres",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           }
@@ -58,15 +69,11 @@
           "Synthetic CPU traces are diagnostic only"
         ]
       },
-      "comparison_variable": "hazard_approach_speed_profile",
-      "status": "unselected_draft"
+      "unresolved_judgment_calls": []
     },
     {
-      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-603-1",
-      "target_type": "violating_attempt",
-      "cell_id": "C111294",
-      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "recording_description": {
         "channels": [
           {
@@ -74,7 +81,7 @@
             "unit": "metres",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           },
@@ -83,7 +90,7 @@
             "unit": "metres/second",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           },
@@ -92,7 +99,7 @@
             "unit": "miles/hour",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           },
@@ -101,7 +108,7 @@
             "unit": "metres",
             "sampling_rate_hz": 20,
             "method": "original Native frame-joined actor readback",
-            "time_window": "480 frames at 20 Hz",
+            "time_window": "600 frames at 20 Hz",
             "reference_frame": "surveyed Native map",
             "uncertainty": "50 ms sampling and pose/velocity consistency"
           }
@@ -118,8 +125,134 @@
           "Synthetic CPU traces are diagnostic only"
         ]
       },
-      "comparison_variable": "hazard_approach_speed_profile",
-      "status": "unselected_draft"
+      "unresolved_judgment_calls": [
+        "as may be necessary",
+        "due care"
+      ],
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+      "rationale": "Controlled original Native speed-profile contrast at the same intersection with other-vehicle hazard; no legal verdict.",
+      "variable_assignments": {
+        "hazard_approach_speed_profile": {
+          "kind": "controller",
+          "value": "earlier approach decrease"
+        },
+        "other_traffic": {
+          "kind": "world_setup",
+          "value": "same source-bound cross-traffic trajectory"
+        }
+      },
+      "paired_probe_id": "C111294_603_1_intersection_speed_profile",
+      "deliberate_differences": [
+        "hazard_approach_speed_profile"
+      ],
+      "probe": {
+        "primary_variable": "hazard_approach_speed_profile",
+        "comparison_or_standard": "same authored intersection and other-vehicle trajectory; measured approach speed contrast",
+        "target_value_or_branch": "earlier approach decrease"
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-603-1",
+      "target_type": "boundary_probe",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame-joined actor readback",
+            "time_window": "600 frames at 20 Hz",
+            "reference_frame": "surveyed Native map",
+            "uncertainty": "50 ms sampling and pose/velocity consistency"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "metres/second",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame-joined actor readback",
+            "time_window": "600 frames at 20 Hz",
+            "reference_frame": "surveyed Native map",
+            "uncertainty": "50 ms sampling and pose/velocity consistency"
+          },
+          {
+            "name": "observed_speed",
+            "unit": "miles/hour",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame-joined actor readback",
+            "time_window": "600 frames at 20 Hz",
+            "reference_frame": "surveyed Native map",
+            "uncertainty": "50 ms sampling and pose/velocity consistency"
+          },
+          {
+            "name": "other_vehicle_pose",
+            "unit": "metres",
+            "sampling_rate_hz": 20,
+            "method": "original Native frame-joined actor readback",
+            "time_window": "600 frames at 20 Hz",
+            "reference_frame": "surveyed Native map",
+            "uncertainty": "50 ms sampling and pose/velocity consistency"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "intersection_and_other_vehicle",
+            "unit": "structured",
+            "method": "authored OpenDRIVE and original cross-traffic actor readback"
+          }
+        ],
+        "limitations": [
+          "Necessity of reduction and legal outcome require physical review",
+          "Synthetic CPU traces are diagnostic only"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "as may be necessary",
+        "due care"
+      ],
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+      "rationale": "Controlled original Native speed-profile contrast at the same intersection with other-vehicle hazard; no legal verdict.",
+      "variable_assignments": {
+        "hazard_approach_speed_profile": {
+          "kind": "controller",
+          "value": "held approach speed"
+        },
+        "other_traffic": {
+          "kind": "world_setup",
+          "value": "same source-bound cross-traffic trajectory"
+        }
+      },
+      "paired_probe_id": "C111294_603_1_intersection_speed_profile",
+      "deliberate_differences": [
+        "hazard_approach_speed_profile"
+      ],
+      "probe": {
+        "primary_variable": "hazard_approach_speed_profile",
+        "comparison_or_standard": "same authored intersection and other-vehicle trajectory; measured approach speed contrast",
+        "target_value_or_branch": "held approach speed"
+      }
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "C111294_603_1_necessity_due_care",
+      "target_law_id": "NRS-484B-603-1",
+      "judgment_refs": [
+        {
+          "phrase": "as may be necessary",
+          "note": "The necessary reduction depends on the actual collision hazard and due-care context, not a fixed mph threshold."
+        },
+        {
+          "phrase": "due care",
+          "note": "Whether all relevant persons used due care requires independent source and legal review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The assigned intersection cell lacks source-backed physical hazard calibration and the other listed statutory settings; a legal necessity boundary cannot be inferred from the two diagnostic speed profiles.",
+      "missing_inputs": [
+        "Original CARLA physical motion and camera evidence for this intersection and independent collision-hazard/due-care review.",
+        "Source-authorized curve, crest, narrow or winding road, pedestrian, weather and other-highway-condition allocations with physical feasibility and recorded context."
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

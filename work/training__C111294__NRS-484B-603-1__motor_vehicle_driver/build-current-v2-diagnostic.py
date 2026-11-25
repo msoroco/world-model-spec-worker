@@ -8,8 +8,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SUFFIX = sys.argv[1] if len(sys.argv) > 1 else 'probe_a'
+SELECTED_CANDIDATE = sys.argv[2] if len(sys.argv) > 2 else 'primary'
 if SUFFIX not in ('probe_a', 'probe_b'):
     raise ValueError('Unknown exact case')
+if SELECTED_CANDIDATE not in ('primary', 'fallback1'):
+    raise ValueError('Unknown candidate')
 CASE = HERE.name + '__' + SUFFIX
 
 
@@ -28,18 +31,22 @@ def rows(path, data):
 
 
 def main():
-    draft = json.loads((HERE / f'duration-600-drafts/{SUFFIX}/primary/construction.json').read_text())
+    draft = json.loads((HERE / f'duration-600-drafts/{SUFFIX}/{SELECTED_CANDIDATE}/construction.json').read_text())
     construction = json.loads(json.dumps(draft))
     frozen = sha(ROOT / 'inputs' / HERE.name / 'assignment.json')
     for file in construction['files']:
-        file['content'] = (file['content'].replace('ego_forward', 'approach')
-                           .replace('ego_side', 'reference_corner')
-                           .replace('junction.mkv', 'driver_reference.mkv')
-                           .replace('"junction"', '"driver_reference"')
-                           .replace("'junction'", "'driver_reference'"))
+        if file['path'] not in ('authored-road.xodr', 'geometry.py'):
+            file['content'] = (file['content'].replace('ego_forward', 'approach')
+                               .replace('ego_side', 'reference_corner')
+                               .replace('junction.mkv', 'driver_reference.mkv')
+                               .replace('"junction"', '"driver_reference"')
+                               .replace("'junction'", "'driver_reference'"))
         if file['path'] == 'config.json':
             config = json.loads(file['content'])
             config['frozen_source_hashes'][0]['sha256'] = frozen
+            if SUFFIX == 'probe_b' and SELECTED_CANDIDATE == 'fallback1':
+                # Match probe A's cross-traffic speed when both fallbacks are used.
+                config['knobs']['other_speed_mps'] = 5
             file['content'] = json.dumps(config, indent=2) + '\n'
         if file['path'] == 'measurement-contract.json':
             contract = json.loads(file['content'])
@@ -72,12 +79,16 @@ def main():
             if old not in file['content']:
                 raise ValueError('Current finalizer channel anchor absent')
             file['content'] = file['content'].replace(old, new)
-    bundle = HERE / f'current-v2-{SUFFIX}-diagnostic'
+    bundle = HERE / (f'current-v2-{SUFFIX}-diagnostic' if SELECTED_CANDIDATE == 'primary'
+                     else f'current-v2-{SUFFIX}-{SELECTED_CANDIDATE}-diagnostic')
     write(bundle / 'construction.json', construction)
     contract = json.loads(next(f['content'] for f in construction['files']
                                if f['path'] == 'measurement-contract.json'))
     contract_path = HERE / f'current-v2-{SUFFIX}-measurement-contract.json'
-    write(contract_path, contract)
+    if SELECTED_CANDIDATE == 'primary':
+        write(contract_path, contract)
+    elif contract_path.is_file() and json.loads(contract_path.read_text()) != contract:
+        raise ValueError('Fallback measurement contract differs from primary')
     source = HERE / f'current-v2-{SUFFIX}-source'
     source.mkdir(exist_ok=True)
     raw_text = next(f['content'] for f in construction['files']
@@ -156,15 +167,25 @@ def main():
                                  'sha256': sha(spec)}})
     manifest = json.loads((HERE / 'draft-execution-manifest-600.json').read_text())
     entry = next(e for e in manifest['cases'] if e['case_id'] == CASE)
-    entry['construction'] = (bundle / 'construction.json').relative_to(HERE).as_posix()
-    entry['construction_sha256'] = sha(bundle / 'construction.json')
+    if SELECTED_CANDIDATE == 'primary':
+        entry['construction'] = (bundle / 'construction.json').relative_to(HERE).as_posix()
+        entry['construction_sha256'] = sha(bundle / 'construction.json')
     entry['fixture_recipe'] = recipe.relative_to(ROOT).as_posix()
     entry['measurement_contract'] = contract_path.name
     entry['kind'] = 'draft_not_selected'
-    entry['candidates'] = []
+    entry['candidates'] = [] if SELECTED_CANDIDATE == 'primary' else [{
+        'id': SELECTED_CANDIDATE,
+        'construction': (bundle / 'construction.json').relative_to(HERE).as_posix(),
+        'construction_sha256': sha(bundle / 'construction.json'),
+    }]
+    if SELECTED_CANDIDATE != 'primary':
+        primary = json.loads((HERE / f'current-v2-{SUFFIX}-diagnostic-manifest.json').read_text())['cases'][0]
+        entry['construction'] = primary['construction']
+        entry['construction_sha256'] = primary['construction_sha256']
     manifest['cases'] = [entry]
     manifest['runtime_manifest_sha256'] = sha(ROOT / 'runtime/SOURCE-MANIFEST.json')
-    path = HERE / f'current-v2-{SUFFIX}-diagnostic-manifest.json'
+    path = HERE / (f'current-v2-{SUFFIX}-diagnostic-manifest.json' if SELECTED_CANDIDATE == 'primary'
+                   else f'current-v2-{SUFFIX}-{SELECTED_CANDIDATE}-diagnostic-manifest.json')
     write(path, manifest)
     print(json.dumps({'manifest_sha256': sha(path), 'recipe_sha256': sha(recipe),
                       'construction_sha256': sha(bundle / 'construction.json')}))

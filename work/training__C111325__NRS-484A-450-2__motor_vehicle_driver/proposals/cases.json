@@ -1,34 +1,189 @@
 {
+  "cell_id": "C111325",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
   "cases": [
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__baseline_reference",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared signed approach context; no extra recording",
+      "variable_assignments": {
+        "requested_pre_crosswalk_stop": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "measured_pre_crosswalk_stop": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_body_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "vehicle_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Native capture, physical sign and crosswalk, and statutory branches unverified"
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "reuse_case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2"
+    },
     {
       "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484A-450-2",
-      "kind": "unselected_native_draft",
-      "target_type": "below",
-      "physical_target": "full stop before near-side crosswalk",
-      "comparison_variable": "stop_before_applicable_boundary",
-      "source_branch": "Near-side crosswalk",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "demo-train",
-        "full-train"
+      "target_type": "compliant_attempt",
+      "paired_probe_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_pre_crosswalk_stop"
       ],
-      "construction_manifest": "draft-manifest.json"
+      "probe": {
+        "primary_variable": "requested_pre_crosswalk_stop",
+        "comparison_or_standard": "source-measured full body halt before the near-side crosswalk; no legal verdict",
+        "target_value_or_branch": true
+      },
+      "rationale": "Controlled requested stop comparison; realized body and speed are measured after capture",
+      "variable_assignments": {
+        "requested_pre_crosswalk_stop": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "measured_pre_crosswalk_stop": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_body_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "vehicle_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Native capture, physical sign and crosswalk, and statutory branches unverified"
+        ]
+      },
+      "unresolved_judgment_calls": []
     },
     {
       "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484A-450-2",
-      "kind": "unselected_native_draft",
-      "target_type": "controlled_attempt",
-      "physical_target": "cross near-side crosswalk without full stop",
-      "comparison_variable": "stop_before_applicable_boundary",
-      "source_branch": "Near-side crosswalk",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "demo-train",
-        "full-train"
+      "target_type": "violating_attempt",
+      "paired_probe_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__comparison",
+      "deliberate_differences": [
+        "requested_pre_crosswalk_stop"
       ],
-      "construction_manifest": "draft-manifest.json"
+      "probe": {
+        "primary_variable": "requested_pre_crosswalk_stop",
+        "comparison_or_standard": "source-measured full body halt before the near-side crosswalk; no legal verdict",
+        "target_value_or_branch": false
+      },
+      "rationale": "Controlled requested stop comparison; realized body and speed are measured after capture",
+      "variable_assignments": {
+        "requested_pre_crosswalk_stop": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "measured_pre_crosswalk_stop": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "boolean"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_body_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "vehicle_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          },
+          {
+            "name": "frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Retained Native-shaped sample and frame join",
+            "time_window": "entire 30 s / 600-frame attempt",
+            "reference_frame": "original Native frame identity",
+            "uncertainty": "50 ms sampling; physical acquisition unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Native capture, physical sign and crosswalk, and statutory branches unverified"
+        ]
+      },
+      "unresolved_judgment_calls": []
     }
   ]
 }

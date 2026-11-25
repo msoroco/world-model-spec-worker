@@ -71,6 +71,8 @@ def finalize(attempt, output):
     expected = case.endswith('probe_1')
     matched = observed['through_yield_response_observed'] == expected
     observed_record = {key: value for key, value in observed.items() if key != 'legal_verdict'}
+    source_kind = observed['source_kind']
+    native_observed = source_kind == 'native_observation'
     result = {
         'case_id': case,
         'measured_values': {'priority_sequence': observed_record},
@@ -81,7 +83,9 @@ def finalize(attempt, output):
                            'physical_cause_confirmed': False,
                            'cause_evidence': ['native_samples.jsonl', 'road.xodr']}],
         'setup_confirmed': False, 'behavior_attempted': True, 'maneuver_completed': False,
-        'termination_reason': 'Synthetic saved software sequence measured; physical review pending',
+        'termination_reason': ('Original Native sequence measured; physical review pending'
+                               if native_observed else
+                               'Synthetic saved software sequence measured; physical review pending'),
         'physical_failure_flags': ['through_highway_designation_and_lawful_prior_yield_unverified'],
         'trace_reference': 'trace.jsonl',
         'video_references': [name + '.mkv' for name in CAMERAS],
@@ -95,7 +99,7 @@ def finalize(attempt, output):
                                              'unit': 'count', 'method': 'source-joined stopped-frame count',
                                              'time_window': 'entire recorded interval',
                                              'statistic': 'count', 'reference': 'native_samples.jsonl'}},
-        'provenance_kind': 'synthetic_native_sample', 'accepted': False,
+        'provenance_kind': source_kind, 'accepted': False,
         'legal_verdict_claimed': False}
     from worker_exchange.native_output import validate_result
     validate_result(result)

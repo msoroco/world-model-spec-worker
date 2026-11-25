@@ -207,6 +207,17 @@ def acquire(bundle, output, host, port):
             'legal_verdict_claimed': False}, indent=2) + '\n')
     if error is not None or frame_count != FRAMES:
         raise RuntimeError('Native acquisition incomplete: ' + str(error))
+    originals = [json.loads(line) for line in (output / 'native_samples.jsonl').read_text().splitlines()]
+    (output / 'stop_history.jsonl').write_text(''.join(json.dumps({
+        'frame': row['native_frame'], 'time_s': row['time_s'],
+        'body_vertices_m': row['body_vertices_m']}, allow_nan=False) + '\n'
+        for row in originals))
+    (output / 'crosswalk_geometry.json').write_text(json.dumps({
+        'intersection_polygon_xy_m': [[-7, -7], [7, -7], [7, 7], [-7, 7]],
+        'crosswalk_near_edge_y_m': -11,
+        'road_sha256': sha(output / 'road.xodr'),
+        'source': 'authored OpenDRIVE junction extent; physical review pending',
+    }, indent=2) + '\n')
     (output / 'diagnostic-source-manifest.json').write_text(json.dumps({
         'case_id': config['case_id'], 'source_kind': 'native_observation',
         'sha256': {name: sha(output / name) for name in

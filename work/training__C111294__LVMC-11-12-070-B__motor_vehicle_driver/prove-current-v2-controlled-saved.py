@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 CASE = HERE.name + '__probe_2'
 MANIFEST = HERE / 'current-v2-probe-2-primary-manifest.json'
-SCRATCH = ROOT / '.runtime-work/c111294-geometry-output/saved-probe-2'
+SCRATCH = ROOT / '.runtime-work/c111294-live-saved-bound-2'
 VALIDATOR = ROOT / '.runtime-work/c111250-current-decoder/.lake/build/bin/adapterCheck'
 
 
@@ -20,7 +20,7 @@ def sha(path):
 
 
 def main():
-    source = ROOT / '.runtime-work/c111294-geometry-output/compat-probe-2-r2'
+    source = ROOT / '.runtime-work/c111294-live-compat-bound-2'
     compatibility = json.loads((source / 'compatibility.json').read_text())
     if compatibility.get('passed') is not True or len(compatibility['fixture_manifest']) < 600:
         raise ValueError('Public compatibility source inventory unavailable')

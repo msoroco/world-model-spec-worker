@@ -69,7 +69,10 @@
         "demo-train",
         "full-train"
       ],
-      "construction_manifest": "draft-manifest.json"
+      "construction_manifest": "draft-manifest.json",
+      "gap_ids": [
+        "near_side_crosswalk_source"
+      ]
     },
     {
       "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__probe_2",
@@ -84,7 +87,10 @@
         "demo-train",
         "full-train"
       ],
-      "construction_manifest": "draft-manifest.json"
+      "construction_manifest": "draft-manifest.json",
+      "gap_ids": [
+        "near_side_crosswalk_source"
+      ]
     }
   ],
   "comparisons": [
@@ -265,5 +271,91 @@
     "Native controller/capture and physically observed sign, crosswalk, route and four camera videos remain absent; no current runtime compatibility/process-saved proof, four distinct source-preserving candidates, selected measured cases, independent audit or accepted-recording equivalence. No-crosswalk statutory branches remain pending."
   ],
   "measurement_mapping": "source-observation-mapping.json",
-  "source_only_proof": "crosswalk-source-proof.json"
+  "source_only_proof": "crosswalk-source-proof.json",
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Read the exact frozen assignment membership and review-context descriptions for all four IDs; checked that review-context trace/manifest/receipt targets under inputs/maintenance are absent. No equivalent measured coverage is inferred from membership or commanded intent.",
+    "facts": [
+      {
+        "recording_id": "8b66dc7110651355664b44be213e621f4447b0bea996732725d583ecf47f284e",
+        "demonstrated_fact": "Frozen review context lists accepted membership and a commanded attempt: Commanded turn path.stop request: halt at applicable reference",
+        "limitations": [
+          "No source receipt is supplied by this export",
+          "Commanded behavior is not measured vehicle behavior",
+          "No source-hashed crosswalk/stop-line/sight-point geometry or original frame audit is supplied"
+        ],
+        "sources": [
+          {
+            "path": "inputs/training__C111325__NRS-484A-450-2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "5ddc40289c2ab849cac4d2ae1c19e5137734256be94460c0394eec951ffea850"
+          }
+        ]
+      },
+      {
+        "recording_id": "f82eb9859f5705429c4cdf17b2872854069ff4692a20870cba4010e5e7e26530",
+        "demonstrated_fact": "Frozen review context lists accepted membership and a commanded attempt: Commanded turn path.stop request: omit approach halt",
+        "limitations": [
+          "No source receipt is supplied by this export",
+          "Commanded behavior is not measured vehicle behavior",
+          "No source-hashed crosswalk/stop-line/sight-point geometry or original frame audit is supplied"
+        ],
+        "sources": [
+          {
+            "path": "inputs/training__C111325__NRS-484A-450-2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "5ddc40289c2ab849cac4d2ae1c19e5137734256be94460c0394eec951ffea850"
+          }
+        ]
+      },
+      {
+        "recording_id": "cc58ed7ec5ab3e21578eab4293638d2a2aa23cc90b3e46b38b026d61991846e7",
+        "demonstrated_fact": "Frozen review context lists accepted membership and a commanded attempt: Commanded turn path.stop before crosswalk: false",
+        "limitations": [
+          "No source receipt is supplied by this export",
+          "Commanded behavior is not measured vehicle behavior",
+          "No source-hashed crosswalk/stop-line/sight-point geometry or original frame audit is supplied"
+        ],
+        "sources": [
+          {
+            "path": "inputs/training__C111325__NRS-484A-450-2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "5ddc40289c2ab849cac4d2ae1c19e5137734256be94460c0394eec951ffea850"
+          }
+        ]
+      },
+      {
+        "recording_id": "1d44f472c13b303e2b4691b2e7348e3a20ce0c53fefbc704f95d064c5984f78e",
+        "demonstrated_fact": "Frozen review context lists accepted membership and a commanded attempt: Commanded turn path.stop before crosswalk: true",
+        "limitations": [
+          "No source receipt is supplied by this export",
+          "Commanded behavior is not measured vehicle behavior",
+          "No source-hashed crosswalk/stop-line/sight-point geometry or original frame audit is supplied"
+        ],
+        "sources": [
+          {
+            "path": "inputs/training__C111325__NRS-484A-450-2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "5ddc40289c2ab849cac4d2ae1c19e5137734256be94460c0394eec951ffea850"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "near_side_crosswalk_source",
+        "requirement": "NRS-484A-450-2 near-side crosswalk halt ordering",
+        "source": "NRS 484A.450(2)",
+        "why_existing_insufficient": "Four accepted membership rows lack returned original source receipts and source-hashed boundary/stop measurement."
+      },
+      {
+        "id": "no_crosswalk_stop_line_source",
+        "requirement": "NRS-484A-450-2 marked-line alternative when no crosswalk",
+        "source": "NRS 484A.450(2)",
+        "why_existing_insufficient": "No returned source proves absence of crosswalk, marked line and full-body halt before it."
+      },
+      {
+        "id": "no_crosswalk_sight_point_source",
+        "requirement": "NRS-484A-450-2 sight-point alternative when neither crosswalk nor line exists",
+        "source": "NRS 484A.450(2)",
+        "why_existing_insufficient": "No returned source proves absence of higher-priority references or original sightline opening point."
+      }
+    ]
+  }
 }

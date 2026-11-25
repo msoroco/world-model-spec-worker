@@ -47,6 +47,7 @@ def main():
         current['mandatory_channels'] = [c['name'] for c in current['recording_description']['channels']]
         current['case']['recording_description'] = current['recording_description']
         sources = {'runner.py': (HERE / 'native/runner.py').read_text(),
+                   'live_capture.py': (HERE / 'native/live_capture.py').read_text(),
                    'measure_yield.py': (HERE / 'native/measure_yield.py').read_text(),
                    'finalize.py': (HERE / 'native/finalize.py').read_text(),
                    'authored-road.xodr': (HERE / 'native/road.xodr').read_text(),

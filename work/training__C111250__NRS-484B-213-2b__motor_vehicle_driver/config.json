@@ -1,0 +1,303 @@
+{
+  "acquire": [
+    "original_ego_transform",
+    "ego_bounding_box",
+    "road_centerline_readback",
+    "lane_direction_readback",
+    "intersection_boundary_readback",
+    "four_source_camera_frames"
+  ],
+  "actor": "motor_vehicle_driver",
+  "cameras": [
+    {
+      "name": "overview",
+      "fps": 20,
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 85,
+      "pose_strategy": "world"
+    },
+    {
+      "name": "approach",
+      "fps": 20,
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "world"
+    },
+    {
+      "name": "reference_corner",
+      "fps": 20,
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "world"
+    },
+    {
+      "name": "driver_reference",
+      "fps": 20,
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "ego"
+    }
+  ],
+  "candidate_id": "primary",
+  "case": {
+    "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "st.intersection",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native map readback and source camera pixels locate the actual intersection; definition review pending",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "st.railway_crossing",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Not asserted by the selected intersection branch; separate physical crossing would require a separate scene",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.approaching",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original full vehicle footprint relative to the source-hashed intersection entry",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "rel.centre_distance",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original full vehicle footprint front to intersection entry; 30.48 m is an engineering proxy",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "st.centre_line",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Authored marked centerline plus original Native lane and map readback",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "rel.occupies",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native four-corner footprint on either side of reviewed centerline",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.in_intersection",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original full vehicle footprint interval overlapping intersection bounds",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        },
+        {
+          "name": "st.one_way_roadway",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original road direction context, opposed lane map readback and source pixels; applicability review pending",
+          "time_window": "all original 600 Native frames / 30 s",
+          "reference_frame": "original Native map, body and camera frame",
+          "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "two_way_intersection_source",
+          "unit": "structured",
+          "method": "Source-hashed OpenDRIVE and original Native map lane readback"
+        }
+      ],
+      "limitations": [
+        "Authored intersection and CPU fixture do not prove public highway or legal intersection definition",
+        "Original Native centerline, body, crossing context and camera pixels require local review"
+      ]
+    }
+  },
+  "case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
+  "cell_id": "C111250",
+  "control_phases": [
+    {
+      "first_frame": 0,
+      "last_frame": 239,
+      "name": "approach_before_zone",
+      "target_lane_id": "-1",
+      "target_speed_mps": 5.0
+    },
+    {
+      "first_frame": 240,
+      "last_frame": 359,
+      "name": "approach_within_zone",
+      "target_lane_id": "-1",
+      "target_speed_mps": 5.0
+    },
+    {
+      "first_frame": 360,
+      "last_frame": 519,
+      "name": "intersection_traversal",
+      "target_lane_id": "-1",
+      "target_speed_mps": 5.0
+    },
+    {
+      "first_frame": 520,
+      "last_frame": 599,
+      "name": "departure",
+      "target_lane_id": "-1",
+      "target_speed_mps": 5.0
+    }
+  ],
+  "distance_proxy": "vehicle_front_to_intersection_entry_m",
+  "distance_threshold_m": 30.48,
+  "duration_frames": 600,
+  "duration_s": 30,
+  "ego_lane_id": "-1",
+  "ego_spawn": {
+    "lane_id": "-1",
+    "road_id": "1",
+    "s_m": 15
+  },
+  "law_id": "NRS-484B-213-2b",
+  "legal_verdict": null,
+  "one_way_highway": false,
+  "opposing_lane_id": "1",
+  "physical_verified": false,
+  "railroad_crossing_claimed": false,
+  "rate_hz": 20,
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "rel.occupies"
+  ],
+  "road_directionality": "two_way",
+  "selected_case_id": "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
+  "source_packets": [],
+  "status": "selected_native_runner_cpu_prepared",
+  "supported_case_ids": [
+    "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_01",
+    "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_02",
+    "training__C111250__NRS-484B-213-2b__motor_vehicle_driver__probe_03"
+  ],
+  "format": "c111250-nrs-intersection-delivery-v2",
+  "requested_left_interval": [],
+  "requested_speed_mps": 3.4,
+  "mandatory_channels": [
+    "st.intersection",
+    "st.railway_crossing",
+    "drv.approaching",
+    "rel.centre_distance",
+    "st.centre_line",
+    "rel.occupies",
+    "drv.in_intersection",
+    "st.one_way_roadway"
+  ],
+  "native_execution_integrated": true,
+  "original_native_observed": false,
+  "recording_description": {
+    "channels": [
+      {
+        "name": "st.intersection",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native map readback and source camera pixels locate the actual intersection; definition review pending",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "st.railway_crossing",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Not asserted by the selected intersection branch; separate physical crossing would require a separate scene",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "drv.approaching",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original full vehicle footprint relative to the source-hashed intersection entry",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "rel.centre_distance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original full vehicle footprint front to intersection entry; 30.48 m is an engineering proxy",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "st.centre_line",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored marked centerline plus original Native lane and map readback",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native four-corner footprint on either side of reviewed centerline",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "drv.in_intersection",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original full vehicle footprint interval overlapping intersection bounds",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      },
+      {
+        "name": "st.one_way_roadway",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original road direction context, opposed lane map readback and source pixels; applicability review pending",
+        "time_window": "all original 600 Native frames / 30 s",
+        "reference_frame": "original Native map, body and camera frame",
+        "uncertainty": "50 ms sample interval; physical and legal interpretation pending"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "two_way_intersection_source",
+        "unit": "structured",
+        "method": "Source-hashed OpenDRIVE and original Native map lane readback"
+      }
+    ],
+    "limitations": [
+      "Authored intersection and CPU fixture do not prove public highway or legal intersection definition",
+      "Original Native centerline, body, crossing context and camera pixels require local review"
+    ]
+  },
+  "assignment_sha256": "8420f03e26cfad1bc035369803b9a6f062940452ca0557f51b5231c98fcfe552",
+  "road_sha256": "aa2963765adede2dcdc310cfc5e772cfa0a5d7a02289532e7d9ade84520fee3f"
+}

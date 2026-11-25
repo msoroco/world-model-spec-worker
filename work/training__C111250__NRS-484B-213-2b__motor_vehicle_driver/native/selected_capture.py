@@ -145,6 +145,7 @@ def execute(bundle, output, host, port, checked):
         write_new(output / 'road-context.json', {
             'approach_axis_xy': [1, 0], 'centerline_y_m': 0,
             'intersection_x_m': [-7, 7], 'one_way_highway': False,
+            'two_way_intersection_source': True,
             'source_kind': 'original_native_map_readback_pending_review',
             'road_sha256': sha(bundle / 'road.xodr'),
             'native_map_readback_sha256': sha(output / 'native-map-readback.json'),
