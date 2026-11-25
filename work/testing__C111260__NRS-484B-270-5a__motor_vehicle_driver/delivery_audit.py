@@ -1,167 +1,204 @@
-"""Independent saved-source audit for the original motorist/rider encounter.
-
-This checks the acquisition packet and every original camera image. It does not
-substitute for composed-video decode, physical review, or a due-care judgment.
-"""
+"""Independent source and decoded-pixel audit for a saved mounted-rider attempt."""
+from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
-import io
 import json
 from pathlib import Path
 import subprocess
 from zipfile import ZipFile
 
 from PIL import Image
+from io import BytesIO
+
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
+ROLES = {"overview": "motorist and mounted rider routes",
+         "approach": "motorist approach and rider class",
+         "reference_corner": "rider mount, conflict window and separation",
+         "driver_reference": "motorist response and surrounding encounter"}
 
 
-ROOT = Path(__file__).resolve().parent
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def _module(name):
-    spec = importlib.util.spec_from_file_location(name, ROOT / (name + ".py"))
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+def read(path):
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def rows(path):
+    return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
 def audit_saved(attempt, *, case_id, packet_sha256, require_attested=False,
                 video_manifest_sha256=None, pixel_review_path=None,
                 pixel_review_sha256=None):
+    """Recheck the original Native packet, camera archives and reviewed pixels."""
+    from saved_encounter import finalize_saved
+    from native_capture import audit_original_pixels
+    from video_media import audit_composed
+    from native_site import verify as verify_site
     root = Path(attempt).resolve()
     packet_path = root / "encounter-packet.json"
-    if not packet_path.is_file() or packet_path.is_symlink():
-        raise ValueError("original encounter packet missing")
-    if hashlib.sha256(packet_path.read_bytes()).hexdigest() != packet_sha256:
-        raise ValueError("externally sealed encounter packet hash drift")
-    packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    if sha(packet_path) != packet_sha256:
+        raise ValueError("encounter packet hash drift")
+    packet = read(packet_path)
     if packet.get("case_id") != case_id:
-        raise ValueError("exact delivery case differs from original packet")
-    if require_attested and packet.get("capture_origin") != "native_adapter_attested":
-        raise ValueError("reviewed original Native capture adapter required")
-    if packet.get("physical_review") != "pending" or packet.get("legal_judgment") != "unresolved":
-        raise ValueError("acquisition packet may not assert physical or legal acceptance")
-    saved = _module("saved_encounter").finalize_saved(root)
+        raise ValueError("exact delivery case differs")
     if require_attested:
-        native_ref = packet.get("native_site")
-        if not native_ref:
-            raise ValueError("sealed Native site survey missing")
-        original = _module("native_site").verify(root, native_ref, expected_kind=saved["kind"])
-        site_ref = packet["site"]
-        site_path = root / site_ref["path"]
-        if json.loads(site_path.read_text(encoding="utf-8")) != original:
-            raise ValueError("captured site differs from sealed Native survey")
-    pixels = _module("native_capture").audit_original_pixels(root)
-    if saved["case_id"] != pixels["case_id"] or saved["case_id"] != case_id:
-        raise ValueError("saved actor and pixel case join differs")
-    if saved["original_frames"] != pixels["original_frames_per_camera"]:
-        raise ValueError("saved actor and pixel frame count differs")
-    video = None
-    if video_manifest_sha256 is not None:
-        manifest_path = root / 'video-media.json'
-        if not manifest_path.is_file() or manifest_path.is_symlink():
-            raise ValueError('externally sealed composed video manifest missing')
-        if hashlib.sha256(manifest_path.read_bytes()).hexdigest() != video_manifest_sha256:
-            raise ValueError('externally sealed composed video manifest hash drift')
-        video = _module('video_media').audit_composed(
-            root, {'path': manifest_path.name, 'sha256': video_manifest_sha256})
-        if require_attested and json.loads(manifest_path.read_text(encoding='utf-8')).get('diagnostic_fixture') is True:
-            raise ValueError('diagnostic video cannot satisfy original delivery audit')
-        if video['case_id'] != case_id or video['original_frames'] != saved['original_frames']:
-            raise ValueError('composed video and original encounter differ')
-    pixels_reviewed = False
+        if packet.get("capture_origin") != "native_adapter_attested" or not packet.get("native_site"):
+            raise ValueError("reviewed original Native source absent")
+        verify_site(root, packet["native_site"], expected_kind=case_id.rsplit("__", 1)[-1].rsplit("_", 1)[0])
+    observed = finalize_saved(root)
+    pixels = audit_original_pixels(root)
+    output = {"case_id": case_id, "rider_kind": observed["kind"],
+              "original_frames": observed["original_frames"],
+              "decoded_original_images": pixels["decoded_images"],
+              "physical_completion": False, "full_video_decode": False,
+              "actual_pixels": False}
+    if video_manifest_sha256:
+        output["full_video_decode"] = audit_composed(
+            root, {"path": "video-media.json", "sha256": video_manifest_sha256})["full_video_decode"]
     if pixel_review_path is not None:
-        if not video or not pixel_review_sha256:
-            raise ValueError('pixel review requires sealed composed video and external review hash')
-        review_path = Path(pixel_review_path)
-        if not review_path.is_file() or review_path.is_symlink():
-            raise ValueError('independent pixel review missing')
-        if hashlib.sha256(review_path.read_bytes()).hexdigest() != pixel_review_sha256:
-            raise ValueError('independent pixel review hash drift')
-        review = json.loads(review_path.read_text(encoding='utf-8'))
-        if (review.get('format') != 'c111260-independent-pixel-review-v1'
-                or review.get('case_id') != case_id
-                or review.get('packet_sha256') != packet_sha256
-                or review.get('video_manifest_sha256') != video_manifest_sha256
-                or review.get('original_frames') != 900):
-            raise ValueError('independent pixel review source binding differs')
-        views = review.get('views')
-        if not isinstance(views, dict) or set(views) != set(pixels['media_sha256']):
-            raise ValueError('independent pixel review omits a camera')
-        media = json.loads((root / 'media.json').read_text(encoding='utf-8'))
-        frame_map = json.loads((root / 'camera-frames.json').read_text(encoding='utf-8'))
-        video_refs = json.loads((root / 'video-media.json').read_text(encoding='utf-8'))['camera_videos']
-        for camera, samples in views.items():
-            if not isinstance(samples, list) or not samples:
-                raise ValueError('independent pixel review has no frame sample: ' + camera)
-            seen = set()
-            with ZipFile(root / media[camera]['path']) as archive:
-                for sample in samples:
-                    frame = sample.get('frame')
-                    if (not isinstance(frame, int) or frame not in frame_map[camera]
-                            or frame in seen):
-                        raise ValueError('independent pixel review frame identity differs')
-                    seen.add(frame)
-                    original_bytes = archive.read(f'{frame:08d}.png')
-                    original_sha = hashlib.sha256(original_bytes).hexdigest()
-                    if (sample.get('original_png_sha256') != original_sha
-                            or sample.get('ego_visible') is not True
-                            or sample.get('rider_visible') is not True
-                            or sample.get('person_mounted_visible') is not True
-                            or sample.get('rider_kind_visible') != saved['kind']):
-                        raise ValueError('independent pixel review role or source differs')
-                    index = frame_map[camera].index(frame)
-                    selected = subprocess.run(
-                        ['ffmpeg', '-nostdin', '-v', 'error', '-xerror',
-                         '-i', str(root / video_refs[camera]['path']),
-                         '-vf', f'select=eq(n\\,{index})', '-frames:v', '1',
-                         '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
-                        capture_output=True, timeout=120)
-                    with Image.open(io.BytesIO(original_bytes)) as original_image:
-                        rgb = original_image.convert('RGB')
-                        expected_pixels = rgb.tobytes()
-                    if selected.returncode or selected.stdout != expected_pixels:
-                        raise ValueError('reviewed encoded pixels differ from original PNG')
-        pixels_reviewed = True
-    return {
-        "format": "c111260-saved-source-audit-v1",
-        "case_id": case_id,
-        "packet_sha256": packet_sha256,
-        "original_frames": saved["original_frames"],
-        "decoded_original_images": pixels["decoded_images"],
-        "rider_kind": saved["kind"],
-        "observed_response": saved["response"],
-        "source_hashes": saved["source_hashes"],
-        "media_sha256": pixels["media_sha256"],
-        "full_video_decode": bool(video and video['full_video_decode']),
-        "actual_pixels": pixels_reviewed,
-        "physical_completion": False,
-        "legal_judgment": "unresolved",
-    }
+        path = Path(pixel_review_path)
+        if not pixel_review_sha256 or sha(path) != pixel_review_sha256:
+            raise ValueError("pixel review hash drift")
+        review = read(path)
+        if (review.get("format") != "c111260-independent-pixel-review-v1" or
+                review.get("case_id") != case_id or
+                review.get("packet_sha256") != packet_sha256 or
+                review.get("video_manifest_sha256") != video_manifest_sha256 or
+                review.get("original_frames") != observed["original_frames"]):
+            raise ValueError("independent pixel review identity differs")
+        views = review.get("views", {})
+        if set(views) != set(VIEWS):
+            raise ValueError("independent pixel review omits a camera")
+        camera_frames = read(root / "camera-frames.json")
+        for name in VIEWS:
+            for item in views[name]:
+                if (not item.get("ego_visible") or not item.get("rider_visible") or
+                        not item.get("person_mounted_visible") or
+                        item.get("rider_kind_visible") != observed["kind"]):
+                    raise ValueError("independent pixel role or source differs")
+                frame = item.get("frame")
+                if frame not in camera_frames[name]:
+                    raise ValueError("independent pixel role or source differs")
+                with ZipFile(root / (name + ".png.zip")) as archive:
+                    original = archive.read(f"{frame:08d}.png")
+                if hashlib.sha256(original).hexdigest() != item.get("original_png_sha256"):
+                    raise ValueError("independent pixel role or source differs")
+                index = camera_frames[name].index(frame)
+                command = ["ffmpeg", "-nostdin", "-v", "error", "-i", str(root / (name + ".mkv")),
+                           "-vf", f"select=eq(n\\,{index})", "-frames:v", "1",
+                           "-f", "rawvideo", "-pix_fmt", "rgb24", "-"]
+                encoded = subprocess.run(command, capture_output=True, check=True).stdout
+                with Image.open(BytesIO(original)) as image:
+                    source_rgb = image.convert("RGB").tobytes()
+                if encoded != source_rgb:
+                    raise ValueError("encoded pixels differ from original")
+        output["actual_pixels"] = True
+    return output
+
+
+def audit(attempt, processing_path, case, review_path, *, diagnostic=False):
+    from worker_exchange.media import audit as decode
+    attempt, processing_path, review_path = map(Path, (attempt, processing_path, review_path))
+    attempt = attempt.resolve()
+    processing = read(processing_path)
+    if (processing.get("format") != "worker-saved-processing" or
+            processing.get("passed") is not True or
+            processing.get("originals_preserved") is not True or
+            processing.get("case_id") != case):
+        raise ValueError("saved-only processing receipt missing or failed")
+    for rel, digest in processing.get("original_source_hashes", {}).items():
+        source = attempt / rel
+        if not source.is_file() or sha(source) != digest:
+            raise ValueError("saved original changed: " + rel)
+    result_path = Path(processing["result"])
+    if sha(result_path) != processing.get("result_sha256"):
+        raise ValueError("saved result changed")
+    result = read(result_path)
+    if result.get("case_id") != case or result.get("diagnostic_fixture") is not diagnostic:
+        raise ValueError("result identity or provenance differs")
+    packet = read(attempt / "encounter-packet.json")
+    if packet.get("case_id") != case or packet.get("diagnostic_fixture") is not diagnostic:
+        raise ValueError("original encounter identity or provenance differs")
+    for key in ("site", "history", "camera_frames"):
+        ref = packet[key]
+        if sha(attempt / ref["path"]) != ref["sha256"]:
+            raise ValueError("source packet hash changed: " + key)
+    history = read(attempt / "history.json")
+    motion = rows(attempt / "trace.jsonl")
+    mapping = rows(attempt / "video_frames.jsonl")
+    # The saved Native row, trace row and camera frame map must share every frame.
+    expected = 9 if diagnostic else 900
+    if not all(len(stream) == expected for stream in (history, motion, mapping)):
+        raise ValueError("original frame count incomplete")
+    source_time_offset = motion[0]["time_s"] - history[0]["time_s"]
+    if abs(source_time_offset) > 0.051:
+        raise ValueError("original source time bases differ")
+    for index, (native, trace, video) in enumerate(zip(history, motion, mapping)):
+        if (native.get("frame") != trace.get("frame") or
+                native.get("frame") != video.get("carla_frame") or
+                abs(native.get("time_s", 1e9) + source_time_offset - trace.get("time_s", -1e9)) > 1e-5 or
+                abs(trace.get("time_s", 1e9) - video.get("time_s", -1e9)) > 1e-6 or
+                video.get("video_frame") != index or
+                native.get("ego_actor_id") == native.get("rider_actor_id") or
+                native.get("rider_person_actor_id") in
+                    (native.get("ego_actor_id"), native.get("rider_actor_id")) or
+                not native.get("rider_mounted_observed")):
+            raise ValueError("original participant or frame join differs")
+    if not diagnostic:
+        seal = read(attempt / "capture-seal.json")
+        exit_receipt = read(attempt / "native-exit.json")
+        owner = read(attempt / "owner-release.json")
+        if (seal.get("events") != ["capture_finished", "encoders_closed", "restoration_verified"] or
+                seal.get("restoration", {}).get("restored") is not True or
+                seal.get("diagnostic_fixture") is True or
+                exit_receipt.get("capture_seal_sha256") != sha(attempt / "capture-seal.json") or
+                owner.get("native_exit_sha256") != sha(attempt / "native-exit.json") or
+                owner.get("operator_attested") is not True):
+            raise ValueError("Native closure or owner release incomplete")
+        if result.get("physical_checks", {}).get("maneuver", {}).get("status") != "met":
+            raise ValueError("measured encounter traversal incomplete")
+    review = read(review_path)
+    if (review.get("case_id") != case or review.get("diagnostic_fixture") is not diagnostic or
+            review.get("frame_map_sha256") != sha(attempt / "video_frames.jsonl") or
+            set(review.get("views", {})) != set(VIEWS) or
+            not review.get("reviewer") or not review.get("method")):
+        raise ValueError("independent pixel review absent or stale")
+    receipts = {}
+    for index, name in enumerate(VIEWS):
+        video = attempt / (name + ".mkv")
+        receipt_path = processing_path.parent / ("source-" + str(index) + ".json")
+        receipt = decode(video, expected, mapping_sha256=sha(attempt / "video_frames.jsonl"),
+                         receipt=processing_path.parent / ("delivery-decode-" + name + ".json"))
+        if (not receipt_path.is_file() or not receipt.get("rgb_sequence_sha256") or
+                review["views"][name].get("video_sha256") != sha(video) or
+                review["views"][name].get("rgb_sequence_sha256") != receipt["rgb_sequence_sha256"] or
+                review["views"][name].get("required_role") != ROLES[name] or
+                review["views"][name].get("visibility_status") !=
+                    ("diagnostic_only" if diagnostic else "visible")):
+            raise ValueError("independent original pixel review incomplete: " + name)
+        receipts[name] = sha(processing_path.parent / ("delivery-decode-" + name + ".json"))
+    return {"format": "c111260-independent-delivery-audit-v1", "case_id": case,
+            "passed": True, "diagnostic_fixture": diagnostic,
+            "checks": {"native_source": not diagnostic, "all_participants": True,
+                       "time_join": True, "full_video_decode": True,
+                       "actual_pixels": True, "physical_completion": not diagnostic},
+            "decode_receipts": receipts, "legal_verdict": None}
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--attempt", type=Path, required=True)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--attempt", required=True)
+    parser.add_argument("--processing", required=True)
     parser.add_argument("--case", required=True)
-    parser.add_argument("--packet-sha256", required=True)
-    parser.add_argument("--require-attested", action="store_true")
-    parser.add_argument("--video-manifest-sha256")
-    parser.add_argument("--pixel-review", type=Path)
-    parser.add_argument("--pixel-review-sha256")
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--pixel-review", required=True)
+    parser.add_argument("--diagnostic", action="store_true")
     args = parser.parse_args()
-    result = audit_saved(args.attempt, case_id=args.case,
-                         packet_sha256=args.packet_sha256,
-                         require_attested=args.require_attested,
-                         video_manifest_sha256=args.video_manifest_sha256,
-                         pixel_review_path=args.pixel_review,
-                         pixel_review_sha256=args.pixel_review_sha256)
-    if args.output.exists():
-        raise ValueError("saved audit output already exists")
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(audit(args.attempt, args.processing, args.case,
+                           args.pixel_review, diagnostic=args.diagnostic), indent=2))
 
 
 if __name__ == "__main__":

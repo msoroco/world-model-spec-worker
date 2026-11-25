@@ -7,7 +7,7 @@
       "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "ef91bf2ea286da899a345f21c78d338fc30cc5f56302413632bad0e7448e4226",
+      "construction_sha256": "0a7cad1c1c44935d6d313ab9a7fd0e9042e4cae631c489be7ce9475d3c0a94fd",
       "measurement_contract": "cases/bicycle_brake/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -49,7 +49,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_brake/fallback1-construction.json",
-          "construction_sha256": "6e7fd12962ec8ba53ecc07b8d0e0467ddcefc2a0d5ba7b24e61734d58ae43035",
+          "construction_sha256": "0442b5620b8098fc4875b5080cb4d99c3057bf9939c9d918b8198b38db7ab7c3",
           "changed_knobs": [
             "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
           ],
@@ -60,26 +60,86 @@
           },
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --candidate fallback1 --output .runtime-work/c111260-5a-proof/bicycle_brake/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "6e7fd12962ec8ba53ecc07b8d0e0467ddcefc2a0d5ba7b24e61734d58ae43035",
+            "construction_sha256": "0442b5620b8098fc4875b5080cb4d99c3057bf9939c9d918b8198b38db7ab7c3",
             "exit_code": 0,
             "log": "proof-offline-bicycle_brake-fallback1.log",
-            "log_sha256": "0cc3c2a48beda5d84492b7a89dc4b15039e5c0925e8850e0904a7ce636a63bb2"
+            "log_sha256": "41919cc1849a5baca889b145de1b4eb93cc6286c4e6b996e80ebf7981eee9f1c"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-bicycle_brake-fallback1.json",
+            "sha256": "35b752ccf9dbd2ad93ed54442a66d29d04d92a79072165b64e522f8f86ef6cea",
+            "log": "proof-compatibility-bicycle_brake-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-bicycle_brake-fallback1-negative.log"
           }
         }
       ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-bicycle_brake.json",
+        "sha256": "b4eecc07be5d1f24ca1d3198c2b99ac98a6f8ab8f58d25c9700098ed0fc31766"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --candidate primary --output .runtime-work/c111260-5a-proof/bicycle_brake/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "ef91bf2ea286da899a345f21c78d338fc30cc5f56302413632bad0e7448e4226",
+        "construction_sha256": "0a7cad1c1c44935d6d313ab9a7fd0e9042e4cae631c489be7ce9475d3c0a94fd",
         "exit_code": 0,
         "log": "proof-offline-bicycle_brake-primary.log",
-        "log_sha256": "57ad002550c350fa1e84b8ea9f6c45097249a7802fed1655811e49009939f5e0"
+        "log_sha256": "ca79dcdf51b9c5da7857508bc8d19bbe59c2caa461f0158153993999cb469bb6"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-bicycle_brake-primary.json",
+        "sha256": "0c906423b4aa61dec6d4a9b4c7b861f8cce8290570ae064bb1e7d64bc07686d2",
+        "log": "proof-compatibility-bicycle_brake-primary-analysis.log",
+        "negative_log": "proof-compatibility-bicycle_brake-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-compatibility-bicycle_brake-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111260_SITE_ROOT",
+        "camera_review_env_var": "C111260_CAMERA_REVIEW",
+        "camera_review_sha256_env_var": "C111260_CAMERA_REVIEW_SHA256"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-process-saved-bicycle_brake.log",
+        "test_exit_code": 0,
+        "test_log_sha256": "6f067c21b892a7a105c75658e8b0879729f7bffd9fdfa2984979dbe1d57888e0"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "258404a01ef54e74df7f99b304b1d29d6c3ecc99d651d631106ae6ac4a440f55",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/bicycle_brake/attempt --processing .runtime-work/c111260-5a-saved/bicycle_brake/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --pixel-review .runtime-work/c111260-5a-saved/bicycle_brake/pixel-review.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-bicycle_brake-positive.log",
+        "test_log_sha256": "6911d0c173cdcc2135b52220fdda21460f4c8ed4da195bb07a326faa5f7e65fc",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/bicycle_brake/attempt --processing .runtime-work/c111260-5a-saved/bicycle_brake/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --pixel-review .runtime-work/c111260-5a-saved/bicycle_brake/pixel-review-tampered.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent original pixel review incomplete",
+        "negative_log": "proof-delivery-bicycle_brake-negative.log",
+        "negative_log_sha256": "95addcd680b8b69e9669f3e0514edd2be62a205559b326ee7670ba4bbabf90e8"
       }
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain",
       "kind": "delivery",
       "construction": "cases/bicycle_maintain/construction.json",
-      "construction_sha256": "47f49f936f8ce498b64b9a3dd3ef6b93f821164db1e07b29dd5a9926054f02df",
+      "construction_sha256": "1c7d26e411f9f764f62babfade0e72ea4e98f7d6624fb209aa64c654ecb64b8c",
       "measurement_contract": "cases/bicycle_maintain/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -121,7 +181,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_maintain/fallback1-construction.json",
-          "construction_sha256": "df5f3988bdc9aea6dee5042f1c3c055c52929b57cf15290be71386548369a792",
+          "construction_sha256": "d39442cc516119f115925178536bcd3ee0811504680eaa8e271e22a83a625721",
           "changed_knobs": [
             "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
           ],
@@ -132,26 +192,86 @@
           },
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --candidate fallback1 --output .runtime-work/c111260-5a-proof/bicycle_maintain/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "df5f3988bdc9aea6dee5042f1c3c055c52929b57cf15290be71386548369a792",
+            "construction_sha256": "d39442cc516119f115925178536bcd3ee0811504680eaa8e271e22a83a625721",
             "exit_code": 0,
             "log": "proof-offline-bicycle_maintain-fallback1.log",
-            "log_sha256": "279538fe812d165bb22f5a84ab94b40efa9072957816601b6c80f1ba281fa35e"
+            "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-bicycle_maintain-fallback1.json",
+            "sha256": "4aae77f0e90fe3b3f7ad45b0dc61705fd971103ebfd150b6790b541e4eb92c6f",
+            "log": "proof-compatibility-bicycle_maintain-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-bicycle_maintain-fallback1-negative.log"
           }
         }
       ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-bicycle_maintain.json",
+        "sha256": "63e5933a8a6d19018d1aecef836d16e2ec3524815bcd49aefceece1b3680b277"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --candidate primary --output .runtime-work/c111260-5a-proof/bicycle_maintain/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "47f49f936f8ce498b64b9a3dd3ef6b93f821164db1e07b29dd5a9926054f02df",
+        "construction_sha256": "1c7d26e411f9f764f62babfade0e72ea4e98f7d6624fb209aa64c654ecb64b8c",
         "exit_code": 0,
         "log": "proof-offline-bicycle_maintain-primary.log",
-        "log_sha256": "e84af6fb3183f2e6c929d3188feaa38c20151c825192a5117c1911fec8992ee5"
+        "log_sha256": "db1ad4e64dae7c3f378521f0f10d6a00e3be172a91f4ddecdad706c3064aa004"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-bicycle_maintain-primary.json",
+        "sha256": "0c451eebef5f0483a02b8871f9790a51b10e458a4fec5cf5ac94ef8c7273d150",
+        "log": "proof-compatibility-bicycle_maintain-primary-analysis.log",
+        "negative_log": "proof-compatibility-bicycle_maintain-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-compatibility-bicycle_maintain-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111260_SITE_ROOT",
+        "camera_review_env_var": "C111260_CAMERA_REVIEW",
+        "camera_review_sha256_env_var": "C111260_CAMERA_REVIEW_SHA256"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-process-saved-bicycle_maintain.log",
+        "test_exit_code": 0,
+        "test_log_sha256": "7474fba98cccfc7ff648906280cab115bbaf2232b775bb3ab1df1615ad42229e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "258404a01ef54e74df7f99b304b1d29d6c3ecc99d651d631106ae6ac4a440f55",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/bicycle_maintain/attempt --processing .runtime-work/c111260-5a-saved/bicycle_maintain/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --pixel-review .runtime-work/c111260-5a-saved/bicycle_maintain/pixel-review.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-bicycle_maintain-positive.log",
+        "test_log_sha256": "891bce8d1db2ebebe07b2283c40b532fdc3340b1adb4f937b4ed94e1bb61ddd8",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/bicycle_maintain/attempt --processing .runtime-work/c111260-5a-saved/bicycle_maintain/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --pixel-review .runtime-work/c111260-5a-saved/bicycle_maintain/pixel-review-tampered.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent original pixel review incomplete",
+        "negative_log": "proof-delivery-bicycle_maintain-negative.log",
+        "negative_log_sha256": "95addcd680b8b69e9669f3e0514edd2be62a205559b326ee7670ba4bbabf90e8"
       }
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake",
       "kind": "delivery",
       "construction": "cases/electric_bicycle_brake/construction.json",
-      "construction_sha256": "35c316bbcb8d130395fc97c82e57d250f60f728d784afda03c80c1d265807887",
+      "construction_sha256": "5defcb3a1b5d637ea317032ebb4cc38ca92d92b1886842dc059dd637e7217dcd",
       "measurement_contract": "cases/electric_bicycle_brake/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -193,7 +313,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_bicycle_brake/fallback1-construction.json",
-          "construction_sha256": "6bd8bafafc8ea05b4943583ad40ef0722b94dbbf1933156de5cbaef073f8360d",
+          "construction_sha256": "8bcfd85ebba95054a3811377e51ff3817cd93d272c1f26b9673d2b0cdc0235b1",
           "changed_knobs": [
             "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
           ],
@@ -204,26 +324,86 @@
           },
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_bicycle_brake/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "6bd8bafafc8ea05b4943583ad40ef0722b94dbbf1933156de5cbaef073f8360d",
+            "construction_sha256": "8bcfd85ebba95054a3811377e51ff3817cd93d272c1f26b9673d2b0cdc0235b1",
             "exit_code": 0,
             "log": "proof-offline-electric_bicycle_brake-fallback1.log",
-            "log_sha256": "cc4ce8d54ec0f6a2d972abf34157488e5e132e9d71efaebb422979f2bf3356f8"
+            "log_sha256": "ca79dcdf51b9c5da7857508bc8d19bbe59c2caa461f0158153993999cb469bb6"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-electric_bicycle_brake-fallback1.json",
+            "sha256": "480e8503aae58882af7c4a0a6db68b0a14f580e91cd7c648e89a6dbadc65d528",
+            "log": "proof-compatibility-electric_bicycle_brake-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-electric_bicycle_brake-fallback1-negative.log"
           }
         }
       ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-electric_bicycle_brake.json",
+        "sha256": "70bd352c8dddf9e91256b28f6b7f4b5e03faa40174132ad3c474dc3814738d2a"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --candidate primary --output .runtime-work/c111260-5a-proof/electric_bicycle_brake/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "35c316bbcb8d130395fc97c82e57d250f60f728d784afda03c80c1d265807887",
+        "construction_sha256": "5defcb3a1b5d637ea317032ebb4cc38ca92d92b1886842dc059dd637e7217dcd",
         "exit_code": 0,
         "log": "proof-offline-electric_bicycle_brake-primary.log",
-        "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+        "log_sha256": "53b77ed73b881186e0f76e3a51bce55b2d9b1423f4fc18759eb12e7a5b519b65"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-electric_bicycle_brake-primary.json",
+        "sha256": "11ff645c98c1867a469b8b668ad620bd8b2c89ce7743a983b4e0777c4e7d2dfc",
+        "log": "proof-compatibility-electric_bicycle_brake-primary-analysis.log",
+        "negative_log": "proof-compatibility-electric_bicycle_brake-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-compatibility-electric_bicycle_brake-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111260_SITE_ROOT",
+        "camera_review_env_var": "C111260_CAMERA_REVIEW",
+        "camera_review_sha256_env_var": "C111260_CAMERA_REVIEW_SHA256"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-process-saved-electric_bicycle_brake.log",
+        "test_exit_code": 0,
+        "test_log_sha256": "64eed6af4615bd1f286503a41cd1bcb38a3b779e47d72f42be9fed39f29f5443"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "258404a01ef54e74df7f99b304b1d29d6c3ecc99d651d631106ae6ac4a440f55",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_bicycle_brake/attempt --processing .runtime-work/c111260-5a-saved/electric_bicycle_brake/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --pixel-review .runtime-work/c111260-5a-saved/electric_bicycle_brake/pixel-review.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-electric_bicycle_brake-positive.log",
+        "test_log_sha256": "caf7c9dbb67c2e6135ca685d74d165bf797e93f3ef17ef81aa4a1059c5e33c86",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_bicycle_brake/attempt --processing .runtime-work/c111260-5a-saved/electric_bicycle_brake/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --pixel-review .runtime-work/c111260-5a-saved/electric_bicycle_brake/pixel-review-tampered.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent original pixel review incomplete",
+        "negative_log": "proof-delivery-electric_bicycle_brake-negative.log",
+        "negative_log_sha256": "95addcd680b8b69e9669f3e0514edd2be62a205559b326ee7670ba4bbabf90e8"
       }
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain",
       "kind": "delivery",
       "construction": "cases/electric_bicycle_maintain/construction.json",
-      "construction_sha256": "68d903aba692b0539c8b76c7981ee70af6e3ba6f85c74b2bce3b2bb89b6b3e35",
+      "construction_sha256": "90ab10261f37e156cf96ea868b19914cb53f42a12b0d8bacb56ed9b0f3ae7fdf",
       "measurement_contract": "cases/electric_bicycle_maintain/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -265,7 +445,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_bicycle_maintain/fallback1-construction.json",
-          "construction_sha256": "e5798f2a3999a80fc7de9c78c899c7b3abcf5eeac768dc244ef581caeb813f06",
+          "construction_sha256": "cc322da230eece667099238623a6e2877ed6b76e83f86d474ddcf493972c040d",
           "changed_knobs": [
             "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
           ],
@@ -276,26 +456,86 @@
           },
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_bicycle_maintain/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "e5798f2a3999a80fc7de9c78c899c7b3abcf5eeac768dc244ef581caeb813f06",
+            "construction_sha256": "cc322da230eece667099238623a6e2877ed6b76e83f86d474ddcf493972c040d",
             "exit_code": 0,
             "log": "proof-offline-electric_bicycle_maintain-fallback1.log",
-            "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+            "log_sha256": "cc4ce8d54ec0f6a2d972abf34157488e5e132e9d71efaebb422979f2bf3356f8"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-electric_bicycle_maintain-fallback1.json",
+            "sha256": "84c54ca7119c4f8fc773b5604052df3dc13cf344b9dcc7dbb6e1509c0ac7ca00",
+            "log": "proof-compatibility-electric_bicycle_maintain-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-electric_bicycle_maintain-fallback1-negative.log"
           }
         }
       ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-electric_bicycle_maintain.json",
+        "sha256": "b46867740a274937e8dd5fe2834af9344939f5d37affc3d0238dd438a7fc3f21"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --candidate primary --output .runtime-work/c111260-5a-proof/electric_bicycle_maintain/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "68d903aba692b0539c8b76c7981ee70af6e3ba6f85c74b2bce3b2bb89b6b3e35",
+        "construction_sha256": "90ab10261f37e156cf96ea868b19914cb53f42a12b0d8bacb56ed9b0f3ae7fdf",
         "exit_code": 0,
         "log": "proof-offline-electric_bicycle_maintain-primary.log",
-        "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+        "log_sha256": "cc4ce8d54ec0f6a2d972abf34157488e5e132e9d71efaebb422979f2bf3356f8"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-electric_bicycle_maintain-primary.json",
+        "sha256": "0f56c4534494a2882b1c5a576e0a457456f0bb1da97ead8c2a63432b4595504c",
+        "log": "proof-compatibility-electric_bicycle_maintain-primary-analysis.log",
+        "negative_log": "proof-compatibility-electric_bicycle_maintain-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-compatibility-electric_bicycle_maintain-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111260_SITE_ROOT",
+        "camera_review_env_var": "C111260_CAMERA_REVIEW",
+        "camera_review_sha256_env_var": "C111260_CAMERA_REVIEW_SHA256"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-process-saved-electric_bicycle_maintain.log",
+        "test_exit_code": 0,
+        "test_log_sha256": "b6e0690491630e6522ff28b950650cd0383a263b07427c6107b09a3911b7baae"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "258404a01ef54e74df7f99b304b1d29d6c3ecc99d651d631106ae6ac4a440f55",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_bicycle_maintain/attempt --processing .runtime-work/c111260-5a-saved/electric_bicycle_maintain/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --pixel-review .runtime-work/c111260-5a-saved/electric_bicycle_maintain/pixel-review.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-electric_bicycle_maintain-positive.log",
+        "test_log_sha256": "009e975fc12dbefd41db3a304dd281a51f8e352059fc85dc0085c0865cfcf28d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_bicycle_maintain/attempt --processing .runtime-work/c111260-5a-saved/electric_bicycle_maintain/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --pixel-review .runtime-work/c111260-5a-saved/electric_bicycle_maintain/pixel-review-tampered.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent original pixel review incomplete",
+        "negative_log": "proof-delivery-electric_bicycle_maintain-negative.log",
+        "negative_log_sha256": "95addcd680b8b69e9669f3e0514edd2be62a205559b326ee7670ba4bbabf90e8"
       }
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake",
       "kind": "delivery",
       "construction": "cases/electric_scooter_brake/construction.json",
-      "construction_sha256": "f2b0042d3ecf7b3e40be39ce89f36077095e8da9bc5923d15336408e05fa7259",
+      "construction_sha256": "c59d81ad69fea494afea4ca144249eff3fedae745455941ba12826f98d8dca7e",
       "measurement_contract": "cases/electric_scooter_brake/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -337,7 +577,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_scooter_brake/fallback1-construction.json",
-          "construction_sha256": "f770cddc4d10bf88f9b4d3acca8e27653c76d432cf0534ca2c0446c189cbe3e3",
+          "construction_sha256": "7e048837ccf0acbc60a4267317af6a6cce7aaaa2bd51b2b3242eaa264caff742",
           "changed_knobs": [
             "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
           ],
@@ -348,26 +588,86 @@
           },
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_scooter_brake/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "f770cddc4d10bf88f9b4d3acca8e27653c76d432cf0534ca2c0446c189cbe3e3",
+            "construction_sha256": "7e048837ccf0acbc60a4267317af6a6cce7aaaa2bd51b2b3242eaa264caff742",
             "exit_code": 0,
             "log": "proof-offline-electric_scooter_brake-fallback1.log",
-            "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+            "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-electric_scooter_brake-fallback1.json",
+            "sha256": "a0e75e12478b7377df8dfdfd8fcaf49eaef270169b7da53894b5ad5011dffe97",
+            "log": "proof-compatibility-electric_scooter_brake-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-electric_scooter_brake-fallback1-negative.log"
           }
         }
       ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-electric_scooter_brake.json",
+        "sha256": "15d07eeb31467cfa0a96a1fe8a2f52d14b89166e3e5d41adc5110ca9da925520"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --candidate primary --output .runtime-work/c111260-5a-proof/electric_scooter_brake/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "f2b0042d3ecf7b3e40be39ce89f36077095e8da9bc5923d15336408e05fa7259",
+        "construction_sha256": "c59d81ad69fea494afea4ca144249eff3fedae745455941ba12826f98d8dca7e",
         "exit_code": 0,
         "log": "proof-offline-electric_scooter_brake-primary.log",
-        "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+        "log_sha256": "0d5f19ead2bf9676d74342ac6c647b4bf2294bed713605930a76f4b7d5b1c878"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-electric_scooter_brake-primary.json",
+        "sha256": "e66bfe2767cfacb5f91377c55fd1d97902e45cfaa7ad74b79490d6731013fcca",
+        "log": "proof-compatibility-electric_scooter_brake-primary-analysis.log",
+        "negative_log": "proof-compatibility-electric_scooter_brake-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-compatibility-electric_scooter_brake-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111260_SITE_ROOT",
+        "camera_review_env_var": "C111260_CAMERA_REVIEW",
+        "camera_review_sha256_env_var": "C111260_CAMERA_REVIEW_SHA256"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-process-saved-electric_scooter_brake.log",
+        "test_exit_code": 0,
+        "test_log_sha256": "2e95b5e3d4bc224d64c6663c030989370f58b9f64985d04d37a81ccd50512171"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "258404a01ef54e74df7f99b304b1d29d6c3ecc99d651d631106ae6ac4a440f55",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_scooter_brake/attempt --processing .runtime-work/c111260-5a-saved/electric_scooter_brake/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --pixel-review .runtime-work/c111260-5a-saved/electric_scooter_brake/pixel-review.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-electric_scooter_brake-positive.log",
+        "test_log_sha256": "5da37a8ce9ef77a696869a5bff8844c127dba14449223368c1f5d1d321a2ada2",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_scooter_brake/attempt --processing .runtime-work/c111260-5a-saved/electric_scooter_brake/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --pixel-review .runtime-work/c111260-5a-saved/electric_scooter_brake/pixel-review-tampered.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent original pixel review incomplete",
+        "negative_log": "proof-delivery-electric_scooter_brake-negative.log",
+        "negative_log_sha256": "95addcd680b8b69e9669f3e0514edd2be62a205559b326ee7670ba4bbabf90e8"
       }
     },
     {
       "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain",
       "kind": "delivery",
       "construction": "cases/electric_scooter_maintain/construction.json",
-      "construction_sha256": "efad0ccf9ea4c42dcb8b4e246724d7b03fc4b1ee79cd9b662438dea8c4279a2f",
+      "construction_sha256": "4987311e3eb9cad299201e057899627e3a2d21f2f14d66621a5389e147ac1f4f",
       "measurement_contract": "cases/electric_scooter_maintain/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -409,7 +709,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_scooter_maintain/fallback1-construction.json",
-          "construction_sha256": "6c2a87c2add381e4506cd7befbdaecbc7260e359c34829c86d4d812fdcd6a9c5",
+          "construction_sha256": "f93118fa3809e139bad5b6c3f50e03223c12c40ca8e875a96e6c432d356fdb03",
           "changed_knobs": [
             "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
           ],
@@ -420,19 +720,79 @@
           },
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_scooter_maintain/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-            "construction_sha256": "6c2a87c2add381e4506cd7befbdaecbc7260e359c34829c86d4d812fdcd6a9c5",
+            "construction_sha256": "f93118fa3809e139bad5b6c3f50e03223c12c40ca8e875a96e6c432d356fdb03",
             "exit_code": 0,
             "log": "proof-offline-electric_scooter_maintain-fallback1.log",
-            "log_sha256": "279538fe812d165bb22f5a84ab94b40efa9072957816601b6c80f1ba281fa35e"
+            "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+          },
+          "compatibility": {
+            "receipt": "proof-compatibility-electric_scooter_maintain-fallback1.json",
+            "sha256": "cd51f073be400cb0863b747e945660025e5f697f0f1e5bafc1614db27bd6f0b2",
+            "log": "proof-compatibility-electric_scooter_maintain-fallback1-analysis.log",
+            "negative_log": "proof-compatibility-electric_scooter_maintain-fallback1-negative.log"
           }
         }
       ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-electric_scooter_maintain.json",
+        "sha256": "92aac6f712a7f159a87489bca97031d04d7110d74c5df4a817a85e5f51f01655"
+      },
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --candidate primary --output .runtime-work/c111260-5a-proof/electric_scooter_maintain/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
-        "construction_sha256": "efad0ccf9ea4c42dcb8b4e246724d7b03fc4b1ee79cd9b662438dea8c4279a2f",
+        "construction_sha256": "4987311e3eb9cad299201e057899627e3a2d21f2f14d66621a5389e147ac1f4f",
         "exit_code": 0,
         "log": "proof-offline-electric_scooter_maintain-primary.log",
-        "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+        "log_sha256": "cc4ce8d54ec0f6a2d972abf34157488e5e132e9d71efaebb422979f2bf3356f8"
+      },
+      "compatibility": {
+        "receipt": "proof-compatibility-electric_scooter_maintain-primary.json",
+        "sha256": "51d2d9c4e642fc61fd64ecedd013f1d5fd8397247c3d0a5853138e6c9ced7ee8",
+        "log": "proof-compatibility-electric_scooter_maintain-primary-analysis.log",
+        "negative_log": "proof-compatibility-electric_scooter_maintain-primary-negative.log"
+      },
+      "negative": {
+        "log": "proof-compatibility-electric_scooter_maintain-primary-negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "site_root_env_var": "C111260_SITE_ROOT",
+        "camera_review_env_var": "C111260_CAMERA_REVIEW",
+        "camera_review_sha256_env_var": "C111260_CAMERA_REVIEW_SHA256"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-process-saved-electric_scooter_maintain.log",
+        "test_exit_code": 0,
+        "test_log_sha256": "23e144b2f11a98cfc0157f893dc92eb4e60fedc30950c8f23bb41231b4ee18a5"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "258404a01ef54e74df7f99b304b1d29d6c3ecc99d651d631106ae6ac4a440f55",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_scooter_maintain/attempt --processing .runtime-work/c111260-5a-saved/electric_scooter_maintain/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --pixel-review .runtime-work/c111260-5a-saved/electric_scooter_maintain/pixel-review.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-electric_scooter_maintain-positive.log",
+        "test_log_sha256": "ab97fd6aa793fa0230333c52616797c2b473d5d004d534cbaad5eeb831e51a96",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c111260-5a-saved/electric_scooter_maintain/attempt --processing .runtime-work/c111260-5a-saved/electric_scooter_maintain/processed/v0001/processing.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --pixel-review .runtime-work/c111260-5a-saved/electric_scooter_maintain/pixel-review-tampered.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent original pixel review incomplete",
+        "negative_log": "proof-delivery-electric_scooter_maintain-negative.log",
+        "negative_log_sha256": "95addcd680b8b69e9669f3e0514edd2be62a205559b326ee7670ba4bbabf90e8"
       }
     }
   ],

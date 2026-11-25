@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from saved_encounter import CAMERAS, finalize_saved
@@ -23,6 +24,40 @@ def measure_rider_encounter(measurement):
             "frames": measurement["frames"]}
 
 
+def measure_physical_encounter(site, rows):
+    """Measure both participants crossing the reviewed conflict route from saved XY."""
+    routes = (("ego", site["ego_route"]), ("rider", site["rider_route"]))
+    sources = ["site.json", "history.json", "camera-frames.json"]
+    method = "20 Hz original XY projected onto reviewed approach-to-exit route"
+    progress = {}
+    for role, route in routes:
+        start, end = route[0], route[2]
+        dx, dy = end["x_m"] - start["x_m"], end["y_m"] - start["y_m"]
+        denominator = dx * dx + dy * dy
+        if denominator <= 0:
+            return {"status": "unverified", "method": method, "sources": sources,
+                    "reason": "reviewed route has no measurable length"}
+        values = []
+        for row in rows:
+            xy = row.get(role + "_position_xy_m")
+            if (not isinstance(xy, list) or len(xy) != 2 or
+                    not all(isinstance(v, (int, float)) and math.isfinite(v) for v in xy)):
+                return {"status": "unverified", "method": method, "sources": sources,
+                        "reason": "original participant XY is absent or nonfinite"}
+            values.append(((xy[0] - start["x_m"]) * dx +
+                           (xy[1] - start["y_m"]) * dy) / denominator)
+        progress[role] = {"first": values[0], "last": values[-1],
+                          "minimum": min(values), "maximum": max(values)}
+    traversed = all(v["first"] <= 0.4 and v["last"] >= 0.6 and
+                    v["maximum"] > v["minimum"] for v in progress.values())
+    window = any(row.get("conflict_window_observed") is True for row in rows)
+    return {"status": "met" if traversed and window else "not_met", "method": method,
+            "sources": sources, "route_progress": progress,
+            "conflict_window_observed": window,
+            "reason": "both participants traversed reviewed encounter route" if traversed and window
+                      else "reviewed encounter traversal incomplete"}
+
+
 def finalize(attempt, report_path):
     root = Path(attempt).resolve()
     config = json.loads((root / "config.json").read_text(encoding="utf-8"))
@@ -39,6 +74,8 @@ def finalize(attempt, report_path):
     if len(rows) != expected_frames or not (root / "video_frames.jsonl").is_file():
         raise ValueError("original encounter acquisition incomplete")
     measurement = saved["measurement"]
+    site = json.loads((root / "site.json").read_text(encoding="utf-8"))
+    physical = measure_physical_encounter(site, rows)
     channel_values = {
         "rider_classification": lambda row: {"kind": row["rider_kind_observed"],
                                                 "person_actor_id": row["rider_person_actor_id"],
@@ -81,10 +118,15 @@ def finalize(attempt, report_path):
     result = {
         "case_id": saved["case_id"], "measured_values": measurement,
         "target_checks": checks,
-        "setup_confirmed": False, "behavior_attempted": False,
-        "maneuver_completed": False,
-        "termination_reason": "900 saved original encounter frames analyzed; physical and legal review pending",
-        "physical_failure_flags": ["physical_completion_unreviewed", "camera_visibility_unreviewed"],
+        "setup_confirmed": physical["status"] != "unverified",
+        "behavior_attempted": physical["status"] != "unverified",
+        "maneuver_completed": physical["status"] == "met",
+        "physical_checks": {"maneuver": physical},
+        "provenance_kind": "synthetic_fixture" if packet.get("diagnostic_fixture") is True else "original_native",
+        "diagnostic_fixture": packet.get("diagnostic_fixture") is True,
+        "termination_reason": "saved encounter measured; physical and legal review remains separate",
+        "physical_failure_flags": ([] if physical["status"] == "met" else
+                                   ["physical_encounter_" + physical["status"]]),
         "trace_reference": "trace.jsonl", "video_references": video_references,
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": config["case"]["recording_description"],
@@ -106,7 +148,7 @@ def finalize(attempt, report_path):
                   "value": measure_rider_encounter(measurement),
                   "sources": source_hashes}},
               "original_frames": saved["original_frames"],
-              "legal_judgment": "unresolved_review", "physical_completion": False}
+              "legal_judgment": "unresolved_review", "physical_completion": physical["status"] == "met"}
     _write(report_path, report)
     return report
 

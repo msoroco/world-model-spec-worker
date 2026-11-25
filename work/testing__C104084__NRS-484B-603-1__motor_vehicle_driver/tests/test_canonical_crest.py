@@ -51,6 +51,25 @@ class CanonicalCrestTests(unittest.TestCase):
             trace = [json.loads(row) for row in (attempt / 'trace.jsonl').read_text().splitlines()]
             self.assertEqual(trace[-1]['frame'], 909)
             self.assertEqual(trace[-1]['position']['x'], 899.0)
+            pipeline = root / 'pipeline'
+            (pipeline / 'capture/native').mkdir(parents=True)
+            (pipeline / 'capture/manifest.json').write_text(json.dumps({
+                'case_id': case, 'frames': 900, 'extraction_confirmed': True}) + '\n')
+            (pipeline / 'capture/evidence.jsonl').write_text('{"original_observations":{}}\n')
+            (pipeline / 'capture/native/frames.jsonl').write_text('{"frame":10}\n')
+            (pipeline / 'trace.jsonl').write_bytes((attempt / 'trace.jsonl').read_bytes())
+            (pipeline / 'road.xodr').write_text('diagnostic road\n')
+            (pipeline / 'carla_recorder.log').write_text('diagnostic recorder\n')
+            native_attempt = root / 'native-layout'
+            native_attempt.mkdir()
+            (native_attempt / 'construction.json').write_text('{}\n')
+            (native_attempt / 'runner.py').write_text('pass\n')
+            publish(bundle, native_attempt, case, pipeline=pipeline)
+            self.assertEqual((native_attempt / 'capture/native/frames.jsonl').read_text(),
+                             '{"frame":10}\n')
+            self.assertTrue((native_attempt / 'capture/crest-source/crest-manifest.json').is_file())
+            self.assertEqual(json.loads((native_attempt / 'acquisition-provenance.json').read_text())['provenance_kind'],
+                             'native')
             attempt2 = root / 'negative'
             attempt2.mkdir()
             (attempt2 / 'construction.json').write_text('{}\n')

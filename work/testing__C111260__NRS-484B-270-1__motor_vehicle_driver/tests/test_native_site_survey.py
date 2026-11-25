@@ -65,9 +65,11 @@ class SurveyTests(unittest.TestCase):
 
     def test_survey_consumed_by_encounter_constructor(self):
         result = survey(World(Map()), Carla, request(), self.root)
-        classification = {'blueprint_id': 'vehicle.bh.crossbike', 'classification':
-                          {'human_powered': True, 'tandem_wheels': 2,
-                           'one_wheel_diameter_in': 26, 'moped': False}}
+        device = {'human_powered': True, 'tandem_wheels': 2,
+                  'one_wheel_diameter_in': 26, 'moped': False,
+                  'observed_blueprint_id': 'vehicle.bh.crossbike',
+                  'rendered_person_present': True}
+        classification = {'blueprint_id': 'vehicle.bh.crossbike', 'classification': device}
         rules = {'jurisdiction': 'Nevada', 'applicable_rules': ['NRS 484B.270(1)']}
         import hashlib
         refs = list(result['original_sources'])
@@ -75,10 +77,46 @@ class SurveyTests(unittest.TestCase):
             path = self.root / name
             path.write_text(json.dumps(value), encoding='utf-8')
             refs.append({'path': name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+        identity = {'reviewer': 'fixture-reviewer', 'assignment_id': ASSIGNMENT,
+                    'cell_id': 'C111260'}
+        conduct_path = self.root / 'conduct.json'
+        conduct_path.write_text('{"observed_signal":"green"}', encoding='utf-8')
+        conduct_ref = {'path': conduct_path.name,
+                       'sha256': hashlib.sha256(conduct_path.read_bytes()).hexdigest()}
+        refs.append(conduct_ref)
+        observations = {'device': device,
+                        'rider': {'distinct_from_ego': True, 'person_visible_in_review': True},
+                        'rules': {**rules, 'conduct_sources': [conduct_ref]}}
+        review_refs = {}
+        for role, data in observations.items():
+            asset_path = self.root / (role + '-asset.json')
+            asset_path.write_text(json.dumps({'original_fixture_role': role}), encoding='utf-8')
+            asset_ref = {'path': asset_path.name,
+                         'sha256': hashlib.sha256(asset_path.read_bytes()).hexdigest()}
+            refs.append(asset_ref)
+            path = self.root / (role + '-review.json')
+            path.write_text(json.dumps({**identity, 'observations': data,
+                                        'original_asset': asset_ref}), encoding='utf-8')
+            review_refs[role + '_review'] = {'path': path.name,
+                                            'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+            refs.append(review_refs[role + '_review'])
+        inventory = {**identity, 'rider_kind': 'human_powered_bicycle',
+                     'blueprint_id': classification['blueprint_id'],
+                     'lawful_riding_verdict': None, 'intent_verdict': None,
+                     'interference_verdict': None, 'device_observations': device,
+                     'rider_observations': observations['rider'],
+                     'rules_observations': observations['rules'],
+                     'original_sources': review_refs}
+        inventory_path = self.root / 'inventory.json'
+        inventory_path.write_text(json.dumps(inventory), encoding='utf-8')
+        refs.append({'path': inventory_path.name,
+                     'sha256': hashlib.sha256(inventory_path.read_bytes()).hexdigest()})
         site = {**request(), 'native_map_name': result['native_map_name'],
                 'original_sources': refs, 'map_source_path': result['map_source_path'],
                 'bicycle_classification_source_path': 'bicycle.json',
                 'rider_rules_source_path': 'rules.json', 'jurisdiction': 'Nevada',
+                'rider_inventory_source_path': 'inventory.json',
+                'rider_kind': 'human_powered_bicycle',
                 'ego_blueprint_id': 'vehicle.tesla.model3',
                 'bicycle_blueprint_id': classification['blueprint_id'],
                 'bicycle_classification': classification['classification'],

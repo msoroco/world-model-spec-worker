@@ -8,7 +8,7 @@ def audit(left,right):
     expected=('maintain_clearance','cross_rider_path')
     if (left.get('mode'),right.get('mode'))!=expected:
         raise ComparisonError('wrong exact mode pair')
-    fixed=('map_sha256','bicycle_classification_sha256','rider_rules_sha256','ego_route_sha256','rider_route_sha256','camera_profile_sha256','duration_frames','ego_blueprint_id','bicycle_blueprint_id')
+    fixed=('map_sha256','bicycle_classification_sha256','rider_rules_sha256','rider_inventory_sha256','rider_kind','ego_route_sha256','rider_route_sha256','camera_profile_sha256','duration_frames','ego_blueprint_id','bicycle_blueprint_id')
     for key in fixed:
         if not left.get(key) or left[key]!=right.get(key):
             raise ComparisonError('fixed condition missing or differs: '+key)

@@ -203,52 +203,108 @@
     {
       "name": "rider_kind_observed",
       "source": "original_native",
-      "purpose": "distinguish three statutory protected rider alternatives"
+      "purpose": "distinguish three statutory protected rider alternatives",
+      "mandatory": false
     },
     {
       "name": "rider_mounted_observed",
       "source": "original_native",
-      "purpose": "identify a person riding rather than an unmounted device"
+      "purpose": "identify a person riding rather than an unmounted device",
+      "mandatory": false
     },
     {
       "name": "ego_actor_id",
       "source": "original_native",
-      "purpose": "identify motor vehicle"
+      "purpose": "identify motor vehicle",
+      "mandatory": false
     },
     {
       "name": "rider_actor_id",
       "source": "original_native",
-      "purpose": "identify distinct rider"
+      "purpose": "identify distinct rider",
+      "mandatory": false
     },
     {
       "name": "surface_gap_m",
       "source": "original_native",
-      "purpose": "measure separation without a legal cutoff"
+      "purpose": "measure separation without a legal cutoff",
+      "mandatory": false
     },
     {
       "name": "contact_observed",
       "source": "original_native",
-      "purpose": "detect collision"
+      "purpose": "detect collision",
+      "mandatory": false
     },
     {
       "name": "ego_speed_mps",
       "source": "original_native",
-      "purpose": "measure driver motion"
+      "purpose": "measure driver motion",
+      "mandatory": false
     },
     {
       "name": "rider_speed_mps",
       "source": "original_native",
-      "purpose": "measure rider motion"
+      "purpose": "measure rider motion",
+      "mandatory": false
     },
     {
       "name": "ego_brake_observed",
       "source": "original_native",
-      "purpose": "measure response rather than request"
+      "purpose": "measure response rather than request",
+      "mandatory": false
     },
     {
       "name": "conflict_window_observed",
       "source": "original_native",
-      "purpose": "bind response to actual encounter"
+      "purpose": "bind response to actual encounter",
+      "mandatory": false
+    },
+    {
+      "name": "rider_classification",
+      "mandatory": true,
+      "source_fields": [
+        "rider_kind_observed",
+        "rider_mounted_observed",
+        "rider_actor_id"
+      ],
+      "evidence": "saved original Native 20 Hz rows and source-bound camera frame map"
+    },
+    {
+      "name": "driver_response",
+      "mandatory": true,
+      "source_fields": [
+        "ego_brake_observed",
+        "ego_speed_mps",
+        "conflict_window_observed"
+      ],
+      "evidence": "saved original Native 20 Hz rows and source-bound camera frame map"
+    },
+    {
+      "name": "separation",
+      "mandatory": true,
+      "source_fields": [
+        "surface_gap_m",
+        "rider_speed_mps"
+      ],
+      "evidence": "saved original Native 20 Hz rows and source-bound camera frame map"
+    },
+    {
+      "name": "contact",
+      "mandatory": true,
+      "source_fields": [
+        "contact_observed"
+      ],
+      "evidence": "saved original Native 20 Hz rows and source-bound camera frame map"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "source_fields": [
+        "ego_actor_id",
+        "rider_actor_id"
+      ],
+      "evidence": "saved original Native 20 Hz rows and source-bound camera frame map"
     }
   ],
   "sources": [
@@ -310,7 +366,7 @@
         "Retain rider classification, contact, surface gap, speed, deceleration and time-to-conflict where physically defined without assigning due-care cutoffs.",
         "Specify intersecting participant routes and an observation window covering approach and separation."
       ],
-      "reason": "The intersection and cyclist permit an active motorist\u2013rider encounter during travel."
+      "reason": "The intersection and cyclist permit an active motorist–rider encounter during travel."
     }
   ],
   "requirement_dispositions": [
@@ -347,5 +403,33 @@
       ],
       "evidence_or_gap": "source-bound-rider-encounter"
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both motorist and mounted rider trajectories",
+        "interval": "full 45 s source recording"
+      },
+      {
+        "view": "approach",
+        "subject": "motorist approach and rider classification",
+        "interval": "full 45 s source recording"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "rider mount and crossing conflict geometry",
+        "interval": "full 45 s source recording"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "motorist control and spacing",
+        "interval": "full 45 s source recording"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

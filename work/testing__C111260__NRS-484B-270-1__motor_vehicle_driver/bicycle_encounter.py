@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from rider_sources import verify_inventory, KINDS
 
 ASSIGNMENT = 'testing__C111260__NRS-484B-270-1__motor_vehicle_driver'
 MODES = ('maintain_clearance', 'cross_rider_path')
@@ -47,6 +48,14 @@ def verify_site(site, root):
     paths=set(source_paths)
     for key in ('map_source_path','bicycle_classification_source_path','rider_rules_source_path'):
         require(site[key] in paths, 'unbound site source: '+key)
+    require(site.get('rider_inventory_source_path') in paths,
+            'source-bound rider inventory missing')
+    rider_kind = site.get('rider_kind')
+    require(rider_kind in KINDS, 'rider kind missing')
+    inventory_ref = next(ref for ref in refs if ref['path'] == site['rider_inventory_source_path'])
+    inventory = verify_inventory(root, inventory_ref, assignment_id=ASSIGNMENT,
+                                 cell_id='C111260', blueprint_id=site['bicycle_blueprint_id'],
+                                 rider_kind=rider_kind)
     map_packet=json.loads(source_paths[site['map_source_path']].read_text())
     bicycle_packet=json.loads(source_paths[site['bicycle_classification_source_path']].read_text())
     rider_rules_packet=json.loads(source_paths[site['rider_rules_source_path']].read_text())
@@ -69,10 +78,11 @@ def verify_site(site, root):
     require(bicycle_packet.get('blueprint_id')==site['bicycle_blueprint_id'] and bicycle_packet.get('classification')==site['bicycle_classification'], 'bicycle classification packet mismatch')
     require(rider_rules_packet.get('applicable_rules') and rider_rules_packet.get('jurisdiction')==site['jurisdiction'], 'rider rules/jurisdiction packet mismatch')
     require(site['native_map_name'] and site['ego_blueprint_id'] and site['bicycle_blueprint_id'], 'map/blueprint identity missing')
-    require(site['bicycle_classification']['human_powered'] is True, 'human powered bicycle not established')
-    require(site['bicycle_classification']['tandem_wheels']==2, 'two tandem wheels not established')
-    require(site['bicycle_classification']['one_wheel_diameter_in']>14, 'NRS 484A.025 wheel criterion not established')
-    require(site['bicycle_classification']['moped'] is False, 'moped exclusion not established')
+    require(site['bicycle_classification'] == inventory['device_observations'],
+            'device classification differs from reviewed inventory')
+    require(rider_rules_packet['applicable_rules'] ==
+            inventory['rules_observations']['applicable_rules'],
+            'rider rule list differs from reviewed inventory')
     for key in ('ego_route_xy','rider_route_xy'):
         route=site[key]
         require(len(route)>=2, 'route too short: '+key)
@@ -105,7 +115,7 @@ def construct_native(site, root, world, carla, mode):
         require(bike is not None, 'bicycle spawn failed')
         actors.append(bike)
         require(ego.type_id==site['ego_blueprint_id'] and bike.type_id==site['bicycle_blueprint_id'], 'spawned actor blueprint readback mismatch')
-        return {'actors':actors,'mode':mode,'crossings_xy':crossings,'ego_route_xy':site['ego_route_xy'],'rider_route_xy':site['rider_route_xy'],'rider_rule_verdict':None,'intent_verdict':None}
+        return {'actors':actors,'mode':mode,'rider_kind':site['rider_kind'],'crossings_xy':crossings,'ego_route_xy':site['ego_route_xy'],'rider_route_xy':site['rider_route_xy'],'rider_rule_verdict':None,'intent_verdict':None}
     except Exception:
         for actor in reversed(actors):
             actor.destroy()
@@ -131,4 +141,4 @@ def measure_attempt(site, root, event_ref, mode):
         gap=math.dist(row['ego_xy'],row['rider_xy'])
         records.append({'frame':frame,'ego_xy':row['ego_xy'],'rider_xy':row['rider_xy'],'center_gap_m':gap,'rider_visual_present':row['rider_visual_present'],'mode_command':mode})
     require(any(r['rider_visual_present'] for r in records), 'no original visual rider presence')
-    return {'mode':mode,'frame_count':len(records),'minimum_center_gap_m':min(r['center_gap_m'] for r in records),'crossings_xy':crossings,'records':records,'original_sources':site['original_sources']+[event_ref],'lawful_riding_verdict':None,'intent_verdict':None,'interference_verdict':None}
+    return {'mode':mode,'rider_kind':site['rider_kind'],'frame_count':len(records),'minimum_center_gap_m':min(r['center_gap_m'] for r in records),'crossings_xy':crossings,'records':records,'original_sources':site['original_sources']+[event_ref],'lawful_riding_verdict':None,'intent_verdict':None,'interference_verdict':None}

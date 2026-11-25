@@ -104,6 +104,7 @@ def finalize(site, root, event_ref, camera_sources, mode, probe, frames=DURATION
         require(travel_frames > 0, 'travel command absent')
     return {
         'assignment_id': site['assignment_id'], 'mode': mode,
+        'rider_kind': site['rider_kind'],
         'first_frame': first, 'frame_count': mode_frames, 'fps': FPS,
         'crossings_xy': [list(p) for p in crossings],
         'minimum_center_gap_m': min(gaps),
