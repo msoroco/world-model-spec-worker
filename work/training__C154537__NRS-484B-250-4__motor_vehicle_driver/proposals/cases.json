@@ -1,83 +1,63 @@
 {
   "actor": "motor_vehicle_driver",
   "cell_id": "C154537",
-  "status": "partial",
-  "semantic_status": "draft",
-  "sweeps_expanded": false,
-  "sweep_specs": [],
+  "status": "draft",
+  "semantic_status": "draft_incomplete_original_judgment_sweep",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Original observer perspective and approaching traffic pixels are needed for the no-line/no-crosswalk branch.",
+          "phrase": "point nearest the intersection where the driver has a view of approaching traffic on the through highway"
+        },
+        {
+          "note": "Retain original speed, body trajectory and pixels; no numeric legal threshold is specified.",
+          "phrase": "proceed cautiously"
+        },
+        {
+          "note": "Retain both actor histories, body-to-junction occupancy and release order.",
+          "phrase": "yielding to vehicles which have previously completed a stop or are within the intersection"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native source and view-opening pixel review",
+        "Observable participant history and cautious-entry review"
+      ],
+      "rationale": "Qualitative visibility, caution and yielding need original Native source and human pixel review before a frozen sweep is specified.",
+      "status": "incomplete",
+      "sweep_id": "qualitative_original_review",
+      "target_law_id": "NRS-484B-250-4"
+    }
+  ],
   "cases": [
     {
       "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__baseline",
       "rationale": "Unselected shared neutral reference; no legal outcome asserted.",
       "recording_description": {
-        "rate_hz": 20,
-        "duration_s": 30,
-        "cameras_required": [
-          "overview",
-          "ego_approach",
-          "cross_approach",
-          "driver_view"
-        ],
-        "required_original_sources": [
-          "Native motion",
-          "device-state history",
-          "stop-line and crosswalk survey",
-          "driver-view ray survey",
-          "four cameras"
-        ],
-        "limitations": [
-          "Request is synthetic and does not prove signal or view geometry"
-        ],
         "channels": [
           {
+            "method": "Retained original-frame synthetic source row",
             "name": "ego_front",
-            "unit": "m",
-            "method": "original ego body vertices",
+            "reference_frame": "original frame/time",
             "sampling_rate_hz": 20,
             "time_window": "30 s / 600 frames",
-            "reference_frame": "original Native frame/time",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
           },
           {
-            "name": "ego_speed",
-            "unit": "m/s",
-            "method": "original Native velocity vector",
+            "method": "Retained original-frame synthetic source row",
+            "name": "signal_request",
+            "reference_frame": "original frame/time",
             "sampling_rate_hz": 20,
             "time_window": "30 s / 600 frames",
-            "reference_frame": "original Native frame/time",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending"
-          },
-          {
-            "name": "governing_signal",
-            "unit": "structured",
-            "method": "original CARLA head/lane/state readback",
-            "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "reference_frame": "original Native frame/time",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending"
-          },
-          {
-            "name": "other_vehicle",
-            "unit": "structured",
-            "method": "original actor body and motion history",
-            "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "reference_frame": "original Native frame/time",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending"
-          },
-          {
-            "name": "driver_view_rays",
-            "unit": "structured",
-            "method": "sampled original Native world.cast_ray",
-            "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "reference_frame": "original Native frame/time",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending"
+            "uncertainty": "50 ms frame bracket; physical and legal review pending",
+            "unit": "structured"
           }
         ],
-        "context_inputs": [
-          "authored OpenDRIVE and imported lane/device survey",
-          "through-highway and official-device source review pending"
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic request only; original vehicular signal state and actual stop unverified"
         ]
       },
       "target_law_id": null,
@@ -123,23 +103,9 @@
       },
       "rationale": "Exact diagnostic branch for controlled_1; legal judgment remains unresolved.",
       "recording_description": {
-        "rate_hz": 20,
-        "duration_s": 30,
-        "cameras_required": [
-          "overview",
-          "ego_approach",
-          "cross_approach",
-          "driver_view"
-        ],
-        "required_original_sources": [
-          "Native motion",
-          "device-state history",
-          "stop-line and crosswalk survey",
-          "driver-view ray survey",
-          "four cameras"
-        ],
         "limitations": [
-          "Request is synthetic and does not prove signal or view geometry"
+          "Authored OpenDRIVE and imported lane/device survey require physical review",
+          "Through-highway and official-device source review pending"
         ],
         "channels": [
           {
@@ -188,10 +154,7 @@
             "uncertainty": "50 ms frame bracket; physical and legal review pending"
           }
         ],
-        "context_inputs": [
-          "authored OpenDRIVE and imported lane/device survey",
-          "through-highway and official-device source review pending"
-        ]
+        "context_inputs": []
       },
       "target_law_id": "NRS-484B-250-4",
       "target_type": "judgment_sweep",
@@ -236,23 +199,9 @@
       },
       "rationale": "Exact diagnostic branch for controlled_2; legal judgment remains unresolved.",
       "recording_description": {
-        "rate_hz": 20,
-        "duration_s": 30,
-        "cameras_required": [
-          "overview",
-          "ego_approach",
-          "cross_approach",
-          "driver_view"
-        ],
-        "required_original_sources": [
-          "Native motion",
-          "device-state history",
-          "stop-line and crosswalk survey",
-          "driver-view ray survey",
-          "four cameras"
-        ],
         "limitations": [
-          "Request is synthetic and does not prove signal or view geometry"
+          "Authored OpenDRIVE and imported lane/device survey require physical review",
+          "Through-highway and official-device source review pending"
         ],
         "channels": [
           {
@@ -301,10 +250,7 @@
             "uncertainty": "50 ms frame bracket; physical and legal review pending"
           }
         ],
-        "context_inputs": [
-          "authored OpenDRIVE and imported lane/device survey",
-          "through-highway and official-device source review pending"
-        ]
+        "context_inputs": []
       },
       "target_law_id": "NRS-484B-250-4",
       "target_type": "judgment_sweep",

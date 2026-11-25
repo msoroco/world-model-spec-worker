@@ -6,7 +6,7 @@ from pathlib import Path
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
 ASSIGNMENT=ROOT.name
-CAMERAS=['overview','entrance','near_side','approach']
+CAMERAS=['overview','approach','reference_corner','driver_reference']
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -16,24 +16,29 @@ def build():
     entries=[]
     for suffix in ('controlled_1','controlled_2'):
         case_id=ASSIGNMENT+'__'+suffix
+        description={'channels':[{'name':'parking_geometry','unit':'mixed','sampling_rate_hz':20,
+            'method':'original Native full-body corners and speed readback',
+            'time_window':'600 frames','reference_frame':'sourced highway and fire-station entrance',
+            'uncertainty':'50 ms frame interval; legal distance reference unresolved'}],
+            'context_inputs':[],
+            'limitations':['Raw body-edge gap is not a statutory reference-point verdict',
+                'Actual station, entrance and pixels require Native and independent review']}
         config={'case_id':case_id,'case_suffix':suffix,'cell_id':'C229410','law_id':'NRS-484B-450-1j',
             'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20,'cameras':CAMERAS,
+            'initial_activity':'parked','exception_context':'none',
+            'selected_case_id':case_id,'supported_case_ids':[case_id],'candidate_id':'primary',
+            'required_atoms':[],'source_packets':[],'case':{'case_id':case_id},
+            'recording_description':description,
             'target':'beyond 20 feet from entrance' if suffix=='controlled_1' else 'within 20 feet from entrance'}
         files=[{'path':'config.json','content':json.dumps(config,indent=2)+'\n'}]
-        for name in ('layout.py','runner.py','measure_entrance.py','tests/test_native.py'):
+        for name in ('layout.py','runner.py','measure_entrance.py','source_context.py','finalize.py','tests/test_native.py'):
             files.append({'path':name,'content':(HERE/name).read_text()})
         for name in ('assignment.json','witnesses.json'):
             source=Path('inputs')/ASSIGNMENT/name
             files.append({'path':name,'content':source.read_text()})
         proposal={'case_id':case_id,'cell_id':'C229410','law_id':'NRS-484B-450-1j',
             'actor':'motor_vehicle_driver','entrypoint':'runner.py','files':files,
-            'recording_description':{'rate_hz':20,'duration_s':30,'cameras_required':CAMERAS,
-                'required_original_sources':['Native vehicle full-body motion','fire-station identity',
-                    'driveway entrance extent and highway side','parking activity and exceptions',
-                    'four synchronized original cameras'],
-                'limitations':['Diagnostic driveway outline does not establish fire-station identity',
-                    'Raw geometry does not adopt statutory reference point or decide 20-foot clause',
-                    'Opposite-side 75-foot clause is not covered by selected pair']},
+            'recording_description':description,
             'status':'selected_native_cpu_draft_not_delivery_prepared',
             'static_checks':['authored OpenDRIVE highway','diagnostic driveway outline',
                 '600 original Native frames','four synchronized FFV1 cameras',

@@ -8,7 +8,7 @@ from measure_entrance import CAMERAS,measure
 
 def fixture(path,target,reviewed=True):
     path.mkdir()
-    context={'source_kind':'original_native','cell_id':'C229410',
+    context={'source_kind':'synthetic_diagnostic','cell_id':'C229410',
         'entrance':{'x_min_m':-3,'x_max_m':3,'road_edge_y_m':-4,'road_side':'south'},
         'fire_station_identity_reviewed':reviewed,'driveway_entrance_reviewed':reviewed,
         'highway_side_reviewed':reviewed,'parking_activity_reviewed':False,
@@ -39,7 +39,7 @@ def main():
         try:measure(unreviewed)
         except ValueError as error:assert 'unreviewed' in str(error)
         else:raise AssertionError('Unreviewed station accepted')
-        (inside/'entrance.mkv').unlink()
+        (inside/'reference_corner.mkv').unlink()
         try:measure(inside)
         except ValueError as error:assert 'Missing required source' in str(error)
         else:raise AssertionError('Missing original camera accepted')

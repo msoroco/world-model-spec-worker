@@ -89,7 +89,7 @@
   "mandatory_observation_terms": [
     {
       "term": "st.parking_space",
-      "purpose": "designation municipal \u2014 the space designated for City vehicles",
+      "purpose": "designation municipal — the space designated for City vehicles",
       "status": "measurement_mapping_pending"
     },
     {
@@ -99,7 +99,7 @@
     },
     {
       "term": "ru.official_vehicle",
-      "purpose": "kind municipal \u2014 the entitled class",
+      "purpose": "kind municipal — the entitled class",
       "status": "measurement_mapping_pending"
     },
     {
@@ -120,34 +120,40 @@
   ],
   "observations": [
     {
-      "name": "st.parking_space",
+      "name": "parking-inventory.json",
       "mandatory": true,
-      "reason": "designation municipal \u2014 the space designated for City vehicles"
+      "reason": "designation municipal — the space designated for City vehicles",
+      "source_term": "st.parking_space"
     },
     {
-      "name": "dev.regulatory_sign",
+      "name": "parking-inventory.json",
       "mandatory": true,
-      "reason": "the posting or marking that designates it"
+      "reason": "the posting or marking that designates it",
+      "source_term": "dev.regulatory_sign"
     },
     {
-      "name": "ru.official_vehicle",
+      "name": "parking-inventory.json",
       "mandatory": true,
-      "reason": "kind municipal \u2014 the entitled class"
+      "reason": "kind municipal — the entitled class",
+      "source_term": "ru.official_vehicle"
     },
     {
-      "name": "ru.subject",
+      "name": "vehicle-poses.jsonl",
       "mandatory": true,
-      "reason": "the vehicle judged and its markings"
+      "reason": "the vehicle judged and its markings",
+      "source_term": "ru.subject"
     },
     {
-      "name": "drv.standing_or_parked",
+      "name": "vehicle-poses.jsonl",
       "mandatory": true,
-      "reason": "the vehicle parked in the space"
+      "reason": "the vehicle parked in the space",
+      "source_term": "drv.standing_or_parked"
     },
     {
-      "name": "rel.occupies",
+      "name": "vehicle-poses.jsonl",
       "mandatory": true,
-      "reason": "its position within it"
+      "reason": "its position within it",
+      "source_term": "rel.occupies"
     }
   ],
   "sources": [
@@ -176,10 +182,9 @@
   "blockers": [
     "Primary CPU drafts exist, but exact delivery manifests, authority source bindings, three distinct fallbacks per case, saved processing, compatibility proofs, independent audits and physical realization remain incomplete."
   ],
-  "source_context_review": "City Council designation and posted/marked space need independent context; City-vehicle status is a legal classification, not inferred from color or blueprint.",
-  "source_observation_mapping": [
-    {
-      "term": "st.parking_space",
+  "source_context_review": "City Council designation and posted/marked space need independent context; City-vehicle status is a legal classification, not inferred from color or blueprint. The statute separately allows City parking facilities; this one-way-road cell constructs only the City-street location. The frozen candidate-cell inventory contains no facility layout, so facility coverage remains an explicit unbound alternative for the lead branch review.",
+  "source_observation_mapping": {
+    "st.parking_space": {
       "measurement": "st_parking_space_source_measure",
       "evidence": "Original Native parking-inventory.json plus independent source review; no legal verdict",
       "channels": [
@@ -194,8 +199,7 @@
         "council_designation_source_id"
       ]
     },
-    {
-      "term": "dev.regulatory_sign",
+    "dev.regulatory_sign": {
       "measurement": "dev_regulatory_sign_source_measure",
       "evidence": "Original Native parking-inventory.json plus independent source review; no legal verdict",
       "channels": [
@@ -210,8 +214,7 @@
         "posting_space_id"
       ]
     },
-    {
-      "term": "ru.official_vehicle",
+    "ru.official_vehicle": {
       "measurement": "ru_official_vehicle_source_measure",
       "evidence": "Original Native parking-inventory.json plus independent source review; no legal verdict",
       "channels": [
@@ -226,8 +229,7 @@
         "subject_status_source_id"
       ]
     },
-    {
-      "term": "ru.subject",
+    "ru.subject": {
       "measurement": "ru_subject_source_measure",
       "evidence": "Original Native vehicle-poses.jsonl plus independent source review; no legal verdict",
       "channels": [
@@ -242,8 +244,7 @@
         "blueprint_id"
       ]
     },
-    {
-      "term": "drv.standing_or_parked",
+    "drv.standing_or_parked": {
       "measurement": "drv_standing_or_parked_source_measure",
       "evidence": "Original Native vehicle-poses.jsonl plus independent source review; no legal verdict",
       "channels": [
@@ -258,8 +259,7 @@
         "time_s"
       ]
     },
-    {
-      "term": "rel.occupies",
+    "rel.occupies": {
       "measurement": "rel_occupies_source_measure",
       "evidence": "Original Native vehicle-poses.jsonl plus independent source review; no legal verdict",
       "channels": [
@@ -273,6 +273,14 @@
         "vehicle_xy_m",
         "bbox_half_length_m"
       ]
+    }
+  },
+  "unresolved_statutory_alternatives": [
+    {
+      "branch": "Parking in a City parking facility designated for City vehicles",
+      "source": "LVMC 11.52.340",
+      "status": "unbound_location_alternative",
+      "reason": "C150129 is one_way_road, and candidate-cells.json has no facility layout; street source facts cannot establish facility coverage."
     }
   ]
 }

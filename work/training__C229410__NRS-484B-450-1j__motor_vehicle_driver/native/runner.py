@@ -2,15 +2,18 @@
 import argparse
 import json
 import math
+import os
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 
 from layout import ENTRANCE,check as layout_check,open_drive
+from source_context import load as load_source_context
 
 FRAMES=600
-CAMERAS=(('overview',1280,720,0,-19,25,-70),('entrance',1280,720,0,-14,10,-45),
-         ('near_side',1280,720,8,-12,7,-35),('approach',1280,720,-25,-12,8,-25))
+CAMERAS=(('overview',1920,1080,0,-19,25,-70),('approach',1280,720,-25,-12,8,-25),
+         ('reference_corner',1280,720,0,-14,10,-45),('driver_reference',1280,720,8,-12,7,-35))
 
 
 def check():
@@ -31,11 +34,19 @@ def actor_row(actor):
             'speed_mps':math.hypot(velocity.x,velocity.y)}
 
 
-def execute(output,host,port):
+def execute(output,host,port,source_context):
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.saved_processing import record_native_exit
     from worker_exchange.world_restore import snapshot,restore
     cfg=json.loads(Path('config.json').read_text());check()
+    authority=load_source_context(source_context)
+    facts=authority['record']
+    if (facts['initial_activity']!=cfg.get('initial_activity','parked') or
+            facts['exception_context']!=cfg.get('exception_context','none')):
+        raise ValueError('Cited activity/exception context differs from selected case')
     output=Path(output).resolve()
     if output.exists():raise ValueError('Use fresh original Native output')
     client=carla.Client(host,port);client.set_timeout(180)
@@ -43,6 +54,7 @@ def execute(output,host,port):
     if old.get_settings().synchronous_mode or any(a.type_id.startswith(('vehicle.','walker.','sensor.','controller.')) for a in old.get_actors()):
         raise RuntimeError('Exclusive idle asynchronous Native world required')
     output.mkdir(parents=True);owned=[];encoders={};queues={};changed=False
+    capture=None;encoder_exit_codes={}
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
             vertex_distance=.5,max_road_length=50,wall_height=0,additional_width=0,
@@ -51,6 +63,10 @@ def execute(output,host,port):
         settings=world.get_settings();settings.synchronous_mode=True;settings.fixed_delta_seconds=.05
         settings.substepping=True;settings.max_substep_delta_time=.01;settings.max_substeps=10
         world.apply_settings(settings)
+        authority_dir=output/'authority';authority_dir.mkdir()
+        shutil.copyfile(authority['manifest_path'],authority_dir/'manifest.json')
+        for name,path in authority['source_paths'].items():
+            shutil.copyfile(path,authority_dir/(name+'.source'))
         waypoint=world.get_map().get_waypoint(carla.Location(x=0,y=-2,z=1),project_to_road=True,lane_type=carla.LaneType.Driving)
         if waypoint is None or waypoint.road_id!=1 or waypoint.lane_id!=-1:
             raise RuntimeError('Native highway lane readback failed')
@@ -74,6 +90,7 @@ def execute(output,host,port):
                 '-f','rawvideo','-pix_fmt','bgra','-s',f'{width}x{height}','-r','20','-i','-',
                 '-frames:v',str(FRAMES),'-c:v','ffv1',str(output/(name+'.mkv'))],
                 stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+        capture=PipelineCapture(client,vehicle,output,cfg['case_id'],required_observations=[])
         target=17 if cfg['case_suffix']=='controlled_1' else 3
         with (output/'native-vehicle.jsonl').open('x') as motion,FrameMap(output/'video_frames.jsonl') as frame_map:
             for index in range(FRAMES):
@@ -81,6 +98,7 @@ def execute(output,host,port):
                 velocity=4 if row['center_xy_m'][0]<target else 0
                 vehicle.set_target_velocity(carla.Vector3D(x=velocity,y=0,z=0))
                 native=world.tick();row=actor_row(vehicle)
+                capture.capture(native,index/20,extra={'c229410_parking':row})
                 motion.write(json.dumps({'native_frame':native,'video_frame':index,'time_s':index/20,
                     'source_kind':'original_native',**row},allow_nan=False)+'\n')
                 camera_frames={}
@@ -92,19 +110,26 @@ def execute(output,host,port):
                 frame_map.append(native,index/20,camera_native_frames=camera_frames)
         for name,process in encoders.items():
             process.stdin.close();error=process.stderr.read()
-            if process.wait(timeout=180) or not (output/(name+'.mkv')).is_file():
+            encoder_exit_codes[name]=process.wait(timeout=180)
+            if encoder_exit_codes[name] or not (output/(name+'.mkv')).is_file():
                 raise RuntimeError('Original FFV1 encoding failed: '+name+error.decode()[-400:])
+        capture.close(confirmed=True);capture=None
         (output/'road.xodr').write_text(open_drive())
         (output/'entrance-context.json').write_text(json.dumps({'source_kind':'original_native',
-            'cell_id':'C229410','entrance':ENTRANCE,'fire_station_identity_reviewed':False,
-            'driveway_entrance_reviewed':False,'highway_side_reviewed':False,
-            'parking_activity_reviewed':False,'traffic_conflict_reviewed':False,
-            'law_officer_device_direction_reviewed':False,
+            'cell_id':'C229410','entrance':facts['entrance'],
+            'authority_manifest_sha256':authority['manifest_sha256'],
+            'authority_source_sha256':{name:authority['record']['sources'][name]['sha256'] for name in authority['source_paths']},
+            'initial_activity':facts['initial_activity'],'exception_context':facts['exception_context'],
+            'fire_station_identity_reviewed':True,
+            'driveway_entrance_reviewed':True,'highway_side_reviewed':True,
+            'parking_activity_reviewed':True,'traffic_conflict_reviewed':True,
+            'law_officer_device_direction_reviewed':True,
             'reference_point_method_adopted':False,
-            'marking_source':'Native diagnostic driveway outline only'},indent=2)+'\n')
+            'marking_source':'Retained authority context plus Native diagnostic outline'},indent=2)+'\n')
         return {'frames':FRAMES,'camera_names':list(queues),
                 'fire_station_identity_unverified':True,'physical_acceptance_claimed':False}
     finally:
+        if capture is not None:capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:process.kill();process.wait()
         for actor in reversed(owned):
@@ -112,14 +137,22 @@ def execute(output,host,port):
                 if hasattr(actor,'stop'):actor.stop()
                 actor.destroy()
             except Exception:pass
-        if changed:restore(client,saved)
+        if changed:
+            restored=restore(client,saved)
+            if capture is None and len(encoder_exit_codes)==4:
+                seal_capture(output,frames=FRAMES,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,context={'case_id':cfg['case_id']})
+                record_native_exit(output)
 
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true')
     parser.add_argument('--output-dir',type=Path);parser.add_argument('--host',default='localhost')
+    parser.add_argument('--source-context',type=Path)
     parser.add_argument('--port',type=int,default=2000);args=parser.parse_args()
     if args.check:print(json.dumps(check()))
     else:
         if args.output_dir is None:parser.error('Original Native output directory required')
-        print(json.dumps(execute(args.output_dir,args.host,args.port)))
+        source=args.source_context or os.environ.get('C229410_SOURCE_CONTEXT')
+        if not source:parser.error('Cited source context required via --source-context or C229410_SOURCE_CONTEXT')
+        print(json.dumps(execute(args.output_dir,args.host,args.port,source)))

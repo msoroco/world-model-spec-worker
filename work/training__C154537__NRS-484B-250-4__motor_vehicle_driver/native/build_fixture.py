@@ -84,8 +84,10 @@ def build(case):
                          'video_frame': frame, 'time_s': frame / 20,
                          'camera_native_frames': {name: frame for name in CAMERAS}})
         traces.append({'frame': frame, 'time_s': frame / 20,
-                       'position_m': [x, -1.75, .5],
+                       'position': {'x': x, 'y': -1.75, 'z': .5},
+                       'position_m': [x, -1.75, .5], 'speed_mph': speed / .44704,
                        'velocity_mps': [speed, 0, 0], 'speed_mps': speed,
+                       'control': {},
                        'heading_deg': 0,
                        'source_kind': 'synthetic_original_shape'})
         road_id = 250 if x < -6 else 251 if x <= 6 else 252
@@ -113,7 +115,7 @@ def build(case):
     text(source / 'trace.jsonl', traces)
     text(source / 'capture/evidence.jsonl', evidence)
     put(source / 'capture/manifest.json', {'extraction_confirmed': True, 'frames': 600,
-        'sources': {'crossroads.xodr': sha(HERE / 'crossroads.xodr'),
+        'sources': {'road.xodr': sha(HERE / 'crossroads.xodr'),
                     'trace.jsonl': sha(source / 'trace.jsonl')},
         'synthetic_diagnostic': True})
     spec = {'files': {'capture/native/frames.jsonl': ''.join(

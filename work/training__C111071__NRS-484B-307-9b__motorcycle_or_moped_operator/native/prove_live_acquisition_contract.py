@@ -7,7 +7,9 @@ from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
 from live_capture import (HERE, camera_frame, map_check, signal_heads,
-                          signal_states, participant_rows,
+                          signal_states, participant_rows, road_reference,
+                          body_road_relation,
+                          approach_control,
                           validate_attempt_directory)
 
 
@@ -26,11 +28,54 @@ class Head:
 
 def prove():
     geometry = map_check()
+    reference = road_reference()
+    if [reference[key] for key in ("detector_y_m", "stop_marking_y_m",
+                                   "nearest_crosswalk_y_m", "junction_entry_y_m")] != [-16, -14, -10, -7]:
+        raise AssertionError("Source road boundaries differ")
+    body_at_halt = [[1.75, -15.5, 0] for _ in range(4)] + [[1.75, -14.5, 0] for _ in range(4)]
+    relation = body_road_relation({"road_id": 1, "lane_id": -1,
+                                   "body_vertices_m": body_at_halt}, reference)
+    if (relation["front_to_stop_marking_m"] != .5 or relation["entered_intersection_by_body"]
+            or not relation["detector_footprint_intersects_ego_body"]
+            or relation["detector_causation_verified"]):
+        raise AssertionError("Original full-body stop relation differs")
+    off_loop = body_road_relation({"road_id": 1, "lane_id": -1,
+                                   "body_vertices_m": [[4.0, y, 0] for _, y, _ in body_at_halt]}, reference)
+    if off_loop["detector_footprint_intersects_ego_body"]:
+        raise AssertionError("Off-loop body was declared on detector footprint")
+    if approach_control(12, 0, False, False)["throttle"] <= 0:
+        raise AssertionError("Approach motion request absent")
+    if approach_control(.5, .05, False, False)["brake"] != 1.0:
+        raise AssertionError("Near-line halt request absent")
+    if approach_control(.5, 0, True, False)["brake"] != 1.0:
+        raise AssertionError("Cycle wait hold request absent")
+    if approach_control(.5, 0, True, True)["throttle"] <= 0:
+        raise AssertionError("Post-cycle straight entry request absent")
     image = SimpleNamespace(frame=91, width=2, height=1,
                             raw_data=bytes(range(8)))
     if camera_frame(image, 91, 2, 1) != bytes(range(8)):
         raise AssertionError("Original frame payload differs")
     rejected = []
+    for name, args in (("release_without_observed_stop", (1, 0, False, True)),
+                       ("nonfinite_motion_readback", (float("nan"), 0, False, False))):
+        try:
+            approach_control(*args)
+        except ValueError:
+            rejected.append(name)
+        else:
+            raise AssertionError("Accepted " + name)
+    for name, row in (("wrong_ego_route", {"road_id": 3, "lane_id": -1,
+                                              "body_vertices_m": body_at_halt}),
+                      ("missing_ego_body", {"road_id": 1, "lane_id": -1,
+                                             "body_vertices_m": body_at_halt[:4]}),
+                      ("nonfinite_ego_body", {"road_id": 1, "lane_id": -1,
+                                               "body_vertices_m": body_at_halt[:7] + [[1.75, float("nan"), 0]]})):
+        try:
+            body_road_relation(row, reference)
+        except ValueError:
+            rejected.append(name)
+        else:
+            raise AssertionError("Accepted " + name)
     for name, frame, width, height, payload in (
             ("wrong_frame", 92, 2, 1, image.raw_data),
             ("wrong_width", 91, 3, 1, image.raw_data),
@@ -117,6 +162,19 @@ def prove():
             rejected.append("misordered_stop")
         else:
             raise AssertionError("Accepted stop marking beyond crosswalk")
+        source = ET.parse(HERE / "authored-road.xodr")
+        detector = source.getroot().find("road[@id='1']/objects/object[@id='504']")
+        detector.set("t", "0")
+        invalid = root / "off-lane-detector.xodr"
+        source.write(invalid, encoding="unicode")
+        try:
+            map_check(invalid)
+        except ValueError as error:
+            if "Detector footprint" not in str(error):
+                raise
+            rejected.append("off_lane_detector")
+        else:
+            raise AssertionError("Accepted off-lane detector")
         config = {"case_id": "exact-case", "candidate_id": "primary"}
         if validate_attempt_directory(root / "new", config) != "new":
             raise AssertionError("Fresh attempt kind differs")
@@ -137,6 +195,9 @@ def prove():
               "passed": True, "map": geometry,
               "camera_frame_positive": True, "signal_binding_positive": True,
               "participant_readback_positive": True,
+              "source_road_relation_positive": True,
+              "detector_footprint_overlap_positive": True,
+              "near_line_stop_controller_positive": True,
               "materialized_attempt_positive": True,
               "negative_rejections": rejected,
               "source_sha256": hashlib.sha256(

@@ -28,9 +28,26 @@ def main():
                   'actor': 'motor_vehicle_driver', 'parking_case': parking_case,
                   'rate_hz': 20, 'duration_s': 30, 'required_atoms': [],
                   'source_packets': [], 'case': {'case_id': case_id},
-                  'cameras': [{'name': name, 'width': 1280, 'height': 720}
-                              for name in ('overview', 'city_space', 'other_space', 'subject_side')],
+                  'cameras': [{'name': name, 'width': width, 'height': height,
+                               'fov_deg': 85, 'pose_strategy': pose}
+                              for name, width, height, pose in (
+                                  ('overview', 1920, 1080, 'overhead all-space context'),
+                                  ('approach', 1280, 720, 'posted City space and subject approach'),
+                                  ('reference_corner', 1280, 720, 'other curb space and boundary'),
+                                  ('driver_reference', 1280, 720, 'subject body and parking pose'))],
                   'recording_description': {'channels': [
+                      {'name': 'parking-inventory.json', 'unit': 'structured',
+                       'sampling_rate_hz': 0, 'method': 'authored geometry and original Native lane survey with authority fields unresolved',
+                       'time_window': 'capture context', 'reference_frame': 'authored one-way street',
+                       'uncertainty': 'City Council designation, posting and City-street jurisdiction require independent records'},
+                      {'name': 'vehicle-poses.jsonl', 'unit': 'structured',
+                       'sampling_rate_hz': 20, 'method': 'original Native actor transform, velocity and bounding box',
+                       'time_window': '600 frames', 'reference_frame': 'authored one-way street',
+                       'uncertainty': '50 ms sampling; vehicle legal classification requires independent source'},
+                      {'name': 'video_frames.jsonl', 'unit': 'structured',
+                       'sampling_rate_hz': 20, 'method': 'original four-view Native camera frame join',
+                       'time_window': '600 frames', 'reference_frame': 'original Native frame',
+                       'uncertainty': 'pixel visibility unverified until actual capture'},
                       {'name': 'subject_vehicle_pose_and_speed', 'unit': 'structured',
                        'sampling_rate_hz': 20, 'method': 'original Native vehicle transform and velocity',
                        'time_window': '600 frames', 'reference_frame': 'authored one-way street',
@@ -42,15 +59,19 @@ def main():
                       'limitations': ['City Council designation, due posting, City-street status and subject vehicle classification need independent source records; geometry and blueprint cannot prove them']},
                   'status': 'cpu_draft_not_delivery_prepared'}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
-                 for name in ('runner.py', 'geometry.py', 'tests/test_native.py')]
+                 for name in ('runner.py', 'geometry.py', 'tests/test_native.py',
+                              'tests/test_source_review.py')]
         files.append({'path': 'parking_measure.py', 'content': (HERE / 'parking_measure.py').read_text()})
+        files.append({'path': 'source_review.py', 'content': (HERE / 'source_review.py').read_text()})
+        files.append({'path': 'finalize.py', 'content': (HERE / 'native' / 'finalize.py').read_text()})
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         proposal = {'case_id': case_id, 'law_id': config['law_id'], 'cell_id': config['cell_id'],
                     'actor': config['actor'], 'entrypoint': 'runner.py', 'files': files,
                     'recording_description': config['recording_description'],
-                    'measurement_plan': {'entrypoint': 'parking_measure.py',
+                    'measurement_plan': {'entrypoint': 'finalize.py',
                                          'required_sources': ['vehicle-poses.jsonl', 'parking-inventory.json',
-                                                              'video_frames.jsonl'],
+                                                              'review.json', 'video_frames.jsonl',
+                                                              'trace.jsonl', 'capture/evidence.jsonl'],
                                          'status': 'source_bound_cpu_draft'},
                     'static_checks': ['one-way OpenDRIVE driving and parking lanes',
                                       'two distinct curb segments', 'four source cameras',

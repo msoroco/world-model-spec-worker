@@ -266,67 +266,164 @@
   "selected_branch": null,
   "observations": [
     {
-      "name": "st.lane_marking",
+      "name": "stripe_body_crossing",
       "mandatory": true,
-      "reason": "the pavement striping that marks the no-passing zone"
+      "evidence": "Native ego body versus authored stripe"
     },
     {
-      "name": "dev.zone_sign",
+      "name": "adjoining_road_entry",
       "mandatory": true,
-      "reason": "kind no_passing, where the zone is signed"
+      "evidence": "Native waypoint road/lane readback"
     },
     {
-      "name": "drv.within_signed_zone",
+      "name": "prior_left_indicator",
       "mandatory": true,
-      "reason": "the subject is inside the zone, kind no_passing"
+      "evidence": "Native observed vehicle light state"
     },
     {
-      "name": "st.centre_line",
+      "name": "oncoming_following_traffic",
       "mandatory": true,
-      "reason": "the left side of the highway"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the footprint left of centre or across the striping"
-    },
-    {
-      "name": "drv.straddles_marking",
-      "mandatory": true,
-      "reason": "crossing the striping"
-    },
-    {
-      "name": "sig.turn_indicator",
-      "mandatory": true,
-      "reason": "the appropriate turn signal given first"
-    },
-    {
-      "name": "drv.turning",
-      "mandatory": true,
-      "reason": "the left turn the crossing is for"
-    },
-    {
-      "name": "st.driveway_or_alley_entrance",
-      "mandatory": true,
-      "reason": "the adjoining highway or way turned into"
-    },
-    {
-      "name": "rel.oncoming",
-      "mandatory": true,
-      "reason": "oncoming traffic that must not be impeded"
-    },
-    {
-      "name": "drv.following",
-      "mandatory": true,
-      "reason": "following traffic that must not be impeded"
-    },
-    {
-      "name": "drv.hard_deceleration",
-      "mandatory": true,
-      "reason": "the impediment, evidenced by another user braking"
+      "evidence": "Native other-actor bodies and velocities"
     }
   ],
   "runtime_uncertainties": [
     "Eight exact copied Native requests, source/compatibility and synthetic saved CPU proofs, independent audit, and pinned offline constructions now exist. Original CARLA generated-road/striping, reviewed crossing and signal, statutory zone designation, adjoining-highway identity, no-impediment and legal outcome remain unverified."
-  ]
+  ],
+  "source_observation_mapping": {
+    "st.lane_marking": {
+      "evidence": "Source-only the pavement striping that marks the no-passing zone; original Native and legal review remain required",
+      "channels": [
+        "stripe_body_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.zone_sign": {
+      "evidence": "Source-only kind no_passing, where the zone is signed; original Native and legal review remain required",
+      "channels": [
+        "stripe_body_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.within_signed_zone": {
+      "evidence": "Source-only the subject is inside the zone, kind no_passing; original Native and legal review remain required",
+      "channels": [
+        "stripe_body_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Source-only the left side of the highway; original Native and legal review remain required",
+      "channels": [
+        "stripe_body_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Source-only the footprint left of centre or across the striping; original Native and legal review remain required",
+      "channels": [
+        "stripe_body_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.straddles_marking": {
+      "evidence": "Source-only crossing the striping; original Native and legal review remain required",
+      "channels": [
+        "stripe_body_crossing"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "sig.turn_indicator": {
+      "evidence": "Source-only the appropriate turn signal given first; original Native and legal review remain required",
+      "channels": [
+        "prior_left_indicator"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Source-only the left turn the crossing is for; original Native and legal review remain required",
+      "channels": [
+        "adjoining_road_entry"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Source-only the adjoining highway or way turned into; original Native and legal review remain required",
+      "channels": [
+        "adjoining_road_entry"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.oncoming": {
+      "evidence": "Source-only oncoming traffic that must not be impeded; original Native and legal review remain required",
+      "channels": [
+        "oncoming_following_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Source-only following traffic that must not be impeded; original Native and legal review remain required",
+      "channels": [
+        "oncoming_following_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Source-only the impediment, evidenced by another user braking; original Native and legal review remain required",
+      "channels": [
+        "oncoming_following_traffic"
+      ],
+      "source_refs": [
+        "inputs/training__C109137__NRS-484B-217-2__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full no-passing stripe, adjoining road, subject body and both traffic directions",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "subject approach and prior left indicator",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "stripe crossing, turn initiation and adjoining-road entry",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject body and surrounding traffic response",
+        "interval": "all 600 frames / 0-30 s"
+      }
+    ]
+  }
 }

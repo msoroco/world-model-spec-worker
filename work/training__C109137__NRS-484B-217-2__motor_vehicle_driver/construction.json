@@ -1,0 +1,87 @@
+{
+  "case_id": "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+  "cell_id": "C109137",
+  "law_id": "NRS-484B-217-2",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Explicit-case CPU handoff for the source-hashed selected Native constructions.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport subprocess\nimport sys\n\nHERE=Path(__file__).resolve().parent\nREPO=HERE.parents[1]\n\ndef command(case,candidate,output,offline=False):\n    config=json.loads((HERE/'config.json').read_text())\n    if case not in config['supported_case_ids']:\n        raise ValueError('Unknown exact case')\n    manifest=json.loads((HERE/'execution-manifest.json').read_text())\n    entry=next((entry for entry in manifest['cases'] if entry['case_id']==case),None)\n    if entry is None or candidate not in ['primary']+[x['id'] for x in entry['candidates']]:\n        raise ValueError('Unknown exact case candidate')\n    output=Path(output).resolve()\n    scratch=(REPO/'.runtime-work').resolve()\n    if output!=scratch and scratch not in output.parents:\n        raise ValueError('Output must be under .runtime-work')\n    return [sys.executable,str(REPO/'runtime.py'),'offline' if offline else 'materialize',\n            '--manifest',str(HERE/'execution-manifest.json'),'--case',case,\n            '--candidate',candidate,'--output',str(output)]+(['--python',sys.executable] if offline else [])\n\ndef main():\n    parser=argparse.ArgumentParser()\n    parser.add_argument('--case',required=True)\n    parser.add_argument('--candidate',default='primary')\n    parser.add_argument('--output',required=True)\n    parser.add_argument('--offline',action='store_true')\n    args=parser.parse_args()\n    raise SystemExit(subprocess.run(command(args.case,args.candidate,args.output,args.offline),cwd=REPO).returncode)\n\nif __name__=='__main__':main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"adjoining_road_id\": 218,\n  \"assignment_id\": \"training__C109137__NRS-484B-217-2__motor_vehicle_driver\",\n  \"assignment_sha256\": \"7af2a5e97c8c9e0ed830a9a27365e371975ad836d801190423fe5d2035ecb16a\",\n  \"camera_policy\": \"standard\",\n  \"candidate_id\": \"primary\",\n  \"case_id\": \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1\",\n  \"case_plan_sha256\": \"57ccbedba5ed431f2472c551e4e85cfd011fed3f9b281ffd0a6223d6795e09bc\",\n  \"ego_blueprint\": \"vehicle.tesla.model3\",\n  \"format\": \"c109137-zone-native-request-v1\",\n  \"frames\": 600,\n  \"main_road_id\": 217,\n  \"original_native_observed\": false,\n  \"rate_hz\": 20,\n  \"requested_speed_mps\": 5.0,\n  \"road_sha256\": \"5f962fb4640b871949d27f2c71c546e504b44451d2c8e8ca958aa886816910bf\",\n  \"signal_onset_frame\": 60,\n  \"source_text\": \"Except as otherwise provided in subsections 3 and 4, a driver shall not drive on the left side of the highway within such zone or drive across or on the left side of any pavement striping designed to mark such zone throughout its length. A driver may drive across a pavement striping marking such zone to an adjoining highway if the driver has first given the appropriate turn signal and there will be no impediment to oncoming or following traffic. Except where otherwise provided, a driver may drive across a pavement striping marking such a zone to make a left-hand turn if the driver has first given the appropriate turn signal in compliance with NRS 484B.413 [NRS-484B-413-2], if it is safe and if it would not be an impediment to oncoming or following traffic.\",\n  \"status\": \"canonical_cpu_prepared\",\n  \"stop_before_stripe_x_m\": null,\n  \"stripe_y_m\": 0.0,\n  \"tracks_sha256\": \"484de14d908a083a1dee12534b24129071646366a7bc311b2b9e9804cdc1ff6b\",\n  \"zone_legally_designated\": false,\n  \"cell_id\": \"C109137\",\n  \"law_id\": \"NRS-484B-217-2\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"duration_s\": 30,\n  \"selected_case_id\": \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1\",\n  \"supported_case_ids\": [\n    \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1\",\n    \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2\",\n    \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic\",\n    \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake\"\n  ],\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"case\": {\n    \"case_id\": \"training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1\"\n  },\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"stripe_body_crossing\",\n        \"unit\": \"object\",\n        \"method\": \"Native ego body versus authored stripe\",\n        \"reference_frame\": \"original Native frame and time\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"600-frame crossing attempt\",\n        \"uncertainty\": \"50 ms bracket; actual pixels and legal zone review pending\"\n      },\n      {\n        \"name\": \"adjoining_road_entry\",\n        \"unit\": \"object\",\n        \"method\": \"Native waypoint road/lane readback\",\n        \"reference_frame\": \"original Native frame and time\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"600-frame crossing attempt\",\n        \"uncertainty\": \"50 ms bracket; actual pixels and legal zone review pending\"\n      },\n      {\n        \"name\": \"prior_left_indicator\",\n        \"unit\": \"object\",\n        \"method\": \"Native observed vehicle light state\",\n        \"reference_frame\": \"original Native frame and time\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"600-frame crossing attempt\",\n        \"uncertainty\": \"50 ms bracket; actual pixels and legal zone review pending\"\n      },\n      {\n        \"name\": \"oncoming_following_traffic\",\n        \"unit\": \"object\",\n        \"method\": \"Native other-actor bodies and velocities\",\n        \"reference_frame\": \"original Native frame and time\",\n        \"sampling_rate_hz\": 20,\n        \"time_window\": \"600-frame crossing attempt\",\n        \"uncertainty\": \"50 ms bracket; actual pixels and legal zone review pending\"\n      }\n    ],\n    \"context_inputs\": [],\n    \"limitations\": [\n      \"Authored zone designation and synthetic pixels cannot establish physical or legal outcome\"\n    ]\n  },\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"authored crossing source view\"\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"authored crossing source view\"\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"authored crossing source view\"\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"authored crossing source view\"\n    }\n  ]\n}\n"
+    }
+  ],
+  "measurement_plan": {
+    "method": "Four exact selected constructions in execution-manifest.json; per-case source-hashed saved finalizers and measurement contracts",
+    "case_ids": [
+      "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_1",
+      "training__C109137__NRS-484B-217-2__motor_vehicle_driver__probe_2",
+      "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_clear_traffic",
+      "training__C109137__NRS-484B-217-2__motor_vehicle_driver__traffic_following_brake"
+    ],
+    "statutory_source_audit": "statutory-source-proof.json",
+    "comparison_audit": "independent-audit-suite.json"
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "stripe_body_crossing",
+        "unit": "object",
+        "method": "Native ego body versus authored stripe",
+        "reference_frame": "original Native frame and time",
+        "sampling_rate_hz": 20,
+        "time_window": "600-frame crossing attempt",
+        "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+      },
+      {
+        "name": "adjoining_road_entry",
+        "unit": "object",
+        "method": "Native waypoint road/lane readback",
+        "reference_frame": "original Native frame and time",
+        "sampling_rate_hz": 20,
+        "time_window": "600-frame crossing attempt",
+        "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+      },
+      {
+        "name": "prior_left_indicator",
+        "unit": "object",
+        "method": "Native observed vehicle light state",
+        "reference_frame": "original Native frame and time",
+        "sampling_rate_hz": 20,
+        "time_window": "600-frame crossing attempt",
+        "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+      },
+      {
+        "name": "oncoming_following_traffic",
+        "unit": "object",
+        "method": "Native other-actor bodies and velocities",
+        "reference_frame": "original Native frame and time",
+        "sampling_rate_hz": 20,
+        "time_window": "600-frame crossing attempt",
+        "uncertainty": "50 ms bracket; actual pixels and legal zone review pending"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Authored zone designation and synthetic pixels cannot establish physical or legal outcome"
+    ]
+  },
+  "static_checks": [
+    "explicit exact case and candidate selection",
+    "output under .runtime-work",
+    "source-hashed offline, compatibility, saved processing and physical fixture proofs"
+  ],
+  "termination_rules": [
+    "Capture stops at configured 600th frame or explicit Native failure; original source is preserved for recorded-only processing"
+  ],
+  "mechanisms": [
+    "authored no-passing stripe and adjoining-road geometry",
+    "observed-pose controller with prior turn indication request",
+    "four synchronized camera sources",
+    "separate following traffic response control"
+  ],
+  "status": "canonical_cpu_prepared"
+}

@@ -10,10 +10,10 @@ from geometry import check as geometry_check, geometry, open_drive
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -19, 25, -45),
-    ('city_space', 1280, 720, 14, -15, 14, -35),
-    ('other_space', 1280, 720, -14, -15, 14, -35),
-    ('subject_side', 1280, 720, 0, -10, 9, -25),
+    ('overview', 1920, 1080, 0, -19, 25, -45),
+    ('approach', 1280, 720, 14, -15, 14, -35),
+    ('reference_corner', 1280, 720, -14, -15, 14, -35),
+    ('driver_reference', 1280, 720, 0, -10, 9, -25),
 )
 TARGET_X = {'outside_city_space': -12.0, 'inside_city_space': 12.0}
 
@@ -45,6 +45,7 @@ def survey(world, carla):
 
 def execute(output_dir, case, host, port):
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
 
@@ -62,6 +63,8 @@ def execute(output_dir, case, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
     owned, encoders, queues = [], {}, {}
+    pipeline = None
+    completed = False
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
@@ -77,7 +80,7 @@ def execute(output_dir, case, host, port):
         settings.max_substeps = 10
         world.apply_settings(settings)
         readback = survey(world, carla)
-        output.mkdir(parents=True)
+        output.mkdir(parents=True, exist_ok=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         inventory = geometry()
         inventory.update({'assignment_id': 'training__C150129__LVMC-11-52-340__motor_vehicle_driver',
@@ -115,6 +118,11 @@ def execute(output_dir, case, host, port):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        case_id = ('training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1'
+                   if case == 'outside_city_space' else
+                   'training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2')
+        pipeline = PipelineCapture(client, vehicle, output, case_id,
+                                   required_observations=())
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'vehicle-poses.jsonl').open('x') as poses:
             first_elapsed = None
             for index in range(FRAMES):
@@ -146,6 +154,9 @@ def execute(output_dir, case, host, port):
                     encoders[name].stdin.write(image.raw_data)
                     mapped[name] = image.frame
                 frame_map.append(native_frame, elapsed, camera_native_frames=mapped)
+                pipeline.capture(native_frame, elapsed,
+                                 extra={'c150129_parking_case': case,
+                                        'c150129_space_id': inventory['space_id']})
                 poses.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
                     'time_s': elapsed, 'vehicle_id': vehicle.id,
                     'vehicle_xy_m': [transform.location.x, transform.location.y],
@@ -158,9 +169,12 @@ def execute(output_dir, case, host, port):
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError(f'Original camera encoding failed: {name}: {stderr.decode()[-400:]}')
+        completed = True
         return {'frames': FRAMES, 'camera_names': list(queues), 'native_survey': readback,
                 'authority_source_missing': True, 'physical_acceptance_claimed': False}
     finally:
+        if pipeline is not None:
+            pipeline.close(confirmed=completed)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()

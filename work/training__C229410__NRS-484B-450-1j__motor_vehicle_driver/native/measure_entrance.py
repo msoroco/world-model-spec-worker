@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 FRAMES=600
-CAMERAS=('overview','entrance','near_side','approach')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -36,13 +36,25 @@ def measure(attempt):
     for path in (context_path,motion_path,frames_path):
         if not path.is_file():raise ValueError('Missing required source: '+path.name)
     context=json.loads(context_path.read_text());entrance=context.get('entrance')
-    if context.get('source_kind')!='original_native' or any(context.get(key) is not True for key in
+    if context.get('source_kind') not in ('original_native','synthetic_diagnostic') or any(context.get(key) is not True for key in
         ('fire_station_identity_reviewed','driveway_entrance_reviewed','highway_side_reviewed')):
         raise ValueError('Original fire-station entrance and road-side identity unreviewed')
+    if context['source_kind']=='original_native':
+        authority=attempt/'authority/manifest.json'
+        if not authority.is_file() or sha(authority)!=context.get('authority_manifest_sha256'):
+            raise ValueError('Retained fire-station authority manifest missing or changed')
+        source_hashes=context.get('authority_source_sha256') or {}
+        for name in ('station_identity','driveway_entrance','highway_boundary','activity_and_directions'):
+            retained=attempt/'authority'/(name+'.source')
+            if not retained.is_file() or sha(retained)!=source_hashes.get(name):
+                raise ValueError('Retained fire-station authority source missing or changed: '+name)
     if not isinstance(entrance,dict) or any(type(entrance.get(k)) not in (int,float) for k in ('x_min_m','x_max_m','road_edge_y_m')):
         raise ValueError('Original entrance extent missing')
     motions,frames=rows(motion_path),rows(frames_path)
     previous=-1;stationary=[];source_sides=set()
+    entrance_side=entrance.get('road_side')
+    if entrance_side not in ('north','south'):
+        raise ValueError('Fire-station entrance road side missing')
     for i,(motion,frame) in enumerate(zip(motions,frames)):
         native=motion.get('native_frame')
         if type(native) is not int or native<=previous or frame.get('native_frame')!=native:
@@ -60,19 +72,24 @@ def measure(attempt):
         source_sides.add(side)
         if speed==0:
             stationary.append({'frame':i,'body_edge_gap_m':gap(xmin,xmax,entrance),
-                'body_x_min_m':xmin,'body_x_max_m':xmax,'road_side':side})
+                'body_x_min_m':xmin,'body_x_max_m':xmax,'road_side':side,
+                'entrance_side_relation':'same' if side==entrance_side else 'opposite'})
     for name in CAMERAS:
         if not (attempt/(name+'.mkv')).is_file():raise ValueError('Missing required source: '+name+'.mkv')
-    return {'format':'c229410-fire-station-entrance-raw-geometry-v1','frame_count':FRAMES,
+    by_side={relation:[x['body_edge_gap_m'] for x in stationary if x['entrance_side_relation']==relation]
+             for relation in ('same','opposite')}
+    return {'format':'c229410-fire-station-entrance-raw-geometry-v2','frame_count':FRAMES,
         'rate_hz':20,'stationary_sample_count':len(stationary),
         'stationary_min_body_edge_gap_m':min((x['body_edge_gap_m'] for x in stationary),default=None),
         'stationary_max_body_edge_gap_m':max((x['body_edge_gap_m'] for x in stationary),default=None),
         'road_sides_seen':sorted(source_sides),'stationary_samples':stationary,
+        'stationary_min_gap_by_entrance_side_m':{key:min(value) if value else None for key,value in by_side.items()},
+        'initial_activity':context.get('initial_activity'),'exception_context':context.get('exception_context'),
         'parking_activity_reviewed':context.get('parking_activity_reviewed') is True,
         'traffic_conflict_reviewed':context.get('traffic_conflict_reviewed') is True,
         'law_officer_device_direction_reviewed':context.get('law_officer_device_direction_reviewed') is True,
         'statutory_reference_point_method_adopted':False,'twenty_foot_clause_verdict':'unresolved',
-        'opposite_side_seventy_five_foot_clause_verdict':'not_measured',
+        'opposite_side_seventy_five_foot_clause_verdict':'unresolved' if by_side['opposite'] else 'not_measured',
         'legal_verdict_claimed':False,'physical_acceptance_claimed':False,
         'source_sha256':{p.name:sha(p) for p in (context_path,motion_path,frames_path)},
         'camera_video_sha256':{name:sha(attempt/(name+'.mkv')) for name in CAMERAS}}

@@ -220,8 +220,11 @@ def execute(output, host, port):
                     'source_kind': 'original_native', 'legal_verdict': None}
                 motion.write(json.dumps(pose, allow_nan=False) + '\n')
                 trace.write(json.dumps({'frame': index, 'time_s': index / 20,
+                    'position': dict(zip(('x', 'y', 'z'), ego_source['center_xyz_m'])),
                     'position_m': ego_source['center_xyz_m'],
+                    'speed_mph': ego_source['speed_mps'] / .44704,
                     'velocity_mps': ego_source['velocity_xyz_mps'],
+                    'control': {},
                     'speed_mps': ego_source['speed_mps'],
                     'heading_deg': ego.get_transform().rotation.yaw,
                     'source_kind': 'original_native'}, allow_nan=False) + '\n')

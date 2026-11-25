@@ -1,0 +1,128 @@
+{
+  "format": "worker-proposed-additional-binding",
+  "status": "ineligible_under_current_candidate_registry",
+  "row": {
+    "assignment_id": "training__C177626__NRS-484B-410__motor_vehicle_driver",
+    "original_assignment_id": "training__C227853__NRS-484B-410__motor_vehicle_driver",
+    "original_cell_incompatibility": "The frozen C227853 road/depart_parked/curb cell initializes the actor on a highway curbside shoulder. The separate statutory entry movement starts outside a highway and crosses its legal boundary. Moving the start off-highway would cease to be a depart_parked/curb scene; treating the shoulder-to-lane merge as entering the highway would misstate the source fact.",
+    "binding_reason": "C177626 is an existing paved_road/enter_road/other_vehicle motor_vehicle_driver cell. Its NRS-484B-260 witness explicitly uses a private-way origin and paved-highway entry; the same physical origin/boundary arrangement can test the separate NRS-484B-410 safety-before-entry obligation without changing either law or treating shoulder departure as entry."
+  },
+  "new_assignment_fields": {
+    "assignment_id": "training__C177626__NRS-484B-410__motor_vehicle_driver",
+    "law_id": "NRS-484B-410",
+    "cell_id": "C177626",
+    "actor": "motor_vehicle_driver",
+    "role": "training",
+    "set_ids": [
+      "full-train"
+    ],
+    "branch": "enter upon a highway",
+    "cell": {
+      "cell_id": "C177626",
+      "layout": "paved_road",
+      "maneuver": "enter_road",
+      "control": "other_vehicle",
+      "candidate_ego_parties": [
+        "bus_driver",
+        "cycle_or_scooter_operator",
+        "emergency_vehicle_driver",
+        "motor_vehicle_driver"
+      ]
+    },
+    "law": {
+      "id": "NRS-484B-410",
+      "title": "Starting parked vehicle",
+      "text": "A person, except when stopping, standing or parking where no parking is permitted, shall not start a vehicle which is stopped, standing or parked on a highway nor enter upon a highway unless and until such movement can be made with safety.",
+      "source": "NRS 484B.410"
+    },
+    "summary": {
+      "activation_conditions": [
+        "the subject is stopped, standing or parked on a highway and starts, or enters a highway",
+        "the place is not one where parking is prohibited"
+      ],
+      "exceptions": [
+        "a person stopping, standing or parking where no parking is permitted is outside the rule"
+      ],
+      "id": "NRS-484B-410",
+      "residue": [
+        "tier S: 'with safety' is the whole obligation; the gap bound is a surrogate"
+      ],
+      "source": "NRS 484B.410",
+      "subject": "driver",
+      "theme": "backing_and_starting",
+      "tier": "S",
+      "timing_requirements": [
+        {
+          "kind": "ordering",
+          "requirement": "'unless and until' — the safety condition must hold before the movement begins, not be established by it"
+        },
+        {
+          "kind": "continuous",
+          "requirement": "judged over the pull-out, until the subject is in the traffic stream"
+        }
+      ],
+      "title": "Starting parked vehicle"
+    },
+    "source_observation_terms": [
+      {
+        "term": "drv.standing_or_parked",
+        "note": "the vehicle is stopped, standing or parked"
+      },
+      {
+        "term": "drv.moving_off",
+        "note": "the start from rest"
+      },
+      {
+        "term": "st.highway",
+        "note": "the highway started onto or entered"
+      },
+      {
+        "term": "drv.lane_change_feasible",
+        "note": "operationalizes 'can be made with safety' for the lane entered"
+      },
+      {
+        "term": "drv.time_to_conflict",
+        "note": "with users on the highway"
+      },
+      {
+        "term": "rel.surface_gap",
+        "note": "the gap accepted"
+      },
+      {
+        "term": "drv.hard_deceleration",
+        "note": "a user forced to brake by the start"
+      },
+      {
+        "term": "st.curb_zone",
+        "note": "'where no parking is permitted' — the carve-out for a vehicle that must move"
+      }
+    ]
+  },
+  "minimum_case_design": {
+    "case_count": 2,
+    "comparison": "hold C177626 paved-road entry geometry, private-way origin, highway boundary, ego policy and cameras fixed; vary approaching highway traffic position or arrival timing",
+    "source_obligations": [
+      "cited off-highway private-way source and legal boundary",
+      "cited public-highway dedication, access and near/far boundary source",
+      "original ego footprints and timing before, at and after first highway-boundary crossing",
+      "original approaching highway traffic trajectories, surface gaps and braking observations",
+      "independent safety judgment made before movement and recorded review without numerical legal cutoff"
+    ],
+    "judgment": "measure movement and conflict evidence; do not encode a numeric legal safety cutoff"
+  },
+  "required_files": [
+    "work/_shared/branch-coverage.json additional_bindings row and NRS-484B-410 entry branch mapping",
+    "work/training__C177626__NRS-484B-410__motor_vehicle_driver/assignment.json with exact catalog cell identity and original law/role/summary/terms",
+    "work/training__C177626__NRS-484B-410__motor_vehicle_driver/case-plan.json with two or more exact entry cases and comparison",
+    "work/training__C177626__NRS-484B-410__motor_vehicle_driver/result.json, HANDOFF.md, inline constructions, execution-manifest.json, canonical proposals, offline/compatibility/recorded-only/audit proofs",
+    "work/_shared/gpu-queue.json exact entry jobs and comparison audit",
+    "work/_shared/branch-review.json independent law and binding review"
+  ],
+  "validator_result": {
+    "candidate_cell_present": false,
+    "validator": "runtime/scenario_pipeline/worker_exchange/branch_coverage.py assignments()",
+    "failure": "Ineligible supplemental binding",
+    "reason": "candidates.get(C177626) is None because this existing batch cell is absent from inputs/coverage/candidate-cells.json",
+    "resolution_needed": "upstream candidate registry or validator change, outside worker-owned files"
+  }
+}

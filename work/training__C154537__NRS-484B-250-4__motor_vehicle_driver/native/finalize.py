@@ -53,7 +53,8 @@ def finalize(attempt, output):
     }
     survey = json.loads((attempt / 'scene-survey.json').read_text())
     rays_by_frame = {row['native_frame']: row for row in survey['driver_view_samples']}
-    channel_values['driver_view_rays'] = lambda row: rays_by_frame.get(row['native_frame'])
+    channel_values['driver_view_rays'] = lambda row: rays_by_frame.get(
+        row['native_frame'], {'sampled': False, 'reason': 'ray not requested at this frame'})
     units = {'ego_front': 'm', 'ego_speed': 'm/s', 'governing_signal': 'structured',
              'other_vehicle': 'structured', 'driver_view_rays': 'structured'}
     for name, get_value in channel_values.items():

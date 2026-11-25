@@ -22,6 +22,7 @@ def build():
         proposal['files'].extend([
             {'path': 'runner.py', 'content': (HERE / 'runner.py').read_text()},
             {'path': 'crossroads.xodr', 'content': (HERE / 'crossroads.xodr').read_text()},
+            {'path': 'road.xodr', 'content': (HERE / 'crossroads.xodr').read_text()},
             {'path': 'finalize.py', 'content': (HERE / 'finalize.py').read_text()},
             {'path': 'measure_saved.py', 'content': (HERE / 'measure_saved.py').read_text()}])
         proposal['static_checks'] = ['one-way two-roadway OpenDRIVE junction',
@@ -39,9 +40,13 @@ def build():
                 ('governing_signal', 'structured', 'original CARLA head/lane/state readback'),
                 ('other_vehicle', 'structured', 'original actor body and motion history'),
                 ('driver_view_rays', 'structured', 'sampled original Native world.cast_ray'))]
-        proposal['recording_description']['context_inputs'] = [
-            'authored OpenDRIVE and imported lane/device survey',
-            'through-highway and official-device source review pending']
+        proposal['recording_description']['context_inputs'] = []
+        proposal['recording_description']['limitations'] = [
+            'Authored OpenDRIVE and imported lane/device survey require physical review',
+            'Through-highway and official-device source review pending']
+        for old_key in ('rate_hz', 'duration_s', 'cameras_required',
+                        'required_original_sources'):
+            proposal['recording_description'].pop(old_key, None)
         suffix = old['case_id'].rsplit('__', 1)[-1]
         config_item = next(item for item in proposal['files'] if item['path'] == 'config.json')
         config = json.loads(config_item['content'])

@@ -56,8 +56,86 @@ def map_check(path=ROAD):
     if not (approach_objects["504"] < approach_objects["502"] <
             approach_objects["501"] < float(roads["1"].get("length"))):
         raise ValueError("Detector, stop marking and crosswalk order differs")
+    detector = next(o for o in roads["1"].findall("objects/object")
+                    if o.get("id") == "504")
+    if (float(detector.get("t")) != -1.75 or
+            float(detector.get("width")) != 1.5 or
+            float(detector.get("length")) != 2 or
+            not 0 < approach_objects["502"] - approach_objects["504"] <= 3):
+        raise ValueError("Detector footprint does not cover the near-line approach lane")
     return {"passed": True, "map_sha256": hashlib.sha256(raw).hexdigest(),
             "native_import_verified": False, "arrow_face_verified": False}
+
+
+def road_reference(path=ROAD):
+    """Derive approach boundaries from the authored road, not case labels."""
+    survey = map_check(path)
+    root = ET.parse(path).getroot()
+    road = root.find("road[@id='1']")
+    geometry = road.find("planView/geometry")
+    heading = float(geometry.get("hdg"))
+    if abs(heading - math.pi / 2) > 1e-6 or abs(float(geometry.get("x"))) > 1e-6:
+        raise ValueError("Straight approach axis differs from source geometry")
+    origin_y = float(geometry.get("y"))
+    stations = {item.get("id"): float(item.get("s"))
+                for item in road.findall("objects/object")}
+    detector = next(item for item in road.findall("objects/object")
+                    if item.get("id") == "504")
+    return {"approach_road_id": 1, "lane_id": -1,
+            "axis": "y", "direction": 1,
+            "detector_y_m": origin_y + stations["504"],
+            "detector_center_x_m": -float(detector.get("t")),
+            "detector_half_length_m": float(detector.get("length")) / 2,
+            "detector_half_width_m": float(detector.get("width")) / 2,
+            "stop_marking_y_m": origin_y + stations["502"],
+            "nearest_crosswalk_y_m": origin_y + stations["501"],
+            "junction_entry_y_m": origin_y + float(road.get("length")),
+            "map_sha256": survey["map_sha256"]}
+
+
+def body_road_relation(row, reference):
+    """Measure the full-body front against source map boundaries per tick."""
+    if row.get("road_id") not in (1, 13, 4) or row.get("lane_id") != -1:
+        raise ValueError("Original ego route or lane differs")
+    body = row.get("body_vertices_m")
+    if not isinstance(body, list) or len(body) != 8:
+        raise ValueError("Original ego full body absent")
+    vertices = [vertex for vertex in body if isinstance(vertex, list) and len(vertex) == 3]
+    if len(vertices) != 8 or not all(math.isfinite(value) for vertex in vertices for value in vertex):
+        raise ValueError("Original ego body geometry invalid")
+    xs = [vertex[0] for vertex in vertices]
+    ys = [vertex[1] for vertex in vertices]
+    front_y = max(ys)
+    detector_x = reference["detector_center_x_m"]
+    detector_y = reference["detector_y_m"]
+    footprint_overlap = (max(xs) >= detector_x - reference["detector_half_width_m"]
+                         and min(xs) <= detector_x + reference["detector_half_width_m"]
+                         and max(ys) >= detector_y - reference["detector_half_length_m"]
+                         and min(ys) <= detector_y + reference["detector_half_length_m"])
+    return {"front_y_m": front_y,
+            "front_to_stop_marking_m": reference["stop_marking_y_m"] - front_y,
+            "front_to_crosswalk_m": reference["nearest_crosswalk_y_m"] - front_y,
+            "entered_intersection_by_body": front_y >= reference["junction_entry_y_m"],
+            "detector_footprint_intersects_ego_body": footprint_overlap,
+            "detector_causation_verified": False,
+            "source_map_sha256": reference["map_sha256"]}
+
+
+def approach_control(front_to_stop_m, speed_mps, stop_established, cycles_complete):
+    """Request a measured near-line halt before counting cross-signal cycles."""
+    if not all(math.isfinite(value) for value in (front_to_stop_m, speed_mps)) or speed_mps < 0:
+        raise ValueError("Original approach motion readback invalid")
+    if cycles_complete:
+        if not stop_established:
+            raise ValueError("Cannot enter before an observed near-line stop")
+        return {"throttle": .35, "brake": 0.0}
+    if stop_established:
+        return {"throttle": 0.0, "brake": 1.0}
+    braking_distance = speed_mps * speed_mps / 8 + 1.0
+    if front_to_stop_m <= braking_distance:
+        return {"throttle": 0.0, "brake": 1.0}
+    return {"throttle": .20 if front_to_stop_m > 5 else .08,
+            "brake": 0.0}
 
 
 def camera_frame(image, native_frame, width, height):
@@ -154,6 +232,7 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
     config = json.loads(Path(config_path).read_text())
     check(config)
     survey = map_check()
+    reference = road_reference()
     output = Path(output_dir).resolve()
     attempt_kind = validate_attempt_directory(output, config)
     import carla
@@ -205,7 +284,8 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
             output.mkdir(parents=True)
             (output / "config.json").write_text(json.dumps(config, indent=2) + "\n")
         (output / "map-import-survey.json").write_text(json.dumps({
-            **survey, "native_map_sha256": hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
+            **survey, "road_reference": reference,
+            "native_map_sha256": hashlib.sha256(mapping.to_opendrive().encode()).hexdigest(),
             "approach_road_id": start.road_id, "approach_lane_id": start.lane_id,
             "signal_actors": [{"role": role, "opendrive_id": actor.get_opendrive_id(),
                 "id": actor.id, "type_id": actor.type_id,
@@ -223,6 +303,12 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
         ego = world.spawn_actor(ego_bp, carla.Transform(
             carla.Location(x=1.75, y=-30, z=1), carla.Rotation(yaw=90)))
         owned.append(ego)
+        initial_vertices = ego.bounding_box.get_world_vertices(ego.get_transform())
+        if len(initial_vertices) != 8:
+            raise RuntimeError("Initial original motorcycle body absent")
+        initial_distance = reference["stop_marking_y_m"] - max(v.y for v in initial_vertices)
+        if not 5 < initial_distance < 30:
+            raise RuntimeError("Initial motorcycle approach distance differs")
         plans = (("overview", 0, -18, 22, -35),
                  ("approach", 1.75, -24, 9, -15),
                  ("reference_corner", -12, -12, 10, -25),
@@ -250,19 +336,25 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
             t0 = None
             prior_cross = None
             observed_cycles = 0
+            stopped_near_line = False
+            phase_tick = 0
+            prior_relation = {"front_to_stop_marking_m": initial_distance}
+            prior_speed = 0.0
             target_cycles = 1 if config["case_variant"] == "one_cycle" else 2
             for index in range(FRAMES):
-                # Drive the requested crossing cycle; the post-tick readback
-                # alone advances the controller's completed-cycle count.
-                phase = ("green", "yellow", "red")[(index % 120) // 40]
+                # Start the requested cycle after the measured near-line halt.
+                # Post-tick readback alone advances the completed-cycle count.
+                phase = ("green", "yellow", "red")[(phase_tick % 120) // 40]
                 heads["cross"].set_state({
                     "green": carla.TrafficLightState.Green,
                     "yellow": carla.TrafficLightState.Yellow,
                     "red": carla.TrafficLightState.Red}[phase])
                 hold = observed_cycles < target_cycles
+                motion = approach_control(
+                    prior_relation["front_to_stop_marking_m"],
+                    prior_speed, stopped_near_line, not hold)
                 ego.apply_control(carla.VehicleControl(
-                    throttle=0.0 if hold else .35,
-                    brake=1.0 if hold else 0.0))
+                    throttle=motion["throttle"], brake=motion["brake"]))
                 native_frame = world.tick()
                 snap = world.get_snapshot()
                 if snap.frame != native_frame:
@@ -274,10 +366,22 @@ def capture(output_dir, config_path, host="127.0.0.1", port=2000):
                     project_to_road=True, lane_type=carla.LaneType.Driving)
                 signal_state = signal_states(heads)
                 cross = signal_state["cross"]
-                if prior_cross == "red" and cross == "green":
+                if stopped_near_line and prior_cross == "red" and cross == "green":
                     observed_cycles += 1
                 prior_cross = cross
                 row = capture_row(index, native_frame, elapsed, ego, waypoint, signal_state)
+                relation = body_road_relation(row, reference)
+                if (not stopped_near_line and .0 <= relation["front_to_stop_marking_m"] <= 1.5
+                        and row["speed_mps"] <= .08):
+                    stopped_near_line = True
+                    phase_tick = 0
+                    prior_cross = "green"
+                elif stopped_near_line:
+                    phase_tick += 1
+                prior_relation = relation
+                prior_speed = row["speed_mps"]
+                row["road_relation_from_original_body"] = relation
+                row["stop_established_from_original_body_and_speed"] = stopped_near_line
                 row["signal_face_review_required"] = True
                 row["detector_physical_cause_verified"] = False
                 row["controller_cycle_count_from_readback"] = observed_cycles
