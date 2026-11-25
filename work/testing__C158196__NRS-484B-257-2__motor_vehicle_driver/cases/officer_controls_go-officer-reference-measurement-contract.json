@@ -1,0 +1,42 @@
+{
+  "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "original capture",
+    "remove": [
+      "officer-reference-capture.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "officer-reference-capture.json",
+        "line-reference-site.xodr",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "reference_saved_measure.measure",
+      "output_key": "first_engineering_stop_before_reference",
+      "requirement": "Original ego stop placement relative to sourced subsection 1 reference",
+      "source": "NRS 484B.257(1)-(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "value_type": "structured record"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "officer-reference-capture.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ],
+      "kind": "measured",
+      "method": "officer_saved_review.validate",
+      "output_key": "police_control_verified",
+      "requirement": "Original police-officer direction and control independently reviewed where applicable",
+      "source": "NRS 484B.257(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "value_type": "boolean"
+    }
+  ]
+}
