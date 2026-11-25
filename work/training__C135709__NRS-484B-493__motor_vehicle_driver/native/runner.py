@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import queue
 import subprocess
@@ -285,5 +286,6 @@ if __name__ == '__main__':
         if not a.output_dir:
             raise SystemExit('--output-dir required for Native execution')
         side = a.side or json.loads((Path(__file__).parent / 'config.json').read_text())['parking_side']
+        review_dir = a.authority_review_dir or os.environ.get('C135709_AUTHORITY_REVIEW_DIR')
         print(json.dumps(execute(a.output_dir, side, a.host, a.port,
-                                 a.source_review_dir)))
+                                 review_dir)))

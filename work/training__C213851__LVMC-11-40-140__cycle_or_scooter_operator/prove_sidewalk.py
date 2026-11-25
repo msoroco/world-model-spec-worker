@@ -15,6 +15,7 @@ def sample(stop=True, pedestrian_clear=True):
             "source_kind": "synthetic_native_sample",
             "district": "residence", "district_source_id": "synthetic-district-survey",
             "origin_kind": "driveway", "origin_source_id": "synthetic-driveway-survey",
+            "travel_direction": "into_driveway",
             "sidewalk_continuation_across_origin": True,
             "sidewalk_continuation_source_id": "synthetic-sidewalk-survey",
             "sidewalk_boundary_source_id": "synthetic-boundary-survey",

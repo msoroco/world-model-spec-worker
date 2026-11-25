@@ -25,6 +25,7 @@ def measure(frame_bytes, site_bytes):
     require(site.get('pedestrian_conflict_source_id'), 'pedestrian conflict source missing')
     require(site["district"] in {"business", "residence"} and site["district_source_id"], "district source missing")
     require(site["origin_kind"] in {"driveway", "alley", "building"} and site["origin_source_id"], "origin source missing")
+    require(site.get('travel_direction') == 'into_driveway', 'selected entering-driveway direction missing')
     require(site["sidewalk_continuation_across_origin"] is True and site["sidewalk_continuation_source_id"], "sidewalk continuation source missing")
     require(site["sidewalk_boundary_source_id"] and site["rider_class_source_id"], "boundary or rider-class source missing")
     require(site["rider_class"] in {"bicycle", "electric_bicycle", "electric_scooter"}, "rider class outside ordinance")

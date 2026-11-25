@@ -1,6 +1,7 @@
 """Create explicit synthetic source fixtures for saved rider-count CPU checks."""
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 FOLDER = Path(__file__).resolve().parent.parent
@@ -21,6 +22,10 @@ def jsonlines(rows):
 
 
 def main():
+    core = json.loads((FOLDER / 'native/diagnostic-core-template.json').read_text())
+    road = FOLDER / 'native/road.xodr'
+    if not road.exists():
+        shutil.copyfile(FOLDER.parent / 'training__C230259__NRS-484B-777-1__cycle_or_scooter_operator/native/road.xodr', road)
     for label, count in (('controlled_1', 2), ('controlled_2', 3)):
         for candidate, shift in (('primary', 0.0), ('fallback1', .18)):
             prefix = f'diagnostic-{label}-{candidate}'
@@ -42,7 +47,8 @@ def main():
             for i in range(600):
                 native = 1000 + i
                 t = round(i * .05, 5)
-                frame_rows.append({'video_frame': i, 'native_frame': native,
+                frame_rows.append({'video_frame': i, 'carla_frame': native,
+                                   'native_frame': native,
                                    'time_s': t,
                                    'camera_native_frames': {view: native for view in VIEWS}})
                 pose_rows.append({'video_frame': i, 'native_frame': native,
@@ -55,11 +61,29 @@ def main():
                                               'shoulder_occupied': False,
                                               'exclusive_use_occupied': False}
                                              for rid in ids]})
+                position = [round(i * .1, 5), round(1.5 + shift, 5), .7]
                 trace_rows.append({'frame': native, 'time_s': t,
-                                   'position_m': round(i * .1, 5)})
-                evidence_rows.append({'original_frame': native,
-                                      'source_kind': 'synthetic_fixture'})
-            sources = []
+                                   'position': {'x': position[0], 'y': position[1], 'z': position[2]},
+                                   'position_m': position, 'heading_deg': 0.0,
+                                   'speed_mps': 2.0, 'speed_mph': 4.473873,
+                                   'velocity_mps': [2.0, 0.0, 0.0],
+                                   'control': {'throttle': 0, 'steer': 0, 'brake': 0,
+                                               'hand_brake': False}})
+                evidence_rows.append({'original_frame': native, 'replay_frame': native,
+                                      'recording_time_s': t, 'replay_simulation_time_s': t,
+                                      'actor_id': 71, 'ego': {'position_m': position,
+                                      'heading_deg': 0.0, 'speed_mps': 2.0,
+                                      'body_vertices_m': [[position[0]-.3, position[1]-.22, 0],
+                                                          [position[0]+.3, position[1]-.22, 0],
+                                                          [position[0]+.3, position[1]+.22, 0],
+                                                          [position[0]-.3, position[1]+.22, 0]],
+                                      'speed_provenance': 'synthetic_native_sample'},
+                                      'world': {'weather': {'cloudiness': 0, 'precipitation': 0,
+                                                           'wetness': 0, 'fog_density': 0},
+                                                'road_projection': {'road_id': 1, 'section_id': 0,
+                                                                    'lane_id': -1, 's_m': round(60+i*.1, 5)}}})
+            sources = [{'path': 'road.xodr',
+                        'source': f'work/{AID}/native/road.xodr', 'sha256': sha(road)}]
             for name, data in (('road_context.json', json.dumps(context, separators=(',', ':')) + '\n'),
                                ('rider_poses.jsonl', jsonlines(pose_rows)),
                                ('video_frames.jsonl', jsonlines(frame_rows))):
@@ -67,9 +91,19 @@ def main():
                 source.write_text(data)
                 sources.append({'path': name, 'source': f'work/{AID}/{source.name}',
                                 'sha256': sha(source)})
-            spec = {'files': {'trace.jsonl': jsonlines(trace_rows),
-                              'capture/evidence.jsonl': jsonlines(evidence_rows)},
-                    'graphs': [],
+            trace_text = jsonlines(trace_rows)
+            capture_manifest = {'frames': 600, 'extraction_confirmed': True,
+                                'synthetic_diagnostic': True,
+                                'case_id': AID + '__' + label,
+                                'required_observations': [],
+                                'sources': {'road.xodr': sha(road),
+                                            'trace.jsonl': hashlib.sha256(trace_text.encode()).hexdigest()}}
+            spec = {'files': {'trace.jsonl': trace_text,
+                              'capture/evidence.jsonl': jsonlines(evidence_rows),
+                              'capture/native/frames.jsonl': core['files']['capture/native/frames.jsonl'],
+                              'capture/manifest.json': json.dumps(capture_manifest) + '\n',
+                              'capture/recorder_info.txt': 'Synthetic CPU diagnostic; no CARLA recording.\nCreate 71: vehicle.bh.crossbike (0)\n'},
+                    'graphs': core['graphs'],
                     'videos': [{'path': name + '.mkv', 'frames': 600,
                                 'width': 1920 if name == 'overview' else 1280,
                                 'height': 1080 if name == 'overview' else 720,

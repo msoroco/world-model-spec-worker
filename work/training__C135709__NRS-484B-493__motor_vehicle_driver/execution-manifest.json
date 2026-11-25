@@ -2,13 +2,13 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C135709__NRS-484B-493__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_delivery_cpu_in_progress",
+  "status": "cpu_prepared_original_source_pending",
   "cases": [
     {
       "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
       "kind": "delivery",
       "construction": "native/controlled_1/construction.json",
-      "construction_sha256": "91de33b3cd3c0b32466eda4d8bff2ae2ba7452b42179113ee745e613da2951bf",
+      "construction_sha256": "4ad17b75fd4e7d29e94fddb61f1a8bb9a067a689b11cf3eb45ae5781197982ee",
       "candidate_risk": {
         "status": "physical",
         "reason": "Primary may brake outside the governed curb extent or leave the shoulder in Native dynamics."
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/controlled_1/fallback1/construction.json",
-          "construction_sha256": "abeea382967afb5c7211d5fa7495e2617852e987029bcbcf538198a15580b1aa",
+          "construction_sha256": "3ece12911f7d43a8fa4aac5d8d9c0102ec64b9c0de32c5cdce6ad82d1536b039",
           "trigger": {
             "source": "original Native vehicle-pose.jsonl and reviewed street extent",
             "metric": "stationary footprint within governed extent and curb shoulder",
@@ -26,7 +26,20 @@
           "changed_knobs": [
             "moving_throttle .18 to .23",
             "brake_start_frame 210 to 260"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/controlled_1/public-fallback1/receipt.json",
+            "sha256": "1b8063c77bba4f8b370c8b1c5ae4744f9e42c51d49016021fcf0700f611db851",
+            "log": "proofs/controlled_1/public-fallback1/analysis.log",
+            "negative_log": "proofs/controlled_1/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-493__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c135709-493-offline-v7-controlled_1-fallback1",
+            "construction_sha256": "3ece12911f7d43a8fa4aac5d8d9c0102ec64b9c0de32c5cdce6ad82d1536b039",
+            "exit_code": 0,
+            "log": "proofs/controlled_1/public-fallback1/static.log",
+            "log_sha256": "ff5fa574156173bba6ca1aa53f2efea46ff5a1d3f970866f729d0faa2daeeca4"
+          }
         }
       ],
       "measurement_procedure": {
@@ -34,14 +47,114 @@
       },
       "measurement_contract": "selected-measurements/controlled_1/measurement-contract.json",
       "fixture_recipe": "work/training__C135709__NRS-484B-493__motor_vehicle_driver/diagnostic-controlled_1-recipe.json",
-      "delivery_readiness": "incomplete",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/controlled_1/public-primary/receipt.json",
+        "sha256": "46d7c50d883bafa1f85f7554c7a828cfaa0341bcd4dec11b8c90b8e840a01a45",
+        "log": "proofs/controlled_1/public-primary/analysis.log",
+        "negative_log": "proofs/controlled_1/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-493__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1 --candidate primary --output .runtime-work/c135709-493-offline-v7-controlled_1-primary",
+        "construction_sha256": "4ad17b75fd4e7d29e94fddb61f1a8bb9a067a689b11cf3eb45ae5781197982ee",
+        "exit_code": 0,
+        "log": "proofs/controlled_1/public-primary/static.log",
+        "log_sha256": "ff5fa574156173bba6ca1aa53f2efea46ff5a1d3f970866f729d0faa2daeeca4"
+      },
+      "negative": {
+        "log": "proofs/controlled_1/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135709__NRS-484B-493__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_1/saved-processing.json",
+        "test_log_sha256": "6875b8d8247aef74dc097f6673958a036d5b7b8552934382955b0e3c3818426c"
+      },
+      "acquisition": {
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "notice_and_street_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "st.lane_direction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "vehicle_footprint": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/controlled_1/proof.json",
+        "sha256": "b696007d479663609ac01e03ce8db92d25eb456001822e5cb8e5800d29472e50"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "79a08df29d9c90cb7679e0b80f0ba733d457de3c577384bf9a1ec1b11cffb27f",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C135709__NRS-484B-493__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1 --attempt .runtime-work/c135709-493-saved-attempt-v7-1 --processing .runtime-work/c135709-493-saved-output-v7-1/v0001/processing.json --output .runtime-work/c135709-493-delivery-1.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_1/delivery-positive.log",
+        "test_log_sha256": "4b081312d40410aaef1695878a5ecec0b00345738f82aa0fdd5cda0a004ef0fd",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C135709__NRS-484B-493__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_1 --attempt .runtime-work/c135709-493-delivery-negative-attempt-v7-1 --processing .runtime-work/c135709-493-saved-output-v7-1/v0001/processing.json --output .runtime-work/c135709-493-delivery-negative-1.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: authority-review/device-authority.json",
+        "negative_log": "proofs/controlled_1/delivery-negative.log",
+        "negative_log_sha256": "86e25f8277b626edc40c0967bc71325bc18f05315c3a68c6bbe96a05928edc66"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2",
       "kind": "delivery",
       "construction": "native/controlled_2/construction.json",
-      "construction_sha256": "7056a3d3cd8d72f1e1900fd9f59f47ba519abff561afee1365800c15e8d6463d",
+      "construction_sha256": "cb0b6f90cf9c8649c462df27d3eb8ea8663aaf6aaea906323645bcb8c10aa6da",
       "candidate_risk": {
         "status": "physical",
         "reason": "Primary may brake outside the governed curb extent or leave the shoulder in Native dynamics."
@@ -50,7 +163,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/controlled_2/fallback1/construction.json",
-          "construction_sha256": "ff783f7f51b4b4ef3cb86b408d6dbdf41ccfd72238395cf718fe8fadfe732043",
+          "construction_sha256": "e367d3334c573a96572361076bce840c115fa8e6e19172a6920dbd53c6ad3d6d",
           "trigger": {
             "source": "original Native vehicle-pose.jsonl and reviewed street extent",
             "metric": "stationary footprint within governed extent and curb shoulder",
@@ -59,7 +172,20 @@
           "changed_knobs": [
             "moving_throttle .18 to .23",
             "brake_start_frame 210 to 260"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/controlled_2/public-fallback1/receipt.json",
+            "sha256": "76adea5b9af91f9ff4f1cbede9b075239dadb603a876debf6279838a6d05191c",
+            "log": "proofs/controlled_2/public-fallback1/analysis.log",
+            "negative_log": "proofs/controlled_2/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-493__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c135709-493-offline-v7-controlled_2-fallback1",
+            "construction_sha256": "e367d3334c573a96572361076bce840c115fa8e6e19172a6920dbd53c6ad3d6d",
+            "exit_code": 0,
+            "log": "proofs/controlled_2/public-fallback1/static.log",
+            "log_sha256": "ff5fa574156173bba6ca1aa53f2efea46ff5a1d3f970866f729d0faa2daeeca4"
+          }
         }
       ],
       "measurement_procedure": {
@@ -67,8 +193,108 @@
       },
       "measurement_contract": "selected-measurements/controlled_2/measurement-contract.json",
       "fixture_recipe": "work/training__C135709__NRS-484B-493__motor_vehicle_driver/diagnostic-controlled_2-recipe.json",
-      "delivery_readiness": "incomplete",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/controlled_2/public-primary/receipt.json",
+        "sha256": "14c14b3f055f014f27b46a9213ae90bb7bef43940ae127ea7c5a3b982f5966ea",
+        "log": "proofs/controlled_2/public-primary/analysis.log",
+        "negative_log": "proofs/controlled_2/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-493__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2 --candidate primary --output .runtime-work/c135709-493-offline-v7-controlled_2-primary",
+        "construction_sha256": "cb0b6f90cf9c8649c462df27d3eb8ea8663aaf6aaea906323645bcb8c10aa6da",
+        "exit_code": 0,
+        "log": "proofs/controlled_2/public-primary/static.log",
+        "log_sha256": "ff5fa574156173bba6ca1aa53f2efea46ff5a1d3f970866f729d0faa2daeeca4"
+      },
+      "negative": {
+        "log": "proofs/controlled_2/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135709__NRS-484B-493__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2 on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_2/saved-processing.json",
+        "test_log_sha256": "b3ea74994d17f448e1860d01924c1a6c74fe7a4e09b3a4ce51ba5bb6d0e145e7"
+      },
+      "acquisition": {
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "notice_and_street_context": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "st.lane_direction": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        },
+        "vehicle_footprint": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join and signed street-side footprint projection",
+          "evidence": "vehicle-pose.jsonl; road-context.json; reviewed authority sources; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/controlled_2/proof.json",
+        "sha256": "9f20814fabe5873672c4c67a6522702507c00d9116dc8ed3871e752ad281119a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "79a08df29d9c90cb7679e0b80f0ba733d457de3c577384bf9a1ec1b11cffb27f",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C135709__NRS-484B-493__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2 --attempt .runtime-work/c135709-493-saved-attempt-v7-2 --processing .runtime-work/c135709-493-saved-output-v7-2/v0001/processing.json --output .runtime-work/c135709-493-delivery-2.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_2/delivery-positive.log",
+        "test_log_sha256": "eda8e6c132aba9d78c53359fcd4d99e91f913abc87dceb8c7c4f2b64a56cd95f",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C135709__NRS-484B-493__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-493__motor_vehicle_driver__controlled_2 --attempt .runtime-work/c135709-493-delivery-negative-attempt-v7-2 --processing .runtime-work/c135709-493-saved-output-v7-2/v0001/processing.json --output .runtime-work/c135709-493-delivery-negative-2.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: authority-review/device-authority.json",
+        "negative_log": "proofs/controlled_2/delivery-negative.log",
+        "negative_log_sha256": "86e25f8277b626edc40c0967bc71325bc18f05315c3a68c6bbe96a05928edc66"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }

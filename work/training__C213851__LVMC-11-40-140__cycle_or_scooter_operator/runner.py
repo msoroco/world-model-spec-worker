@@ -28,6 +28,7 @@ def check(config):
             and config["actor"] == "cycle_or_scooter_operator", "assignment changed")
     require(config["frozen_cell"] == {"layout": "residence_district", "maneuver": "exit_road",
                                        "control": "driveway_entrance"}, "frozen cell changed")
+    require(config.get('travel_direction') == 'into_driveway', 'selected entering-driveway direction changed')
     require(config["rider_blueprint"] == "vehicle.bh.crossbike" and config["rider_class"] == "bicycle",
             "rider class or blueprint changed")
     require(config["rate_hz"] == 20 and config["duration_s"] == 30 and config["frames"] == 600,
@@ -50,6 +51,7 @@ def read_survey(path):
             and survey["rider_blueprint_source_id"] and survey.get('pedestrian_conflict_source_id'),
             "district/sidewalk/rider/pedestrian survey missing")
     require(survey["district"] == "residence" and survey["origin_kind"] == "driveway"
+            and survey.get('travel_direction') == 'into_driveway'
             and survey["sidewalk_continuation_across_driveway"] is True, "selected branch survey differs")
     require(len(survey[config.get('spawn_key', 'rider_spawn_xyz_yaw_deg')]) == 4 and len(survey["pedestrian_spawn_xyz_yaw_deg"]) == 4
             and len(survey["pre_sidewalk_stop_xyz_m"]) == 3 and len(survey["after_sidewalk_xyz_m"]) == 3,
@@ -60,6 +62,17 @@ def read_survey(path):
             len(survey['sidewalk_approach_direction_xyz']) == 3 and
             len(survey['pedestrian_conflict_polygon_xy_m']) >= 3,
             'surveyed sidewalk boundary and conflict geometry missing')
+    boundary = survey['sidewalk_boundary_point_xyz_m']
+    direction = survey['sidewalk_approach_direction_xyz']
+    norm = math.hypot(direction[0], direction[1])
+    require(norm > 0, 'surveyed driveway-entry direction missing')
+    def side(point):
+        return ((point[0]-boundary[0])*direction[0] +
+                (point[1]-boundary[1])*direction[1]) / norm
+    require(side(survey[config.get('spawn_key', 'rider_spawn_xyz_yaw_deg')][:3]) < 0 and
+            side(survey['pre_sidewalk_stop_xyz_m']) < 0 and
+            side(survey['after_sidewalk_xyz_m']) > 0,
+            'surveyed route must enter driveway across the sidewalk')
     return survey
 
 
@@ -174,6 +187,7 @@ def execute(config, output_dir, survey_path, host, port):
             'district': survey['district'],
             'district_source_id': survey['district_source_id'],
             'origin_kind': survey['origin_kind'],
+            'travel_direction': survey['travel_direction'],
             'origin_source_id': survey['driveway_source_id'],
             'sidewalk_continuation_across_origin': survey['sidewalk_continuation_across_driveway'],
             'sidewalk_continuation_source_id': survey['sidewalk_continuation_source_id'],
@@ -184,6 +198,10 @@ def execute(config, output_dir, survey_path, host, port):
             'sidewalk_boundary_point_xyz_m': survey['sidewalk_boundary_point_xyz_m'],
             'sidewalk_approach_direction_xyz': survey['sidewalk_approach_direction_xyz'],
             'pedestrian_conflict_polygon_xy_m': survey['pedestrian_conflict_polygon_xy_m'],
+            'sidewalk_context': {'source_kind': 'original_source_review',
+                'district': survey['district'], 'origin_kind': survey['origin_kind'],
+                'travel_direction': survey['travel_direction'],
+                'sidewalk_continuation_across_origin': survey['sidewalk_continuation_across_driveway']},
             'review_required': True}, indent=2) + '\n')
     finally:
         for sensor in sensors:

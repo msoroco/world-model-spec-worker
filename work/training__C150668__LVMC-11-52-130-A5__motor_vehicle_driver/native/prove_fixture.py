@@ -12,6 +12,7 @@ def context():
     return {"source_kind": "native_sidewalk_fixture_and_vehicle_readback",
             "native_map_sha256": "1" * 64, "fixture_identity_sha256": "2" * 64,
             "fixture_geometry_sha256": "3" * 64, "sidewalk_geometry_sha256": "4" * 64,
+            "front_orientation_sha256": "5" * 64,
             "fixture_kind": "sidewalk_elevator",
             "fixture_bounds_m": {"min_x": 0, "max_x": 2, "min_y": 0, "max_y": 2},
             "sidewalk_bounds_m": {"min_x": -20, "max_x": 20, "min_y": 0, "max_y": 3}}
@@ -46,6 +47,11 @@ if __name__ == "__main__":
     assert a["within_five_foot_side_band_at_rest"] is False
     assert b["within_five_foot_side_band_at_rest"] is True
     assert a["directly_in_front_frame_count_at_rest"] == b["directly_in_front_frame_count_at_rest"] == 0
+    original_join = copy.deepcopy(band)
+    for row in original_join:
+        row["camera_native_frames"] = {name: row["native_frame"] for name in CAMERAS}
+        row.pop("source_cameras")
+    assert measure(source, original_join)["within_five_foot_side_band_at_rest"] is True
     front = measure(source, trace(1))
     assert front["directly_in_front_frame_count_at_rest"] == 500
     assert front["within_five_foot_side_band_at_rest"] is False
@@ -75,6 +81,9 @@ if __name__ == "__main__":
     bad_rows = copy.deepcopy(band)
     bad_rows[250]["native_frame"] = bad_rows[249]["native_frame"]
     negative.append(reject("repeated_native_frame", source, bad_rows, "Native frame identity"))
+    bad_rows = copy.deepcopy(original_join)
+    bad_rows[250]["camera_native_frames"]["fixture_side"] += 1
+    negative.append(reject("wrong_native_camera_frame", source, bad_rows, "Four source camera"))
     bad_rows = copy.deepcopy(band)
     for row in bad_rows:
         row["observed_vehicle_speed_mps"] = 3.0
@@ -82,6 +91,7 @@ if __name__ == "__main__":
     proof = {"format": "worker-cpu-sidewalk-fixture-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
              "positive": {"outside": a, "side_band": b},
+             "original_native_camera_join_shape_passed": True,
              "branch_diagnostics": {
                  "direct_front": front,
                  "exact_five_feet": at_boundary,

@@ -92,6 +92,7 @@ def main():
         context={'assignment_id':AID,'case_id':cid,'source_kind':'synthetic_native_sample',
             'district':'residence','district_source_id':'synthetic-fixture:district',
             'origin_kind':'driveway','origin_source_id':'synthetic-fixture:driveway',
+            'travel_direction':'into_driveway',
             'sidewalk_continuation_across_origin':True,
             'sidewalk_continuation_source_id':'synthetic-fixture:sidewalk-continuation',
             'sidewalk_boundary_source_id':'synthetic-fixture:boundary',
@@ -102,6 +103,10 @@ def main():
             'pedestrian_conflict_polygon_xy_m':[[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]],
             'camera_sha256':cameras,'review_kind':'synthetic_diagnostic',
             'reviewer':'synthetic-software-test'}
+        context['sidewalk_context']={'source_kind':'synthetic_diagnostic',
+            'district':'residence','origin_kind':'driveway',
+            'travel_direction':'into_driveway',
+            'sidewalk_continuation_across_origin':True}
         spec={'files':{'video_frames.jsonl':lines(frames),
             'sidewalk-native.jsonl':lines(native), 'sidewalk_context.json':json.dumps(context)+'\n',
             'trace.jsonl':trace_text,'road.xodr':road,

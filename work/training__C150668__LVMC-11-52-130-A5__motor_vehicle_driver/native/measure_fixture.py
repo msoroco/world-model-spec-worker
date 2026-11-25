@@ -39,7 +39,7 @@ def side_gap(vehicle, fixture):
 def measure(context, rows):
     if context.get("source_kind") != "native_sidewalk_fixture_and_vehicle_readback":
         raise ValueError("Missing Native fixture and vehicle readback")
-    for key in ("native_map_sha256", "fixture_identity_sha256", "fixture_geometry_sha256", "sidewalk_geometry_sha256"):
+    for key in ("native_map_sha256", "fixture_identity_sha256", "fixture_geometry_sha256", "sidewalk_geometry_sha256", "front_orientation_sha256"):
         value = context.get(key)
         if not isinstance(value, str) or len(value) != 64 or any(char not in "0123456789abcdef" for char in value):
             raise ValueError(f"Missing source hash: {key}")
@@ -65,9 +65,16 @@ def measure(context, rows):
         previous_native = native
         if abs(finite(row.get("time_s"), "Native time") - index / RATE_HZ) > 1e-6:
             raise ValueError("Native time join failed")
-        cameras = row.get("source_cameras")
-        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != index for name in CAMERAS):
-            raise ValueError("Four source camera frame join failed")
+        cameras = row.get("camera_native_frames")
+        if cameras is not None:
+            if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(
+                    cameras[name] != native for name in CAMERAS):
+                raise ValueError("Four source camera frame join failed")
+        else:
+            cameras = row.get("source_cameras")
+            if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(
+                    cameras[name] != index for name in CAMERAS):
+                raise ValueError("Four source camera frame join failed")
         vehicle = bounds(row.get("vehicle_footprint_m"), "vehicle footprint")
         speed = finite(row.get("observed_vehicle_speed_mps"), "observed vehicle speed")
         if speed < 0:

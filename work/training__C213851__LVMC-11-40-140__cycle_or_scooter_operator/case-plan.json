@@ -6,7 +6,7 @@
   "source_law_text": "The operator of a bicycle, electric bicycle, or electric scooter within a business or residence district entering into or emerging from an alley, driveway or building shall stop such vehicle immediately prior to driving onto a sidewalk or onto the sidewalk area extending across any alleyway, driveway or building, yielding the right-of-way to any pedestrian as may be necessary to avoid collision.",
   "source_law_citation": "LVMC 11.40.140",
   "summary_status": "recovered_requires_source_review",
-  "selected_branch": "rider emerging from driveway or alley in district",
+  "selected_branch": "Entering a driveway across a sidewalk area.",
   "cell_fixed_facts": {
     "layout": "residence_district",
     "maneuver": "exit_road",
@@ -42,44 +42,60 @@
       "target_law_id": "LVMC-11-40-140",
       "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "stop immediately before sidewalk and yield to pedestrian",
+      "physical_target": "enter driveway after stopping before surveyed sidewalk and yielding until pedestrian clears conflict region",
       "comparison_variable": "stop before sidewalk and pedestrian yield",
-      "selection_status": "selected_for_cpu_preparation",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "native_capture_proposal_offline_checked",
+      "construction_status": "pinned_offline_passed_original_native_unexecuted",
       "native_construction": "native/construction.json",
       "measurement_script": "sidewalk_saved_measure.py",
-      "source_review": "No accepted recording IDs. Exact LVMC 11.40.140 requires a bicycle/e-bike/e-scooter operator in business or residence district emerging from alley, driveway or building, stopping immediately before sidewalk or continuing sidewalk area and yielding to a pedestrian as necessary. This case targets the residence-driveway bicycle branch; no physical or legal outcome is inferred."
+      "source_review": "No accepted recording IDs. Exact LVMC 11.40.140 requires a bicycle/e-bike/e-scooter operator in business or residence district emerging from alley, driveway or building, stopping immediately before sidewalk or continuing sidewalk area and yielding to a pedestrian as necessary. This case targets the residence-driveway bicycle branch; no physical or legal outcome is inferred.",
+      "construction_path": "selected-primary-construction.json",
+      "construction_sha256": "3c54cfc38872e9fb359d9d0cbb18cdd6eda8d30208af79a659a9f9962140f841",
+      "fixture_recipe": "cases/probe_01/recipe.json",
+      "selection_targets": [
+        "full-train"
+      ],
+      "requested_not_measured": true,
+      "selection_reason": "No accepted full-train evidence; selected residence-driveway bicycle comparison requires original stop and pedestrian conflict sources.",
+      "gap_ids": []
     },
     {
       "case_id": "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__probe_02",
       "target_law_id": "LVMC-11-40-140",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "cross sidewalk area without stop while pedestrian has conflict",
+      "physical_target": "enter same driveway by rolling through surveyed sidewalk boundary while pedestrian conflict persists",
       "comparison_variable": "stop before sidewalk and pedestrian yield",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "pinned_offline_passed_original_native_unexecuted",
+      "construction_path": "cases/probe_02/primary-construction.json",
+      "construction_sha256": "13ff3f2c6ebf980e5d717a31db3f1a18af99b85594e3c424f2ce8d5c9397693e",
+      "fixture_recipe": "cases/probe_02/recipe.json",
+      "selection_targets": [
+        "full-train"
+      ],
+      "requested_not_measured": true,
+      "selection_reason": "No accepted full-train evidence; selected residence-driveway bicycle comparison requires original stop and pedestrian conflict sources.",
+      "gap_ids": []
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__planned_comparison",
+      "comparison_id": "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__stop_yield_comparison",
       "case_ids": [
         "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__probe_01",
         "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__probe_02"
       ],
       "deliberate_differences": [
-        "stop before sidewalk and pedestrian yield"
+        "commanded pre-sidewalk stop and pedestrian crossing timing"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
+        "frozen residence-district driveway cell and bicycle actor",
+        "same surveyed sidewalk continuation, boundary and pedestrian conflict polygon",
+        "same bicycle and pedestrian identities, route, 20 Hz rate and 30 s capture",
+        "same four-camera source profile and recording description"
       ]
     }
   ],
@@ -150,10 +166,7 @@
     "Must prove actual sidewalk continuation across the driveway and rider blueprint suitability."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Original surveyed district, driveway, sidewalk continuation, rider suitability, pedestrian conflict and physical motion remain to be reviewed after Native capture."
   ],
   "observations": [
     {
@@ -224,12 +237,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Must prove actual sidewalk continuation across the driveway and rider blueprint suitability.",
-    "No CARLA execution or accepted recording is claimed."
+    "No CARLA execution or accepted recording is claimed; original sidewalk, bicycle and pedestrian conditions remain source-gated."
   ],
   "requirement_dispositions": [
     {
@@ -241,8 +249,136 @@
         "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__probe_01",
         "training__C213851__LVMC-11-40-140__cycle_or_scooter_operator__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Two exact residence-driveway bicycle cases compare source-measured pre-sidewalk cessation and pedestrian conflict timing; no legal numeric cutoff or physical outcome is inferred."
     }
   ],
-  "selected_delivery_case_count": 1
+  "selected_delivery_case_count": 2,
+  "source_observation_mapping": {
+    "ru.bicycle": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "ru.bicycle"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "ru.electric_bicycle"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "ru.electric_scooter"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.alley": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "st.alley"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "st.driveway_or_alley_entrance"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "st.sidewalk"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "drv.stopped"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "drv.crossing_line"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.pedestrian": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "ru.pedestrian"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "drv.yields_to": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "drv.yields_to"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Original Native rider/pedestrian pose joined to independently reviewed district, driveway, sidewalk and conflict sources; legal judgment reserved",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
+      "source_refs": [
+        "inputs/training__C213851__LVMC-11-40-140__cycle_or_scooter_operator/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "bicycle, sidewalk boundary and pedestrian conflict region",
+        "interval": "full 30 s capture"
+      },
+      {
+        "view": "approach",
+        "subject": "bicycle, sidewalk boundary and pedestrian conflict region",
+        "interval": "full 30 s capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "bicycle, sidewalk boundary and pedestrian conflict region",
+        "interval": "full 30 s capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "bicycle, sidewalk boundary and pedestrian conflict region",
+        "interval": "full 30 s capture"
+      }
+    ]
+  }
 }

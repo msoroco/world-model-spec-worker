@@ -89,9 +89,9 @@ def main():
                       'content': (source / name).read_text()}
                      for name in ('runner.py', 'tests/test_native.py')]
             for name in ('measure_abreast.py', 'finalize.py'):
-                path = FOLDER / ('native/' + name)
+                path = FOLDER / (name if name == 'measure_abreast.py' else 'native/' + name)
                 if path.exists():
-                    files.append({'path': name, 'source': f'work/{AID}/native/{name}',
+                    files.append({'path': name, 'source': f'work/{AID}/{path.relative_to(FOLDER)}',
                                   'content': path.read_text()})
             files.append({'path': 'config.json', 'content': json.dumps(cfg, indent=2) + '\n'})
             construction = {'case_id': case_id, 'cell_id': 'C230328', 'law_id': LAW,
