@@ -73,7 +73,7 @@
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Any-other-area 300-foot signaling",
       "status": "selected_required",
-      "evidence_or_gap": "Reviewed other-area 300-foot source scope bound to two exact other-area cases; original source review pending.",
+      "evidence_or_gap": "Reviewed other-area 300-foot source scope bound to three exact other-area cases; original source review pending.",
       "case_ids": [
         "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_long",
         "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_at",
@@ -85,7 +85,7 @@
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Any-other-area 300-foot signaling",
       "status": "selected_required",
-      "evidence_or_gap": "Reviewed other-area 300-foot source scope bound to two exact other-area cases; original source review pending.",
+      "evidence_or_gap": "Reviewed other-area 300-foot source scope bound to three exact other-area cases; original source review pending.",
       "case_ids": [
         "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_long",
         "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_at",
@@ -118,7 +118,7 @@
       "target_law_id": "NRS-484B-413-2",
       "target_type": "planned_delivery_comparison",
       "planning_status": "selected_cpu_prepared",
-      "source_branch": "business_or_residential_100ft",
+      "source_branch": "other_area_300ft",
       "comparison_variable": "continuous_signal_distance_before_course_change",
       "fixed_conditions": {
         "cell_id": "C124163",
@@ -300,49 +300,57 @@
       "name": "sig.turn_indicator",
       "mandatory": true,
       "source_note": "the signal, left or right",
-      "status": "unmapped_to_native_and_core"
+      "status": "selected_source_join_original_capture_pending",
+      "evidence_note": "600-frame diagnostic source join exists; original Native and visible-pixel review pending."
     },
     {
       "name": "sig.hand_signal",
       "mandatory": true,
       "source_note": "or the arm signal with its meaning",
-      "status": "unmapped_to_native_and_core"
+      "status": "declared_source_alternative_original_capture_pending",
+      "evidence_note": "Not exercised by six left-indicator/left-turn CPU cases; original hand-signal or direct-course-change claim is excluded."
     },
     {
       "name": "drv.distance_while",
       "mandatory": true,
       "source_note": "the path length over which the signal has been shown continuously",
-      "status": "unmapped_to_native_and_core"
+      "status": "selected_source_join_original_capture_pending",
+      "evidence_note": "600-frame diagnostic source join exists; original Native and visible-pixel review pending."
     },
     {
       "name": "kin.path_length",
       "mandatory": true,
       "source_note": "the 100-foot and 300-foot thresholds",
-      "status": "unmapped_to_native_and_core"
+      "status": "selected_source_join_original_capture_pending",
+      "evidence_note": "600-frame diagnostic source join exists; original Native and visible-pixel review pending."
     },
     {
       "name": "drv.turning",
       "mandatory": true,
       "source_note": "the turn or course change that follows",
-      "status": "unmapped_to_native_and_core"
+      "status": "selected_source_join_original_capture_pending",
+      "evidence_note": "600-frame diagnostic source join exists; original Native and visible-pixel review pending."
     },
     {
       "name": "drv.lane_change",
       "mandatory": true,
       "source_note": "'otherwise turn from a direct course'",
-      "status": "unmapped_to_native_and_core"
+      "status": "declared_source_alternative_original_capture_pending",
+      "evidence_note": "Not exercised by six left-indicator/left-turn CPU cases; original hand-signal or direct-course-change claim is excluded."
     },
     {
       "name": "env.precipitation",
       "mandatory": true,
-      "source_note": "'regardless of the weather' — no weather excuse",
-      "status": "unmapped_to_native_and_core"
+      "source_note": "'regardless of the weather' \u2014 no weather excuse",
+      "status": "selected_context_requires_original_review",
+      "evidence_note": "Clear and rain are separate selected stimuli; weather and district are confounded in the six CPU diagnostics, so no weather effect or waiver is inferred."
     },
     {
       "name": "kin.speed",
       "mandatory": true,
       "source_note": "the speed that converts the distance into a time",
-      "status": "unmapped_to_native_and_core"
+      "status": "selected_source_join_original_capture_pending",
+      "evidence_note": "600-frame diagnostic source join exists; original Native and visible-pixel review pending."
     }
   ],
   "sources": [
@@ -388,59 +396,83 @@
   ],
   "source_observation_mapping": {
     "sig.turn_indicator": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "sig.turn_indicator"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "sig.hand_signal": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "sig.hand_signal"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "drv.distance_while": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "drv.distance_while"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "kin.path_length": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "kin.path_length"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "drv.turning": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "drv.turning"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "drv.lane_change": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "drv.lane_change"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "env.precipitation": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "env.precipitation"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "kin.speed": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Selected 20 Hz post-tick Native source/camera join with saved-only analysis; diagnostic CPU coverage passed, original signal pixels, hand signal, lane-change alternative, district and weather remain independent source review before any legal verdict.",
+      "channels": [
+        "kin.speed"
+      ],
       "source_refs": [
-        "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json"
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/selected_runner.py",
+        "work/training__C124163__NRS-484B-413-2__motor_vehicle_driver/native/finalize.py"
       ]
     }
   },

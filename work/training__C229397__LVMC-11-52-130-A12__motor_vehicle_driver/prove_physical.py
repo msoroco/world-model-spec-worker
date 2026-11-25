@@ -9,7 +9,9 @@ from crosswalk_measure import ASSIGNMENT, measure
 EVENTS = ['capture_finished', 'encoders_closed', 'restoration_verified',
           'native_exit', 'owner_released', 'saved_processing_started']
 GAPS = {'controlled_1': 12.0, 'boundary_20ft': 6.096,
-        'controlled_2': 3.0, 'stop_near': 3.0, 'stand_near': 3.0}
+        'controlled_2': 3.0, 'stop_near': 3.0, 'stand_near': 3.0,
+        'traffic_conflict_near': 3.0, 'law_compliance_near': 3.0,
+        'police_direction_near': 3.0, 'device_direction_near': 3.0}
 
 
 def fixture(suffix, kind):

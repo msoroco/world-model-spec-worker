@@ -67,11 +67,41 @@ def device_row(device, index, native_frame, elapsed):
             'source_status': 'Native device state only; authority and applicability unresolved'}
 
 
+def spawn_direction_participant(world, carla, owned):
+    """Place a visible candidate participant; police authority is never inferred."""
+    blueprints = sorted(world.get_blueprint_library().filter('walker.pedestrian.*'),
+                        key=lambda item: item.id)
+    if not blueprints:
+        raise RuntimeError('Native direction-participant blueprint unavailable')
+    blueprint = blueprints[0]
+    actor = world.spawn_actor(blueprint, carla.Transform(
+        carla.Location(x=-2.0, y=0.0, z=8.8), carla.Rotation(yaw=-90)))
+    owned.append(actor)
+    return actor
+
+
+def authority_row(participant, index, native_frame, elapsed, qualifier):
+    row = {'video_frame': index, 'native_frame': native_frame, 'time_s': elapsed,
+           'qualifier': qualifier, 'authority_status': 'unverified',
+           'direction_status': 'requires independent original source'}
+    if participant is not None:
+        transform = participant.get_transform()
+        row['candidate_participant_id'] = participant.id
+        row['candidate_participant_xyz_m'] = [transform.location.x,
+                                               transform.location.y,
+                                               transform.location.z]
+    else:
+        row['candidate_participant_id'] = None
+    return row
+
+
 def write_context_manifest(path, case, device):
     value = {'format': 'c229397-native-qualifier-context-v1', 'qualifier': QUALIFIERS[case],
              'case_suffix': case, 'traffic_actor_requested': case == 'traffic_conflict_near',
              'device_requested': case == 'device_direction_near',
              'device_actor_found': device is not None,
+             'law_instruction_source_required': case == 'law_compliance_near',
+             'officer_authority_source_required': case == 'police_direction_near',
              'authority_and_necessity_unresolved': True,
              'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     path.write_text(json.dumps(value, indent=2) + '\n')

@@ -5,7 +5,8 @@ import sys
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'native'))
-from qualifier_context import (device_row, find_device, spawn_traffic_actor,
+from qualifier_context import (authority_row, device_row, find_device,
+                               spawn_direction_participant, spawn_traffic_actor,
                                traffic_command, traffic_row, write_context_manifest)
 from qualifier_runner import check, control_for
 from qualifier_geometry import open_drive
@@ -44,12 +45,14 @@ class Blueprint:
 
 class World:
     def __init__(self):
-        self.blueprints = [Blueprint('vehicle.a'), Blueprint('vehicle.b')]
+        self.blueprints = [Blueprint('vehicle.a'), Blueprint('vehicle.b'),
+                           Blueprint('walker.pedestrian.001')]
         self.actors = []
         self.spawned = None
 
     def get_blueprint_library(self):
-        return SimpleNamespace(filter=lambda pattern: self.blueprints)
+        return SimpleNamespace(filter=lambda pattern: [item for item in self.blueprints
+            if item.id.startswith('walker.') == pattern.startswith('walker.')])
 
     def spawn_actor(self, blueprint, transform):
         self.spawned = (blueprint, transform)
@@ -86,10 +89,15 @@ def main():
     assert find_device(world) is device
     present = device_row(device, 10, 710, .5)
     assert present['device_id'] == 22 and present['state'] == 'Green'
+    direction = spawn_direction_participant(world, carla, owned)
+    assert world.spawned[0].id == 'walker.pedestrian.001'
+    assert authority_row(direction, 10, 710, .5, 'police_direction')['authority_status'] == 'unverified'
+    assert authority_row(None, 10, 710, .5, 'law_compliance')['candidate_participant_id'] is None
     assert control_for('traffic_conflict_near', 300, 1, 0)['hand_brake']
     print(json.dumps({'passed': True, 'qualifier_cases': list(result['targets']),
         'second_actor_spawn_call': True, 'traffic_control_and_row': True,
-        'device_present_and_absent_rows': True, 'legal_verdict_claimed': False},
+        'device_present_and_absent_rows': True,
+        'law_and_officer_authority_timelines': True, 'legal_verdict_claimed': False},
         sort_keys=True))
 
 

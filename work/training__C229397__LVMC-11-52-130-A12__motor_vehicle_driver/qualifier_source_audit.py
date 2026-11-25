@@ -13,8 +13,9 @@ ASSIGNMENT = 'training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver'
 QUALIFIERS = ('traffic_conflict', 'law_compliance', 'police_direction', 'device_direction')
 SOURCE_ROLES = {
     'traffic_conflict': ('participant_motion', 'traffic_context_review'),
-    'law_compliance': ('applicable_law_text', 'law_context_review'),
-    'police_direction': ('officer_identity', 'officer_direction', 'direction_context_review'),
+    'law_compliance': ('applicable_law_text', 'law_context_review', 'authority_timeline'),
+    'police_direction': ('officer_identity', 'officer_direction',
+                         'direction_context_review', 'authority_timeline'),
     'device_direction': ('device_identity', 'device_state', 'direction_context_review'),
 }
 
@@ -70,6 +71,9 @@ def audit(attempt, packet_path, case_id, qualifier, diagnostic=False):
             sources['device_identity']['path'] != 'qualifier-context.json' or
             sources['device_state']['path'] != 'device-states.jsonl'):
         raise ValueError('Device context must use Native identity and state')
+    if qualifier in ('law_compliance', 'police_direction') and (
+            sources['authority_timeline']['path'] != 'authority-events.jsonl'):
+        raise ValueError('Authority context must use Native frame timeline')
     poses = [json.loads(row) for row in (attempt / 'vehicle-poses.jsonl').read_text().splitlines()]
     frames = [json.loads(row) for row in (attempt / 'video_frames.jsonl').read_text().splitlines()]
     if len(poses) != len(frames) or len(frames) != 600 or any(
@@ -77,8 +81,11 @@ def audit(attempt, packet_path, case_id, qualifier, diagnostic=False):
             pose.get('native_frame') != frame.get('native_frame')
             for pose, frame in zip(poses, frames)):
         raise ValueError('Qualifier original frame join incomplete')
-    if qualifier in ('traffic_conflict', 'device_direction'):
-        role = 'participant_motion' if qualifier == 'traffic_conflict' else 'device_state'
+    if qualifier in ('traffic_conflict', 'device_direction', 'law_compliance',
+                     'police_direction'):
+        role = ('participant_motion' if qualifier == 'traffic_conflict'
+                else 'device_state' if qualifier == 'device_direction'
+                else 'authority_timeline')
         rows = [json.loads(row) for row in (attempt / sources[role]['path']).read_text().splitlines()]
         if len(rows) != 600 or any(
                 row.get('video_frame') != index or row.get('native_frame') != frames[index]['native_frame']
@@ -89,6 +96,9 @@ def audit(attempt, packet_path, case_id, qualifier, diagnostic=False):
         if qualifier == 'device_direction' and packet['finding'] == 'present' and not all(
                 row.get('device_present') and row.get('device_id') is not None for row in rows):
             raise ValueError('Device presence finding lacks Native device state')
+        if qualifier == 'police_direction' and len({row.get('candidate_participant_id')
+                for row in rows}) != 1:
+            raise ValueError('Direction participant identity differs across frames')
     observed = packet.get('reviewed_video_frames')
     if not isinstance(observed, list) or not observed or any(
             not isinstance(i, int) or i < 0 or i >= 600 for i in observed):

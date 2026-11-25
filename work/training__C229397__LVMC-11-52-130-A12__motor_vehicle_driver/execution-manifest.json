@@ -675,6 +675,414 @@
         "negative_log": "proofs/stand_near/delivery-audit-negative.log",
         "negative_log_sha256": "8a1ca1a60c12c58707db5528eab4844a9e3b4687d75485de6a34f31659b88301"
       }
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near",
+      "kind": "delivery",
+      "construction": "draft-qualifiers/traffic_conflict_near/primary/construction.json",
+      "construction_sha256": "d34d6962ec5e1f6db44b0cacef9d9e37169e38f1c1aeb9fc649311c391a7eb00",
+      "id": "primary",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The qualifier changes context while the same near-crosswalk parking motion is already tested with a physical fallback; context authority cannot be solved by an alternate motion."
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize_delivery.py"
+      },
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "selected-measurements/traffic_conflict_near/measurement-contract.json",
+      "fixture_recipe": "work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/diagnostic-qualifier-traffic-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/qualifiers/traffic/compatibility.json",
+        "sha256": "7a56ccdbdfdc25f897940f51cee2465aa7964d4fc63ac38eafd7fd229088a9d0",
+        "log": "proofs/qualifiers/traffic/analysis.log",
+        "negative_log": "proofs/qualifiers/traffic/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/traffic_conflict_near/proof.json",
+        "sha256": "fff7ba10aec648ce169ee1d1b404869d9cfd1ba66118710228116d6854859ad1"
+      },
+      "offline": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near",
+        "candidate_id": "primary",
+        "construction_sha256": "d34d6962ec5e1f6db44b0cacef9d9e37169e38f1c1aeb9fc649311c391a7eb00",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near --output .runtime-work/c229397-qualifier-traffic-offline-v4 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "proofs/selected-qualifiers/traffic/offline.log",
+        "log_sha256": "88687af8725e47b7ff4de2e37fd7fca4907ecee36055caba3483786900a4de6f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" on failure",
+        "test_log": "proofs/selected-qualifiers/traffic/saved-processing.json",
+        "test_log_sha256": "93b7d87a9d243d3d6cd67ced7a21392c3ea16b06eaa4a473c25785afa7e0f3c1",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "frame_join": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "traffic_actor_motion": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "subject_vehicle_pose_and_extent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "control_intent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "qualifier_delivery_audit.py",
+        "script_sha256": "5d52c07e426079c9ba0d40309d4011da782b3e3affbae7b6e1b12ae1cfdf6048",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near --attempt .runtime-work/c229397-qualifier-traffic-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-traffic-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-saved-attempt-controlled_2-v2 --output .runtime-work/c229397-selected-traffic-positive-delivery-audit.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/selected-qualifiers/traffic/delivery-positive.log",
+        "test_log_sha256": "c4188703a42913bb247b4f35eb0a517c26b2989fe8eb906f79cd993dcf4cb854",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__traffic_conflict_near --attempt .runtime-work/c229397-qualifier-traffic-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-traffic-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-qualifier-altered-baseline-v3 --output .runtime-work/c229397-selected-traffic-negative-delivery-audit.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Controlled crosswalk context differs",
+        "negative_log": "proofs/selected-qualifiers/traffic/delivery-negative.log",
+        "negative_log_sha256": "78d73f959886d78f9d7aaa6e7c3a9c2616be743efeebe7950bd166aa58cc92cc"
+      },
+      "delivery_audit_diagnostic": {
+        "receipt": "proofs/qualifiers/traffic/delivery-audit.json",
+        "sha256": "17871e3e1f5b7b48c976ab013ae2e40040fc88e79647f1c0056c98cf0a687a9a",
+        "original_review_complete": false
+      }
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near",
+      "kind": "delivery",
+      "construction": "draft-qualifiers/law_compliance_near/primary/construction.json",
+      "construction_sha256": "12598787df2a98d57e715948167360bd1bcfbd6ea8051e2e48e738d6eb210d78",
+      "id": "primary",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The qualifier changes context while the same near-crosswalk parking motion is already tested with a physical fallback; context authority cannot be solved by an alternate motion."
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize_delivery.py"
+      },
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "selected-measurements/law_compliance_near/measurement-contract.json",
+      "fixture_recipe": "work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/diagnostic-qualifier-law-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/qualifiers/law/compatibility.json",
+        "sha256": "b765cd3669f032921af3c6045d6cc3b0232c7a87d4a5f220f11a0f272537f17e",
+        "log": "proofs/qualifiers/law/analysis.log",
+        "negative_log": "proofs/qualifiers/law/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/law_compliance_near/proof.json",
+        "sha256": "759195bac4e740498a7aad6a742fbc7fcd802d3ec1af49da8f4d605ad601073e"
+      },
+      "offline": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near",
+        "candidate_id": "primary",
+        "construction_sha256": "12598787df2a98d57e715948167360bd1bcfbd6ea8051e2e48e738d6eb210d78",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near --output .runtime-work/c229397-qualifier-law-offline-v4 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "proofs/selected-qualifiers/law/offline.log",
+        "log_sha256": "7b7ff797f77d5e117a3526edf69f299b3e6378994a56e0ce060722b981e1fa8a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" on failure",
+        "test_log": "proofs/selected-qualifiers/law/saved-processing.json",
+        "test_log_sha256": "1c22ad410dc0280ebd2d10826c6c9fd9a255fa18aa248244074cf49332009005",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "frame_join": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "authority_timeline": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "subject_vehicle_pose_and_extent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "control_intent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "qualifier_delivery_audit.py",
+        "script_sha256": "5d52c07e426079c9ba0d40309d4011da782b3e3affbae7b6e1b12ae1cfdf6048",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near --attempt .runtime-work/c229397-qualifier-law-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-law-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-saved-attempt-controlled_2-v2 --output .runtime-work/c229397-selected-law-positive-delivery-audit.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/selected-qualifiers/law/delivery-positive.log",
+        "test_log_sha256": "72299fe2ea64105ecff7ba75f74689c48f6b8a032261127d77f637cf6b0142d4",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__law_compliance_near --attempt .runtime-work/c229397-qualifier-law-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-law-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-qualifier-altered-baseline-v3 --output .runtime-work/c229397-selected-law-negative-delivery-audit.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Controlled crosswalk context differs",
+        "negative_log": "proofs/selected-qualifiers/law/delivery-negative.log",
+        "negative_log_sha256": "78d73f959886d78f9d7aaa6e7c3a9c2616be743efeebe7950bd166aa58cc92cc"
+      },
+      "delivery_audit_diagnostic": {
+        "receipt": "proofs/qualifiers/law/delivery-audit.json",
+        "sha256": "10b0470c0c8fefd0f13ebeff181c2fc20c41646beb5347cc4d9ba2ad8153323f",
+        "original_review_complete": false
+      }
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near",
+      "kind": "delivery",
+      "construction": "draft-qualifiers/police_direction_near/primary/construction.json",
+      "construction_sha256": "71be63a5aad4811376f63fd66ac80628622ddf7222da189e176f262f34240f1c",
+      "id": "primary",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The qualifier changes context while the same near-crosswalk parking motion is already tested with a physical fallback; context authority cannot be solved by an alternate motion."
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize_delivery.py"
+      },
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "selected-measurements/police_direction_near/measurement-contract.json",
+      "fixture_recipe": "work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/diagnostic-qualifier-officer-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/qualifiers/officer/compatibility.json",
+        "sha256": "38f465d57df3384b5675c95c94ff87e63c26367e83662f6160187448584aa738",
+        "log": "proofs/qualifiers/officer/analysis.log",
+        "negative_log": "proofs/qualifiers/officer/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/police_direction_near/proof.json",
+        "sha256": "6ef1d07bb944e28f754783b33ade52e39e61a8663ee8a53d57871e8ade343ea8"
+      },
+      "offline": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near",
+        "candidate_id": "primary",
+        "construction_sha256": "71be63a5aad4811376f63fd66ac80628622ddf7222da189e176f262f34240f1c",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near --output .runtime-work/c229397-qualifier-officer-offline-v4 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "proofs/selected-qualifiers/officer/offline.log",
+        "log_sha256": "55be8274ad9db000d377b7fb3adc71056b36b8c49e5f68be902a956fd01112f1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" on failure",
+        "test_log": "proofs/selected-qualifiers/officer/saved-processing.json",
+        "test_log_sha256": "59f3f963c767de4a0d3cd8901bbe8665d05eec7ca1605ac396d97636c2de6ce1",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "frame_join": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "authority_timeline": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "subject_vehicle_pose_and_extent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "control_intent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "qualifier_delivery_audit.py",
+        "script_sha256": "5d52c07e426079c9ba0d40309d4011da782b3e3affbae7b6e1b12ae1cfdf6048",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near --attempt .runtime-work/c229397-qualifier-officer-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-officer-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-saved-attempt-controlled_2-v2 --output .runtime-work/c229397-selected-officer-positive-delivery-audit.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/selected-qualifiers/officer/delivery-positive.log",
+        "test_log_sha256": "062014fa3f5ee8e95e2a1dce13d09f80a447a1face430a725ebf245e7bd61bc4",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__police_direction_near --attempt .runtime-work/c229397-qualifier-officer-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-officer-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-qualifier-altered-baseline-v3 --output .runtime-work/c229397-selected-officer-negative-delivery-audit.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Controlled crosswalk context differs",
+        "negative_log": "proofs/selected-qualifiers/officer/delivery-negative.log",
+        "negative_log_sha256": "78d73f959886d78f9d7aaa6e7c3a9c2616be743efeebe7950bd166aa58cc92cc"
+      },
+      "delivery_audit_diagnostic": {
+        "receipt": "proofs/qualifiers/officer/delivery-audit.json",
+        "sha256": "56e2158302137b2059156441fb19aec29a08e35df1957d0e7e2cd6bb1a5de719",
+        "original_review_complete": false
+      }
+    },
+    {
+      "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near",
+      "kind": "delivery",
+      "construction": "draft-qualifiers/device_direction_near/primary/construction.json",
+      "construction_sha256": "8bdf7cd98ad2c446437d9410e29bb8e39bb99ea16706e3a67a153b93c06ce80e",
+      "id": "primary",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "The qualifier changes context while the same near-crosswalk parking motion is already tested with a physical fallback; context authority cannot be solved by an alternate motion."
+      },
+      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize_delivery.py"
+      },
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "measurement_contract": "selected-measurements/device_direction_near/measurement-contract.json",
+      "fixture_recipe": "work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/diagnostic-qualifier-device-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/qualifiers/device/compatibility.json",
+        "sha256": "2a49eca783efec1c58df495eb4e2f7cd7ba3c99574382321c00476047f3be321",
+        "log": "proofs/qualifiers/device/analysis.log",
+        "negative_log": "proofs/qualifiers/device/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/device_direction_near/proof.json",
+        "sha256": "24a4c40eab39b7faaeece81f100a1bfa7275d16a88756fe72c9463b36adf760b"
+      },
+      "offline": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near",
+        "candidate_id": "primary",
+        "construction_sha256": "8bdf7cd98ad2c446437d9410e29bb8e39bb99ea16706e3a67a153b93c06ce80e",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near --output .runtime-work/c229397-qualifier-device-offline-v4 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "proofs/selected-qualifiers/device/offline.log",
+        "log_sha256": "cd21abd884f6231095c6ff208dc6e769a12e26dcb36a5a6d6032220ee4974428"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" on failure",
+        "test_log": "proofs/selected-qualifiers/device/saved-processing.json",
+        "test_log_sha256": "9f3b6d93cef073094586f345733bc4680e370050b4841206c0c90e6e7071280c",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "frame_join": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "device_state": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "subject_vehicle_pose_and_extent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        },
+        "control_intent": {
+          "entrypoint": "finalize_delivery.py",
+          "method": "Original Native per-frame source and independent qualifier authority/necessity packet joined by frame identity",
+          "evidence": "vehicle-poses.jsonl, control-intent.jsonl, video_frames.jsonl, qualifier-context.json, qualifier-source-packet.json, qualifier-specific event timeline, four camera videos"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "qualifier_delivery_audit.py",
+        "script_sha256": "5d52c07e426079c9ba0d40309d4011da782b3e3affbae7b6e1b12ae1cfdf6048",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near --attempt .runtime-work/c229397-qualifier-device-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-device-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-saved-attempt-controlled_2-v2 --output .runtime-work/c229397-selected-device-positive-delivery-audit.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/selected-qualifiers/device/delivery-positive.log",
+        "test_log_sha256": "67fbf9603264da9d41d25a3da317518c6623cb30309fe10f7adf8666f6403eba",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/qualifier_delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__device_direction_near --attempt .runtime-work/c229397-qualifier-device-recorded-positive-v6 --processing .runtime-work/c229397-qualifier-device-saved-positive-v5/v0001/processing.json --baseline .runtime-work/c229397-qualifier-altered-baseline-v3 --output .runtime-work/c229397-selected-device-negative-delivery-audit.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Controlled crosswalk context differs",
+        "negative_log": "proofs/selected-qualifiers/device/delivery-negative.log",
+        "negative_log_sha256": "78d73f959886d78f9d7aaa6e7c3a9c2616be743efeebe7950bd166aa58cc92cc"
+      },
+      "delivery_audit_diagnostic": {
+        "receipt": "proofs/qualifiers/device/delivery-audit.json",
+        "sha256": "3283a7a36f66d0bb391fffa90d8f5455945c90ec661da952a5630450012f7965",
+        "original_review_complete": false
+      }
     }
   ]
 }

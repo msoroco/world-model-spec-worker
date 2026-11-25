@@ -8,6 +8,8 @@ from qualifier_source_audit import ASSIGNMENT, audit as source_audit
 
 
 CASES = {'traffic_conflict_near': ('traffic_conflict', 'traffic-actors.jsonl'),
+         'law_compliance_near': ('law_compliance', 'authority-events.jsonl'),
+         'police_direction_near': ('police_direction', 'authority-events.jsonl'),
          'device_direction_near': ('device_direction', 'device-states.jsonl')}
 BASE_SOURCES = ('vehicle-poses.jsonl', 'control-intent.jsonl', 'video_frames.jsonl',
                 'crosswalk-inventory.json', 'crosswalk-source-review.json',
@@ -73,10 +75,18 @@ def audit(case, attempt, processing_path, baseline, diagnostic=False, review_pat
                 item.get('speed_mps', 0) == 0 for item in context):
             raise ValueError('Distinct traffic actor motion missing')
         difference = 'second_actor_trajectory'
-    else:
+    elif suffix == 'device_direction_near':
         if not all('device_present' in item and 'state' in item for item in context):
             raise ValueError('Native device state or absence not inventoried')
         difference = 'device_state_or_explicit_absence'
+    else:
+        if not all(item.get('qualifier') == qualifier and
+                   item.get('authority_status') == 'unverified' for item in context):
+            raise ValueError('Source-gated authority timeline missing')
+        if suffix == 'police_direction_near' and len({item.get(
+                'candidate_participant_id') for item in context}) != 1:
+            raise ValueError('Direction participant identity differs')
+        difference = 'source_gated_' + qualifier + '_timeline'
     physical_review_complete = False
     if not diagnostic:
         if review_path is None:

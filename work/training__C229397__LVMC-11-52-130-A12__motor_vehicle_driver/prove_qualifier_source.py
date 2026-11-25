@@ -17,7 +17,7 @@ def sha(path):
 
 def main():
     source = ROOT / '.runtime-work/c229397-saved-attempt-controlled_2-v2'
-    attempt = ROOT / '.runtime-work/c229397-qualifier-source-diagnostic-v3'
+    attempt = ROOT / '.runtime-work/c229397-qualifier-source-diagnostic-v4'
     if attempt.exists():
         raise ValueError('Retain existing qualifier diagnostic')
     shutil.copytree(source, attempt)
@@ -36,6 +36,11 @@ def main():
         'video_frame': index, 'native_frame': frame['native_frame'],
         'device_present': False, 'device_id': None, 'state': None}) + '\n'
         for index, frame in enumerate(frames)))
+    authority_path = attempt / 'authority-events.jsonl'
+    authority_path.write_text(''.join(json.dumps({
+        'video_frame': index, 'native_frame': frame['native_frame'],
+        'authority_status': 'unverified', 'candidate_participant_id': 31}) + '\n'
+        for index, frame in enumerate(frames)))
     context_path = attempt / 'qualifier-context.json'
     context_path.write_text(json.dumps({'device_actor_found': False,
         'authority_and_necessity_unresolved': True}) + '\n')
@@ -50,6 +55,8 @@ def main():
                 path = context_path
             elif qualifier == 'device_direction' and role == 'device_state':
                 path = device_path
+            elif role == 'authority_timeline':
+                path = authority_path
             else:
                 path = folder / (qualifier + '-' + role + '.txt')
                 path.write_text('Synthetic diagnostic source role: ' + qualifier + ' / ' + role + '\n')

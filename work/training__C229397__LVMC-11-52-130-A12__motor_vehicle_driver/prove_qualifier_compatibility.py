@@ -12,7 +12,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 ASSIGNMENT = HERE.name
 SOURCE_PACKAGE = HERE / 'qualifier-saved-package'
-SCRATCH = ROOT / '.runtime-work/c229397-qualifier-compat-repo-v1'
+SCRATCH = ROOT / '.runtime-work/c229397-qualifier-compat-repo-v2'
 DESTINATION = SCRATCH / 'work' / ASSIGNMENT
 DECODER = ROOT / '.runtime-work/c150129-decoder/.lake/build/bin/adapterCheck'
 
@@ -25,13 +25,15 @@ def main():
     if SCRATCH.exists():
         raise ValueError('Retain prior public qualifier compatibility scratch')
     shutil.copytree(SOURCE_PACKAGE, DESTINATION)
-    for stem in ('traffic', 'device'):
+    for stem in ('traffic', 'law', 'officer', 'device'):
         for ending in ('.json', '-recipe.json'):
             name = 'diagnostic-qualifier-' + stem + ending
             shutil.copyfile(HERE / name, DESTINATION / name)
     results = {}
     manifest = DESTINATION / 'execution-manifest.json'
     for suffix, stem in (('traffic_conflict_near', 'traffic'),
+                         ('law_compliance_near', 'law'),
+                         ('police_direction_near', 'officer'),
                          ('device_direction_near', 'device')):
         case_id = ASSIGNMENT + '__' + suffix
         output = SCRATCH / '.runtime-work' / ('compat-' + stem)

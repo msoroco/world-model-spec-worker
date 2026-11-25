@@ -17,7 +17,7 @@ def main():
     for entry in manifest['cases']:
         condition = entry['case_id'].rsplit('__', 1)[-1]
         for candidate in ('primary', 'fallback1'):
-            source = REPO/'.runtime-work'/f'c124163-offline-{condition}-{candidate}-v6'/'offline.log'
+            source = REPO/'.runtime-work'/f'c124163-offline-{condition}-{candidate}-v7'/'offline.log'
             if not source.exists() or 'Ran 2 tests' not in source.read_text() or 'OK' not in source.read_text():
                 raise ValueError('Exact offline proof missing: '+condition+' '+candidate)
             dest = ROOT/'proofs'/condition/candidate/'offline.log'
@@ -27,7 +27,7 @@ def main():
             selected['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest '
                             'work/'+ROOT.name+'/execution-manifest.json --case '
                             +entry['case_id']+' --candidate '+candidate+' --output '
-                            f'.runtime-work/c124163-offline-{condition}-{candidate}-v6',
+                            f'.runtime-work/c124163-offline-{condition}-{candidate}-v7',
                             'exit_code': 0, 'construction_sha256': selected['construction_sha256'],
                             'log': str(dest.relative_to(ROOT)), 'log_sha256': sha(dest)}
         entry['fixture_recipe'] = f'work/{ROOT.name}/diagnostic-{condition}-primary-recipe.json'

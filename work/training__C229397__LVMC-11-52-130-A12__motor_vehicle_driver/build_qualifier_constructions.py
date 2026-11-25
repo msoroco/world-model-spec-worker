@@ -7,7 +7,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
 BASE = json.loads((HERE / 'draft-crosswalk/controlled_2/primary/construction.json').read_text())
-SUFFIXES = ('traffic_conflict_near', 'device_direction_near')
+SUFFIXES = ('traffic_conflict_near', 'law_compliance_near',
+            'police_direction_near', 'device_direction_near')
 
 
 def sha(path):
@@ -35,6 +36,7 @@ def build(suffix):
     finalizer = files['finalize_delivery.py']['content'].replace(
         "'stand_near': 3.0}[config['crosswalk_case']]",
         "'stand_near': 3.0, 'traffic_conflict_near': 3.0, "
+        "'law_compliance_near': 3.0, 'police_direction_near': 3.0, "
         "'device_direction_near': 3.0}[config['crosswalk_case']]")
     finalizer = finalizer.replace(
         'from finalize_crosswalk import finalize as diagnose',
@@ -50,7 +52,7 @@ def build(suffix):
         'def finalize(attempt, output):')
     finalizer = finalizer.replace(
         '    diagnostic = diagnose(attempt)',
-        "    qualifier_name = 'traffic_conflict' if config['crosswalk_case'] == 'traffic_conflict_near' else 'device_direction'\n"
+        "    qualifier_name = config['crosswalk_case'].removesuffix('_near')\n"
         "    packet_path = attempt / 'qualifier-source-packet.json'\n"
         "    if not packet_path.is_file():\n"
         "        raise ValueError('Missing original qualifier source packet')\n"
@@ -58,7 +60,9 @@ def build(suffix):
         "    qualifier_review = audit_qualifier(attempt, packet_path, case_id, qualifier_name,\n"
         "        diagnostic=packet.get('diagnostic_fixture') is True)\n"
         "    diagnostic = diagnose(attempt)")
-    source_file = 'traffic-actors.jsonl' if suffix == 'traffic_conflict_near' else 'device-states.jsonl'
+    source_file = ('traffic-actors.jsonl' if suffix == 'traffic_conflict_near'
+                   else 'device-states.jsonl' if suffix == 'device_direction_near'
+                   else 'authority-events.jsonl')
     finalizer = finalizer.replace(
         "'crosswalk-inventory.json', 'crosswalk-source-review.json')",
         "'crosswalk-inventory.json', 'crosswalk-source-review.json',\n"
@@ -68,7 +72,9 @@ def build(suffix):
         "    context_rows = [json.loads(line) for line in (attempt / '" + source_file + "').read_text().splitlines()]\n"
         "    if len(context_rows) != len(mapping):\n"
         "        raise ValueError('Qualifier context frame count differs')\n"
-        "    values['" + ('traffic_actor_motion' if suffix == 'traffic_conflict_near' else 'device_state') + "'] = context_rows\n"
+        "    values['" + ('traffic_actor_motion' if suffix == 'traffic_conflict_near'
+                         else 'device_state' if suffix == 'device_direction_near'
+                         else 'authority_timeline') + "'] = context_rows\n"
         '    for name, items in values.items():')
     finalizer = finalizer.replace(
         "'diagnostic': diagnostic, 'source_sha256': sources,",
@@ -92,9 +98,13 @@ def build(suffix):
     config['supported_case_ids'] = [case_id]
     config['crosswalk_case'] = suffix
     config['required_atoms'] = []
-    name = 'traffic_actor_motion' if suffix == 'traffic_conflict_near' else 'device_state'
+    name = ('traffic_actor_motion' if suffix == 'traffic_conflict_near'
+            else 'device_state' if suffix == 'device_direction_near'
+            else 'authority_timeline')
     method = ('original Native second vehicle trajectory' if suffix == 'traffic_conflict_near'
-              else 'original Native traffic-control device readback or explicit absence')
+              else 'original Native traffic-control device readback or explicit absence'
+              if suffix == 'device_direction_near' else
+              'original Native frame join; legal authority requires separate authenticated source')
     channel = {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
                'method': method, 'time_window': '600 frames',
                'reference_frame': 'Native frame identity',
@@ -110,7 +120,7 @@ def build(suffix):
     construction['files'] = list(files.values())
     construction['measurement_plan']['required_sources'].extend([
         'qualifier-context.json',
-        'traffic-actors.jsonl' if suffix == 'traffic_conflict_near' else 'device-states.jsonl',
+        source_file,
         'qualifier-source-packet.json'])
     target = HERE / 'draft-qualifiers' / suffix / 'primary'
     target.mkdir(parents=True, exist_ok=True)

@@ -6,9 +6,134 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral unselected median-opening route context.",
+      "variable_assignments": {
+        "requested_signal_distance_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": null
+        },
+        "district_class": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "other_area"
+        },
+        "weather": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "clear"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick Native source joined to original camera frames; unobservable terms remain explicitly unresolved",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Visible signaling, hand signal, district/weather and turn onset need original independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "district_weather_review",
+            "unit": "structured",
+            "method": "independent original district and weather source review"
+          }
+        ],
+        "limitations": [
+          "A control request does not prove visible signaling.",
+          "District, weather, turn onset and indicator pixels require original review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
+      ]
+    },
+    {
       "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_long",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "judgment_sweep",
+      "target_type": "boundary_probe",
       "rationale": "Source-joined signal distance before a left-turn request in the stated district and weather, without a legal verdict.",
       "variable_assignments": {
         "requested_signal_distance_m": {
@@ -27,21 +152,24 @@
           "value": "clear"
         }
       },
-      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_signal_pair",
+      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_distance_triplet",
       "deliberate_differences": [
         "requested_signal_distance_m"
       ],
       "probe": {
         "primary_variable": "requested_signal_distance_m",
         "comparison_or_standard": "source-joined continuous visible signal distance and exact statutory district threshold",
-        "target_value_or_branch": 100.0
+        "target_value_or_branch": 100.0,
+        "threshold_ref": "obligation.other_distance",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 328.0839895
       },
       "unresolved_judgment_calls": [
-        "visible signal pixels",
-        "district class",
-        "weather verification",
-        "observed course-change onset",
-        "accepted recording equivalence"
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
       ],
       "recording_description": {
         "channels": [
@@ -138,12 +266,17 @@
           "A control request does not prove visible signaling.",
           "District, weather, turn onset and indicator pixels require original review."
         ]
+      },
+      "epsilon_used": {
+        "value": 1.3123359580052494,
+        "unit": "ft",
+        "rationale": "20 Hz at 8 m/s gives 0.4 m sampling granularity; not a legal tolerance."
       }
     },
     {
       "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_at",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "judgment_sweep",
+      "target_type": "boundary_probe",
       "rationale": "Source-joined signal distance before a left-turn request in the stated district and weather, without a legal verdict.",
       "variable_assignments": {
         "requested_signal_distance_m": {
@@ -162,21 +295,24 @@
           "value": "clear"
         }
       },
-      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_signal_pair",
+      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_distance_triplet",
       "deliberate_differences": [
         "requested_signal_distance_m"
       ],
       "probe": {
         "primary_variable": "requested_signal_distance_m",
         "comparison_or_standard": "source-joined continuous visible signal distance and exact statutory district threshold",
-        "target_value_or_branch": 91.44
+        "target_value_or_branch": 91.44,
+        "threshold_ref": "obligation.other_distance",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 300
       },
       "unresolved_judgment_calls": [
-        "visible signal pixels",
-        "district class",
-        "weather verification",
-        "observed course-change onset",
-        "accepted recording equivalence"
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
       ],
       "recording_description": {
         "channels": [
@@ -273,12 +409,17 @@
           "A control request does not prove visible signaling.",
           "District, weather, turn onset and indicator pixels require original review."
         ]
+      },
+      "epsilon_used": {
+        "value": 1.3123359580052494,
+        "unit": "ft",
+        "rationale": "20 Hz at 8 m/s gives 0.4 m sampling granularity; not a legal tolerance."
       }
     },
     {
       "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_short",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "judgment_sweep",
+      "target_type": "boundary_probe",
       "rationale": "Source-joined signal distance before a left-turn request in the stated district and weather, without a legal verdict.",
       "variable_assignments": {
         "requested_signal_distance_m": {
@@ -297,21 +438,24 @@
           "value": "clear"
         }
       },
-      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_signal_pair",
+      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__other_distance_triplet",
       "deliberate_differences": [
         "requested_signal_distance_m"
       ],
       "probe": {
         "primary_variable": "requested_signal_distance_m",
         "comparison_or_standard": "source-joined continuous visible signal distance and exact statutory district threshold",
-        "target_value_or_branch": 70.0
+        "target_value_or_branch": 70.0,
+        "threshold_ref": "obligation.other_distance",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 229.65879265
       },
       "unresolved_judgment_calls": [
-        "visible signal pixels",
-        "district class",
-        "weather verification",
-        "observed course-change onset",
-        "accepted recording equivalence"
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
       ],
       "recording_description": {
         "channels": [
@@ -408,12 +552,17 @@
           "A control request does not prove visible signaling.",
           "District, weather, turn onset and indicator pixels require original review."
         ]
+      },
+      "epsilon_used": {
+        "value": 1.3123359580052494,
+        "unit": "ft",
+        "rationale": "20 Hz at 8 m/s gives 0.4 m sampling granularity; not a legal tolerance."
       }
     },
     {
       "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_long",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "judgment_sweep",
+      "target_type": "boundary_probe",
       "rationale": "Source-joined signal distance before a left-turn request in the stated district and weather, without a legal verdict.",
       "variable_assignments": {
         "requested_signal_distance_m": {
@@ -432,21 +581,24 @@
           "value": "rain"
         }
       },
-      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_signal_pair",
+      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_distance_triplet",
       "deliberate_differences": [
         "requested_signal_distance_m"
       ],
       "probe": {
         "primary_variable": "requested_signal_distance_m",
         "comparison_or_standard": "source-joined continuous visible signal distance and exact statutory district threshold",
-        "target_value_or_branch": 35.2
+        "target_value_or_branch": 35.2,
+        "threshold_ref": "obligation.district_distance",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 115.4855643
       },
       "unresolved_judgment_calls": [
-        "visible signal pixels",
-        "district class",
-        "weather verification",
-        "observed course-change onset",
-        "accepted recording equivalence"
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
       ],
       "recording_description": {
         "channels": [
@@ -543,12 +695,17 @@
           "A control request does not prove visible signaling.",
           "District, weather, turn onset and indicator pixels require original review."
         ]
+      },
+      "epsilon_used": {
+        "value": 1.3123359580052494,
+        "unit": "ft",
+        "rationale": "20 Hz at 8 m/s gives 0.4 m sampling granularity; not a legal tolerance."
       }
     },
     {
       "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_at",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "judgment_sweep",
+      "target_type": "boundary_probe",
       "rationale": "Source-joined signal distance before a left-turn request in the stated district and weather, without a legal verdict.",
       "variable_assignments": {
         "requested_signal_distance_m": {
@@ -567,21 +724,24 @@
           "value": "rain"
         }
       },
-      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_signal_pair",
+      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_distance_triplet",
       "deliberate_differences": [
         "requested_signal_distance_m"
       ],
       "probe": {
         "primary_variable": "requested_signal_distance_m",
         "comparison_or_standard": "source-joined continuous visible signal distance and exact statutory district threshold",
-        "target_value_or_branch": 30.48
+        "target_value_or_branch": 30.48,
+        "threshold_ref": "obligation.district_distance",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 100
       },
       "unresolved_judgment_calls": [
-        "visible signal pixels",
-        "district class",
-        "weather verification",
-        "observed course-change onset",
-        "accepted recording equivalence"
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
       ],
       "recording_description": {
         "channels": [
@@ -678,12 +838,17 @@
           "A control request does not prove visible signaling.",
           "District, weather, turn onset and indicator pixels require original review."
         ]
+      },
+      "epsilon_used": {
+        "value": 1.3123359580052494,
+        "unit": "ft",
+        "rationale": "20 Hz at 8 m/s gives 0.4 m sampling granularity; not a legal tolerance."
       }
     },
     {
       "case_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_short",
       "target_law_id": "NRS-484B-413-2",
-      "target_type": "judgment_sweep",
+      "target_type": "boundary_probe",
       "rationale": "Source-joined signal distance before a left-turn request in the stated district and weather, without a legal verdict.",
       "variable_assignments": {
         "requested_signal_distance_m": {
@@ -702,21 +867,24 @@
           "value": "rain"
         }
       },
-      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_signal_pair",
+      "paired_probe_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__district_distance_triplet",
       "deliberate_differences": [
         "requested_signal_distance_m"
       ],
       "probe": {
         "primary_variable": "requested_signal_distance_m",
         "comparison_or_standard": "source-joined continuous visible signal distance and exact statutory district threshold",
-        "target_value_or_branch": 20.0
+        "target_value_or_branch": 20.0,
+        "threshold_ref": "obligation.district_distance",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 65.6167979
       },
       "unresolved_judgment_calls": [
-        "visible signal pixels",
-        "district class",
-        "weather verification",
-        "observed course-change onset",
-        "accepted recording equivalence"
+        "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+        "in a business or residential district",
+        "in any other area",
+        "regardless of the weather"
       ],
       "recording_description": {
         "channels": [
@@ -813,9 +981,44 @@
           "A control request does not prove visible signaling.",
           "District, weather, turn onset and indicator pixels require original review."
         ]
+      },
+      "epsilon_used": {
+        "value": 1.3123359580052494,
+        "unit": "ft",
+        "rationale": "20 Hz at 8 m/s gives 0.4 m sampling granularity; not a legal tolerance."
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C124163__NRS-484B-413-2__motor_vehicle_driver__original_context_review",
+      "target_law_id": "NRS-484B-413-2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course",
+          "note": "Original visible signal and observed change from direct course require independent source review."
+        },
+        {
+          "phrase": "in a business or residential district",
+          "note": "District classification must be established from original route context."
+        },
+        {
+          "phrase": "in any other area",
+          "note": "Other-area classification must be established from original route context."
+        },
+        {
+          "phrase": "regardless of the weather",
+          "note": "Weather is source context and cannot waive either distance."
+        }
+      ],
+      "rationale": "Six source-distance boundary requests do not settle visible signal, district or weather source judgments.",
+      "missing_inputs": [
+        "Original signal pixels and independent onset review",
+        "Independent district/weather route review",
+        "Original accepted-recording source hashes"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

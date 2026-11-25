@@ -1,0 +1,72 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C202463__NRS-484B-560-3__motor_vehicle_driver__probe_d",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "required-stop",
+      "source": "NRS 484B.560(3)",
+      "output_key": "required_stop",
+      "method": "measure_required_stop",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "rail-review/required-stop.json",
+        "rail-review/required-stop.source.txt",
+        "gate.jsonl",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "far-right",
+      "source": "NRS 484B.560(3)",
+      "output_key": "far_right",
+      "method": "measure_far_right",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "actors.jsonl",
+        "geometry.json",
+        "rail-review/right-edge.json",
+        "rail-review/right-availability.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "two-lanes",
+      "source": "NRS 484B.560(3)",
+      "output_key": "two_lanes",
+      "method": "measure_two_lanes",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "actors.jsonl",
+        "gate.jsonl",
+        "geometry.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "four-lane-qualifier",
+      "source": "NRS 484B.560(3)",
+      "output_key": "marked_lanes",
+      "method": "measure_marked_lanes",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "rail-inventory.json",
+        "rail-review/lane-markings.json",
+        "rail-review/lane-markings.source.txt"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "rail-review/required-stop.json"
+    ],
+    "error_contains": "Missing required source: rail-review/required-stop.json"
+  }
+}

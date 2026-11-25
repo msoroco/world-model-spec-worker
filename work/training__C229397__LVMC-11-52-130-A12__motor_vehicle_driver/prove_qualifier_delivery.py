@@ -19,7 +19,7 @@ def sha(path):
 
 def main():
     reports = {}
-    altered = ROOT / '.runtime-work/c229397-qualifier-altered-baseline-v2'
+    altered = ROOT / '.runtime-work/c229397-qualifier-altered-baseline-v3'
     if altered.exists():
         raise ValueError('Retain prior altered baseline')
     altered.mkdir()
@@ -28,9 +28,11 @@ def main():
     (altered / 'crosswalk-inventory.json').write_text(json.dumps(inventory) + '\n')
     shutil.copyfile(BASE / 'crosswalk-source-review.json', altered / 'crosswalk-source-review.json')
     for suffix, stem in (('traffic_conflict_near', 'traffic'),
+                         ('law_compliance_near', 'law'),
+                         ('police_direction_near', 'officer'),
                          ('device_direction_near', 'device')):
-        attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-recorded-positive-v5')
-        processing = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-positive-v4/v0001/processing.json')
+        attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-recorded-positive-v6')
+        processing = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-positive-v5/v0001/processing.json')
         case = ASSIGNMENT + '__' + suffix
         result = audit(case, attempt, processing, BASE, diagnostic=True)
         receipt = HERE / 'proofs' / 'qualifiers' / stem / 'delivery-audit.json'

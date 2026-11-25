@@ -19,11 +19,11 @@ def sha(path):
 def main():
     manifest_path = FOLDER/'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    proof_root = REPO/'.runtime-work'/'c124163-physical-proofs-v7'
+    proof_root = REPO/'.runtime-work'/'c124163-physical-proofs-v8'
     proof_root.mkdir(parents=True, exist_ok=True)
     for entry in manifest['cases']:
         condition = entry['case_id'].rsplit('__',1)[-1]
-        source = REPO/'.runtime-work'/f'c124163-compat-{condition}-primary-v7'
+        source = REPO/'.runtime-work'/f'c124163-compat-{condition}-primary-v8'
         fixtures = []
         for kind in ('complete_motion','incomplete_motion','missing_evidence'):
             attempt = proof_root/condition/kind

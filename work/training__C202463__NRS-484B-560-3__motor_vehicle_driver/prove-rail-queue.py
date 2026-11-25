@@ -16,16 +16,17 @@ def write(path, obj):
     path.write_text(json.dumps(obj, sort_keys=True, indent=2) + '\n')
 
 
-def make(name, ego_y, other_x):
+def make(name, ego_y, other_x, lanes=2):
     folder = ROOT / 'fixtures' / 'rail_queue' / name
     folder.mkdir(parents=True, exist_ok=True)
-    write(folder / 'geometry.json', {'rail_crossing_x_m': 0.0, 'right_highway_edge_y_m': 3.5,
-                                   'total_marked_lanes': 2, 'vehicle_width_m': 1.8, 'vehicle_length_m': 4.5})
+    right_edge = {2: 3.5, 4: 7.0, 5: 8.75}[lanes]
+    write(folder / 'geometry.json', {'rail_crossing_x_m': 0.0, 'right_highway_edge_y_m': right_edge,
+                                   'total_marked_lanes': lanes, 'vehicle_width_m': 1.8, 'vehicle_length_m': 4.5})
     gate = [{'frame': 1000 + i, 'time_s': i / 20, 'kind': 'rail_gate',
              'indication': 'stop' if 100 <= i < 400 else 'release'} for i in range(600)]
     actors = [{'frame': 1000 + i, 'time_s': i / 20,
                'actors': {'ego': {'x_m': -10.0, 'y_m': ego_y, 'speed_mps': 0.0},
-                          'other': {'x_m': other_x, 'y_m': 2.0, 'speed_mps': 0.0}}} for i in range(600)]
+                          'other': {'x_m': other_x, 'y_m': right_edge - 1.5, 'speed_mps': 0.0}}} for i in range(600)]
     (folder / 'gate.jsonl').write_text(''.join(json.dumps(x, sort_keys=True) + '\n' for x in gate))
     (folder / 'actors.jsonl').write_text(''.join(json.dumps(x, sort_keys=True) + '\n' for x in actors))
     write(folder / 'sources.json', {'kind': 'synthetic_cpu_rail_stop_queue',
@@ -45,7 +46,9 @@ def edit_rows(folder, file, edit, rehash=True):
 
 
 def reject(folder, file, edit, expected, rehash=True):
-    with tempfile.TemporaryDirectory() as scratch:
+    runtime_work = Path.cwd() / '.runtime-work'
+    runtime_work.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=runtime_work) as scratch:
         trial = Path(scratch)
         for name in ('geometry.json', 'gate.jsonl', 'actors.jsonl', 'sources.json'):
             (trial / name).write_bytes((folder / name).read_bytes())
@@ -59,9 +62,12 @@ def reject(folder, file, edit, expected, rehash=True):
 
 
 observed, negatives = {}, {}
-for name, ego_y, other_x in (('right_single_queue', 2.0, -16.0), ('left_single_queue', -1.0, -16.0),
-                            ('left_abreast_queue', -1.0, -10.0)):
-    folder = make(name, ego_y, other_x)
+for name, ego_y, other_x, lanes in (('right_single_queue', 2.0, -16.0, 2),
+                                   ('left_single_queue', -1.0, -16.0, 2),
+                                   ('left_abreast_queue', -1.0, -10.0, 2),
+                                   ('left_abreast_four_lanes', 2.5, -10.0, 4),
+                                   ('left_abreast_five_lanes', 4.25, -10.0, 5)):
+    folder = make(name, ego_y, other_x, lanes)
     observed[name] = module.measure(folder)
     negatives[name] = {
         'changed_hash': reject(folder, 'actors.jsonl', lambda rows: rows[1]['actors']['ego'].update({'y_m': 0.0}), 'Source hash differs', False),
@@ -71,11 +77,16 @@ assert all(v['stopped_during_gate_stop_frames'] == 300 for v in observed.values(
 assert observed['right_single_queue']['minimum_right_edge_gap_m'] == 0.6
 assert observed['left_single_queue']['minimum_right_edge_gap_m'] == 3.6
 assert observed['left_abreast_queue']['abreast_two_queue_frames'] == 300
-proof = {'format': 'c202463-rail-stop-queue-diagnostic-v1', 'selected': False, 'accepted': False,
+assert [observed[n]['total_marked_lanes'] for n in
+        ('left_abreast_queue', 'left_abreast_four_lanes', 'left_abreast_five_lanes')] == [2, 4, 5]
+assert all(observed[n]['abreast_two_queue_frames'] == 300 for n in
+           ('left_abreast_four_lanes', 'left_abreast_five_lanes'))
+proof = {'format': 'c202463-rail-stop-queue-diagnostic-v2', 'selected': False, 'accepted': False,
          'observed': observed, 'negative_errors': negatives,
-         'comparison_axes': ['ego lateral placement', 'other-vehicle longitudinal queue placement'],
+         'comparison_axes': ['ego lateral placement', 'other-vehicle longitudinal queue placement',
+                             'marked lane count: below, at, above four'],
          'limitations': ['synthetic gate does not establish independently supported stop duty',
                          'as far right as possible has no invented cutoff', 'two queue arrangements are measurements, not legal verdicts']}
 path = ROOT / 'rail-queue-proof.json'
 write(path, proof)
-print(json.dumps({'proof_sha256': module.digest(path), 'positives': 3, 'negatives': 9}, sort_keys=True))
+print(json.dumps({'proof_sha256': module.digest(path), 'positives': 5, 'negatives': 15}, sort_keys=True))

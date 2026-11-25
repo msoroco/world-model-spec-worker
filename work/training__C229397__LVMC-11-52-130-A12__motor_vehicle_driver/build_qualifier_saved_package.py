@@ -8,7 +8,8 @@ import shutil
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.name
 PACKAGE = HERE / 'qualifier-saved-package'
-SUFFIXES = ('traffic_conflict_near', 'device_direction_near')
+SUFFIXES = ('traffic_conflict_near', 'law_compliance_near',
+            'police_direction_near', 'device_direction_near')
 
 
 def sha(path):

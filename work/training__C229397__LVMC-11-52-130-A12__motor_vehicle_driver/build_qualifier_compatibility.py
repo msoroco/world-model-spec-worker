@@ -26,11 +26,13 @@ def build(suffix, stem):
     frames = [json.loads(row) for row in files['video_frames.jsonl'].splitlines()]
     if len(frames) != 600:
         raise ValueError('Qualifier fixture needs 600 frame identities')
-    qualifier = 'traffic_conflict' if stem == 'traffic' else 'device_direction'
+    qualifier = suffix.removesuffix('_near')
     context = {'format': 'c229397-native-qualifier-context-v1',
                'case_suffix': suffix, 'qualifier': qualifier,
                'traffic_actor_requested': stem == 'traffic',
                'device_requested': stem == 'device', 'device_actor_found': False,
+               'law_instruction_source_required': stem == 'law',
+               'officer_authority_source_required': stem == 'officer',
                'authority_and_necessity_unresolved': True,
                'diagnostic_fixture': True}
     files['qualifier-context.json'] = json.dumps(context, indent=2) + '\n'
@@ -43,7 +45,7 @@ def build(suffix, stem):
         files['traffic_context_review.txt'] = 'Synthetic unresolved traffic necessity review\n'
         roles = {'participant_motion': source_file,
                  'traffic_context_review': 'traffic_context_review.txt'}
-    else:
+    elif stem == 'device':
         source_file = 'device-states.jsonl'
         files[source_file] = ''.join(json.dumps({
             'video_frame': index, 'native_frame': frame['native_frame'],
@@ -53,6 +55,27 @@ def build(suffix, stem):
         roles = {'device_identity': 'qualifier-context.json',
                  'device_state': source_file,
                  'direction_context_review': 'direction_context_review.txt'}
+    else:
+        source_file = 'authority-events.jsonl'
+        files[source_file] = ''.join(json.dumps({
+            'video_frame': index, 'native_frame': frame['native_frame'],
+            'qualifier': qualifier, 'authority_status': 'unverified',
+            'candidate_participant_id': 31 if stem == 'officer' else None}) + '\n'
+            for index, frame in enumerate(frames))
+        if stem == 'law':
+            files['applicable_law_text.txt'] = 'Synthetic placeholder for independently sourced applicable law; not authority.\n'
+            files['law_context_review.txt'] = 'Synthetic unresolved law applicability review.\n'
+            roles = {'applicable_law_text': 'applicable_law_text.txt',
+                     'law_context_review': 'law_context_review.txt',
+                     'authority_timeline': source_file}
+        else:
+            files['officer_identity.txt'] = 'Synthetic candidate actor identity; police authority unverified.\n'
+            files['officer_direction.txt'] = 'Synthetic candidate timed direction; no real officer instruction.\n'
+            files['direction_context_review.txt'] = 'Synthetic unresolved officer direction review.\n'
+            roles = {'officer_identity': 'officer_identity.txt',
+                     'officer_direction': 'officer_direction.txt',
+                     'direction_context_review': 'direction_context_review.txt',
+                     'authority_timeline': source_file}
     roles.update(vehicle_poses='vehicle-poses.jsonl',
                  frame_map='video_frames.jsonl', overview_video='overview.mkv')
     packet = {'format': 'c229397-qualifier-source-packet-v1',
@@ -95,6 +118,8 @@ def main():
     manifest_path = PACKAGE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
     for suffix, stem in (('traffic_conflict_near', 'traffic'),
+                         ('law_compliance_near', 'law'),
+                         ('police_direction_near', 'officer'),
                          ('device_direction_near', 'device')):
         recipe, contract = build(suffix, stem)
         entry = next(item for item in manifest['cases'] if item['case_id'].endswith('__' + suffix))
@@ -111,8 +136,8 @@ def main():
     (PACKAGE / 'case-plan.json').write_text(json.dumps(case_plan, indent=2) + '\n')
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps({'manifest_sha256': sha(manifest_path),
-                      'recipes': ['diagnostic-qualifier-traffic-recipe.json',
-                                  'diagnostic-qualifier-device-recipe.json']}, sort_keys=True))
+                      'recipes': ['diagnostic-qualifier-' + stem + '-recipe.json'
+                                  for stem in ('traffic', 'law', 'officer', 'device')]}, sort_keys=True))
 
 
 if __name__ == '__main__':

@@ -1,0 +1,39 @@
+{
+  "format": "c124163-source-alternatives-review-v1",
+  "law_source": "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json:law.text",
+  "selected_scope": "Six left-indicator, left-turn requests across below, at, and above the district 100-foot and other-area 300-foot source thresholds; observed diagnostic distances are separate from requested distances.",
+  "alternative_dispositions": [
+    {
+      "alternative": "right_turn",
+      "status": "incompatible_with_frozen_cell",
+      "source": "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json:cell.maneuver",
+      "tested_limit": "The frozen C124163 cell requires maneuver left_turn, layout median_opening and control median_barrier. A right-turn construction changes the exact cell maneuver."
+    },
+    {
+      "alternative": "otherwise_turn_from_direct_course_or_lane_change",
+      "status": "incompatible_with_frozen_cell",
+      "source": "inputs/training__C124163__NRS-484B-413-2__motor_vehicle_driver/assignment.json:cell.maneuver",
+      "tested_limit": "A lane-change/direct-course-change construction changes the frozen left_turn maneuver; no legal conclusion is drawn for that alternative from these six cases."
+    },
+    {
+      "alternative": "hand_signal",
+      "status": "pinned_source_capability_unsupported",
+      "source": "runtime/scenario_pipeline/traffic_spec_adapter/adapter.py:212,1796-1797; runtime/tests/test_traffic_spec_adapter.py:714-720",
+      "tested_limit": "The pinned source capability omits sig.hand_signal and adapter normalization deletes hand_signal; a vehicle light-state request is not a driver arm gesture.",
+      "cpu_test": {
+        "command": "PYTHONPATH=runtime/scenario_pipeline:runtime/tests .venv-cpu/bin/python -m unittest test_traffic_spec_adapter.ManifestAvailabilityTests.test_source_capabilities_are_exhaustive_except_hand_signals",
+        "exit_code": 0,
+        "log": "native/hand-signal-capability.log",
+        "log_sha256": "b8d9665ed8fe4e06979a49d9064784afbf9c22614a78c6930f1275017e32fa34"
+      }
+    },
+    {
+      "alternative": "weather",
+      "status": "no_fixed_condition_weather_contrast_selected",
+      "source": "NRS 484B.413(2) sentence 2; case-plan.json:cases",
+      "tested_limit": "The two selected weather conditions also change district class, so no isolated weather effect is inferred. The statutory distance duty is retained in clear and rain; weather does not excuse either branch."
+    }
+  ],
+  "accepted_recording_equivalence": "Membership metadata does not supply source-hashed camera, light-state, odometer, district or weather facts; no accepted recording is credited as equivalent.",
+  "legal_verdict": null
+}

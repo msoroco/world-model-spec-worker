@@ -26,8 +26,11 @@ def run(suffix, stem, kind):
     selected['manifest_sha256'] = sha(MANIFEST)
     (attempt / 'candidate-selection.json').write_text(json.dumps(selected, indent=2) + '\n')
     if kind == 'missing':
-        (attempt / ('traffic-actors.jsonl' if stem == 'traffic' else 'device-states.jsonl')).unlink()
-    output = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-' + kind + '-v4')
+        missing = ('traffic-actors.jsonl' if stem == 'traffic' else
+                   'device-states.jsonl' if stem == 'device' else
+                   'authority-events.jsonl')
+        (attempt / missing).unlink()
+    output = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-saved-' + kind + '-v5')
     command = [sys.executable, str(ROOT / 'runtime.py'), 'process-saved',
         '--manifest', str(MANIFEST), '--case', ASSIGNMENT + '__' + suffix,
         '--attempt', str(attempt), '--output', str(output),
@@ -62,6 +65,8 @@ def run(suffix, stem, kind):
 def main():
     results = {}
     for suffix, stem in (('traffic_conflict_near', 'traffic'),
+                         ('law_compliance_near', 'law'),
+                         ('police_direction_near', 'officer'),
                          ('device_direction_near', 'device')):
         results[suffix] = {'positive': run(suffix, stem, 'positive'),
                            'missing': run(suffix, stem, 'missing')}

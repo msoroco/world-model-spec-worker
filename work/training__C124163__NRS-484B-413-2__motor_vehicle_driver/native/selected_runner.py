@@ -135,7 +135,8 @@ def execute(config, output, host, port):
                 previous = location
                 snapshot_frame = world.get_snapshot().timestamp.elapsed_seconds
                 capture.capture(frame, i/RATE_HZ, extra={'video_frame': i})
-                frame_map.append(frame, i/RATE_HZ, native_elapsed_s=snapshot_frame)
+                frame_map.append(frame, i/RATE_HZ, native_elapsed_s=snapshot_frame,
+                                 camera_native_frames={view: frame for view in VIEWS})
                 lights = int(ego.get_light_state())
                 sample = {'video_frame': i, 'native_frame': frame,
                           'source_kind': 'original_post_tick_native',

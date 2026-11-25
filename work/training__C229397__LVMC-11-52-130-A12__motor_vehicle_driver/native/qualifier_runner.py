@@ -8,7 +8,8 @@ import subprocess
 
 from geometry import CROSSWALK_RECT
 from qualifier_geometry import TARGET_X, check as geometry_check, open_drive
-from qualifier_context import (QUALIFIERS, device_row, find_device,
+from qualifier_context import (QUALIFIERS, authority_row, device_row, find_device,
+                               spawn_direction_participant,
                                spawn_traffic_actor, traffic_command, traffic_row,
                                write_context_manifest)
 
@@ -80,7 +81,7 @@ def execute(output_dir, case, host, port):
     output = Path(output_dir).resolve()
     if any((output / name).exists() for name in (
             'video_frames.jsonl', 'vehicle-poses.jsonl', 'traffic-actors.jsonl',
-            'device-states.jsonl')):
+            'device-states.jsonl', 'authority-events.jsonl')):
         raise ValueError('original Native attempt already has frame sources')
     client = carla.Client(host, port)
     client.set_timeout(180)
@@ -129,6 +130,7 @@ def execute(output_dir, case, host, port):
         owned.append(vehicle)
         traffic_actor = spawn_traffic_actor(world, carla, owned) if case == 'traffic_conflict_near' else None
         device = find_device(world) if case == 'device_direction_near' else None
+        direction_participant = spawn_direction_participant(world, carla, owned) if case == 'police_direction_near' else None
         context = write_context_manifest(output / 'qualifier-context.json', case, device)
         for name, width, height, x, y, z, pitch in CAMERAS:
             camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
@@ -155,6 +157,7 @@ def execute(output_dir, case, host, port):
             trace = stack.enter_context((output / 'trace.jsonl').open('x'))
             traffic_file = stack.enter_context((output / 'traffic-actors.jsonl').open('x')) if traffic_actor else None
             device_file = stack.enter_context((output / 'device-states.jsonl').open('x')) if case == 'device_direction_near' else None
+            authority_file = stack.enter_context((output / 'authority-events.jsonl').open('x')) if case in ('law_compliance_near', 'police_direction_near') else None
             first_elapsed = None
             for index in range(FRAMES):
                 location = vehicle.get_transform().location
@@ -205,6 +208,10 @@ def execute(output_dir, case, host, port):
                         traffic_actor, index, native_frame, elapsed, traffic_intent)) + '\n')
                 if device_file:
                     device_file.write(json.dumps(device_row(device, index, native_frame, elapsed)) + '\n')
+                if authority_file:
+                    authority_file.write(json.dumps(authority_row(
+                        direction_participant, index, native_frame, elapsed,
+                        QUALIFIERS[case])) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
@@ -214,6 +221,8 @@ def execute(output_dir, case, host, port):
                 'native_crosswalk_readback': crosswalk_readback,
                 'qualifier_context': context, 'traffic_actor_captured': traffic_actor is not None,
                 'device_state_captured': device is not None,
+                'authority_timeline_captured': case in ('law_compliance_near', 'police_direction_near'),
+                'officer_authority_verified': False,
                 'marked_crosswalk_source_missing': True, 'physical_acceptance_claimed': False,
                 'legal_verdict_claimed': False}
     finally:

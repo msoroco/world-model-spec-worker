@@ -34,7 +34,7 @@ def main():
         for i in range(600):
             native = 1000+i
             time = round(i/20, 5)
-            odometer = round(i*.4, 5)
+            odometer = round(i*.3048, 5)
             position = [odometer, 0, .7]
             frames.append({'video_frame': i, 'carla_frame': native,
                 'native_frame': native, 'time_s': time,
@@ -45,21 +45,21 @@ def main():
                 'signal_requested': odometer >= start,
                 'course_change_requested': odometer >= 120.0,
                 'yaw_deg': 0 if i < 300 else (i-300)*.08,
-                'position_m': position, 'velocity_mps': [8, 0, 0],
+                'position_m': position, 'velocity_mps': [6.096, 0, 0],
                 'signal_visible_pixels_reviewed': False,
                 'source_kind': 'synthetic_native_sample'})
             trace.append({'frame': native, 'time_s': time,
                 'position': {'x': position[0], 'y': position[1], 'z': position[2]},
                 'position_m': position, 'heading_deg': 0,
-                'speed_mps': 8, 'speed_mph': 8/.44704,
-                'velocity_mps': [8, 0, 0],
+                'speed_mps': 6.096, 'speed_mph': 6.096/.44704,
+                'velocity_mps': [6.096, 0, 0],
                 'control': {'throttle': 0, 'steer': 0, 'brake': 0,
                             'hand_brake': False}})
             events.append({'original_frame': native, 'replay_frame': native,
                 'recording_time_s': time, 'replay_simulation_time_s': time,
                 'actor_id': 71,
                 'ego': {'position_m': position, 'heading_deg': 0,
-                        'speed_mps': 8,
+                        'speed_mps': 6.096,
                         'body_vertices_m': [[odometer-.3, -.22, 0],
                                             [odometer+.3, -.22, 0],
                                             [odometer+.3, .22, 0],

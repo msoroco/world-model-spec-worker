@@ -25,9 +25,11 @@ def sha(path):
 
 
 def prepare(suffix, name):
-    stem = 'traffic' if suffix == 'traffic_conflict_near' else 'device'
-    offline = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-offline-v3')
-    attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-' + name + '-v5')
+    stem = ('traffic' if suffix == 'traffic_conflict_near' else
+            'device' if suffix == 'device_direction_near' else
+            'law' if suffix == 'law_compliance_near' else 'officer')
+    offline = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-offline-v4')
+    attempt = ROOT / ('.runtime-work/c229397-qualifier-' + stem + '-' + name + '-v6')
     if attempt.exists():
         raise ValueError('Retain existing qualifier finalizer proof')
     shutil.copytree(offline, attempt)
@@ -35,7 +37,7 @@ def prepare(suffix, name):
         shutil.copyfile(BASE / source, attempt / source)
     shutil.copytree(BASE / 'capture', attempt / 'capture')
     frames = [json.loads(row) for row in (attempt / 'video_frames.jsonl').read_text().splitlines()]
-    qualifier = 'traffic_conflict' if stem == 'traffic' else 'device_direction'
+    qualifier = suffix.removesuffix('_near')
     context = {'format': 'c229397-native-qualifier-context-v1',
                'qualifier': qualifier, 'case_suffix': suffix,
                'traffic_actor_requested': stem == 'traffic',
@@ -52,7 +54,7 @@ def prepare(suffix, name):
             for index, frame in enumerate(frames)))
         role_paths['participant_motion'] = path.name
         review_roles = ('traffic_context_review',)
-    else:
+    elif stem == 'device':
         path = attempt / 'device-states.jsonl'
         path.write_text(''.join(json.dumps({'video_frame': index,
             'native_frame': frame['native_frame'], 'device_present': False,
@@ -60,6 +62,17 @@ def prepare(suffix, name):
             for index, frame in enumerate(frames)))
         role_paths.update(device_identity='qualifier-context.json', device_state=path.name)
         review_roles = ('direction_context_review',)
+    else:
+        path = attempt / 'authority-events.jsonl'
+        path.write_text(''.join(json.dumps({'video_frame': index,
+            'native_frame': frame['native_frame'], 'qualifier': qualifier,
+            'candidate_participant_id': 31 if stem == 'officer' else None,
+            'authority_status': 'unverified'}) + '\n'
+            for index, frame in enumerate(frames)))
+        role_paths['authority_timeline'] = path.name
+        review_roles = (('applicable_law_text', 'law_context_review') if stem == 'law'
+                        else ('officer_identity', 'officer_direction',
+                              'direction_context_review'))
     for role in review_roles:
         source = attempt / (role + '.txt')
         source.write_text('Synthetic unresolved diagnostic review: ' + qualifier + '\n')
@@ -90,8 +103,10 @@ def run(attempt, log):
 
 def main():
     proof = {}
-    for suffix in ('traffic_conflict_near', 'device_direction_near'):
-        stem = 'traffic' if suffix == 'traffic_conflict_near' else 'device'
+    for suffix, stem in (('traffic_conflict_near', 'traffic'),
+                         ('law_compliance_near', 'law'),
+                         ('police_direction_near', 'officer'),
+                         ('device_direction_near', 'device')):
         positive = prepare(suffix, 'finalizer-positive')
         log = HERE / ('qualifier-' + stem + '-finalizer-positive.log')
         outcome = run(positive, log)
@@ -103,7 +118,9 @@ def main():
                 result['accepted'] is not False or result['legal_verdict_claimed'] is not False):
             raise ValueError('Qualifier finalizer asserted unsupported conclusion')
         negative = prepare(suffix, 'finalizer-negative')
-        source = 'traffic-actors.jsonl' if stem == 'traffic' else 'device-states.jsonl'
+        source = ('traffic-actors.jsonl' if stem == 'traffic' else
+                  'device-states.jsonl' if stem == 'device' else
+                  'authority-events.jsonl')
         (negative / source).unlink()
         negative_log = HERE / ('qualifier-' + stem + '-finalizer-negative.log')
         rejected = run(negative, negative_log)
