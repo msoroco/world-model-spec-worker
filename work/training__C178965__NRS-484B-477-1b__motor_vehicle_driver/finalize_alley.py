@@ -6,7 +6,7 @@ from pathlib import Path
 
 from alley_measure import ASSIGNMENT, FRAMES, measure
 
-CAMERAS = ('overview', 'along_alley', 'cross_section', 'vehicle_close')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def _jsonl(path):

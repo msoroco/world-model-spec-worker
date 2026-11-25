@@ -24,7 +24,7 @@
       "source_index": 125,
       "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "recording_ids": [],
-      "disposition": "planned_unproven"
+      "disposition": "selected_required"
     }
   ],
   "accepted_membership_snapshot": {
@@ -40,35 +40,49 @@
     {
       "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
       "target_law_id": "NRS-484B-287-1d",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "diagonal crossing under device authorizing diagonal travel",
       "comparison_variable": "official device authorization",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "current_runtime_native_cpu_draft",
+      "selection_targets": [
+        "full-train"
+      ],
+      "requested_not_measured": true,
+      "gap_ids": [
+        "no-accepted-original"
+      ]
     },
     {
       "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_02",
       "target_law_id": "NRS-484B-287-1d",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "same crossing with no such authorization",
       "comparison_variable": "official device authorization",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "current_runtime_native_cpu_draft",
+      "selection_targets": [
+        "full-train"
+      ],
+      "requested_not_measured": true,
+      "gap_ids": [
+        "no-accepted-original"
+      ]
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C109166__NRS-484B-287-1d__pedestrian__planned_comparison",
+      "comparison_id": "training__C109166__NRS-484B-287-1d__pedestrian__authorization_contrast",
       "case_ids": [
         "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
         "training__C109166__NRS-484B-287-1d__pedestrian__probe_02"
       ],
       "deliberate_differences": [
-        "official device authorization"
+        "requested governing diagonal device display and source-bound authorization context"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
@@ -133,10 +147,8 @@
     "Requires a physical official control authorizing diagonal crossing; exception NRS 484B.290 must be resolved."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Original surveyed official diagonal device and NRS 484B.290 person-specific evidence remain unavailable for physical review.",
+    "Current public compatibility, saved-only processing, semantic proposals, delivery and comparison audits are being constructed."
   ],
   "observations": [
     {
@@ -192,24 +204,122 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Requires a physical official control authorizing diagonal crossing; exception NRS 484B.290 must be resolved.",
+    "Original surveyed official diagonal device and NRS 484B.290 person-specific evidence remain unavailable for physical review.",
+    "Current public compatibility, saved-only processing, semantic proposals, delivery and comparison audits are being constructed.",
     "No CARLA execution or accepted recording is claimed."
   ],
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-287-1d",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source": "NRS 484B.287(1)(d)",
       "branch": "Intersection crossing without diagonal authorization",
       "status": "selected_required",
       "case_ids": [
         "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
         "training__C109166__NRS-484B-287-1d__pedestrian__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Exact two-case Native requests and original-source acquisition gate are CPU-tested; original official authority, physical path and independent pixel review remain pending."
+    },
+    {
+      "requirement": "NRS-484B-287-1d",
+      "source": "NRS 484B.287(1)(d)",
+      "branch": "Except as provided in NRS 484B.290",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
+        "training__C109166__NRS-484B-287-1d__pedestrian__probe_02"
+      ],
+      "evidence_or_gap": "Person-specific NRS 484B.290 applicability requires exact source and independent original review; no legal conclusion from synthetic fixtures."
     }
-  ]
+  ],
+  "source_observation_mapping": {
+    "ru.subject": {
+      "evidence": "Original Native walker identity and full body samples; independent person review pending",
+      "channels": [
+        "ru.subject"
+      ],
+      "source_refs": [
+        "pedestrian-original.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Original full-body entry and exit against surveyed intersection boundary",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": [
+        "road-boundary-review.json",
+        "pedestrian-original.jsonl"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Original Native sampled center path across all frames",
+      "channels": [
+        "kin.path_length"
+      ],
+      "source_refs": [
+        "pedestrian-original.jsonl"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original Native direction sampled over crossing; no legal angle cutoff",
+      "channels": [
+        "kin.heading"
+      ],
+      "source_refs": [
+        "pedestrian-original.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original full pedestrian footprint against surveyed intersection",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "pedestrian-original.jsonl",
+        "road-boundary-review.json"
+      ]
+    },
+    "dev.pedestrian_signal": {
+      "evidence": "Original device readback and pixels; independent review pending",
+      "channels": [
+        "dev.pedestrian_signal"
+      ],
+      "source_refs": [
+        "device-original.jsonl",
+        "diagonal-pixel-review.json"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original surveyed official device status and signs; independent review pending",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "authority/official_status.json"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "Original surveyed crosswalk geometry and diagonal route",
+      "channels": [
+        "st.crosswalk"
+      ],
+      "source_refs": [
+        "road-boundary-review.json"
+      ]
+    }
+  },
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Compare frozen membership and witness inventory against the exact diagonal authorization text and original evidence requirements. No accepted membership or original recording is supplied.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no-accepted-original",
+        "requirement": "original surveyed full-body diagonal crossing and official device authorization",
+        "source": "inputs/training__C109166__NRS-484B-287-1d__pedestrian/assignment.json",
+        "why_existing_insufficient": "The frozen full-train membership list is empty; no accepted recording can be reused."
+      }
+    ]
+  }
 }

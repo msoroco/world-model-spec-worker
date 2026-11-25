@@ -1,13 +1,21 @@
-# NRS 484B.113(3) at C230259: partial CPU checkpoint
+# NRS 484B.113(3) at C230259: delivery prepared
 
-Official Nevada Legislature section source: https://www.leg.state.nv.us/NRS/NRS-484B.html. `statutory-source-review.json` records the section title, common driver stem and subsections 1–3. The backing context is supported by the section structure. The separate pedestrian alternative remains uncovered in this selected other-vehicle pair. No accepted recording is in the frozen selection.
+The official Nevada Legislature NRS 484B.113 section supplies the common driver stem and backing context (https://www.leg.state.nv.us/NRS/NRS-484B.html). `statutory-source-review.json` records that source review. Four exact cases cover separate moving traffic and pedestrian alternatives in two controlled backing-onset comparisons. Legal right-of-way remains unresolved.
 
-The exact selected cases are `training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1` and `training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2`. They vary backing onset timing while keeping the authored highway geometry, separate moving vehicle, 30 s at 20 Hz and four original FFV1 views fixed. `native/runner.py` checks road/lane readback, vehicle classification and distinct actor IDs; captures synchronized original source rows and video frame map; restores the world. Actual CARLA execution has not occurred.
+The Native runner authors the highway lane, captures ego, another vehicle and (for pedestrian cases) a walker, preserves 600 original frames at 20 Hz in four synchronized FFV1 views, and restores world settings. The four primary constructions and eight fallbacks pass exact offline checks. All 12 exact public compatibility runs pass positive measurement, converter, Lean decoder and final video checks and negative missing-source rejection.
 
-`native/measure_motion.py` retains backing and other-vehicle motion, overlap, conflict-region entry order and source hashes without assigning a legal right-of-way finding. `native/audit.py` independently rejects source hash changes, missing backing/moving traffic, unsupported legal findings and changed comparison capture settings. Synthetic fixtures in `native/prove_saved.py` demonstrate the positive path and negative branches; they are not physical evidence.
+Four diagnostic acquisitions pass recorded-only saved processing with original sources preserved. For each case, three physical-completion CPU fixtures cover met, not met and missing evidence. Independent delivery audits pass positive and negative source checks for all four cases; both comparisons pass positive and negative fixed-condition and measured-onset checks. These synthetic diagnostics prove software preparation only. Original Native execution, actual pixel review, physical completion and legal precedence remain for local operation.
 
-Current primary construction hashes: `cecf22a6f892fbcffb7cc4e696f8187eb8f218f2a89893800642017ed3fcf92f` and `e13353b0ac128084aa1ab653941a87d448eada5386ef78898feaee2cc3334195`. Offline logs: `dce830ee24b985489ed6a2ef9c72a23b0419aaeadb6d5d8498f2e4ac596ba7a9` and `55afb4d2aafc533f828fa71c505a1868662db92419b57ef9819d673571eef32a`. Saved-shape log: `29acfbffc56b300c576469d50c4aa3f397c264a0276f82fd6fbf93f15061b8c6`. Materialized Native unit tests: `192dda99961b1eb72f81fe29e0bcc18891c76cf810c49664c938c0771f987cf7`.
+Exact scoped gate: `.venv-cpu/bin/python worker_check.py --assignment training__C230259__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready` passed with `static_checks_passed: true`.
 
-Exact remaining CPU work: implement pedestrian cases or source-backed compatible reuse; provide risk-based fallbacks and offline/compatibility for every selected construction; canonical source packets, positive/negative fixture recipe and Native result finalizer; semantic stage proposals; saved-only processing; physical fixture, delivery and comparison audits; execution manifest and strict gate. Current independent audit is source-shaped and cannot replace the canonical delivery audit. This is a partial implementation checkpoint, not delivery prepared.
+Primary construction SHA-256:
+- `training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_1`: `7b585a3647ff873ed1f68f641acd79aa3c909fc67b89f1640a14e6054e6b9860`
+- `training__C230259__NRS-484B-113-3__motor_vehicle_driver__controlled_2`: `b86a88396e6e81a27ea97d3f0d3e5f96a3e0cb61fd44c7bc264e3e827dd69d56`
+- `training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_1`: `f05c2233b640b1d592962b7fecda208f210b4d766e4aa69587cc1c075cd35812`
+- `training__C230259__NRS-484B-113-3__motor_vehicle_driver__pedestrian_2`: `01238989997d4d1901120ef09bb1662bb93e15dfcfe1f5cf63196048f5a75d13`
 
-Resume with `export SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-resume TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1`, then `.venv-cpu/bin/python worker_check.py --assignment training__C230259__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready`.
+Execution manifest SHA-256: `361feeefa21e7f949f9a1fa2bf6af42bb8b8d2ededfda72436bcc4d96b0bd3ae`.
+Case plan SHA-256: `ac0fbdacf602fa832d400c0700e5580b32e3746448e0638aeb079c91fe4118b3`.
+Strict gate log SHA-256: `abc5bf37f45506dfbe81d21d86828984cd952604e3dcccec3738c877da183510`.
+
+The lead integrates shared branch coverage, ordered GPU queue and local integration proof. All returned artifacts for this assignment are UTF-8 and at most 2 MiB.

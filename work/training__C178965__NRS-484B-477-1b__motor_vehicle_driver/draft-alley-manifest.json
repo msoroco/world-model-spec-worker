@@ -1,38 +1,94 @@
 {
   "format": "worker-selected-cpu-draft-manifest-v1",
   "assignment_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver",
-  "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "status": "partial",
   "cases": [
     {
       "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
       "kind": "delivery",
       "construction": "draft-alley/controlled_1/primary/construction.json",
-      "construction_sha256": "0a44aed494339ea835ec65e54c6511562dbe74306846c382320ecb7653f02a6a",
+      "construction_sha256": "1d091ecd1119612e5c7688daa8a3a37c6e778bd780af052bc33da5c40e1f6042",
       "candidate_risk": {
         "status": "physical",
-        "reason": "both vehicle footprints and maneuver require Native readback"
+        "reason": "actor spawn may fail or interpenetrate the elevated authored road"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-alley/controlled_1/fallback1/construction.json",
+          "construction_sha256": "a810f764517ef294d1df858c41f66f1e7031cad6c52bd598f491459408f0105a",
+          "trigger": {
+            "source": "original Native actor spawn and body readback",
+            "metric": "spawn success and pavement intersection",
+            "failure_condition": "primary actor spawn fails or initially intersects paved surface"
+          },
+          "changed_knobs": [
+            "both actor spawn heights 8.8 m to 9.1 m"
+          ],
+          "offline": {
+            "construction_sha256": "a810f764517ef294d1df858c41f66f1e7031cad6c52bd598f491459408f0105a",
+            "exit_code": 0,
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c178965-owner/controlled_1-fallback1-offline-20261125 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "controlled_1-fallback1-current-offline.log",
+            "log_sha256": "1e87979818310bb2fcc68fd811271aec672b66b31f12ad050d5486b1545c4f4c"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_alley.py"
       },
-      "delivery_readiness": "incomplete"
+      "delivery_readiness": "incomplete",
+      "offline": {
+        "construction_sha256": "1d091ecd1119612e5c7688daa8a3a37c6e778bd780af052bc33da5c40e1f6042",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --candidate primary --output .runtime-work/c178965-owner/controlled_1-primary-offline-20261125 --python \"$PWD/.venv-cpu/bin/python\"",
+        "log": "controlled_1-primary-current-offline.log",
+        "log_sha256": "7fbdc112a587cbb3661a566367fd7a80f375e37251536e38d0a136cecba4b0b1"
+      }
     },
     {
       "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
       "kind": "delivery",
       "construction": "draft-alley/controlled_2/primary/construction.json",
-      "construction_sha256": "9dc8139addc991e71b8e679eaed2b69aafc2b51f0ba27df6f3d80a12708eca8d",
+      "construction_sha256": "c305d488859677e230e18ad7dfb79938927e3275c4774ecc495a2fc6cd8bb285",
       "candidate_risk": {
         "status": "physical",
-        "reason": "both vehicle footprints and maneuver require Native readback"
+        "reason": "actor spawn may fail or interpenetrate the elevated authored road"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-alley/controlled_2/fallback1/construction.json",
+          "construction_sha256": "6dc661cdaefcb1e14fa5a1f34a9cddb847d83340c96f8bdeea619bdb43b3ebaa",
+          "trigger": {
+            "source": "original Native actor spawn and body readback",
+            "metric": "spawn success and pavement intersection",
+            "failure_condition": "primary actor spawn fails or initially intersects paved surface"
+          },
+          "changed_knobs": [
+            "both actor spawn heights 8.8 m to 9.1 m"
+          ],
+          "offline": {
+            "construction_sha256": "6dc661cdaefcb1e14fa5a1f34a9cddb847d83340c96f8bdeea619bdb43b3ebaa",
+            "exit_code": 0,
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c178965-owner/controlled_2-fallback1-offline-20261125 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "controlled_2-fallback1-current-offline.log",
+            "log_sha256": "2fe013d9b7a8cc70c5003b43e4bae1dded64948599e86a9b65794758afac1c27"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_alley.py"
       },
-      "delivery_readiness": "incomplete"
+      "delivery_readiness": "incomplete",
+      "offline": {
+        "construction_sha256": "c305d488859677e230e18ad7dfb79938927e3275c4774ecc495a2fc6cd8bb285",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --candidate primary --output .runtime-work/c178965-owner/controlled_2-primary-offline-20261125 --python \"$PWD/.venv-cpu/bin/python\"",
+        "log": "controlled_2-primary-current-offline.log",
+        "log_sha256": "d4a47a46acf6c015168397d2499610b15beb38f186b6c8d4aab42d07517dca4e"
+      }
     }
   ]
 }

@@ -1,28 +1,33 @@
 """Original Native paved-alley parking capture, gated by map readback."""
 import argparse
 import json
+import os
 from pathlib import Path
 import queue
 import subprocess
 
 from geometry import WIDTHS, check as geometry_check, open_drive
+from legal_context import review_source
 
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -17, 24, -45),
-    ('along_alley', 1280, 720, -35, -12, 13, -20),
-    ('cross_section', 1280, 720, 0, -12, 12, -35),
-    ('vehicle_close', 1280, 720, 12, -10, 9, -30),
+    ('overview', 1920, 1080, 0, -17, 24, -45),
+    ('approach', 1280, 720, -35, -12, 13, -20),
+    ('reference_corner', 1280, 720, 0, -12, 12, -35),
+    ('driver_reference', 1280, 720, 12, -10, 9, -30),
 )
 
 
-def check(width):
+def check(width, spawn_height=8.8):
     g = geometry_check(width)
+    if not 8.5 <= spawn_height <= 9.5:
+        raise ValueError('spawn height outside authored elevated road envelope')
     if len(CAMERAS) != 4 or len({c[0] for c in CAMERAS}) != 4 or FRAMES / RATE != 30:
         raise ValueError('four independent cameras and 30-second capture required')
     return {'passed': True, 'frames': FRAMES, 'rate_hz': RATE,
             'camera_names': [c[0] for c in CAMERAS], 'geometry': g,
+            'spawn_height_m': spawn_height,
             'native_imported': False, 'physical_acceptance_claimed': False}
 
 
@@ -55,7 +60,7 @@ def _pose(actor):
             'blueprint_id': actor.type_id}
 
 
-def execute(output_dir, case, host, port):
+def execute(output_dir, case, host, port, spawn_height):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
@@ -63,7 +68,7 @@ def execute(output_dir, case, host, port):
     if case not in WIDTHS:
         raise ValueError('unknown exact alley case')
     width = WIDTHS[case]
-    check(width)
+    check(width, spawn_height)
     output = Path(output_dir).resolve()
     if any((output / name).exists() for name in ('video_frames.jsonl', 'vehicle-poses.jsonl')):
         raise ValueError('original Native attempt already has frame sources')
@@ -102,17 +107,21 @@ def execute(output_dir, case, host, port):
                      'local_ordinance_review_source_id': None,
                      'other_alley_scope_review_source_id': None,
                      'source_status': 'original geometry only; alley definition and ordinance need source review'}
+        independent_packet = os.environ.get('C178965_ALLEY_CONTEXT_SOURCE')
+        if independent_packet:
+            inventory.update(review_source(independent_packet, output / 'alley-legal-source.json'))
+            inventory['source_status'] = 'independent packet copied; site match and legal effect require local review'
         (output / 'alley-inventory.json').write_text(json.dumps(inventory, indent=2) + '\n')
         library = world.get_blueprint_library()
         bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
         bp.set_attribute('role_name', 'c178965_subject')
         subject = world.spawn_actor(bp, carla.Transform(
-            carla.Location(x=-38, y=-width + 1, z=8.8), carla.Rotation(yaw=0)))
+            carla.Location(x=-38, y=-width + 1, z=spawn_height), carla.Rotation(yaw=0)))
         owned.append(subject)
         other_bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[1]
         other_bp.set_attribute('role_name', 'c178965_other_vehicle')
         other = world.spawn_actor(other_bp, carla.Transform(
-            carla.Location(x=0, y=-1, z=8.8), carla.Rotation(yaw=0)))
+            carla.Location(x=0, y=-1, z=spawn_height), carla.Rotation(yaw=0)))
         owned.append(other)
         for name, image_width, height, x, y, z, pitch in CAMERAS:
             camera_bp = library.find('sensor.camera.rgb')
@@ -194,10 +203,12 @@ if __name__ == '__main__':
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
-    case = args.case or json.loads(Path('config.json').read_text())['alley_case']
+    config = json.loads(Path('config.json').read_text())
+    case = args.case or config['alley_case']
+    spawn_height = config['spawn_height_m']
     if args.check:
-        print(json.dumps(check(WIDTHS[case])))
+        print(json.dumps(check(WIDTHS[case], spawn_height)))
     else:
         if not args.output_dir:
             raise SystemExit('--output-dir required for Native execution')
-        print(json.dumps(execute(args.output_dir, case, args.host, args.port)))
+        print(json.dumps(execute(args.output_dir, case, args.host, args.port, spawn_height)))

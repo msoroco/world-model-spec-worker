@@ -1,0 +1,38 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C109166__NRS-484B-287-1d__pedestrian__probe_01",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-484B-287-1d",
+      "source": "NRS 484B.287(1)(d)",
+      "output_key": "diagonal_crossing_authorization",
+      "method": "diagonal_crossing_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "pedestrian-original.jsonl",
+        "device-original.jsonl",
+        "authority-receipt.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-484B-287-1d",
+      "source": "NRS 484B.287(1)(d)",
+      "output_key": "nrs_484b_290_exception_context",
+      "method": "exception_applicability_measurement",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "exception-applicability-source.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device-original.jsonl"
+    ],
+    "error_contains": "Missing required source: device-original.jsonl"
+  }
+}

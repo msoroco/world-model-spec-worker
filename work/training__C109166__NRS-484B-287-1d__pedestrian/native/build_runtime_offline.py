@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from diagonal_motion import camera_plan
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent
@@ -18,6 +19,8 @@ import json
 from pathlib import Path
 from authorization import measure, requested, sha
 from diagonal_motion import camera_plan, command
+from native_request import validate_pair
+from runner import check as check_runner
 
 HERE = Path.cwd()
 
@@ -40,6 +43,10 @@ def check():
             raise ValueError('Diagonal controller/source route changed')
     if [item['name'] for item in camera_plan()] != ['overview', 'approach', 'reference_corner', 'driver_reference']:
         raise ValueError('Four camera acquisition plan changed')
+    if validate_pair()['changed_device_frame_count'] != 600:
+        raise ValueError('Whole-crossing device contrast changed')
+    if check_runner(cfg)['native_executed']:
+        raise ValueError('Offline runner asserted Native execution')
     measured = measure(HERE / 'diagonal-source.jsonl', HERE / 'diagonal-context.json')
     if measured['requested_authorization_at_entry'] != cfg['requested_authorization']:
         raise ValueError('First-entry authorization request changed')
@@ -78,6 +85,13 @@ def build():
                   'diagonal_source_sha256': sha(source),
                   'context_sha256': sha(context), 'frames': 600,
                   'rate_hz': 20, 'duration_s': 30,
+                  'cell_id': 'C109166', 'law_id': 'NRS-484B-287-1d',
+                  'actor': 'pedestrian',
+                  'cameras': [{'name': item['name'], 'width': item['width'],
+                               'height': item['height']} for item in camera_plan()],
+                  'opendrive_signal_id': 'candidate-unverified-203',
+                  'entry_proxy_x_m': -5.5,
+                  'driver_reference_height_m': 3.0,
                   'original_native_observed': False, 'selected': False}
         files = [{'path': name, 'content': content} for name, content in (
             ('assignment-source.json', SOURCE.read_text()),
@@ -87,6 +101,8 @@ def build():
             ('authorization.py', (HERE / 'authorization.py').read_text()),
             ('diagonal_motion.py', (HERE / 'diagonal_motion.py').read_text()),
             ('camera_capture.py', (HERE / 'camera_capture.py').read_text()),
+            ('native_request.py', (HERE / 'native_request.py').read_text()),
+            ('runner.py', (ASSIGNMENT / 'runner.py').read_text()),
             ('check.py', CHECK), ('tests/test_exact.py', TEST),
             ('config.json', json.dumps(config, indent=2) + '\n'))]
         construction = {'case_id': config['case_id'], 'cell_id': 'C109166',
