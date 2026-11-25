@@ -44,7 +44,8 @@ def body(x):
     return [[x, -1], [x + 1, -1], [x + 1, 1], [x, 1]]
 
 
-def capture_and_review(root, packet, case_id=PREFIX + "officer_controls_go"):
+def capture_and_review(root, packet, case_id=PREFIX + "officer_controls_go",
+                       ego_positions=(-9, -4, -3)):
     camera_names = ("overview", "approach", "reference_corner", "driver_reference")
     for name in camera_names:
         subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
@@ -53,7 +54,7 @@ def capture_and_review(root, packet, case_id=PREFIX + "officer_controls_go"):
                         "-pix_fmt", "bgr0", str(root / (name + ".mkv"))],
                        check=True, capture_output=True)
     rows, observations = [], []
-    for index, x in enumerate((-9, -4, -3)):
+    for index, x in enumerate(ego_positions):
         frame = 100 + index
         refs = {name: name + ".mkv#frame-" + str(index) for name in camera_names}
         rows.append({"carla_frame": frame, "native_actor_source": {
@@ -207,7 +208,28 @@ class SavedReviewTests(unittest.TestCase):
             self.assertEqual(result["target_checks"][1]["requested"], "stop")
             self.assertEqual(result["target_checks"][1]["measured"], "go")
             self.assertFalse(result["target_checks"][1]["matched"])
+            self.assertFalse(result["target_checks"][2]["matched"])
             self.assertEqual(result["legal_conclusion"], "unresolved")
+
+    def test_source_reviewed_hold_without_ego_entry(self):
+        with tempfile.TemporaryDirectory() as dirname:
+            root = Path(dirname)
+            packet = sources(root)
+            capture, review = capture_and_review(root, packet,
+                                                 PREFIX + "officer_controls_hold",
+                                                 ego_positions=(-9, -9, -9))
+            value = json.loads(review.read_text())
+            for frame in value["frames"]:
+                frame["officer_direction_observed"] = "stop"
+            write(review, value)
+            result = SAVED.process(capture, review, root, packet, root / "saved",
+                                   native_map_id="CPU-map", intersection_id=1)
+            self.assertIsNone(result["first_ego_entry"])
+            self.assertEqual(result["first_hold_observation"]["frame"], 100)
+            self.assertEqual(result["subsection_2_applicability"],
+                             "officer_hold_no_entry_candidate")
+            self.assertEqual([check["matched"] for check in result["target_checks"]],
+                             [True, True, True])
 
 
 if __name__ == "__main__":

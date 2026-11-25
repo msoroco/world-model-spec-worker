@@ -85,11 +85,20 @@ def analyze(root:Path)->dict:
                         "traffic_control_observed":controlled,"ego_speed_mps":speed,
                         "ego_body_in_intersection":inside,"other_body_in_intersection":other_inside,
                         "other_approaching_observed":approaching})
-    if first_entry is None:raise ValueError("No observed ego entry")
+    first_hold=next(({"frame":s["frame"],"time_s":s["time_s"],
+                      "officer_direction_observed":s["direction"],
+                      "traffic_control_observed":s["traffic_control_observed"]}
+                     for s in samples if s["other_body_in_intersection"] and
+                     not s["ego_body_in_intersection"] and
+                     s["traffic_control_observed"] and s["direction"]=="stop"),None)
+    if first_entry is None and not (str(ctx.get("case_id","")).endswith("__officer_controls_hold") and first_hold):
+        raise ValueError("No observed ego entry or sourced officer hold")
     return {"format":"worker-officer-control-exception-observations","sources":hashes,
-            "first_ego_entry":first_entry,"officer_control_observed_at_entry":first_entry["traffic_control_observed"],
-            "other_inside_at_ego_entry":next(s["other_body_in_intersection"] for s in samples if s["frame"]==first_entry["frame"]),
-            "other_approaching_observed_at_ego_entry":next(s["other_approaching_observed"] for s in samples if s["frame"]==first_entry["frame"]),
-            "subsection_2_applicability":"officer_control_exception_candidate" if first_entry["traffic_control_observed"] else "signed_entrance_candidate",
+            "first_ego_entry":first_entry,"first_hold_observation":first_hold,
+            "officer_control_observed_at_entry":first_entry["traffic_control_observed"] if first_entry else None,
+            "other_inside_at_ego_entry":next((s["other_body_in_intersection"] for s in samples if first_entry and s["frame"]==first_entry["frame"]),None),
+            "other_approaching_observed_at_ego_entry":next((s["other_approaching_observed"] for s in samples if first_entry and s["frame"]==first_entry["frame"]),None),
+            "subsection_2_applicability":("officer_hold_no_entry_candidate" if first_entry is None else
+                                          "officer_control_exception_candidate" if first_entry["traffic_control_observed"] else "signed_entrance_candidate"),
             "samples":samples,"police_authority_judgment":"unresolved pending source review",
             "legal_control_exception_judgment":"unresolved","legal_conclusion":"unresolved"}

@@ -93,6 +93,7 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
     site = json.loads(Path(source_packet).read_text())["review"]
     entrances = {item["entrance_id"]: item for item in site["entrances"]}
     context = {"native_map_id": native_map_id, "intersection_id": intersection_id,
+               "case_id": capture["case_id"],
                "officer_actor_id": officer_id,
                "authority_source": source_paths["officer_authority"],
                "uniform_video_source": None,
@@ -155,9 +156,17 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
     context["direction_video_source"] = observed[0]["direction_frame_source"]
     output_root = _output_root(output_root)
     output_root.mkdir(parents=True, exist_ok=True)
+    existing_map = output_root / "video_frames.jsonl"
+    if existing_map.exists():
+        original_map = [json.loads(line) for line in existing_map.read_text().splitlines() if line.strip()]
+        if len(original_map) != len(frame_map) or any(
+                any(original.get(key) != expected[key] for key in ("video_frame", "carla_frame", "time_s"))
+                for original, expected in zip(original_map, frame_map)):
+            raise ValueError("Capture-time original frame map differs from saved review")
+    else:
+        existing_map.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in frame_map))
     for name, payload in (("officer_context.json", json.dumps(context, sort_keys=True) + "\n"),
-                          ("officer_history.jsonl", "".join(json.dumps(row, sort_keys=True) + "\n" for row in history)),
-                          ("video_frames.jsonl", "".join(json.dumps(row, sort_keys=True) + "\n" for row in frame_map))):
+                          ("officer_history.jsonl", "".join(json.dumps(row, sort_keys=True) + "\n" for row in history))):
         path = output_root / name
         if path.exists():
             raise ValueError("Saved source already exists: " + name)
@@ -167,7 +176,7 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
     result["review_sha256"] = _sha(review_path)
     result["source_packet_sha256"] = _sha(source_packet)
     expected_control, expected_direction = EXPECTED[capture["case_id"]]
-    entry = result["first_ego_entry"]
+    entry = result["first_ego_entry"] or result.get("first_hold_observation")
     result["case_id"] = capture["case_id"]
     result["target_checks"] = [
         {"target": "officer_control_observed_at_ego_entry",
@@ -180,4 +189,10 @@ def process(capture_path, review_path, source_root, source_packet, output_root,
          "measured": entry["officer_direction_observed"],
          "matched": entry["officer_direction_observed"] == expected_direction,
          "physical_cause_confirmed": False}]
+    if capture["case_id"] == PREFIX + "officer_controls_hold":
+        held = result["first_ego_entry"] is None
+        result["target_checks"].append({
+            "target": "ego_held_outside_intersection",
+            "requested": True, "measured": held, "matched": held,
+            "physical_cause_confirmed": False})
     return result
