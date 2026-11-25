@@ -1,0 +1,59 @@
+{
+  "template_id": "NRS-484B-410@motor_vehicle_driver",
+  "law_id": "NRS-484B-410",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person, except when stopping, standing or parking where no parking is permitted, shall not start a vehicle which is stopped, standing or parked on a highway nor enter upon a highway unless and until such movement can be made with safety.",
+  "structure": {
+    "activation": {
+      "condition": "a person starts a stopped, standing or parked vehicle on a highway, or enters upon a highway",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "start or enter before the movement can be made with safety",
+      "source_clause": "shall not start a vehicle which is stopped, standing or parked on a highway nor enter upon a highway unless and until such movement can be made with safety.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "stopping, standing or parking where no parking is permitted",
+        "effect": "exception to this movement restriction; independent restrictions may still apply",
+        "replacement_obligation": "none specified in this section",
+        "source_clause": "except when stopping, standing or parking where no parking is permitted"
+      }
+    ],
+    "timing": {
+      "description": "safety judgment concerns the conditions before and at the start or entry, not a later outcome alone",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "with safety",
+        "note": "No legal gap, TTC or braking cutoff is supplied by the section."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "initial_approaching_traffic_position",
+      "kind": "controller",
+      "range_or_domain": "ahead or behind in authored scenario, with original body position readback"
+    },
+    {
+      "name": "initial_status",
+      "kind": "world_setup",
+      "range_or_domain": "source-grounded stopped, standing or parked purpose"
+    },
+    {
+      "name": "parking_permitted",
+      "kind": "world_setup",
+      "range_or_domain": "independently sourced curb permission Boolean"
+    },
+    {
+      "name": "surface_gap_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured original same-tick body separation; no legal bound"
+    }
+  ]
+}

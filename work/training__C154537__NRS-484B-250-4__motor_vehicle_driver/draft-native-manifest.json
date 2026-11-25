@@ -7,26 +7,65 @@
       "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
       "kind": "delivery",
       "construction": "native/native-bundles/controlled_1/construction.json",
-      "construction_sha256": "b5c41dba5b1ffe7bd47b16a3eff53591e793729da938a53c505bf49edb6cc77a",
+      "construction_sha256": "49eadb3a1e15957d5e9dd4cb56492898b08ebc964a41168b1700bdce6e3a2f3d",
+      "fixture_recipe": "work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/native/diagnostic-controlled_1-fixture-recipe.json",
+      "measurement_contract": "native/controlled_1-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Original map signal, actor stop and driver-view survey may fail"
+        "reason": "The primary actor spawn may intersect imported road surface"
       },
-      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_1/fallback1.json",
+          "construction_sha256": "889d7562632c69c0899039d703940a838d586148e0ecca9ee1d9d42f6469ce3e",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ]
+        }
+      ],
       "delivery_readiness": "incomplete"
     },
     {
       "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_2",
       "kind": "delivery",
       "construction": "native/native-bundles/controlled_2/construction.json",
-      "construction_sha256": "931ff52d8b76865f553a10544f983bfd537d30c1fc2c6b648dd81f3a947a1df5",
+      "construction_sha256": "06234ebe4cc84bd231f39e39a9c1b250e6ff751b018c4e45c4cb4e1d40a60385",
+      "fixture_recipe": "work/training__C154537__NRS-484B-250-4__motor_vehicle_driver/native/diagnostic-controlled_2-fixture-recipe.json",
+      "measurement_contract": "native/controlled_2-measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Original map signal, actor stop and driver-view survey may fail"
+        "reason": "The primary actor spawn may intersect imported road surface"
       },
-      "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/native-bundles/controlled_2/fallback1.json",
+          "construction_sha256": "aaad50944c96b907edd92558b89f14007af15659f27bb7f462e412d52b2b00c9",
+          "trigger": {
+            "source": "original Native spawn result",
+            "metric": "try_spawn_actor returns None or actor body overlaps imported road surface",
+            "failure_condition": "primary actor spawn fails or overlaps surface"
+          },
+          "changed_knobs": [
+            "both initial actor spawn heights from 1.5 m to 1.8 m"
+          ]
+        }
+      ],
       "delivery_readiness": "incomplete"
     }
   ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "physical_acceptance_claimed": false
 }

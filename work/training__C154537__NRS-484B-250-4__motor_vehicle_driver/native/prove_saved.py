@@ -17,7 +17,7 @@ def sha(path):
 
 def fixture(path, stop=True):
     path.mkdir()
-    survey = {'source_kind': 'original_native', 'stop_line_present': False,
+    survey = {'source_kind': 'synthetic_original_shape', 'stop_line_present': False,
         'near_side_crosswalk_present': False, 'sidewalk_derived_crosswalk_reviewed': True,
         'signal_installed': True, 'signal_uncovered': True,
         'official_device_provenance_reviewed': True,

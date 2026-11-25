@@ -26,8 +26,12 @@ def build():
         construction=json.loads((HERE/item['construction']).read_text())
         config=json.loads(next(file['content'] for file in construction['files']
                                if file['path']=='config.json'))
+        disposition_index={'parked_no_loading':0,'stopped_temporary':1,
+                           'standing_passenger_exchange':2}[config['requested_initial_status']]
+        if not config['requested_parking_permitted']:
+            disposition_index+=3
         contract={'format':'worker-measurement-contract','case_id':case,
-            'requirements':[{'disposition_index':0,'requirement':'NRS-484B-410',
+            'requirements':[{'disposition_index':disposition_index,'requirement':'NRS-484B-410',
                 'source':'NRS 484B.410','output_key':'departure_observation',
                 'method':'departure_observation','value_type':'object','kind':'measured',
                 'inputs':['departure-trace.jsonl','video_frames.jsonl',
@@ -119,7 +123,7 @@ def build():
                      'comparison_or_standard':'paired clearance and conflict contrast',
                      'target_value_or_branch':suffix},
             'variable_assignments':{'initial_approaching_traffic_position':{
-                'kind':'controller','value':-55 if int(suffix[-1])%2==0 else 15},
+                'kind':'controller','value':-55 if int(suffix.rsplit('_',1)[-1])%2==0 else 15},
                 'initial_status':{'kind':'authority_source','value':status},
                 'parking_permitted':{'kind':'authority_source','value':permitted}},
             'recording_description':config['recording_description'],

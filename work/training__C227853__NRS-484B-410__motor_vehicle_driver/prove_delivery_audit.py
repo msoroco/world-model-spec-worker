@@ -16,7 +16,7 @@ def main():
     output=[]
     folder=HERE/'delivery-proofs'
     folder.mkdir(exist_ok=True)
-    for suffix in ('controlled_'+str(i) for i in range(1,9)):
+    for suffix in ('controlled_'+str(i) for i in range(1,13)):
         case=HERE.name+'__'+suffix
         for negative in (False,True):
             name=suffix+('-negative' if negative else '-positive')+'.log'

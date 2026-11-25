@@ -1,4 +1,4 @@
-"""Independent original-source delivery audit for a parked-highway departure."""
+"""Independent original-source audit for a stopped, standing or parked start."""
 import argparse
 import hashlib
 import json
@@ -39,6 +39,7 @@ def check_result(result,case):
 
 
 def check_review(review,case,frame_map,context,samples,authority):
+    sourced=json.loads(context.read_text())
     if (review.get('format')!='c227853-original-departure-review-v1' or
             review.get('source_kind')!='original_native_review' or
             review.get('case_id')!=case or not review.get('reviewer_id')):
@@ -49,9 +50,12 @@ def check_review(review,case,frame_map,context,samples,authority):
                       ('authority_manifest_sha256',authority)):
         if review.get(name)!=sha(path):
             raise ValueError('Original source review hash changed: '+name)
+    if (review.get('parking_permitted_value') is not sourced.get('parking_permitted') or
+            review.get('initial_status_value')!=sourced.get('initial_status')):
+        raise ValueError('Independent initial-status or curb-permission finding differs')
     if not all(review.get(name) is True for name in
-               ('public_highway_verified','parking_permitted_verified',
-                'initial_parked_no_loading_verified','initial_footprint_within_highway_verified',
+               ('public_highway_verified','curb_permission_fact_verified',
+                'initial_status_verified','initial_footprint_within_highway_verified',
                 'movement_onset_reviewed','nearby_traffic_reviewed')):
         raise ValueError('Independent highway, parking or departure review missing')
     pixels=review.get('reviewed_frames',[])
@@ -86,6 +90,13 @@ def audit(args):
     check_result(result,args.case)
     frame_map=inside(attempt,'video_frames.jsonl')
     context=inside(attempt,'departure-context.json')
+    config=json.loads(inside(attempt,'config.json').read_text())
+    sourced=json.loads(context.read_text())
+    if (config.get('requested_initial_status','parked_no_loading')!=sourced.get('initial_status') or
+            config.get('requested_parking_permitted',True) is not sourced.get('parking_permitted') or
+            result['measured_values'].get('initial_status_source_fact')!=sourced.get('initial_status') or
+            result['measured_values'].get('parking_permitted_source_fact') is not sourced.get('parking_permitted')):
+        raise ValueError('Original authority, requested branch and measured status differ')
     samples=inside(attempt,'departure-trace.jsonl')
     authority=inside(attempt,'authority/manifest.json')
     review=inside(attempt,args.review)

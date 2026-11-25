@@ -18,29 +18,91 @@
     "text_sha256": "a51e49cd4b28938e205275b3a7dcfdfe93cc70cb0fe6beac14fc7b32cd80875a"
   },
   "summary_status": "recovered_requires_source_review",
-  "selected_branch": "Start from a parked position on a highway",
+  "selected_branch": "Stopped, standing or parked highway starts, including parking-prohibited exception",
   "witness_branches": [
     "Start from a parked position on a highway"
   ],
   "requirement_dispositions": [
     {
+      "disposition_index": 0,
       "requirement": "NRS-484B-410",
       "source": "NRS 484B.410",
-      "branch": "Start from a parked position on a highway",
+      "branch": "start parked vehicle on highway",
       "status": "selected_required",
       "case_ids": [
         "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
         "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Two selected parked-departure cases have current-runtime exact offline, source-bound public compatibility with missing-context negatives, and saved-only CPU proofs; physical and legal outcomes remain unverified."
+      "evidence_or_gap": "Selected source-shaped diagnostic; cited real-world initial-status, Nevada highway and curb permission records required for Native execution; physical and legal findings unverified."
     },
     {
+      "disposition_index": 1,
       "requirement": "NRS-484B-410",
       "source": "NRS 484B.410",
-      "branch": "Textual exceptions, alternatives, or dependencies: except, unless",
-      "status": "exception_pending",
+      "branch": "start stopped vehicle on highway",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4"
+      ],
+      "evidence_or_gap": "Selected source-shaped diagnostic; cited real-world initial-status, Nevada highway and curb permission records required for Native execution; physical and legal findings unverified."
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "start standing vehicle on highway",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6"
+      ],
+      "evidence_or_gap": "Selected source-shaped diagnostic; cited real-world initial-status, Nevada highway and curb permission records required for Native execution; physical and legal findings unverified."
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "exception: parked where parking prohibited",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8"
+      ],
+      "evidence_or_gap": "Selected source-shaped diagnostic; cited real-world initial-status, Nevada highway and curb permission records required for Native execution; physical and legal findings unverified."
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "exception: stopped where parking prohibited",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_9",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_10"
+      ],
+      "evidence_or_gap": "Selected source-shaped diagnostic; cited real-world initial-status, Nevada highway and curb permission records required for Native execution; physical and legal findings unverified."
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "exception: standing where parking prohibited",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_11",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_12"
+      ],
+      "evidence_or_gap": "Selected source-shaped diagnostic; cited real-world initial-status, Nevada highway and curb permission records required for Native execution; physical and legal findings unverified."
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "NRS-484B-410",
+      "source": "NRS 484B.410",
+      "branch": "enter upon a highway",
+      "status": "binding_pending",
       "case_ids": [],
-      "evidence_or_gap": "Each applicable statutory qualifier requires a separately controlled construction or an explicit unsupported-physical finding; source language must be retained in audit."
+      "evidence_or_gap": "Frozen depart_parked/curb cell starts on highway shoulder. Enter-upon-highway requires an off-highway initial road and public-highway boundary crossing; see binding review."
     }
   ],
   "neutral_baseline": {
@@ -51,61 +113,363 @@
     {
       "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-410",
-      "kind": "planned_only",
-      "source_branch": "Start from a parked position on a highway",
-      "physical_target": "start from highway parking only after path is clear",
-      "comparison_variable": "clearance and conflict during start",
+      "kind": "selected_diagnostic",
+      "source_branch": "start parked vehicle on highway",
+      "physical_target": "begin parked_no_loading on sourced Nevada highway and move into travel lane with far traffic",
+      "comparison_variable": "initial approaching traffic position",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
       "cpu_native_draft": {
         "construction": "draft-departure/controlled_1/primary/construction.json",
-        "construction_sha256": "66fdca9253274a940df2efa15cb8279c24d868a52ea9c6f1e95ce8256b178b2d",
-        "offline_log": "controlled-1-offline.log",
-        "offline_log_sha256": "81fc656524315f8904cb78811b0065768740f407d89893bdc6634e62fe93dd1e",
-        "status": "offline_draft_passed_not_delivery_ready"
-      }
+        "construction_sha256": "11660d79edce00e1839a8cf51833ba2182e8a0803ab58b5586bbf29073d61e60",
+        "offline_log": "controlled_1-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "parked_no_loading",
+      "parking_permitted_required": true
     },
     {
       "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-410",
-      "kind": "planned_only",
-      "source_branch": "Start from a parked position on a highway",
-      "physical_target": "start from highway parking into conflicting traffic",
-      "comparison_variable": "clearance and conflict during start",
+      "kind": "selected_diagnostic",
+      "source_branch": "start parked vehicle on highway",
+      "physical_target": "begin parked_no_loading on sourced Nevada highway and move into travel lane with near traffic",
+      "comparison_variable": "initial approaching traffic position",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
       "cpu_native_draft": {
         "construction": "draft-departure/controlled_2/primary/construction.json",
-        "construction_sha256": "2f608fb97bf9990ac3fe76707b1054d83e1ebadeff3e23907b960235d89f2419",
-        "offline_log": "controlled-2-offline.log",
-        "offline_log_sha256": "81fc656524315f8904cb78811b0065768740f407d89893bdc6634e62fe93dd1e",
-        "status": "offline_draft_passed_not_delivery_ready"
-      }
+        "construction_sha256": "eb9120b214f66c276ad2170a02c1e691ce2df57f33009dcc0d1603f4cad6bfa8",
+        "offline_log": "controlled_2-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "parked_no_loading",
+      "parking_permitted_required": true
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "start stopped vehicle on highway",
+      "physical_target": "begin stopped_temporary on sourced Nevada highway and move into travel lane with far traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_3/primary/construction.json",
+        "construction_sha256": "2fb1a60060da8273d75c1e7096053dae92ee7f0639f86c483838382218ed6236",
+        "offline_log": "controlled_3-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "stopped_temporary",
+      "parking_permitted_required": true
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "start stopped vehicle on highway",
+      "physical_target": "begin stopped_temporary on sourced Nevada highway and move into travel lane with near traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_4/primary/construction.json",
+        "construction_sha256": "ac828683885ca9bee27c7757bac6bf8aba034ce521c1ec9f78046f1cf5fff4e7",
+        "offline_log": "controlled_4-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "stopped_temporary",
+      "parking_permitted_required": true
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "start standing vehicle on highway",
+      "physical_target": "begin standing_passenger_exchange on sourced Nevada highway and move into travel lane with far traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_5/primary/construction.json",
+        "construction_sha256": "d497e968e4d72c24e89bd962bb494570aa5779f12f2072a6adf3a39bb64e79fa",
+        "offline_log": "controlled_5-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "standing_passenger_exchange",
+      "parking_permitted_required": true
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "start standing vehicle on highway",
+      "physical_target": "begin standing_passenger_exchange on sourced Nevada highway and move into travel lane with near traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_6/primary/construction.json",
+        "construction_sha256": "7d0c20ae208e821f62687b05156745eb613a52c8c268547f54290d56e575586e",
+        "offline_log": "controlled_6-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "standing_passenger_exchange",
+      "parking_permitted_required": true
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "exception: parked where parking prohibited",
+      "physical_target": "begin parked_no_loading on sourced Nevada highway and move into travel lane with far traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_7/primary/construction.json",
+        "construction_sha256": "6cd3a8ea96041914a193e4d8e02824fc67b87f84f345c010379cf109cec834d9",
+        "offline_log": "controlled_7-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "parked_no_loading",
+      "parking_permitted_required": false
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "exception: parked where parking prohibited",
+      "physical_target": "begin parked_no_loading on sourced Nevada highway and move into travel lane with near traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_8/primary/construction.json",
+        "construction_sha256": "8e1a81af4e808c3aa01b1638c447544a108b8f49df4abdf2845abae823a9199f",
+        "offline_log": "controlled_8-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "parked_no_loading",
+      "parking_permitted_required": false
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_9",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "exception: stopped where parking prohibited",
+      "physical_target": "begin stopped_temporary on sourced Nevada highway and move into travel lane with far traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_9/primary/construction.json",
+        "construction_sha256": "0ebc336c196fe0c205a7bfafd154a374e026963b50f5dd5d1532853d3ab15070",
+        "offline_log": "controlled_9-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "stopped_temporary",
+      "parking_permitted_required": false
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_10",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "exception: stopped where parking prohibited",
+      "physical_target": "begin stopped_temporary on sourced Nevada highway and move into travel lane with near traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_10/primary/construction.json",
+        "construction_sha256": "2cc60329da7a7b3a6e8e7a5a7992563cd6f3f86054e9259fc1156a026648b403",
+        "offline_log": "controlled_10-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "stopped_temporary",
+      "parking_permitted_required": false
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_11",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "exception: standing where parking prohibited",
+      "physical_target": "begin standing_passenger_exchange on sourced Nevada highway and move into travel lane with far traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_11/primary/construction.json",
+        "construction_sha256": "297c97007d3ab7b2c08a31a901d3c1aa42c6270ba2ce131b0af540f6c871039b",
+        "offline_log": "controlled_11-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "standing_passenger_exchange",
+      "parking_permitted_required": false
+    },
+    {
+      "case_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_12",
+      "target_law_id": "NRS-484B-410",
+      "kind": "selected_diagnostic",
+      "source_branch": "exception: standing where parking prohibited",
+      "physical_target": "begin standing_passenger_exchange on sourced Nevada highway and move into travel lane with near traffic",
+      "comparison_variable": "initial approaching traffic position",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "cpu_native_draft": {
+        "construction": "draft-departure/controlled_12/primary/construction.json",
+        "construction_sha256": "d2285dbb5efae7183a8e27ca2f9787d8d87e3849e74a99de73260e2c45766348",
+        "offline_log": "controlled_12-primary-offline.log",
+        "status": "current_runtime_proof_in_progress"
+      },
+      "initial_status_required": "standing_passenger_exchange",
+      "parking_permitted_required": false
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison",
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison_1",
       "case_ids": [
         "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_1",
         "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_2"
       ],
       "deliberate_differences": [
-        "clearance and conflict during start"
+        "initial approaching traffic position: ahead versus behind at first frame"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, legal jurisdiction, relevant devices and participants",
-        "route and controller policy except requested comparison variable",
-        "capture channels, rate, camera policy and recording duration"
+        "frozen cell and motor_vehicle_driver actor",
+        "same sourced initial status and curb permission",
+        "same OpenDRIVE, ego controller, capture timing and four cameras"
       ],
       "source_audit": {
         "script": "audit_comparison.py",
         "proof_log": "comparison-source-proof.log",
-        "proof_sha256": "07afe31e6cef39e20d0f9da0924a5f0be63478ef7a18bc85e1027edfde95adc9"
+        "proof_sha256": "4b607cd83cd5c4f41018f2c0ca0b6ee08eb52f5ab0c63b9c8d7e0b869516b938"
+      }
+    },
+    {
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison_2",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_3",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_4"
+      ],
+      "deliberate_differences": [
+        "initial approaching traffic position: ahead versus behind at first frame"
+      ],
+      "fixed_conditions": [
+        "frozen cell and motor_vehicle_driver actor",
+        "same sourced initial status and curb permission",
+        "same OpenDRIVE, ego controller, capture timing and four cameras"
+      ],
+      "source_audit": {
+        "script": "audit_comparison.py",
+        "proof_log": "comparison-source-proof.log",
+        "proof_sha256": "4b607cd83cd5c4f41018f2c0ca0b6ee08eb52f5ab0c63b9c8d7e0b869516b938"
+      }
+    },
+    {
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison_3",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_5",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_6"
+      ],
+      "deliberate_differences": [
+        "initial approaching traffic position: ahead versus behind at first frame"
+      ],
+      "fixed_conditions": [
+        "frozen cell and motor_vehicle_driver actor",
+        "same sourced initial status and curb permission",
+        "same OpenDRIVE, ego controller, capture timing and four cameras"
+      ],
+      "source_audit": {
+        "script": "audit_comparison.py",
+        "proof_log": "comparison-source-proof.log",
+        "proof_sha256": "4b607cd83cd5c4f41018f2c0ca0b6ee08eb52f5ab0c63b9c8d7e0b869516b938"
+      }
+    },
+    {
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison_4",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_7",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_8"
+      ],
+      "deliberate_differences": [
+        "initial approaching traffic position: ahead versus behind at first frame"
+      ],
+      "fixed_conditions": [
+        "frozen cell and motor_vehicle_driver actor",
+        "same sourced initial status and curb permission",
+        "same OpenDRIVE, ego controller, capture timing and four cameras"
+      ],
+      "source_audit": {
+        "script": "audit_comparison.py",
+        "proof_log": "comparison-source-proof.log",
+        "proof_sha256": "4b607cd83cd5c4f41018f2c0ca0b6ee08eb52f5ab0c63b9c8d7e0b869516b938"
+      }
+    },
+    {
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison_5",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_9",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_10"
+      ],
+      "deliberate_differences": [
+        "initial approaching traffic position: ahead versus behind at first frame"
+      ],
+      "fixed_conditions": [
+        "frozen cell and motor_vehicle_driver actor",
+        "same sourced initial status and curb permission",
+        "same OpenDRIVE, ego controller, capture timing and four cameras"
+      ],
+      "source_audit": {
+        "script": "audit_comparison.py",
+        "proof_log": "comparison-source-proof.log",
+        "proof_sha256": "4b607cd83cd5c4f41018f2c0ca0b6ee08eb52f5ab0c63b9c8d7e0b869516b938"
+      }
+    },
+    {
+      "comparison_id": "training__C227853__NRS-484B-410__motor_vehicle_driver__comparison_6",
+      "case_ids": [
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_11",
+        "training__C227853__NRS-484B-410__motor_vehicle_driver__controlled_12"
+      ],
+      "deliberate_differences": [
+        "initial approaching traffic position: ahead versus behind at first frame"
+      ],
+      "fixed_conditions": [
+        "frozen cell and motor_vehicle_driver actor",
+        "same sourced initial status and curb permission",
+        "same OpenDRIVE, ego controller, capture timing and four cameras"
+      ],
+      "source_audit": {
+        "script": "audit_comparison.py",
+        "proof_log": "comparison-source-proof.log",
+        "proof_sha256": "4b607cd83cd5c4f41018f2c0ca0b6ee08eb52f5ab0c63b9c8d7e0b869516b938"
       }
     }
   ],
@@ -206,8 +570,8 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Stopped/standing highway starts, highway entry, and the no-parking exception remain CPU branch construction work.",
-    "Independent actual Nevada highway dedication/public-use, parking restriction and purpose evidence are not supplied in frozen inputs; Native runner requires a cited source context at launch.",
+    "Highway entry needs a compatible off-highway start and public-highway boundary crossing; frozen depart_parked/curb identity requires binding review.",
+    "Independent actual Nevada highway dedication/public-use, curb restriction and initial-purpose sources are absent from frozen inputs.",
     "Physical curb, traffic trajectories, camera pixels and safety judgment remain unverified."
   ],
   "unverified_physical_assumptions": [
@@ -216,7 +580,7 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "Worker-owned CPU work remains: source-grounded movement/exception branches, selected delivery proof chains, saved processing, fallbacks, audits and exact strict gate."
+    "CPU positive/negative compatibility, recorded-only and canonical semantic stages are still in progress for twelve selected cases."
   ],
   "source_context_review": "Starting a stopped highway vehicle and entering a highway are alternative movements. Safety is a judgment standard, so preserve conflict trajectories without claiming a legal cutoff.",
   "full_law_review": {
@@ -227,12 +591,12 @@
     ],
     "exception": "stopping, standing or parking where no parking is permitted",
     "ordering": "unless and until: available safety facts must precede start; do not infer them from eventual outcome",
-    "coverage_gap": "Only parked-highway-start clear/conflict primary drafts exist; stopped/standing, highway-entry and no-parking exception branches remain. Safety is a judgment, not a numeric gap, TTC or braking cutoff."
+    "coverage_gap": "Twelve stopped/standing/parked and no-parking-exception source-shaped cases are selected; highway-entry boundary construction remains pending. Legal safety has no numeric cutoff."
   },
   "source_bound_cpu_diagnostic": {
     "module": "departure_saved_measure.py",
-    "proof": "departure-saved-proof.log",
-    "proof_sha256": "54c1404c9c2857ce20d6fa3a56f3ab16967e10345b4ea0403c0331dd644776d0",
+    "proof": "departure-saved-current-proof.log",
+    "proof_sha256": "43f1e486030204f5d112907a7fbfb24dea4e822cdd4bf0ab4b36fb94b43982bc",
     "test_scope": "three 600-frame/20-Hz synthetic source-shaped positives, ten source/frame negatives, original FrameMap/OpenDRIVE join",
     "legal_result": null
   },
@@ -309,5 +673,10 @@
         "departure-context.json"
       ]
     }
+  },
+  "additional_binding_review": {
+    "original_cell_incompatibility": "The frozen C227853 road/depart_parked/curb cell initializes the actor on a highway curbside shoulder. The separate statutory entry movement starts outside a highway and crosses its legal boundary. Moving the start off-highway would cease to be a depart_parked/curb scene; treating the shoulder-to-lane merge as entering the highway would misstate the source fact.",
+    "required_source": "Independently cited Nevada public-highway dedication and boundary record, off-highway approach status, and entry crossing in original frames.",
+    "status": "lead_review_requested"
   }
 }

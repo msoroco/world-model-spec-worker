@@ -14,7 +14,11 @@ CASES=(('controlled_1',False,'parked_no_loading',True),
        ('controlled_5',False,'standing_passenger_exchange',True),
        ('controlled_6',True,'standing_passenger_exchange',True),
        ('controlled_7',False,'parked_no_loading',False),
-       ('controlled_8',True,'parked_no_loading',False))
+       ('controlled_8',True,'parked_no_loading',False),
+       ('controlled_9',False,'stopped_temporary',False),
+       ('controlled_10',True,'stopped_temporary',False),
+       ('controlled_11',False,'standing_passenger_exchange',False),
+       ('controlled_12',True,'standing_passenger_exchange',False))
 
 
 def sha(path):

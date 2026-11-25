@@ -31,7 +31,7 @@ def measure(attempt):
         if not path.is_file():
             raise ValueError('Missing required source: ' + path.name)
     survey = json.loads(survey_path.read_text())
-    if survey.get('source_kind') != 'original_native' or survey.get('stop_line_present') is not False or survey.get('near_side_crosswalk_present') is not False:
+    if survey.get('source_kind') not in ('original_native', 'synthetic_original_shape') or survey.get('stop_line_present') is not False or survey.get('near_side_crosswalk_present') is not False:
         raise ValueError('Original stop-line and crosswalk absence not established')
     if survey.get('sidewalk_derived_crosswalk_reviewed') is not True:
         raise ValueError('Sidewalk-derived crosswalk review missing')
@@ -76,6 +76,14 @@ def measure(attempt):
             raise ValueError('Original four-camera join differs')
         if row.get('signal_state') != 'inoperative_dark' or row.get('signal_id') != survey.get('signal_id'):
             raise ValueError('Governing signal not inoperative throughout sampled entry context')
+        if row.get('source_kind') == 'original_native':
+            heads = row.get('signal_readback')
+            if not isinstance(heads, dict) or set(heads) != {'701', '702'} or any(
+                    head.get('state') != 'Off' or not head.get('light_box_count') or
+                    head.get('uncovered_pixels_reviewed') is not False or
+                    head.get('official_authority_inferred') is not False
+                    for head in heads.values()):
+                raise ValueError('Original Native governing head readback incomplete')
         speed = row.get('ego_speed_mps')
         center = row.get('ego_center_x_m')
         front = row.get('ego_front_x_m')
@@ -107,6 +115,8 @@ def measure(attempt):
             raise ValueError('Missing required source: ' + name + '.mkv')
     before_entry_stops = [frame for frame in stop_frames if frame < entry_frame]
     return {'format': 'c154537-original-stop-reference-measurement-v1',
+            'source_kind': survey['source_kind'],
+            'diagnostic_fixture': survey['source_kind'] == 'synthetic_original_shape',
             'frame_count': FRAMES, 'entry_frame': entry_frame,
             'complete_cessation_sample_before_entry': bool(before_entry_stops),
             'first_cessation_frame': min(before_entry_stops) if before_entry_stops else None,

@@ -12,10 +12,10 @@ FILES=('road.xodr','video_frames.jsonl','departure-context.json',
        'departure-trace.jsonl')
 
 
-def reject(folder,mutation,expected):
-    clear=folder/'controlled_1'
-    close=folder/'controlled_2'
-    for suffix in ('controlled_1','controlled_2'):
+def reject(folder,pair,mutation,expected):
+    clear=folder/pair[0]
+    close=folder/pair[1]
+    for suffix in pair:
         target=folder/suffix
         target.mkdir()
         for name in FILES:
@@ -31,8 +31,9 @@ def reject(folder,mutation,expected):
 
 
 def main():
-    positive=audit(HERE/'selected-source/controlled_1',
-                   HERE/'selected-source/controlled_2')
+    pairs=[('controlled_'+str(i),'controlled_'+str(i+1)) for i in (1,3,5,7,9,11)]
+    positive={a+'__'+b:audit(HERE/'selected-source'/a,HERE/'selected-source'/b)
+              for a,b in pairs}
     checks={
         'changed_map':(lambda a,b:(b/'road.xodr').write_text('changed\n'),'Fixed map'),
         'changed_context':(lambda a,b:(b/'departure-context.json').write_text(
@@ -46,9 +47,10 @@ def main():
             (b/'departure-trace.jsonl').read_text().replace('"traffic_xy_m":[-50.0',
                 '"traffic_xy_m":[30.0',1)),'Requested initial traffic position')}
     temp_root=Path(os.environ.get('TMPDIR','/tmp'))
-    for name,(mutation,expected) in checks.items():
-        with tempfile.TemporaryDirectory(prefix='c227853-compare-',dir=temp_root) as temp:
-            reject(Path(temp),mutation,expected)
+    for pair in pairs:
+        for name,(mutation,expected) in checks.items():
+            with tempfile.TemporaryDirectory(prefix='c227853-compare-',dir=temp_root) as temp:
+                reject(Path(temp),pair,mutation,expected)
     print(json.dumps({'passed':True,'positive':positive,
                       'negative_mutations':list(checks)},sort_keys=True))
 

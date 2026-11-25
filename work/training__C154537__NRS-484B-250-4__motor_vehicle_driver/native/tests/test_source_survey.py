@@ -7,7 +7,7 @@ import unittest
 
 NATIVE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(NATIVE))
-from runner import authored_survey, view_sample
+from runner import authored_survey, signal_readback, view_sample
 
 
 class Vec:
@@ -96,6 +96,36 @@ class SurveyTest(unittest.TestCase):
         self.assertFalse(blocked['approaching_traffic_visible'])
         self.assertEqual(blocked['rays'][0]['blockers'][0]['label'], 'building')
         json.dumps(blocked)
+
+    def test_native_signal_lane_and_dark_readback(self):
+        class Light:
+            id = 20
+
+            def __init__(self, road, state='Off'):
+                self.road, self.state = road, state
+
+            def get_affected_lane_waypoints(self):
+                return [type('Waypoint', (), {'road_id': self.road, 'lane_id': -1})()]
+
+            def get_light_boxes(self):
+                return [object()]
+
+            def get_state(self):
+                return self.state
+
+        class SignalCarla:
+            class TrafficLightState:
+                Off = 'Off'
+
+        heads = {'701': Light(250), '702': Light(253)}
+        observed = signal_readback(heads, SignalCarla)
+        self.assertEqual(observed['701']['affected_lanes'], [[250, -1]])
+        heads['701'] = Light(252)
+        with self.assertRaisesRegex(ValueError, 'governing signal/lane/state'):
+            signal_readback(heads, SignalCarla)
+        heads['701'] = Light(250, 'Green')
+        with self.assertRaisesRegex(ValueError, 'governing signal/lane/state'):
+            signal_readback(heads, SignalCarla)
 
 
 if __name__ == '__main__':

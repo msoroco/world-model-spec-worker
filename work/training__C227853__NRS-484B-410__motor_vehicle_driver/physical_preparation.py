@@ -112,7 +112,7 @@ def build():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--build', action='store_true')
-    parser.add_argument('--case', choices=tuple('controlled_'+str(i) for i in range(1,9)))
+    parser.add_argument('--case', choices=tuple('controlled_'+str(i) for i in range(1,13)))
     parser.add_argument('--kind', choices=(*KINDS, 'lifecycle'))
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
