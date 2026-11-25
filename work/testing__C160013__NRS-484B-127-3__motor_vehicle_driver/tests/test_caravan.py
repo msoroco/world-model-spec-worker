@@ -17,8 +17,8 @@ class Tests(unittest.TestCase):
   (root/'road_context.json').write_text(json.dumps(ctx))
   rows=[]
   for i in range(2):
-   members=[{'actor_id':j+1,'body_vertices_xy_m':body(10+j*spacing+i)} for j in range(3)]
-   rows.append({'frame':100+i,'time_s':1+i*.05,'road_id':7,'caravan_members':members,'entering_vehicle':{'actor_id':9,'body_vertices_xy_m':body(10+spacing/2+i)}})
+   members=[{'actor_id':j+1,'blueprint_id':'vehicle.tesla.model3','body_vertices_xy_m':body(10+j*spacing+i)} for j in range(3)]
+   rows.append({'frame':100+i,'time_s':1+i*.05,'road_id':7,'caravan_members':members,'entering_vehicle':{'actor_id':9,'blueprint_id':'vehicle.tesla.model3','body_vertices_xy_m':body(10+spacing/2+i)}})
   frames=[{'video_frame':i,'carla_frame':r['frame'],'time_s':r['time_s']} for i,r in enumerate(rows)]
   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows));(root/'video_frames.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in frames))
  def test_gap_changes_and_no_legal_cutoff(self):
@@ -184,7 +184,7 @@ class CaptureTests(unittest.TestCase):
   capture=load('caravan_capture')
   class Actor:
    def __init__(self,actor_id,x,y):
-    self.id=actor_id;self.x=x;self.y=y;self.controls=[]
+    self.id=actor_id;self.type_id='vehicle.tesla.model3';self.x=x;self.y=y;self.controls=[]
     self.bounding_box=NS(get_world_vertices=lambda tr:[NS(x=x,y=y) for x,y in
      [[self.x-1,self.y-1],[self.x+1,self.y-1],[self.x+1,self.y+1],[self.x-1,self.y+1]]])
    def get_transform(self):return NS(location=NS(x=self.x,y=self.y),rotation=NS(yaw=0))
@@ -272,3 +272,119 @@ class CameraLifecycleTests(unittest.TestCase):
   self.assertEqual(len(stopped),4)
   self.assertEqual(len(destroyed),4)
   self.assertEqual(len([call for call in calls if call[0]=='sensor_tick']),4)
+
+class SavedSourceTests(unittest.TestCase):
+ def test_selected_outcomes_from_original_frames(self):
+  saved=load('caravan_saved')
+  fixture=Tests()
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);fixture.fixture(root,10)
+   rows=[json.loads(s) for s in (root/'caravan_history.jsonl').read_text().splitlines()]
+   rows[0]['entering_vehicle']['body_vertices_xy_m']=body(3)
+   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   wide=saved.finalize(root,saved.WIDE,minimum_frames=2)
+   self.assertTrue(wide['wide_gap_entry_observed'])
+   self.assertFalse(wide['physical_acceptance_claimed'])
+   with self.assertRaisesRegex(ValueError,'Incomplete original'):
+    saved.finalize(root,saved.WIDE)
+   with self.assertRaisesRegex(ValueError,'occupied caravan gap'):
+    saved.finalize(root,saved.NARROW,minimum_frames=2)
+   fixture.fixture(root,3)
+   rows=[json.loads(s) for s in (root/'caravan_history.jsonl').read_text().splitlines()]
+   for row in rows:
+    row['entering_vehicle']['body_vertices_xy_m']=offset(row['entering_vehicle']['body_vertices_xy_m'],-3)
+   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   narrow=saved.finalize(root,saved.NARROW,minimum_frames=2)
+   self.assertTrue(narrow['narrow_gap_occupancy_absent'])
+   self.assertEqual(narrow['legal_conclusion'],'unresolved')
+
+class DispatchTests(unittest.TestCase):
+ def test_runtime_capture_dispatch_resolves_materialized_case_and_review_bundle(self):
+  from unittest.mock import patch
+  native=load('caravan_native')
+  with tempfile.TemporaryDirectory() as tmp:
+   output=Path(tmp)
+   selected=native.ASSIGNMENT+'__entrant_can_occupy_gap'
+   (output/'config.json').write_text(json.dumps({'selected_case_id':selected})+'\n')
+   seen=[]
+   argv=['caravan_native.py','--output-dir',str(output),'--host','127.0.0.1','--port','2000']
+   with patch.object(sys,'argv',argv),patch.dict('os.environ',{'C160013_REVIEW_BUNDLE':'/reviewed/site'}),patch.object(native,'capture',lambda args:seen.append(args)):
+    native.main()
+   self.assertEqual(seen[0].case_id,selected)
+   self.assertEqual(seen[0].review_bundle,'/reviewed/site')
+   with patch.object(sys,'argv',argv),patch.dict('os.environ',{'C160013_REVIEW_BUNDLE':''}):
+    with self.assertRaisesRegex(ValueError,'C160013_REVIEW_BUNDLE'):
+     native.main()
+
+class ReviewIntegrityTests(unittest.TestCase):
+ def test_diagnostic_map_cannot_be_declared_reviewed(self):
+  capture=load('caravan_capture')
+  packet={'site_review_status':'reviewed_native_site','reviewer':'map operator',
+          'district_review_basis':'parcel review',
+          'caravan_review_basis':'three participant route records',
+          'highway_review_basis':'road topology review',
+          'camera_review_basis':'four camera review',
+          'native_map_id':'FixtureMap'}
+  with tempfile.TemporaryDirectory() as tmp:
+   with self.assertRaisesRegex(ValueError,'Original Native map identity'):
+    capture.validate_site(packet,tmp,'FixtureMap')
+
+class CandidateControlTests(unittest.TestCase):
+ def test_common_fallback_speed_cap_changes_native_control(self):
+  control=load('caravan_control')
+  primary=control.command([0,0],0,0,[20,0],target_speed_mps=4)
+  fallback=control.command([0,0],0,0,[20,0],target_speed_mps=2.5)
+  self.assertGreater(primary['throttle'],fallback['throttle'])
+  self.assertGreater(fallback['throttle'],0)
+
+class FinalizerTests(unittest.TestCase):
+ def test_saved_finalizer_writes_original_channels_and_result(self):
+  import types
+  from unittest.mock import patch
+  module=load('finalizer')
+  saved=load('caravan_saved')
+  fixture=Tests()
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);fixture.fixture(root,10)
+   rows=[json.loads(s) for s in (root/'caravan_history.jsonl').read_text().splitlines()]
+   rows[0]['entering_vehicle']['body_vertices_xy_m']=body(3)
+   (root/'caravan_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   (root/'config.json').write_text(json.dumps({'selected_case_id':saved.WIDE,
+       'recording_description':{'channels':[{'name':'entrant_gap_occupancy'}]}})+'\n')
+   (root/'site_packet.json').write_text('{}\n')
+   (root/'trace.jsonl').write_text('{}\n')
+   (root/'capture').mkdir();(root/'capture/evidence.jsonl').write_text('{}\n')
+   for name in module.CAMERAS:(root/name).write_text('diagnostic camera placeholder\n')
+   native=types.ModuleType('worker_exchange.native_output')
+   native.physical_result=lambda attempt,result:dict(result,physical_checks={'setup':{'status':'unverified'}})
+   native.write_result=lambda attempt,result:(Path(attempt)/'result.json').write_text(json.dumps(result)+'\n')
+   original=module.observe
+   with patch.dict(sys.modules,{'worker_exchange.native_output':native}),patch.object(module,'observe',lambda r,c:original(r,c,minimum_frames=2)):
+    analysis=module.finalize(root,root/'analysis-report.json')
+   self.assertFalse(analysis['legal_verdict_asserted'])
+   self.assertTrue(analysis['measurements']['caravan_entry']['value']['entry_observed'])
+   self.assertTrue((root/'channels/entrant_gap_occupancy.jsonl').is_file())
+   self.assertEqual(len((root/'channels/entrant_gap_occupancy.jsonl').read_text().splitlines()),2)
+   self.assertEqual(json.loads((root/'result.json').read_text())['case_id'],saved.WIDE)
+
+class CrossRecordingIdentityTests(unittest.TestCase):
+ def test_same_vehicle_roles_allow_distinct_native_actor_numbers(self):
+  compare=load('caravan_comparison');fixture=Tests()
+  with tempfile.TemporaryDirectory() as tmp:
+   wide=Path(tmp)/'wide';narrow=Path(tmp)/'narrow';wide.mkdir();narrow.mkdir()
+   fixture.fixture(wide,10);fixture.fixture(narrow,3)
+   rows=[json.loads(s) for s in (wide/'caravan_history.jsonl').read_text().splitlines()]
+   rows[0]['entering_vehicle']['body_vertices_xy_m']=body(3)
+   (wide/'caravan_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   rows=[json.loads(s) for s in (narrow/'caravan_history.jsonl').read_text().splitlines()]
+   for row in rows:
+    for member in row['caravan_members']:member['actor_id']+=100
+    row['entering_vehicle']['actor_id']+=100
+    row['entering_vehicle']['body_vertices_xy_m']=offset(row['entering_vehicle']['body_vertices_xy_m'],-3)
+   (narrow/'caravan_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   self.assertTrue(compare.audit(wide,narrow,minimum_frames=2)['wide_entry_observed'])
+   rows[0]['caravan_members'][0]['blueprint_id']='vehicle.other.model'
+   rows[1]['caravan_members'][0]['blueprint_id']='vehicle.other.model'
+   (narrow/'caravan_history.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+   with self.assertRaisesRegex(ValueError,'changed original vehicle roles'):
+    compare.audit(wide,narrow,minimum_frames=2)

@@ -24,8 +24,11 @@ def validate_site(packet, root, native_map_id):
     for key in ("reviewer", "district_review_basis", "caravan_review_basis",
                 "highway_review_basis", "camera_review_basis"):
         value = packet.get(key)
-        if not isinstance(value, str) or not value.strip() or "synthetic" in value.lower():
+        if (not isinstance(value, str) or not value.strip() or
+                any(word in value.lower() for word in ("synthetic", "diagnostic", "fixture"))):
             raise ValueError("Original Native site review required: " + key)
+    if packet.get("native_map_id") in (None, "", "FixtureMap", "TownX"):
+        raise ValueError("Original Native map identity required")
     if packet.get("native_map_id") != native_map_id:
         raise ValueError("Native map differs from reviewed caravan site")
     if packet.get("outside_business_district") is not True or packet.get("caravan_or_motorcade") is not True:
@@ -80,7 +83,11 @@ def state(actor):
     speed = math.hypot(float(velocity.x), float(velocity.y))
     if not math.isfinite(yaw) or not math.isfinite(speed):
         raise ValueError("Nonfinite original Native vehicle state")
-    return {"actor_id": int(actor.id), "body_vertices_xy_m": points,
+    blueprint_id = getattr(actor, "type_id", None)
+    if not isinstance(blueprint_id, str) or not blueprint_id:
+        raise ValueError("Original Native vehicle type identity required")
+    return {"actor_id": int(actor.id), "blueprint_id": blueprint_id,
+            "body_vertices_xy_m": points,
             "position_xy": [float(transform.location.x), float(transform.location.y)],
             "yaw_deg": yaw, "speed_mps": speed}
 
@@ -154,10 +161,10 @@ def capture_frames(world, carla, caravan, entrant, sensors, encoders, mapping,
         mapping.append(frame, time_s)
         history.write(json.dumps({"frame": frame, "time_s": time_s,
                                   "road_id": packet["road_id"],
-                                  "caravan_members": [{key: member[key] for key in ("actor_id", "body_vertices_xy_m")}
+                                  "caravan_members": [{key: member[key] for key in ("actor_id", "blueprint_id", "body_vertices_xy_m")}
                                                       for member in [state(actor) for actor in caravan]],
                                   "entering_vehicle": {key: value for key, value in state(entrant).items()
-                                                       if key in ("actor_id", "body_vertices_xy_m")}},
+                                                       if key in ("actor_id", "blueprint_id", "body_vertices_xy_m")}},
                                  separators=(",", ":")) + "\n")
         count = index + 1
     return {"frames": count, "first_frame": last_frame - count + 1,

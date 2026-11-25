@@ -43,7 +43,7 @@ def analyze(root:Path)->dict:
  fx,fy=fx/norm,fy/norm
  rows,frames=_rows(root/'caravan_history.jsonl'),_rows(root/'video_frames.jsonl')
  if len(rows)<2 or len(rows)!=len(frames):raise ValueError('Incomplete caravan history')
- prev=(-1,-math.inf);samples=[];member_centers={};member_ids=None;entrant_id=None;forward_motion={}
+ prev=(-1,-math.inf);samples=[];member_centers={};member_ids=None;entrant_id=None;forward_motion={};member_types=None;entrant_type=None
  for i,(row,frame) in enumerate(zip(rows,frames)):
   fid,t=row.get('frame'),_finite(row.get('time_s'),'time')
   if type(fid) is not int or fid<=prev[0] or t<=prev[1]:raise ValueError('Nonmonotone original history')
@@ -57,11 +57,18 @@ def analyze(root:Path)->dict:
   if any(type(actor_id) is not int for actor_id in ids):raise ValueError('Original caravan actor IDs required')
   if member_ids is None:member_ids=ids
   elif ids!=member_ids:raise ValueError('Caravan membership changed across original frames')
+  types={m['actor_id']:m.get('blueprint_id') for m in members}
+  if any(not isinstance(kind,str) or not kind for kind in types.values()):raise ValueError('Original caravan vehicle types required')
+  if member_types is None:member_types=types
+  elif types!=member_types:raise ValueError('Caravan vehicle types changed across original frames')
   entrant=row.get('entering_vehicle')
   if not isinstance(entrant,dict) or type(entrant.get('actor_id')) is not int or entrant['actor_id'] in {m.get('actor_id') for m in members}:
    raise ValueError('Distinct entering vehicle required')
   if entrant_id is None:entrant_id=entrant['actor_id']
   elif entrant['actor_id']!=entrant_id:raise ValueError('Entering vehicle identity changed across original frames')
+  if not isinstance(entrant.get('blueprint_id'),str) or not entrant['blueprint_id']:raise ValueError('Original entering vehicle type required')
+  if entrant_type is None:entrant_type=entrant['blueprint_id']
+  elif entrant_type!=entrant['blueprint_id']:raise ValueError('Entering vehicle type changed across original frames')
   bodies=[_body(m) for m in members];other=_body(entrant)
   if not all(road.covers(b) for b in bodies+[other]):raise ValueError('Vehicle outside sourced highway')
   ordered=sorted(zip(members,bodies),key=lambda mb:mb[1].centroid.x*fx+mb[1].centroid.y*fy)
@@ -96,4 +103,4 @@ def analyze(root:Path)->dict:
  for pair in sorted(occupied_pairs):
   states=[next((g['entering_body_wholly_between_member_bodies'] for g in sample['gaps'] if (g['rear_actor_id'],g['front_actor_id'])==pair),False) for sample in samples]
   transitions.append({'rear_actor_id':pair[0],'front_actor_id':pair[1],'occupied_on_original_frame':True,'observed_entry_transition':any(not a and b for a,b in zip(states,states[1:]))})
- return {'format':'worker-caravan-spacing-observations','sources':hashes,'context_source_hashes':context_hashes,'samples':samples,'gap_occupancy':transitions,'caravan_forward_motion_observed':all(forward_motion.get(actor_id,False) for actor_id in member_ids),'sufficient_space_without_danger_judgment':'unresolved; no statutory numeric gap','legal_conclusion':'unresolved'}
+ return {'format':'worker-caravan-spacing-observations','sources':hashes,'context_source_hashes':context_hashes,'samples':samples,'gap_occupancy':transitions,'caravan_forward_motion_observed':all(forward_motion.get(actor_id,False) for actor_id in member_ids),'member_blueprint_ids':sorted(member_types.values()),'entrant_blueprint_id':entrant_type,'sufficient_space_without_danger_judgment':'unresolved; no statutory numeric gap','legal_conclusion':'unresolved'}

@@ -6,6 +6,7 @@ local saved processing must determine whether the planned motion actually occurr
 import argparse
 import json
 import math
+import os
 from contextlib import ExitStack
 from pathlib import Path
 
@@ -76,6 +77,16 @@ def capture(args):
         raise ValueError("Exact selected caravan case required")
     output = Path(args.output_dir).resolve()
     packet = _install_review(output, args.review_bundle)
+    config = json.loads((output / "config.json").read_text(encoding="utf-8"))
+    if config.get("selected_case_id") != args.case_id:
+        raise ValueError("Materialized construction selected another caravan case")
+    if not isinstance(config.get("required_atoms"), list):
+        raise ValueError("Materialized required atom inventory missing")
+    cap = config.get("target_speed_cap_mps")
+    if type(cap) not in (int, float) or not math.isfinite(cap) or not 0 < cap <= 8:
+        raise ValueError("Finite bounded Native target speed cap required")
+    packet["target_speed_mps"] = min(packet["target_speed_mps"], float(cap))
+    packet["required_atoms"] = config["required_atoms"]
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -119,6 +130,7 @@ def capture(args):
                             "caravan_or_motorcade", "roadway_polygon_xy_m", "road_forward_xy",
                             "business_district_source", "caravan_membership_source",
                             "route_source", "lane_source")}
+                context["control_target_speed_mps"] = packet["target_speed_mps"]
                 (output / "road_context.json").write_text(json.dumps(context, indent=2) + "\n", encoding="utf-8")
                 with source_cameras(world, entrant, poses) as sensors, ExitStack() as stack:
                     for name, (width, height) in PROFILE.items():
@@ -161,8 +173,15 @@ def main():
         print(json.dumps({"assignment_id": ASSIGNMENT, "case_ids": list(CASES),
                           "cpu_check_passed": True, "carla_started": False}))
         return
-    if not args.output_dir or not args.review_bundle:
-        raise ValueError("Materialized output and original reviewed Native bundle required")
+    if not args.output_dir:
+        raise ValueError("Materialized output required")
+    if not args.case_id:
+        config = json.loads((Path(args.output_dir) / "config.json").read_text(encoding="utf-8"))
+        args.case_id = config.get("selected_case_id")
+    if not args.review_bundle:
+        args.review_bundle = os.environ.get("C160013_REVIEW_BUNDLE")
+    if not args.review_bundle:
+        raise ValueError("C160013_REVIEW_BUNDLE with original reviewed Native site required")
     capture(args)
 
 

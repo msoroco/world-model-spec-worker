@@ -6,12 +6,6 @@ from pathlib import Path
 from caravan_spacing import analyze
 
 
-def _ids(root):
-    first = json.loads((Path(root) / "caravan_history.jsonl").read_text().splitlines()[0])
-    return ({member["actor_id"] for member in first["caravan_members"]},
-            first["entering_vehicle"]["actor_id"])
-
-
 def audit(wide_root, narrow_root, *, minimum_frames=900):
     wide_root, narrow_root = Path(wide_root), Path(narrow_root)
     wide, narrow = analyze(wide_root), analyze(narrow_root)
@@ -24,8 +18,9 @@ def audit(wide_root, narrow_root, *, minimum_frames=900):
         raise ValueError("Selected cases changed fixed highway or caravan context")
     if wide["context_source_hashes"] != narrow["context_source_hashes"]:
         raise ValueError("Selected cases changed original context sources")
-    if _ids(wide_root) != _ids(narrow_root):
-        raise ValueError("Selected cases changed original actors")
+    if ((wide["member_blueprint_ids"], wide["entrant_blueprint_id"]) !=
+            (narrow["member_blueprint_ids"], narrow["entrant_blueprint_id"])):
+        raise ValueError("Selected cases changed original vehicle roles")
     if any(gap["entering_body_touches_member"] for result in (wide, narrow)
            for sample in result["samples"] for gap in sample["gaps"]):
         raise ValueError("Selected caravan comparison contains body contact")

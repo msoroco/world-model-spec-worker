@@ -37,7 +37,7 @@ def _write(root, spacing, *, narrow):
             (root / "video_frames.jsonl").open("w") as frames:
         for index in range(900):
             move = .01 * index
-            members = [{"actor_id": member + 1,
+            members = [{"actor_id": member + 1, "blueprint_id": "vehicle.tesla.model3",
                         "body_vertices_xy_m": _body(10 + member * spacing + move, 0)}
                        for member in range(3)]
             if narrow:
@@ -49,7 +49,7 @@ def _write(root, spacing, *, narrow):
             time_s = round(1 + index / 20, 9)
             history.write(json.dumps({"frame": frame, "time_s": time_s, "road_id": 7,
                                       "caravan_members": members,
-                                      "entering_vehicle": {"actor_id": 9,
+                                      "entering_vehicle": {"actor_id": 9, "blueprint_id": "vehicle.tesla.model3",
                                                            "body_vertices_xy_m": _body(entrant_x, entrant_y)}}) + "\n")
             frames.write(json.dumps({"video_frame": index, "carla_frame": frame,
                                      "time_s": time_s}) + "\n")
