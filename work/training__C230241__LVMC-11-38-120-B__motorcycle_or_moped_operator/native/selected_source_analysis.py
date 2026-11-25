@@ -25,6 +25,11 @@ SOURCES = (
     'raw.mkv',
 )
 
+REVIEW_EVIDENCE = (
+    'headlamp_pixel_source', 'tail_lamp_pixel_source',
+    'front_range_source', 'rear_range_source', 'discernibility_source',
+)
+
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -37,6 +42,24 @@ def required(root, name):
     return path
 
 
+def validate_original_review_provenance(context, rows):
+    """Require frame-specific independent sources before accepting original mode."""
+    if context.get('source_kind') != 'calibrated_original_review' or context.get('diagnostic_only') is not False:
+        raise ValueError('Original review provenance mode differs')
+    for key in ('reviewer', 'range_calibration_source',
+                'visibility_review_source', 'camera_evidence'):
+        if not context.get(key):
+            raise ValueError('Original review missing provenance: ' + key)
+    if len(rows) != 600:
+        raise ValueError('Original review requires 600 frame-specific rows')
+    for index, row in enumerate(rows):
+        if row.get('source_kind') != 'calibrated_original_review' or row.get('video_frame') != index:
+            raise ValueError('Original review frame identity differs at ' + str(index))
+        for key in REVIEW_EVIDENCE:
+            if not row.get(key):
+                raise ValueError('Original review lacks frame source: ' + key)
+
+
 def selected_lighting_measurement(attempt, derived):
     """Return source-bound observations; a requested lamp is not an observation."""
     attempt, derived = Path(attempt), Path(derived)
@@ -44,6 +67,11 @@ def selected_lighting_measurement(attempt, derived):
         required(attempt, name)
     before = {name: sha(attempt / name) for name in SOURCES}
     binding = bind(attempt, 600)
+    if not binding['diagnostic_only']:
+        context = json.loads((attempt / 'lighting-review-context.json').read_text())
+        rows = [json.loads(line) for line in
+                (attempt / 'lighting-review.jsonl').read_text().splitlines()]
+        validate_original_review_provenance(context, rows)
     if derived.exists():
         raise ValueError('Choose a fresh derived output directory')
     derived.mkdir(parents=True)
@@ -61,15 +89,15 @@ def selected_lighting_measurement(attempt, derived):
             or measured['frame_map_sha256'] != before['video_frames.jsonl']
             or {name: sha(attempt / name) for name in SOURCES} != before):
         raise ValueError('Saved lighting sources changed during analysis')
-    if binding['diagnostic_only'] is not True:
-        raise ValueError('Original review requires a separate independent delivery audit')
     return {
         'format': 'c230241-selected-source-measurement-v1',
-        'diagnostic_only': True,
+        'diagnostic_only': binding['diagnostic_only'],
         'source_hashes': before,
         'joined_sha256': sha(joined_path),
         'frames': measured['frames'],
         'counts': measured['measurements'],
+        'headlamp_count': measured['headlamp_count'],
+        'tail_lamp_rear_mounted': measured['tail_lamp_rear_mounted'],
         'statutory_front_ft': measured['statutory_front_ft'],
         'statutory_rear_ft': measured['statutory_rear_ft'],
         'sunset_offset_s': measured['sunset_offset_s'],

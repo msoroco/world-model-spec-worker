@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C230241__LVMC-11-38-120-B__motorcycle_or_moped_operator__reference",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "equipment_observations",
+      "method": "equipment_observations",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "lighting-review.jsonl",
+        "lighting-measure-context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "burning_observations",
+      "method": "burning_observations",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-lighting-frames.jsonl",
+        "lighting-review.jsonl",
+        "lighting-measure-context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "scope_observations",
+      "method": "scope_observations",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "lighting-review-context.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lighting-measure-context.json"
+    ],
+    "error_contains": "Missing required source: lighting-measure-context.json"
+  }
+}
