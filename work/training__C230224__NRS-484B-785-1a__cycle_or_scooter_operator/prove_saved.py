@@ -11,7 +11,7 @@ from prove_scooter import fixture
 def main():
     with tempfile.TemporaryDirectory(prefix='scooter-saved-', dir=os.environ['TMPDIR']) as tmp:
         root = Path(tmp) / 'source'
-        fixture(root, 12*.44704)
+        fixture(root, 12*.44704, 'controlled_1')
         context_path = root / 'scooter_context.json'
         context = json.loads(context_path.read_text())
         context['review_kind'] = 'original_source_review'

@@ -103,6 +103,26 @@ def audit(case, attempt, processing_path, diagnostic=False, review_path=None):
     original_complete = False
     if not diagnostic:
         from worker_exchange import media
+        from worker_exchange.native_output import provenance_record
+
+        provenance = provenance_record(attempt)
+        seal_path = attempt / 'capture-seal.json'
+        require(provenance['provenance_kind'] == 'native' and
+                provenance['diagnostic_fixture'] is False and
+                seal_path.is_file() and
+                source_hashes.get('capture-seal.json') == sha(seal_path),
+                'Original Native acquisition provenance required')
+        seal = read(seal_path)
+        require(seal.get('format') == 'worker-sealed-capture' and
+                seal.get('provenance_kind') == 'native' and
+                seal.get('diagnostic_fixture') is False and
+                seal.get('frames') == 600 and
+                seal.get('restoration', {}).get('restored') is True,
+                'Native capture seal or restoration incomplete')
+        require(result.get('setup_confirmed') is True and
+                result.get('maneuver_completed') is True and
+                result.get('physical_checks', {}).get('maneuver', {}).get('status') == 'met',
+                'Original physical completion evidence incomplete')
 
         version = Path(processing.get('version', ''))
         for i, camera in enumerate(CAMERAS):

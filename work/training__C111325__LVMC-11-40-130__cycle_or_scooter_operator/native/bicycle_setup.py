@@ -31,7 +31,7 @@ def plan(condition):
     return {
         'condition': condition, 'actor_blueprint': BLUEPRINT,
         'requested_peak_speed_mps': SPEED_REQUESTS[condition],
-        'start_xyz_m': (-50.0, 0.0, 0.7), 'yaw_deg': 0.0,
+        'start_xyz_m': (-50.0, -1.75, 0.7), 'yaw_deg': 0.0,
         'rate_hz': RATE_HZ, 'frames': FRAMES, 'duration_s': 30,
         'camera_profile': 'overview1080-capability',
         'cameras': [

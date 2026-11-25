@@ -23,7 +23,8 @@ def main():
     bundle = json.loads((here / 'draft-crosswalk/controlled_2/primary/construction.json').read_text())
     config = next(json.loads(item['content']) for item in bundle['files'] if item['path'] == 'config.json')
     case = config['case_id']
-    with tempfile.TemporaryDirectory(prefix='c229397-delivery-audit-') as directory:
+    with tempfile.TemporaryDirectory(prefix='c229397-delivery-audit-',
+                                     dir=here.parents[1] / '.runtime-work') as directory:
         attempt = Path(directory) / 'attempt'
         attempt.mkdir()
         write_attempt(attempt)
@@ -71,7 +72,7 @@ def main():
         try:
             audit(case, attempt, receipt_path, diagnostic=False)
         except ValueError as exc:
-            if str(exc) != 'Original camera or source decode receipt missing: overview':
+            if str(exc) != 'Original Native acquisition provenance required':
                 raise
         else:
             raise RuntimeError('original source decode omitted but accepted')

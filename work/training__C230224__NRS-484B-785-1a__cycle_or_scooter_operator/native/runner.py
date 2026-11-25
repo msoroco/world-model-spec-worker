@@ -36,7 +36,10 @@ def survey_check(survey):
                 'travel_unit_xy', 'target_speed_mps', 'camera_world_transforms',
                 'scooter_classification_source', 'scooter_mass_source', 'scooter_motor_max_speed_source',
                 'ordinance_applicability_source', 'local_path_permission_source',
-                'device_blueprint_source'):
+                'device_blueprint_source', 'scooter_handlebars_source',
+                'scooter_electric_motor_source', 'scooter_riding_design_source',
+                'scooter_propulsion_source', 'contrary_posting_source',
+                'local_definition_applicability_source', 'assistive_device_intent_source'):
         if not survey.get(key) and survey.get(key) != 0:
             raise ValueError('Missing reviewed Native survey source: '+key)
     if survey['device_subtype'] != 'electric_scooter':
@@ -58,6 +61,8 @@ def survey_check(survey):
         raise ValueError('Invalid requested speed')
     if survey['target_speed_mps'] >= 15 * .44704:
         raise ValueError('Selected below-15-mph case needs a lower requested speed')
+    if survey['target_speed_mps'] > survey['scooter_motor_only_max_mph'] * .44704:
+        raise ValueError('Requested speed exceeds reviewed device maximum')
     if set(survey['camera_world_transforms']) != set(CAMERAS):
         raise ValueError('Four surveyed source cameras required')
     for item in survey['camera_world_transforms'].values():
@@ -156,7 +161,9 @@ def capture(survey, output, host, port):
             if proc.wait(timeout=120):
                 raise RuntimeError('Source camera encoding failed')
         (output/'path_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'review_kind': 'original_source_review',
+            'assignment_id': AID, 'case_id': CASE,
+            'requested_speed_mps': survey['target_speed_mps'],
+            'review_kind': 'original_source_review',
             'device_subtype': survey['device_subtype'], 'device_actor_id': device.id,
             'scooter_classification_source': survey['scooter_classification_source'],
             'ordinance_applicability_source': survey['ordinance_applicability_source'],

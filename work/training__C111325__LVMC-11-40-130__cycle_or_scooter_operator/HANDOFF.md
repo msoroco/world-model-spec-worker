@@ -23,3 +23,23 @@ Implement an actual bicycle Native mechanism rather than substituting a motor ve
 ## 2026-11-23 four-camera timing diagnostic
 
 `native/prove_camera_sources.py` bound each exact 600-row bicycle request to a video-frame map and four 600-frame FFV1 CPU streams using the camera names in `native/bicycle_setup.py`. All eight diagnostic streams decoded to 600 frames. The source-derived stop frames remain 337 for the 3 m/s request and 222 for the 5 m/s request, with the context and route fixed. Script SHA-256 `a5d04bfbf2427d9942f19fcd95128e51db9db02696ac7bf63e10d19f953b16b4`; returned `four-camera-cpu-proof.json` SHA-256 `ba0419b275af3f093c8ea0cafa83af5aa4d1beb9f920bf60e6227ebb66c3155a`. These 32x32 black software videos do not establish a real bicycle, rider, visible road conditions or prudence finding. Status remains partial.
+
+## 2026-11-25 readback-driven bicycle control
+
+`native/bicycle_control.py` now issues bounded `VehicleControl` throttle/brake from live bicycle position and velocity readbacks for the two exact 3 and 5 m/s engineering requests. It rejects a wrong blueprint, nonfinite source, reversed or teleported travel, lateral departure and crossing beyond the common stop position. These values guide an original capture and do not establish realized speed or legal prudence. `native/prove_bicycle_control.py` passed two condition checks and five negative checks against a fake Native actor. The proof and exact hashes are in `result.json`. The controller is still separate from a selected capture runner and original saved-source audit, so this remains partial.
+
+## 2026-11-25 independent original-speed audit
+
+`native/audit_original_speed.py` independently checks 600 original bicycle actor rows against the four-camera frame map, Native actor identity, monotonic timing, finite poses and velocities, fixed conditions, approach lane, complete stop and the measured speed/timing contrast. It leaves the statutory prudence judgment unresolved. `native/prove_original_speed_audit.py` passed two mock condition traces, the controlled comparison and five negative checks: synthetic-as-original, switched actor, broken camera join, altered fixed conditions and stop overrun. Proof and hashes are in `result.json`. The mock traces are temporary in `.runtime-work/`; no original CARLA observations or source pixels are asserted. The selected capture runner and full delivery package still need construction.
+
+## 2026-11-25 stop-sign and lane alignment
+
+`native/build_speed_road.py` rotates a source-hashed C111325 stop-sign intersection OpenDRIVE map into the speed request's x-axis. Its CPU geometry proof verifies the governed incoming road, driving lane, sign at x=0, crosswalk at x=3, 50 m bicycle approach and stop at x=-2. The bicycle center now follows lane y=-1.75 m in both 600-frame diagnostic traces, setup and independent audit. Source proof, independent audit, both current-runtime offline constructions, four-camera timing, mock Native setup and controller/audit checks were rerun after that change; hashes are in `result.json`. This map geometry remains a CPU construction proposal until original Native map readback and physical review. Selected delivery binding and public/saved/semantic/delivery proofs remain.
+
+## 2026-11-25 original route survey
+
+`native/survey.py` fails closed unless the original CARLA map readback exposes road 1, stop signal 901 at x=0 and three bicycle approach waypoints on driving lane -1 centered near y=-1.75. It records original weather precipitation and wetness without treating them as verified visibility or legal conditions. `native/prove_survey.py` passed the source-map CPU fixture and rejected wrong lane, shifted sign and wrong sign type. This still needs integration into the selected capture runner, a reviewed bicycle classification and original pixels.
+
+## 2026-11-25 original capture path
+
+`native/live_capture.py` connects the source-hashed road, original route survey, bicycle setup and readback-driven controller to a prospective exclusive CARLA run. It records 600 original bicycle pose/velocity rows, Native frame identities, four synchronized original camera streams and raw frame/source hashes. It uses the shared frame writer and restores the operator-owned world with cleanup in `finally`. Its CPU construction check passed; no CARLA server was contacted. Saved finalization, physical status assessment, selected execution-manifest binding, public compatibility, recorded-only processing, semantic proposals and independent delivery proofs remain incomplete.

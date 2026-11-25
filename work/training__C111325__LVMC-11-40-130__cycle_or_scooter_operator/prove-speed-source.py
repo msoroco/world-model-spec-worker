@@ -49,7 +49,9 @@ def main():
     if not records[0]['peak_position_derived_speed_mps'] < records[1]['peak_position_derived_speed_mps']:
         raise AssertionError('Speed contrast absent')
     negatives = []
-    temporary = folder / 'negative.jsonl'
+    scratch = HERE.parents[1] / '.runtime-work/c111325'
+    scratch.mkdir(parents=True, exist_ok=True)
+    temporary = scratch / 'speed-negative.jsonl'
     for name, mutate in (
         ('missing_frame', lambda rows: rows.pop()),
         ('wrong_stop_line', lambda rows: rows[200].__setitem__('stop_line_x_m', 1.0)),
@@ -62,7 +64,7 @@ def main():
         write_rows(temporary, rows)
         negatives.append({'mutation': name, 'rejection': rejected(temporary, context_path)})
     temporary.unlink()
-    false_context = folder / 'false-context.json'
+    false_context = scratch / 'speed-false-context.json'
     false_context.write_text(json.dumps(dict(context, physical_conditions_verified=True)) + '\n')
     negatives.append({'mutation': 'false_physical_authority',
                       'rejection': rejected(folder / 'condition_a.jsonl', false_context)})

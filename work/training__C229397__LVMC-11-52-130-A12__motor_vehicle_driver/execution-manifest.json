@@ -13,7 +13,41 @@
         "status": "physical",
         "reason": "painted marking and park position require original Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/controlled_1/fallback1/construction.json",
+          "construction_sha256": "c50ebbaeda0cf5320ba3d6584c22d21f3ffe5d8f614cc38fe45eadc9873a44c1",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "terminal body gap and sampled halt span",
+            "failure_condition": "primary overshoots the requested body gap or lacks a five-second stationary proxy"
+          },
+          "changed_knobs": [
+            "approach throttle .28/.11 to .20/.08",
+            "braking entry 4 m to 5 m and intermediate brake .35 to .45"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c50ebbaeda0cf5320ba3d6584c22d21f3ffe5d8f614cc38fe45eadc9873a44c1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c229397-fallback-controlled_1-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "proofs/controlled_1/fallback1/offline.log",
+            "log_sha256": "5bae659aa109070034d07cdc0d9d23ab8200a9cf6a47e6136f1b944ca006bc5f"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_1/fallback1/compatibility.json",
+            "sha256": "0a78c2907ddbbf767921398742f6f42f2a6aa3944e0ee31fae9dc9a9ce9d4458",
+            "log": "proofs/controlled_1/fallback1/analysis.log",
+            "negative_log": "proofs/controlled_1/fallback1/negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "proofs/controlled_1/fallback1/saved-processing-summary.json",
+            "test_log_sha256": "581327d25eee2631cae2c01c809ec64d9f73327d6a0bc1f6593fbe1e9da89686"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_delivery.py"
       },
@@ -77,6 +111,31 @@
       "physical_preparation": {
         "receipt": "proofs/physical/controlled_1/proof.json",
         "sha256": "b5c4ed5028c69981d9f5a9e3b68a7fbebc6811d09dd0609c981740a40a38a9fa"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4eadaa4e5a61433f78988f9f6089e980844365d9be8b3f01c988777955a67ba2",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1 --attempt .runtime-work/c229397-saved-attempt-controlled_1-proof --processing .runtime-work/c229397-saved-controlled_1-proof/v0001/processing.json --output .runtime-work/c229397-delivery-audit-controlled_1-bound.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_1/delivery-audit-positive.log",
+        "test_log_sha256": "f97a9293c6f45e57db015ce3a3b08134f744ec53940d0385ea1637634ae8876c",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_1 --attempt .runtime-work/c229397-saved-attempt-controlled_1-proof --processing .runtime-work/c229397-stale-processing-controlled_1.json --output .runtime-work/c229397-delivery-audit-controlled_1-rejected.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: control-intent.jsonl",
+        "negative_log": "proofs/controlled_1/delivery-audit-negative.log",
+        "negative_log_sha256": "8a1ca1a60c12c58707db5528eab4844a9e3b4687d75485de6a34f31659b88301"
       }
     },
     {
@@ -88,7 +147,41 @@
         "status": "physical",
         "reason": "painted marking and park position require original Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/controlled_2/fallback1/construction.json",
+          "construction_sha256": "cd02896dd2d711538b50eb6587e831d564c1328ea3b2c2ab67ab11a544d6f322",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "terminal body gap and sampled halt span",
+            "failure_condition": "primary overshoots the requested body gap or lacks a five-second stationary proxy"
+          },
+          "changed_knobs": [
+            "approach throttle .28/.11 to .20/.08",
+            "braking entry 4 m to 5 m and intermediate brake .35 to .45"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "cd02896dd2d711538b50eb6587e831d564c1328ea3b2c2ab67ab11a544d6f322",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c229397-fallback-controlled_2-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "proofs/controlled_2/fallback1/offline.log",
+            "log_sha256": "05eb6d7b4f6681ba050ced4511ab32758dadd87c2b75e34d4b794930f2d4170c"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_2/fallback1/compatibility.json",
+            "sha256": "ce8b4e535665ef002b5d8ce221e63ec98f22e3f229226606775558c363dc92da",
+            "log": "proofs/controlled_2/fallback1/analysis.log",
+            "negative_log": "proofs/controlled_2/fallback1/negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "proofs/controlled_2/fallback1/saved-processing-summary.json",
+            "test_log_sha256": "017b54043b8427854b53c4fe4d2240ee89036732957c03c9c9069ade4b4025ae"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_delivery.py"
       },
@@ -154,6 +247,31 @@
       "physical_preparation": {
         "receipt": "proofs/physical/controlled_2/proof.json",
         "sha256": "423b1807c1645fc7ef372ec1257265d51a52881218d9793d33c835a328554096"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4eadaa4e5a61433f78988f9f6089e980844365d9be8b3f01c988777955a67ba2",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2 --attempt .runtime-work/c229397-saved-attempt-controlled_2-v2 --processing .runtime-work/c229397-saved-controlled_2-v2/v0001/processing.json --output .runtime-work/c229397-delivery-audit-controlled_2-bound.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/controlled_2/delivery-audit-positive.log",
+        "test_log_sha256": "d78162efdf2a3dfabc127c0bbade5f522285e75d9e873eb0e8aa0c80ae6cbfe1",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__controlled_2 --attempt .runtime-work/c229397-saved-attempt-controlled_2-v2 --processing .runtime-work/c229397-stale-processing-controlled_2.json --output .runtime-work/c229397-delivery-audit-controlled_2-rejected.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: control-intent.jsonl",
+        "negative_log": "proofs/controlled_2/delivery-audit-negative.log",
+        "negative_log_sha256": "8a1ca1a60c12c58707db5528eab4844a9e3b4687d75485de6a34f31659b88301"
       }
     },
     {
@@ -165,7 +283,41 @@
         "status": "physical",
         "reason": "painted marking and park position require original Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/boundary_20ft/fallback1/construction.json",
+          "construction_sha256": "f18dff08a7f9a6af8816d43aa06a5f70c81358df214fd00a536ebdbded9eacd3",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "terminal body gap and sampled halt span",
+            "failure_condition": "primary overshoots the requested body gap or lacks a five-second stationary proxy"
+          },
+          "changed_knobs": [
+            "approach throttle .28/.11 to .20/.08",
+            "braking entry 4 m to 5 m and intermediate brake .35 to .45"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "f18dff08a7f9a6af8816d43aa06a5f70c81358df214fd00a536ebdbded9eacd3",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft --candidate fallback1 --output .runtime-work/c229397-fallback-boundary_20ft-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "proofs/boundary_20ft/fallback1/offline.log",
+            "log_sha256": "59a6e74bcd64c8353f5f0c333917799d3aaf717d425056e05a25ed237589575d"
+          },
+          "compatibility": {
+            "receipt": "proofs/boundary_20ft/fallback1/compatibility.json",
+            "sha256": "964dce3f08609ac8fad2c7f961ad10f39c43f08025f690f0e1e68a99b90f89cb",
+            "log": "proofs/boundary_20ft/fallback1/analysis.log",
+            "negative_log": "proofs/boundary_20ft/fallback1/negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "proofs/boundary_20ft/fallback1/saved-processing-summary.json",
+            "test_log_sha256": "eaeeeb682e66736016c3595a8c1773cc704831865caedbf3219f11d947befde3"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_delivery.py"
       },
@@ -229,6 +381,31 @@
       "physical_preparation": {
         "receipt": "proofs/physical/boundary_20ft/proof.json",
         "sha256": "5cda8e5cb25322de8a1cf2bb286629d3a8e5462c599a11e313357ec017eb9013"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4eadaa4e5a61433f78988f9f6089e980844365d9be8b3f01c988777955a67ba2",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft --attempt .runtime-work/c229397-saved-attempt-boundary_20ft-proof --processing .runtime-work/c229397-saved-boundary_20ft-proof/v0001/processing.json --output .runtime-work/c229397-delivery-audit-boundary_20ft-bound.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/boundary_20ft/delivery-audit-positive.log",
+        "test_log_sha256": "96d0f0b01abf4c2bde3d0e960d2d7ee7bb589d091ff9c8fd50750e9f00cafcd2",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__boundary_20ft --attempt .runtime-work/c229397-saved-attempt-boundary_20ft-proof --processing .runtime-work/c229397-stale-processing-boundary_20ft.json --output .runtime-work/c229397-delivery-audit-boundary_20ft-rejected.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: control-intent.jsonl",
+        "negative_log": "proofs/boundary_20ft/delivery-audit-negative.log",
+        "negative_log_sha256": "8a1ca1a60c12c58707db5528eab4844a9e3b4687d75485de6a34f31659b88301"
       }
     },
     {
@@ -240,7 +417,41 @@
         "status": "physical",
         "reason": "painted marking and park position require original Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/stop_near/fallback1/construction.json",
+          "construction_sha256": "41efde6539893c79a1de8b8ed2728242ddedfe1b3de46c5f99fb7d709043a69a",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "terminal body gap and sampled halt span",
+            "failure_condition": "primary overshoots the requested body gap or lacks a five-second stationary proxy"
+          },
+          "changed_knobs": [
+            "approach throttle .28/.11 to .20/.08",
+            "braking entry 4 m to 5 m and intermediate brake .35 to .45"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "41efde6539893c79a1de8b8ed2728242ddedfe1b3de46c5f99fb7d709043a69a",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near --candidate fallback1 --output .runtime-work/c229397-fallback-stop_near-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "proofs/stop_near/fallback1/offline.log",
+            "log_sha256": "7e75a4db724faa895b6da05a15c2829007cc873b5f4ee917f3efc33ba76add70"
+          },
+          "compatibility": {
+            "receipt": "proofs/stop_near/fallback1/compatibility.json",
+            "sha256": "a59f62254464a24bf78f9648056a023506b363d3e9ea2cfbe00a7115c7f980f5",
+            "log": "proofs/stop_near/fallback1/analysis.log",
+            "negative_log": "proofs/stop_near/fallback1/negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "proofs/stop_near/fallback1/saved-processing-summary.json",
+            "test_log_sha256": "6abb886731167d78ab85e2d639b1a030936fd8b14a6ed1acc1a0de4e57dab351"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_delivery.py"
       },
@@ -304,6 +515,31 @@
       "physical_preparation": {
         "receipt": "proofs/physical/stop_near/proof.json",
         "sha256": "d155fe82f5c7ec690c2ade7695192ed0980702d6c7c4f7998d3df23a3e95ff28"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4eadaa4e5a61433f78988f9f6089e980844365d9be8b3f01c988777955a67ba2",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near --attempt .runtime-work/c229397-saved-attempt-stop_near-proof --processing .runtime-work/c229397-saved-stop_near-proof/v0001/processing.json --output .runtime-work/c229397-delivery-audit-stop_near-bound.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/stop_near/delivery-audit-positive.log",
+        "test_log_sha256": "34791f1249bd2dabfb133e36d641db8d1b6e62f54bd944e4409d1147ab253b04",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stop_near --attempt .runtime-work/c229397-saved-attempt-stop_near-proof --processing .runtime-work/c229397-stale-processing-stop_near.json --output .runtime-work/c229397-delivery-audit-stop_near-rejected.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: control-intent.jsonl",
+        "negative_log": "proofs/stop_near/delivery-audit-negative.log",
+        "negative_log_sha256": "8a1ca1a60c12c58707db5528eab4844a9e3b4687d75485de6a34f31659b88301"
       }
     },
     {
@@ -315,7 +551,41 @@
         "status": "physical",
         "reason": "painted marking and park position require original Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/stand_near/fallback1/construction.json",
+          "construction_sha256": "d1a8e0b1fe53904cef45baaccfe24381838bef82fd79a297a5a264fad28cefbe",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "terminal body gap and sampled halt span",
+            "failure_condition": "primary overshoots the requested body gap or lacks a five-second stationary proxy"
+          },
+          "changed_knobs": [
+            "approach throttle .28/.11 to .20/.08",
+            "braking entry 4 m to 5 m and intermediate brake .35 to .45"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "d1a8e0b1fe53904cef45baaccfe24381838bef82fd79a297a5a264fad28cefbe",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/execution-manifest.json --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near --candidate fallback1 --output .runtime-work/c229397-fallback-stand_near-offline-v1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "log": "proofs/stand_near/fallback1/offline.log",
+            "log_sha256": "8b7d491a84206ff89de42ccecac9c10eb5deeb66bc9ef4a61ca7f2c0689d062a"
+          },
+          "compatibility": {
+            "receipt": "proofs/stand_near/fallback1/compatibility.json",
+            "sha256": "78438f7c2664f6daf019d4184e6e153c86c4420a5fa1184916f20ce49446524d",
+            "log": "proofs/stand_near/fallback1/analysis.log",
+            "negative_log": "proofs/stand_near/fallback1/negative.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "test_exit_code": 0,
+            "test_log": "proofs/stand_near/fallback1/saved-processing-summary.json",
+            "test_log_sha256": "89e6bde3d151da98602f96462bd9fab2a3c3718f8d18f48e2a8e7a13cc766fc3"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize_delivery.py"
       },
@@ -379,6 +649,31 @@
       "physical_preparation": {
         "receipt": "proofs/physical/stand_near/proof.json",
         "sha256": "52027f8d0dc2c0f283a5c509376877c69eb70774f6b638a0a784181ae88f9f73"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "4eadaa4e5a61433f78988f9f6089e980844365d9be8b3f01c988777955a67ba2",
+        "command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near --attempt .runtime-work/c229397-saved-attempt-stand_near-proof --processing .runtime-work/c229397-saved-stand_near-proof/v0001/processing.json --output .runtime-work/c229397-delivery-audit-stand_near-bound.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/stand_near/delivery-audit-positive.log",
+        "test_log_sha256": "9b36858cd371b88ce5c5a0d1549748d3e20026b4a3df3139116d2abe465401cb",
+        "negative_command": ".venv-cpu/bin/python work/training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver/delivery_audit.py --case training__C229397__LVMC-11-52-130-A12__motor_vehicle_driver__stand_near --attempt .runtime-work/c229397-saved-attempt-stand_near-proof --processing .runtime-work/c229397-stale-processing-stand_near.json --output .runtime-work/c229397-delivery-audit-stand_near-rejected.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: control-intent.jsonl",
+        "negative_log": "proofs/stand_near/delivery-audit-negative.log",
+        "negative_log_sha256": "8a1ca1a60c12c58707db5528eab4844a9e3b4687d75485de6a34f31659b88301"
       }
     }
   ]

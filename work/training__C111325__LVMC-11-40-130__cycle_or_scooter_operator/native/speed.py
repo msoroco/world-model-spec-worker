@@ -11,6 +11,7 @@ FRAMES = 600
 HZ = 20
 START_X = -50.0
 STOP_X = -2.0
+LANE_Y = -1.75
 MAX_SPEED = {'condition_a': 3.0, 'condition_b': 5.0}
 CONTEXT_ID = 'c111325-stop-approach-v1'
 
@@ -32,7 +33,7 @@ def requested(condition):
             if STOP_X - x < 0.01:
                 x = STOP_X
         rows.append({'frame': frame, 'time_s': frame / HZ,
-                     'bicycle_center_xy_m': [round(x, 6), 0.0],
+                     'bicycle_center_xy_m': [round(x, 6), LANE_Y],
                      'context_id': CONTEXT_ID, 'stop_line_x_m': 0.0,
                      'requested_speed_condition': condition,
                      'source_kind': 'synthetic_scene_request',
@@ -72,7 +73,7 @@ def measure(path, context_path):
                 any(type(v) not in (int, float) or not math.isfinite(v) for v in point)):
             raise ValueError('Invalid bicycle source row')
         x, y = point
-        if y != 0.0 or x > STOP_X or (prior is not None and x < prior):
+        if y != LANE_Y or x > STOP_X or (prior is not None and x < prior):
             raise ValueError('Bicycle lane or stop geometry changed')
         if prior is not None:
             speed = (x - prior) * HZ

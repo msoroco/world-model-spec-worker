@@ -52,8 +52,8 @@ def main():
                     raise ValueError('Impossible bicycle motion in draft')
                 speeds.append(speed)
         first_stop = next(i for i, row in enumerate(rows) if row['bicycle_center_xy_m'][0] == -2.0)
-        if (rows[0]['bicycle_center_xy_m'] != [-50.0, 0.0] or
-                rows[-1]['bicycle_center_xy_m'] != [-2.0, 0.0] or
+        if (rows[0]['bicycle_center_xy_m'] != [-50.0, -1.75] or
+                rows[-1]['bicycle_center_xy_m'] != [-2.0, -1.75] or
                 proof['records'][index]['first_stopped_frame'] != first_stop or
                 abs(proof['records'][index]['peak_position_derived_speed_mps'] - max(speeds)) > 1e-6):
             raise ValueError('Position-derived speed or stop disagrees')

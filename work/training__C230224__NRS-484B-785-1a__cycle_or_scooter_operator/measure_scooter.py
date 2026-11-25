@@ -31,6 +31,12 @@ def measure(root):
     context = json.loads(paths['scooter_context.json'].read_text())
     if len(frames) != COUNT or len(trace) != COUNT or context.get('assignment_id') != AID:
         raise ValueError('Exact assignment and 600 joined frames required')
+    suffixes = ('controlled_1', 'controlled_at_cap', 'controlled_2')
+    if context.get('case_id') not in {AID + '__' + suffix for suffix in suffixes}:
+        raise ValueError('Exact selected scooter case identity required')
+    request = context.get('requested_speed_mps')
+    if type(request) not in (int, float) or not math.isfinite(request) or not 0 < request <= 20*.44704:
+        raise ValueError('Requested speed source missing or outside device class range')
     if context.get('review_kind') not in ('synthetic_diagnostic', 'original_source_review'):
         raise ValueError('Unspecified source kind')
     camera_hashes = {}
@@ -54,7 +60,11 @@ def measure(root):
         raise ValueError('A bicycle or unspecified device is not an electric scooter')
     for key in ('scooter_classification_source', 'scooter_mass_source', 'scooter_motor_max_speed_source',
                 'path_surface_source', 'path_continuity_source', 'path_access_source',
-                'roadway_boundary_source', 'ordinance_applicability_source', 'ordinance_review_source'):
+                'roadway_boundary_source', 'ordinance_applicability_source', 'ordinance_review_source',
+                'scooter_handlebars_source', 'scooter_electric_motor_source',
+                'scooter_riding_design_source', 'scooter_propulsion_source',
+                'contrary_posting_source', 'local_definition_applicability_source',
+                'assistive_device_intent_source'):
         if not context.get(key):
             raise ValueError('Missing source-bound context: ' + key)
     mass = context.get('scooter_rider_excluded_mass_lb')
@@ -92,7 +102,18 @@ def measure(root):
     if frames[-1]['time_s'] - frames[0]['time_s'] < 29.9:
         raise ValueError('Full 30-second original observation required')
     return {'format': 'source-bound-scooter-path-speed-v1', 'assignment_id': AID,
+            'case_id': context['case_id'], 'requested_speed_mps': request,
             'source_sha256': {**{key: sha(path) for key, path in paths.items()}, **camera_hashes},
+            'fixed_context': {key: context[key] for key in (
+                'device_subtype', 'scooter_rider_excluded_mass_lb', 'scooter_motor_only_max_mph',
+                'path_box_xyxy_m', 'path_surface_source', 'path_continuity_source',
+                'path_access_source', 'roadway_boundary_source',
+                'ordinance_applicability_source', 'ordinance_review_source',
+                'scooter_handlebars_source', 'scooter_electric_motor_source',
+                'scooter_riding_design_source', 'scooter_propulsion_source',
+                'contrary_posting_source', 'local_definition_applicability_source',
+                'assistive_device_intent_source',
+                'ordinance_exception_reviewed', 'path_access_reviewed')},
             'review_kind': context['review_kind'], 'samples': COUNT,
             'path_center_frames': on_path, 'above_15_mph_frames': above_cap,
             'min_speed_mph': min(speeds) / .44704, 'max_speed_mph': max(speeds) / .44704,
