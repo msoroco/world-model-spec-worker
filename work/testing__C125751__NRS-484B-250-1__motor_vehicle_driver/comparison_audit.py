@@ -47,7 +47,8 @@ def _source_report(attempt):
     attempt = Path(attempt)
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
     names = ('signal-packet.json', 'signal-history.json', 'review.json',
-             'map.xodr', 'source-packet.json', 'trace.jsonl', 'video_frames.jsonl')
+             'map.xodr', 'source-packet.json', 'reviewed-packet.json',
+             'acquisition-provenance.json', 'trace.jsonl', 'video_frames.jsonl')
     for name in names:
         path = attempt / name
         if not path.is_file():
@@ -58,6 +59,8 @@ def _source_report(attempt):
             raise ValueError('Missing or stale original Native source: ' + name)
     packet = json.loads((attempt / 'signal-packet.json').read_text())
     source_packet = json.loads((attempt / 'source-packet.json').read_text())
+    if (attempt / 'source-packet.json').read_bytes() != (attempt / 'reviewed-packet.json').read_bytes():
+        raise ValueError('retained reviewed packet differs from original')
     validate_source_packet(source_packet, (attempt / 'map.xodr').read_bytes(),
                            (attempt / 'review.json').read_bytes())
     for ref in validate_review_refs((attempt / 'review.json').read_bytes(), attempt):

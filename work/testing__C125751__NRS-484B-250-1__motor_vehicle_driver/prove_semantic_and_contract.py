@@ -44,11 +44,11 @@ def main():
         write_attempt(fixture)
         report = build_report(fixture)
         outputs = verify_report(contracts[0], report, fixture)
-        (fixture / 'source-packet.json').unlink()
+        (fixture / 'reviewed-packet.json').unlink()
         try:
             build_report(fixture)
         except ValueError as error:
-            if 'Missing required source: source-packet.json' not in str(error):
+            if 'Missing required source: reviewed-packet.json' not in str(error):
                 raise
             negative = str(error)
         else:

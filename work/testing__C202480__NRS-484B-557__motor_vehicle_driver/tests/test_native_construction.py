@@ -17,6 +17,8 @@ def site(root, case_id="case"):
         "opendrive": b"reviewed map",
         "crossing_authority": json.dumps({"designation_authority": "state_dot", "crossing_type": "highway_railroad_grade",
                                            "device_type": "official_stop_sign", "device_governs": "railroad_approach",
+                                           "designation_record_citation": "DOT crossing order 17",
+                                           "sign_governance_citation": "DOT sign inventory 17",
                                            "sign_landmark_id": "sign-1"}).encode(),
         "crossing_geometry": json.dumps({"rail_id": "rail-1", "nearest_rail_xy_m": [0, 0],
                                           "approach_unit_normal_xy": [1, 0]}).encode(),
@@ -28,7 +30,14 @@ def site(root, case_id="case"):
         bindings[name] = {"path": path.name, "sha256": hashlib.sha256(data).hexdigest()}
     packet = {"format": "nrs-484b-557-reviewed-site-v1", "case_id": case_id,
               "sources": bindings, "sign_landmark_id": "sign-1", "rail_id": "rail-1",
-              "ego_longitudinal_half_extent_m": 2.0, "ego_blueprint_id": "vehicle.test"}
+              "ego_longitudinal_half_extent_m": 2.0, "ego_blueprint_id": "vehicle.test",
+              "approach_distance_m": 25.0,
+              "source_review": {"kind": "original_site_review", "reviewer": "source reviewer",
+                                "review_date": "2026-11-25", "map_source": "Native map export",
+                                "designation_record_citation": "DOT crossing order 17",
+                                "sign_governance_citation": "DOT sign inventory 17",
+                                "rail_survey_citation": "rail survey 17",
+                                "camera_pose_citation": "reviewed scene poses"}}
     path = root / "site.json"
     path.write_text(json.dumps(packet))
     return path, packet
@@ -61,6 +70,7 @@ class NativeConstructionTest(unittest.TestCase):
             self.assertEqual(len(world.spawned), 1)
             self.assertEqual(world.spawned[0][0], "vehicle.test")
             self.assertAlmostEqual(built["planned_center_xy_m"][0], -(2 + 15 / CONSTRUCT.FEET_PER_METRE))
+            self.assertAlmostEqual(built["spawn_center_xy_m"][0], built["planned_center_xy_m"][0] - 25)
             self.assertEqual(world.spawned[0][1][2], [1, 0])
 
     def test_unsupported_authority_rejected_before_spawn(self):
@@ -100,6 +110,26 @@ class NativeConstructionTest(unittest.TestCase):
             world.signs = []
             with self.assertRaisesRegex(ValueError, "stop sign absent"):
                 CONSTRUCT.create(world, path, {"case_id": "case", "planned_stop_body_gap_ft": 15}, lambda *args: args)
+
+    def test_diagnostic_review_rejected_before_spawn(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, packet = site(Path(directory))
+            packet["source_review"]["rail_survey_citation"] = "synthetic rail geometry"
+            path.write_text(json.dumps(packet))
+            world = World()
+            with self.assertRaisesRegex(ValueError, "diagnostic source"):
+                CONSTRUCT.create(world, path, {"case_id": "case", "planned_stop_body_gap_ft": 15}, lambda *args: args)
+            self.assertEqual(world.spawned, [])
+
+    def test_missing_approach_distance_rejected_before_spawn(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, packet = site(Path(directory))
+            packet.pop("approach_distance_m")
+            path.write_text(json.dumps(packet))
+            world = World()
+            with self.assertRaisesRegex(ValueError, "upstream approach distance"):
+                CONSTRUCT.create(world, path, {"case_id": "case", "planned_stop_body_gap_ft": 15}, lambda *args: args)
+            self.assertEqual(world.spawned, [])
 
 
 if __name__ == "__main__":

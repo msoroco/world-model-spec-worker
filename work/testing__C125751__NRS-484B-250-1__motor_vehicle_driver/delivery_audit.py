@@ -21,7 +21,7 @@ CHECKS = ('native_source', 'all_participants', 'time_join',
 CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 REQUIRED = ('construction.json', 'config.json', 'runner.py',
-            'acquisition-provenance.json', 'source-packet.json',
+            'acquisition-provenance.json', 'source-packet.json', 'reviewed-packet.json',
             'review.json', 'map.xodr', 'signal-packet.json',
             'signal-history.json', 'trace.jsonl', 'video_frames.jsonl', *CAMERAS)
 
@@ -65,6 +65,8 @@ def verify_sources(case_id, attempt):
     if config.get('selected_case_id') != case_id or construction.get('case_id') != case_id:
         raise ValueError('sealed construction/config selected another exact case')
     source_packet = read(attempt / 'source-packet.json')
+    if sealed['source-packet.json'] != sealed['reviewed-packet.json']:
+        raise ValueError('retained reviewed packet copy differs')
     validate_source_packet(source_packet, (attempt / 'map.xodr').read_bytes(),
                            (attempt / 'review.json').read_bytes())
     for ref in validate_review_refs((attempt / 'review.json').read_bytes(), attempt):

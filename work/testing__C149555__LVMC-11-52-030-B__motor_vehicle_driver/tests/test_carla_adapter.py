@@ -58,8 +58,14 @@ class NativeAdapterTests(unittest.TestCase):
             def get_waypoint(self, location, project_to_road=False):
                 return type("Waypoint", (), {"road_id": 2, "lane_id": -1,
                                                "s": location.x})()
+            def get_waypoint_xodr(self, road_id, lane_id, station):
+                transform = type("Transform", (), {"location": Point(30),
+                    "get_right_vector": lambda _: Point(1)})()
+                return type("Waypoint", (), {"transform": transform})()
         adapter = module.NativeCarlaAdapter(World(SampleMap()),
-                                            {"native_road_id": 2, "native_lane_id": -1},
+                                            {"native_road_id": 2, "native_lane_id": -1,
+                                             "zone": {"start_station_m": 20,
+                                                      "end_station_m": 40}},
                                             {}, carla_module=object())
         adapter.ego = Ego()
         adapter.cargo = type("Cargo", (), {"id": 9, "get_location": lambda _: Point(31)})()

@@ -39,6 +39,12 @@ class Adapter:
 def packet(variant="freight_loading"):
     conditions = {"verbatim_text": "Freight 8-18", "freight_permitted": True,
                   "civil_windows": [{"weekdays": list(range(7)), "start": "08:00", "end": "18:00"}]}
+    activity = "unloading" if variant == "freight_unloading" else "none" if variant == "no_freight_activity" else "loading"
+    def cargo_offset(index):
+        if activity == "none":
+            return None
+        start = 1 if activity == "unloading" else 3
+        return start + (1 if activity == "unloading" else -1) * (0 if index < 250 else 1 if index == 250 else 2)
     return {"case_id": "case", "variant": variant, "native_result_sha256": "r", "frame_map_sha256": "f",
             "native_map_sha256": "m", "curb_observation_sha256": "c", "sign_observation_sha256": "s",
             "commercial_dossier_sha256": "d", "freight_activity_source_sha256": "a",
@@ -53,9 +59,13 @@ def packet(variant="freight_loading"):
                         "ego_station_m": 5 + 25 * min(i, 200) / 200,
                         "ego_body_station_min_m": 3 + 25 * min(i, 200) / 200,
                         "ego_body_station_max_m": 7 + 25 * min(i, 200) / 200,
-                        "ego_speed_mps": 2.5 if i < 200 else 0.0} for i in range(900)],
+                        "ego_speed_mps": 2.5 if i < 200 else 0.0,
+                        "cargo_actor_id": None if activity == "none" else "cargo-1",
+                        "cargo_lateral_offset_m": cargo_offset(i)} for i in range(900)],
             "zone": {"start_station_m": 20, "end_station_m": 40},
-            "freight_activity": {"vehicle_id": "truck-1", "observed_action": "loading", "cargo_actor_id": "cargo-1", "observed_transfer_frames": [250, 251]},
+            "freight_activity": {"vehicle_id": "truck-1", "observed_action": activity,
+                                 "cargo_actor_id": None if activity == "none" else "cargo-1",
+                                 "observed_transfer_frames": [] if activity == "none" else [250, 251]},
             "civil_time": {"source_sha256": "clock", "timezone": "America/Los_Angeles", "local_datetime": "2026-11-23T12:00:00"},
             "posted_window_check": {"source_sha256": "window", "derived_from_sign_sha256": "s", "inside": True}}
 
@@ -96,7 +106,7 @@ class FreightContractTests(unittest.TestCase):
     def test_saved_original_rejects_frame_cargo_sign_and_zone_mismatch(self):
         for change, rejection in (
             (lambda p: p["frames"][400].update(original_frame=401), "noncontiguous"),
-            (lambda p: p["freight_activity"].update(cargo_actor_id=None), "freight transfer"),
+            (lambda p: p["freight_activity"].update(cargo_actor_id=None), "contradicts original cargo trajectory"),
             (lambda p: p.update(sign_text_readback="Different"), "sign text mismatch"),
             (lambda p: p["frames"][500].update(ego_station_m=50, ego_body_station_min_m=48, ego_body_station_max_m=52), "stop spans zone"),
             (lambda p: p["frames"][500].update(ego_body_station_max_m=42), "stop spans zone"),
@@ -120,8 +130,10 @@ class FreightContractTests(unittest.TestCase):
         with self.assertRaisesRegex(module.SourceError, "final hold missing"):
             module.audit_saved_original(p, case_id="case", variant="freight_loading")
         p = packet()
+        for index, frame in enumerate(p["frames"]):
+            frame["cargo_lateral_offset_m"] = 3 if index < 50 else 2 if index == 50 else 1
         p["freight_activity"]["observed_transfer_frames"] = [50]
-        with self.assertRaisesRegex(module.SourceError, "during original halt"):
+        with self.assertRaisesRegex(module.SourceError, "original cargo moved before halt"):
             module.audit_saved_original(p, case_id="case", variant="freight_loading")
 
     def test_posted_time_is_derived_from_original_sign_and_civil_clock(self):

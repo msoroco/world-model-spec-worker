@@ -19,7 +19,7 @@ def sha(path):
 
 
 def main():
-    scratch = REPO / '.runtime-work' / 'c125751-diagnostic-runtime'
+    scratch = REPO / '.runtime-work' / 'c125751-diagnostic-runtime-3'
     base = json.loads((scratch / 'execution-manifest.json').read_text())
     case_id = ASSIGNMENT + '__precedence'
     for entry in base['cases']:

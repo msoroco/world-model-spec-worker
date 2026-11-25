@@ -188,6 +188,7 @@ def run_native(spec, suffix, sources, camera_plan, output, host, port):
             if (output / name).exists():
                 raise ValueError('retained reviewed source already exists: ' + name)
             (output / name).write_bytes(Path(sources, name).read_bytes())
+        (output / 'reviewed-packet.json').write_bytes((output / 'source-packet.json').read_bytes())
         retained_refs = []
         for ref in validate_review_refs((output / 'review.json').read_bytes(), sources):
             name = ref['path']
@@ -264,6 +265,7 @@ def run_native(spec, suffix, sources, camera_plan, output, host, port):
             'ego_blueprint': spec['ego_blueprint'],
             'other_blueprint': spec['other_blueprint']})
         names = ('signal-history.json', 'signal-packet.json', 'source-packet.json',
+                 'reviewed-packet.json',
                  'acquisition-provenance.json',
                  'review.json', 'map.xodr', 'trace.jsonl', 'video_frames.jsonl',
                  'road.xodr', 'carla_recorder.log',

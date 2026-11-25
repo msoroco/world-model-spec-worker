@@ -31,7 +31,7 @@ def save(path, value):
 
 
 def main():
-    scratch = REPO / '.runtime-work' / 'c125751-diagnostic-runtime'
+    scratch = REPO / '.runtime-work' / 'c125751-diagnostic-runtime-3'
     if scratch.exists():
         raise ValueError('Retain prior diagnostic proof; remove only the named .runtime-work folder to rerun')
     scratch.mkdir(parents=True)

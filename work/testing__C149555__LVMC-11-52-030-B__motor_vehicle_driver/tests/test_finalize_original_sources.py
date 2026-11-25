@@ -37,13 +37,17 @@ class FinalizeOriginalSourcesTests(unittest.TestCase):
                         motion.append(json.dumps(dict(sample, native_frame=native_frame)))
                     (attempt / "frame-map.jsonl").write_text("\n".join(frames) + "\n")
                     (attempt / "freight_motion.jsonl").write_text("\n".join(motion) + "\n")
+                    source_refs = dict(manifest["sources"])
+                    Path(source_refs.pop("freight_activity")["path"]).unlink()
                     result = finalizer.finalize(attempt, case_id=manifest["case_id"],
-                                                source_refs=manifest["sources"])
+                                                source_refs=source_refs)
                     self.assertEqual(result["case_id"], manifest["case_id"])
                     packet = json.loads(Path(result["sources"]["native_result"]["path"]).read_text())
                     self.assertEqual(packet["posted_window_check"]["inside"],
                                      variant != "outside_posted_time")
                     self.assertEqual(len(packet["frames"]), 900)
+                    self.assertEqual(packet["freight_activity"]["observed_action"],
+                                     original["freight_activity"]["observed_action"])
 
     def test_finalizer_rejects_unjoined_original_motion(self):
         scratch = Path.cwd() / ".runtime-work"

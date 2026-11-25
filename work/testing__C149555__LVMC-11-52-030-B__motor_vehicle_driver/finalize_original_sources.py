@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 from freight_contract import (SOURCE_FIELDS, SourceError, VARIANTS, audit_source_bundle,
-                              inside_posted_window, read_sealed)
+                              derive_freight_activity, inside_posted_window, read_sealed)
 
 
 ASSIGNMENT = "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver"
@@ -35,10 +35,13 @@ def rows(path: Path) -> list[dict]:
 
 def finalize(attempt: Path, *, case_id: str, source_refs: dict) -> dict:
     attempt = Path(attempt).resolve(strict=True)
+    source_refs = dict(source_refs)
     require(case_id.startswith(ASSIGNMENT + "__"), "foreign freight case")
     variant = case_id.removeprefix(ASSIGNMENT + "__")
     require(variant in VARIANTS, "unknown exact freight case")
-    required = set(SOURCE_FIELDS) - {"native_result"}
+    required = set(SOURCE_FIELDS) - {"native_result", "freight_activity"}
+    if "freight_activity" in source_refs:
+        required.add("freight_activity")
     require(required | {"comparison_context"} <= set(source_refs), "missing original source reference")
     sources = {}
     for name in required | {"comparison_context"}:
@@ -61,6 +64,16 @@ def finalize(attempt: Path, *, case_id: str, source_refs: dict) -> dict:
         require(frame.get("native_frame") == sample.get("native_frame") and
                 frame.get("time_s") == sample.get("time_s"),
                 "original Native frame/time join mismatch")
+
+    if "freight_activity" not in sources:
+        activity = dict(vehicle_id=sources["commercial_dossier"].get("vehicle_id"),
+                        **derive_freight_activity(motion))
+        path = attempt / "freight_activity.json"
+        with path.open("x", encoding="utf-8") as stream:
+            json.dump(activity, stream, sort_keys=True, separators=(",", ":"))
+            stream.write("\n")
+        source_refs["freight_activity"] = {"path": str(path), "sha256": sha256(path)}
+        sources["freight_activity"] = activity
 
     native_map = sources["native_map"]
     curb = sources["curb_observation"]

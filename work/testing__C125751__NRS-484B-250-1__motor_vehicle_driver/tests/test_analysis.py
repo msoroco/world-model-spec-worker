@@ -19,11 +19,15 @@ def write_attempt(root):
              'signal-history.json': payload, 'review.json': REVIEW,
              'map.xodr': MAP,
              'source-packet.json': json.dumps(packet()).encode(),
+             'reviewed-packet.json': json.dumps(packet()).encode(),
              'acquisition-provenance.json': json.dumps({
                  'provenance_kind': 'synthetic_fixture',
                  'diagnostic_fixture': True,
                  'review_sha256': hashlib.sha256(REVIEW).hexdigest()}).encode()}
-    trace = ''.join(json.dumps({'frame': 100+i, 'time_s': row['time_s']})+'\n'
+    trace = ''.join(json.dumps({'frame': 100+i, 'time_s': row['time_s'],
+                                'position': {'x': row['ego']['xy_m'][0],
+                                             'y': row['ego']['xy_m'][1], 'z': 0.0},
+                                'heading_deg': 0.0, 'speed_mps': 2.0})+'\n'
                     for i, row in enumerate(history['frames']))
     mapping = ''.join(json.dumps({'video_frame': i, 'carla_frame': 100+i,
                                   'time_s': row['time_s']})+'\n'

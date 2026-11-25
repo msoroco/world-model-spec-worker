@@ -1,0 +1,121 @@
+{
+  "assignment_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver",
+  "law_id": "LVMC-11-52-030-B",
+  "cell_id": "C149555",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
+  "supported_case_ids": [
+    "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
+    "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
+    "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity",
+    "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
+    "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
+    "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "frame_count": 900,
+  "required_atoms": [],
+  "source_packets": [
+    "native_map",
+    "curb_observation",
+    "sign_observation",
+    "commercial_dossier",
+    "civil_time",
+    "comparison_context"
+  ],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed original Native RGB view of yellow curb, sign, freight vehicle and cargo"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed original Native RGB view of yellow curb, sign, freight vehicle and cargo"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed original Native RGB view of yellow curb, sign, freight vehicle and cargo"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed original Native RGB view of yellow curb, sign, freight vehicle and cargo"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
+    "variant": "freight_unloading",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body_footprint",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "live post-tick bounding-box projection on reviewed curb station",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "requires original source and independent pixel review; no legal threshold inferred"
+        },
+        {
+          "name": "ego_speed",
+          "unit": "m/s",
+          "sampling_rate_hz": 20,
+          "method": "live post-tick CARLA velocity",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "requires original source and independent pixel review; no legal threshold inferred"
+        },
+        {
+          "name": "freight_activity",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "original cargo actor lateral displacement while ego halted",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "requires original source and independent pixel review; no legal threshold inferred"
+        },
+        {
+          "name": "posted_civil_time",
+          "unit": "civil datetime",
+          "sampling_rate_hz": 20,
+          "method": "sealed original sign and civil-time source",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "requires original source and independent pixel review; no legal threshold inferred"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "four original RGB frame identities and SHA-256 hashes",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "requires original source and independent pixel review; no legal threshold inferred"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_original_site",
+          "unit": "structured record",
+          "method": "source-sealed Native map, yellow curb pixels, accompanying sign and enterprise-use dossier"
+        }
+      ],
+      "limitations": [
+        "Freight purpose and stop/stand/park legal classification require independent source review.",
+        "No requested case label or diagnostic prop movement establishes municipal commercial status."
+      ]
+    }
+  }
+}

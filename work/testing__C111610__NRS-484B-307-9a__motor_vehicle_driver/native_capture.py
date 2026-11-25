@@ -15,7 +15,7 @@ from PIL import Image
 
 from native_turn import verify_site
 
-CAMERAS = ("front", "left", "right", "rear")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sha(raw):
@@ -39,17 +39,36 @@ def capture(adapter, site_path, profile_path, output, case_suffix,
     site_raw, profile_raw = site_path.read_bytes(), profile_path.read_bytes()
     site, profile = json.loads(site_raw), json.loads(profile_raw)
     verify_site(site, site_path.parent)
+    if site.get("source_kind") != "original_native_site_review":
+        raise ValueError("reviewed original Native site provenance missing")
+    adapter_ref = site.get("adapter_source")
+    if (not isinstance(adapter_ref, dict) or
+            not isinstance(adapter_ref.get("path"), str) or
+            not isinstance(adapter_ref.get("sha256"), str)):
+        raise ValueError("reviewed original adapter source missing")
+    adapter_path = (site_path.parent / adapter_ref["path"]).resolve()
+    if (not adapter_path.is_relative_to(site_path.parent.resolve()) or
+            not adapter_path.is_file() or
+            _sha(adapter_path.read_bytes()) != adapter_ref["sha256"]):
+        raise ValueError("reviewed original adapter source changed")
     if (frame_count != 600 or profile.get("fps") != 20 or
             profile.get("duration_frames") != 600 or
-            profile.get("cameras") != list(CAMERAS)):
+            profile.get("cameras") != list(CAMERAS) or
+            set(profile.get("dimensions", {})) != set(CAMERAS)):
         raise ValueError("exact four-camera 600-frame 20 Hz profile required")
+    for name in CAMERAS:
+        dims = profile["dimensions"][name]
+        if (not isinstance(dims, list) or len(dims) != 2 or
+                any(type(value) is not int or value <= 0 for value in dims)):
+            raise ValueError("four-camera source dimensions invalid: " + name)
     if not callable(getattr(adapter, "tick", None)) or not callable(
             getattr(adapter, "source_attestation", None)):
         raise ValueError("original Native adapter required")
     attestation = adapter.source_attestation()
     if (attestation.get("native_origin") is not True or
             attestation.get("site_sha256") != _sha(site_raw) or
-            not attestation.get("source_ref")):
+            attestation.get("source_ref") != adapter_ref["path"] or
+            attestation.get("adapter_sha256") != adapter_ref["sha256"]):
         raise ValueError("original Native site attestation mismatch")
     output.mkdir(parents=True, exist_ok=True)
     for ref in site["original_sources"].values():
@@ -60,6 +79,11 @@ def capture(adapter, site_path, profile_path, output, case_suffix,
         if destination.exists():
             raise ValueError("original site source destination collides")
         destination.write_bytes(source.read_bytes())
+    adapter_destination = (output / adapter_ref["path"]).resolve()
+    if not adapter_destination.is_relative_to(output.resolve()) or adapter_destination.exists():
+        raise ValueError("reviewed adapter destination invalid")
+    adapter_destination.parent.mkdir(parents=True, exist_ok=True)
+    adapter_destination.write_bytes(adapter_path.read_bytes())
     site_ref = _write(output / "site.json", site_raw)
     profile_ref = _write(output / "camera_profile.json", profile_raw)
     rows, frame_map = [], []
@@ -98,8 +122,8 @@ def capture(adapter, site_path, profile_path, output, case_suffix,
                 if pixels.format != "PNG":
                     raise ValueError("original camera is not PNG: " + name)
                 pixels.load()
-                if pixels.size[0] <= 0 or pixels.size[1] <= 0:
-                    raise ValueError("original camera dimensions invalid")
+                if list(pixels.size) != profile["dimensions"][name]:
+                    raise ValueError("original camera dimensions mismatch: " + name)
             path = output / f"{name}-{i:06d}.png"
             ref = _write(path, raw)
             camera_rows[name].append({"frame": i, "source": ref})

@@ -38,13 +38,50 @@ def audit_saved_file(packet_path: Path) -> dict[str, Any]:
         if relative.is_absolute() or ".." in relative.parts or not relative.parts:
             raise ValueError(f"unsafe source path: {key}")
         paths[key] = relative
+    original = {}
     for key, relative in paths.items():
         binding = sources[key]
-        source_path = packet_path.parent / relative
+        source_path = (packet_path.parent / relative).resolve()
+        if not source_path.is_relative_to(packet_path.parent.resolve()):
+            raise ValueError(f"unsafe source path: {key}")
         if not source_path.is_file():
             raise ValueError(f"missing source file: {key}")
-        if hashlib.sha256(source_path.read_bytes()).hexdigest() != binding.get("sha256"):
+        data = source_path.read_bytes()
+        if hashlib.sha256(data).hexdigest() != binding.get("sha256"):
             raise ValueError(f"source hash differs: {key}")
+        try:
+            original[key] = json.loads(data)
+        except (ValueError, UnicodeError) as error:
+            raise ValueError(f"original source is not structured: {key}") from error
+    geometry = original["native_crossing_geometry"]
+    authority = original["native_authority_record"]
+    device = original["native_stop_device"]
+    motion = original["native_ego_kinematics"]
+    footprint = original["native_ego_footprint"]
+    if not isinstance(geometry, dict) or packet.get("nearest_track_rails") != geometry.get("nearest_track_rails"):
+        raise ValueError("packet rail geometry differs from original source")
+    context = packet.get("context")
+    if not isinstance(context, dict) or not isinstance(authority, dict) or not isinstance(device, dict):
+        raise ValueError("original authority and device source missing")
+    for field in ("crossing_type", "designation_authority", "dot_approval_source"):
+        if field in context or field in authority:
+            if context.get(field) != authority.get(field):
+                raise ValueError("packet crossing authority differs from original source")
+    for field in ("device_type", "device_governs"):
+        if context.get(field) != device.get(field):
+            raise ValueError("packet stop device differs from original source")
+    if not isinstance(motion, list) or not isinstance(footprint, list):
+        raise ValueError("original motion and footprint histories missing")
+    samples = packet.get("samples")
+    if not isinstance(samples, list) or len(samples) != len(motion) or len(samples) != len(footprint):
+        raise ValueError("packet samples differ from original histories")
+    for sample, movement, body in zip(samples, motion, footprint):
+        if (not isinstance(movement, dict) or not isinstance(body, dict) or
+                any(sample.get(key) != movement.get(key) for key in
+                    ("frame", "source_frame", "elapsed_s", "speed_mps")) or
+                any(sample.get(key) != body.get(key) for key in
+                    ("frame", "source_frame", "body_corners_xy_m"))):
+            raise ValueError("packet sample differs from original motion or footprint")
     return audit_saved_packet(packet)
 
 

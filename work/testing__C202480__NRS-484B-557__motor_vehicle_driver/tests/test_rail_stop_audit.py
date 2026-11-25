@@ -29,16 +29,55 @@ class RailStopAuditTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             p = packet()
+            records = {
+                "native_crossing_geometry": {"nearest_track_rails": p["nearest_track_rails"]},
+                "native_authority_record": {"crossing_type": p["context"]["crossing_type"],
+                                            "designation_authority": p["context"]["designation_authority"]},
+                "native_stop_device": {"device_type": p["context"]["device_type"],
+                                       "device_governs": p["context"]["device_governs"]},
+                "native_ego_kinematics": [{key: sample[key] for key in
+                    ("frame", "source_frame", "elapsed_s", "speed_mps")} for sample in p["samples"]],
+                "native_ego_footprint": [{key: sample[key] for key in
+                    ("frame", "source_frame", "body_corners_xy_m")} for sample in p["samples"]],
+            }
             for key, binding in p["sources"].items():
                 source = root / binding["path"]
                 source.parent.mkdir(parents=True, exist_ok=True)
-                source.write_text(key)
-                binding["sha256"] = hashlib.sha256(key.encode()).hexdigest()
+                data = json.dumps(records[key]).encode()
+                source.write_bytes(data)
+                binding["sha256"] = hashlib.sha256(data).hexdigest()
             packet_path = root / "packet.json"
             packet_path.write_text(json.dumps(p))
             self.assertTrue(AUDIT.audit_saved_file(packet_path)["complete_stop_observed"])
             (root / p["sources"]["native_stop_device"]["path"]).write_text("changed")
             with self.assertRaisesRegex(ValueError, "source hash differs"):
+                AUDIT.audit_saved_file(packet_path)
+
+    def test_saved_file_rejects_forged_packet_values_with_valid_source_hashes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            p = packet()
+            records = {
+                "native_crossing_geometry": {"nearest_track_rails": p["nearest_track_rails"]},
+                "native_authority_record": {"crossing_type": p["context"]["crossing_type"],
+                                            "designation_authority": p["context"]["designation_authority"]},
+                "native_stop_device": {"device_type": p["context"]["device_type"],
+                                       "device_governs": p["context"]["device_governs"]},
+                "native_ego_kinematics": [{key: sample[key] for key in
+                    ("frame", "source_frame", "elapsed_s", "speed_mps")} for sample in p["samples"]],
+                "native_ego_footprint": [{key: sample[key] for key in
+                    ("frame", "source_frame", "body_corners_xy_m")} for sample in p["samples"]],
+            }
+            for key, binding in p["sources"].items():
+                source = root / binding["path"]
+                source.parent.mkdir(parents=True, exist_ok=True)
+                data = json.dumps(records[key]).encode()
+                source.write_bytes(data)
+                binding["sha256"] = hashlib.sha256(data).hexdigest()
+            p["samples"][1]["speed_mps"] = 4
+            packet_path = root / "packet.json"
+            packet_path.write_text(json.dumps(p))
+            with self.assertRaisesRegex(ValueError, "differs from original motion"):
                 AUDIT.audit_saved_file(packet_path)
 
     def test_saved_file_rejects_path_traversal(self):

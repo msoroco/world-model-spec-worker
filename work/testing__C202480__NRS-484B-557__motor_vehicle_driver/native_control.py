@@ -11,7 +11,7 @@ FEET_PER_METRE = 3.280839895013123
 
 class RailApproachController:
     def __init__(self, ego, rail_xy, approach_unit_normal_xy, body_half_extent_m,
-                 stop_gap_ft, control_factory, *, rolling=False):
+                 stop_gap_ft, control_factory, *, rolling=False, depart_on_conflict=False):
         if stop_gap_ft <= 0 or body_half_extent_m <= 0:
             raise ValueError("positive stop gap and body half extent required")
         if abs(math.hypot(*approach_unit_normal_xy) - 1.0) > 1e-6:
@@ -23,6 +23,7 @@ class RailApproachController:
         self.target_gap_m = stop_gap_ft / FEET_PER_METRE
         self.control_factory = control_factory
         self.rolling = rolling
+        self.depart_on_conflict = depart_on_conflict
         self.stopped_frames = 0
         self.departed = False
 
@@ -44,7 +45,7 @@ class RailApproachController:
             phase = "departure_requested"
         elif gap_error <= 0.3 and abs(forward_speed) <= 0.05 and not self.rolling:
             self.stopped_frames += 1
-            if crossing_clear and self.stopped_frames >= 1:
+            if (crossing_clear or self.depart_on_conflict) and self.stopped_frames >= 1:
                 self.departed = True
                 control = self.control_factory(throttle=0.25, brake=0.0)
                 phase = "departure_requested"

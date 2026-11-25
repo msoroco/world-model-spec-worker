@@ -344,7 +344,56 @@
       }
     ]
   },
-  "source_observation_mapping": {},
+  "source_observation_mapping": {
+    "different_highway_identity": {
+      "source": [
+        "review.json",
+        "reviewed-packet.json",
+        "map.xodr"
+      ],
+      "observation": "reviewed public highway identities and distinct approach road IDs; original review pending"
+    },
+    "intersection_entry_order": {
+      "source": [
+        "signal-history.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ],
+      "observation": "original body polygon first overlap of reviewed crossing; both vehicles retained per frame"
+    },
+    "intersection_clearance": {
+      "source": [
+        "signal-history.json",
+        "reviewed-packet.json"
+      ],
+      "observation": "both original body polygons beyond reviewed crossing after entry"
+    },
+    "operative_official_device": {
+      "source": [
+        "review.json",
+        "reviewed-packet.json",
+        "signal-history.json"
+      ],
+      "observation": "reviewed official operative device controls crossing, matched to live signal readback"
+    },
+    "human_driver_scope": {
+      "source": [
+        "review.json",
+        "construction.json"
+      ],
+      "observation": "reviewed conventional motor vehicle and human driver scope"
+    },
+    "camera_visibility": {
+      "source": [
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "video_frames.jsonl"
+      ],
+      "observation": "actual pixels and frame joins require independent local review"
+    }
+  },
   "subsection4_qualification": {
     "source": "NRS 484B.250(1) and (4), as exported in inputs/coverage/branch-sources.json",
     "disposition": "This C125751 assignment compares an operative official traffic light and entry order. Inoperative-signal stop-line and yield rules are assigned separately to testing__C24811__NRS-484B-250-4__motor_vehicle_driver. A red operative light is not an inoperative signal. Exact Native and reviewed-source evidence must establish operative status before the official-device exception is used; no legal applicability is asserted from authored cell control.",

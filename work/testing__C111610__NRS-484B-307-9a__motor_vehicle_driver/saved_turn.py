@@ -40,7 +40,8 @@ def source_bytes(root, ref):
     return raw
 
 
-def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
+def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20,
+                        diagnostic=False):
     """Return a source-bound, nonacceptance measurement for one saved attempt.
 
     The manifest joins the site, original telemetry and every original camera
@@ -56,8 +57,28 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
     require(manifest['fps'] == fps and manifest['duration_frames'] == expected_frames, 'manifest timing mismatch')
     site = json.loads(source_bytes(root, manifest['site']))
     profile = json.loads(source_bytes(root, manifest['camera_profile']))
+    if not diagnostic:
+        require(expected_frames == 600, 'delivery requires 600 original frames')
+        require('frame_map' in manifest, 'original Native frame map missing')
+        attestation = manifest.get('native_source_attestation')
+        require(isinstance(attestation, dict) and
+                attestation.get('native_origin') is True and
+                attestation.get('site_sha256') == manifest['site']['sha256'] and
+                isinstance(attestation.get('source_ref'), str) and
+                bool(attestation['source_ref']),
+                'original Native source attestation missing or stale')
+        require(site.get('source_kind') == 'original_native_site_review',
+                'reviewed original site provenance missing')
+        adapter_ref = site.get('adapter_source')
+        require(isinstance(adapter_ref, dict) and
+                attestation.get('source_ref') == adapter_ref.get('path') and
+                attestation.get('adapter_sha256') == adapter_ref.get('sha256'),
+                'reviewed original adapter binding missing or stale')
+        source_bytes(root, adapter_ref)
     require(profile.get('fps') == fps and profile.get('duration_frames') == expected_frames and
-            profile.get('cameras') == ['front', 'left', 'right', 'rear'], 'camera profile mismatch')
+            profile.get('cameras') == ['overview', 'approach', 'reference_corner', 'driver_reference'], 'camera profile mismatch')
+    require(set(profile.get('dimensions', {})) == {'overview', 'approach', 'reference_corner', 'driver_reference'},
+            'camera profile dimensions missing')
     try:
         measured = _native.measure_attempt(site, root, manifest['telemetry'])
         case_result = _native.audit_case_measurement(case_suffix, measured)
@@ -85,9 +106,10 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
                     'original Native frame map clock gap')
             last_native_frame = frame
     cameras = manifest['cameras']
-    require(set(cameras) == {'front', 'left', 'right', 'rear'}, 'four original cameras required')
+    require(set(cameras) == {'overview', 'approach', 'reference_corner', 'driver_reference'}, 'four original cameras required')
     decoded = {}
-    for camera in ('front', 'left', 'right', 'rear'):
+    all_camera_paths = set()
+    for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
         frames = cameras[camera]
         require(isinstance(frames, list) and len(frames) == expected_frames, 'camera frame count mismatch: ' + camera)
         seen_paths = set()
@@ -96,7 +118,10 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
             require(item.get('frame') == frame, 'camera frame sequence mismatch: ' + camera)
             ref = item.get('source')
             require(isinstance(ref, dict) and ref.get('path') not in seen_paths, 'camera frame source repeated: ' + camera)
+            require(ref['path'] not in all_camera_paths,
+                    'original camera source reused across views')
             seen_paths.add(ref['path'])
+            all_camera_paths.add(ref['path'])
             raw = source_bytes(root, ref)
             try:
                 with Image.open(io.BytesIO(raw)) as image:
@@ -108,7 +133,8 @@ def audit_saved_attempt(root, manifest_ref, *, expected_frames=600, fps=20):
                 raise SavedSourceError('camera image decode failed: ' + camera) from exc
             if width_height is None:
                 width_height = dims
-            require(dims == width_height, 'camera dimensions changed: ' + camera)
+            require(dims == width_height and list(dims) == profile['dimensions'][camera],
+                    'camera dimensions changed: ' + camera)
         decoded[camera] = {'frames': len(frames), 'dimensions': list(width_height)}
     entry = measured['first_ego_entry']
     approach = [row for row in rows if row['frame'] <= entry['frame']]

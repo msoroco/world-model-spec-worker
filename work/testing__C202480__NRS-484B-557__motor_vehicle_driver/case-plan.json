@@ -184,11 +184,11 @@
     {
       "comparison_id": "cessation",
       "case_ids": [
-        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_clear",
         "testing__C202480__NRS-484B-557__motor_vehicle_driver__rolling"
       ],
       "fixed_conditions": [
-        "same reviewed crossing, stop-position target, vehicle, approach, cameras"
+        "same reviewed crossing, official device, 30-foot commanded stop-position target, vehicle, approach direction, crossing traffic, duration and four cameras"
       ],
       "deliberate_differences": [
         "commanded complete cessation versus rolling passage"
@@ -209,12 +209,30 @@
     }
   ],
   "observations": [
-    "official crossing and authority record",
-    "governing stop sign and landmark identity",
-    "nearest track rail geometry",
-    "original 20 Hz vehicle footprint and speed",
-    "subsequent movement and crossing conflict context",
-    "four synchronized cameras"
+    {
+      "name": "official crossing and authority record",
+      "mandatory": true
+    },
+    {
+      "name": "governing stop sign and landmark identity",
+      "mandatory": true
+    },
+    {
+      "name": "nearest track rail geometry",
+      "mandatory": true
+    },
+    {
+      "name": "original 20 Hz vehicle footprint and speed",
+      "mandatory": true
+    },
+    {
+      "name": "subsequent movement and crossing conflict context",
+      "mandatory": true
+    },
+    {
+      "name": "four synchronized cameras",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -241,7 +259,7 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original DOT designation, sign governance and Native map/rail survey are required by the production source gate; the frozen assignment contains no reviewed site packet."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -260,7 +278,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_constructed_case_plan",
+  "planning_status": "partial_source_gated_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -284,9 +302,109 @@
       "reason": "The railway-crossing task and stop sign directly support the required approach once crossing designation and sign governance are established."
     }
   ],
-  "source_observation_mapping": {
-    "stop_distance": "original body-corner coordinates and nearest rail line per frame; report corner range and minimum distance in feet without choosing a statutory vehicle reference point",
-    "cessation": "original 20 Hz speed history with exact zero-speed sample before first rail contact",
-    "due_care": "original scene, traffic actors, sight/camera and conflict packet for independent review; no automatic legal threshold"
-  }
+  "source_observation_mapping": {},
+  "selected_branch": "Stop distance, complete cessation and subsequent proceeding",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "crossing, sign, train/traffic and ego",
+        "interval": "full 45-second attempt"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and governing stop sign",
+        "interval": "full 45-second attempt"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "nearest rail and body-footprint gap",
+        "interval": "full 45-second attempt"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver approach and departure context",
+        "interval": "full 45-second attempt"
+      }
+    ]
+  },
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "official DOT-designated highway railroad crossing and governing stop sign",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "no_accepted_evidence",
+      "case_ids": [
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__inside_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__at_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__below_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__at_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__rolling",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_conflict",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_clear"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "stop within 50 feet but not less than 15 feet from nearest track",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "no_accepted_evidence",
+      "case_ids": [
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__inside_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__at_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__below_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__at_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_50"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "complete cessation before proceeding",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "no_accepted_evidence",
+      "case_ids": [
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__inside_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__at_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_15",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__below_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__at_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__above_50",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__rolling",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_conflict",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_clear"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "afterward proceed only upon exercising due care",
+      "source": {
+        "path": "inputs/testing__C202480__NRS-484B-557__motor_vehicle_driver/assignment.json",
+        "sha256": "dc9894dacfab2b1a0389c489a73ce63fb15d229eb34cce6a5bdaff294d07c341"
+      },
+      "status": "selected_required",
+      "evidence_or_gap": "no_accepted_evidence",
+      "case_ids": [
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_conflict",
+        "testing__C202480__NRS-484B-557__motor_vehicle_driver__depart_clear"
+      ]
+    }
+  ]
 }

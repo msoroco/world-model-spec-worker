@@ -240,10 +240,13 @@ class NativeCarlaAdapter:
         if self.cargo is not None:
             location = self.cargo.get_location()
             sample["cargo_position_m"] = [location.x, location.y, location.z]
-            right = transform.get_right_vector()
+            zone = self.site["zone"]
+            reference = self._station_transform(
+                (zone["start_station_m"] + zone["end_station_m"]) / 2)
+            right = reference.get_right_vector()
             sample["cargo_lateral_offset_m"] = (
-                (location.x - transform.location.x) * right.x +
-                (location.y - transform.location.y) * right.y)
+                (location.x - reference.location.x) * right.x +
+                (location.y - reference.location.y) * right.y)
         if self.carrier is not None:
             location = self.carrier.get_location()
             sample["carrier_position_m"] = [location.x, location.y, location.z]

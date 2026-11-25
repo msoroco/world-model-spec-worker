@@ -11,7 +11,7 @@ from signal_crossing import validate_source_packet
 from source_bindings import validate_review_refs
 
 
-SOURCES = ('signal-packet.json', 'signal-history.json', 'source-packet.json', 'review.json',
+SOURCES = ('signal-packet.json', 'signal-history.json', 'reviewed-packet.json', 'review.json',
            'map.xodr', 'trace.jsonl', 'video_frames.jsonl',
            'acquisition-provenance.json')
 
@@ -50,7 +50,7 @@ def build_report(attempt):
     config = json.loads((attempt / 'config.json').read_text())
     case_id = config.get('selected_case_id')
     packet = json.loads(sources['signal-packet.json'].read_text())
-    reviewed_packet = json.loads(sources['source-packet.json'].read_text())
+    reviewed_packet = json.loads(sources['reviewed-packet.json'].read_text())
     validate_source_packet(reviewed_packet, sources['map.xodr'].read_bytes(),
                            sources['review.json'].read_bytes())
     for ref in validate_review_refs(sources['review.json'].read_bytes(), attempt):
@@ -124,7 +124,7 @@ def saved_result(attempt, report):
     channels = attempt / 'channels'
     channels.mkdir(exist_ok=False)
     evidence = []
-    reviewed = json.loads((attempt / 'source-packet.json').read_text())
+    reviewed = json.loads((attempt / 'reviewed-packet.json').read_text())
     rows = history['frames']
     channel_values = {
         'ego_body_history': [(row['time_s'], row['ego']['body_vertices_xy_m']) for row in rows],
@@ -206,7 +206,7 @@ def saved_result(attempt, report):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': description,
               'recording_evidence': evidence,
-              'realized_observables': {'signal_crossing': observed},
+              'realized_observables': {},
               'physical_checks': physical, 'legal_verdict_claimed': False,
               'physical_acceptance_claimed': False,
               'provenance_kind': provenance['provenance_kind'],

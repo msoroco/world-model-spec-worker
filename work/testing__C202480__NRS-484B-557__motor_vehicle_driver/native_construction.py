@@ -19,7 +19,9 @@ def _read_source(root: Path, binding: dict, label: str) -> bytes:
     relative = Path(binding.get("path", ""))
     if relative.is_absolute() or ".." in relative.parts or not relative.parts:
         raise ValueError(f"unsafe {label} path")
-    path = root / relative
+    path = (root / relative).resolve()
+    if not path.is_relative_to(root.resolve()):
+        raise ValueError(f"unsafe {label} path")
     if not path.is_file():
         raise ValueError(f"missing {label} file")
     data = path.read_bytes()
@@ -68,6 +70,30 @@ def inspect_site(packet_path: Path, case: dict) -> dict:
     return packet
 
 
+def verify_production_site(packet_path: Path, case: dict) -> dict:
+    """Require independently cited original authority and survey sources.
+
+    Source-shaped CPU packets can test geometry, but cannot authorize a GPU run.
+    """
+    packet = inspect_site(packet_path, case)
+    review = packet.get("source_review")
+    if not isinstance(review, dict) or review.get("kind") != "original_site_review":
+        raise ValueError("independent original crossing site review missing")
+    for field in ("reviewer", "review_date", "map_source", "designation_record_citation",
+                  "sign_governance_citation", "rail_survey_citation", "camera_pose_citation"):
+        value = review.get(field)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"original crossing site review lacks {field}")
+        if any(word in value.lower() for word in ("synthetic", "fixture", "diagnostic", "placeholder")):
+            raise ValueError(f"diagnostic source cannot support {field}")
+    authority = packet["_authority"]
+    if authority.get("designation_record_citation") != review["designation_record_citation"]:
+        raise ValueError("designation citation differs from reviewed authority")
+    if authority.get("sign_governance_citation") != review["sign_governance_citation"]:
+        raise ValueError("sign governance citation differs from reviewed authority")
+    return packet
+
+
 def planned_ego_center_xy(packet: dict, case: dict) -> tuple[float, float]:
     """Offset the vehicle centre from a rail by body length plus target gap.
 
@@ -85,7 +111,7 @@ def planned_ego_center_xy(packet: dict, case: dict) -> tuple[float, float]:
 
 def create(world, packet_path: Path, case: dict, transform_factory):
     """Verify live map/sign, spawn ego at a reviewed crossing approach."""
-    packet = inspect_site(packet_path, case)
+    packet = verify_production_site(packet_path, case)
     live_map = world.get_map()
     if hashlib.sha256(live_map.to_opendrive().encode()).hexdigest() != packet["_opendrive_sha256"]:
         raise ValueError("live OpenDRIVE differs from reviewed source")
@@ -93,13 +119,19 @@ def create(world, packet_path: Path, case: dict, transform_factory):
     if str(packet["sign_landmark_id"]) not in landmarks:
         raise ValueError("reviewed crossing stop sign absent from Native map")
     x, y = planned_ego_center_xy(packet, case)
+    approach_distance = packet.get("approach_distance_m")
+    if type(approach_distance) not in (float, int) or not math.isfinite(approach_distance) or approach_distance <= 0:
+        raise ValueError("positive reviewed upstream approach distance required")
+    nx, ny = packet["_normal"]
+    spawn_x, spawn_y = x - nx * approach_distance, y - ny * approach_distance
     blueprint_id = packet.get("ego_blueprint_id")
     if not isinstance(blueprint_id, str) or not blueprint_id.startswith("vehicle."):
         raise ValueError("reviewed motor-vehicle blueprint required")
     blueprint = world.get_blueprint_library().find(blueprint_id)
-    transform = transform_factory(x, y, packet["_normal"])
+    transform = transform_factory(spawn_x, spawn_y, packet["_normal"])
     ego = world.try_spawn_actor(blueprint, transform)
     if ego is None:
         raise ValueError("Native ego spawn failed")
     return {"ego": ego, "packet": packet, "planned_center_xy_m": [x, y],
+            "spawn_center_xy_m": [spawn_x, spawn_y],
             "planned_gap_ft": case["planned_stop_body_gap_ft"]}

@@ -6,16 +6,19 @@ from saved_turn import audit_saved_attempt
 
 
 def audit_saved_pair(comparison_id, left_root, left_manifest_ref,
-                     right_root, right_manifest_ref, *, expected_frames=600):
+                     right_root, right_manifest_ref, *, expected_frames=600,
+                     diagnostic=False):
     if comparison_id not in PAIRS:
         raise ValueError("unknown exact red-plus-arrow comparison")
     if (left_root == right_root and
             left_manifest_ref.get("sha256") == right_manifest_ref.get("sha256")):
         raise ValueError("same original attempt reused for comparison")
     left = audit_saved_attempt(left_root, left_manifest_ref,
-                               expected_frames=expected_frames)
+                               expected_frames=expected_frames,
+                               diagnostic=diagnostic)
     right = audit_saved_attempt(right_root, right_manifest_ref,
-                                expected_frames=expected_frames)
+                                expected_frames=expected_frames,
+                                diagnostic=diagnostic)
     receipt = audit_pair(comparison_id, left["comparison_row"],
                          right["comparison_row"])
     receipt.update({

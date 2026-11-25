@@ -33,16 +33,17 @@ class SavedTurnTests(unittest.TestCase):
             'other_traffic': {'actor_id': 92, 'intersection_id': 'junction-1', 'route_lane_id': 3},
         }
         refs = {name: self.save_json(name, value) for name, value in original.items()}
-        site = {'cell_id': 'C111610', 'actor': 'motor_vehicle_driver', 'intersection_id': 'junction-1',
+        site = {'cell_id': 'C111610', 'actor': 'motor_vehicle_driver',
+                'source_kind': 'original_native_site_review', 'intersection_id': 'junction-1',
                 'ego_approach_lane_id': 1, 'arrow_destination_lane_id': 2,
                 'straight_destination_lane_id': 3, 'ego_head_id': 'ego-head',
                 'opposing_head_id': 'opp-head', 'adjacent_crosswalk_id': 'cw-1',
-                'arrow_direction': 'left', 'pedestrian_actor_id': 91,
+                'arrow_direction': 'approach', 'pedestrian_actor_id': 91,
                 'other_traffic_actor_id': 92, 'original_sources': refs}
         rows = []
         for i in range(3):
             rows.append({'frame': i, 'ego_head_id': 'ego-head', 'opposing_head_id': 'opp-head',
-                         'ego_red': True, 'opposing_red': True, 'ego_arrow_direction': 'left',
+                         'ego_red': True, 'opposing_red': True, 'ego_arrow_direction': 'approach',
                          'pedestrian_actor_id': 91, 'pedestrian_permission_source_id': 'ped-head',
                          'other_traffic_actor_id': 92, 'other_traffic_lawful_context': True,
                          'other_traffic_in_intersection': False, 'pedestrian_lawful_context': True,
@@ -50,7 +51,7 @@ class SavedTurnTests(unittest.TestCase):
                          'ego_route_lane_id': 2, 'ego_in_intersection': i == 2,
                          'ego_speed_mps': 2.0})
         cameras = {}
-        for camera in ('front', 'left', 'right', 'rear'):
+        for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             frames = []
             for i in range(3):
                 image = Image.new('RGB', (4, 3), color=(i * 60, 10, 20))
@@ -62,7 +63,8 @@ class SavedTurnTests(unittest.TestCase):
                          'site': self.save_json('site', site), 'telemetry': self.save_json('telemetry', rows),
                          'camera_profile': self.save_json('camera_profile',
                              {'fps': 20, 'duration_frames': 3,
-                              'cameras': ['front', 'left', 'right', 'rear']}),
+                              'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
+                              'dimensions': dict.fromkeys(('overview', 'approach', 'reference_corner', 'driver_reference'), [4, 3])}),
                          'cameras': cameras}
 
     def save_bytes(self, name, raw):
@@ -74,14 +76,14 @@ class SavedTurnTests(unittest.TestCase):
         return self.save_bytes(name + '.json', json.dumps(value, sort_keys=True).encode())
 
     def audit(self):
-        return saved.audit_saved_attempt(self.root, self.save_json('manifest', self.manifest), expected_frames=3)
+        return saved.audit_saved_attempt(self.root, self.save_json('manifest', self.manifest), expected_frames=3, diagnostic=True)
 
     def test_full_source_decode_and_measurement(self):
         result = self.audit()
         self.assertEqual(result['first_ego_entry_frame'], 2)
         self.assertEqual(result['original_frames'], 3)
         self.assertEqual({k: v['frames'] for k, v in result['decoded_cameras'].items()},
-                         dict.fromkeys(('front', 'left', 'right', 'rear'), 3))
+                         dict.fromkeys(('overview', 'approach', 'reference_corner', 'driver_reference'), 3))
         self.assertFalse(result['physical_acceptance'])
         self.assertTrue(result['comparison_row']['held_until_clear'])
         self.assertEqual(result['comparison_row']['original_signal_frames'], 3)
@@ -96,25 +98,26 @@ class SavedTurnTests(unittest.TestCase):
         self.manifest['duration_frames'] = 600
         self.manifest['camera_profile'] = self.save_json('camera_profile',
             {'fps': 20, 'duration_frames': 600,
-             'cameras': ['front', 'left', 'right', 'rear']})
+             'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
+             'dimensions': dict.fromkeys(('overview', 'approach', 'reference_corner', 'driver_reference'), [4, 3])})
         for camera, frames in self.manifest['cameras'].items():
             source_raw = (self.root / frames[-1]['source']['path']).read_bytes()
             for frame in range(3, 600):
                 frames.append({'frame': frame,
                                'source': self.save_bytes(camera + str(frame) + '.png', source_raw)})
-        result = saved.audit_saved_attempt(self.root, self.save_json('full_manifest', self.manifest))
+        result = saved.audit_saved_attempt(self.root, self.save_json('full_manifest', self.manifest), diagnostic=True)
         self.assertEqual(result['original_frames'], 600)
         self.assertEqual(sum(v['frames'] for v in result['decoded_cameras'].values()), 2400)
 
     def test_missing_changed_or_broken_camera_rejected(self):
-        self.manifest['cameras']['rear'].pop()
+        self.manifest['cameras']['driver_reference'].pop()
         with self.assertRaisesRegex(saved.SavedSourceError, 'camera frame count mismatch'):
             self.audit()
-        self.manifest['cameras']['rear'].append(self.manifest['cameras']['front'][2])
-        self.manifest['cameras']['front'][1]['source']['sha256'] = '0' * 64
+        self.manifest['cameras']['driver_reference'].append(self.manifest['cameras']['overview'][2])
+        self.manifest['cameras']['overview'][1]['source']['sha256'] = '0' * 64
         with self.assertRaisesRegex(saved.SavedSourceError, 'source hash mismatch'):
             self.audit()
-        self.manifest['cameras']['front'][1]['source'] = self.save_bytes('broken.png', b'broken')
+        self.manifest['cameras']['overview'][1]['source'] = self.save_bytes('broken.png', b'broken')
         with self.assertRaisesRegex(saved.SavedSourceError, 'camera image decode failed'):
             self.audit()
 
@@ -132,11 +135,11 @@ class SavedTurnTests(unittest.TestCase):
             self.audit()
 
     def test_frame_identity_and_escape_rejected(self):
-        self.manifest['cameras']['left'][1]['frame'] = 2
+        self.manifest['cameras']['approach'][1]['frame'] = 2
         with self.assertRaisesRegex(saved.SavedSourceError, 'camera frame sequence mismatch'):
             self.audit()
-        self.manifest['cameras']['left'][1]['frame'] = 1
-        self.manifest['cameras']['left'][1]['source']['path'] = '../outside.png'
+        self.manifest['cameras']['approach'][1]['frame'] = 1
+        self.manifest['cameras']['approach'][1]['source']['path'] = '../outside.png'
         with self.assertRaisesRegex(saved.SavedSourceError, 'source escapes attempt root'):
             self.audit()
 

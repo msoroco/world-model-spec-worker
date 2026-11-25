@@ -31,7 +31,7 @@ class SavedPairTests(unittest.TestCase):
     def test_exact_source_replay_and_reuse_rejection(self):
         left, right = self.pair()
         result = audit_saved_pair('pedestrian_yield', self.fixture.root, left,
-                                  self.fixture.root, right, expected_frames=3)
+                                  self.fixture.root, right, expected_frames=3, diagnostic=True)
         self.assertEqual(result['format'], 'c111610-source-bound-red-arrow-comparison-v1')
         self.assertEqual(result['decoded_view_frames'], 24)
         self.assertFalse(result['physical_acceptance'])
@@ -39,7 +39,7 @@ class SavedPairTests(unittest.TestCase):
                             result['source_hashes']['right']['telemetry'])
         with self.assertRaisesRegex(ValueError, 'same original attempt reused'):
             audit_saved_pair('pedestrian_yield', self.fixture.root, left,
-                             self.fixture.root, left, expected_frames=3)
+                             self.fixture.root, left, expected_frames=3, diagnostic=True)
 
     def test_tampered_source_and_missing_difference_rejected(self):
         left, right = self.pair()
@@ -48,7 +48,7 @@ class SavedPairTests(unittest.TestCase):
         path.write_bytes(original + b' ')
         with self.assertRaisesRegex(ValueError, 'source hash mismatch'):
             audit_saved_pair('pedestrian_yield', self.fixture.root, left,
-                             self.fixture.root, right, expected_frames=3)
+                             self.fixture.root, right, expected_frames=3, diagnostic=True)
         path.write_bytes(original)
         rows = json.loads(path.read_text())
         rows[1]['ego_in_intersection'] = False
@@ -57,4 +57,4 @@ class SavedPairTests(unittest.TestCase):
         right = self.fixture.save_json('right_manifest', right_manifest)
         with self.assertRaisesRegex(ValueError, 'pedestrian precedence difference not observed'):
             audit_saved_pair('pedestrian_yield', self.fixture.root, left,
-                             self.fixture.root, right, expected_frames=3)
+                             self.fixture.root, right, expected_frames=3, diagnostic=True)
