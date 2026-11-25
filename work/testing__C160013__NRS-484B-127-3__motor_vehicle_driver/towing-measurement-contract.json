@@ -1,0 +1,51 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Motor vehicles on a highway outside a business district form a caravan or motorcade",
+      "source": "NRS 484B.127(3)",
+      "output_key": "caravan_context",
+      "method": "source_hashed_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Space is left between each vehicle or combination of vehicles throughout caravan travel",
+      "source": "NRS 484B.127(3)",
+      "output_key": "caravan_gap",
+      "method": "source_hashed_body_gap",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "caravan_history.jsonl",
+        "video_frames.jsonl",
+        "towing-relationship.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Another vehicle or combination can enter and occupy that space without danger",
+      "source": "NRS 484B.127(3)",
+      "output_key": "caravan_entry",
+      "method": "source_hashed_occupancy",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_context.json",
+        "caravan_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "caravan_history.jsonl"
+    ],
+    "error_contains": "Missing required source: caravan_history.jsonl"
+  }
+}

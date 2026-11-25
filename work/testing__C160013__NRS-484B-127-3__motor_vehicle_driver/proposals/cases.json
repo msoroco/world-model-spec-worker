@@ -36,6 +36,14 @@
         "caravan_spacing_target": {
           "kind": "controller",
           "value": 10
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [],
@@ -133,6 +141,14 @@
         "caravan_spacing_target": {
           "kind": "controller",
           "value": 10
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -242,6 +258,14 @@
         "caravan_spacing_target": {
           "kind": "controller",
           "value": 3
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
         }
       },
       "unresolved_judgment_calls": [
@@ -317,11 +341,628 @@
         "comparison_or_standard": "physical body-gap and occupancy contrast, not a statutory threshold",
         "target_value_or_branch": 3
       }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__towed_entrant_can_occupy_gap",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "boundary_probe",
+      "rationale": "Full drawing-and-drawn body gap and entrant occupancy; statutory danger unresolved.",
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "enter_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 10
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native complete bodies",
+            "name": "caravan_member_bodies",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "original Native complete body",
+            "name": "entering_vehicle_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected complete-body edges on sourced highway",
+            "name": "inter_body_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          },
+          {
+            "method": "complete entrant body inside same-lane gap",
+            "name": "entrant_gap_occupancy",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original complete-body intersection",
+            "name": "member_contact",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native complete drawn-unit body",
+            "name": "drawn_unit_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected full combination front to next member rear",
+            "name": "combination_gap_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed district, route, lane and caravan membership",
+            "name": "road_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Statutory without-danger judgment has no supplied numeric cutoff.",
+          "Diagnostic site does not establish Native map or camera review."
+        ]
+      },
+      "paired_probe_id": "towing_combination_contrast",
+      "deliberate_differences": [
+        "drawing_drawn_combination"
+      ],
+      "probe": {
+        "primary_variable": "caravan_spacing_target",
+        "comparison_or_standard": "physical body-gap and occupancy contrast, not a statutory threshold",
+        "target_value_or_branch": 10
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_spacing_towed_physical-0000",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample physical caravan spacing with a drawn unit across a small CPU-supported range while leaving statutory danger unresolved.",
+      "paired_probe_id": "caravan_spacing_towed_physical",
+      "deliberate_differences": [
+        "caravan_spacing_target"
+      ],
+      "probe": {
+        "primary_variable": "caravan_spacing_target",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "caravan_spacing_target": 3.0
+        }
+      },
+      "sweep_id": "caravan_spacing_towed_physical",
+      "sweep_spec_version": "0f09120cb09bd218f87c57cb54b37c4971176d6ce8624f92b24191adb8e6b3cf",
+      "sweep_point": {
+        "caravan_spacing_target": 3.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "enter_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 3.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native complete bodies",
+            "name": "caravan_member_bodies",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "original Native complete body",
+            "name": "entering_vehicle_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected complete-body edges on sourced highway",
+            "name": "inter_body_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          },
+          {
+            "method": "complete entrant body inside same-lane gap",
+            "name": "entrant_gap_occupancy",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original complete-body intersection",
+            "name": "member_contact",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native complete drawn-unit body",
+            "name": "drawn_unit_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected full combination front to next member rear",
+            "name": "combination_gap_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed district, route, lane and caravan membership",
+            "name": "road_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Statutory without-danger judgment has no supplied numeric cutoff.",
+          "Diagnostic site does not establish Native map or camera review."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger",
+          "note": "Physical entry and body separation are observable; the statutory sufficiency and danger judgment has no supplied numerical cutoff."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "caravan_spacing_target",
+          "observable": "inter_body_opening",
+          "unit": "metres",
+          "measurement": {
+            "method": "original Native complete-body longitudinal opening from source-hashed caravan history",
+            "time_window": "full 45-second 20 Hz capture",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger"
+      ]
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_spacing_towed_physical-0001",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample physical caravan spacing with a drawn unit across a small CPU-supported range while leaving statutory danger unresolved.",
+      "paired_probe_id": "caravan_spacing_towed_physical",
+      "deliberate_differences": [
+        "caravan_spacing_target"
+      ],
+      "probe": {
+        "primary_variable": "caravan_spacing_target",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "caravan_spacing_target": 10.0
+        }
+      },
+      "sweep_id": "caravan_spacing_towed_physical",
+      "sweep_spec_version": "0f09120cb09bd218f87c57cb54b37c4971176d6ce8624f92b24191adb8e6b3cf",
+      "sweep_point": {
+        "caravan_spacing_target": 10.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "enter_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 10.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native complete bodies",
+            "name": "caravan_member_bodies",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "original Native complete body",
+            "name": "entering_vehicle_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected complete-body edges on sourced highway",
+            "name": "inter_body_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          },
+          {
+            "method": "complete entrant body inside same-lane gap",
+            "name": "entrant_gap_occupancy",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original complete-body intersection",
+            "name": "member_contact",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native complete drawn-unit body",
+            "name": "drawn_unit_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected full combination front to next member rear",
+            "name": "combination_gap_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed district, route, lane and caravan membership",
+            "name": "road_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Statutory without-danger judgment has no supplied numeric cutoff.",
+          "Diagnostic site does not establish Native map or camera review."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger",
+          "note": "Physical entry and body separation are observable; the statutory sufficiency and danger judgment has no supplied numerical cutoff."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "caravan_spacing_target",
+          "observable": "inter_body_opening",
+          "unit": "metres",
+          "measurement": {
+            "method": "original Native complete-body longitudinal opening from source-hashed caravan history",
+            "time_window": "full 45-second 20 Hz capture",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger"
+      ]
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_spacing_towed_physical-0002",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "rationale": "Sample physical caravan spacing with a drawn unit across a small CPU-supported range while leaving statutory danger unresolved.",
+      "paired_probe_id": "caravan_spacing_towed_physical",
+      "deliberate_differences": [
+        "caravan_spacing_target"
+      ],
+      "probe": {
+        "primary_variable": "caravan_spacing_target",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "target_value_or_branch": {
+          "caravan_spacing_target": 6.5
+        }
+      },
+      "sweep_id": "caravan_spacing_towed_physical",
+      "sweep_spec_version": "0f09120cb09bd218f87c57cb54b37c4971176d6ce8624f92b24191adb8e6b3cf",
+      "sweep_point": {
+        "caravan_spacing_target": 6.5
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "enter_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 6.5,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native complete bodies",
+            "name": "caravan_member_bodies",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "original Native complete body",
+            "name": "entering_vehicle_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected complete-body edges on sourced highway",
+            "name": "inter_body_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          },
+          {
+            "method": "complete entrant body inside same-lane gap",
+            "name": "entrant_gap_occupancy",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original complete-body intersection",
+            "name": "member_contact",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native complete drawn-unit body",
+            "name": "drawn_unit_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected full combination front to next member rear",
+            "name": "combination_gap_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed district, route, lane and caravan membership",
+            "name": "road_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Statutory without-danger judgment has no supplied numeric cutoff.",
+          "Diagnostic site does not establish Native map or camera review."
+        ]
+      },
+      "judgment_refs": [
+        {
+          "phrase": "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger",
+          "note": "Physical entry and body separation are observable; the statutory sufficiency and danger judgment has no supplied numerical cutoff."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "caravan_spacing_target",
+          "observable": "inter_body_opening",
+          "unit": "metres",
+          "measurement": {
+            "method": "original Native complete-body longitudinal opening from source-hashed caravan history",
+            "time_window": "full 45-second 20 Hz capture",
+            "statistic": "min"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger"
+      ]
     }
   ],
   "sweep_specs": [
     {
-      "sweep_id": "caravan_spacing_judgment",
+      "sweep_id": "caravan_spacing_towed_physical",
       "target_law_id": "NRS-484B-127-3",
       "judgment_refs": [
         {
@@ -329,12 +970,153 @@
           "note": "Physical entry and body separation are observable; the statutory sufficiency and danger judgment has no supplied numerical cutoff."
         }
       ],
-      "status": "incomplete",
-      "rationale": "Physical spacing and combination occupancy must be sampled without choosing a legal cutoff.",
-      "missing_inputs": [
-        "A supported Native controller for independently varying member spacing while preserving a reviewed caravan route and all original bodies.",
-        "A physical towing/combination participant and feasible range/spacing evidence for its entry."
+      "status": "complete",
+      "rationale": "Sample physical caravan spacing with a drawn unit across a small CPU-supported range while leaving statutory danger unresolved.",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "caravan_spacing_target",
+          "observable": "inter_body_opening",
+          "unit": "metres",
+          "min": 3,
+          "max": 10,
+          "spacing": 3.5,
+          "range_rationale": "The existing exact narrow and wide construction plans use 3 m and 10 m spacing targets; these are engineering endpoints, not legal limits.",
+          "spacing_rationale": "One midpoint gives coarse physical coverage without asserting a legal boundary.",
+          "feasibility_evidence": "cases/towing-sweep-geometry.json CPU proof checks planned 3, 6.5 and 10 m towing spawn transforms against sourced road polygon and planned body entry; actual Native blueprint extents and motion remain unverified.",
+          "measurement": {
+            "method": "original Native complete-body longitudinal opening from source-hashed caravan history",
+            "time_window": "full 45-second 20 Hz capture",
+            "statistic": "min"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "enter_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 10
+        },
+        "drawing_drawn_combination": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "inter_body_opening": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native complete bodies",
+            "name": "caravan_member_bodies",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "original Native complete body",
+            "name": "entering_vehicle_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected complete-body edges on sourced highway",
+            "name": "inter_body_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          },
+          {
+            "method": "complete entrant body inside same-lane gap",
+            "name": "entrant_gap_occupancy",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original complete-body intersection",
+            "name": "member_contact",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native complete drawn-unit body",
+            "name": "drawn_unit_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected full combination front to next member rear",
+            "name": "combination_gap_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed district, route, lane and caravan membership",
+            "name": "road_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Statutory without-danger judgment has no supplied numeric cutoff.",
+          "Diagnostic site does not establish Native map or camera review."
+        ]
+      },
+      "feasibility_evidence": "Existing untowed 3 m and 10 m constructions and the towed 10 m construction pass exact offline checks; towed 3 m and 6.5 m Native spawn geometry has not been constructed or proven.",
+      "spec_version": "0f09120cb09bd218f87c57cb54b37c4971176d6ce8624f92b24191adb8e6b3cf",
+      "planned_case_count": 3,
+      "selection_order": [
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_spacing_towed_physical-0000",
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_spacing_towed_physical-0001",
+        "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_spacing_towed_physical-0002"
       ]
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

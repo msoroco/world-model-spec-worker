@@ -81,11 +81,21 @@ def main():
         'description': 'Measured opening between complete bodies on original frames.'})
     observable_path.write_text(json.dumps(observable, indent=2) + '\n')
     expand_sweeps(cases, templates=[template], bindings=bindings)
-    expected = [item['case_id'] for item in sweep_plan['provisional_cases']]
+    expected = [PACKAGE.name + '__' + item['case_id']
+                for item in sweep_plan['provisional_cases']]
+    for item in cases['cases']:
+        if item.get('sweep_id') == sweep['sweep_id']:
+            item['case_id'] = PACKAGE.name + '__' + item['case_id']
+    for item in cases['sweep_specs'][0]['selection_order']:
+        if not item.startswith(sweep['sweep_id'] + '-'):
+            raise ValueError('Unexpected runtime sweep selection')
+    cases['sweep_specs'][0]['selection_order'] = [
+        PACKAGE.name + '__' + item
+        for item in cases['sweep_specs'][0]['selection_order']]
     expanded = [item['case_id'] for item in cases['cases'] if item.get('sweep_id') == sweep['sweep_id']]
     if expanded != expected:
         raise ValueError('Sweep grid case IDs or order changed')
-    diagnostics = json.loads((PACKAGE / 'towing-sweep-diagnostic-manifest.json').read_text())
+    diagnostics = json.loads((PACKAGE / 'qualified-towing-sweep-manifest.json').read_text())
     for item in diagnostics['cases']:
         manifest['cases'].append({'case_id': item['case_id'], 'construction': item['construction'], 'kind': 'delivery'})
         target = STAGE / item['construction']
