@@ -255,6 +255,20 @@ def run_native(output, host, port):
                  case['case_suffix'], signal_reader, output, sensors, scratch,
                  camera_profile_ref, context_ref, other_context_ref,
                  before_tick=before_tick, after_tick=after_tick)
+        sample_dir = output / 'source-frame-samples'
+        sample_dir.mkdir(exist_ok=False)
+        sample_refs = {}
+        for view in VIEWS:
+            sample_refs[view] = {}
+            for index in (0, 450, 899):
+                relative = f'source-frame-samples/{view}-{index:06d}.png'
+                original = scratch / view / f'{index:06d}.png'
+                if not original.is_file():
+                    raise ValueError('original camera PNG sample missing')
+                shutil.copyfile(original, output / relative)
+                sample_refs[view][str(index)] = sealed_ref(output, relative)
+        (output / 'source-frame-samples.json').write_text(
+            json.dumps({'case_id': case['case_id'], 'samples': sample_refs}, sort_keys=True) + '\n')
         phase = 'closing'
         pipeline.close(); pipeline = None
         frame_map.close(); frame_map = None

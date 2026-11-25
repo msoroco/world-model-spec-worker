@@ -1,6 +1,6 @@
 # testing__C111125__NRS-484B-307-2a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery prepared after production-audit correction. The current proof summary is at the end; Native capture and independent manual source review remain local execution checks.
 
 Exact law: NRS 484B.307(2)(a) — When the signal is circular green alone: Vehicular traffic facing the signal may proceed straight through or turn right or left unless another device at the place prohibits either or both such turns. Such vehicular traffic, including vehicles turning right or left, must yield the right-of-way to other vehicles and to pedestrians lawfully within the intersection or an adjacent crosswalk at the time the signal is exhibited.
 Assigned branch(es): Straight movement under circular green alone.
@@ -90,3 +90,35 @@ Pinned preflight, 26 focused tests and scoped static passed. Exact scoped strict
 - `cpu-session-strict.log` SHA256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` exit 1.
 
 Remaining CPU work: source-reviewed original site/profile/context, operator world/actor/control ownership, four exact construction and finalizer bundles, canonical semantic proposals/manifest, offline and positive/negative compatibility proofs, saved-only delivery/comparison receipts.
+
+## CPU delivery ready checkpoint, 2026-11-25
+
+Four exact selected cases now have source-gated Native constructions, 900-tick 20 Hz acquisition wiring, four source-surveyed cameras, original signal readback, saved analysis and two tested construction candidates each. The primary and the 0.75 engineering throttle fallback preserve the same law, cell, case, original site and recording contract. Both candidates passed exact offline and positive/negative compatibility checks. The canonical semantic stage chain passed its pinned validator with four selected boundary probes and one explicit incomplete judgment sweep plan; no legal cutoff or verdict is asserted.
+
+Each case passed three measured synthetic physical fixture states (met, not_met, unverified) and an ordered capture/encoder/restoration/Native exit/owner release/saved-processing lifecycle test. Each case also passed saved-only analysis with original input hashes unchanged, an independent positive and missing-camera diagnostic delivery audit, and all three planned comparison pairs passed positive and stale-signal negative audits. The diagnostic fixture outcomes are software proof only. Actual original CARLA motion, official circular-only head, lawful-presence source, visible participants, camera pixels and physical completion must be reviewed during delivery.
+
+The exact scoped command `.venv-cpu/bin/python worker_check.py --assignment testing__C111125__NRS-484B-307-2a__motor_vehicle_driver --complete --require-delivery-ready` passed with exit 0 under `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111125-2a-owner`, `TMPDIR` there, and `PYTHONDONTWRITEBYTECODE=1`. Pinned CPU preflight and the focused test suite also passed. See `result.json`, `cpu-final-strict.log`, `cpu-final-preflight.log`, and `cpu-final-tests.log`.
+
+- Execution manifest SHA-256: `6a1ea71e327310305ff32894d9ddbd0e7bd057a9dc9f7fb3a808c89be5e1fca1`.
+- Case plan SHA-256: `820224c17027820f6b76c8db53cd4ac113afd52d4a239e08b83930de495f85df`.
+- Semantic index SHA-256: `2a8746d42682ef6c61f52ad89a2328b5c713afc136c56c74edde8665e8fb09cb`.
+- Assignment-local queue proposal SHA-256: `e3bf966b01e6d4b7c7fba7583983c19b14bf5ea7608e10d7e456100fea63bae8`. The lead integrates its four exact cases, fallback commands and three comparison audits into the shared queue.
+- Scoped strict log SHA-256: `48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c`.
+
+The first GPU delivery command in `result.json` supplies the exact case and local CARLA variables. The operator must provide `C111125_ORIGINAL_SITE_BUNDLE` after original map/head/route/camera review. The Native runner fails closed when that reviewed bundle or its source hashes are absent or inconsistent; readiness does not claim a physical recording.
+
+## Production source review correction, 2026-11-25
+
+The previous production audit decoded only one RGB frame per camera and accepted saved physical completion without an independent pixel and physical review. That evidence did not support `actual_pixels` or `physical_completion`. The result is reverted to truthful partial and the assignment-local GPU queue proposal is held as a draft.
+
+The Native runner now preserves original camera PNG samples at frames 0, 450 and 899 for every view before sealing. The production audit checks the capture seal source digest, all sealed source bytes, original Native acquisition bindings, encoder closure and world restoration, media receipt, and saved physical source hashes. It compares each preserved PNG RGB buffer with the corresponding lossless decoded video frame and requires a separate manual review bound to the capture seal, saved result, original events and frame map, all camera media, and sampled RGB hashes. The reviewer must record source-frame observations of the circular green, other-user context, ego yield, physical completion and all four views; missing, stale, unverified or nonoriginal-frame review fails closed. It still claims no legal verdict.
+
+The focused test suite includes negative changes to media bytes, restoration, PNG/video pixels, review source hashes, unverified physical completion and frame identity. Actual Native capture and independent source review remain unperformed, so the production audit has not produced an accepted original-source receipt.
+
+Focused suite: 39 tests passed; log SHA-256 `3f66d77c18d206ed25861423b3d32eafdfec5242e704cf642dd87c06bb6f83b8`. The exact scoped strict command was rerun and fails only because `result.json` is deliberately partial; log SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`. Assignment static/complete check passed. No original Native frames or independent review have been claimed.
+
+## CPU proof refresh after production correction
+
+All eight primary/fallback constructions were rehashed and rerun through exact offline and positive/negative compatibility proof after the runner preserved original PNG samples. Four source-preserving saved-only diagnostic runs and four independent positive/missing-camera delivery diagnostics were also refreshed; the production review negatives remain in the 39-test focused suite. The complete scoped static check passed. The production audit intentionally fails closed on a Native attempt until its sealed sources and independent source review exist; CPU delivery preparation is complete without claiming original physical or legal acceptance.
+
+The exact assignment-scoped strict CPU delivery gate passed after refreshing all eight construction offline/compatibility proofs, four physical/lifecycle receipts and saved-only proofs. Strict log SHA-256: `48e9f59ff0f28d1257ed36d0db584e4dad09e3ef96fbf6b28498472188867f1c`. This is CPU delivery readiness only. Original CARLA motion, sampled pixel review, lawful-presence context and independent physical completion review remain local execution requirements before any source acceptance.

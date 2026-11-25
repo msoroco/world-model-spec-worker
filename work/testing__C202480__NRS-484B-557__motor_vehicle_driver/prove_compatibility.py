@@ -26,6 +26,13 @@ def keep(source: Path, target: Path) -> None:
     target.write_bytes(data)
 
 
+def cache_valid(cached: dict, entry: dict, recipe: Path, contract: Path) -> bool:
+    return (cached.get("passed") is True
+            and cached.get("construction_sha256") == entry["construction_sha256"]
+            and cached.get("fixture_recipe_sha256") == sha(recipe)
+            and cached.get("measurement_contract_sha256") == sha(contract))
+
+
 def main() -> None:
     ROOT.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(ROOT),
@@ -41,10 +48,11 @@ def main() -> None:
             output / "compatibility.json").is_file() else {}
         recipe = REPO / entry["fixture_recipe"]
         contract = HERE / entry["measurement_contract"]
-        current = (cached.get("passed") is True
-                   and cached.get("construction_sha256") == entry["construction_sha256"]
-                   and cached.get("fixture_recipe_sha256") == sha(recipe)
-                   and cached.get("measurement_contract_sha256") == sha(contract))
+        current = cache_valid(cached, entry, recipe, contract)
+        if current:
+            stale = dict(cached, construction_sha256="0" * 64)
+            if cache_valid(stale, entry, recipe, contract):
+                raise ValueError("stale construction cache was accepted")
         if not current:
             if output.exists():
                 shutil.rmtree(output)

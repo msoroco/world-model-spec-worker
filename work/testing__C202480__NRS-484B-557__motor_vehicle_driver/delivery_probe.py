@@ -22,6 +22,7 @@ def main() -> None:
     parser.add_argument("--case", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--negative", action="store_true")
+    parser.add_argument("--negative-incomplete-seal", action="store_true")
     args = parser.parse_args()
     manifest = json.loads((HERE / "execution-manifest.json").read_text())
     entry = next(item for item in manifest["cases"] if item["case_id"] == args.case)
@@ -41,6 +42,9 @@ def main() -> None:
     seal = {"format": "worker-sealed-capture", "provenance_kind": "synthetic_fixture",
             "diagnostic_fixture": True, "sources": {name: sha(output / name) for name in names}}
     (output / "capture-seal.json").write_text(json.dumps(seal, separators=(",", ":")) + "\n")
+    if args.negative_incomplete_seal:
+        del seal["sources"]["native-stop-device.json"]
+        (output / "capture-seal.json").write_text(json.dumps(seal, separators=(",", ":")) + "\n")
     if args.negative:
         damaged = output / "native-stop-device.json"
         damaged.write_text(damaged.read_text().rstrip("\n") + " \n")

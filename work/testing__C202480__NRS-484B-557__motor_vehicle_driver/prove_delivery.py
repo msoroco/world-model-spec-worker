@@ -26,24 +26,27 @@ def main() -> None:
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(HERE.name + "__")
         outcomes = []
-        for negative in (False, True):
-            label = "negative" if negative else "positive"
+        for label in ("positive", "negative", "incomplete-seal"):
             output = ROOT / (suffix + "-" + label)
             if output.exists():
                 shutil.rmtree(output)
             command = [str(REPO / ".venv-cpu/bin/python"), str(script),
                        "--case", entry["case_id"], "--output", str(output)]
-            if negative:
+            if label == "negative":
                 command.append("--negative")
+            elif label == "incomplete-seal":
+                command.append("--negative-incomplete-seal")
             done = subprocess.run(command, cwd=REPO,
                                   env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1"),
                                   capture_output=True, text=True, timeout=180)
             log = HERE / ("delivery-" + suffix + "-" + label + ".log")
             log.write_text((done.stdout + done.stderr).rstrip("\n") + "\n")
-            expected = "sealed original source changed: native-stop-device.json"
-            if negative:
+            expected = ("sealed original source changed: native-stop-device.json"
+                        if label == "negative" else
+                        "capture seal lacks complete original source inventory")
+            if label != "positive":
                 if done.returncode == 0 or expected not in log.read_text():
-                    raise ValueError("sealed-source negative failed: " + suffix)
+                    raise ValueError("sealed-source negative failed: " + suffix + " " + label)
             elif done.returncode or '"diagnostic_audit_test_passed": true' not in done.stdout:
                 raise ValueError("independent audit failed: " + suffix + done.stderr[-500:])
             outcomes.append({"command": " ".join(command), "exit_code": done.returncode,
@@ -63,7 +66,12 @@ def main() -> None:
             "negative_exit_code": outcomes[1]["exit_code"],
             "negative_expected_error": "sealed original source changed: native-stop-device.json",
             "negative_log": outcomes[1]["log"],
-            "negative_log_sha256": outcomes[1]["log_sha256"]}
+            "negative_log_sha256": outcomes[1]["log_sha256"],
+            "incomplete_seal_command": outcomes[2]["command"],
+            "incomplete_seal_exit_code": outcomes[2]["exit_code"],
+            "incomplete_seal_expected_error": "capture seal lacks complete original source inventory",
+            "incomplete_seal_log": outcomes[2]["log"],
+            "incomplete_seal_log_sha256": outcomes[2]["log_sha256"]}
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
         print(suffix, "independent delivery audit and tamper rejection passed", flush=True)
 

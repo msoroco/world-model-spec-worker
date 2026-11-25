@@ -236,44 +236,29 @@
   ],
   "observations": [
     {
-      "name": "native_frame_map",
+      "name": "ego_body_footprint",
       "mandatory": true,
-      "source": "original Native 20 Hz frame map and actor motion"
+      "source": "live post-tick bounding-box projection on reviewed curb station"
     },
     {
-      "name": "native_road_lane",
+      "name": "ego_speed",
       "mandatory": true,
-      "source": "Native map identity, road and one-way lane readback"
-    },
-    {
-      "name": "yellow_curb_zone",
-      "mandatory": true,
-      "source": "original curb image/geometry and station extents"
-    },
-    {
-      "name": "posted_sign",
-      "mandatory": true,
-      "source": "original sign pixels/text and civil windows"
-    },
-    {
-      "name": "commercial_vehicle_status",
-      "mandatory": true,
-      "source": "source-reviewed enterprise-use dossier bound to vehicle identity"
+      "source": "live post-tick CARLA velocity"
     },
     {
       "name": "freight_activity",
       "mandatory": true,
-      "source": "original cargo actor transfer interval and freight purpose source"
+      "source": "original cargo actor lateral displacement while ego halted"
     },
     {
-      "name": "civil_time",
+      "name": "posted_civil_time",
       "mandatory": true,
-      "source": "sourced civil date/time and time-zone join"
+      "source": "sealed original sign and civil-time source"
     },
     {
-      "name": "four_camera_media",
+      "name": "camera_frame_map",
       "mandatory": true,
-      "source": "original synchronized camera streams and decoded pixels"
+      "source": "four original RGB frame identities and SHA-256 hashes"
     }
   ],
   "sources": [
@@ -302,7 +287,8 @@
   "runtime_uncertainties": [
     "No reviewed Native one-way yellow-curb/sign site source, commercial enterprise dossier, original cargo transfer, civil-time readback, or physical four-view capture yet.",
     "Legal interpretation outside posted times, stopping exclusions, and separate taxicab passenger use remain unresolved; no legal conclusion is inferred from fixture values.",
-    "The separate taxicab passenger loading, unloading, or waiting alternative is outside this frozen motor_vehicle_driver commercial-freight witness and remains an unresolved law-wide branch; these six cases do not establish taxicab coverage."
+    "The separate taxicab passenger loading, unloading, or waiting alternative is outside this frozen motor_vehicle_driver commercial-freight witness and remains an unresolved law-wide branch; these six cases do not establish taxicab coverage.",
+    "Road/lane identity, yellow zone and sign geometry, commercial enterprise status, freight purpose, and civil-time source are mandatory independent source audits in the original delivery; the five named 20 Hz capture channels alone cannot establish those facts."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -381,5 +367,47 @@
         "interval": "0-45 s, every synchronized frame"
       }
     ]
-  }
+  },
+  "source_gated_observations": [
+    {
+      "name": "native_frame_map",
+      "mandatory": true,
+      "source": "original Native 20 Hz frame map and actor motion"
+    },
+    {
+      "name": "native_road_lane",
+      "mandatory": true,
+      "source": "Native map identity, road and one-way lane readback"
+    },
+    {
+      "name": "yellow_curb_zone",
+      "mandatory": true,
+      "source": "original curb image/geometry and station extents"
+    },
+    {
+      "name": "posted_sign",
+      "mandatory": true,
+      "source": "original sign pixels/text and civil windows"
+    },
+    {
+      "name": "commercial_vehicle_status",
+      "mandatory": true,
+      "source": "source-reviewed enterprise-use dossier bound to vehicle identity"
+    },
+    {
+      "name": "freight_activity",
+      "mandatory": true,
+      "source": "original cargo actor transfer interval and freight purpose source"
+    },
+    {
+      "name": "civil_time",
+      "mandatory": true,
+      "source": "sourced civil date/time and time-zone join"
+    },
+    {
+      "name": "four_camera_media",
+      "mandatory": true,
+      "source": "original synchronized camera streams and decoded pixels"
+    }
+  ]
 }

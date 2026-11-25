@@ -30,13 +30,24 @@ def _decoded_bgra(video: Path, index: int, *, png: bool = False) -> bytes:
     return subprocess.check_output(command, timeout=120)
 
 
-def _verify_native_pixel_samples(attempt: Path, seal: dict) -> dict:
+def _verify_native_pixel_samples(attempt: Path, seal: dict, mapping: list) -> dict:
     inventory = json.loads((attempt / "pixel-sample-inventory.json").read_text())
     joins = json.loads((attempt / "camera-frame-joins.json").read_text())
     expected = {(camera, index) for camera in CAMERAS for index in (0, 450, 899)}
     rows = inventory.get("samples", [])
     if inventory.get("frames") != [0, 450, 899] or len(joins) != 900 or len(rows) != len(expected):
         raise ValueError("original PNG sample inventory incomplete")
+    for index, joined in enumerate(joins):
+        if (joined.get("frame") != index
+                or joined.get("source_frame") != mapping[index]["carla_frame"]
+                or set(joined.get("cameras", {})) != set(CAMERAS)):
+            raise ValueError("original camera frame joins incomplete")
+        for name in CAMERAS:
+            camera = joined["cameras"][name]
+            if (camera.get("frame") != joined["source_frame"]
+                    or camera.get("source_video") != name + ".mkv"
+                    or len(camera.get("original_bgra_sha256", "")) != 64):
+                raise ValueError("original camera source hash join differs")
     if {(r.get("camera"), r.get("video_frame")) for r in rows} != expected:
         raise ValueError("original PNG sample coverage differs")
     verified = {}
@@ -62,7 +73,8 @@ def _verify_native_pixel_samples(attempt: Path, seal: dict) -> dict:
     return verified
 
 
-def _independent_review(attempt: Path, seal: dict, joins: dict) -> dict:
+def _independent_review(attempt: Path, seal: dict, joins: dict,
+                        measurement: dict | None = None) -> dict:
     path = attempt / "independent-physical-review.json"
     if not path.is_file():
         raise ValueError("independent original-frame physical review missing")
@@ -83,8 +95,26 @@ def _independent_review(attempt: Path, seal: dict, joins: dict) -> dict:
         if (not isinstance(value, dict) or value.get("status") != "verified"
                 or not value.get("original_frame_refs") or not value.get("finding")):
             raise ValueError("independent original-frame review did not verify: " + name)
-        if any(ref not in joins for ref in value["original_frame_refs"]):
-            raise ValueError("independent review references an unjoined original frame")
+        for ref in value["original_frame_refs"]:
+            if ref in joins:
+                continue
+            parts = ref.split(":") if isinstance(ref, str) else []
+            if (len(parts) != 3 or parts[0] != "video" or parts[1] not in CAMERAS
+                    or not parts[2].isdigit() or int(parts[2]) >= 900):
+                raise ValueError("independent review references an unjoined original frame")
+            if parts[1] + ".mkv" not in seal["sources"]:
+                raise ValueError("independent review references an unsealed video")
+    if measurement and measurement.get("first_stop_frame") is not None:
+        stop = measurement["first_stop_frame"]
+        for name in ("ego_body_stop_footprint", "cessation"):
+            refs = checks[name]["original_frame_refs"]
+            if not any(ref == f"video:{camera}:{stop}" for camera in CAMERAS for ref in refs):
+                raise ValueError("independent review omitted measured stop frame: " + name)
+        if measurement.get("proceeding_observed"):
+            refs = checks["departure_clearance"]["original_frame_refs"]
+            if not any(isinstance(ref, str) and ref.startswith("video:")
+                       and int(ref.rsplit(":", 1)[1]) > stop for ref in refs):
+                raise ValueError("independent review omitted post-stop departure frame")
     return review
 
 
@@ -101,21 +131,27 @@ def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
     if provenance.get("provenance_kind") != seal.get("provenance_kind"):
         raise ValueError("capture provenance and seal differ")
     required_sealed = set(SOURCES) | {name + ".mkv" for name in CAMERAS}
+    if (attempt / "native-conflict-history.json").is_file():
+        required_sealed.add("native-conflict-history.json")
     if not synthetic:
         required_sealed |= set(NATIVE_ORIGINALS)
         required_sealed |= {f"original-{name}-{index:03d}.png"
                             for name in CAMERAS for index in (0, 450, 899)}
-        if (attempt / "native-conflict-history.json").is_file():
-            required_sealed.add("native-conflict-history.json")
     if not required_sealed <= set(seal["sources"]):
         raise ValueError("capture seal lacks complete original source inventory")
     for name, checksum in seal["sources"].items():
-        path = attempt / name
+        path = (attempt / name).resolve()
+        if not path.is_relative_to(attempt):
+            raise ValueError("capture seal escapes original attempt")
         if not path.is_file() or sha(path) != checksum:
             raise ValueError("sealed original source changed: " + name)
     if config["selected_case_id"] != config["case"]["case_id"]:
         raise ValueError("selected case identity differs")
     measurement = audit_saved_file(attempt / "rail-stop-packet.json")
+    packet = json.loads((attempt / "rail-stop-packet.json").read_text())
+    if any(binding.get("path") not in seal["sources"]
+           for binding in packet.get("sources", {}).values()):
+        raise ValueError("rail measurement used an unsealed original source")
     trace = [json.loads(line) for line in (attempt / "trace.jsonl").read_text().splitlines()]
     mapping = [json.loads(line) for line in (attempt / "video_frames.jsonl").read_text().splitlines()]
     if len(trace) != 900 or len(mapping) != 900:
@@ -142,8 +178,8 @@ def audit(attempt: Path, *, diagnostic_test: bool = False) -> dict:
     joined_pixels = {}
     review = None
     if not synthetic:
-        joined_pixels = _verify_native_pixel_samples(attempt, seal)
-        review = _independent_review(attempt, seal, joined_pixels)
+        joined_pixels = _verify_native_pixel_samples(attempt, seal, mapping)
+        review = _independent_review(attempt, seal, joined_pixels, measurement)
     if diagnostic_test:
         if not synthetic or provenance.get("diagnostic_fixture") is not True:
             raise ValueError("diagnostic test requires synthetic provenance")
