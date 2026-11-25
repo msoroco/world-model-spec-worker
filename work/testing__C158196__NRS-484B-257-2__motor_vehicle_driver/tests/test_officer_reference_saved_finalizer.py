@@ -24,7 +24,13 @@ class OfficerReferenceSavedFinalizerTests(unittest.TestCase):
                    'stop_line_reference')
         (self.attempt / 'config.json').write_text(json.dumps({
             'selected_case_id': case_id, 'law_id': 'NRS-484B-257-2',
-            'cell_id': 'C158196', 'actor': 'motor_vehicle_driver'}))
+            'cell_id': 'C158196', 'actor': 'motor_vehicle_driver',
+            'duration_s': 30, 'rate_hz': 20,
+            'case': {'recording_description': {'channels': []}},
+            'physical_completion': {'criterion': 'travel_progress',
+                                    'motion_source': 'officer_reference_history.jsonl',
+                                    'body_key': 'ego_body_vertices_xy_m',
+                                    'context_sources': [], 'minimum_progress_m': 0.25}}))
         reference = from_authored_site(self.site)
         x = reference['x_m'] - 2
         body = [[x + dx, dy] for dx, dy in
@@ -34,22 +40,26 @@ class OfficerReferenceSavedFinalizerTests(unittest.TestCase):
                    'case_id': case_id, 'site_sha256':
                    hashlib.sha256(self.site.read_bytes()).hexdigest(),
                    'fixed_delta_seconds': 0.05, 'frame_count': 600, 'rows': []}
-        frames, trace, evidence = [], [], []
+        frames, history, trace, evidence = [], [], [], []
         for i in range(600):
             fid, time_s = 101 + i, (i + 1) * 0.05
             cameras = {name: {'carla_frame': fid, 'video_frame': i,
-                              'raw_source': str(self.attempt / (name + '.mkv')) +
-                              '#frame-' + str(i)} for name in finalizer.CAMERAS}
+                              'raw_source': name + '.mkv#frame-' + str(i)}
+                       for name in finalizer.CAMERAS}
             capture['rows'].append({'frame_index': i, 'carla_frame': fid,
                                     'time_s': time_s, 'stopping_reference': reference,
                                     'ego_body_vertices_xy_m': body,
                                     'ego_front_x_m': x + 1, 'ego_speed_mps': 0.0,
                                     'camera_raw_sources': cameras})
             frames.append({'video_frame': i, 'carla_frame': fid, 'time_s': time_s})
+            history.append({'frame': fid, 'time_s': time_s,
+                            'ego_body_vertices_xy_m': body, 'ego_speed_mps': 0.0})
             trace.append({'frame': fid, 'time_s': time_s})
             evidence.append({'original_frame': fid})
         (self.attempt / 'officer-reference-capture.json').write_text(json.dumps(capture))
-        for name, rows in (('video_frames.jsonl', frames), ('trace.jsonl', trace),
+        for name, rows in (('video_frames.jsonl', frames),
+                           ('officer_reference_history.jsonl', history),
+                           ('trace.jsonl', trace),
                            ('capture/evidence.jsonl', evidence)):
             (self.attempt / name).write_text(''.join(json.dumps(row) + '\n' for row in rows))
         for name in finalizer.CAMERAS:
@@ -72,6 +82,25 @@ class OfficerReferenceSavedFinalizerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'frame differs'):
             finalizer.analyze(self.attempt, self.site)
         probe.assert_not_called()
+
+    @patch.object(finalizer, '_probe')
+    def test_native_result_retains_unresolved_judgment(self, probe):
+        output = self.attempt / 'analysis-report.json'
+        report = finalizer.finalize(self.attempt, output, self.site)
+        native = json.loads((self.attempt / 'result.json').read_text())
+        self.assertEqual(report['legal_exception_judgment'], 'unresolved')
+        stop_measurement = report['measurements']['first_engineering_stop_before_reference']
+        self.assertEqual(stop_measurement['method'], 'measure_reference_stop')
+        self.assertTrue(stop_measurement['value']['observed'])
+        self.assertEqual(set(stop_measurement['sources']),
+                         {'officer-reference-capture.json',
+                          'officer_reference_history.jsonl', 'video_frames.jsonl'})
+        self.assertEqual(native['physical_checks']['maneuver']['status'], 'not_met')
+        self.assertFalse(native['maneuver_completed'])
+        self.assertEqual(len((self.attempt / 'channels' /
+                              'ego_body_front_at_reference.jsonl').read_text().splitlines()),
+                         600)
+        self.assertTrue(output.is_file())
 
 
 if __name__ == '__main__':

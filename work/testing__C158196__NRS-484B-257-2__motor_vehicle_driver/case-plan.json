@@ -64,6 +64,63 @@
         "non_obligated_traffic"
       ],
       "physical_risk": "Native actor timing may not realize the intended occupancy or approach interval; original samples must decide"
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Source-grounded officer controls go alternative",
+      "physical_risk": "Native motion, officer visibility and stopping placement must be checked from original sources",
+      "gap_ids": [
+        "subsection_1_stopping_reference",
+        "officer_exception"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Source-grounded officer controls hold alternative",
+      "physical_risk": "Native motion, officer visibility and stopping placement must be checked from original sources",
+      "gap_ids": [
+        "subsection_1_stopping_reference",
+        "officer_exception"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Source-grounded officer present inactive alternative",
+      "physical_risk": "Native motion, officer visibility and stopping placement must be checked from original sources",
+      "gap_ids": [
+        "subsection_1_stopping_reference",
+        "officer_exception"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Source-grounded stop line reference alternative",
+      "physical_risk": "Native motion, officer visibility and stopping placement must be checked from original sources",
+      "gap_ids": [
+        "subsection_1_stopping_reference"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Source-grounded crosswalk reference alternative",
+      "physical_risk": "Native motion, officer visibility and stopping placement must be checked from original sources",
+      "gap_ids": [
+        "subsection_1_stopping_reference"
+      ]
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference",
+      "target_law_id": "NRS-484B-257-2",
+      "purpose": "Source-grounded nearest view reference alternative",
+      "physical_risk": "Native motion, officer visibility and stopping placement must be checked from original sources",
+      "gap_ids": [
+        "subsection_1_stopping_reference"
+      ]
     }
   ],
   "comparisons": [
@@ -118,6 +175,46 @@
       "deliberate_differences": [
         "other vehicle starting separation and observed conflict time"
       ]
+    },
+    {
+      "comparison_id": "officer_go_vs_hold",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold"
+      ],
+      "fixed_conditions": [
+        "same authored line site, ego route, other route, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "programmed officer stop-then-go versus hold; original authority remains for independent review"
+      ]
+    },
+    {
+      "comparison_id": "officer_hold_vs_inactive",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive"
+      ],
+      "fixed_conditions": [
+        "same authored line site, officer actor, ego route, other route, cameras and duration"
+      ],
+      "deliberate_differences": [
+        "programmed stop pose versus present inactive officer"
+      ]
+    },
+    {
+      "comparison_id": "reference_hierarchy",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference"
+      ],
+      "fixed_conditions": [
+        "same ego and other approach construction, camera profile and duration"
+      ],
+      "deliberate_differences": [
+        "authored line versus near crosswalk versus nearest-view reference sites"
+      ]
     }
   ],
   "evidence_review": {
@@ -169,7 +266,9 @@
     "Native signal affected lane and original head state at ego entry",
     "ego/other complete bodies and other occupancy",
     "sign duty when signal does not actually control ego",
-    "approaching hazard without invented numeric cutoff"
+    "approaching hazard without invented numeric cutoff",
+    "original ego front-body and speed relative to each incorporated subsection 1 reference",
+    "officer actor, programmed arm readback, and separately reviewed original-camera direction/control"
   ],
   "sources": [
     {
@@ -208,6 +307,21 @@
       "path": "visible-site.xodr",
       "sha256": "0f52ae7bfb95055245be789b0eb032ff50d4adba7b2ff827a208d4b852906da1",
       "review_status": "authored CPU source; Native sign, control and non-through status pending"
+    },
+    {
+      "path": "line-reference-site.xodr",
+      "sha256": "ea34d36f880d1ec08f2ae22494b9d260bf81eb5b3b8dc8c4618cbf046df67cd1",
+      "review_status": "authored CPU source; Native reference and visibility review pending"
+    },
+    {
+      "path": "crosswalk-reference-site.xodr",
+      "sha256": "ac61c9f3d4b6ed7766f65e416a335e12230eb2447d6520e0d717f8bcc7de017a",
+      "review_status": "authored CPU source; Native reference and visibility review pending"
+    },
+    {
+      "path": "nearest-view-reference-site.xodr",
+      "sha256": "8362428c0f25c9783efebd9338ba4afbcf810f47c65ccdf483dce77fe111ef1f",
+      "review_status": "authored CPU source; Native reference and visibility review pending"
     }
   ],
   "source_observation_mapping": {
@@ -367,6 +481,31 @@
         "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far"
       ],
       "evidence_or_gap": "Original speed samples precede observed entry; proper statutory stopping reference remains unresolved."
+    },
+    {
+      "requirement": "Original ego stop placement is retained against the applicable subsection 1 authored stopping reference",
+      "source": "NRS 484B.257(1)-(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__stop_line_reference",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__crosswalk_reference",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__nearest_view_reference"
+      ],
+      "evidence_or_gap": "Authored line, near-crosswalk and nearest-view references have separate exact constructions; Native visibility and legal placement remain unresolved."
+    },
+    {
+      "requirement": "Original-frame police-officer identity, direction and actual control are independently reviewed",
+      "source": "NRS 484B.257(1)-(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_hold",
+        "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_present_inactive"
+      ],
+      "evidence_or_gap": "The walker actor and arm pose are programmed and source-retained; actual police identity and control require independent original-frame review."
     }
   ]
 }

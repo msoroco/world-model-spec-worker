@@ -78,7 +78,9 @@ def validate(capture_path, review_path, camera_paths):
             raise ValueError('Four same-frame camera sources required')
         if any(not isinstance(refs[name], dict) or
                refs[name].get('carla_frame') != frame or
-               refs[name].get('raw_source') != str(camera_paths[name]) + '#frame-' + str(index)
+               refs[name].get('raw_source') not in (
+                   name + '.mkv#frame-' + str(index),
+                   str(camera_paths[name]) + '#frame-' + str(index))
                for name in CAMERAS):
             raise ValueError('Original officer camera frame source differs')
         source_ids = {refs[name]['raw_source'] for name in CAMERAS}

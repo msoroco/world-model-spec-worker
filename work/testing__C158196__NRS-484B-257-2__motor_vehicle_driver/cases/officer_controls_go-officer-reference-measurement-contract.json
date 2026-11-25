@@ -2,40 +2,41 @@
   "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__officer_controls_go",
   "format": "worker-measurement-contract",
   "negative": {
-    "error_contains": "original capture",
+    "error_contains": "Missing required source: officer-reference-capture.json",
     "remove": [
       "officer-reference-capture.json"
     ]
   },
   "requirements": [
     {
-      "disposition_index": 0,
+      "disposition_index": 4,
       "inputs": [
         "officer-reference-capture.json",
-        "line-reference-site.xodr",
+        "officer_reference_history.jsonl",
         "video_frames.jsonl"
       ],
       "kind": "measured",
-      "method": "reference_saved_measure.measure",
+      "method": "measure_reference_stop",
       "output_key": "first_engineering_stop_before_reference",
-      "requirement": "Original ego stop placement relative to sourced subsection 1 reference",
+      "requirement": "Original ego stop placement is retained against the applicable subsection 1 authored stopping reference",
       "source": "NRS 484B.257(1)-(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
-      "value_type": "structured record"
+      "value_type": "object"
     },
     {
-      "disposition_index": 1,
+      "disposition_index": 5,
       "inputs": [
         "officer-reference-capture.json",
+        "officer-original-frame-review.json",
         "overview.mkv",
         "approach.mkv",
         "reference_corner.mkv",
         "driver_reference.mkv"
       ],
       "kind": "measured",
-      "method": "officer_saved_review.validate",
+      "method": "measure_police_control",
       "output_key": "police_control_verified",
-      "requirement": "Original police-officer direction and control independently reviewed where applicable",
-      "source": "NRS 484B.257(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
+      "requirement": "Original-frame police-officer identity, direction and actual control are independently reviewed",
+      "source": "NRS 484B.257(1)-(2); inputs/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/assignment.json",
       "value_type": "boolean"
     }
   ]

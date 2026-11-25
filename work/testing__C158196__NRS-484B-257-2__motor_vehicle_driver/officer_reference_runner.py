@@ -137,6 +137,14 @@ def _capture_world(world, client, output, selected, carla):
                 if media.encoder.count != 600:
                     raise ValueError('Four original camera streams incomplete')
                 write_receipt(result, output / 'officer-reference-capture.json')
+                with (output / 'officer_reference_history.jsonl').open('x') as history:
+                    for source in result['rows']:
+                        history.write(json.dumps({
+                            'frame': source['carla_frame'],
+                            'time_s': source['time_s'],
+                            'ego_body_vertices_xy_m': source['ego_body_vertices_xy_m'],
+                            'ego_speed_mps': source['ego_speed_mps'],
+                        }, allow_nan=False) + '\n')
                 with FrameMap(output / 'video_frames.jsonl') as frame_map:
                     for source in result['rows']:
                         frame_map.append(source['carla_frame'], source['time_s'],
