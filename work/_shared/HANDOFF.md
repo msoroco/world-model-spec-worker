@@ -900,3 +900,15 @@ C215286 added a five-packet reviewed-source intake check with hash, identity and
 ## 2026-11-24 C179789 condition construction
 
 C179789 now has reversible Native weather readback/restoration, original-world lane/sight ray probe, and bounded lead/ego longitudinal controllers with body-gap guard. Eight package tests pass. It remains partial pending exact runner, source-bound surface realization, saved finalizer, semantic and delivery proofs.
+
+## 2026-11-24 C179789 exact runner checkpoint
+
+C179789 now has a six-case CARLA-lazy runner, root dry/open-traffic config, four-camera FFV1 path, source-bound frame sampler, and weather/surface identity guards. Seventeen CPU tests and runner --check pass. Exact constructions, saved finalizer, compatibility and delivery proofs remain pending; status partial.
+
+## 2026-11-24 C179789 first exact offline receipt
+
+C179789 dry/open-traffic exact diagnostic construction passed current-runtime offline materialization and 17 embedded tests. Construction hash and runtime source hash are in `cases/dry-offline-receipt.json`. The other five exact constructions, saved/compatibility/semantic/delivery proofs remain; status partial.
+
+## 2026-11-24 C179789 three offline cases
+
+Dry/open, wet/same-traffic and dense-traffic exact diagnostic constructions pass current-runtime offline checks; `cases/condition-offline-index.json` binds hashes/logs. Construction comparison checks fixed road, ego and four-camera contract, plus wet versus traffic differences. Status partial; three exact cases and saved/delivery stages remain.

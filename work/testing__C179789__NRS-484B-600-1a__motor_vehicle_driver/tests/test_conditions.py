@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 import json
 import tempfile
 import unittest
@@ -20,8 +21,11 @@ traffic=load("traffic_construction")
 
 class ConditionsTests(unittest.TestCase):
     def fixture(self,root,surface="dry",sight=15):
+        surface_text="Original reviewed surface observation fixture\n"
+        (root/"surface.txt").write_text(surface_text)
+        surface_ref={"path":"surface.txt","sha256":hashlib.sha256(surface_text.encode()).hexdigest()}
         ctx={"native_map_id":"TownX","ego_actor_id":10,"road_id":7,"lane_id":-1,
-             "road_surface_source":"native-map-and-original-camera",
+             "road_surface_source":surface_ref,
              "lane_width_source":"native-waypoint-and-road-boundary",
              "traffic_source":"native-actor-body-and-video",
              "weather_source":"native-weather-readback",
@@ -36,7 +40,9 @@ class ConditionsTests(unittest.TestCase):
             rows.append({"frame":100+i,"time_s":1+i*.05,"ego_actor_id":10,
                          "road_id":7,"lane_id":-1,"ego_velocity_source":"actor.get_velocity",
                          "ego_velocity_mps":[10,0,0],"lane_width_m":3.2,
-                         "surface":surface,"precipitation_percent":0 if surface=="dry" else 80,
+                         "surface":surface,"surface_source":surface_ref,"physical_surface_verified":False,
+                         "weather_source":"world.get_weather","sight_ray_source":"original Native ray",
+                         "curvature_source":"native-waypoint.next(5.0)","precipitation_percent":0 if surface=="dry" else 80,
                          "sight_distance_m":sight,"curvature_per_m":.002,
                          "surrounding_traffic":[{"actor_id":20,"velocity_source":"actor.get_velocity",
                                                  "velocity_mps":[5,0,0],"longitudinal_body_gap_m":20}]})
@@ -69,6 +75,19 @@ class ConditionsTests(unittest.TestCase):
             frames[1]["carla_frame"]=999
             (root/"video_frames.jsonl").write_text("".join(json.dumps(r)+"\n" for r in frames))
             with self.assertRaisesRegex(ValueError,"frame join"):measure.analyze(root)
+
+    def test_surface_document_and_frame_binding_rejected_when_changed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);self.fixture(root)
+            (root/"surface.txt").write_text("changed observation\n")
+            with self.assertRaisesRegex(ValueError,"surface document hash changed"):
+                measure.analyze(root)
+            self.fixture(root)
+            rows=[json.loads(line) for line in (root/"condition_history.jsonl").read_text().splitlines()]
+            rows[1]["surface_source"]["sha256"]="0"*64
+            (root/"condition_history.jsonl").write_text("".join(json.dumps(row)+"\n" for row in rows))
+            with self.assertRaisesRegex(ValueError,"condition source join"):
+                measure.analyze(root)
 
     def test_native_lead_spawn_gap_and_cleanup(self):
         destroyed=[]

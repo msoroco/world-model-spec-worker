@@ -1461,3 +1461,17 @@ Assignment-scoped `worker_check.py --complete` passed after the intake addition 
 No new assignment is ready. C179789 gained CPU-tested reversible Native weather setup/readback, lane-width and sight-ray probe, and bounded lead/ego controls with a measured body-gap guard. Eight package tests, runtime source verification and CPU preflight pass. The six exact speed/conditions cases remain partial; source-reviewed surface realization, exact capture/finalization, candidate proofs, semantic proposals and independent audits are next. C215286 remains partial; its five-site-packet intake rejects the diagnostic TownX bundle. Retained prior-ready packages were not modified.
 
 C179789 assignment-scoped `worker_check.py --complete` passes (`assignment-check.log`). The return inventory scan found 10,711 UTF-8 files, zero binary archives, oversized files, trailing whitespace or conflict markers. The no-flags whole-batch check remains deferred under `START_HERE.md` because retained prior-ready completions bind the previous runtime; the previously reported Unicode failure is absent. Full strict delivery readiness has not passed.
+
+## 2026-11-24 C179789 exact runner continuation
+
+No new ready assignment. C179789 now has an exact six-case CARLA-lazy capture runner and root dry/open-traffic config. It includes reversible Native weather, body-gap controls, four lossless original cameras, original frame joins, and byte-bound weather/surface packet checks. Seventeen package tests, runner --check, runtime source verification and CPU preflight pass. C179789 remains partial until six exact constructions, saved finalizer, source-reviewed condition packets, selected CPU proofs, semantic and independent audits are complete. C215286 and the other eight partial assignments remain partial; retained prior-ready packages were untouched.
+
+## 2026-11-24 C179789 exact dry construction proof
+
+No assignment changed to ready. `testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic` now has a returned inline construction and a passing exact offline receipt on the current runtime (`cases/dry-exact-offline.log`, `cases/dry-offline-receipt.json`). Seventeen materialized CPU tests pass; no simulation ran. The construction uses diagnostic source packets and makes no Native, physical, pixel or legal acceptance claim. C179789 stays partial pending the other five exact constructions, source-bound compatibility and saved proofs, finalizer, fallbacks, semantic and independent audits. Retained prior-ready packages remain untouched.
+
+The C179789 dry construction was rebuilt with observed-condition range guards and reran exact current-runtime offline proof with 18 materialized tests; `cases/dry-offline-receipt.json` has the current hash. The prior dry construction hash in this report is historical. Status remains partial.
+
+## 2026-11-24 C179789 three-case exact proof
+
+No new ready assignment. C179789 now has three exact current-runtime offline receipts for `__dry_open_traffic`, `__wet_same_traffic` and `__dense_traffic`, indexed in `cases/condition-offline-index.json`; each materialized bundle passed 18 CPU tests without simulation. A controlled-construction audit verifies fixed road/ego/cameras and isolates the wet and dense-traffic differences. Their packets remain explicitly diagnostic. C179789 is partial pending the other three exact cases, reviewed Native sources and all saved/compatibility/semantic/delivery proofs. Prior-ready packages were not changed.

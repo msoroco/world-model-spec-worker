@@ -41,6 +41,18 @@ def analyze(root:Path)->dict:
                 "weather_source","sight_source","curvature_source",
                 "braking_model_source"):
         if ctx.get(key) is None:raise ValueError("Missing sourced speed context: "+key)
+    surface_ref=ctx["road_surface_source"]
+    if not isinstance(surface_ref,dict) or not isinstance(surface_ref.get("path"),str):
+        raise ValueError("Original surface document binding required")
+    rel=Path(surface_ref["path"])
+    if rel.is_absolute() or ".." in rel.parts or str(rel) in ("", "."):
+        raise ValueError("Unsafe original surface document path")
+    source=root/rel
+    if not source.is_file() or not source.resolve().is_relative_to(root.resolve()):
+        raise ValueError("Original surface document missing")
+    if hashlib.sha256(source.read_bytes()).hexdigest()!=surface_ref.get("sha256"):
+        raise ValueError("Original surface document hash changed")
+    hashes[str(rel)]=surface_ref["sha256"]
     reaction=_number(ctx.get("diagnostic_reaction_time_s"),"diagnostic reaction time")
     decel=_number(ctx.get("diagnostic_braking_deceleration_mps2"),"diagnostic deceleration")
     if reaction<0 or decel<=0:raise ValueError("Invalid declared engineering braking model")
@@ -67,6 +79,10 @@ def analyze(root:Path)->dict:
             raise ValueError("Invalid frame-specific highway condition")
         if row.get("surface") not in ("dry","wet","ice_or_snow"):
             raise ValueError("Surface condition not source-resolved")
+        if (row.get("surface_source")!=surface_ref or row.get("physical_surface_verified") is not False
+                or row.get("weather_source")!="world.get_weather" or not row.get("sight_ray_source")
+                or not row.get("curvature_source")):
+            raise ValueError("Original frame condition source join failed")
         traffic=row.get("surrounding_traffic")
         if not isinstance(traffic,list):raise ValueError("Missing surrounding-traffic inventory")
         actors=[]

@@ -6,14 +6,44 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/tests -v",
+      "command": "PYTHONPATH=work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "8aa0ad831f54b9a63ea3a3fc3f9a51271669629bd3b2628f5a7e38ee881e1570"
+      "sha256": "7cea3f9905613f1d412d2e1c010ec954f933025ce452b1a7ee1ad14e88f74839"
+    },
+    {
+      "command": "PYTHONPATH=work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/runner.py --check",
+      "exit_code": 0,
+      "log": "runner-check.log",
+      "sha256": "9ae72c2820ec73d410fbd876ba6f8808eef468f4aa802f79334a3ceff5a5753a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-dry-offline-target/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic --output .runtime-work/c179789-dry-offline-target/attempt",
+      "exit_code": 0,
+      "log": "cases/dry-exact-offline.log",
+      "sha256": "50feaa9d048b7b1d9fa508ae8e096b4ff4c9080c82cfa1ec2e59efbd72598327"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-wet_same_traffic-offline/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic --output .runtime-work/c179789-wet_same_traffic-offline/attempt",
+      "exit_code": 0,
+      "log": "cases/wet-exact-offline.log",
+      "sha256": "e5ae79e601d6811072a16ad843a16622e58c20e6dca60709eedc402bb4a1b318"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest .runtime-work/c179789-dense-offline-controlled/manifest.json --case testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic --output .runtime-work/c179789-dense-offline-controlled/attempt",
+      "exit_code": 0,
+      "log": "cases/dense-exact-offline.log",
+      "sha256": "0009902a1d9def628e1a282918bcae47f588d2fc75f775c34d9a7daf15bbfc65"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C179789__NRS-484B-600-1a__motor_vehicle_driver/cases/check_condition_variants.py",
+      "exit_code": 0,
+      "log": "cases/condition-variants-check.log",
+      "sha256": "447190d0617117452f86db47c6a5bd6f1b665a0ef6102a28c3a17d075c68b80e"
     }
   ],
   "remaining_gpu_checks": [
     "Actual surface/weather/visibility, lead traffic, lane width, ego motion and camera quality."
   ],
-  "reason": "CPU-tested Native lead-vehicle spawn/body gap, frame-joined speed/conditions, reversible weather readback and original-world lane/sight ray probe, and bounded ego/lead longitudinal controllers. Weather commands do not establish wet/icy surface or actual visibility; stopping distance remains nonlegal. Exact source-reviewed surface and weather realization, runner/four-camera capture, saved finalizer, justified fallbacks, semantic proposals, offline/compatibility/saved-processing proofs and independent delivery/comparison audits remain unfinished worker-owned CPU work. See HANDOFF.md."
+  "reason": "Three exact C179789 diagnostic constructions (dry/open traffic, wet/same traffic, dense traffic) pass current-runtime offline checks. Their construction comparison checks unchanged road, ego, cameras and source inventory while isolating wet condition versus denser lead speed/gap; 18 package tests pass. Status remains partial: narrow, low-visibility and ice/snow exact constructions, source-reviewed Native site/condition packets, saved finalizer and measurement contract, positive/negative compatibility and recorded-only processing proofs, physical-preparation, justified fallbacks, semantic proposals and independent delivery/comparison audits remain worker-owned CPU work. No Native, physical, pixel or legal acceptance claimed."
 }

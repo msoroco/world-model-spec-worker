@@ -1,0 +1,167 @@
+{
+  "law_id": "NRS-484B-600-1a",
+  "cell_id": "C179789",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+  "supported_case_ids": [
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dry_open_traffic",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__wet_same_traffic",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__narrow_same_traffic",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__dense_traffic",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__low_visibility",
+    "testing__C179789__NRS-484B-600-1a__motor_vehicle_driver__ice_or_snow"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "site_packet": "road_packet.json",
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "kin.velocity"
+  ],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "original fixed scene view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "original fixed scene view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "original fixed scene view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "original ego attached view"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_speed_mps",
+        "unit": "m/s",
+        "method": "original Native actor.get_velocity",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "lead_speed_mps",
+        "unit": "m/s",
+        "method": "original Native actor.get_velocity",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "longitudinal_body_gap_m",
+        "unit": "m",
+        "method": "original actor body extents projected on road tangent",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "lane_width_m",
+        "unit": "m",
+        "method": "original Native waypoint",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "surface",
+        "unit": "category",
+        "method": "original hashed surface observation packet",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "precipitation_percent",
+        "unit": "percent",
+        "method": "Native weather readback",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "sight_distance_m",
+        "unit": "m",
+        "method": "original Native cast_ray",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      },
+      {
+        "name": "curvature_per_m",
+        "unit": "1/m",
+        "method": "original Native waypoint chain",
+        "time_window": "entire captured interval",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "uncertainty": "20 Hz samples; physical and pixel review required"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "road_context",
+        "unit": "structured record",
+        "method": "hashed surface and weather packets joined to Native road, vehicle and map observations"
+      }
+    ],
+    "limitations": [
+      "The statute supplies no numeric speed threshold; stopping distance is an engineering diagnostic only.",
+      "Weather readback does not establish wet or icy pavement, actual visibility, or legal reasonableness."
+    ]
+  },
+  "requested_speed_mps": 8,
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "condition_history.jsonl",
+    "position_key": "ego_position_m",
+    "minimum_progress_m": 100,
+    "minimum_samples": 900,
+    "engineering_tolerances_not_legal": true
+  },
+  "condition_target": {
+    "surface": "dry",
+    "lane_width_m": [
+      3,
+      4
+    ],
+    "longitudinal_body_gap_m": [
+      10,
+      35
+    ],
+    "sight_distance_m": [
+      50,
+      120
+    ],
+    "precipitation_percent": [
+      0,
+      5
+    ]
+  }
+}
