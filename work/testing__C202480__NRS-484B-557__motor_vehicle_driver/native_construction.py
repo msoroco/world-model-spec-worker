@@ -61,12 +61,45 @@ def inspect_site(packet_path: Path, case: dict) -> dict:
         raise ValueError("nonfinite rail or approach geometry")
     if abs(math.hypot(*normal) - 1.0) > 1e-6:
         raise ValueError("approach normal must be unit length")
+    rails = geometry.get("nearest_track_rails")
+    if not isinstance(rails, list) or not rails:
+        raise ValueError("reviewed nearest-track rail lines required")
+    for rail in rails:
+        if not isinstance(rail, dict) or not all(key in rail for key in ("a", "b")):
+            raise ValueError("reviewed rail line lacks endpoints")
+        a, b = rail["a"], rail["b"]
+        if (not isinstance(a, list) or not isinstance(b, list) or len(a) != 2 or
+                len(b) != 2 or any(type(value) not in (float, int) or
+                not math.isfinite(value) for value in a + b) or a == b):
+            raise ValueError("reviewed rail line endpoints invalid")
+    conflict = None
+    if case.get("departure_context") == "crossing_conflict":
+        conflict = json.loads(_read_source(packet_path.parent,
+                                           sources.get("crossing_conflict"),
+                                           "crossing conflict"))
+        if (conflict.get("case_id") != case["case_id"] or
+                not isinstance(conflict.get("review_citation"), str) or
+                not conflict["review_citation"].strip() or
+                not str(conflict.get("blueprint_id", "")).startswith("vehicle.")):
+            raise ValueError("reviewed crossing-conflict actor source incomplete")
+        xyz = conflict.get("spawn_xyz_m")
+        if (not isinstance(xyz, list) or len(xyz) != 3 or
+                any(type(value) not in (float, int) or not math.isfinite(value)
+                    for value in xyz) or
+                type(conflict.get("yaw_deg")) not in (float, int) or
+                not math.isfinite(conflict["yaw_deg"])):
+            raise ValueError("reviewed crossing-conflict pose invalid")
+        throttle = conflict.get("throttle")
+        if type(throttle) not in (float, int) or not 0 < throttle <= 1:
+            raise ValueError("reviewed crossing-conflict motion request invalid")
     if type(case.get("planned_stop_body_gap_ft")) not in (float, int) or case["planned_stop_body_gap_ft"] <= 0:
         raise ValueError("positive planned stop body gap required")
     packet["_opendrive_sha256"] = hashlib.sha256(opendrive).hexdigest()
     packet["_rail_xy"] = rail_xy
     packet["_normal"] = normal
     packet["_authority"] = authority
+    packet["_conflict"] = conflict
+    packet["_site_dir"] = str(packet_path.parent.resolve())
     return packet
 
 
@@ -91,6 +124,17 @@ def verify_production_site(packet_path: Path, case: dict) -> dict:
         raise ValueError("designation citation differs from reviewed authority")
     if authority.get("sign_governance_citation") != review["sign_governance_citation"]:
         raise ValueError("sign governance citation differs from reviewed authority")
+    if packet["_conflict"] is not None:
+        citation = review.get("crossing_conflict_citation")
+        if (not isinstance(citation, str) or not citation.strip() or
+                packet["_conflict"]["review_citation"] != citation or
+                any(word in citation.lower() for word in
+                    ("synthetic", "fixture", "diagnostic", "placeholder"))):
+            raise ValueError("original crossing-conflict actor review missing")
+    from native_camera import validate_plan
+    cameras = validate_plan(packet_path)
+    if any(item["pose_source_citation"] != review["camera_pose_citation"] for item in cameras):
+        raise ValueError("camera poses differ from reviewed original source")
     return packet
 
 
@@ -132,6 +176,22 @@ def create(world, packet_path: Path, case: dict, transform_factory):
     ego = world.try_spawn_actor(blueprint, transform)
     if ego is None:
         raise ValueError("Native ego spawn failed")
-    return {"ego": ego, "packet": packet, "planned_center_xy_m": [x, y],
+    conflict_actor = None
+    try:
+        if packet["_conflict"] is not None:
+            reviewed = packet["_conflict"]
+            conflict_blueprint = world.get_blueprint_library().find(reviewed["blueprint_id"])
+            pose = transform_factory(reviewed["spawn_xyz_m"][0],
+                                     reviewed["spawn_xyz_m"][1],
+                                     [math.cos(math.radians(reviewed["yaw_deg"])),
+                                      math.sin(math.radians(reviewed["yaw_deg"]))],
+                                     reviewed["spawn_xyz_m"][2])
+            conflict_actor = world.try_spawn_actor(conflict_blueprint, pose)
+            if conflict_actor is None:
+                raise ValueError("Native crossing-conflict actor spawn failed")
+    except BaseException:
+        ego.destroy()
+        raise
+    return {"ego": ego, "conflict_actor": conflict_actor, "packet": packet, "planned_center_xy_m": [x, y],
             "spawn_center_xy_m": [spawn_x, spawn_y],
             "planned_gap_ft": case["planned_stop_body_gap_ft"]}

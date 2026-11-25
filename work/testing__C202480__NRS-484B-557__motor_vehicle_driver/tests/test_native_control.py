@@ -44,6 +44,15 @@ class NativeControlTest(unittest.TestCase):
         self.assertEqual(unit.step(True)["phase"], "departure_requested")
         self.assertEqual(unit.step(False)["phase"], "departure_requested")
 
+    def test_conflict_departure_is_explicit_probe(self):
+        ego = Ego(-(2 + 30 / CONTROL.FEET_PER_METRE), 0)
+        hold = controller(ego)
+        self.assertEqual(hold.step(False)["phase"], "stop_hold_requested")
+        probe = CONTROL.RailApproachController(ego, [0, 0], [1, 0], 2, 30,
+                                                lambda **kwargs: kwargs,
+                                                depart_on_conflict=True)
+        self.assertEqual(probe.step(False)["phase"], "departure_requested")
+
     def test_rolling_probe_never_requests_complete_stop(self):
         ego = Ego(-(2 + 30 / CONTROL.FEET_PER_METRE), 1)
         unit = controller(ego, rolling=True)

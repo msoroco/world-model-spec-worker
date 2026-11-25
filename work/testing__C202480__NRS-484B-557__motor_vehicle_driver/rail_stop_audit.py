@@ -38,6 +38,16 @@ def audit_saved_file(packet_path: Path) -> dict[str, Any]:
         if relative.is_absolute() or ".." in relative.parts or not relative.parts:
             raise ValueError(f"unsafe source path: {key}")
         paths[key] = relative
+    if packet.get("conflict_actor_present") is True:
+        binding = sources.get("native_conflict_history")
+        if not isinstance(binding, dict):
+            raise ValueError("missing original crossing-conflict history")
+        relative = Path(binding.get("path", ""))
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+            raise ValueError("unsafe crossing-conflict history path")
+        paths["native_conflict_history"] = relative
+    elif sources.get("native_conflict_history") is not None:
+        raise ValueError("unselected crossing-conflict history")
     original = {}
     for key, relative in paths.items():
         binding = sources[key]
@@ -82,6 +92,17 @@ def audit_saved_file(packet_path: Path) -> dict[str, Any]:
                 any(sample.get(key) != body.get(key) for key in
                     ("frame", "source_frame", "body_corners_xy_m"))):
             raise ValueError("packet sample differs from original motion or footprint")
+    if packet.get("conflict_actor_present") is True:
+        conflict = original["native_conflict_history"]
+        if not isinstance(conflict, list) or len(conflict) != len(samples):
+            raise ValueError("original crossing-conflict frame history incomplete")
+        for sample, actor in zip(samples, conflict):
+            if (not isinstance(actor, dict) or actor.get("frame") != sample.get("frame") or
+                    actor.get("source_frame") != sample.get("source_frame")):
+                raise ValueError("original crossing-conflict frame join differs")
+        if packet.get("conflict_samples") not in (None, conflict):
+            raise ValueError("packet crossing-conflict samples differ from original")
+        packet["conflict_samples"] = conflict
     return audit_saved_packet(packet)
 
 
@@ -185,19 +206,51 @@ def audit_saved_packet(packet: dict[str, Any]) -> dict[str, Any]:
                      "body_to_nearest_rail_min_ft": min(abs(low), abs(high)) * FEET_PER_METRE if low * high > 0 else 0.0,
                      "body_signed_range_ft": [low * FEET_PER_METRE, high * FEET_PER_METRE],
                      "source_frame": source_frame})
+    conflict_present = packet.get("conflict_actor_present") is True
+    if conflict_present and "native_conflict_history" not in sources:
+        raise ValueError("original crossing-conflict source missing")
+    conflict_samples = packet.get("conflict_samples")
+    if conflict_present:
+        if not isinstance(conflict_samples, list) or len(conflict_samples) != len(samples):
+            raise ValueError("original crossing-conflict samples missing")
+        for sample, actor in zip(samples, conflict_samples):
+            if (actor.get("frame") != sample["frame"] or
+                    actor.get("source_frame") != sample["source_frame"] or
+                    len(actor.get("body_corners_xy_m", [])) != 4):
+                raise ValueError("crossing-conflict body/frame history differs")
+            if _finite_number(actor.get("speed_mps"), "crossing-conflict speed") < 0:
+                raise ValueError("negative crossing-conflict speed")
+            for corner in actor["body_corners_xy_m"]:
+                _point(corner, "crossing-conflict body corner")
     first_rail_contact = next((r["frame"] for r in rows if r["body_to_nearest_rail_min_ft"] == 0.0), None)
+    first_approach_frame = next((r["frame"] for r in rows if r["speed_mps"] > 0.0), None)
     stopped = [r for r in rows if r["speed_mps"] == 0.0 and
+               first_approach_frame is not None and r["frame"] > first_approach_frame and
                (first_rail_contact is None or r["frame"] < first_rail_contact)]
     if not stopped:
         return {"status": "measured", "complete_stop_observed": False, "stop_samples": [],
                 "first_source_frame": first_source_frame,
                 "last_source_frame": first_source_frame + len(rows) - 1,
-                "proceeding_observed": False, "due_care": "unresolved", "source_keys": list(REQUIRED_SOURCES)}
+                "proceeding_observed": False, "due_care": "unresolved",
+                "conflict_actor_present": conflict_present,
+                "source_keys": list(REQUIRED_SOURCES) + (["native_conflict_history"] if conflict_present else [])}
     first_stop = stopped[0]
     stop_frame = first_stop["frame"]
     preceding = [r for r in rows if r["frame"] < stop_frame]
     following = [r for r in rows if r["frame"] > stop_frame]
     proceeding = any(r["speed_mps"] > 0 for r in following)
+    separation = None
+    if conflict_present and following:
+        def rectangle_gap(a, b):
+            gaps = []
+            for axis in (0, 1):
+                low_a, high_a = min(p[axis] for p in a), max(p[axis] for p in a)
+                low_b, high_b = min(p[axis] for p in b), max(p[axis] for p in b)
+                gaps.append(max(low_a - high_b, low_b - high_a, 0.0))
+            return math.hypot(*gaps)
+        separation = min(rectangle_gap(samples[i]["body_corners_xy_m"],
+                                       conflict_samples[i]["body_corners_xy_m"])
+                         for i in range(len(rows)) if rows[i]["frame"] > stop_frame)
     # Values near legal boundaries are measurements only; they are not labels.
     return {"status": "measured", "complete_stop_observed": True,
             "first_source_frame": first_source_frame,
@@ -206,5 +259,7 @@ def audit_saved_packet(packet: dict[str, Any]) -> dict[str, Any]:
             "first_stop_body_signed_range_ft": first_stop["body_signed_range_ft"],
             "stop_samples": [r["frame"] for r in stopped], "approach_samples": len(preceding),
             "proceeding_observed": proceeding, "departure_samples": len(following),
+            "conflict_actor_present": conflict_present,
+            "minimum_departure_conflict_body_separation_m": separation,
             "due_care": "requires independent scene-and-conflict review",
-            "source_keys": list(REQUIRED_SOURCES)}
+            "source_keys": list(REQUIRED_SOURCES) + (["native_conflict_history"] if conflict_present else [])}

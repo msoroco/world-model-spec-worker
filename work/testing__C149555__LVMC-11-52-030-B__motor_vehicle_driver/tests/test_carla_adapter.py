@@ -114,6 +114,16 @@ class NativeAdapterTests(unittest.TestCase):
         adapter.ego.speed = 0.0
         self.assertEqual(adapter.step_capture(2)["phase"], "hold")
         self.assertTrue(adapter.ego.controls[-1]["hand_brake"])
+        fallback = module.NativeCarlaAdapter(
+            TickWorld(RoadMap()),
+            {"native_road_id": 2, "native_lane_id": -1,
+             "approach_throttle": 0.25}, {}, carla_module=Carla())
+        fallback.ego = Ego()
+        fallback.drive_to_station(7, 30.0)
+        fallback.stop_and_hold(7)
+        fallback._current_station = lambda: 5.0
+        fallback.step_capture(0)
+        self.assertEqual(fallback.ego.controls[-1]["throttle"], 0.25)
 
     def test_native_map_and_one_way_are_checked_before_spawn(self):
         m = Map()

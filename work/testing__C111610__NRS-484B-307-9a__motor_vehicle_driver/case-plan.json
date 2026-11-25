@@ -43,7 +43,8 @@
         "status": "physical",
         "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
         "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
-      }
+      },
+      "case_suffix": "yield_pedestrian"
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
@@ -63,7 +64,8 @@
         "status": "physical",
         "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
         "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
-      }
+      },
+      "case_suffix": "continue_pedestrian"
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
@@ -76,14 +78,15 @@
         "steady_red_plus_green_turn_arrow": true,
         "opposing_steady_red_during_arrow": true,
         "adjacent_crosswalk_pedestrian_present": false,
-        "controller_policy": "continue",
+        "controller_policy": "hold_until_clear",
         "intended_route": "arrow_turn"
       },
       "physical_risk_assessment": {
         "status": "physical",
         "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
         "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
-      }
+      },
+      "case_suffix": "clear_crosswalk_turn"
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
@@ -96,14 +99,15 @@
         "steady_red_plus_green_turn_arrow": true,
         "opposing_steady_red_during_arrow": true,
         "adjacent_crosswalk_pedestrian_present": false,
-        "controller_policy": "continue",
+        "controller_policy": "hold_until_clear",
         "intended_route": "straight"
       },
       "physical_risk_assessment": {
         "status": "physical",
         "risk": "Unverified official signal phase, opposing head and crosswalk adjacency can make the setup inapplicable; a source-sealed site and actual Native readback are required.",
         "fallback_policy": "Use a different source-verified intersection preserving official phase, turn direction, crosswalk, camera and comparison variables only after a new exact candidate proof."
-      }
+      },
+      "case_suffix": "wrong_movement"
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
@@ -124,7 +128,8 @@
         "status": "physical",
         "risk": "Other traffic route and lawful use require original actor and governing signal records.",
         "fallback_policy": "Only a source-verified route through the same intersection preserving compared traffic relation may substitute."
-      }
+      },
+      "case_suffix": "yield_other_traffic"
     },
     {
       "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
@@ -145,7 +150,8 @@
         "status": "physical",
         "risk": "Other traffic route and lawful use require original actor and governing signal records.",
         "fallback_policy": "Only a source-verified route through the same intersection preserving compared traffic relation may substitute."
-      }
+      },
+      "case_suffix": "continue_other_traffic"
     }
   ],
   "comparisons": [
@@ -208,13 +214,46 @@
     }
   ],
   "observations": [
-    "Original ego-facing red and arrow direction and frame interval",
-    "Original opposing red during arrow illumination",
-    "Source-backed official head and governed approach",
-    "Crosswalk polygon and adjacency to actual turn",
-    "Pedestrian track and external lawful-presence context",
-    "Original ego route, intersection entry, speed and stop/clear precedence",
-    "Other traffic actor identity, route, intersection occupancy and externally sourced lawful-use context"
+    {
+      "name": "ego_facing_red_arrow",
+      "description": "Original ego-facing steady red, green arrow direction and illuminated interval",
+      "mandatory": true
+    },
+    {
+      "name": "opposing_red",
+      "description": "Original opposing steady-red indication during the arrow",
+      "mandatory": true
+    },
+    {
+      "name": "official_head_approach",
+      "description": "Reviewed official head and governed approach",
+      "mandatory": true
+    },
+    {
+      "name": "adjacent_crosswalk",
+      "description": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_lawful_presence",
+      "description": "Pedestrian track and external permission context",
+      "mandatory": true
+    },
+    {
+      "name": "ego_entry_route_speed",
+      "description": "Original ego route, entry, speed and yield order",
+      "mandatory": true
+    },
+    {
+      "name": "other_traffic_lawful_use",
+      "description": "Other traffic identity, route, occupancy and external lawful-use context",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "description": "Four synchronized original camera frame identities",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -240,8 +279,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and camera coverage require later CARLA run and original recording review.",
-    "Canonical proposals, exact manifest, finalizer and delivery acceptance receipts remain CPU work."
+    "Physical realization, official signal readback, lawful context and camera coverage require original CARLA run and review.",
+    "Canonical semantic proposals, exact delivery manifest and runtime compatibility receipts remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -358,14 +397,39 @@
   ],
   "source_observation_mapping": {},
   "camera_plan": {
+    "profile": "overview1080-capability",
     "fps": 20,
-    "duration_seconds": 30,
+    "duration_s": 30,
+    "frame_count": 600,
     "sources": [
-      "front",
-      "left",
-      "right",
-      "rear"
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
     ],
-    "limitation": "Actual coverage and motion require Native review."
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "entire intersection, ego, pedestrian and other traffic",
+        "interval": "approach through clearance"
+      },
+      {
+        "view": "approach",
+        "subject": "ego-facing red and green arrow with governed approach",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "adjacent crosswalk and pedestrian",
+        "interval": "approach through clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego route, opposing head and other traffic",
+        "interval": "approach through clearance"
+      }
+    ],
+    "limitation": "Actual source phase, actor motion, visibility and physical completion require Native review."
   }
 }

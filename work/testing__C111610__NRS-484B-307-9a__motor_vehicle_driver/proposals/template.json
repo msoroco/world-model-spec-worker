@@ -1,0 +1,62 @@
+{
+  "template_id": "NRS-484B-307-9a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-9a",
+  "actor": "motor_vehicle_driver",
+  "quote": "Where the signal is a steady red with a green turn arrow: Except as otherwise provided in paragraph (b) [NRS-484B-307-9b], vehicular traffic facing the signal may enter the intersection only to make the movement indicated by the green turn arrow, but must yield the right-of-way to pedestrians lawfully within an adjacent crosswalk and to other traffic lawfully using the intersection. Drivers turning in the direction of the arrow are thereby advised that so long as the turn arrow is illuminated, oncoming or opposing traffic simultaneously faces a steady red signal.",
+  "structure": {
+    "law_id": "NRS-484B-307-9a",
+    "activation": {
+      "condition": "Motor vehicle driver faces an official steady red with illuminated green turn arrow.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Enter only for the arrow-directed movement, yielding to lawfully present adjacent-crosswalk pedestrians and other traffic lawfully using the intersection.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Actor qualifies under paragraph (b).",
+        "effect": "Paragraph (b) governs the listed operator instead of this paragraph.",
+        "replacement_obligation": "Apply the separately assigned paragraph (b) only to its listed actors.",
+        "source_clause": "Except as otherwise provided in paragraph (b) [NRS-484B-307-9b]"
+      }
+    ],
+    "timing": {
+      "description": "Original steady red, green arrow, opposing red, lawful occupancy and actual entry are joined by Native frame.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "note": "The source supplies no numeric yielding or lawful-presence cutoff."
+      },
+      {
+        "phrase": "yield the right-of-way to other traffic lawfully using the intersection",
+        "note": "The source supplies no numeric yielding or lawful-use cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "adjacent_crosswalk_occupancy",
+      "kind": "world_setup",
+      "range_or_domain": "clear or sourced lawful pedestrian in adjacent crosswalk"
+    },
+    {
+      "name": "other_traffic_occupancy",
+      "kind": "world_setup",
+      "range_or_domain": "absent or sourced lawful traffic in intersection"
+    },
+    {
+      "name": "turn_controller_policy",
+      "kind": "controller",
+      "range_or_domain": "hold until clear or continue"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "arrow-directed turn or straight movement"
+    }
+  ]
+}

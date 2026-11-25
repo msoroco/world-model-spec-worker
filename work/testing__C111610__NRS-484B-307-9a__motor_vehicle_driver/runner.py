@@ -17,7 +17,7 @@ from native_turn import case_command, construct_native, verify_site
 
 
 HERE = Path(__file__).resolve().parent
-ASSIGNMENT = HERE.name
+ASSIGNMENT = "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver"
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 DIMENSIONS = {"overview": [1920, 1080], "approach": [1280, 720],
               "reference_corner": [1280, 720], "driver_reference": [1280, 720]}

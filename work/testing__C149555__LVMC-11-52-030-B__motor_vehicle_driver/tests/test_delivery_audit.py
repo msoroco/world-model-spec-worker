@@ -31,8 +31,12 @@ class DeliveryAuditTests(unittest.TestCase):
         (self.attempt / "source.json").write_text("{}\n")
         (self.attempt / "raw.jsonl").write_text("{}\n")
         (self.attempt / "overview.mkv").write_bytes(b"video")
+        self.canonical_path = self.attempt / "result.json"
+        write_json(self.canonical_path, {"case_id": "case", "diagnostic_fixture": False})
         self.manifest_path = self.attempt / "freight-delivery-manifest.json"
         self.manifest = {"case_id": "case", "native_result_sha256": "native",
+                         "canonical_result_sha256": sha(self.canonical_path),
+                         "diagnostic_fixture": False,
                          "sources": {"native_result": {"path": "source.json", "sha256": sha(self.attempt / "source.json")}},
                          "raw_sources": {"motion": {"path": "raw.jsonl", "sha256": sha(self.attempt / "raw.jsonl")}},
                          "media": {"overview": {"path": "overview.mkv", "sha256": sha(self.attempt / "overview.mkv")}}}
@@ -73,6 +77,11 @@ class DeliveryAuditTests(unittest.TestCase):
         self.processing["result_sha256"] = sha(self.result_path)
         write_json(self.processing_path, self.processing)
         with self.assertRaises(SourceError):
+            self.run_audit()
+
+    def test_rejects_changed_canonical_native_result(self):
+        write_json(self.canonical_path, {"case_id": "case", "diagnostic_fixture": True})
+        with self.assertRaisesRegex(SourceError, "canonical Native result changed"):
             self.run_audit()
 
 

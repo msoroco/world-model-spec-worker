@@ -131,9 +131,9 @@ def finalize(attempt: Path, *, case_id: str, source_refs: dict) -> dict:
     refs = dict(source_refs, native_result={"path": str(packet_path), "sha256": sha256(packet_path)})
     manifest = {"case_id": case_id, "kind": "delivery", "acquisition_kind": "original_native",
                 "sources": refs,
-                "raw_sources": {"frame_map": {"path": str(attempt / "frame-map.jsonl"),
+                "raw_sources": {"frame_map": {"path": "frame-map.jsonl",
                                               "sha256": sha256(attempt / "frame-map.jsonl")},
-                                "motion": {"path": str(attempt / "freight_motion.jsonl"),
+                                "motion": {"path": "freight_motion.jsonl",
                                            "sha256": sha256(attempt / "freight_motion.jsonl")}}}
     audit_source_bundle(manifest, case_id=case_id, variant=variant,
                         source_root=attempt, require_raw=True)

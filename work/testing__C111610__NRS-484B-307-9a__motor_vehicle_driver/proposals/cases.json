@@ -1,0 +1,929 @@
+{
+  "cell_id": "C111610",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Reference red-plus-arrow intersection, clear crosswalk and arrow-directed turn.",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Reference physical crosswalk state."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Reference physical intersection state."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "hold_until_clear",
+          "note": "Common controller for presence and route comparisons."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "arrow_turn",
+          "note": "Arrow-directed movement."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ]
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Turn in arrow direction after lawful adjacent-crosswalk pedestrian clears",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "present",
+          "note": "Original lawful presence must be verified."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Original lawful use must be verified."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "hold_until_clear",
+          "note": "Native command; actual motion retained."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "arrow_turn",
+          "note": "Native command; actual route retained."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ],
+      "paired_probe_id": "pedestrian_yield",
+      "deliberate_differences": [
+        "turn_controller_policy"
+      ],
+      "probe": {
+        "primary_variable": "turn_controller_policy",
+        "comparison_or_standard": "pedestrian_yield",
+        "target_value_or_branch": "hold_until_clear"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Turn in arrow direction while lawful adjacent-crosswalk pedestrian remains present",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "present",
+          "note": "Original lawful presence must be verified."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Original lawful use must be verified."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "continue",
+          "note": "Native command; actual motion retained."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "arrow_turn",
+          "note": "Native command; actual route retained."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ],
+      "paired_probe_id": "pedestrian_yield",
+      "deliberate_differences": [
+        "turn_controller_policy"
+      ],
+      "probe": {
+        "primary_variable": "turn_controller_policy",
+        "comparison_or_standard": "pedestrian_yield",
+        "target_value_or_branch": "continue"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Turn in arrow direction with adjacent crosswalk clear",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Original lawful presence must be verified."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Original lawful use must be verified."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "hold_until_clear",
+          "note": "Native command; actual motion retained."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "arrow_turn",
+          "note": "Native command; actual route retained."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ],
+      "paired_probe_id": "arrow_movement",
+      "deliberate_differences": [
+        "commanded_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "commanded_turn_path",
+        "comparison_or_standard": "arrow_movement",
+        "target_value_or_branch": "arrow_turn"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Enter straight while arrow directs a turn and adjacent crosswalk is clear",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Original lawful presence must be verified."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "absent",
+          "note": "Original lawful use must be verified."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "hold_until_clear",
+          "note": "Native command; actual motion retained."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "straight",
+          "note": "Native command; actual route retained."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ],
+      "paired_probe_id": "arrow_movement",
+      "deliberate_differences": [
+        "commanded_turn_path"
+      ],
+      "probe": {
+        "primary_variable": "commanded_turn_path",
+        "comparison_or_standard": "arrow_movement",
+        "target_value_or_branch": "straight"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Arrow turn with lawful other traffic in intersection; hold_until_clear controller",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Original lawful presence must be verified."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "present",
+          "note": "Original lawful use must be verified."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "hold_until_clear",
+          "note": "Native command; actual motion retained."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "arrow_turn",
+          "note": "Native command; actual route retained."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ],
+      "paired_probe_id": "other_traffic_yield",
+      "deliberate_differences": [
+        "turn_controller_policy"
+      ],
+      "probe": {
+        "primary_variable": "turn_controller_policy",
+        "comparison_or_standard": "other_traffic_yield",
+        "target_value_or_branch": "hold_until_clear"
+      }
+    },
+    {
+      "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic",
+      "target_law_id": "NRS-484B-307-9a",
+      "target_type": "boundary_probe",
+      "rationale": "Arrow turn with lawful other traffic in intersection; continue controller",
+      "variable_assignments": {
+        "adjacent_crosswalk_occupancy": {
+          "kind": "world_setup",
+          "value": "clear",
+          "note": "Original lawful presence must be verified."
+        },
+        "other_traffic_occupancy": {
+          "kind": "world_setup",
+          "value": "present",
+          "note": "Original lawful use must be verified."
+        },
+        "turn_controller_policy": {
+          "kind": "controller",
+          "value": "continue",
+          "note": "Native command; actual motion retained."
+        },
+        "commanded_turn_path": {
+          "kind": "controller",
+          "value": "arrow_turn",
+          "note": "Native command; actual route retained."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_facing_red_arrow",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "opposing_red",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original opposing steady-red indication during the arrow",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "official_head_approach",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Reviewed official head and governed approach",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "adjacent_crosswalk",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "pedestrian_lawful_presence",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Pedestrian track and external permission context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "ego_entry_route_speed",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego route, entry, speed and yield order",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "other_traffic_lawful_use",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Other traffic identity, route, occupancy and external lawful-use context",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera frame identities",
+            "time_window": "approach through intersection clearance",
+            "reference_frame": "original Native frame and time",
+            "uncertainty": "20 Hz sampling and original sensor/source precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_original_site",
+            "unit": "structured record",
+            "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+          }
+        ],
+        "limitations": [
+          "Physical signal, actor and camera realization requires original Native review.",
+          "Lawful use and right of way remain source-dependent judgments."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+        "yield the right-of-way to other traffic lawfully using the intersection"
+      ],
+      "paired_probe_id": "other_traffic_yield",
+      "deliberate_differences": [
+        "turn_controller_policy"
+      ],
+      "probe": {
+        "primary_variable": "turn_controller_policy",
+        "comparison_or_standard": "other_traffic_yield",
+        "target_value_or_branch": "continue"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c111610-9a-1",
+      "target_law_id": "NRS-484B-307-9a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to pedestrians lawfully within an adjacent crosswalk",
+          "note": "The source supplies no numeric yielding or lawful-presence cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No source-reviewed original site and nontransient physical range are supplied for this assignment.",
+      "missing_inputs": [
+        "Source-reviewed official red-plus-arrow site, pedestrian and other traffic lawful-use records",
+        "Feasible original participant timing and occupancy range"
+      ]
+    },
+    {
+      "sweep_id": "c111610-9a-2",
+      "target_law_id": "NRS-484B-307-9a",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to other traffic lawfully using the intersection",
+          "note": "The source supplies no numeric yielding or lawful-use cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No source-reviewed original site and nontransient physical range are supplied for this assignment.",
+      "missing_inputs": [
+        "Source-reviewed official red-plus-arrow site, pedestrian and other traffic lawful-use records",
+        "Feasible original participant timing and occupancy range"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

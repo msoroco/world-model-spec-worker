@@ -3,10 +3,12 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
 MODULE = Path(__file__).resolve().parents[1] / "native_construction.py"
+sys.path.insert(0, str(MODULE.parent))
 SPEC = importlib.util.spec_from_file_location("native_construction", MODULE)
 CONSTRUCT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CONSTRUCT)
@@ -21,7 +23,8 @@ def site(root, case_id="case"):
                                            "sign_governance_citation": "DOT sign inventory 17",
                                            "sign_landmark_id": "sign-1"}).encode(),
         "crossing_geometry": json.dumps({"rail_id": "rail-1", "nearest_rail_xy_m": [0, 0],
-                                          "approach_unit_normal_xy": [1, 0]}).encode(),
+                                          "approach_unit_normal_xy": [1, 0],
+                                          "nearest_track_rails": [{"a": [0, -5], "b": [0, 5]}]}).encode(),
     }
     bindings = {}
     for name, data in records.items():
@@ -37,7 +40,17 @@ def site(root, case_id="case"):
                                 "designation_record_citation": "DOT crossing order 17",
                                 "sign_governance_citation": "DOT sign inventory 17",
                                 "rail_survey_citation": "rail survey 17",
-                                "camera_pose_citation": "reviewed scene poses"}}
+                                "camera_pose_citation": "reviewed scene poses"},
+              "cameras": [
+                  {"name": name, "width": width, "height": height,
+                   "attachment": "ego" if name == "driver_reference" else "world",
+                   "pose_source_citation": "reviewed scene poses", "reviewer": "source reviewer",
+                   "location_xyz_m": [0.0, 0.0, 4.0], "rotation_rpy_deg": [0.0, 0.0, 0.0],
+                   "fov_deg": 90}
+                  for name, width, height in (("overview", 1920, 1080),
+                                              ("approach", 1280, 720),
+                                              ("reference_corner", 1280, 720),
+                                              ("driver_reference", 1280, 720))]}
     path = root / "site.json"
     path.write_text(json.dumps(packet))
     return path, packet
@@ -61,6 +74,29 @@ class World:
 
 
 class NativeConstructionTest(unittest.TestCase):
+    def test_conflict_case_requires_reviewed_actor_and_spawns_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, packet = site(Path(directory))
+            case = {"case_id": "case", "planned_stop_body_gap_ft": 30.0,
+                    "departure_context": "crossing_conflict"}
+            world = World()
+            with self.assertRaisesRegex(ValueError, "missing crossing conflict"):
+                CONSTRUCT.create(world, path, case, lambda *args: args)
+            self.assertEqual(world.spawned, [])
+            conflict = {"case_id": "case", "review_citation": "crossing actor route survey 17",
+                        "blueprint_id": "vehicle.test", "spawn_xyz_m": [1, 2, 0.5],
+                        "yaw_deg": 90, "throttle": 0.2}
+            raw = json.dumps(conflict).encode()
+            (Path(directory) / "conflict.json").write_bytes(raw)
+            packet["sources"]["crossing_conflict"] = {
+                "path": "conflict.json", "sha256": hashlib.sha256(raw).hexdigest()}
+            packet["source_review"]["crossing_conflict_citation"] = conflict["review_citation"]
+            path.write_text(json.dumps(packet))
+            scene = CONSTRUCT.create(world, path, case, lambda *args: args)
+            self.assertEqual(len(world.spawned), 2)
+            self.assertIsNotNone(scene["conflict_actor"])
+            self.assertEqual(world.spawned[1][1][3], 0.5)
+
     def test_spawn_requests_geometry_and_blueprint(self):
         with tempfile.TemporaryDirectory() as directory:
             path, _ = site(Path(directory))

@@ -29,6 +29,40 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def write_delivery_manifest(attempt: Path, source_manifest: dict, media: dict,
+                            result_path: Path, inventory: dict) -> Path:
+    """Seal the original capture for saved processing without inventing review facts."""
+    attempt = Path(attempt).resolve(strict=True)
+    require(set(media) == {"overview", "approach", "reference_corner", "driver_reference"},
+            "four original camera sources required")
+    identifiers = {}
+    for key in ("job_id", "attempt_id", "recording_id"):
+        value = inventory.get(key)
+        require(isinstance(value, str) and value.strip(),
+                "original source inventory missing " + key)
+        identifiers[key] = value
+    sealed_media = {}
+    for name, ref in media.items():
+        require(isinstance(ref, dict) and ref.get("path") and ref.get("sha256"),
+                "incomplete original camera seal: " + name)
+        path = (attempt / ref["path"]).resolve(strict=True)
+        require(path.is_relative_to(attempt) and path.is_file() and sha(path) == ref["sha256"],
+                "original camera seal differs: " + name)
+        sealed_media[name] = {"path": str(path.relative_to(attempt)),
+                              "sha256": ref["sha256"]}
+    canonical = Path(result_path).resolve(strict=True)
+    require(canonical == attempt / "result.json", "canonical Native result path differs")
+    manifest = dict(source_manifest, **identifiers, media=sealed_media,
+                    native_result_sha256=source_manifest["sources"]["native_result"]["sha256"],
+                    canonical_result_sha256=sha(canonical),
+                    diagnostic_fixture=False)
+    target = attempt / "freight-delivery-manifest.json"
+    with target.open("x", encoding="utf-8") as stream:
+        json.dump(manifest, stream, sort_keys=True, indent=2)
+        stream.write("\n")
+    return target
+
+
 def check(root: Path = ROOT) -> dict:
     config = json.loads((Path(root) / "config.json").read_text(encoding="utf-8"))
     require(tuple(config.get(key) for key in ("assignment_id", "law_id", "cell_id", "actor")) ==
@@ -48,6 +82,9 @@ def check(root: Path = ROOT) -> dict:
     require(config.get("case", {}).get("case_id") == case_id and
             config["case"].get("variant") == case_id.removeprefix(ASSIGNMENT + "__"),
             "selected freight variant differs")
+    controller = config.get("engineering_controller", {})
+    require(controller.get("approach_throttle") in (0.35, 0.25),
+            "unreviewed approach throttle setting")
     return config
 
 
@@ -112,6 +149,7 @@ def run(output: Path, source_root: Path, inventory_path: Path, *, host: str,
     case_id = config["selected_case_id"]
     site, dossier, copies = copy_original_sources(source_root, inventory, output,
                                                    case_id=case_id)
+    site = dict(site, approach_throttle=config["engineering_controller"]["approach_throttle"])
     if client_factory is None:
         import carla
         client_factory = carla.Client
@@ -123,9 +161,12 @@ def run(output: Path, source_root: Path, inventory_path: Path, *, host: str,
                            "sha256": sha(output / "frame-index.json")}
     source_manifest = finalize(output, case_id=case_id, source_refs=copies)
     result_path = write_native_result(output, source_manifest)
+    delivery_manifest = write_delivery_manifest(output, source_manifest, capture["media"],
+                                                result_path, inventory)
     return {"case_id": case_id, "frames": capture["frames"],
             "result_path": str(result_path), "result_sha256": sha(result_path),
-            "source_manifest": source_manifest, "media": capture["media"],
+            "source_manifest": source_manifest, "delivery_manifest": str(delivery_manifest),
+            "delivery_manifest_sha256": sha(delivery_manifest), "media": capture["media"],
             "restoration": capture["restoration"]}
 
 

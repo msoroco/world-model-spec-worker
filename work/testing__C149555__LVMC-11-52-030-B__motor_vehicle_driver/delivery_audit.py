@@ -38,6 +38,11 @@ def audit(attempt: Path, processing_path: Path, review_path: Path, *,
     review_path = Path(review_path).resolve(strict=True)
     manifest_path = attempt / "freight-delivery-manifest.json"
     manifest = read(manifest_path)
+    require(manifest.get("diagnostic_fixture") is False,
+            "diagnostic fixture cannot satisfy independent delivery audit")
+    canonical = attempt / "result.json"
+    require(canonical.is_file() and sha(canonical) == manifest.get("canonical_result_sha256"),
+            "canonical Native result changed")
     processing = read(processing_path)
     case_id = manifest.get("case_id")
     require(processing.get("format") == "worker-saved-processing" and
@@ -47,7 +52,7 @@ def audit(attempt: Path, processing_path: Path, review_path: Path, *,
             "successful saved-only processing receipt missing")
     preserved = processing.get("original_source_hashes")
     require(isinstance(preserved, dict), "saved original source inventory missing")
-    required = {manifest_path.name}
+    required = {manifest_path.name, "result.json"}
     for section in ("sources", "raw_sources", "media"):
         for ref in manifest.get(section, {}).values():
             path = (attempt / ref["path"]).resolve(strict=True)

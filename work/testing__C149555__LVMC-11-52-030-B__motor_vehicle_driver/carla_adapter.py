@@ -178,7 +178,7 @@ class NativeCarlaAdapter:
             else:
                 desired = min(self.site.get("approach_speed_mps", 4.0), max(0.8, distance * 0.4))
                 self.ego.apply_control(self.carla.VehicleControl(
-                    throttle=0.35 if speed < desired else 0.0,
+                    throttle=self.site.get("approach_throttle", 0.35) if speed < desired else 0.0,
                     brake=0.35 if speed > desired + 0.5 else 0.0))
                 return {"phase": "approach", "frame": frame_index}
         if self.phase == "braking":

@@ -75,8 +75,8 @@ def case_command(case_suffix, observed_pedestrian_in_crosswalk):
     commands = {
         'yield_pedestrian': ('arrow_turn', 'hold_until_clear'),
         'continue_pedestrian': ('arrow_turn', 'continue'),
-        'clear_crosswalk_turn': ('arrow_turn', 'continue'),
-        'wrong_movement': ('straight', 'continue'),
+        'clear_crosswalk_turn': ('arrow_turn', 'hold_until_clear'),
+        'wrong_movement': ('straight', 'hold_until_clear'),
         'yield_other_traffic': ('arrow_turn', 'hold_until_clear'),
         'continue_other_traffic': ('arrow_turn', 'continue'),
     }

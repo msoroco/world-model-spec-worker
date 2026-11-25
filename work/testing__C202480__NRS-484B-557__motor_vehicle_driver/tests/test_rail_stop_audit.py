@@ -25,6 +25,23 @@ def packet():
 
 
 class RailStopAuditTest(unittest.TestCase):
+    def test_conflict_history_requires_original_frame_join_and_measures_separation(self):
+        p = packet()
+        p["conflict_actor_present"] = True
+        p["sources"]["native_conflict_history"] = {
+            "path": "capture/native_conflict_history.json", "sha256": "a" * 64}
+        p["conflict_samples"] = [{"frame": row["frame"],
+                                  "source_frame": row["source_frame"],
+                                  "speed_mps": 2.0,
+                                  "body_corners_xy_m": [[0, 5], [1, 5], [1, 6], [0, 6]]}
+                                 for row in p["samples"]]
+        result = AUDIT.audit_saved_packet(p)
+        self.assertTrue(result["conflict_actor_present"])
+        self.assertAlmostEqual(result["minimum_departure_conflict_body_separation_m"], 1.0)
+        p["conflict_samples"][2]["source_frame"] += 1
+        with self.assertRaisesRegex(ValueError, "frame history differs"):
+            AUDIT.audit_saved_packet(p)
+
     def test_saved_file_checks_source_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -102,6 +119,12 @@ class RailStopAuditTest(unittest.TestCase):
     def test_rolling_never_stopped(self):
         p = packet()
         p["samples"][1]["speed_mps"] = 0.1
+        self.assertFalse(AUDIT.audit_saved_packet(p)["complete_stop_observed"])
+
+    def test_startup_zero_before_approach_is_not_stop_witness(self):
+        p = packet()
+        p["samples"][0]["speed_mps"] = 0
+        p["samples"][1]["speed_mps"] = 1
         self.assertFalse(AUDIT.audit_saved_packet(p)["complete_stop_observed"])
 
     def test_stop_after_rail_contact_is_not_approach_stop(self):

@@ -1,0 +1,608 @@
+{
+  "assignment_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_speed": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "freight_activity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "posted_civil_time": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Primary curb approach may overshoot the exact source-reviewed target; a bounded lower-throttle controller is needed for the same case.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
+          ],
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "49772d5ee28790877bcb5a328ef85d0cfe13cf8ea72fe180523e82b6c978c8be",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --candidate fallback1 --output .runtime-work/c149555-resume/offline2-freight_loading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "49772d5ee28790877bcb5a328ef85d0cfe13cf8ea72fe180523e82b6c978c8be",
+            "exit_code": 0,
+            "log": "proof-offline-freight_loading-fallback1.log",
+            "log_sha256": "557f6d6672a9265815188837fcdd4b2f0e2372d996062061e3267f49a4a5631f"
+          },
+          "trigger": {
+            "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
+            "metric": "source-joined stop station and full stopped body footprint",
+            "source": "original Native freight_motion.jsonl and frame-map.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
+      "construction": "construction.json",
+      "construction_sha256": "c3415734f26b3334e417d5982960177961d282c6c3d20cca17318965d1bf60c5",
+      "delivery_acceptance": {
+        "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
+        "checks": [
+          "native_source",
+          "original_motion",
+          "four_camera_sources",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "script": "delivery_audit.py",
+        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "sets": [
+          "full-test"
+        ]
+      },
+      "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/freight_loading/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/freight_loading/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
+        "source_root_env_var": "C149555_SOURCE_ROOT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --candidate primary --output .runtime-work/c149555-resume/offline2-freight_loading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "c3415734f26b3334e417d5982960177961d282c6c3d20cca17318965d1bf60c5",
+        "exit_code": 0,
+        "log": "proof-offline-freight_loading.log",
+        "log_sha256": "3880516dde16dd70af514d0a97bb01aafc88ccbf6180f8745e001e7231d02661"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_speed": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "freight_activity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "posted_civil_time": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Primary curb approach may overshoot the exact source-reviewed target; a bounded lower-throttle controller is needed for the same case.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
+          ],
+          "construction": "cases/freight_unloading/fallback1-construction.json",
+          "construction_sha256": "990969029f5ff02437173fe09b4aeea93ab2d2740219da0a806776e34dfad2c7",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --candidate fallback1 --output .runtime-work/c149555-resume/offline2-freight_unloading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "990969029f5ff02437173fe09b4aeea93ab2d2740219da0a806776e34dfad2c7",
+            "exit_code": 0,
+            "log": "proof-offline-freight_unloading-fallback1.log",
+            "log_sha256": "b05b17b9bcef3727397c11d881a0c1475f460ff9bf890c45d22bccc9d7b422af"
+          },
+          "trigger": {
+            "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
+            "metric": "source-joined stop station and full stopped body footprint",
+            "source": "original Native freight_motion.jsonl and frame-map.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
+      "construction": "cases/freight_unloading/construction.json",
+      "construction_sha256": "b3e0511636d2895458f6c32b19986b09013edb9acdb3922f47b20652bb1b6d2d",
+      "delivery_acceptance": {
+        "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
+        "checks": [
+          "native_source",
+          "original_motion",
+          "four_camera_sources",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "script": "delivery_audit.py",
+        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "sets": [
+          "full-test"
+        ]
+      },
+      "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/freight_unloading/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/freight_unloading/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
+        "source_root_env_var": "C149555_SOURCE_ROOT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --candidate primary --output .runtime-work/c149555-resume/offline2-freight_unloading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "b3e0511636d2895458f6c32b19986b09013edb9acdb3922f47b20652bb1b6d2d",
+        "exit_code": 0,
+        "log": "proof-offline-freight_unloading.log",
+        "log_sha256": "c558406fdc14947d554e148bc7b58bc138a942fabdabb9f23636afea82230479"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_speed": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "freight_activity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "posted_civil_time": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Primary curb approach may overshoot the exact source-reviewed target; a bounded lower-throttle controller is needed for the same case.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
+          ],
+          "construction": "cases/no_freight_activity/fallback1-construction.json",
+          "construction_sha256": "db162e3f502dc9ef105f011002ff5aef4c8df8568e0232196844cbc5d66f53ca",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --candidate fallback1 --output .runtime-work/c149555-resume/offline2-no_freight_activity-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "db162e3f502dc9ef105f011002ff5aef4c8df8568e0232196844cbc5d66f53ca",
+            "exit_code": 0,
+            "log": "proof-offline-no_freight_activity-fallback1.log",
+            "log_sha256": "c0f0b65e82a567026395ce64f667531f9c9f48a55c17b82d6879478420936c01"
+          },
+          "trigger": {
+            "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
+            "metric": "source-joined stop station and full stopped body footprint",
+            "source": "original Native freight_motion.jsonl and frame-map.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity",
+      "construction": "cases/no_freight_activity/construction.json",
+      "construction_sha256": "e262fce0bed8dc49c788981b19718f75ca12918a8e806adfab382dab5429487f",
+      "delivery_acceptance": {
+        "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity",
+        "checks": [
+          "native_source",
+          "original_motion",
+          "four_camera_sources",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "script": "delivery_audit.py",
+        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "sets": [
+          "full-test"
+        ]
+      },
+      "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/no_freight_activity/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/no_freight_activity/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
+        "source_root_env_var": "C149555_SOURCE_ROOT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --candidate primary --output .runtime-work/c149555-resume/offline2-no_freight_activity-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "e262fce0bed8dc49c788981b19718f75ca12918a8e806adfab382dab5429487f",
+        "exit_code": 0,
+        "log": "proof-offline-no_freight_activity.log",
+        "log_sha256": "150439c99460aa55fee55849baeded58e9ac3dc95de74bd76f8227b8fc2783af"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_speed": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "freight_activity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "posted_civil_time": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Primary curb approach may overshoot the exact source-reviewed target; a bounded lower-throttle controller is needed for the same case.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
+          ],
+          "construction": "cases/noncommercial_loading/fallback1-construction.json",
+          "construction_sha256": "ca8c62931204f69c4c9a8b03e07ae0992a984d65e066110416515c312e538b9d",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate fallback1 --output .runtime-work/c149555-resume/offline2-noncommercial_loading-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "ca8c62931204f69c4c9a8b03e07ae0992a984d65e066110416515c312e538b9d",
+            "exit_code": 0,
+            "log": "proof-offline-noncommercial_loading-fallback1.log",
+            "log_sha256": "e02091329792e710f396f71c5e1bffe774a194f0df63ef8d59d9398e0d8b76b1"
+          },
+          "trigger": {
+            "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
+            "metric": "source-joined stop station and full stopped body footprint",
+            "source": "original Native freight_motion.jsonl and frame-map.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
+      "construction": "cases/noncommercial_loading/construction.json",
+      "construction_sha256": "c8329895ca441665ab40923e627f1d7e129d2602fffd803d49f9fc1ab4e2a2cd",
+      "delivery_acceptance": {
+        "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
+        "checks": [
+          "native_source",
+          "original_motion",
+          "four_camera_sources",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "script": "delivery_audit.py",
+        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "sets": [
+          "full-test"
+        ]
+      },
+      "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/noncommercial_loading/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/noncommercial_loading/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
+        "source_root_env_var": "C149555_SOURCE_ROOT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --candidate primary --output .runtime-work/c149555-resume/offline2-noncommercial_loading-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "c8329895ca441665ab40923e627f1d7e129d2602fffd803d49f9fc1ab4e2a2cd",
+        "exit_code": 0,
+        "log": "proof-offline-noncommercial_loading.log",
+        "log_sha256": "7dfaf2b96cc8ed232ca6ec5817482b362e21597fb9f71f05a7330ebc80699f6b"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_speed": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "freight_activity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "posted_civil_time": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Primary curb approach may overshoot the exact source-reviewed target; a bounded lower-throttle controller is needed for the same case.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
+          ],
+          "construction": "cases/outside_posted_time/fallback1-construction.json",
+          "construction_sha256": "f58df51b7f773aa0220d5a036d24ef25c05aff9c379d0668496a6d46ec2a26d5",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --candidate fallback1 --output .runtime-work/c149555-resume/offline2-outside_posted_time-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "f58df51b7f773aa0220d5a036d24ef25c05aff9c379d0668496a6d46ec2a26d5",
+            "exit_code": 0,
+            "log": "proof-offline-outside_posted_time-fallback1.log",
+            "log_sha256": "d8881c1806f7bdf17a1163f47ad8c46926f1badd24f7e1db7cfc21dbc1343aae"
+          },
+          "trigger": {
+            "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
+            "metric": "source-joined stop station and full stopped body footprint",
+            "source": "original Native freight_motion.jsonl and frame-map.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
+      "construction": "cases/outside_posted_time/construction.json",
+      "construction_sha256": "d1adfb07c218ddd733a40553db616df904eaefb3f5df6e29b5e968696e0a49c5",
+      "delivery_acceptance": {
+        "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
+        "checks": [
+          "native_source",
+          "original_motion",
+          "four_camera_sources",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "script": "delivery_audit.py",
+        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "sets": [
+          "full-test"
+        ]
+      },
+      "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/outside_posted_time/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/outside_posted_time/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
+        "source_root_env_var": "C149555_SOURCE_ROOT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --candidate primary --output .runtime-work/c149555-resume/offline2-outside_posted_time-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "d1adfb07c218ddd733a40553db616df904eaefb3f5df6e29b5e968696e0a49c5",
+        "exit_code": 0,
+        "log": "proof-offline-outside_posted_time.log",
+        "log_sha256": "479b80f6b3bf1c10dd3827f3a8fd6d8393dd3dca4986680041e4018d08ff7363"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "ego_speed": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "freight_activity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        },
+        "posted_civil_time": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original Native frame-indexed capture and independent source review",
+          "method": "capture_original_frames"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Primary curb approach may overshoot the exact source-reviewed target; a bounded lower-throttle controller is needed for the same case.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach_throttle 0.35 to 0.25; same source-reviewed site, target, vehicle, law, cameras and 900-frame duration"
+          ],
+          "construction": "cases/outside_yellow_zone/fallback1-construction.json",
+          "construction_sha256": "460a8735b16419ac386f12c2c7bc0014c7c9c72b307bc307283e3efb8b21e161",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --candidate fallback1 --output .runtime-work/c149555-resume/offline2-outside_yellow_zone-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "460a8735b16419ac386f12c2c7bc0014c7c9c72b307bc307283e3efb8b21e161",
+            "exit_code": 0,
+            "log": "proof-offline-outside_yellow_zone-fallback1.log",
+            "log_sha256": "f172c26d7e555baf8bba0ba20bc5de19ab65bad31d992656058eb5210b1334ba"
+          },
+          "trigger": {
+            "failure_condition": "primary controller overshoots the authored source-reviewed stop station before establishing the terminal halt",
+            "metric": "source-joined stop station and full stopped body footprint",
+            "source": "original Native freight_motion.jsonl and frame-map.jsonl"
+          }
+        }
+      ],
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone",
+      "construction": "cases/outside_yellow_zone/construction.json",
+      "construction_sha256": "e5f639dfe1e440ac7f582ce3d6f5cb3bae7e45eac9d9d87cbebc0a5081204496",
+      "delivery_acceptance": {
+        "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone",
+        "checks": [
+          "native_source",
+          "original_motion",
+          "four_camera_sources",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/delivery_audit.py --attempt \"$ATTEMPT\" --processing \"$PROCESSED\" --pixel-review \"$PIXEL_REVIEW\"",
+        "script": "delivery_audit.py",
+        "script_sha256": "98a36c5b279082b5b95f794c2331cbd7883ec082afb1b7662e1288ad9fa87893",
+        "sets": [
+          "full-test"
+        ]
+      },
+      "fixture_recipe": "work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/diagnostics/outside_yellow_zone/recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/outside_yellow_zone/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_inventory_env_var": "C149555_SOURCE_INVENTORY",
+        "source_root_env_var": "C149555_SOURCE_ROOT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --candidate primary --output .runtime-work/c149555-resume/offline2-outside_yellow_zone-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "e5f639dfe1e440ac7f582ce3d6f5cb3bae7e45eac9d9d87cbebc0a5081204496",
+        "exit_code": 0,
+        "log": "proof-offline-outside_yellow_zone.log",
+        "log_sha256": "0b26006ecc734198730749b6544df20153cf0f56fdf659e71c5cd5650c073a30"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/execution-manifest.json --case testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\"",
+        "recorded_only": true
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "readiness": "draft_cpu",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

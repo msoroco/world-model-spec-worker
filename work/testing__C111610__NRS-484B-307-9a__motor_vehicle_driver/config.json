@@ -1,0 +1,153 @@
+{
+  "assignment_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver",
+  "law_id": "NRS-484B-307-9a",
+  "cell_id": "C111610",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+  "case_suffix": "yield_pedestrian",
+  "supported_case_ids": [
+    "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+    "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_pedestrian",
+    "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__clear_crosswalk_turn",
+    "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__wrong_movement",
+    "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_other_traffic",
+    "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__continue_other_traffic"
+  ],
+  "plan_sha256": "45540295bb51cead309e008285ea1f2e178a4d019523e4d9154860d73be23332",
+  "rate_hz": 20,
+  "fps": 20,
+  "frame_count": 600,
+  "duration_s": 30,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "source-reviewed intersection coverage",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed intersection coverage",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed intersection coverage",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed intersection coverage",
+      "fov_deg": 90
+    }
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "testing__C111610__NRS-484B-307-9a__motor_vehicle_driver__yield_pedestrian",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_facing_red_arrow",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original ego-facing steady red, green arrow direction and illuminated interval",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "opposing_red",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original opposing steady-red indication during the arrow",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "official_head_approach",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Reviewed official head and governed approach",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "adjacent_crosswalk",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Source-sealed crosswalk polygon and adjacency to the actual turn",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "pedestrian_lawful_presence",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Pedestrian track and external permission context",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "ego_entry_route_speed",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original ego route, entry, speed and yield order",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "other_traffic_lawful_use",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Other traffic identity, route, occupancy and external lawful-use context",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four synchronized original camera frame identities",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sampling and original sensor/source precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_original_site",
+          "unit": "structured record",
+          "method": "Hash-sealed map, heads, crosswalk and actor permission sources."
+        }
+      ],
+      "limitations": [
+        "Physical signal, actor and camera realization requires original Native review.",
+        "Lawful use and right of way remain source-dependent judgments."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "turn",
+    "motion_source": "body_history.jsonl",
+    "body_key": "body_vertices_m",
+    "heading_key": "heading_deg",
+    "turn_degrees": 90,
+    "turn_tolerance_deg": 30,
+    "minimum_progress_m": 1.0,
+    "context_sources": []
+  }
+}
