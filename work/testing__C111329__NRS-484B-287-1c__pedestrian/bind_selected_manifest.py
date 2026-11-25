@@ -65,8 +65,8 @@ def bind():
                 "negative_log": negative,
                 "diagnostic_only": True,
                 "command": (f".venv-cpu/bin/python work/{ROOT.name}/run_compat_deterministic.py --manifest work/{ROOT.name}/execution-manifest.json "
-                            f"--case {case} --candidate {cand_id} --output .runtime-work/c111329-287-1c-compat-v8-{short}-{cand_id} "
-                            "--library runtime/library --validator .runtime-work/c214977-decoder/.lake/build/bin/adapterCheck"),
+                            f"--case {case} --candidate {cand_id} --output .runtime-work/c111329-287-1c-compat-v9-{short}-{cand_id} "
+                            "--library runtime/library --validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             }
             if cand_id == "primary":
                 entry["negative"] = {"log": negative, "diagnostic_only": True}
@@ -95,11 +95,11 @@ def bind():
             "script": script,
             "script_sha256": digest(ROOT / script),
             "command": (f".venv-cpu/bin/python work/{ROOT.name}/{script} "
-                        f"--case-id {case} --attempt .runtime-work/c111329-287-1c-compat-v8-{short}-primary "
-                        f"--output .runtime-work/c111329-287-1c-independent-v6-{short}.json --diagnostic"),
+                        f"--case-id {case} --attempt .runtime-work/c111329-287-1c-compat-v9-{short}-primary "
+                        f"--output .runtime-work/c111329-287-1c-independent-v9-{short}.json --diagnostic"),
             "negative_command": (f".venv-cpu/bin/python work/{ROOT.name}/{script} "
-                                 f"--case-id {case} --attempt .runtime-work/c111329-287-1c-independent-negative-v6-{short} "
-                                 f"--output .runtime-work/c111329-287-1c-independent-negative-v6-{short}.json --diagnostic"),
+                                 f"--case-id {case} --attempt .runtime-work/c111329-287-1c-independent-negative-v9-{short} "
+                                 f"--output .runtime-work/c111329-287-1c-independent-negative-v9-{short}.json --diagnostic"),
             "test_log": pos_log,
             "test_log_sha256": digest(ROOT / pos_log),
             "negative_log": neg_log,
@@ -111,13 +111,13 @@ def bind():
             "diagnostic_only": True,
             "recorded_only": True,
             "positive_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
-                                 f"--case {case} --attempt .runtime-work/c111329-287-1c-compat-v8-{short}-primary "
-                                 f"--output .runtime-work/c111329-287-1c-saved-v8-{short} --library runtime/library "
-                                 "--validator .runtime-work/c214977-decoder/.lake/build/bin/adapterCheck"),
+                                 f"--case {case} --attempt .runtime-work/c111329-287-1c-compat-v9-{short}-primary "
+                                 f"--output .runtime-work/c111329-287-1c-saved-v9-{short} --library runtime/library "
+                                 "--validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             "missing_source_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
-                                       f"--case {case} --attempt .runtime-work/c111329-287-1c-saved-negative-attempt-v8-{short} "
-                                       f"--output .runtime-work/c111329-287-1c-saved-negative-v8-{short} --library runtime/library "
-                                       "--validator .runtime-work/c214977-decoder/.lake/build/bin/adapterCheck"),
+                                       f"--case {case} --attempt .runtime-work/c111329-287-1c-saved-negative-attempt-v9-{short} "
+                                       f"--output .runtime-work/c111329-287-1c-saved-negative-v9-{short} --library runtime/library "
+                                       "--validator .runtime-work/c111329-287-1c-decoder/.lake/build/bin/adapterCheck"),
             "positive_receipt": f"cases/{short}/cpu-saved-positive-processing.json",
             "missing_source_receipt": f"cases/{short}/cpu-saved-negative-processing.json",
         }

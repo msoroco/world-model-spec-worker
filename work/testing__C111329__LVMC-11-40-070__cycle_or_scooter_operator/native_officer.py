@@ -10,13 +10,22 @@ import json
 from pathlib import Path
 
 
-def read_officer_source(path: Path, expected_sha256: str, site: dict, bike_id: str) -> dict:
+RECIPIENT_ROLE = "selected_cycle_operator"
+
+
+def route_digest(site: dict) -> str:
+    return hashlib.sha256(json.dumps(site["vehicle_route"], sort_keys=True,
+                                     separators=(",", ":")).encode()).hexdigest()
+
+
+def read_officer_source(path: Path, expected_sha256: str, site: dict) -> dict:
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != expected_sha256:
         raise ValueError("original officer source hash mismatch")
     packet = json.loads(raw)
     required = ("source_kind", "map_name", "authority_source", "officer_blueprint_id",
-                "gesture_asset_id", "spawn_xyz", "recipient_bike_id", "command",
+                "gesture_asset_id", "spawn_xyz", "recipient_role",
+                "recipient_route_sha256", "command",
                 "start_frame", "end_frame", "visible_camera_ids")
     if any(k not in packet for k in required):
         raise ValueError("incomplete original officer source")
@@ -24,8 +33,9 @@ def read_officer_source(path: Path, expected_sha256: str, site: dict, bike_id: s
         raise ValueError("unverified original officer source")
     if packet["map_name"] != site["map_name"] or packet["authority_source"] != site.get("police_authority_source"):
         raise ValueError("officer map or authority source mismatch")
-    if packet["recipient_bike_id"] != str(bike_id):
-        raise ValueError("officer recipient source mismatch")
+    if (packet["recipient_role"] != RECIPIENT_ROLE or
+            packet["recipient_route_sha256"] != route_digest(site)):
+        raise ValueError("officer recipient role or route source mismatch")
     if packet["command"] not in {"stop", "proceed"}:
         raise ValueError("unsupported original officer command")
     if not isinstance(packet["spawn_xyz"], list) or len(packet["spawn_xyz"]) != 3:
@@ -35,6 +45,17 @@ def read_officer_source(path: Path, expected_sha256: str, site: dict, bike_id: s
     if len(set(packet["visible_camera_ids"])) < 2:
         raise ValueError("officer gesture has insufficient camera plan")
     return packet
+
+
+def bind_recipient(packet: dict, bike, site: dict) -> dict:
+    """Bind the reviewed role and route to the observed spawned actor id."""
+    if (packet["recipient_role"] != RECIPIENT_ROLE or
+            packet["recipient_route_sha256"] != route_digest(site) or
+            not bike.is_alive or not str(bike.id)):
+        raise ValueError("officer live recipient binding mismatch")
+    bound = dict(packet)
+    bound["observed_recipient_bike_id"] = str(bike.id)
+    return bound
 
 
 def construct(world, carla, packet: dict, case: dict, gesture_adapter) -> dict:
@@ -66,7 +87,7 @@ def construct(world, carla, packet: dict, case: dict, gesture_adapter) -> dict:
 def read_command(officer, packet: dict, frame: int, gesture_reader, bike_id: str) -> dict:
     if not officer.is_alive or not callable(gesture_reader):
         raise ValueError("original officer actor or gesture reader unavailable")
-    if str(bike_id) != packet["recipient_bike_id"]:
+    if str(bike_id) != packet.get("observed_recipient_bike_id"):
         raise ValueError("officer command recipient mismatch")
     active = packet["start_frame"] <= frame <= packet["end_frame"]
     observed = gesture_reader(officer, packet["gesture_asset_id"], frame)

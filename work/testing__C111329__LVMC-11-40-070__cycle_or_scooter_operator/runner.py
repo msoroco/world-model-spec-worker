@@ -11,9 +11,11 @@ import importlib
 import json
 import os
 from pathlib import Path
+import shutil
 
 from native_device import construct as construct_bike, read_site
-from native_officer import construct as construct_officer, read_officer_source, read_command
+from native_officer import (construct as construct_officer, read_officer_source,
+                            bind_recipient, read_command)
 from native_capture import capture
 from native_route import command_step
 from native_cameras import CAMERAS, DIMENSIONS
@@ -50,7 +52,8 @@ def check(root: Path = ROOT) -> dict:
 
 
 def preflight_sources(case: dict, site_path: Path, site_sha256: str,
-                      officer_path: Path | None, officer_sha256: str | None) -> dict:
+                      officer_path: Path | None, officer_sha256: str | None,
+                      officer_pose_variant: str | None = None) -> dict:
     site = read_site(site_path, site_sha256)
     if site["device_type"] != case["device_type"]:
         raise ValueError("reviewed site has another device type")
@@ -58,12 +61,10 @@ def preflight_sources(case: dict, site_path: Path, site_sha256: str,
     if case["officer_direction"] != "none":
         if officer_path is None or not officer_sha256:
             raise ValueError("reviewed Police Officer authority source required")
-        raw = officer_path.read_bytes()
-        if hashlib.sha256(raw).hexdigest() != officer_sha256:
-            raise ValueError("original officer source hash mismatch")
-        officer = json.loads(raw)
+        officer = read_officer_source(officer_path, officer_sha256, site)
         for key in ("source_kind", "map_name", "authority_source", "officer_blueprint_id",
-                    "gesture_asset_id", "spawn_xyz", "recipient_bike_id", "command",
+                    "gesture_asset_id", "spawn_xyz", "recipient_role",
+                    "recipient_route_sha256", "command",
                     "start_frame", "end_frame", "visible_camera_ids"):
             if key not in officer:
                 raise ValueError("incomplete original officer source: " + key)
@@ -73,6 +74,9 @@ def preflight_sources(case: dict, site_path: Path, site_sha256: str,
             raise ValueError("officer authority differs from reviewed site")
         if officer["command"] != case["officer_direction"]:
             raise ValueError("officer direction differs from exact case")
+        if officer_pose_variant and (officer.get("pose_variant") != officer_pose_variant
+                                     or not officer.get("camera_sightline_source")):
+            raise ValueError("reviewed officer pose or camera sightline source differs from selected candidate")
         if not isinstance(officer["visible_camera_ids"], list) or len(set(officer["visible_camera_ids"]) & set(CAMERAS)) < 2:
             raise ValueError("reviewed officer camera plan insufficient")
     elif officer_path is not None or officer_sha256 is not None:
@@ -84,7 +88,9 @@ def execute(config_root: Path, output_dir: Path, site_path: Path, site_sha256: s
             officer_path: Path | None, officer_sha256: str | None,
             adapter_name: str, host: str, port: int) -> dict:
     case = check(config_root)
-    sources = preflight_sources(case, site_path, site_sha256, officer_path, officer_sha256)
+    config = json.loads((config_root / "config.json").read_text())
+    sources = preflight_sources(case, site_path, site_sha256, officer_path,
+                                officer_sha256, config.get("officer_pose_variant"))
     if not output_dir.is_dir():
         raise ValueError("executor output directory missing")
     trace_path = output_dir / "original-instruction-trace.json"
@@ -93,15 +99,38 @@ def execute(config_root: Path, output_dir: Path, site_path: Path, site_sha256: s
     adapter = importlib.import_module(adapter_name)
     if not hasattr(adapter, "open_session"):
         raise ValueError("Native adapter lacks open_session")
+    copied = {"site": (site_path, output_dir / "original-site.json", site_sha256)}
+    if officer_path is not None:
+        copied["officer"] = (officer_path, output_dir / "original-officer.json", officer_sha256)
+    if any(target.exists() for _, target, _ in copied.values()):
+        raise ValueError("original source copy already exists")
+    for source, target, expected in copied.values():
+        with target.open("xb") as stream, source.open("rb") as original:
+            shutil.copyfileobj(original, stream)
+        if sha(target) != expected:
+            raise ValueError("original source changed during capture handoff")
+    source_manifest = output_dir / "original-source-hashes.json"
+    with source_manifest.open("x") as stream:
+        json.dump({name: digest for name, (_, _, digest) in copied.items()}, stream,
+                  sort_keys=True)
+        stream.write("\n")
     with adapter.open_session(host, port, sources["site"], case) as session:
         world = session.world
         carla = session.carla
         built = construct_bike(world, carla, sources["site"], case)
         bike = built["bike"]
         officer = None
+        bound_officer = None
         try:
             if sources["officer"] is not None:
-                read_officer_source(officer_path, officer_sha256, sources["site"], str(bike.id))
+                bound_officer = bind_recipient(sources["officer"], bike, sources["site"])
+                receipt = {"source_kind": "original_native_acquisition_readback",
+                           "site_sha256": site_sha256, "officer_sha256": officer_sha256,
+                           "reviewed_recipient_role": bound_officer["recipient_role"],
+                           "reviewed_route_sha256": bound_officer["recipient_route_sha256"],
+                           "observed_recipient_bike_id": bound_officer["observed_recipient_bike_id"]}
+                (output_dir / "original-acquisition-receipt.json").write_text(
+                    json.dumps(receipt, sort_keys=True) + "\n")
                 officer = construct_officer(world, carla, sources["officer"], case,
                                             session.set_visible_gesture)["officer"]
 
@@ -109,7 +138,7 @@ def execute(config_root: Path, output_dir: Path, site_path: Path, site_sha256: s
                 if officer is None:
                     return {"actor_id": None, "authority_source": None,
                             "recipient_id": str(participant.id), "command": "none"}
-                return read_command(officer, sources["officer"], snapshot.frame,
+                return read_command(officer, bound_officer, snapshot.frame,
                                     session.read_visible_gesture, str(participant.id))
 
             def control(elapsed_s):
@@ -125,9 +154,11 @@ def execute(config_root: Path, output_dir: Path, site_path: Path, site_sha256: s
             try:
                 bike.set_target_velocity(carla.Vector3D(x=0.0, y=0.0, z=0.0))
             finally:
-                if officer is not None:
-                    officer.destroy()
-                bike.destroy()
+                try:
+                    if officer is not None:
+                        officer.destroy()
+                finally:
+                    bike.destroy()
 
 
 def main() -> None:

@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRATCH = ROOT.parents[1] / ".runtime-work" / "c125714-2031-analysis-tests"
 sys.path.insert(0, str(ROOT))
 
-from analysis import build_report
+from analysis import build_report, constraint_context_measurement, write_selected_result
 from native_history import capture
 from test_native_history import CameraAdapter
 from test_opposing_pass import site
@@ -67,6 +67,31 @@ class AnalysisTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Missing required source: reviewed-map.json"):
             build_report(self.root, diagnostic_fixture=True,
                          camera_dimensions=self.dimensions)
+
+    def test_constraint_context_is_required_only_for_constrained_case(self):
+        self.assertEqual(constraint_context_measurement({}, "right_half"),
+                         {"feature_present": False, "legal_reasonableness": "unresolved"})
+        with self.assertRaisesRegex(ValueError, "source-recorded physical constraint"):
+            constraint_context_measurement({}, "right_constrained")
+
+    def test_saved_result_projects_frozen_recording_channels(self):
+        sys.path.insert(0, str(ROOT.parents[1] / "runtime"))
+        from scenario_pipeline.batch_pipeline.validation import recording_evidence
+        from scenario_pipeline.worker_exchange.native_output import validate_result
+        (self.root / "trace.jsonl").write_text('{"frame":0,"time_s":0}\n')
+        (self.root / "video_frames.jsonl").write_text('{"video_frame":0,"carla_frame":0,"time_s":0}\n')
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
+            (self.root / (name + ".mkv")).write_bytes(b"diagnostic placeholder")
+        report = build_report(self.root, diagnostic_fixture=True,
+                              camera_dimensions=self.dimensions)
+        result = write_selected_result(self.root, report)
+        validate_result(result)
+        recording_evidence(result, result["recording_description"],
+                           lambda name: self.root / name)
+        self.assertFalse(result["maneuver_completed"])
+        self.assertFalse(result["target_checks"][0]["physical_cause_confirmed"])
+        with self.assertRaises(FileExistsError):
+            write_selected_result(self.root, report)
 
 
 if __name__ == "__main__":

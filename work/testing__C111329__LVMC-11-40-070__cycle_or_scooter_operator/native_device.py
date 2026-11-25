@@ -7,19 +7,22 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 VALID_DEVICES = {"signal", "stop_sign", "other_control_device"}
 VALID_DIRECTIONS = {"stop", "proceed", "none"}
 
 
-def read_site(path: Path, expected_sha256: str) -> dict:
+def read_site(path: Path, expected_sha256: str, *, allow_diagnostic: bool = False) -> dict:
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != expected_sha256:
         raise ValueError("original Native site hash mismatch")
     site = json.loads(raw)
     if site.get("source_kind") != "original_local_native_site_inventory":
         raise ValueError("unverified Native site inventory")
+    if site.get("diagnostic_fixture") and not allow_diagnostic:
+        raise ValueError("diagnostic fixture cannot be an original Native site")
     for key in ("map_name", "jurisdiction_source", "governed_approach", "stop_line", "vehicle_route", "device_id", "device_type", "device_authority_source", "vehicle_applicability_source", "bike_blueprint_id"):
         if not site.get(key):
             raise ValueError("missing Native site field: " + key)
@@ -27,6 +30,24 @@ def read_site(path: Path, expected_sha256: str) -> dict:
         raise ValueError("unsupported official device type")
     if len(site["vehicle_route"]) < 2 or len(site["stop_line"]) != 2:
         raise ValueError("incomplete route or stop line")
+    try:
+        route = [[float(v) for v in point] for point in site["vehicle_route"]]
+        line = [[float(v) for v in point] for point in site["stop_line"]]
+        if any(len(point) != 3 for point in route) or any(len(point) != 2 for point in line):
+            raise ValueError("invalid original route or stop-line dimensions")
+        if not all(math.isfinite(v) for point in route + line for v in point):
+            raise ValueError("nonfinite original route or stop line")
+        if math.dist(line[0], line[1]) < 0.1:
+            raise ValueError("degenerate original stop line")
+        if math.dist(route[0][:2], route[1][:2]) < 1.0:
+            raise ValueError("degenerate original route")
+        x0, y0 = line[0]
+        x1, y1 = line[1]
+        side = lambda point: (x1-x0)*(point[1]-y0)-(y1-y0)*(point[0]-x0)
+        if side(route[0]) * side(route[1]) >= 0:
+            raise ValueError("original route does not cross governing stop line")
+    except (TypeError, ValueError) as error:
+        raise ValueError("invalid original route or stop-line geometry") from error
     return site
 
 

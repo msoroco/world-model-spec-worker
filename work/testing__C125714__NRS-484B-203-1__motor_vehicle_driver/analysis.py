@@ -9,8 +9,9 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
-from native_history import audit_media
+from native_history import CAMERA_DIMENSIONS, audit_media
 from opposing_pass import load_sealed, measure
 from physical_completion import assess
 
@@ -36,17 +37,55 @@ def paved_allocation_measurement(trace):
     observed = measure(trace)
     return {"ego_edge_from_paved_half_max_m": observed["ego_north_edge_from_half_max_m"],
             "other_edge_from_paved_half_max_m": observed["other_south_edge_from_half_max_m"],
+            "ego_yielded_paved_fraction_min": observed["ego_yielded_paved_fraction_min"],
+            "other_yielded_paved_fraction_min": observed["other_yielded_paved_fraction_min"],
             "paved_width_range_m": observed["paved_width_range_m"]}
 
 
-def constraint_context_measurement(reviewed_map):
+def constraint_context_measurement(reviewed_map, variant):
     feature = reviewed_map.get("physical_constraint")
+    if feature is None and variant != "right_constrained":
+        return {"feature_present": False, "legal_reasonableness": "unresolved"}
     if not isinstance(feature, dict) or not feature.get("source_id"):
         raise ValueError("source-recorded physical constraint context missing")
-    return {"feature_source_id": feature["source_id"],
+    return {"feature_present": True, "feature_source_id": feature["source_id"],
             "station_range_m": feature["station_range_m"],
             "lateral_range_m": feature["lateral_range_m"],
             "legal_reasonableness": "unresolved"}
+
+
+def audit_diagnostic_videos(trace, attempt, expected_manifest_sha256):
+    """Join labeled synthetic actor clocks to generated videos; no physical claim."""
+    manifest_path = _required(attempt, "opposing-camera-frames/camera-manifest.json")
+    if sha(manifest_path) != expected_manifest_sha256:
+        raise ValueError("diagnostic camera manifest changed")
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("format") != "diagnostic-video-join":
+        raise ValueError("diagnostic video manifest required")
+    rows = manifest.get("rows")
+    samples = trace.get("samples")
+    if not isinstance(rows, list) or len(rows) != len(samples):
+        raise ValueError("diagnostic camera/actor frame count mismatch")
+    for i, (actor, camera) in enumerate(zip(samples, rows)):
+        if any(camera.get(key) != actor.get(key) for key in
+               ("frame", "time_s", "native_frame", "native_elapsed_s")):
+            raise ValueError(f"diagnostic camera/actor clock mismatch at {i}")
+    if manifest.get("videos") != {name: name + ".mkv" for name in CAMERA_DIMENSIONS}:
+        raise ValueError("four diagnostic videos required")
+    for name, (width, height) in CAMERA_DIMENSIONS.items():
+        video = _required(attempt, manifest["videos"][name])
+        probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames",
+                                "-select_streams", "v:0", "-show_entries",
+                                "stream=nb_read_frames,width,height", "-of", "json", str(video)],
+                               capture_output=True, text=True, check=True)
+        streams = json.loads(probe.stdout).get("streams", [])
+        if len(streams) != 1 or (streams[0].get("width"), streams[0].get("height")) != (width, height) or int(streams[0].get("nb_read_frames", -1)) != len(rows):
+            raise ValueError("diagnostic video decode/profile mismatch: " + name)
+    return {"trace_sha256": sha(_required(attempt, "opposing-actor-trace.json")),
+            "camera_manifest_sha256": expected_manifest_sha256,
+            "joined_frames": len(rows), "decoded_view_frames": len(rows)*4,
+            "diagnostic_fixture": True, "physical_acceptance": False,
+            "legal_judgment": "unresolved"}
 
 
 def build_report(attempt, *, diagnostic_fixture=False, camera_dimensions=None):
@@ -80,8 +119,12 @@ def build_report(attempt, *, diagnostic_fixture=False, camera_dimensions=None):
     if not isinstance(manifest, dict):
         raise ValueError("original four-camera manifest missing")
     media = attempt / "opposing-camera-frames"
-    media_audit = audit_media(trace_path, receipt["sha256"], media,
-                              manifest["sha256"], dimensions=camera_dimensions)
+    camera_packet = json.loads(_required(attempt, "opposing-camera-frames/camera-manifest.json").read_text())
+    if diagnostic_fixture and isinstance(camera_packet, dict):
+        media_audit = audit_diagnostic_videos(trace, attempt, manifest["sha256"])
+    else:
+        media_audit = audit_media(trace_path, receipt["sha256"], media,
+                                  manifest["sha256"], dimensions=camera_dimensions)
     if media_audit["joined_frames"] != receipt["frame_count"]:
         raise ValueError("original actor and camera count differs")
     measured = measure(trace)
@@ -102,7 +145,7 @@ def build_report(attempt, *, diagnostic_fixture=False, camera_dimensions=None):
                 "method": "paved_allocation_measurement",
                 "sources": {"opposing-actor-trace.json": trace_sha,
                     "reviewed-map.json": map_sha}},
-            "constraint_context": {"value": constraint_context_measurement(reviewed),
+            "constraint_context": {"value": constraint_context_measurement(reviewed, variant),
                 "method": "constraint_context_measurement",
                 "sources": {"reviewed-map.json": map_sha}}},
         "camera_audit": media_audit, "analysis_complete": True,
@@ -115,12 +158,85 @@ def build_report(attempt, *, diagnostic_fixture=False, camera_dimensions=None):
                         "As nearly as possible remains a human legal judgment."]}
 
 
+def write_selected_result(attempt, report):
+    """Project sealed saved sources into the exact recording contract once."""
+    attempt = Path(attempt)
+    config = json.loads(_required(attempt, "config.json").read_text())
+    description = config["recording_description"]
+    traces = json.loads(_required(attempt, "opposing-actor-trace.json").read_text())
+    cameras = json.loads(_required(attempt, "opposing-camera-frames/camera-manifest.json").read_text())
+    _required(attempt, "trace.jsonl")
+    _required(attempt, "video_frames.jsonl")
+    for name in ("overview", "approach", "reference_corner", "driver_reference"):
+        _required(attempt, name + ".mkv")
+    camera_rows = cameras["rows"] if isinstance(cameras, dict) and cameras.get("format") == "diagnostic-video-join" else cameras
+    if len(traces["samples"]) != len(camera_rows):
+        raise ValueError("saved recording channel lengths differ")
+    channels = attempt / "channels"
+    channels.mkdir(exist_ok=False)
+    streams = {
+        "opposing_actor_body_history": traces["samples"],
+        "four_camera_views": camera_rows,
+    }
+    evidence = []
+    for channel in description["channels"]:
+        name = channel["name"]
+        if name not in streams:
+            raise ValueError("selected recording channel has no saved source: " + name)
+        path = channels / (name + ".jsonl")
+        with path.open("x", encoding="utf-8") as output:
+            for row in streams[name]:
+                output.write(json.dumps({"time_s": row["time_s"], "value": row},
+                                        separators=(",", ":"), allow_nan=False) + "\n")
+        evidence.append({"name": name, "unit": channel["unit"],
+                         "reference": str(path.relative_to(attempt))})
+    contexts = {"reviewed_median_opening_map": json.loads(
+        _required(attempt, "reviewed-map.json").read_text())}
+    for context in description["context_inputs"]:
+        name = context["name"]
+        if name not in contexts:
+            raise ValueError("selected context has no saved source: " + name)
+        path = channels / (name + ".json")
+        path.write_text(json.dumps({name: contexts[name]}, separators=(",", ":"),
+                                   allow_nan=False) + "\n", encoding="utf-8")
+        evidence.append({"name": name, "unit": context["unit"],
+                         "reference": str(path.relative_to(attempt))})
+    measurements = {name: item["value"] for name, item in report["measurements"].items()}
+    target = {"target": "original opposing-body and four-camera observation",
+              "requested": True, "measured": True, "method": "build_report",
+              "tolerance": 0, "matched": True, "physical_cause_confirmed": False,
+              "cause_evidence": report["measurements"]["opposing_motion"]["sources"]}
+    result = {"case_id": report["case_id"], "measured_values": measurements,
+              "target_checks": [target], "setup_confirmed": False,
+              "behavior_attempted": False, "maneuver_completed": False,
+              "termination_reason": "Saved source projection; original physical review pending",
+              "physical_failure_flags": [], "trace_reference": "trace.jsonl",
+              "video_references": [name + ".mkv" for name in
+                                   ("overview", "approach", "reference_corner", "driver_reference")],
+              "video_frame_map_reference": "video_frames.jsonl",
+              "recording_description": description, "recording_evidence": evidence,
+              "realized_observables": {}}
+    result_path = attempt / "result.json"
+    if result_path.exists():
+        raise FileExistsError(result_path)
+    result_path.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n",
+                           encoding="utf-8")
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
-    report = build_report(args.attempt)
+    attempt = Path(args.attempt)
+    provenance = json.loads(_required(attempt, "acquisition-provenance.json").read_text())
+    diagnostic = (provenance.get("provenance_kind") == "synthetic_fixture" and
+                  provenance.get("diagnostic_fixture") is True)
+    if provenance.get("provenance_kind") not in ("synthetic_fixture", "native"):
+        raise ValueError("saved acquisition provenance missing")
+    report = build_report(attempt, diagnostic_fixture=diagnostic)
+    write_selected_result(args.attempt, report)
     target = Path(args.output)
     if target.exists():
         raise FileExistsError(target)

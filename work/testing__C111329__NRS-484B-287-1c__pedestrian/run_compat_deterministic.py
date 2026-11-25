@@ -24,7 +24,8 @@ def main():
     scratch = repo / ".runtime-work" / "c111329-287-1c-fixture-stable" / (args.case.split("__")[-1] + "-" + args.candidate)
     if repo / ".runtime-work" not in scratch.parents:
         raise ValueError("Stable scratch path outside .runtime-work")
-    if not os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "").startswith(str(repo / ".runtime-work")):
+    output_root = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "/nonexistent")).resolve()
+    if repo / ".runtime-work" not in output_root.parents:
         raise ValueError("Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     sys.path[:0] = [str(repo / "runtime"), str(repo / "runtime/scenario_pipeline")]
     from scenario_pipeline.worker_exchange import package_compatibility

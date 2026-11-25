@@ -173,6 +173,22 @@ class MeasurementTests(unittest.TestCase):
         self.assertGreater(encroached["ego_north_edge_from_half_max_m"], 0)
         self.assertEqual(encroached["legal_judgment"], "unresolved")
 
+    def test_exact_half_paved_boundary_and_capacity_applicability(self):
+        # Seven metres of paved width; the source body edge determines the
+        # portion left to the other driver, including the exact 0.5 boundary.
+        below = module.measure(history(ego_y=-0.7))
+        exact = module.measure(history(ego_y=-0.8))
+        above = module.measure(history(ego_y=-0.9))
+        self.assertLess(below["ego_yielded_paved_fraction_min"], 0.5)
+        self.assertEqual(exact["ego_yielded_paved_fraction_min"], 0.5)
+        self.assertGreater(above["ego_yielded_paved_fraction_min"], 0.5)
+        for measured in (below, exact, above):
+            self.assertEqual(measured["legal_judgment"], "unresolved")
+        unsupported = history(ego_y=-0.8)
+        unsupported["traffic_line_capacity_each_direction"] = [2, 1]
+        with self.assertRaisesRegex(ValueError, "single-line capacity source missing"):
+            module.measure(unsupported)
+
     def test_wrong_side_and_missing_interval(self):
         self.assertFalse(module.measure(history(ego_y=1.7, other_y=-1.7))["right_of_other_all"])
         packet = history()
