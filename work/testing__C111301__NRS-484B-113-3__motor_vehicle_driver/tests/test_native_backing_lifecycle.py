@@ -102,7 +102,8 @@ class World:
 class NativeBackingLifecycleTests(unittest.TestCase):
     def test_reviewed_camera_factory_spawns_source_positioned_sensor(self):
         pose = {'location': {'x': 1.0, 'y': 2.0, 'z': 3.0},
-                'rotation': {'pitch': 0.0, 'yaw': 90.0, 'roll': 0.0}}
+                'rotation': {'pitch': 0.0, 'yaw': 90.0, 'roll': 0.0},
+                'fov_deg': 90}
         carla = SimpleNamespace(Transform=lambda location, rotation: (location, rotation),
                                 Location=lambda **values: values,
                                 Rotation=lambda **values: values)
@@ -111,18 +112,28 @@ class NativeBackingLifecycleTests(unittest.TestCase):
         blueprint = SimpleNamespace(set_attribute=lambda key, value: attributes.__setitem__(key, value))
         calls = []
         world = SimpleNamespace(get_blueprint_library=lambda: SimpleNamespace(find=lambda name: blueprint),
-                                spawn_actor=lambda *args, **kwargs: calls.append((args, kwargs)) or Sensor('front'))
+                                spawn_actor=lambda *args, **kwargs: calls.append((args, kwargs)) or Sensor('overview'))
         vehicle = object()
-        sensor = factory(world, vehicle, 'front', (1920, 1080))
+        sensor = factory(world, vehicle, 'overview', (1920, 1080))
         self.assertIsInstance(sensor, Sensor)
         self.assertEqual(attributes, {'image_size_x': '1920', 'image_size_y': '1080',
-                                      'sensor_tick': '.05'})
+                                      'sensor_tick': '.05', 'fov': '90'})
         self.assertIs(calls[0][1]['attach_to'], vehicle)
         self.assertEqual(calls[0][0][1][0]['z'], 3.0)
 
     def test_reviewed_camera_factory_rejects_missing_extrinsic(self):
         with self.assertRaisesRegex(ValueError, 'four reviewed original camera'):
-            CarlaCameraFactory(SimpleNamespace(), {'camera_extrinsics': {'front': {}}})
+            CarlaCameraFactory(SimpleNamespace(), {'camera_extrinsics': {'overview': {}}})
+
+    def test_reviewed_camera_factory_rejects_wrong_fov(self):
+        pose = {'location': {'x': 1.0, 'y': 2.0, 'z': 3.0},
+                'rotation': {'pitch': 0.0, 'yaw': 0.0, 'roll': 0.0},
+                'fov_deg': 80}
+        carla = SimpleNamespace(Transform=lambda location, rotation: (location, rotation),
+                                Location=lambda **values: values,
+                                Rotation=lambda **values: values)
+        with self.assertRaisesRegex(ValueError, 'field of view differs'):
+            CarlaCameraFactory(carla, {'camera_extrinsics': {name: pose for name in CAMERAS}})
 
     def test_ffv1_encoder_writes_20_hz_lossless_video(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
@@ -188,13 +199,25 @@ class NativeBackingLifecycleTests(unittest.TestCase):
                 run(world, **kwargs)
             self.assertFalse(world.actors)
 
+    def test_linked_original_packet_is_rejected_before_world_mutation(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
+            root = Path(temp)
+            world, kwargs = self.run_case(root)
+            linked = root / 'linked-map.json'
+            linked.symlink_to(root / 'map.json')
+            kwargs['packet_path'] = linked
+            with self.assertRaisesRegex(ValueError, 'adjacent original map packet'):
+                run(world, **kwargs)
+            self.assertFalse(world.actors)
+
     def test_reviewed_packet_runs_production_owned_lifecycle(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
             world, kwargs = self.run_case(root)
             packet = json.loads((root / 'map.json').read_text())
             pose = {'location': {'x': 1.0, 'y': 0.0, 'z': 1.0},
-                    'rotation': {'pitch': 0.0, 'yaw': 0.0, 'roll': 0.0}}
+                    'rotation': {'pitch': 0.0, 'yaw': 0.0, 'roll': 0.0},
+                    'fov_deg': 90}
             packet.update(review_status='reviewed_original',
                           actor_transforms={'vehicle': pose, 'pedestrian': pose},
                           camera_extrinsics={name: pose for name in CAMERAS})

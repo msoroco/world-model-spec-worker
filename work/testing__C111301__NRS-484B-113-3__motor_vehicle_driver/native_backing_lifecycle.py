@@ -62,9 +62,10 @@ class FFV1Encoder:
 
 def _source_packet(attempt, packet_path, diagnostic_fixture):
     attempt = Path(attempt).resolve()
-    packet_path = Path(packet_path).resolve()
-    if packet_path.parent != attempt or packet_path.is_symlink():
+    packet_path = Path(packet_path)
+    if packet_path.is_symlink() or packet_path.resolve().parent != attempt:
         raise ValueError('adjacent original map packet required')
+    packet_path = packet_path.resolve()
     packet = json.loads(packet_path.read_text())
     source = packet.get('map_source')
     if not isinstance(source, dict) or set(source) != {'path', 'sha256'}:
@@ -106,12 +107,15 @@ class CarlaCameraFactory:
             raise ValueError('four reviewed original camera extrinsics required')
         for name in CAMERAS:
             _pose(carla, sources[name], name)
+            if sources[name].get('fov_deg') != 90:
+                raise ValueError('reviewed original camera field of view differs: ' + name)
 
     def __call__(self, world, vehicle, name, dimensions):
         blueprint = world.get_blueprint_library().find('sensor.camera.rgb')
         blueprint.set_attribute('image_size_x', str(dimensions[0]))
         blueprint.set_attribute('image_size_y', str(dimensions[1]))
         blueprint.set_attribute('sensor_tick', '.05')
+        blueprint.set_attribute('fov', '90')
         sensor = world.spawn_actor(blueprint,
                                    _pose(self.carla, self.packet['camera_extrinsics'][name], name),
                                    attach_to=vehicle)

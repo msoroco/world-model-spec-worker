@@ -45,9 +45,9 @@ def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
                "vehicle_forward_xy": [1, 0], "pedestrian_velocity_xy": [0, .2],
                "brake": 1.0, "reverse_gear": True, "pedestrian_in_corridor": True}
               for i in range(900)]
-    maps = [{"frame": i, "cameras": {name: i for name in ("front", "rear", "left", "right")}}
+    maps = [{"frame": i, "cameras": {name: i for name in ("overview", "approach", "reference_corner", "driver_reference")}}
             for i in range(900)]
-    media = {name: write(root, name + ".txt", {"fixture": name}) for name in ("front", "rear", "left", "right")}
+    media = {name: write(root, name + ".txt", {"fixture": name}) for name in ("overview", "approach", "reference_corner", "driver_reference")}
     receipt = {"assignment_id": ASSIGNMENT, "case_id": case, "source_kind": "native_original",
                "diagnostic": False, "source_id": "original:attempt-1", "vehicle_actor_id": 7,
                "pedestrian_actor_id": 8, "map_packet": write(root, "map.json", packet),
@@ -99,7 +99,7 @@ class SavedBackingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
-            for name in ("front", "rear", "left", "right"):
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
                 video = root / (name + ".mkv")
                 subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
                     "-f", "lavfi", "-i", "testsrc2=size=16x16:rate=20", "-frames:v", "3",
@@ -109,7 +109,7 @@ class SavedBackingTests(unittest.TestCase):
             result = audit_media(root, receipt, expected_frames=3,
                                  dimensions={name: (16, 16) for name in receipt["media"]})
             self.assertTrue(result["actual_pixels_decoded"])
-            self.assertEqual(result["cameras"]["rear"]["decoded_frames"], 3)
+            self.assertEqual(result["cameras"]["approach"]["decoded_frames"], 3)
             self.assertFalse(result["physical_visibility_confirmed"])
             with self.assertRaisesRegex(ValueError, "decoded frame count differs"):
                 audit_media(root, receipt, expected_frames=4,
@@ -117,7 +117,7 @@ class SavedBackingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "dimensions differ"):
                 audit_media(root, receipt, expected_frames=3,
                             dimensions={name: (32, 16) for name in receipt["media"]})
-            (root / "rear.mkv").write_bytes(b"changed")
+            (root / "approach.mkv").write_bytes(b"changed")
             with self.assertRaisesRegex(ValueError, "hash differs"):
                 audit_media(root, receipt, expected_frames=3,
                             dimensions={name: (16, 16) for name in receipt["media"]})
@@ -126,7 +126,7 @@ class SavedBackingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
-            for name in ("front", "rear", "left", "right"):
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
                 video = root / (name + ".mkv")
                 subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
                     "-f", "lavfi", "-i", "testsrc2=size=16x16:rate=20", "-frames:v", "900",
@@ -264,7 +264,7 @@ class SavedBackingTests(unittest.TestCase):
             root = Path(directory)
             receipt = fixture(root)
             maps = json.loads((root / "frame-map.json").read_text())
-            maps[50]["cameras"]["rear"] = 49
+            maps[50]["cameras"]["approach"] = 49
             receipt["frame_map"] = write(root, "frame-map.json", maps)
             write(root, "acquisition.json", receipt)
             with self.assertRaisesRegex(ValueError, "camera frame identity"):
@@ -274,7 +274,7 @@ class SavedBackingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             receipt = fixture(root)
-            receipt["media"].pop("rear")
+            receipt["media"].pop("approach")
             write(root, "acquisition.json", receipt)
             with self.assertRaisesRegex(ValueError, "four sealed media"):
                 process(root, ASSIGNMENT + "__pedestrian_yield")

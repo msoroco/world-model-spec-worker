@@ -40,7 +40,7 @@ class NativeBackingCaptureTests(unittest.TestCase):
         if time_s is None:
             time_s = (frame - 1000) * .05
         return {name: SimpleNamespace(frame=frame, timestamp=time_s)
-                for name in ('front', 'rear', 'left', 'right')}
+                for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}
 
     def test_complete_original_source_rows(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
@@ -66,7 +66,7 @@ class NativeBackingCaptureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
             recorder = self.setup_recorder(Path(temp))
             images = self.images(1000)
-            images['rear'] = SimpleNamespace(frame=999)
+            images['approach'] = SimpleNamespace(frame=999)
             with self.assertRaisesRegex(ValueError, 'camera and world'):
                 recorder.append(1000, 0, images)
             with self.assertRaisesRegex(ValueError, '20 Hz'):
@@ -83,7 +83,7 @@ class NativeBackingCaptureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
             recorder = self.setup_recorder(Path(temp))
             images = self.images(1000)
-            images['front'].timestamp = .5
+            images['overview'].timestamp = .5
             with self.assertRaisesRegex(ValueError, 'camera timestamp and world tick differ'):
                 recorder.append(1000, 0, images)
             self.assertEqual(recorder.rows, [])

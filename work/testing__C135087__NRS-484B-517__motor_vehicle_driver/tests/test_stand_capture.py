@@ -75,6 +75,21 @@ class CaptureTest(unittest.TestCase):
         self.assertEqual(attempt["actor_rows"]["sha256"],
                          hashlib.sha256((self.root / "actor-rows.json").read_bytes()).hexdigest())
 
+    def test_camera_finalization_follows_capture_ticks(self):
+        for name in ("front", "rear", "left", "right"):
+            (self.root / (name + ".mkv")).unlink()
+        calls = []
+        def finish():
+            calls.append(self.world.index)
+            for name in ("front", "rear", "left", "right"):
+                (self.root / (name + ".mkv")).write_bytes(name.encode())
+        attempt = capture(self.world, self.actors, observe, "case-a", "Town", self.root,
+                          camera_finalize=finish)
+        self.assertEqual(calls, [899])
+        self.assertEqual(len((self.root / "trace.jsonl").read_text().splitlines()), 900)
+        self.assertEqual(len((self.root / "video_frames.jsonl").read_text().splitlines()), 900)
+        self.assertEqual(set(attempt["cameras"]), {"front", "rear", "left", "right"})
+
     def test_missing_camera_rejected_before_ticking(self):
         (self.root / "rear.mkv").unlink()
         with self.assertRaisesRegex(SourceError, "camera source"):

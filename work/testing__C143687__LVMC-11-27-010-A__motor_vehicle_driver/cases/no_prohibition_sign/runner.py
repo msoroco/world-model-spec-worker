@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 from source_packet import verify_packet
@@ -71,8 +72,15 @@ def main() -> None:
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
     result = check_bundle(Path(__file__).resolve().parent)
-    if not args.check:
-        raise ValueError('Native four-camera acquisition and reviewed original site are not bound')
+    if args.output_dir:
+        reviewed = os.environ.get('C143687_REVIEWED_SOURCE_DIR')
+        if not reviewed:
+            raise ValueError('C143687_REVIEWED_SOURCE_DIR is required for Native acquisition')
+        from native_runner import run_native
+        result = run_native(Path(__file__).resolve().parent, args.output_dir,
+                            reviewed, args.host, args.port)
+    elif not args.check:
+        raise ValueError('select --check or supply a fresh Native output directory')
     print(json.dumps(result, sort_keys=True))
 
 

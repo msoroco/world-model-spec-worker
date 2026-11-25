@@ -37,7 +37,7 @@ def _write(root, name, value):
 
 
 def capture(world, actors, observer, case_id, map_name, output,
-            frame_count=900, step=None):
+            frame_count=900, step=None, camera_finalize=None):
     """Tick a synchronous world and seal actor rows with existing camera files.
 
     `actors` maps subject/entrant/passenger to live CARLA actors. `observer`
@@ -59,14 +59,11 @@ def capture(world, actors, observer, case_id, map_name, output,
     root = Path(output)
     if not root.is_dir():
         raise SourceError("capture output directory with four cameras required")
-    camera_refs = {}
-    for name in CAMERAS:
-        camera = root / (name + ".mkv")
-        if camera.is_symlink() or not camera.is_file() or not camera.stat().st_size:
-            raise SourceError("missing original camera source: " + name)
-        camera_refs[name] = {"path": camera.name,
-                             "sha256": hashlib.sha256(camera.read_bytes()).hexdigest(),
-                             "frame_count": frame_count, "fps": 20}
+    if camera_finalize is None:
+        for name in CAMERAS:
+            camera = root / (name + ".mkv")
+            if camera.is_symlink() or not camera.is_file() or not camera.stat().st_size:
+                raise SourceError("missing original camera source: " + name)
     rows, frame_map = [], []
     previous = None
     for index in range(frame_count):
@@ -93,6 +90,16 @@ def capture(world, actors, observer, case_id, map_name, output,
                "entrant_speed_mps": _speed(actors["entrant"]), **readback}
         rows.append(row)
         frame_map.append({"frame": frame, "time_s": time_s})
+    if camera_finalize is not None:
+        camera_finalize()
+    camera_refs = {}
+    for name in CAMERAS:
+        camera = root / (name + ".mkv")
+        if camera.is_symlink() or not camera.is_file() or not camera.stat().st_size:
+            raise SourceError("missing original camera source: " + name)
+        camera_refs[name] = {"path": camera.name,
+                             "sha256": hashlib.sha256(camera.read_bytes()).hexdigest(),
+                             "frame_count": frame_count, "fps": 20}
     attempt = {"source_format": "native_original", "frame_count": frame_count,
                "fps": 20, "case_id": case_id, "map_name": map_name,
                "subject_id": actors["subject"].id,
@@ -104,4 +111,10 @@ def capture(world, actors, observer, case_id, map_name, output,
                "cameras": camera_refs}
     audit_saved_attempt(attempt, root)
     _write(root, "attempt-source.json", attempt)
+    (root / "trace.jsonl").write_text("".join(json.dumps({
+        "frame": row["frame"], "time_s": row["time_s"],
+        "speed_mps": row["subject_speed_mps"]}) + "\n" for row in rows))
+    (root / "video_frames.jsonl").write_text("".join(json.dumps({
+        "video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}) + "\n"
+        for i, row in enumerate(rows)))
     return attempt

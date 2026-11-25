@@ -16,7 +16,8 @@ from trail import validate_source
 
 
 def capture(world, vehicle, operator_id, sign_observer, site, case,
-            packet_path, output, camera_plan_sha256, frame_count=900):
+            packet_path, output, camera_plan_sha256, frame_count=900,
+            before_tick=None, on_frame=None):
     validate_source(site, case)
     source = verify_packet(site, Path(packet_path))
     if type(frame_count) is not int or frame_count != 900:
@@ -57,6 +58,8 @@ def capture(world, vehicle, operator_id, sign_observer, site, case,
     previous = None
     rows, packet_lines = [], []
     for _ in range(frame_count):
+        if before_tick is not None:
+            before_tick(vehicle, site, len(rows))
         tick_frame = world.tick()
         snapshot = world.get_snapshot()
         frame, time_s = snapshot.frame, float(snapshot.timestamp.elapsed_seconds)
@@ -82,6 +85,9 @@ def capture(world, vehicle, operator_id, sign_observer, site, case,
                      'vehicle_inside_corridor': box[0] <= x <= box[2] and box[1] <= y <= box[3],
                      'sign_face_visible': sign_visible,
                      'native_packet_sha256': packet_sha})
+        if on_frame is not None:
+            on_frame({'case_id': case_id, 'frame': frame, 'time_s': time_s,
+                      'vehicle_id': vehicle.id, 'location_xy': [x, y]}, snapshot)
     raw = ''.join(json.dumps(row, sort_keys=True, allow_nan=False) + '\n' for row in rows).encode()
     packet_path_out.write_bytes(b''.join(packet_lines))
     path.write_bytes(raw)

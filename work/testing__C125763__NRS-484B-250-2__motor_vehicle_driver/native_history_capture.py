@@ -53,7 +53,7 @@ def _vertices(actor) -> list[list[float]]:
 
 
 def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int = 900,
-            *, camera_readers=None, camera_dimensions=None) -> dict:
+            *, camera_readers=None, camera_dimensions=None, before_tick=None) -> dict:
     """Capture one 20 Hz synchronous run; output directory must be new and empty.
 
     The reviewed packet binds the live map and source bytes. An independent
@@ -87,7 +87,11 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     histories = {"ego": [], "other": []}
     camera_rows = []
     previous = None
-    for _ in range(frame_count):
+    if before_tick is not None and not callable(before_tick):
+        raise ValueError('before_tick must be callable')
+    for index in range(frame_count):
+        if before_tick is not None:
+            before_tick(index)
         tick_frame = world.tick()
         snapshot = world.get_snapshot()
         frame = snapshot.frame

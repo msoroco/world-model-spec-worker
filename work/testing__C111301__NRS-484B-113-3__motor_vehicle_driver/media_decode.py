@@ -11,8 +11,8 @@ from pathlib import Path
 
 from saved_backing import CAMERAS, _sealed, process
 
-PRODUCTION_DIMENSIONS = {"front": (1920, 1080), "rear": (1280, 720),
-                         "left": (1280, 720), "right": (1280, 720)}
+PRODUCTION_DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
+                         "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def _probe(video):

@@ -84,6 +84,18 @@ class CaptureTests(unittest.TestCase):
             self.run_capture()
         self.assertEqual(self.world.index, prior_index)
 
+    def test_native_control_and_camera_callbacks_share_original_frames(self):
+        controls, cameras = [], []
+        capture(self.world, self.vehicle, 'driver-1',
+                lambda snapshot, sign: snapshot.frame == 112,
+                self.site, CASES[0], self.packet, self.output, 'camera-plan',
+                before_tick=lambda vehicle, site, index: controls.append((index, self.world.index)),
+                on_frame=lambda sample, snapshot: cameras.append((sample['frame'], snapshot.frame)))
+        self.assertEqual(len(controls), 900)
+        self.assertEqual(controls[0], (0, -1))
+        self.assertEqual(controls[-1], (899, 898))
+        self.assertEqual(cameras, [(100 + index, 100 + index) for index in range(900)])
+
     def test_source_and_map_gate_before_capture(self):
         (self.root / 'official_plan_designation.txt').write_text('changed')
         with self.assertRaisesRegex(ValueError, 'source hash mismatch'):

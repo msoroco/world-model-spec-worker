@@ -15,7 +15,7 @@ from backing_semantics import response_witness
 
 ASSIGNMENT = "testing__C111301__NRS-484B-113-3__motor_vehicle_driver"
 CASES = {ASSIGNMENT + "__pedestrian_yield", ASSIGNMENT + "__pedestrian_continue"}
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _sealed(root, ref):

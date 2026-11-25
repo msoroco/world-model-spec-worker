@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
   "input_sha256": "d2a20dd00035ab889eee7c4e18e73079dbb58fdafdc3f4cc022350b24a46c9e5",
   "status": "partial",
-  "readiness_kind": "partial_native_backing_tick_sources_tested",
+  "readiness_kind": "partial_selected_manifest_measurement_contracts_and_offline_tested",
   "applied_update": 0,
   "tests": [
     {
@@ -82,10 +82,64 @@
       "exit_code": 0,
       "log": "cpu-nov25-native-join-tests.log",
       "sha256": "d41cbfed69ae9a4d3592de4be1b0629cdfa1ff35200f5c789c4f7cdc24b68212"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output MPLCONFIGDIR=$PWD/.runtime-work/c111301-nov25/mpl PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25-lifecycle-tests.log",
+      "sha256": "4e3415bc72a0e417fda9c1f74aeaa002d99275986dc4decb506cbf3c3ed3bd3d"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov25-lifecycle-static.log",
+      "sha256": "6f95550e204df71bfd17832f265d6b90b00c340394b06d6de0449007baf6c293"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov25-lifecycle-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python [materialize both selected inline constructions under .runtime-work and run runner.py --check plus bundled unittest]",
+      "exit_code": 0,
+      "log": "cpu-nov25-selected-constructions.log",
+      "sha256": "714be0ee02ef5ff43a81aedba697c0d219d194fd3d7382abfb40a84ac7f51aa5"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output MPLCONFIGDIR=$PWD/.runtime-work/c111301-nov25/mpl PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25-manifest-tests.log",
+      "sha256": "d122adf6f1809895d30e777bb9132364eb5fb3e0a982afacd5e0d90d4ef46b8c"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov25-manifest-static.log",
+      "sha256": "6f95550e204df71bfd17832f265d6b90b00c340394b06d6de0449007baf6c293"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c111301-nov25/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111301-nov25/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov25-manifest-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --output .runtime-work/c111301-offline-yield-nov25 --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "proof-offline-pedestrian_yield.log",
+      "sha256": "051f2c34a3e292824d8b1301af749d7c9fbbcce593b9df096b7926b98f69137b"
+    },
+    {
+      "command": "runtime.py offline --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --output .runtime-work/c111301-offline-continue-nov25 --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "proof-offline-pedestrian_continue.log",
+      "sha256": "18605cb6126b016456269a3699921d49ce2a6b12325859cca328a2414a563eff"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "NativeBackingRecorder binds four original camera timestamps to each 20 Hz sampled tick and rejects skipped Native world frames. Twenty-seven focused CPU tests and scoped static pass. This is a partial construction: full CARLA-owned camera/video lifecycle, canonical two-case bundles and semantic proposals, source-bound offline/positive-negative compatibility/process-saved and independent delivery receipts remain worker-owned; the original reviewed C111301 map/site and physical interaction are unavailable in frozen sources."
+  "reason": "Draft selected manifest binds both exact source-gated constructions and source-hashed analyzer/measurement contracts; 43 focused tests, both exact runtime offline proofs, and scoped static pass. Positive/negative package compatibility, canonical process-saved and independent delivery/comparison audits remain CPU work. Original reviewed C111301 site and physical motion/pixels/legal priority remain unverified."
 }
