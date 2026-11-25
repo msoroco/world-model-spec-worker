@@ -68,6 +68,7 @@ def build(suffix, variant):
     source=((ROOT/'surface.txt').read_text() if suffix in ('dense_traffic','low_visibility','dry_4mps','dry_6mps') else
             f'Synthetic {suffix} surface planning note; no original Native site review.\n')
     (ROOT/'cases'/(suffix+'-surface.txt')).write_text(source)
+    files['surface-seed.txt']=source
     surface=json.loads(files['surface_packet.json'])
     surface['surface']=variant['surface']
     if suffix=='narrow_same_traffic':

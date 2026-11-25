@@ -11,7 +11,7 @@ FILES = ('runner.py', 'config.json', 'camera_setup.py', 'camera_encoder.py',
          'conditions_measurements.py', 'finalizer.py', 'delivery_audit.py',
          'measurement-contract.json',
          'road_packet.json', 'surface_packet.json',
-         'weather.json',
+         'surface-seed.txt', 'weather.json',
          'tests/test_cameras.py', 'tests/test_camera_encoder.py',
          'tests/test_condition_capture.py', 'tests/test_condition_construction.py',
          'tests/test_conditions.py', 'tests/test_finalizer.py',
@@ -23,6 +23,7 @@ def build():
     config = json.loads((ROOT / 'config.json').read_text())
     if config['selected_case_id'] != CASE:
         raise ValueError('Root dry case selection changed')
+    (ROOT / 'surface-seed.txt').write_bytes((ROOT / 'surface.txt').read_bytes())
     package = {'case_id': CASE, 'law_id': config['law_id'],
                'cell_id': config['cell_id'], 'actor': config['actor'],
                'entrypoint': 'runner.py', 'recording_description': config['recording_description'],

@@ -12,6 +12,17 @@ RUNNER=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(RUNNER)
 
 
 class RunnerEntryTests(unittest.TestCase):
+    def test_selected_surface_seed_copied_and_tamper_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'surface-seed.txt').write_text('reviewed source fixture\n')
+            source = RUNNER.prepare_surface_source(root)
+            self.assertEqual(source.read_text(), 'reviewed source fixture\n')
+            self.assertEqual(RUNNER.prepare_surface_source(root), source)
+            source.write_text('changed\n')
+            with self.assertRaisesRegex(ValueError, 'differs from selected construction'):
+                RUNNER.prepare_surface_source(root)
+
     def config(self):
         return {'law_id':'NRS-484B-600-1a','cell_id':'C179789',
                 'actor':'motor_vehicle_driver','selected_case_id':RUNNER.CASES[0],
@@ -101,6 +112,7 @@ class RunnerEntryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             output=Path(folder)
             (output/'construction.json').write_text('{}\n')
+            (output/'surface-seed.txt').write_text('Synthetic diagnostic surface\n')
             (output/'road_packet.json').write_text(json.dumps({
                 'review_status':'synthetic diagnostic','case_id':RUNNER.CASES[0]})+'\n')
             with self.assertRaisesRegex(ValueError,'before capture'):

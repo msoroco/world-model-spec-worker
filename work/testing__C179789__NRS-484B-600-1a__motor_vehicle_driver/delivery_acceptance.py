@@ -2,6 +2,8 @@
 import argparse
 import hashlib
 import json
+import os
+import sys
 from pathlib import Path
 
 ASSIGNMENT = 'testing__C179789__NRS-484B-600-1a__motor_vehicle_driver'
@@ -100,6 +102,8 @@ def audit(attempt, case, review_path, output):
         raise ValueError('Unknown exact speed/condition case')
     attempt = Path(attempt).resolve()
     mapping, history = verify_originals(attempt, case)
+    from delivery_audit import audit_delivery
+    condition_audit = audit_delivery(attempt, attempt / 'analysis-report.json')
     review = read(review_path)
     source_hashes = {name: sha(attempt / (name + '.mkv')) for name in CAMERAS}
     if (review.get('case_id') != case or not review.get('reviewer') or not review.get('method')
@@ -112,6 +116,10 @@ def audit(attempt, case, review_path, output):
         raise ValueError('Independent pixel review omits camera or participant')
     config = read(attempt / 'config.json')
     dimensions = {c['name']: (c['width'], c['height']) for c in config['cameras']}
+    repo = Path(__file__).resolve().parents[2]
+    os.environ.setdefault('SCENARIO_PIPELINE_OUTPUT_ROOT',
+                          str(repo / '.runtime-work/c179789-acceptance'))
+    sys.path.insert(0, str(repo / 'runtime/scenario_pipeline'))
     from worker_exchange import media
     for name in CAMERAS:
         samples = [row for row in observations if row['camera'] == name]
@@ -159,6 +167,7 @@ def audit(attempt, case, review_path, output):
     receipt = {'format': 'worker-c179789-delivery-acceptance', 'case_id': case,
                'checks': {key: True for key in CHECKS}, 'passed': True,
                'source_hashes': source_hashes, 'frames': len(mapping),
+               'condition_audit': condition_audit,
                'pixel_review_sha256': sha(review_path), 'auditor_sha256': sha(__file__)}
     output = Path(output).resolve()
     if output.exists() or attempt not in output.parents or output.name == 'result.json':

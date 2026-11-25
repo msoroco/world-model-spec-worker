@@ -158,10 +158,27 @@ def _sensor_frame(queue, frame):
     raise ValueError('Original source camera frame join failed')
 
 
+def prepare_surface_source(output):
+    """Copy the selected, byte-bound source into an immutable Native attempt."""
+    output = Path(output).resolve()
+    seed = output / 'surface-seed.txt'
+    source = output / 'surface.txt'
+    if not seed.is_file():
+        raise ValueError('Selected surface source seed missing')
+    raw = seed.read_bytes()
+    if source.exists():
+        if not source.is_file() or source.read_bytes() != raw:
+            raise ValueError('Original surface source differs from selected construction')
+    else:
+        source.write_bytes(raw)
+    return source
+
+
 def capture(args, config):
     output = Path(args.output_dir).resolve()
     if not output.is_dir() or not (output / 'construction.json').is_file():
         raise ValueError('Use runtime.py capture to materialize exact construction first')
+    prepare_surface_source(output)
     packet = json.loads((output / 'road_packet.json').read_text())
     surface_review, weather_source = require_site_packet(packet, output, config['selected_case_id'])
     if surface_review['surface'] != config['condition_target']['surface']:
