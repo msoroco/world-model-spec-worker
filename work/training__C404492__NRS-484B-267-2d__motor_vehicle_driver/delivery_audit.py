@@ -29,13 +29,22 @@ def selected_statutory_context(context, case):
             context.get('review_kind') != 'original_source_review' or
             not context.get('reviewer')):
         raise ValueError('Original statutory context review required')
-    if (context.get('emergency_vehicle_authorized') is not True or
-            context.get('qualifying_flash_equipment_reviewed') is not True):
-        raise ValueError('Emergency authority or flashing equipment unproved')
+    official = case.endswith(('__official_1', '__official_2'))
+    if official:
+        if context.get('official_regulatory_vehicle') is not True:
+            raise ValueError('Regulatory vehicle status unproved')
+        value = context.get('regulatory_agency_vehicle_source')
+        if not isinstance(value, str) or not value or value.startswith('synthetic-fixture:'):
+            raise ValueError('Original regulatory agency source missing')
+    elif context.get('emergency_vehicle_authorized') is not True:
+        raise ValueError('Emergency authority unproved')
+    if context.get('qualifying_flash_equipment_reviewed') is not True:
+        raise ValueError('Flashing equipment unproved')
     if context.get('officer_directed_otherwise') is not False:
         raise ValueError('Selected undirected branch requires reviewed officer exception absence')
     for key in ('ego_driver_source', 'ego_vehicle_source',
-                'emergency_authorization_source', 'qualifying_flash_equipment_source',
+                *(('regulatory_agency_vehicle_source',) if official else ('emergency_authorization_source',)),
+                'qualifying_flash_equipment_source',
                 'flashing_light_visual_source', 'lane_boundary_source',
                 'officer_direction_review_source'):
         value = context.get(key)
@@ -113,10 +122,11 @@ def audit(case, candidate, attempt, processing, diagnostic=False):
     if not review_path.is_file():
         raise ValueError('Independent physical and pixel review required')
     review = read(review_path)
+    authority_review = ('regulatory_authority_reviewed' if case.endswith(('__official_1', '__official_2'))
+                        else 'emergency_authorization_reviewed')
     required = ('all_participants_reviewed', 'four_original_camera_pixels_reviewed',
                 'actual_motion_and_overlap_reviewed', 'flashing_equipment_reviewed',
-                'emergency_authorization_reviewed', 'officer_direction_reviewed',
-                'native_completion_reviewed')
+                authority_review, 'officer_direction_reviewed', 'native_completion_reviewed')
     if review.get('case_id') != case or any(review.get(key) is not True for key in required):
         raise ValueError('Independent statutory source review incomplete')
     return {**common, 'accepted': True, 'checks': {key: True for key in

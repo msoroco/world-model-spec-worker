@@ -32,11 +32,11 @@ def write_rows(path, values):
     path.write_text("".join(json.dumps(value, allow_nan=False)+"\n" for value in values))
 
 
-def rebuild_channels(root, description, native, mapping, rider, trace, sign):
+def rebuild_channels(root, description, native, mapping, rider, trace, sign, original_mode=False):
     """Derive diagnostic observations from retained rows, never fixture channels."""
-    channels = root/"channels"
+    channels = root/("reviewed_channels" if original_mode else "channels")
     if channels.exists():
-        raise ValueError("Fixture-supplied derived channels are not accepted")
+        raise ValueError("Derived review channels already exist")
     channels.mkdir()
     for channel in description["channels"]:
         name = channel["name"]
@@ -48,14 +48,19 @@ def rebuild_channels(root, description, native, mapping, rider, trace, sign):
                 value = {"actor_id": r["actor_id"], "machine_class": r["machine_class"],
                          "selected_class": r["machine_class"] == name.split(".", 1)[1]}
             elif name == "ru.rider_posture":
-                value = {"mounted_fixture": r["mounted"], "original_pixel_review": "pending"}
+                value = ({"mounted": r["mounted"], "source": "original_pixel_review"} if original_mode else
+                         {"mounted_fixture": r["mounted"], "original_pixel_review": "pending"})
             elif name == "ru.pedestrian":
-                value = {"walking_machine_fixture": r["walking_machine"],
-                         "original_pixel_review": "pending"}
+                value = ({"walking_machine": r["walking_machine"], "source": "original_pixel_review"}
+                         if original_mode else {"walking_machine_fixture": r["walking_machine"],
+                                                "original_pixel_review": "pending"})
             elif name == "dev.regulatory_sign":
-                value = {"code": sign["code"], "authorization_proven": False}
+                value = {"code": sign["code"], "authorization_proven": original_mode}
             elif name == "dev.governs":
-                value = {"road_id": sign["governs_road"], "lane_id": sign["governs_lane"], "synthetic_fixture": True}
+                value = ({"road_id": sign["governs_road"], "lane_id": sign["governs_lane"],
+                          "original_review_bound": True} if original_mode else
+                         {"road_id": sign["governs_road"], "lane_id": sign["governs_lane"],
+                          "synthetic_fixture": True})
             elif name == "dev.position":
                 value = {"station_m": sign["station_m"], "synthetic_fixture": True}
             elif name == "drv.u_turn":
@@ -77,9 +82,11 @@ def rebuild_channels(root, description, native, mapping, rider, trace, sign):
             values.append({"time_s": n["time_s"], "value": value})
         write_rows(channels/(name+".jsonl"), values)
     context = root/"context.json"
-    expected_context = json.dumps({"signed_hill_crest": {"scope": "synthetic_native_shaped_diagnostic", "sign_authorization_proven": False}}, allow_nan=False)+"\n"
+    expected_context = (json.dumps({"signed_hill_crest": json.loads((root/"road_geometry.json").read_text())},
+                                   indent=2, allow_nan=False)+"\n" if original_mode else
+                        json.dumps({"signed_hill_crest": {"scope": "synthetic_native_shaped_diagnostic", "sign_authorization_proven": False}}, allow_nan=False)+"\n")
     if context.exists():
-        if context.read_text() != expected_context:
+        if json.loads(context.read_text()) != json.loads(expected_context):
             raise ValueError("Existing derived context differs from saved sources")
     else:
         context.write_text(expected_context)
@@ -127,6 +134,23 @@ def reviewed_original_rows(root, config, manifest, native, mapping, rider, sign)
     if any(any(row.get(key) is not None for key in
                ("mounted", "walking_machine", "u_turn_active")) for row in rider):
         raise ValueError("Original Native rider rows must remain unreviewed")
+    seal_path = root / "capture-seal.json"
+    if not seal_path.is_file():
+        raise ValueError("Original Native capture seal missing")
+    seal = json.loads(seal_path.read_text())
+    if (seal.get("format") != "worker-sealed-capture" or
+            seal.get("provenance_kind") != "native" or
+            seal.get("diagnostic_fixture") is not False or
+            seal.get("frames") != len(rider) or
+            seal.get("restoration", {}).get("restored") is not True):
+        raise ValueError("Original Native capture seal differs")
+    for source_name in ("rider_native_samples.jsonl", "native_samples.jsonl",
+                        "video_frames.jsonl", "authored-sign.json", "trace.jsonl",
+                        "body_history.jsonl", "capture/evidence.jsonl",
+                        "overview.mkv", "approach.mkv", "reference_corner.mkv",
+                        "driver_reference.mkv"):
+        if seal.get("sources", {}).get(source_name) != sha(root / source_name):
+            raise ValueError("Original Native sealed source differs: " + source_name)
     from measure_geometry import measure
     geometry = measure(rider, native, mapping, sign)
     review_path = root / "sign-review.json"
@@ -142,6 +166,7 @@ def reviewed_original_rows(root, config, manifest, native, mapping, rider, sign)
     camera_names = ("overview", "approach", "reference_corner", "driver_reference")
     camera_hashes = {name + ".mkv": sha(root / (name + ".mkv")) for name in camera_names}
     if (review.get("source_kind") != "original_camera_sign_and_rider_review" or
+            not isinstance(review.get("reviewer"), str) or not review["reviewer"].strip() or
             review.get("reviewed_from_original_pixels") is not True or
             review.get("official_device_verified") is not True or
             review.get("governs_approach") is not True or
@@ -268,10 +293,11 @@ def finalize(attempt, output):
     if any(value != frames for value in videos.values()):
         raise ValueError("Source camera frame count differs")
     description = config["recording_description"]
-    rebuild_channels(root, description, native, mapping, rider, trace, sign)
+    rebuild_channels(root, description, native, mapping, rider, trace, sign, original_mode)
     recording = []
     for channel in description["channels"]:
-        reference = "channels/"+channel["name"]+".jsonl"
+        channel_dir = "reviewed_channels" if original_mode else "channels"
+        reference = channel_dir+"/"+channel["name"]+".jsonl"
         if not (root/reference).is_file():
             raise ValueError("Missing required source: "+reference)
         recording.append({"name": channel["name"], "unit": channel["unit"], "reference": reference})
@@ -283,15 +309,18 @@ def finalize(attempt, output):
         "measured_values": {"mounted_turn_frames": mounted_turn_frames, "turn_frames": turn_frames,
                             "dismount_frame": dismount_frame, "first_turn_frame": first_turn_frame,
                             "walking_turn_frames": walking_turn_frames,
-                            "sign_authorization_proven": False},
+                            "sign_authorization_proven": original_mode},
         "target_checks": [{"target": "mounted bicycle turns through authored no-U-turn region",
             "requested": expected, "measured": measured,
-            "method": "saved synthetic rider/sign/frame joins", "tolerance": "exact boolean source check",
+            "method": "saved original rider/sign/frame review" if original_mode else
+                      "saved synthetic rider/sign/frame joins", "tolerance": "exact boolean source check",
             "matched": expected == measured, "physical_cause_confirmed": False,
             "cause_evidence": ["rider_native_samples.jsonl", "authored-sign.json"]}],
-        "setup_confirmed": False, "behavior_attempted": True, "maneuver_completed": True,
-        "termination_reason": "full synthetic source duration retained",
-        "physical_failure_flags": ["original_rider_posture_sign_authorization_and_pixels_unverified"],
+        "setup_confirmed": original_mode, "behavior_attempted": True, "maneuver_completed": True,
+        "termination_reason": "full original source duration retained" if original_mode else
+                              "full synthetic source duration retained",
+        "physical_failure_flags": (["independent_physical_acceptance_pending"] if original_mode else
+                                   ["original_rider_posture_sign_authorization_and_pixels_unverified"]),
         "trace_reference": "trace.jsonl", "video_references": list(videos),
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description, "recording_evidence": recording,
@@ -303,14 +332,16 @@ def finalize(attempt, output):
             "requested": True,
             "measured": dismount_frame is not None and first_turn_frame is not None and
                         dismount_frame < first_turn_frame and walking_turn_frames == turn_frames,
-            "method": "saved synthetic rider/frame joins",
+            "method": "saved original rider/frame review" if original_mode else
+                      "saved synthetic rider/frame joins",
             "tolerance": "strict ordering and every turn frame walking",
             "matched": True,
             "physical_cause_confirmed": False,
             "cause_evidence": ["rider_native_samples.jsonl", "native_samples.jsonl"]})
     from worker_exchange.native_output import validate_result
     validate_result(result)
-    report = {"format": "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1",
+    report = {"format": ("c104538-lvmc-original-saved-review-v1" if original_mode else
+                         "c104538-lvmc-synthetic-saved-mounted-diagnostic-v1"),
         "case_id": config["case_id"], "candidate_id": config["candidate_id"],
         "source_kind": manifest["source_kind"], "frames": frames, "video_frames": videos,
         "turn_frames": turn_frames, "mounted_turn_frames": mounted_turn_frames,
@@ -319,12 +350,20 @@ def finalize(attempt, output):
         "source_hashes": {name: sha(root/name) for name in
             ("rider_native_samples.jsonl", "authored-sign.json", "native_samples.jsonl",
              "video_frames.jsonl", "capture/manifest.json")},
-        "sign_authorization_proven": False, "original_native_capture_executed": False,
+        "sign_authorization_proven": original_mode,
+        "original_native_capture_executed": original_mode,
         "legal_verdict_claimed": False, "accepted": False,
         "measurements": ({"dismounted_turn_observation": measure_dismounted_turn(
             root, frames, dismount_frame, first_turn_frame, walking_turn_frames, turn_frames)}
             if kind == "dismounted_turn" else
             {"mounted_turn_observation": measure_mounted_turn(root, frames, turn_frames, mounted_turn_frames)})}
+    if original_mode:
+        report["review_source_sha256"] = {name: sha(root/name) for name in
+            ("sign-review.json", "rider-review.jsonl", "pixel_review.jsonl",
+             "overview.mkv", "approach.mkv", "reference_corner.mkv",
+             "driver_reference.mkv")}
+        report["original_geometry"] = geometry
+        report["pedestrian_rule_compliance_verified"] = review["pedestrian_rule_compliance_verified"]
     target.write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
     (root/"result.json").write_text(json.dumps(result, indent=2, allow_nan=False)+"\n")
     return report

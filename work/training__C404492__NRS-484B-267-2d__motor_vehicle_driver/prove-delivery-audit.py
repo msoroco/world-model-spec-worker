@@ -1,4 +1,4 @@
-"""Exercise independent delivery audit on both selected diagnostic cases."""
+"""Exercise independent delivery audit on all selected diagnostic cases."""
 import hashlib
 import json
 import os
@@ -12,6 +12,8 @@ ROOT = HERE.parents[1]
 CASES = {
     'controlled_1': 'c404492-capture-final/controlled_1-primary',
     'controlled_2': 'c404492-capture-final/controlled_2-primary',
+    'official_1': 'c404492-official-public/official_1-primary-v2',
+    'official_2': 'c404492-official-public/official_2-primary-v2',
 }
 CHECKS = ['native_source', 'all_participants', 'time_join', 'full_video_decode',
           'actual_pixels', 'physical_completion']
@@ -36,16 +38,19 @@ def main():
                        'officer_direction_review_source')
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
+        official = suffix.startswith('official_')
         context = {'case_id': entry['case_id'], 'review_kind': 'original_source_review',
                    'reviewer': 'independent local reviewer',
-                   'emergency_vehicle_authorized': True,
+                   'emergency_vehicle_authorized': not official,
+                   'official_regulatory_vehicle': official,
+                   'regulatory_agency_vehicle_source': 'original-source:agency-status',
                    'qualifying_flash_equipment_reviewed': True,
                    'officer_directed_otherwise': False,
                    **{key: 'original-source:' + key for key in context_sources}}
         selected_statutory_context(context, entry['case_id'])
         for key, value in (('officer_directed_otherwise', True),
                            ('officer_directed_otherwise', 'unknown'),
-                           ('emergency_vehicle_authorized', False),
+                           (('official_regulatory_vehicle' if official else 'emergency_vehicle_authorized'), False),
                            ('qualifying_flash_equipment_reviewed', False),
                            ('officer_direction_review_source', ''),
                            ('officer_direction_review_source', 'synthetic-fixture:officer')):
@@ -57,7 +62,8 @@ def main():
             else:
                 raise AssertionError('Statutory context defect accepted: ' + key)
         attempt = ROOT / '.runtime-work' / CASES[suffix]
-        processing = HERE / 'current-saved' / (suffix + '-primary-receipt.json')
+        processing = (HERE / 'current-official-saved' / (suffix + '-primary.json') if official
+                      else HERE / 'current-saved' / (suffix + '-primary-receipt.json'))
         folder = HERE / 'delivery-proofs' / suffix
         output = ROOT / '.runtime-work' / 'c404492-tmp' / (suffix + '-delivery-diagnostic.json')
         output.unlink(missing_ok=True)

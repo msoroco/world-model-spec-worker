@@ -10,6 +10,8 @@ from audit_official_comparison import audit
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SOURCES = HERE / 'current-fixture'
+SELECTED = {suffix: ROOT / '.runtime-work' / 'c404492-official-public' / (suffix + '-primary-v2')
+            for suffix in ('official_1', 'official_2')}
 
 
 def sha(path):
@@ -29,7 +31,31 @@ def rejects(reference, contrast, message):
 def main():
     reference = SOURCES / 'official_1'
     contrast = SOURCES / 'official_2'
-    positive = audit(reference, contrast)
+    manifest_path = HERE / 'execution-manifest.json'
+    manifest = json.loads(manifest_path.read_text())
+    selected_sources = {}
+    for suffix, attempt in SELECTED.items():
+        case_id = HERE.name + '__' + suffix
+        entry = next((case for case in manifest['cases'] if case['case_id'] == case_id), None)
+        if entry is None:
+            raise ValueError('Official comparison case not selected: ' + suffix)
+        choice = json.loads((attempt / 'candidate-selection.json').read_text())
+        saved_path = HERE / entry['saved_processing']['receipt']
+        saved = json.loads(saved_path.read_text())
+        if (choice['case_id'] != case_id or choice['candidate_id'] != 'primary' or
+                choice['construction_sha256'] != entry['construction_sha256'] or
+                saved['case_id'] != case_id or saved['candidate_id'] != 'primary' or
+                saved['native_revision']['construction_sha256'] != entry['construction_sha256'] or
+                saved['originals_preserved'] is not True):
+            raise ValueError('Official selected candidate or saved proof changed')
+        for source in ('vehicle_poses.jsonl', 'video_frames.jsonl', 'trace.jsonl',
+                       'emergency_context.json'):
+            if sha(attempt / source) != saved['original_source_hashes'].get(source):
+                raise ValueError('Official selected source changed: ' + source)
+        selected_sources[suffix] = {
+            'case_id': case_id, 'construction_sha256': entry['construction_sha256'],
+            'saved_receipt_sha256': sha(saved_path)}
+    positive = audit(SELECTED['official_1'], SELECTED['official_2'])
     scratch = ROOT / '.runtime-work'
     scratch.mkdir(exist_ok=True)
     negatives = []
@@ -63,6 +89,8 @@ def main():
         negatives.append(rejects(reference, changed, 'regulatory'))
     proof = {'format': 'c404492-official-comparison-cpu-proof',
              'status': 'source_shaped_diagnostic_only',
+             'selected_manifest_sha256': sha(manifest_path),
+             'selected_sources': selected_sources,
              'comparison': positive, 'negative_rejections': negatives,
              'audit_sha256': sha(HERE / 'audit_official_comparison.py'),
              'physical_acceptance_claimed': False}

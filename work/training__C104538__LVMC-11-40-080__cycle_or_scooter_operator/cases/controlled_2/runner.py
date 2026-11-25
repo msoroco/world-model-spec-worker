@@ -160,9 +160,10 @@ def execute(case_suffix, candidate_id, output_dir, host, port):
     import carla
     import numpy as np
     for parent in Path(__file__).resolve().parents:
-        runtime_package = parent / 'runtime' / 'pipeline' / 'scenario_pipeline'
-        if runtime_package.is_dir():
-            sys.path.insert(0, str(runtime_package))
+        runtime_root = parent / 'runtime'
+        runtime_package = runtime_root / 'scenario_pipeline'
+        if runtime_package.is_dir() and (runtime_root / 'python/pipeline_capture.py').is_file():
+            sys.path[:0] = [str(runtime_root / 'python'), str(runtime_package)]
             break
     from worker_exchange.world_restore import snapshot, restore
     from worker_exchange.media import compose_four_views

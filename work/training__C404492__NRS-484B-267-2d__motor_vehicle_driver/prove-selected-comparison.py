@@ -21,11 +21,13 @@ def read(path):
 def main():
     manifest_path = HERE / 'execution-manifest.json'
     manifest = read(manifest_path)
-    if {c['case_id'].rsplit('__', 1)[-1] for c in manifest['cases']} != set(ATTEMPTS):
+    if not set(ATTEMPTS) <= {c['case_id'].rsplit('__', 1)[-1] for c in manifest['cases']}:
         raise ValueError('Selected comparison case set changed')
     sources = {}
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
+        if suffix not in ATTEMPTS:
+            continue
         attempt = ATTEMPTS[suffix]
         selected = read(attempt / 'candidate-selection.json')
         saved = read(HERE / entry['saved_processing']['receipt'])

@@ -1,121 +1,285 @@
 {
-  "cell_id": "C422978",
   "actor": "motorcycle_or_moped_operator",
-  "status": "unselected_cpu_draft",
   "cases": [
     {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-      "target_law_id": "LVMC-11-38-030",
-      "target_type": "attempt",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__baseline",
+      "rationale": "Neutral unselected context with no motorcycle sidewalk route.",
       "recording_description": {
         "channels": [
           {
+            "method": "original Native actor and camera frame join",
             "name": "motorcycle_body_speed",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor and camera frame join",
-            "time_window": "entire 24 s attempt",
             "reference_frame": "Native imported OpenDRIVE and original camera",
-            "uncertainty": "50 ms frame bracket; legal context separately reviewed"
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
           },
           {
+            "method": "original Native actor and camera frame join",
             "name": "sidewalk_lane_readback",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor and camera frame join",
-            "time_window": "entire 24 s attempt",
             "reference_frame": "Native imported OpenDRIVE and original camera",
-            "uncertainty": "50 ms frame bracket; legal context separately reviewed"
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
           },
           {
-            "name": "camera_frame_join",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
             "method": "original Native actor and camera frame join",
-            "time_window": "entire 24 s attempt",
+            "name": "camera_frame_join",
             "reference_frame": "Native imported OpenDRIVE and original camera",
-            "uncertainty": "50 ms frame bracket; legal context separately reviewed"
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
           }
         ],
         "context_inputs": [
           {
+            "method": "source-hashed explicit city spatial context packet",
             "name": "city_boundary_polygon",
-            "unit": "structured record",
-            "method": "source-hashed explicit city spatial context packet"
+            "unit": "structured record"
           },
           {
+            "method": "source-hashed explicit city spatial context packet",
             "name": "sidewalk_polygon",
-            "unit": "structured record",
-            "method": "source-hashed explicit city spatial context packet"
+            "unit": "structured record"
           },
           {
+            "method": "source-hashed explicit city spatial context packet",
             "name": "driveway_crossing_polygons",
-            "unit": "structured record",
-            "method": "source-hashed explicit city spatial context packet"
+            "unit": "structured record"
           }
         ],
         "limitations": [
           "Authored requests are not Native observations",
           "Spatial packet geometry is not city authority or legal review"
         ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "sidewalk of the City",
+        "ridden upon"
+      ],
+      "variable_assignments": {
+        "city_sidewalk_qualification": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": null
+        },
+        "commanded_sidewalk_motorcycle_occupancy": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "roadway_only"
+        },
+        "observed_moving_sidewalk_overlap": {
+          "kind": "subject_behavior",
+          "unit": "boolean",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
+      "deliberate_differences": [
+        "commanded_sidewalk_motorcycle_occupancy"
+      ],
+      "paired_probe_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__sidewalk_pair",
+      "probe": {
+        "comparison_or_standard": "original moving motorcycle body overlap with surveyed City sidewalk",
+        "primary_variable": "commanded_sidewalk_motorcycle_occupancy",
+        "target_value_or_branch": "witness_1"
+      },
+      "rationale": "Compare roadway and sidewalk motorcycle requests; preserve original physical and legal uncertainty.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native actor and camera frame join",
+            "name": "motorcycle_body_speed",
+            "reference_frame": "Native imported OpenDRIVE and original camera",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor and camera frame join",
+            "name": "sidewalk_lane_readback",
+            "reference_frame": "Native imported OpenDRIVE and original camera",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native actor and camera frame join",
+            "name": "camera_frame_join",
+            "reference_frame": "Native imported OpenDRIVE and original camera",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed explicit city spatial context packet",
+            "name": "city_boundary_polygon",
+            "unit": "structured record"
+          },
+          {
+            "method": "source-hashed explicit city spatial context packet",
+            "name": "sidewalk_polygon",
+            "unit": "structured record"
+          },
+          {
+            "method": "source-hashed explicit city spatial context packet",
+            "name": "driveway_crossing_polygons",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Authored requests are not Native observations",
+          "Spatial packet geometry is not city authority or legal review"
+        ]
+      },
+      "target_law_id": "LVMC-11-38-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "sidewalk of the City",
+        "ridden upon"
+      ],
+      "variable_assignments": {
+        "city_sidewalk_qualification": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": null
+        },
+        "commanded_sidewalk_motorcycle_occupancy": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "roadway_only"
+        },
+        "observed_moving_sidewalk_overlap": {
+          "kind": "subject_behavior",
+          "unit": "boolean",
+          "value": null
+        }
       }
     },
     {
       "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
-      "target_law_id": "LVMC-11-38-030",
-      "target_type": "attempt",
+      "deliberate_differences": [
+        "commanded_sidewalk_motorcycle_occupancy"
+      ],
+      "paired_probe_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__sidewalk_pair",
+      "probe": {
+        "comparison_or_standard": "original moving motorcycle body overlap with surveyed City sidewalk",
+        "primary_variable": "commanded_sidewalk_motorcycle_occupancy",
+        "target_value_or_branch": "witness_2"
+      },
+      "rationale": "Compare roadway and sidewalk motorcycle requests; preserve original physical and legal uncertainty.",
       "recording_description": {
         "channels": [
           {
+            "method": "original Native actor and camera frame join",
             "name": "motorcycle_body_speed",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor and camera frame join",
-            "time_window": "entire 24 s attempt",
             "reference_frame": "Native imported OpenDRIVE and original camera",
-            "uncertainty": "50 ms frame bracket; legal context separately reviewed"
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
           },
           {
+            "method": "original Native actor and camera frame join",
             "name": "sidewalk_lane_readback",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "original Native actor and camera frame join",
-            "time_window": "entire 24 s attempt",
             "reference_frame": "Native imported OpenDRIVE and original camera",
-            "uncertainty": "50 ms frame bracket; legal context separately reviewed"
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
           },
           {
-            "name": "camera_frame_join",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
             "method": "original Native actor and camera frame join",
-            "time_window": "entire 24 s attempt",
+            "name": "camera_frame_join",
             "reference_frame": "Native imported OpenDRIVE and original camera",
-            "uncertainty": "50 ms frame bracket; legal context separately reviewed"
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "50 ms frame bracket; legal context separately reviewed",
+            "unit": "structured"
           }
         ],
         "context_inputs": [
           {
+            "method": "source-hashed explicit city spatial context packet",
             "name": "city_boundary_polygon",
-            "unit": "structured record",
-            "method": "source-hashed explicit city spatial context packet"
+            "unit": "structured record"
           },
           {
+            "method": "source-hashed explicit city spatial context packet",
             "name": "sidewalk_polygon",
-            "unit": "structured record",
-            "method": "source-hashed explicit city spatial context packet"
+            "unit": "structured record"
           },
           {
+            "method": "source-hashed explicit city spatial context packet",
             "name": "driveway_crossing_polygons",
-            "unit": "structured record",
-            "method": "source-hashed explicit city spatial context packet"
+            "unit": "structured record"
           }
         ],
         "limitations": [
           "Authored requests are not Native observations",
           "Spatial packet geometry is not city authority or legal review"
         ]
+      },
+      "target_law_id": "LVMC-11-38-030",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "sidewalk of the City",
+        "ridden upon"
+      ],
+      "variable_assignments": {
+        "city_sidewalk_qualification": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": null
+        },
+        "commanded_sidewalk_motorcycle_occupancy": {
+          "kind": "controller",
+          "unit": "categorical",
+          "value": "sidewalk_route"
+        },
+        "observed_moving_sidewalk_overlap": {
+          "kind": "subject_behavior",
+          "unit": "boolean",
+          "value": null
+        }
       }
     }
-  ]
+  ],
+  "cell_id": "C422978",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Surveyed City authority and pedestrian-use designation must be established from original sources.",
+          "phrase": "sidewalk of the City"
+        },
+        {
+          "note": "Continuous original motorcycle body, speed and rider posture determine riding on the sidewalk; driveway-rule composition remains unresolved.",
+          "phrase": "ridden upon"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native motorcycle body and rider posture",
+        "Surveyed City pedestrian-use designation and driveway-rule composition"
+      ],
+      "rationale": "Two source-bound cases are selected; original City, rider and driveway context remains unreviewed.",
+      "status": "incomplete",
+      "sweep_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__city_sidewalk_observation",
+      "target_law_id": "LVMC-11-38-030"
+    }
+  ],
+  "sweeps_expanded": true
 }
