@@ -63,12 +63,15 @@ def build_attempt(case_id, attempt, media):
     for index in range(600):
         frame_id, time = 100 + index, round(5 + index / 20, 8)
         center_x = -15.0 if index < 100 else -15.0 + 30.0 * (index - 100) / 499
+        other_speed = template['other_speed_mps']
+        other_travel = other_speed * index / 20
         row = dict(template)
         row.update(frame=frame_id, time_s=time, ego_speed_mps=0.0 if index < 100 else 30 / 24.95,
                    ego_distance_to_conflict_m=max(0.0, -center_x),
                    ego_body_vertices_xy_m=[[center_x-1, -1], [center_x-1, 1],
                                            [center_x+1, 1], [center_x+1, -1]],
-                   other_speed_mps=0.0)
+                   other_distance_to_conflict_m=max(0.0, template['other_distance_to_conflict_m']-other_travel),
+                   other_body_vertices_xy_m=[[x, y+other_travel] for x, y in template['other_body_vertices_xy_m']])
         history.append(row)
         frame = dict(frame_template)
         frame.update(video_frame=index, carla_frame=frame_id, time_s=time,
@@ -91,7 +94,9 @@ def build_attempt(case_id, attempt, media):
             os.link(media / (name + '.mkv'), path)
     command = [sys.executable, str(ROOT / 'saved_finalizer.py'), '--attempt', str(attempt),
                '--output', str(attempt / 'analysis-report.json')]
-    completed = subprocess.run(command, env=os.environ.copy(), capture_output=True, text=True)
+    env = os.environ.copy()
+    env['PYTHONPATH'] = str(REPO / 'runtime' / 'scenario_pipeline')
+    completed = subprocess.run(command, env=env, capture_output=True, text=True)
     if completed.returncode:
         raise RuntimeError('Saved finalizer rejected diagnostic sources: ' + completed.stderr)
 
