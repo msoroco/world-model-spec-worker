@@ -11,6 +11,7 @@ import shutil
 from stand import SourceError, construct_case
 from stand_capture import capture
 from stand_delivery import audit as audit_delivery_sources
+from stand_converter_source import audit as audit_converter_sources
 
 
 HERE = Path(__file__).resolve().parent
@@ -63,9 +64,15 @@ def run(site_ref, vehicle_ref, native_adapter, output, host="localhost", port=20
         attempt = capture(session.world, session.actors, session.observer,
                           config["selected_case_id"], constructed["site"]["map_name"],
                           root, step=session.step, camera_finalize=session.finish_cameras)
+        if not hasattr(session, "export_converter_sources"):
+            raise SourceError("Native adapter lacks original converter source export")
+        session.export_converter_sources(root, constructed, attempt)
+        source_audit = audit_converter_sources(root, attempt)
     if not session.restoration_verified:
         raise SourceError("Native world or sensor restoration unverified")
     audit_delivery_sources(root)
+    (root / "converter-source-audit.json").write_text(
+        json.dumps(source_audit, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     (root / "acquisition-provenance.json").write_text(json.dumps({
         "provenance_kind": "native", "diagnostic_fixture": False,
         "case_id": config["selected_case_id"]}, indent=2) + "\n")

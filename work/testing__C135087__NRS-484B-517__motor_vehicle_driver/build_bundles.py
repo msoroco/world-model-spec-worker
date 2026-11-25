@@ -9,7 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCES = ("runner.py", "stand.py", "stand_capture.py", "stand_delivery.py",
-           "stand_media_audit.py", "analysis.py", "tests/test_bundle.py")
+           "stand_media_audit.py", "stand_converter_source.py", "analysis.py", "tests/test_bundle.py")
 
 
 def sha(data):
@@ -59,7 +59,8 @@ def build():
                               for name in ("overview", "approach", "reference_corner", "driver_reference")],
                   "required_atoms": [],
                   "required_sources": ["reviewed_site_designation_sign", "vehicle_classification",
-                                       "original_actor_rows", "original_four_camera_media"],
+                                       "original_actor_rows", "original_four_camera_media",
+                                       "original_native_converter_packet"],
                   "physical_completion": {"criterion": "travel_progress", "motion_source": "trace.jsonl",
                                           "position_key": "position_m", "minimum_progress_m": 1.0,
                                           "completion_goal_method": "Observed at least 1 m approach progress before the sourced stand stop; engineering diagnostic only, not a legal cutoff"},

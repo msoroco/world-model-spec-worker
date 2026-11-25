@@ -14,9 +14,9 @@ from scenario_pipeline.worker_exchange import semantic_delivery
 
 
 class SemanticProposalTests(unittest.TestCase):
-    def test_both_exact_cases_validate_with_pinned_stage_schema(self):
+    def test_four_exact_cases_validate_with_pinned_stage_schema(self):
         built = build()
-        self.assertEqual(built, {'selected_cases': 2, 'stage_count': 6})
+        self.assertEqual(built, {'selected_cases': 4, 'stage_count': 6})
         rows = json.loads((ROOT / 'proposals/cases.json').read_text())['cases']
         scratch = REPO / '.runtime-work'
         with tempfile.TemporaryDirectory(dir=scratch) as temp:
@@ -33,7 +33,7 @@ class SemanticProposalTests(unittest.TestCase):
             assignment = json.loads((REPO / 'inputs' / ROOT.name / 'assignment.json').read_text())
             result = semantic_delivery.validate(folder, assignment, {'cases': manifest})
             self.assertEqual(result['stage_count'], 6)
-            self.assertEqual(result['selected_cases'], 2)
+            self.assertEqual(result['selected_cases'], 4)
 
 
 if __name__ == '__main__':

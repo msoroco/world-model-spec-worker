@@ -9,8 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 AID = HERE.name
-SCRATCH = REPO / ".runtime-work" / "c135087-compat-v5"
-FIRST = REPO / ".runtime-work" / "c135087-compat-v3" / "loading_open_approaching"
+SCRATCH = REPO / ".runtime-work" / "c135087-compat-v6"
 
 
 def sha(path: Path) -> str:
@@ -23,7 +22,7 @@ def bind():
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(AID + "__")
         for candidate in ("primary", "fallback1"):
-            source = FIRST if suffix == "loading_open_approaching" and candidate == "primary" else SCRATCH / (suffix + "-" + candidate)
+            source = SCRATCH / (suffix + "-" + candidate)
             receipt = json.loads((source / "compatibility.json").read_text())
             assert receipt["passed"] is True and receipt["case_id"] == entry["case_id"]
             assert receipt["candidate_id"] == candidate

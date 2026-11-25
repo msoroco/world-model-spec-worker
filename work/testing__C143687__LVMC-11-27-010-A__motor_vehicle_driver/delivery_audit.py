@@ -5,6 +5,7 @@ decode, actual-pixel review, physical-completion review and local acceptance.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import importlib.util
 import json
@@ -119,3 +120,18 @@ def audit_decoded(attempt: Path, acquisition_path: Path, case_id: str,
                            'first_pts_s': times[0], 'last_pts_s': times[-1]}
     return {**report, 'full_video_decode': True, 'decoded_view_frames': 3600,
             'camera_streams': streams}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='Audit one sealed original attempt and decode all four camera streams')
+    parser.add_argument('--case', required=True, help='Exact selected case ID')
+    parser.add_argument('--attempt', required=True, type=Path, help='Saved attempt directory')
+    parser.add_argument('--acquisition', type=Path,
+                        help='Acquisition JSON; defaults to <attempt>/acquisition.json')
+    args = parser.parse_args()
+    acquisition = args.acquisition if args.acquisition is not None else args.attempt / 'acquisition.json'
+    print(json.dumps(audit_decoded(args.attempt, acquisition, args.case), sort_keys=True))
+
+
+if __name__ == '__main__':
+    main()

@@ -234,6 +234,23 @@ class CaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'not a retained file'):
             audit_media(attempt, camera_dimensions={name: (2, 2) for name in CAMERAS})
 
+    def test_original_camera_directory_symlink_is_not_retained_capture(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2)).save(stream, format='PNG')
+        image = stream.getvalue()
+        readers = {name: lambda frame, image=image: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        attempt = self.root / 'camera-directory-symlink'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4,
+                camera_readers=readers,
+                camera_dimensions={name: (2, 2) for name in CAMERAS})
+        original_dir = attempt / 'original-frames'
+        moved_dir = self.root / 'same-original-frames'
+        original_dir.rename(moved_dir)
+        original_dir.symlink_to(moved_dir, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, 'not a retained file'):
+            audit_media(attempt, camera_dimensions={name: (2, 2) for name in CAMERAS})
+
     def test_saved_finalizer_reopens_four_camera_source(self):
         stream = io.BytesIO()
         Image.new('RGB', (2, 2), (4, 5, 6)).save(stream, format='PNG')

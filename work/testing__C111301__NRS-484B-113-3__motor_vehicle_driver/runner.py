@@ -5,8 +5,12 @@ import argparse
 import json
 from pathlib import Path
 
-from native_backing_lifecycle import run
-from saved_backing import ASSIGNMENT, CASES, CAMERAS
+from native_backing_lifecycle import run as run_pedestrian
+from traffic_lifecycle import run as run_traffic
+from saved_backing import ASSIGNMENT, CASES as PEDESTRIAN_CASES, CAMERAS
+from traffic_saved import CASES as TRAFFIC_CASES
+
+CASES = PEDESTRIAN_CASES | TRAFFIC_CASES
 
 
 def check(root=None):
@@ -49,7 +53,8 @@ def main():
     client = carla.Client(args.host, args.port)
     client.set_timeout(20.0)
     try:
-        receipt = run(client.get_world(), attempt=output, packet_path=output / 'map.json',
+        capture = run_traffic if selected in TRAFFIC_CASES else run_pedestrian
+        receipt = capture(client.get_world(), attempt=output, packet_path=output / 'map.json',
                       case_id=selected, control_factory=carla.VehicleControl,
                       carla=carla, client=client)
     except BaseException as exc:

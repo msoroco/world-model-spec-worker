@@ -7,6 +7,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import runner
 from stand import SourceError
+from stand_converter_source import audit as audit_converter_sources
 
 
 class BundleTests(unittest.TestCase):
@@ -17,6 +18,11 @@ class BundleTests(unittest.TestCase):
     def test_original_records_required(self):
         with self.assertRaisesRegex(SourceError, "reviewed original stand"):
             runner.run(None, None, None, None)
+
+    def test_missing_converter_packet_rejected(self):
+        root = Path(__file__).resolve().parents[1]
+        with self.assertRaisesRegex(SourceError, "missing original converter source"):
+            audit_converter_sources(root, {"case_id": "source-gated", "first_frame": 1})
 
 
 if __name__ == "__main__":

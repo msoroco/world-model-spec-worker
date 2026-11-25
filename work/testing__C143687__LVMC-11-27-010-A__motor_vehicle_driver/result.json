@@ -2,12 +2,12 @@
   "applied_update": 0,
   "assignment_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver",
   "input_sha256": "a2b29bd1e5cd71587c873915cb7a52558c199daafbb463afedec8c37c3c332e9",
-  "readiness_kind": "six_exact_cpu_compatibility_and_saved_proofs",
-  "reason": "Six exact selected constructions, 41 focused CPU tests, source-bound measurement contracts, positive/missing-source compatibility, physical checker/lifecycle fixtures, recorded-only saved processing, and independent diagnostic delivery source/decode audits pass. Original reviewed City/site authority and actual CARLA pixels/motion remain unverified. Complete assignment strict gate and final source-bound handoff remain in progress.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Six exact selected constructions, 41 focused CPU tests, source-bound measurement contracts, positive/missing-source compatibility, physical checker/lifecycle fixtures, recorded-only saved processing, and independent diagnostic delivery source/decode audits pass. Original reviewed City/site authority and actual CARLA pixels/motion remain unverified; the first GPU delivery command is specified for physical execution.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c143687-current SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output PYTHONPATH=$PWD/work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver .venv-cpu/bin/python -m unittest discover -s work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/tests -v",
@@ -134,6 +134,12 @@
       "exit_code": 0,
       "log": "cpu-delivery-not_designated-positive.log",
       "sha256": "e9568c93b538426631208c7311f78d27a223c197033978f1f19cbca175fb4ac0"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c143687-current SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/delivery_audit.py --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites --attempt .runtime-work/c143687-current/saved-all-original",
+      "exit_code": 0,
+      "log": "cpu-delivery-audit-cli-all_prerequisites.log",
+      "sha256": "70fb692f4076a4b55fd11e1a33d762842aa572270dfdda7bccc5dc9d2cf574e9"
     }
   ],
   "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""

@@ -20,6 +20,23 @@ from native_construction import reviewed_scene
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
+def _retained_file(root: Path, relative: str) -> Path:
+    """Require each original source path component to belong to the attempt."""
+    root = Path(root)
+    parts = Path(relative).parts
+    if (root.is_symlink() or not root.is_dir() or not parts or
+            Path(relative).is_absolute() or '..' in parts):
+        raise ValueError('original source is not a retained file')
+    path = root
+    for part in parts:
+        path = path / part
+        if path.is_symlink():
+            raise ValueError('original source is not a retained file')
+    if not path.is_file() or root.resolve() not in path.resolve().parents:
+        raise ValueError('original source is not a retained file')
+    return path
+
+
 def _bytes(path: Path, content: bytes) -> str:
     if path.exists():
         raise ValueError("Capture destination already exists: " + path.name)
@@ -167,9 +184,7 @@ def audit_media(attempt, *, camera_dimensions):
         binding = manifest.get(name)
         if not isinstance(binding, dict) or binding.get('kind') != 'original_native':
             raise ValueError('original camera/body source missing')
-        source_path = root / name
-        if source_path.is_symlink() or not source_path.is_file():
-            raise ValueError('original camera/body source is not a retained file')
+        source_path = _retained_file(root, name)
         data = source_path.read_bytes()
         if hashlib.sha256(data).hexdigest() != binding.get('sha256'):
             raise ValueError('original camera/body source changed')
@@ -193,9 +208,7 @@ def audit_media(attempt, *, camera_dimensions):
             expected = f'original-frames/{name}-{index:06d}.png'
             if ref.get('path') != expected:
                 raise ValueError('original camera frame path differs')
-            image_path = root / expected
-            if image_path.is_symlink() or not image_path.is_file():
-                raise ValueError('original camera frame is not a retained file')
+            image_path = _retained_file(root, expected)
             content = image_path.read_bytes()
             if hashlib.sha256(content).hexdigest() != ref.get('sha256'):
                 raise ValueError('original camera frame bytes changed')

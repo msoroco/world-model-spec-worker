@@ -62,6 +62,44 @@
         "pedestrian_in_corridor": true,
         "yield_for_pedestrian": false
       }
+    },
+    {
+      "target_law_id": "NRS-484B-113-3",
+      "branch_id": "moving_traffic",
+      "gap_ids": [
+        "moving-traffic-backing-unverified"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No source-reviewed alternate Native site mechanism is known before original capture."
+      },
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+      "rationale": "Reverse vehicle holds for a moving vehicle on a source-reviewed conflicting route; legal result unresolved.",
+      "requested_setup": {
+        "reverse": true,
+        "moving_traffic_in_corridor": true,
+        "yield_for_moving_traffic": true
+      }
+    },
+    {
+      "target_law_id": "NRS-484B-113-3",
+      "branch_id": "moving_traffic",
+      "gap_ids": [
+        "moving-traffic-backing-unverified"
+      ],
+      "evidence_status": "construction_target_unmeasured",
+      "risk_assessment": {
+        "status": "none",
+        "reason": "No source-reviewed alternate Native site mechanism is known before original capture."
+      },
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue",
+      "rationale": "Reverse vehicle continues amid a moving vehicle on a source-reviewed conflicting route; legal result unresolved.",
+      "requested_setup": {
+        "reverse": true,
+        "moving_traffic_in_corridor": true,
+        "yield_for_moving_traffic": false
+      }
     }
   ],
   "comparisons": [
@@ -83,58 +121,92 @@
         "driver reverse hold/brake policy during pedestrian corridor occupancy"
       ],
       "audit": "backing_measurements.compare requires distinct original sources, matching source-hashed map, fixed measured pedestrian exposure and observed driver response difference"
+    },
+    {
+      "comparison_id": "traffic_yield_response",
+      "case_ids": [
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue"
+      ],
+      "fixed_conditions": [
+        "original map/junction source hash",
+        "two vehicle blueprints",
+        "reverse route",
+        "moving traffic route, start and speed",
+        "control context",
+        "20 Hz camera and duration contract"
+      ],
+      "deliberate_differences": [
+        "driver reverse hold/brake policy during moving traffic corridor occupancy"
+      ],
+      "audit": "traffic_measurements.compare requires distinct original sources, matching source-hashed map, fixed measured moving-vehicle exposure and observed driver response difference"
     }
   ],
   "observations": [
     {
       "name": "vehicle_actor_id",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "pedestrian_actor_id",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "vehicle_xy",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "pedestrian_xy",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "vehicle_velocity_xy",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "vehicle_forward_xy",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "pedestrian_velocity_xy",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "reverse_gear",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "brake",
-      "mandatory": true,
+      "mandatory": false,
       "source": "original Native frame capture"
     },
     {
       "name": "pedestrian_in_corridor",
+      "mandatory": false,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "vehicle_reverse_response",
       "mandatory": true,
       "source": "original Native frame capture"
+    },
+    {
+      "name": "moving_pedestrian_corridor_exposure",
+      "mandatory": true,
+      "source": "original Native frame capture"
+    },
+    {
+      "name": "moving_traffic_corridor_exposure",
+      "mandatory": false,
+      "source": "original Native traffic frame capture"
     }
   ],
   "sources": [
@@ -174,6 +246,12 @@
       {
         "id": "pedestrian-backing-unverified",
         "requirement": "Observed backing phase, moving pedestrian, potential path conflict, and measured driver precedence",
+        "source": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen accepted evidence inventory is empty"
+      },
+      {
+        "id": "moving-traffic-backing-unverified",
+        "requirement": "Observed backing phase, moving traffic vehicle, potential route conflict, and measured driver precedence",
         "source": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
         "why_existing_insufficient": "Frozen accepted evidence inventory is empty"
       }
@@ -219,9 +297,40 @@
     {
       "disposition_index": 1,
       "requirement": "Moving traffic alternative in the full subsection",
-      "status": "alternative_pending",
+      "status": "selected_required",
       "source": "inputs/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/assignment.json",
-      "evidence_or_gap": "Frozen assigned witness branch is pedestrians; full-law branch allocation needs independent review"
+      "evidence_or_gap": "No accepted recording; original moving-traffic backing interaction remains unverified",
+      "case_ids": [
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue"
+      ]
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "backing vehicle and conflicting participant",
+        "interval": "all 900 consecutive 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "backing vehicle and conflicting participant",
+        "interval": "all 900 consecutive 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "backing vehicle and conflicting participant",
+        "interval": "all 900 consecutive 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "backing vehicle and conflicting participant",
+        "interval": "all 900 consecutive 20 Hz frames"
+      }
+    ]
+  }
 }

@@ -98,3 +98,7 @@ The 27-test suite and scoped static check pass, while exact scoped strict exits 
 ## 2026-11-25 retained-camera source path check
 
 The independent `audit_media` now rejects symlinked or absent original body, frame-map and camera files before hashing and decoding. A diagnostic negative substitutes a symlink to identical PNG bytes outside the attempt and is rejected. This preserves the source boundary beyond checksum equality. The 28-test focused suite and scoped static pass; exact scoped strict exits 1 on truthful partial. `cpu-source-path-*.log` hashes are bound in `result.json`.
+
+## 2026-11-25 retained source-directory boundary checkpoint
+
+The independent four-camera/body/frame-map auditor now requires each component of an original source path to remain inside the capture attempt. It rejects a symlinked `original-frames` parent directory pointing to byte-identical camera PNGs outside the attempt, as well as direct symlinked camera files. The 29-test focused suite and scoped static check pass. The exact scoped strict gate still exits 1 on truthful partial status. SHA-bound `cpu-parent-path-*.log` entries are in `result.json`. Three selected canonical cases, proposals and current-runtime selected proofs remain CPU work; original physical/site and legal applicability claims remain unverified.

@@ -11,9 +11,9 @@ from runner import check
 
 
 class RunnerTests(unittest.TestCase):
-    def test_exact_two_case_four_view_check(self):
+    def test_exact_four_case_four_view_check(self):
         result = check(ROOT)
-        self.assertEqual(len(result['selected_cases']), 2)
+        self.assertEqual(len(result['selected_cases']), 4)
         self.assertTrue(result['source_site_required_at_capture'])
         self.assertFalse(result['physical_acceptance_claimed'])
 

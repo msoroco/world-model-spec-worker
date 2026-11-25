@@ -1,6 +1,6 @@
 # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery-prepared. Six exact selected cases and their proof receipts pass the assignment-scoped strict gate. Original City/site authority, CARLA motion and actual camera visibility remain unverified.
 
 Exact law: LVMC 11.27.010(A); with 11.27.010(B) — Except as otherwise provided in Subsection (B), it is unlawful to operate a motorized vehicle upon or within a right-of-way that: (1) Has been designated on an official trails plan as an equestrian trail, multi-use trail, or other trail not intended for use by motorized vehicles; (2) Has been dedicated to the City for use as such a trail; and (3) Has been posted with appropriate signs to indicate that motorized vehicles are prohibited. The provisions of Subsection (A) do not apply to: (1) An emergency vehicle; (2) Any vehicle that is being used in connection with maintenance of the right-of-way; or (3) Any motorized wheelchair or other device that is designed for and used by a mobility-impaired person.
 Assigned branch(es): Conjunctive trail prerequisites, subject to all Subsection (B) exceptions.
@@ -8,12 +8,9 @@ Cell: C143687 (nonmotorized_trail, travel, access_restriction_sign); actor: moto
 Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
 Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
 
-## Next CPU actions
+## Current delivery action
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Run the exact `first_gpu_delivery_command` in `result.json` after providing reviewed original City/site source records through `C143687_REVIEWED_SOURCE_DIR`. The Native runner must then capture original 45-second CARLA motion and four synchronized camera streams. Review physical completion, source authority, actual sign visibility and all five comparison pairs before claiming the rule is met or not met. The mobility-device exception remains an unresolved compatible actor/cell allocation judgment.
 
 ## Proven checks and dependency boundary
 
@@ -98,3 +95,11 @@ All six `runtime.py offline` selected bundles passed after the analyzer and Nati
 For every exact case, the three source-bound physical checker fixtures passed: long diagnostic travel met the engineering motion criterion, stationary travel did not, and absent trace remained unverified. The lifecycle fixture rejected owner release before Native exit, then verified the ordered capture/encoder/restoration/exit/release/saved-processing events. All six recorded-only `process-saved` copies passed: the selected analyzer rebuilt outputs, the converter and renderer ran, final media decoded, and original source hashes were unchanged. All six independent `prove_delivery.py` positives decoded four complete 900-frame FFV1 camera streams; all six negatives rejected a corrupted overview source hash. The focused suite passed 41 tests (`cpu-tests-current.log`). `execution_manifest.validate`, `semantic_delivery.validate`, per-case delivery acceptance validation and compatibility receipt validation are the current static proof targets; the first three are already passing, while the combined receipt revalidation is running.
 
 The original reviewed City plan/dedication source, actual posted-sign image, and original CARLA motion are absent. `C143687_REVIEWED_SOURCE_DIR` remains mandatory before Native capture. The mobility-device exception needs a separately compatible actor/cell allocation review; no ordinary vehicle has been relabeled as a mobility device. Actual pixels, physical completion and legal sufficiency remain unverified. The six cases are CPU-prepared diagnostics only until the scoped strict gate passes. For local use, `result.json` gives the first exact `execute-delivery` command; each manifest entry gives a recorded-only `process-saved` command. The lead must add all six exact jobs and five comparison audits to the shared queue.
+
+## 2026-11-25 scoped strict delivery-prepared result
+
+The exact on-disk command `PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c143687-current SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python worker_check.py --assignment testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver --complete --require-delivery-ready` passed (exit 0, `static_checks_passed: true`, the exact assignment reported). It revalidated six exact constructions, source-bound measurement contracts, semantic chain, six compatibility receipts, six recorded-only saved receipts, independent decoded delivery audits, physical preparation fixtures and return-file hygiene. The frozen assignment has no source observation terms, so the required source observation mapping is empty; mandatory plan observations name the four captured source channels. The `result.json` status is ready with `readiness_kind: delivery_prepared` for CPU handoff. This status does not assert an original City/site source or successful physical CARLA run.
+
+## 2026-11-25 source-audit CLI completion
+
+`delivery_audit.py` now accepts `--case`, `--attempt` and optional `--acquisition` (defaulting to the attempt's `acquisition.json`), and prints the decoded source audit as JSON. Its exact all-prerequisites diagnostic CLI proof decoded 3,600 view frames and retained `actual_pixels: false`, `physical_completion: false` and no legal judgment (`cpu-delivery-audit-cli-all_prerequisites.log`). A missing acquisition CLI run exited nonzero. The CLI is suitable for the shared queue's `additional_source_audit_command`; it still requires an original physical attempt for substantive delivery review.
