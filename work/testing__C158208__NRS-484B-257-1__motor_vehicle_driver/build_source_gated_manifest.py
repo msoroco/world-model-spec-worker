@@ -8,6 +8,7 @@ from pathlib import Path
 
 from native_attempt import verify_review_sources
 from branch_site_preflight import validate_site_branch
+from source_grounded_sweeps import verify as verify_sweeps
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -36,6 +37,11 @@ def build(assembly_path: Path) -> dict:
             {case["case_id"] for case in proposals["cases"] if case["target_type"] != "baseline"} != expected or
             proposals.get("sweeps_expanded") is not True):
         raise ValueError("Full statutory case plan and source-grounded sweeps are not expanded")
+    sweep_path = local(assembly.get("source_grounded_sweeps", ""))
+    sweep_receipt = verify_sweeps(local(assembly.get("sweep_site", "")), sweep_path)
+    sweep_proposal = json.loads(sweep_path.read_text())
+    if proposals.get("sweep_specs") != sweep_proposal["sweep_specs"]:
+        raise ValueError("selected semantic sweeps differ from original source-grounded ranges")
     entries = []
     for case_id in sorted(expected):
         row = assembly["cases"][case_id]
@@ -84,6 +90,7 @@ def build(assembly_path: Path) -> dict:
         entries.append(entry)
     manifest = {"format": "worker-execution-manifest", "assignment_id": HERE.name,
                 "runtime_manifest_sha256": sha(ROOT / "runtime/SOURCE-MANIFEST.json"),
+                "source_grounded_sweeps": sweep_receipt,
                 "cases": entries}
     target = HERE / "execution-manifest.json"
     if target.exists():

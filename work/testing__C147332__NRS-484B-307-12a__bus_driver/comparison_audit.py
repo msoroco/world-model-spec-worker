@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from analysis import sha, verified_join
+from delivery_audit import audit_attempt
 from green_lane_measurement import compare_green_indication, compare_permission_without_motion
 
 
@@ -22,7 +23,7 @@ def case(attempt):
     return suffix, scene, sha(path)
 
 
-def audit(first_attempt, second_attempt, kind):
+def audit(first_attempt, second_attempt, kind, *, diagnostic=False):
     if kind not in ("second_green_arrow", "permission_without_motion"):
         raise ValueError("unknown comparison")
     first, a_scene, a_sha = case(first_attempt)
@@ -31,6 +32,14 @@ def audit(first_attempt, second_attempt, kind):
                 else ("green_selected_drive", "green_selected_stand"))
     if (first, second) != expected:
         raise ValueError("wrong exact comparison case pair or order")
+    if Path(first_attempt).resolve() == Path(second_attempt).resolve():
+        raise ValueError("comparison requires distinct original attempts")
+    if not diagnostic:
+        if any(not (Path(attempt) / "capture-seal.json").is_file()
+               for attempt in (first_attempt, second_attempt)):
+            raise ValueError("original Native acquisition required")
+        audit_attempt(first_attempt)
+        audit_attempt(second_attempt)
     fixed = ("assignment_id", "law_id", "cell_id", "actor", "layout", "control",
              "bus_blueprint_id", "map_source_sha256", "bus_lane_id", "bus_half_width_m")
     if any(a_scene.get(key) != b_scene.get(key) for key in fixed):
@@ -53,6 +62,7 @@ def audit(first_attempt, second_attempt, kind):
             "scene_sha256": [a_sha, b_sha], "reviewed_site_packet_sha256": [
                 a_site["reviewed_packet_sha256"], b_site["reviewed_packet_sha256"]],
             "observations": observed, "source_bound": True,
+            "diagnostic_fixture": diagnostic,
             "physical_acceptance_claimed": False, "legal_verdict_claimed": False}
 
 
@@ -62,8 +72,10 @@ def main():
     parser.add_argument("--second-attempt", required=True)
     parser.add_argument("--comparison", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--diagnostic", action="store_true")
     args = parser.parse_args()
-    report = audit(args.first_attempt, args.second_attempt, args.comparison)
+    report = audit(args.first_attempt, args.second_attempt, args.comparison,
+                   diagnostic=args.diagnostic)
     output = Path(args.output)
     if output.exists():
         raise ValueError("retain prior audit; choose a fresh output")

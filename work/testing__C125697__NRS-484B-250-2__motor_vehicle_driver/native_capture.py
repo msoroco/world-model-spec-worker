@@ -286,6 +286,9 @@ def run(world, carla, packet_path: Path, output: Path, expected_case: str,
         (output / "highway_identity.json").write_bytes(original_sources["highway_identity"])
         for name in CAMERAS:
             (output / f"frame-map-{name}.json").write_text(json.dumps(maps[name]) + "\n")
+            for index in (0, frame_count // 2, frame_count - 1):
+                shutil.copyfile(scratch / name / f"{index:06d}.png",
+                                output / f"sample-{name}-{index:06d}.png")
             destination = output / f"{name}.mkv"
             process = subprocess.run([
                 "ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",

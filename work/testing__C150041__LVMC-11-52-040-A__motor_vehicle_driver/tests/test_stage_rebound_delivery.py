@@ -1,13 +1,16 @@
 """Canonical staging uses synthetic retained packets only as protocol fixtures."""
 import json
+import hashlib
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from rebind_reviewed_execution import rebind
+import stage_rebound_delivery
 from stage_rebound_delivery import install, reviewed_fixture_spec, stage
 from test_bind_reviewed_site import pair
 
@@ -67,7 +70,16 @@ class CanonicalStageTests(unittest.TestCase):
                 stage(rebound, staged)
             mirror = root / 'mirror' / 'work' / ROOT.name
             mirror.mkdir(parents=True)
-            installed = install(staged, packets['park'], packets['stand'], mirror)
+            original_temp = stage_rebound_delivery.tempfile.NamedTemporaryFile
+            temporary_dirs = []
+            def scratch_temp(*args, **kwargs):
+                temporary_dirs.append(Path(kwargs['dir']).resolve())
+                return original_temp(*args, **kwargs)
+            with patch.object(stage_rebound_delivery.tempfile,
+                              'NamedTemporaryFile', side_effect=scratch_temp):
+                installed = install(staged, packets['park'], packets['stand'], mirror)
+            self.assertTrue(temporary_dirs)
+            self.assertEqual(set(temporary_dirs), {ROOT.parents[1] / '.runtime-work'})
             self.assertEqual(installed, mirror / 'execution-manifest.json')
             self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('primary.json'))), 6)
             self.assertEqual(len(list((mirror / 'diagnostic' / 'reviewed').rglob('fallback1.json'))), 6)
@@ -90,6 +102,43 @@ class CanonicalStageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'construction or packet seal differs'):
                 stage(rebound, root / 'staged')
             self.assertFalse((root / 'staged').exists())
+
+    def test_late_staged_artifact_rejected_before_any_publication(self):
+        with TemporaryDirectory(dir=ROOT.parents[1] / '.runtime-work') as name:
+            root = Path(name)
+            packets = pair(root)
+            rebound = root / 'rebound'
+            rebind(packets['park'], packets['stand'], rebound)
+            staged = root / 'staged'
+            receipt = json.loads(stage(rebound, staged).read_text())
+            late = staged / receipt['artifacts'][-1]['path']
+            late.write_text(late.read_text() + '\n')
+            mirror = root / 'mirror' / 'work' / ROOT.name
+            mirror.mkdir(parents=True)
+            with self.assertRaisesRegex(ValueError, 'staged artifact changed'):
+                install(staged, packets['park'], packets['stand'], mirror)
+            self.assertEqual(list(mirror.rglob('*')), [])
+
+    def test_stale_runtime_manifest_rejected_before_publication(self):
+        with TemporaryDirectory(dir=ROOT.parents[1] / '.runtime-work') as name:
+            root = Path(name)
+            packets = pair(root)
+            rebound = root / 'rebound'
+            rebind(packets['park'], packets['stand'], rebound)
+            staged = root / 'staged'
+            receipt_path = stage(rebound, staged)
+            manifest_path = staged / 'execution-manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            manifest['runtime_manifest_sha256'] = '0' * 64
+            manifest_path.write_text(json.dumps(manifest) + '\n')
+            receipt = json.loads(receipt_path.read_text())
+            receipt['manifest_sha256'] = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+            receipt_path.write_text(json.dumps(receipt) + '\n')
+            mirror = root / 'mirror' / 'work' / ROOT.name
+            mirror.mkdir(parents=True)
+            with self.assertRaisesRegex(ValueError, 'inventory differs'):
+                install(staged, packets['park'], packets['stand'], mirror)
+            self.assertEqual(list(mirror.rglob('*')), [])
 
 
 if __name__ == '__main__':

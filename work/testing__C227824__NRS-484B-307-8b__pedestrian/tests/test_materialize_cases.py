@@ -100,6 +100,70 @@ class MaterializeTests(unittest.TestCase):
             materialize(self.source, self.output)
         self.assertFalse(self.output.exists())
 
+    def test_production_review_assets_copied_and_verified(self):
+        map_bytes = (b'<OpenDRIVE><road><signals><signal id="head-1"/>'
+                     b'</signals></road><controller id="controller-1">'
+                     b'<control signalId="head-1"/></controller></OpenDRIVE>\n')
+        (self.source / "candidate-corridor.xodr").write_bytes(map_bytes)
+        route = self.base["route_id"]
+        common = {"route_id": route, "source_evidence": "synthetic unit test only"}
+        declarations = {
+            "official-signal.json": {**common, "signal_source_id": "head-1"},
+            "highway-survey.json": {**common,
+                                     "polygon_xy_m": self.base["highway_polygon_xy_m"]},
+            "driver-none.json": {**common, "governing_device_ids": [],
+                                 "readback_api": "set_pedestrian_indication,get_state,get_countdown"},
+            "driver-one.json": {**common, "governing_device_ids": [8],
+                                "readback_api": "set_pedestrian_indication,get_state,get_countdown"},
+        }
+        for name, value in declarations.items():
+            (self.source / name).write_text(json.dumps(value) + "\n")
+        for base_name, driver in (("no-device-base.json", "driver-none.json"),
+                                  ("one-device-base.json", "driver-one.json")):
+            path = self.source / base_name
+            scene = json.loads(path.read_text())
+            device_path = self.source / scene["device_inventory_review"]["source_path"]
+            device_path.write_text(json.dumps({"route_id": route,
+                                               "source_evidence": "synthetic unit test only",
+                                               "device_ids": scene["governing_pedestrian_device_ids"]}) + "\n")
+            scene["device_inventory_review"]["source_sha256"] = self._binding(device_path.name)["sha256"]
+            camera_path = self.source / scene["camera_placement_review"]["source_path"]
+            camera_path.write_text(json.dumps({"route_id": route,
+                                               "source_evidence": "synthetic unit test only",
+                                               "camera_placements": scene["camera_placements"]}) + "\n")
+            scene["camera_placement_review"]["source_sha256"] = self._binding(camera_path.name)["sha256"]
+            scene["map_source_sha256"] = hashlib.sha256(map_bytes).hexdigest()
+            scene["production_source_review"] = {
+                "complete": True, "route_id": route,
+                "facing_signal_source_id": "head-1",
+                "controller_source_id": "controller-1",
+                "official_signal": self._binding("official-signal.json"),
+                "pedestrian_device_driver": self._binding(driver),
+                "highway_boundary_survey": self._binding("highway-survey.json"),
+            }
+            path.write_text(json.dumps(scene) + "\n")
+        ids = materialize(self.source, self.output)
+        for case_id in ids:
+            target = self.output / case_id
+            for name in declarations:
+                self.assertEqual((target / name).read_bytes(),
+                                 (self.source / name).read_bytes())
+        self.assertEqual(len(ids), 6)
+
+    def test_changed_production_source_rejected_before_output(self):
+        path = self.source / "no-device-base.json"
+        scene = json.loads(path.read_text())
+        scene["production_source_review"] = {
+            "complete": True, "official_signal": {"path": "absent.json", "sha256": "0" * 64}}
+        path.write_text(json.dumps(scene) + "\n")
+        with self.assertRaisesRegex(ValueError, "official_signal source missing"):
+            materialize(self.source, self.output)
+        self.assertFalse(self.output.exists())
+
+    def _binding(self, name):
+        return {"path": name,
+                "sha256": hashlib.sha256((self.source / name).read_bytes()).hexdigest()}
+
 
 if __name__ == "__main__":
     unittest.main()

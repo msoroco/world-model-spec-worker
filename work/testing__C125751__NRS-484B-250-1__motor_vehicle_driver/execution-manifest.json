@@ -2,13 +2,13 @@
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial_source_gate",
+  "status": "selected_delivery_prepared",
   "cases": [
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence",
       "kind": "delivery",
       "construction": "cases/precedence/construction.json",
-      "construction_sha256": "476925677e40fb0c998f98e0602756b7a8b0f522675b7f6776fb4b0561004d00",
+      "construction_sha256": "618a23d4c77929ed17c3bbb32828952a98ffd0aced593e9f4400bbf10cbbbe36",
       "measurement_contract": "cases/precedence/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -110,48 +110,68 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "343d9f4d58eced6cce6e5b13a17f54c3836c3be67b7a5b94f80d80ad30b4667c",
-        "status": "pending_original_source_and_receipts"
+        "script_sha256": "51c5378e4a301308fb7b58c7d42dc609d4645bbac4429fb5ddcbc8d7eeeac285",
+        "status": "cpu_prepared_original_audit_pending",
+        "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125751-owner-nov25/compat-v5-precedence --output .runtime-work/c125751-owner-nov25/delivery-v4-precedence",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-precedence.log",
+        "test_log_sha256": "f08ec953105702992d90dc691b5aae0406afad1bbc6643f9248ada56dee4646e",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_audit.py --case-id testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125751-owner-nov25/compat-v5-precedence --physical-receipt .runtime-work/c125751-owner-nov25/compat-v5-precedence/result.json --pixel-review .runtime-work/c125751-owner-nov25/delivery-v4-precedence/absent-original-pixel-review.json --decode-receipt .runtime-work/c125751-owner-nov25/delivery-v4-precedence/primary-decode.json --media-auditor runtime/scenario_pipeline/worker_exchange/media.py --job-id synthetic-rejection --attempt-number 1 --recording-id synthetic-rejection --output .runtime-work/c125751-owner-nov25/delivery-v4-precedence/must-not-exist.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original Native lifecycle unverified",
+        "negative_log": "cpu-delivery-negative-precedence.log",
+        "negative_log_sha256": "a887ca05a9bab78e5acfc8bdc8b37f3716119b7c5e895449192a2c2a82a1a8ed",
+        "scope": "positive CPU media/Core component probe; full original Native/pixel/physical audit pending"
       },
       "post_capture": {
         "recorded_only": true,
-        "status": "pending_retained_native_attempt"
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/precedence/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/precedence/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool .runtime-work/c125751-owner-nov25/four-saved-v3/precedence/saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-precedence.log",
+        "test_log_sha256": "6dfc5a96688a571ecee58d7f3694eac4b48263aa685c30c929ff8ea60fdaaf74",
+        "diagnostic_receipt": "processing-precedence-diagnostic.json",
+        "diagnostic_receipt_sha256": "6dfc5a96688a571ecee58d7f3694eac4b48263aa685c30c929ff8ea60fdaaf74",
+        "scope": "six-frame synthetic saved-only proof; original Native acquisition pending"
       },
       "missing_proofs": [
-        "reviewed original source bindings",
-        "production offline proof",
-        "positive/negative compatibility",
-        "process-saved complete adapter source",
-        "independent original delivery and comparison audits"
+        "reviewed original source packet and original median/site bindings",
+        "physical 1100-frame Native capture, original pixels and local acceptance"
       ],
       "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-precedence-native.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
-        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES",
+        "ego_blueprint_env_var": "C125751_EGO_BLUEPRINT",
+        "other_blueprint_env_var": "C125751_OTHER_BLUEPRINT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125751-owner-nov25/offline-v4-precedence --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125751-owner-nov25/offline-v6-precedence --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "476925677e40fb0c998f98e0602756b7a8b0f522675b7f6776fb4b0561004d00",
+        "construction_sha256": "618a23d4c77929ed17c3bbb32828952a98ffd0aced593e9f4400bbf10cbbbe36",
         "log": "cpu-offline-owner-precedence.log",
-        "log_sha256": "cd70db77aa0a5031b9781e87bcf5f2f9183693482fab6785bdcbbb64b4b97a3f"
+        "log_sha256": "8860f0dd1f670cf2771dc11518da20a3d0173c51bb81a6e92c7f822f7a364b18"
       },
       "compatibility": {
         "receipt": "package-compat-precedence.json",
-        "sha256": "0322c99b0ddff59b1bec8c19c634bd351db623b91459aa84033dcf70141f4d95",
+        "sha256": "e64c440eca38f7d6ee3e3a5b03cc2b8f37d858d9e931bd768da18c7a9049b457",
         "log": "package-compat-analysis-precedence.log"
       },
       "negative": {
         "log": "negative-analysis-precedence.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-precedence-proof.json",
+        "sha256": "d71980d1d16af965d9ffacf7444854a4145feb47b4347deb71479e2b5c938b73"
       }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance",
       "kind": "delivery",
       "construction": "cases/advance/construction.json",
-      "construction_sha256": "9e0639b5a610eeacba94d82ff0f475e6c8e2983b35f1dd63c771fd2203b25562",
+      "construction_sha256": "4555bc49a61a9296d831a76797e075f97c7b8834c0f8cce398a26098cc171a8d",
       "measurement_contract": "cases/advance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -253,48 +273,68 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "343d9f4d58eced6cce6e5b13a17f54c3836c3be67b7a5b94f80d80ad30b4667c",
-        "status": "pending_original_source_and_receipts"
+        "script_sha256": "51c5378e4a301308fb7b58c7d42dc609d4645bbac4429fb5ddcbc8d7eeeac285",
+        "status": "cpu_prepared_original_audit_pending",
+        "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125751-owner-nov25/compat-v5-advance --output .runtime-work/c125751-owner-nov25/delivery-v4-advance",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-advance.log",
+        "test_log_sha256": "8b006cb81a89905dcc4b4547800d79d1bb72fc27adfa017ae033cfe836266e67",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_audit.py --case-id testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125751-owner-nov25/compat-v5-advance --physical-receipt .runtime-work/c125751-owner-nov25/compat-v5-advance/result.json --pixel-review .runtime-work/c125751-owner-nov25/delivery-v4-advance/absent-original-pixel-review.json --decode-receipt .runtime-work/c125751-owner-nov25/delivery-v4-advance/primary-decode.json --media-auditor runtime/scenario_pipeline/worker_exchange/media.py --job-id synthetic-rejection --attempt-number 1 --recording-id synthetic-rejection --output .runtime-work/c125751-owner-nov25/delivery-v4-advance/must-not-exist.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original Native lifecycle unverified",
+        "negative_log": "cpu-delivery-negative-advance.log",
+        "negative_log_sha256": "a887ca05a9bab78e5acfc8bdc8b37f3716119b7c5e895449192a2c2a82a1a8ed",
+        "scope": "positive CPU media/Core component probe; full original Native/pixel/physical audit pending"
       },
       "post_capture": {
         "recorded_only": true,
-        "status": "pending_retained_native_attempt"
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/advance/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/advance/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool .runtime-work/c125751-owner-nov25/four-saved-v3/advance/saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-advance.log",
+        "test_log_sha256": "5b22af300997b561b96041ad3c6c56b0e216436f5a5b91b9ab05ec49d5b99ac4",
+        "diagnostic_receipt": "processing-advance-diagnostic.json",
+        "diagnostic_receipt_sha256": "5b22af300997b561b96041ad3c6c56b0e216436f5a5b91b9ab05ec49d5b99ac4",
+        "scope": "six-frame synthetic saved-only proof; original Native acquisition pending"
       },
       "missing_proofs": [
-        "reviewed original source bindings",
-        "production offline proof",
-        "positive/negative compatibility",
-        "process-saved complete adapter source",
-        "independent original delivery and comparison audits"
+        "reviewed original source packet and original median/site bindings",
+        "physical 1100-frame Native capture, original pixels and local acceptance"
       ],
       "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-advance-native.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
-        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES",
+        "ego_blueprint_env_var": "C125751_EGO_BLUEPRINT",
+        "other_blueprint_env_var": "C125751_OTHER_BLUEPRINT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125751-owner-nov25/offline-v4-advance --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125751-owner-nov25/offline-v6-advance --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "9e0639b5a610eeacba94d82ff0f475e6c8e2983b35f1dd63c771fd2203b25562",
+        "construction_sha256": "4555bc49a61a9296d831a76797e075f97c7b8834c0f8cce398a26098cc171a8d",
         "log": "cpu-offline-owner-advance.log",
-        "log_sha256": "04f21c13b5a4c80e61d15f165f102e8f6647401134950a27cbac887b10c45f2e"
+        "log_sha256": "dc5736394dd022f03320f293e396db013ae8aebe2823fd221cc7f40e1eac5c7f"
       },
       "compatibility": {
         "receipt": "package-compat-advance.json",
-        "sha256": "dbd08106047674258c8ab51eb898aa2bf7f5faa23b7617b1a63a1b8ff8b72363",
+        "sha256": "326f89811a5482df2a6028b304711532c32b587b0eb0d56a2b072f38db4f4e3a",
         "log": "package-compat-analysis-advance.log"
       },
       "negative": {
         "log": "negative-analysis-advance.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-advance-proof.json",
+        "sha256": "337693e50c43a51025804294dd83fe90d76171f432a7deb40c046223d8edb556"
       }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later",
       "kind": "delivery",
       "construction": "cases/other_later/construction.json",
-      "construction_sha256": "48c260b3a0d517bfd1ef7b45823c9e7132b8459a6df732dbdbd26f026a746a08",
+      "construction_sha256": "5fb5ec87db1ec8df8d8719e568bf1daea25235f023597d587fddf9755affcba6",
       "measurement_contract": "cases/other_later/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -396,48 +436,68 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "343d9f4d58eced6cce6e5b13a17f54c3836c3be67b7a5b94f80d80ad30b4667c",
-        "status": "pending_original_source_and_receipts"
+        "script_sha256": "51c5378e4a301308fb7b58c7d42dc609d4645bbac4429fb5ddcbc8d7eeeac285",
+        "status": "cpu_prepared_original_audit_pending",
+        "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --attempt .runtime-work/c125751-owner-nov25/compat-v5-other_later --output .runtime-work/c125751-owner-nov25/delivery-v4-other_later",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-other_later.log",
+        "test_log_sha256": "615574d5faa770d5d028b0d7ad06c1cde9770052c9b50eedb0cb8fafb2bb67ec",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_audit.py --case-id testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --attempt .runtime-work/c125751-owner-nov25/compat-v5-other_later --physical-receipt .runtime-work/c125751-owner-nov25/compat-v5-other_later/result.json --pixel-review .runtime-work/c125751-owner-nov25/delivery-v4-other_later/absent-original-pixel-review.json --decode-receipt .runtime-work/c125751-owner-nov25/delivery-v4-other_later/primary-decode.json --media-auditor runtime/scenario_pipeline/worker_exchange/media.py --job-id synthetic-rejection --attempt-number 1 --recording-id synthetic-rejection --output .runtime-work/c125751-owner-nov25/delivery-v4-other_later/must-not-exist.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original Native lifecycle unverified",
+        "negative_log": "cpu-delivery-negative-other_later.log",
+        "negative_log_sha256": "a887ca05a9bab78e5acfc8bdc8b37f3716119b7c5e895449192a2c2a82a1a8ed",
+        "scope": "positive CPU media/Core component probe; full original Native/pixel/physical audit pending"
       },
       "post_capture": {
         "recorded_only": true,
-        "status": "pending_retained_native_attempt"
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/other_later/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/other_later/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool .runtime-work/c125751-owner-nov25/four-saved-v3/other_later/saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-other_later.log",
+        "test_log_sha256": "547b94b2309a029db4253581ba3e1489ce4e303fad1f5ea30be90d2afebea5c4",
+        "diagnostic_receipt": "processing-other_later-diagnostic.json",
+        "diagnostic_receipt_sha256": "547b94b2309a029db4253581ba3e1489ce4e303fad1f5ea30be90d2afebea5c4",
+        "scope": "six-frame synthetic saved-only proof; original Native acquisition pending"
       },
       "missing_proofs": [
-        "reviewed original source bindings",
-        "production offline proof",
-        "positive/negative compatibility",
-        "process-saved complete adapter source",
-        "independent original delivery and comparison audits"
+        "reviewed original source packet and original median/site bindings",
+        "physical 1100-frame Native capture, original pixels and local acceptance"
       ],
       "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-other_later-native.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
-        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES",
+        "ego_blueprint_env_var": "C125751_EGO_BLUEPRINT",
+        "other_blueprint_env_var": "C125751_OTHER_BLUEPRINT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --output .runtime-work/c125751-owner-nov25/offline-v4-other_later --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --output .runtime-work/c125751-owner-nov25/offline-v6-other_later --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "48c260b3a0d517bfd1ef7b45823c9e7132b8459a6df732dbdbd26f026a746a08",
+        "construction_sha256": "5fb5ec87db1ec8df8d8719e568bf1daea25235f023597d587fddf9755affcba6",
         "log": "cpu-offline-owner-other_later.log",
-        "log_sha256": "906775e9cdc9ffb24d20d8364845fdb29a62c5c2eb2e1010351f75906ee70724"
+        "log_sha256": "d74cc95957e2340ad9b3809fefc07b2169a59d6511f7ac55b9581a6eea60a656"
       },
       "compatibility": {
         "receipt": "package-compat-other_later.json",
-        "sha256": "7007beca38565f7ca0ba60d021a9fe0cc0ca2d1bac30c1ec20ced9f146b5f8b9",
+        "sha256": "877c25775993bc93a705b78bf2ce610497e4e56ed0558f0d388e1b7da3792618",
         "log": "package-compat-analysis-other_later.log"
       },
       "negative": {
         "log": "negative-analysis-other_later.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-other_later-proof.json",
+        "sha256": "f59c4172b8374db95ec4c94f134f3df7d2de1357bf6f2974918049af2519fb7d"
       }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red",
       "kind": "delivery",
       "construction": "cases/signal_red/construction.json",
-      "construction_sha256": "0a92d68d43cff9c48806a9126e96d0f2284d0d282849d851d5592f6a7586b00a",
+      "construction_sha256": "8b89d998950340a17f772c028bf2b0431ea9489616bef673a2cbd9c0d8b19237",
       "measurement_contract": "cases/signal_red/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -539,52 +599,88 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "343d9f4d58eced6cce6e5b13a17f54c3836c3be67b7a5b94f80d80ad30b4667c",
-        "status": "pending_original_source_and_receipts"
+        "script_sha256": "51c5378e4a301308fb7b58c7d42dc609d4645bbac4429fb5ddcbc8d7eeeac285",
+        "status": "cpu_prepared_original_audit_pending",
+        "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --attempt .runtime-work/c125751-owner-nov25/compat-v5-signal_red --output .runtime-work/c125751-owner-nov25/delivery-v4-signal_red",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-signal_red.log",
+        "test_log_sha256": "0f1915eb31e5c5775e3c8a959c2a387d9d300b3774c64f65ae272f401b4baa12",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_audit.py --case-id testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --attempt .runtime-work/c125751-owner-nov25/compat-v5-signal_red --physical-receipt .runtime-work/c125751-owner-nov25/compat-v5-signal_red/result.json --pixel-review .runtime-work/c125751-owner-nov25/delivery-v4-signal_red/absent-original-pixel-review.json --decode-receipt .runtime-work/c125751-owner-nov25/delivery-v4-signal_red/primary-decode.json --media-auditor runtime/scenario_pipeline/worker_exchange/media.py --job-id synthetic-rejection --attempt-number 1 --recording-id synthetic-rejection --output .runtime-work/c125751-owner-nov25/delivery-v4-signal_red/must-not-exist.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original Native lifecycle unverified",
+        "negative_log": "cpu-delivery-negative-signal_red.log",
+        "negative_log_sha256": "a887ca05a9bab78e5acfc8bdc8b37f3716119b7c5e895449192a2c2a82a1a8ed",
+        "scope": "positive CPU media/Core component probe; full original Native/pixel/physical audit pending"
       },
       "post_capture": {
         "recorded_only": true,
-        "status": "pending_retained_native_attempt"
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/signal_red/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/signal_red/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool .runtime-work/c125751-owner-nov25/four-saved-v3/signal_red/saved/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cpu-process-saved-signal_red.log",
+        "test_log_sha256": "764b2448fb2f288c930b32fdc4957f99181f1f69d3f3983948cfeb5b645a5684",
+        "diagnostic_receipt": "processing-signal_red-diagnostic.json",
+        "diagnostic_receipt_sha256": "764b2448fb2f288c930b32fdc4957f99181f1f69d3f3983948cfeb5b645a5684",
+        "scope": "six-frame synthetic saved-only proof; original Native acquisition pending"
       },
       "missing_proofs": [
-        "reviewed original source bindings",
-        "production offline proof",
-        "positive/negative compatibility",
-        "process-saved complete adapter source",
-        "independent original delivery and comparison audits"
+        "reviewed original source packet and original median/site bindings",
+        "physical 1100-frame Native capture, original pixels and local acceptance"
       ],
       "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-signal_red-native.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
-        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES",
+        "ego_blueprint_env_var": "C125751_EGO_BLUEPRINT",
+        "other_blueprint_env_var": "C125751_OTHER_BLUEPRINT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --output .runtime-work/c125751-owner-nov25/offline-v4-signal_red --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --output .runtime-work/c125751-owner-nov25/offline-v6-signal_red --python \"$PWD/.venv-cpu/bin/python\"",
         "exit_code": 0,
-        "construction_sha256": "0a92d68d43cff9c48806a9126e96d0f2284d0d282849d851d5592f6a7586b00a",
+        "construction_sha256": "8b89d998950340a17f772c028bf2b0431ea9489616bef673a2cbd9c0d8b19237",
         "log": "cpu-offline-owner-signal_red.log",
-        "log_sha256": "fe0caadf1eeaa58e1e629910bd4726aabd194a07639d8eab3689e33d843ee6b1"
+        "log_sha256": "0e5f5aafa22fb71267c70ab3317c9885379d839f8560a8149df70dea8c8fd882"
       },
       "compatibility": {
         "receipt": "package-compat-signal_red.json",
-        "sha256": "a2f52dff6e67a7ab9eedaf55ac8130e97e856bcaa125ca17c8c73e769f5a2eb2",
+        "sha256": "73062e919ba474827c82aceb59c9ef022b811a8c98c4471fd410684bf9e0b492",
         "log": "package-compat-analysis-signal_red.log"
       },
       "negative": {
         "log": "negative-analysis-signal_red.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-signal_red-proof.json",
+        "sha256": "f7d7b2dcf639a457b9538b5ca399ae32a2e54ddf6eba618fd4ec2bdf40caf87f"
       }
     }
   ],
   "comparisons": [
     {
       "comparison_id": "median_entry_order",
-      "status": "pending_original_attempts"
+      "status": "cpu_audit_prepared_original_attempts_pending",
+      "diagnostic_receipt": "comparison-diagnostic-median_entry_order.json",
+      "diagnostic_receipt_sha256": "7fe5cfdf56d61f06f4655379e24ce6a77af392cc021fee3f251290216c8409cf",
+      "positive_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --left .runtime-work/c125751-owner-nov25/comparison-reports/precedence.json --right .runtime-work/c125751-owner-nov25/comparison-reports/other_later.json --variable entry_order --output .runtime-work/c125751-owner-nov25/comparison-reports/median_entry_order.json",
+      "negative_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --left-attempt .runtime-work/c125751-owner-nov25/compat-v5-precedence --right-attempt .runtime-work/c125751-owner-nov25/compat-v5-other_later --variable entry_order --output .runtime-work/c125751-owner-nov25/comparison-reports/median_entry_order-must-not-exist.json",
+      "negative_log": "cpu-comparison-negative-median_entry_order.log",
+      "negative_log_sha256": "81da9a4d2d230e73318dea69de7cda74282436017f903b4dd3a550cb9ba163e7",
+      "production_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --left-attempt \"$LEFT_ATTEMPT\" --right-attempt \"$RIGHT_ATTEMPT\" --variable entry_order --output \"$COMPARISON_AUDIT\"",
+      "scope": "synthetic measured comparison algorithm passed; saved original comparison rejects synthetic lifecycle"
     },
     {
       "comparison_id": "official_signal_readback",
-      "status": "pending_original_attempts"
+      "status": "cpu_audit_prepared_original_attempts_pending",
+      "diagnostic_receipt": "comparison-diagnostic-official_signal_readback.json",
+      "diagnostic_receipt_sha256": "59bdd6a288208efa1ccd20db56c39e02f8cc4a7e67aac82c0c611e04c47305fd",
+      "positive_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --left .runtime-work/c125751-owner-nov25/comparison-reports/precedence.json --right .runtime-work/c125751-owner-nov25/comparison-reports/signal_red.json --variable signal_state --output .runtime-work/c125751-owner-nov25/comparison-reports/official_signal_readback.json",
+      "negative_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --left-attempt .runtime-work/c125751-owner-nov25/compat-v5-precedence --right-attempt .runtime-work/c125751-owner-nov25/compat-v5-signal_red --variable signal_state --output .runtime-work/c125751-owner-nov25/comparison-reports/official_signal_readback-must-not-exist.json",
+      "negative_log": "cpu-comparison-negative-official_signal_readback.log",
+      "negative_log_sha256": "81da9a4d2d230e73318dea69de7cda74282436017f903b4dd3a550cb9ba163e7",
+      "production_command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --left-attempt \"$LEFT_ATTEMPT\" --right-attempt \"$RIGHT_ATTEMPT\" --variable signal_state --output \"$COMPARISON_AUDIT\"",
+      "scope": "synthetic measured comparison algorithm passed; saved original comparison rejects synthetic lifecycle"
     }
   ],
   "production_acceptance_claimed": false

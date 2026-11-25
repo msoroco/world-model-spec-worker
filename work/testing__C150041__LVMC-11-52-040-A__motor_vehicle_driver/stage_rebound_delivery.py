@@ -233,6 +233,7 @@ def install(staged_dir, park_packet, stand_packet, target=ROOT):
     manifest = json.loads(manifest_path.read_text())
     expected = {ROOT.name + '__' + name for name in REQUESTS}
     if (manifest.get('assignment_id') != ROOT.name or
+            manifest.get('runtime_manifest_sha256') != sha(REPO / 'runtime' / 'SOURCE-MANIFEST.json') or
             {entry['case_id'] for entry in manifest['cases']} != expected or
             len(receipt['constructions']) != 12):
         raise ValueError('canonical staged exact-case inventory differs')
@@ -252,24 +253,29 @@ def install(staged_dir, park_packet, stand_packet, target=ROOT):
     artifacts = receipt.get('artifacts', [])
     if not artifacts or len({row['path'] for row in artifacts}) != len(artifacts):
         raise ValueError('canonical stage artifact inventory missing or duplicated')
+    for row in artifacts:
+        source = staged / row['path']
+        destination = target / row['path']
+        if not source.resolve().is_relative_to(staged) or sha(source) != row['sha256']:
+            raise ValueError('staged artifact changed')
+        if not destination.resolve().is_relative_to(target):
+            raise ValueError('staged artifact destination escapes assignment')
+        if destination.exists() and sha(destination) != row['sha256']:
+            raise ValueError('published construction path has different bytes')
     # Install the sealed bundles and fixture inputs before replacing the manifest, so interruption
     # cannot leave a new manifest pointing to absent bundles.
     for row in artifacts:
         source = staged / row['path']
-        if not source.resolve().is_relative_to(staged) or sha(source) != row['sha256']:
-            raise ValueError('staged artifact changed')
         destination = target / row['path']
         destination.parent.mkdir(parents=True, exist_ok=True)
         if destination.exists():
-            if sha(destination) != row['sha256']:
-                raise ValueError('published construction path has different bytes')
             continue
-        with tempfile.NamedTemporaryFile(dir=destination.parent, delete=False) as handle:
+        with tempfile.NamedTemporaryFile(dir=REPO / '.runtime-work', delete=False) as handle:
             temporary = Path(handle.name)
             handle.write(source.read_bytes())
         os.replace(temporary, destination)
     destination = target / 'execution-manifest.json'
-    with tempfile.NamedTemporaryFile(dir=target, delete=False) as handle:
+    with tempfile.NamedTemporaryFile(dir=REPO / '.runtime-work', delete=False) as handle:
         temporary = Path(handle.name)
         handle.write(manifest_path.read_bytes())
     os.replace(temporary, destination)

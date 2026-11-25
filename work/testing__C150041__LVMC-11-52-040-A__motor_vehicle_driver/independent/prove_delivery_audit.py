@@ -40,7 +40,8 @@ def fixture(attempt: Path, case_id: str):
               "frame_map_sha256": sha(attempt / "video_frames.jsonl"),
               "core_trace_sha256": sha(attempt / "traffic_spec" / "trace.json"),
               "observations": {name: {"visible": True, "frame": 1,
-                                      "view": "approach", "description": "protocol only"}
+                                      "view": "approach", "description": "protocol only",
+                                      "camera_sha256": sha(attempt / "approach.mkv")}
                                for name in OBSERVATIONS}}
     decode = {"format": "source-decode", "passed": True,
               "video_sha256": sha(attempt / "raw.mkv"),
@@ -59,7 +60,9 @@ def main() -> None:
     args = parser.parse_args()
     binding = bind(args.case_id.removeprefix(ROOT.name + "__"),
                    args.installed_saved_root) if args.installed_saved_root else None
-    with tempfile.TemporaryDirectory(prefix="c150041-audit-proof-") as temp:
+    scratch = ROOT.parents[1] / ".runtime-work"
+    scratch.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="c150041-audit-proof-", dir=scratch) as temp:
         attempt = Path(temp)
         source, physical, pixels, decode, core = fixture(attempt, args.case_id)
         if args.negative:
@@ -83,6 +86,15 @@ def main() -> None:
         else:
             raise AssertionError("missing Chapter exception pixels accepted")
         pixels["observations"]["chapter_exception"]["visible"] = True
+        pixels["observations"]["vehicle_body"]["camera_sha256"] = "0" * 64
+        try:
+            verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
+        except ValueError as error:
+            if str(error) != "actual pixels unverified: vehicle_body":
+                raise
+        else:
+            raise AssertionError("changed original camera binding accepted")
+        pixels["observations"]["vehicle_body"]["camera_sha256"] = sha(attempt / "approach.mkv")
         core["scenes"][1]["t"] = 100
         try:
             verify_inputs(args.case_id, source, physical, pixels, decode, core, attempt)
@@ -103,7 +115,7 @@ def main() -> None:
         if binding:
             print(json.dumps({"passed": True, "proof_scope": "diagnostic_cpu_protocol_only",
                               "installed_binding": binding}, sort_keys=True))
-        print(args.case_id + ": diagnostic protocol positive and three negatives passed; no original acceptance")
+        print(args.case_id + ": diagnostic protocol positive and four negatives passed; no original acceptance")
 
 
 if __name__ == "__main__":

@@ -57,6 +57,8 @@ def build(kind: str, site_path: Path, output: Path) -> dict:
     if draft.get("case_id") != ASSIGNMENT + "__" + donor or draft.get("diagnostic_only") is not True:
         raise ValueError("diagnostic construction donor changed")
     files = {item["path"]: item["content"] for item in draft["files"]}
+    files.pop("diagnostic-site.json", None)
+    files.pop("review-context.json", None)
     files["analysis.py"] = (HERE / "analysis.py").read_text(encoding="utf-8")
     files["statutory_branch_measurement.py"] = (HERE / "statutory_branch_measurement.py").read_text(encoding="utf-8")
     files["prepare_derived_media.py"] = (HERE / "prepare_derived_media.py").read_text(encoding="utf-8")

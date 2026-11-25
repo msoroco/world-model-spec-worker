@@ -9,6 +9,8 @@ from pathlib import Path
 from camera_sources import audit_camera_sources
 from prepare_derived_media import prepare as prepare_derived_media
 from source_tick_capture import verify_seal
+from native_attempt import verify_review_sources
+from branch_site_preflight import validate_site_branch
 
 
 def close_capture(attempt: Path, release: dict) -> dict:
@@ -28,6 +30,25 @@ def close_capture(attempt: Path, release: dict) -> dict:
     construction_hash = hashlib.sha256((root / "construction.json").read_bytes()).hexdigest()
     if identity.get("construction_sha256") != construction_hash:
         raise ValueError("capture construction differs from selected Native revision")
+    if (release.get("case_id") != identity.get("case_id") or
+            release.get("capture_identity_sha256") != hashlib.sha256(
+                (root / "capture-identity.json").read_bytes()).hexdigest() or
+            release.get("frame_count") != 900):
+        raise ValueError("original Native owner release differs from captured source")
+    scene = json.loads((root / "scene.json").read_text())
+    site_name = scene.get("site_source")
+    if not isinstance(site_name, str) or Path(site_name).name != site_name:
+        raise ValueError("original reviewed site source name differs")
+    site_path = root / site_name
+    if hashlib.sha256(site_path.read_bytes()).hexdigest() != identity.get("site_packet_sha256"):
+        raise ValueError("original reviewed site differs from capture identity")
+    site = json.loads(site_path.read_text())
+    if site.get("review_status") != "reviewed" or site.get("cell_id") != "C158208":
+        raise ValueError("original C158208 site review required")
+    verify_review_sources(site, site_path, diagnostic_fixture=False)
+    validate_site_branch(site, identity["case_id"])
+    if site.get("map_opendrive_sha256") != identity.get("map_opendrive_sha256"):
+        raise ValueError("original reviewed OpenDRIVE differs from capture")
     traces = []
     mappings = []
     for index, (row, raw) in enumerate(zip(samples, originals)):

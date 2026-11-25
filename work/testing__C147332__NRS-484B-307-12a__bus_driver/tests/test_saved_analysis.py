@@ -106,7 +106,7 @@ def sealed_fixture(root):
         subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-f", "lavfi",
                         "-i", f"color=c=green:s={size}:r=20", "-frames:v", "3", "-c:v", "ffv1",
                         str(root / (name + ".mkv"))], check=True, capture_output=True)
-    original_names = ("road.xodr", "trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
+    original_names = ("scene.json", "road.xodr", "trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
                       "bus-body-history.jsonl", "lane-signal-history.jsonl",
                       "sign-state-original.jsonl", "camera-frame-map.jsonl",
                       "controller-history.jsonl", "reviewed-context.json",
@@ -194,6 +194,17 @@ class SavedAnalysisTests(unittest.TestCase):
             seal["sources"]["overview.mkv"] = sha(video)
             put(root / "capture-seal.json", json.dumps(seal))
             with self.assertRaisesRegex(ValueError, "capture profile mismatch"):
+                audit_attempt(root, diagnostic=True)
+
+    def test_delivery_audit_rejects_changed_original_scene(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sealed_fixture(root)
+            scene_path = root / "scene.json"
+            scene = json.loads(scene_path.read_text())
+            scene["bus_lane_id"] = "fabricated-lane"
+            scene_path.write_text(json.dumps(scene))
+            with self.assertRaisesRegex(ValueError, "original source missing or changed: scene.json"):
                 audit_attempt(root, diagnostic=True)
 
     def test_pinned_saved_result_and_converter_channels_from_staged_fixture(self):
@@ -309,10 +320,12 @@ class SavedAnalysisTests(unittest.TestCase):
             fixture(c, case_id="green_selected_drive")
             fixture(d, moving=False, case_id="green_selected_stand")
             # The synthetic text is shared to exercise source binding only.
-            self.assertTrue(audit(a, b, "second_green_arrow")["source_bound"])
-            self.assertTrue(audit(c, d, "permission_without_motion")["source_bound"])
+            self.assertTrue(audit(a, b, "second_green_arrow", diagnostic=True)["source_bound"])
+            self.assertTrue(audit(c, d, "permission_without_motion", diagnostic=True)["source_bound"])
             with self.assertRaisesRegex(ValueError, "wrong exact comparison"):
-                audit(b, a, "second_green_arrow")
+                audit(b, a, "second_green_arrow", diagnostic=True)
+            with self.assertRaisesRegex(ValueError, "original Native acquisition required"):
+                audit(a, b, "second_green_arrow")
 
     def test_comparison_rejects_changed_original_geometry(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -325,7 +338,7 @@ class SavedAnalysisTests(unittest.TestCase):
             source = b / "body-1.json"
             source.write_text("changed body")
             with self.assertRaisesRegex(ValueError, "row source missing or changed"):
-                audit(a, b, "second_green_arrow")
+                audit(a, b, "second_green_arrow", diagnostic=True)
 
 
 if __name__ == "__main__":

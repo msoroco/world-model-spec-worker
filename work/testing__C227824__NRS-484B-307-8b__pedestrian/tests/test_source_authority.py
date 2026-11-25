@@ -19,6 +19,8 @@ class AuthorityTests(unittest.TestCase):
         self.scene = {
             "route_id": "source-test-route", "highway_polygon_xy_m": [[0, 0], [2, 0], [2, 2], [0, 2]],
             "governing_pedestrian_device_ids": [8],
+            "camera_placements": {"overview": {"location_xyz_m": [0, 0, 3],
+                                                "target_xyz_m": [1, 1, 1]}},
             "production_source_review": {
                 "complete": True, "route_id": "source-test-route",
                 "facing_signal_source_id": "head-1", "controller_source_id": "controller-1",
@@ -26,6 +28,16 @@ class AuthorityTests(unittest.TestCase):
         }
         self.put("candidate-corridor.xodr", '<OpenDRIVE><road><signals><signal id="head-1"/></signals></road><controller id="controller-1"><control signalId="head-1"/></controller></OpenDRIVE>\n')
         self.scene["map_source_sha256"] = self.digest("candidate-corridor.xodr")
+        for name, review_key, source_key, value in (
+            ("inventory-review.json", "device_inventory_review", "device_ids", [8]),
+            ("camera-review.json", "camera_placement_review", "camera_placements",
+             self.scene["camera_placements"]),
+        ):
+            self.put(name, json.dumps({"route_id": "source-test-route",
+                                       "source_evidence": "synthetic unit test only",
+                                       source_key: value}) + "\n")
+            self.scene[review_key] = {"complete": True, "source_path": name,
+                                      "source_sha256": self.digest(name)}
         for name, extra in (
             ("official_signal", {"signal_source_id": "head-1"}),
             ("pedestrian_device_driver", {"governing_device_ids": [8],
@@ -77,6 +89,15 @@ class AuthorityTests(unittest.TestCase):
         self.put("candidate-corridor.xodr", '<OpenDRIVE><road><signals><signal id="head-1"/><signal id="head-2"/></signals></road><controller id="controller-1"><control signalId="head-2"/></controller></OpenDRIVE>\n')
         self.scene["map_source_sha256"] = self.digest("candidate-corridor.xodr")
         with self.assertRaisesRegex(ValueError, "does not govern facing signal"):
+            verify(self.scene, self.root)
+
+    def test_reject_inventory_and_camera_review_drift(self):
+        self.scene["governing_pedestrian_device_ids"] = []
+        with self.assertRaisesRegex(ValueError, "governing-device inventory review differs"):
+            verify(self.scene, self.root)
+        self.scene["governing_pedestrian_device_ids"] = [8]
+        self.scene["camera_placements"]["overview"]["target_xyz_m"] = [2, 2, 1]
+        with self.assertRaisesRegex(ValueError, "camera placement review differs"):
             verify(self.scene, self.root)
 
 

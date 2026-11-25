@@ -34,7 +34,8 @@ def check():
         raise ValueError("Exact-case timing or approach request changed")
     if (config["rate_hz"] != 20 or config["frame_count"] != 900 or
             config["duration_s"] != 45 or
-            config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]):
+            [camera["name"] for camera in config["cameras"]] !=
+            ["overview", "approach", "reference_corner", "driver_reference"]):
         raise ValueError("Original source capture contract changed")
     if config["required_sources"] != ["native_trace", "opendrive", "device_inventory",
                                        "highway_identity",

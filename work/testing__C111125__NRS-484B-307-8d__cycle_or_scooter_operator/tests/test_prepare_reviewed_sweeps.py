@@ -24,7 +24,13 @@ class ReviewedSweepPreparationTests(unittest.TestCase):
         site["reviewed_original_site"] = True
         self.site_path = self.authority / "site.json"
         self.site_path.write_text(json.dumps(site) + "\n")
-        control = {"supported_numeric_controls": ["detector_test_offset_m", "directed_gap_s"]}
+        control = {"reviewed_original_controls": True,
+                   "site_sha256": digest(self.site_path),
+                   "supported_numeric_controls": [
+                       {"name": "detector_test_offset_m", "adapter_method": "set_detector_offset",
+                        "original_readback_field": "detector_offset_m", "unit": "m"},
+                       {"name": "directed_gap_s", "adapter_method": "set_directed_gap",
+                        "original_readback_field": "directed_gap_s", "unit": "s"}]}
         self.control_path = self.authority / "control.json"
         self.control_path.write_text(json.dumps(control) + "\n")
         self.ranges_path = self.authority / "ranges.json"
@@ -44,7 +50,8 @@ class ReviewedSweepPreparationTests(unittest.TestCase):
         return {"variable": variable, "kind": "controller", "observable": observable,
                 "unit": "m" if variable.endswith("_m") else "s",
                 "min": 0.0, "max": 1.0, "spacing": 0.5,
-                "measurement": {"method": "original Native readback", "time_window": "entry window", "statistic": "min"},
+                "measurement": {"method": "original Native readback", "time_window": "entry window", "statistic": "min",
+                                "original_readback_field": "detector_offset_m" if variable.endswith("_m") else "directed_gap_s"},
                 "range_rationale": "diagnostic schema fixture only", "spacing_rationale": "diagnostic schema fixture only",
                 "feasibility_evidence": "diagnostic schema fixture only",
                 "feasibility_source_ref": self.ref(self.authority / evidence), "landmarks": []}
@@ -61,6 +68,8 @@ class ReviewedSweepPreparationTests(unittest.TestCase):
                      {s["sweep_id"] for s in proposal["sweep_specs"]}]
         self.assertEqual(len(generated), 6)
         self.assertTrue(all("legal_verdict" not in c for c in generated))
+        self.assertEqual({s["numeric_control_binding"]["adapter_method"] for s in proposal["sweep_specs"]},
+                         {"set_detector_offset", "set_directed_gap"})
 
     def test_missing_and_stale_original_source_rejected(self):
         (self.authority / "source" / "detector.json").unlink()
@@ -88,6 +97,23 @@ class ReviewedSweepPreparationTests(unittest.TestCase):
         site["diagnostic_fixture"] = True
         self.site_path.write_text(json.dumps(site) + "\n")
         with self.assertRaisesRegex(ValueError, "reviewed original site authority missing"):
+            self.expand()
+
+    def test_control_packet_must_bind_site_and_original_readback(self):
+        control = json.loads(self.control_path.read_text())
+        control["site_sha256"] = "0" * 64
+        self.control_path.write_text(json.dumps(control) + "\n")
+        ranges = json.loads(self.ranges_path.read_text())
+        ranges["control_ref"] = self.ref(self.control_path)
+        self.ranges_path.write_text(json.dumps(ranges) + "\n")
+        with self.assertRaisesRegex(ValueError, "bound to another site"):
+            self.expand()
+        control["site_sha256"] = digest(self.site_path)
+        control["supported_numeric_controls"][0]["original_readback_field"] = "other_field"
+        self.control_path.write_text(json.dumps(control) + "\n")
+        ranges["control_ref"] = self.ref(self.control_path)
+        self.ranges_path.write_text(json.dumps(ranges) + "\n")
+        with self.assertRaisesRegex(ValueError, "differs from sourced numeric readback"):
             self.expand()
 
 

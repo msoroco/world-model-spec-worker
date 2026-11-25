@@ -50,9 +50,24 @@ def prepare(proposal_path, authority_root, site_ref, ranges_ref):
         raise ValueError("source-reviewed sweep ranges absent or bound to another site")
     control_path = linked(root, ranges.get("control_ref"))
     control = json.loads(control_path.read_text(encoding="utf-8"))
+    if (control.get("reviewed_original_controls") is not True or
+            control.get("site_sha256") != digest(site_path)):
+        raise ValueError("source-supported numeric controls missing or bound to another site")
     controls = control.get("supported_numeric_controls")
-    if not isinstance(controls, list):
-        raise ValueError("source-supported numeric controls missing")
+    if not isinstance(controls, list) or len(controls) != 2:
+        raise ValueError("two source-supported numeric controls required")
+    controls_by_name = {}
+    for entry in controls:
+        if (not isinstance(entry, dict) or not isinstance(entry.get("name"), str) or
+                not entry["name"] or not isinstance(entry.get("adapter_method"), str) or
+                not entry["adapter_method"].isidentifier() or
+                not isinstance(entry.get("original_readback_field"), str) or
+                not entry["original_readback_field"].isidentifier() or
+                not isinstance(entry.get("unit"), str) or not entry["unit"]):
+            raise ValueError("numeric control lacks executable adapter/readback binding")
+        if entry["name"] in controls_by_name:
+            raise ValueError("duplicate source numeric control")
+        controls_by_name[entry["name"]] = entry
     for ref in ranges.get("evidence_refs", []):
         linked(root, ref)
     if not ranges.get("evidence_refs"):
@@ -75,8 +90,11 @@ def prepare(proposal_path, authority_root, site_ref, ranges_ref):
         placeholder = placeholder_by_id[placeholder_id]
         axis = entries[key]
         variable = axis.get("variable")
-        if not isinstance(variable, str) or variable not in controls:
+        if not isinstance(variable, str) or variable not in controls_by_name:
             raise ValueError("sweep axis lacks sourced numeric adapter control: " + key)
+        binding = controls_by_name[variable]
+        if axis.get("unit") != binding["unit"] or axis.get("measurement", {}).get("original_readback_field") != binding["original_readback_field"]:
+            raise ValueError("sweep axis differs from sourced numeric readback: " + key)
         if axis.get("kind") not in ("controller", "world_setup"):
             raise ValueError("sweep control kind unsupported: " + key)
         if not all(finite(axis.get(k)) for k in ("min", "max", "spacing")) or not axis["min"] < axis["max"] or not 0 < axis["spacing"] <= axis["max"] - axis["min"]:
@@ -102,6 +120,9 @@ def prepare(proposal_path, authority_root, site_ref, ranges_ref):
                 "variable_assignments": dict(baseline["variable_assignments"]),
                 "recording_description": baseline["recording_description"]}
         spec["variable_assignments"][variable] = {"kind": axis["kind"], "unit": axis["unit"], "value": axis["min"]}
+        spec["numeric_control_binding"] = {"adapter_method": binding["adapter_method"],
+                                             "original_readback_field": binding["original_readback_field"],
+                                             "control_sha256": digest(control_path)}
         expanded_specs.append(spec)
     proposal["sweep_specs"] = expanded_specs
     repo = Path(__file__).resolve().parents[2]

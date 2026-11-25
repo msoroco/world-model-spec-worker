@@ -189,6 +189,18 @@ def run_native(spec, suffix, sources, camera_plan, output, host, port):
                 raise ValueError('retained reviewed source already exists: ' + name)
             (output / name).write_bytes(Path(sources, name).read_bytes())
         (output / 'reviewed-packet.json').write_bytes((output / 'source-packet.json').read_bytes())
+        write(output / 'source-bindings.json', {
+            'case_id': spec['case_id'],
+            'source_packet_sha256': spec['source_packet_sha256'],
+            'map_sha256': spec['map_sha256'],
+            'review_sha256': packet['review_sha256'],
+            'crossing_id': spec['crossing_id'],
+            'ego_route_sha256': spec['ego_route_sha256'],
+            'other_route_sha256': spec['other_route_sha256'],
+            'camera_plan_sha256': spec['camera_plan_sha256'],
+            'ego_blueprint': spec['ego_blueprint'],
+            'other_blueprint': spec['other_blueprint'],
+        })
         retained_refs = []
         for ref in validate_review_refs((output / 'review.json').read_bytes(), sources):
             name = ref['path']
@@ -265,6 +277,7 @@ def run_native(spec, suffix, sources, camera_plan, output, host, port):
             'ego_blueprint': spec['ego_blueprint'],
             'other_blueprint': spec['other_blueprint']})
         names = ('signal-history.json', 'signal-packet.json', 'source-packet.json',
+                 'source-bindings.json',
                  'reviewed-packet.json',
                  'acquisition-provenance.json',
                  'review.json', 'map.xodr', 'trace.jsonl', 'video_frames.jsonl',

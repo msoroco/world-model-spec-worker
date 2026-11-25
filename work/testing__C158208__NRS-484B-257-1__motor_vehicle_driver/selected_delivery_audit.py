@@ -11,6 +11,9 @@ from camera_sources import CAMERAS, DIMENSIONS, audit_camera_sources
 from source_tick_capture import verify_seal
 from build_semantic_proposals import KINDS
 from analysis import REQUIREMENT_INDICES
+from native_attempt import verify_review_sources
+from branch_site_preflight import validate_site_branch
+from physical_completion import assess as assess_completion
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
 BASE_SOURCES = {"capture-identity.json", "nearest-view-tick-seal.json",
@@ -75,6 +78,14 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
         site = stage / site_name
         if not site.is_file() or sha(site) != identity.get("site_packet_sha256"):
             raise ValueError("selected original site differs")
+        reviewed_site = json.loads(site.read_text())
+        if (reviewed_site.get("review_status") != "reviewed" or
+                reviewed_site.get("cell_id") != "C158208"):
+            raise ValueError("selected original site review identity differs")
+        verify_review_sources(reviewed_site, site, diagnostic_fixture=False)
+        validate_site_branch(reviewed_site, case_id)
+        if reviewed_site.get("map_opendrive_sha256") != identity.get("map_opendrive_sha256"):
+            raise ValueError("selected original OpenDRIVE hash differs")
     report_path = stage / "analysis-report.json"
     report = json.loads(report_path.read_text())
     if (report.get("case_id") != case_id or report.get("diagnostic_fixture") is not diagnostic_fixture
@@ -121,6 +132,16 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
             raise ValueError("selected trace/video timestamp join differs")
     if not diagnostic_fixture:
         audit_camera_sources(stage)
+        completion = assess_completion(stage, case_id, identity["construction_sha256"])
+        if not completion["maneuver_completed"]:
+            raise ValueError("selected original ego body did not clear intersection")
+        release = json.loads((stage / "native-owner-release.json").read_text())
+        if (release.get("case_id") != case_id or
+                release.get("source_kind") != "original_capture" or
+                release.get("frame_count") != 900 or
+                release.get("capture_identity_sha256") != sha(stage / "capture-identity.json") or
+                release.get("world_restore", {}).get("restored") is not True):
+            raise ValueError("selected original Native owner release differs")
     sources = {}
     if len(result["video_references"]) != 4:
         raise ValueError("four exact camera sources required")

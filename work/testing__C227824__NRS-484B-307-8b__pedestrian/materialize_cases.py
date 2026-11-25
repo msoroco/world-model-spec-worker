@@ -15,6 +15,7 @@ from pathlib import Path
 from native_case_bundles import expand
 from build_construction import build
 from runner import check
+from source_authority import verify as verify_source_authority
 
 
 ROOT = Path(__file__).resolve().parent
@@ -31,6 +32,21 @@ def _private(path):
     if not path.is_relative_to(PRIVATE):
         raise ValueError("source and output must be under .runtime-work")
     return path
+
+
+def _review_asset(source, binding, label):
+    name = binding.get("path") if isinstance(binding, dict) else None
+    digest = binding.get("sha256") if isinstance(binding, dict) else None
+    if (not isinstance(name, str) or not name or Path(name).is_absolute()
+            or ".." in Path(name).parts or not isinstance(digest, str)):
+        raise ValueError(label + " source binding missing")
+    original = source / name
+    path = original.resolve()
+    if not path.is_relative_to(source) or not path.is_file() or original.is_symlink():
+        raise ValueError(label + " source missing or escapes private source")
+    if _sha(path) != digest:
+        raise ValueError(label + " source hash differs")
+    return name, path
 
 
 def materialize(source, output):
@@ -67,6 +83,17 @@ def materialize(source, output):
             if _sha(path) != review.get("source_sha256"):
                 raise ValueError("review source hash differs")
             assets[name] = path
+        production = scene.get("production_source_review")
+        if production is not None:
+            if not isinstance(production, dict) or production.get("complete") is not True:
+                raise ValueError("production source review incomplete")
+            for label in ("official_signal", "pedestrian_device_driver",
+                          "highway_boundary_survey"):
+                name, path = _review_asset(source, production.get(label), label)
+                prior = assets.get(name)
+                if prior is not None and prior != path:
+                    raise ValueError("production source path collision: " + name)
+                assets[name] = path
     output.mkdir(parents=True)
     try:
         for case_id, scene in scenes.items():
@@ -89,6 +116,8 @@ def materialize(source, output):
             (target / "construction.json").write_text(json.dumps(construction, indent=2) + "\n")
             (target / "scene.json").write_text(json.dumps(scene, indent=2) + "\n")
             check(target)
+            if scene.get("production_source_review") is not None:
+                verify_source_authority(scene, target)
     except BaseException:
         shutil.rmtree(output)
         raise

@@ -59,6 +59,27 @@ def verify(scene, attempt):
     controlled = {item.get("signalId") for item in controllers[controller_id].findall("control")}
     if signal_id not in controlled:
         raise ValueError("reviewed controller does not govern facing signal")
+    for label, review_key, source_key, expected in (
+        ("governing-device inventory", "device_inventory_review", "device_ids",
+         scene.get("governing_pedestrian_device_ids")),
+        ("camera placement", "camera_placement_review", "camera_placements",
+         scene.get("camera_placements")),
+    ):
+        binding = scene.get(review_key)
+        if not isinstance(binding, dict) or binding.get("complete") is not True:
+            raise ValueError(label + " review missing")
+        data = _source(root, {"path": binding.get("source_path"),
+                              "sha256": binding.get("source_sha256")}, label)
+        try:
+            declaration = json.loads(data)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ValueError(label + " review is not JSON") from exc
+        if (not isinstance(declaration, dict) or
+                declaration.get("diagnostic_fixture") is True or
+                declaration.get("route_id") != scene.get("route_id") or
+                not declaration.get("source_evidence") or
+                declaration.get(source_key) != expected):
+            raise ValueError(label + " review differs from original scene")
     for label in ("official_signal", "pedestrian_device_driver", "highway_boundary_survey"):
         data = _source(root, review.get(label), label)
         try:

@@ -248,7 +248,7 @@ def run_native(scene, road, site, output, host, port, packet_path):
         capture.close(); capture = None
         frame_map.close(); frame_map = None
         cameras.close(); cameras = None
-        names = ["reviewed-context.json", "authored-road.xodr", "road.xodr", "trace.jsonl",
+        names = ["scene.json", "reviewed-context.json", "authored-road.xodr", "road.xodr", "trace.jsonl",
                  "video_frames.jsonl", "carla_recorder.log", "bus-body-history.jsonl",
                  "lane-signal-history.jsonl", "sign-state-original.jsonl",
                  "camera-frame-map.jsonl", "controller-history.jsonl",

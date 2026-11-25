@@ -95,6 +95,28 @@ class CaptureTest(unittest.TestCase):
         self.assertEqual(len((self.root / "video_frames.jsonl").read_text().splitlines()), 900)
         self.assertEqual(set(attempt["cameras"]), {"overview", "approach", "reference_corner", "driver_reference"})
 
+    def test_pinned_pipeline_trace_is_preserved_and_joined(self):
+        trace = "".join(json.dumps({"frame": 100 + index, "time_s": index / 20,
+                                    "position_m": [0.0, 0.0, 0.0],
+                                    "pipeline_extra": "original"}) + "\n"
+                        for index in range(900))
+        def finish():
+            (self.root / "trace.jsonl").write_text(trace)
+        capture(self.world, self.actors, observe, "case-a", "Town", self.root,
+                camera_finalize=finish)
+        self.assertEqual((self.root / "trace.jsonl").read_text(), trace)
+
+    def test_divergent_pipeline_trace_rejected_without_rewrite(self):
+        trace = "".join(json.dumps({"frame": 100 + index, "time_s": index / 20,
+                                    "position_m": [9.0, 0.0, 0.0]}) + "\n"
+                        for index in range(900))
+        def finish():
+            (self.root / "trace.jsonl").write_text(trace)
+        with self.assertRaisesRegex(SourceError, "trace differs"):
+            capture(self.world, self.actors, observe, "case-a", "Town", self.root,
+                    camera_finalize=finish)
+        self.assertEqual((self.root / "trace.jsonl").read_text(), trace)
+
     def test_missing_camera_rejected_before_ticking(self):
         (self.root / "approach.mkv").unlink()
         with self.assertRaisesRegex(SourceError, "camera source"):

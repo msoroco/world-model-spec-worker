@@ -24,7 +24,7 @@ class OfflineBundleTest(unittest.TestCase):
                    '--output-dir', str(ROOT / 'uncreated-native-attempt')]
         result = subprocess.run(command, capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('source or capture binding absent', result.stderr)
+        self.assertIn('reviewed Native vehicle blueprint missing', result.stderr)
         self.assertFalse((ROOT / 'uncreated-native-attempt').exists())
 
 

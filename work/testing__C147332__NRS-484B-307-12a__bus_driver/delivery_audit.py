@@ -14,7 +14,7 @@ from analysis import build_report
 
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
-ORIGINALS = ("road.xodr", "trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
+ORIGINALS = ("scene.json", "road.xodr", "trace.jsonl", "video_frames.jsonl", "carla_recorder.log",
              "bus-body-history.jsonl", "lane-signal-history.jsonl",
              "sign-state-original.jsonl", "camera-frame-map.jsonl",
              "controller-history.jsonl", "reviewed-context.json", *[name + ".mkv" for name in CAMERAS])

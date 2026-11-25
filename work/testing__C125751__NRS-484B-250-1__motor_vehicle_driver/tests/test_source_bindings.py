@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from case_protocol import load_case
-from source_bindings import bind_sources, route_digest
+from source_bindings import bind_sources, prepare_capture_spec, route_digest
 from test_signal_crossing import MAP, REVIEW, packet
 
 
@@ -35,6 +35,16 @@ class SourceBindingTest(unittest.TestCase):
                         other_blueprint='vehicle.cpu.fixture.other')
             self.assertEqual(bind_sources(spec, 'precedence', source,
                                           ROOT / 'camera-plan.json')['crossing_id'], 'median-1')
+            planning = load_case(ROOT, 'precedence')
+            resolved = prepare_capture_spec(
+                planning, 'precedence', source, ROOT / 'camera-plan.json',
+                {'ego': 'vehicle.cpu.fixture.ego',
+                 'other': 'vehicle.cpu.fixture.other'})
+            self.assertEqual(resolved['source_packet_sha256'], hashlib.sha256(raw).hexdigest())
+            self.assertEqual(resolved['crossing_id'], p['crossing_id'])
+            with self.assertRaisesRegex(ValueError, 'blueprint missing'):
+                prepare_capture_spec(planning, 'precedence', source,
+                                     ROOT / 'camera-plan.json', {'ego': None, 'other': None})
             spec_path = source / 'case-spec.json'
             spec_path.write_text(json.dumps(spec))
             checked = subprocess.run([sys.executable, str(ROOT / 'runner.py'),

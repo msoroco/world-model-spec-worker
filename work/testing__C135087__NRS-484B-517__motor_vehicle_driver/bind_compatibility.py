@@ -9,7 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 AID = HERE.name
-SCRATCH = REPO / ".runtime-work" / "c135087-compat-v7"
+SCRATCH = REPO / ".runtime-work" / "c135087-compat-v9"
 
 
 def sha(path: Path) -> str:

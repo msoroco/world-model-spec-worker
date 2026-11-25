@@ -65,3 +65,41 @@ def bind_sources(spec: dict, suffix: str, sources: Path, camera_plan_path: Path)
     if packet['review_sha256'] != digest(review_bytes):
         raise ValueError('review source bytes changed')
     return packet
+
+
+def prepare_capture_spec(spec: dict, suffix: str, sources: Path,
+                         camera_plan_path: Path, blueprints: dict):
+    """Resolve null planning fields only from reviewed bytes at Native handoff."""
+    validate_case(spec, suffix, require_source=False)
+    fields = ('source_packet_sha256', 'map_sha256', 'crossing_id',
+              'ego_route_sha256', 'other_route_sha256',
+              'ego_blueprint', 'other_blueprint')
+    present = [bool(spec.get(key)) for key in fields]
+    if all(present):
+        bind_sources(spec, suffix, sources, camera_plan_path)
+        return dict(spec)
+    if any(present):
+        raise ValueError('partially source-bound case spec is unsafe')
+    for party in ('ego', 'other'):
+        value = blueprints.get(party)
+        if not isinstance(value, str) or not value.startswith('vehicle.'):
+            raise ValueError('reviewed Native vehicle blueprint missing: ' + party)
+    sources = Path(sources)
+    paths = [sources / name for name in ('map.xodr', 'review.json', 'source-packet.json')]
+    if any(path.is_symlink() or not path.is_file() for path in paths):
+        raise ValueError('original reviewed source file absent')
+    map_bytes, review_bytes, packet_bytes = (path.read_bytes() for path in paths)
+    packet = json.loads(packet_bytes)
+    validate_source_packet(packet, map_bytes, review_bytes)
+    validate_review_refs(review_bytes, sources)
+    bound = dict(spec)
+    bound.update(source_packet_sha256=digest(packet_bytes),
+                 map_sha256=digest(map_bytes),
+                 crossing_id=packet['crossing_id'],
+                 ego_route_sha256=route_digest(packet['ego_route_xy_m']),
+                 other_route_sha256=route_digest(packet['other_route_xy_m']),
+                 camera_plan_sha256=digest(Path(camera_plan_path).read_bytes()),
+                 ego_blueprint=blueprints['ego'],
+                 other_blueprint=blueprints['other'])
+    bind_sources(bound, suffix, sources, camera_plan_path)
+    return bound

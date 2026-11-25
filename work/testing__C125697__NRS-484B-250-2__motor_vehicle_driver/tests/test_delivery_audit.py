@@ -4,6 +4,8 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+import subprocess
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +82,55 @@ def staged(root):
 
 
 class DeliveryAuditTests(unittest.TestCase):
+    def test_full_decode_png_join_and_middle_frame_tamper(self):
+        scratch = Path(".runtime-work/c125697-2502-tests").resolve()
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            root = Path(directory)
+            rows = [{"video_frame": i, "carla_frame": 100 + i,
+                     "time_s": i / 20} for i in range(9)]
+            (root / "video_frames.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows))
+            (root / "frame-map-overview.json").write_text(json.dumps(rows) + "\n")
+            for index in range(9):
+                image = Image.new("RGB", (32, 18))
+                image.putdata([((x * 7 + index * 9) % 256,
+                                (y * 13 + index * 11) % 256,
+                                (x * 5 + y * 3) % 256)
+                               for y in range(18) for x in range(32)])
+                image.save(root / f"frame-{index:06d}.png")
+                if index in (0, 4, 8):
+                    image.save(root / f"sample-overview-{index:06d}.png")
+
+            def encode(count, destination):
+                subprocess.run([
+                    "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                    "-framerate", "20", "-i", str(root / "frame-%06d.png"),
+                    "-frames:v", str(count), "-c:v", "ffv1", str(destination)],
+                    check=True)
+
+            encode(9, root / "overview.mkv")
+            baseline = delivery_audit._pixels(root, "overview", 9, (32, 18))
+            self.assertEqual(baseline["frame_count"], 9)
+            self.assertEqual(baseline["sample_frames"], [0, 4, 8])
+            image = Image.open(root / "frame-000004.png").convert("RGB")
+            image.putpixel((10, 10), (255, 0, 255))
+            image.save(root / "frame-000004.png")
+            encode(9, root / "changed.mkv")
+            (root / "overview.mkv").write_bytes((root / "changed.mkv").read_bytes())
+            with self.assertRaisesRegex(ValueError, "PNG/video pixel join differs"):
+                delivery_audit._pixels(root, "overview", 9, (32, 18))
+            image.save(root / "sample-overview-000004.png")
+            encode(8, root / "short.mkv")
+            (root / "overview.mkv").write_bytes((root / "short.mkv").read_bytes())
+            with self.assertRaisesRegex(ValueError, "full decode incomplete"):
+                delivery_audit._pixels(root, "overview", 9, (32, 18))
+            (root / "overview.mkv").write_bytes((root / "changed.mkv").read_bytes())
+            rows[4]["carla_frame"] = -1
+            (root / "frame-map-overview.json").write_text(json.dumps(rows) + "\n")
+            with self.assertRaisesRegex(ValueError, "camera frame map differs"):
+                delivery_audit._pixels(root, "overview", 9, (32, 18))
+
     def test_source_policy_and_missing_camera_rejection(self):
         scratch = Path(".runtime-work/c125697-2502-tests").resolve()
         scratch.mkdir(parents=True, exist_ok=True)

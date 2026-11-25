@@ -122,12 +122,28 @@ def capture(world, actors, observer, case_id, map_name, output,
                "cameras": camera_refs}
     audit_saved_attempt(attempt, root)
     _write(root, "attempt-source.json", attempt)
-    (root / "trace.jsonl").write_text("".join(json.dumps({
-        "frame": row["frame"], "time_s": row["time_s"],
-        "position": row["position"], "heading_deg": row["heading_deg"],
-        "position_m": [row["position"][key] for key in ("x", "y", "z")],
-        "speed_mps": row["subject_speed_mps"],
-        "speed_mph": row["subject_speed_mps"] / .44704}) + "\n" for row in rows))
+    trace_path = root / "trace.jsonl"
+    if trace_path.exists():
+        if trace_path.is_symlink() or not trace_path.is_file():
+            raise SourceError("original pipeline trace is not a regular file")
+        try:
+            trace = [json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()]
+        except (UnicodeError, ValueError) as error:
+            raise SourceError("original pipeline trace is unreadable") from error
+        if len(trace) != frame_count:
+            raise SourceError("original pipeline trace frame count differs")
+        for source, row in zip(trace, rows):
+            if (source.get("frame") != row["frame"] or
+                    abs(float(source.get("time_s", float("nan"))) - row["time_s"]) > 1e-4 or
+                    source.get("position_m") != [row["position"][key] for key in ("x", "y", "z")]):
+                raise SourceError("original pipeline trace differs from actor capture")
+    else:
+        trace_path.write_text("".join(json.dumps({
+            "frame": row["frame"], "time_s": row["time_s"],
+            "position": row["position"], "heading_deg": row["heading_deg"],
+            "position_m": [row["position"][key] for key in ("x", "y", "z")],
+            "speed_mps": row["subject_speed_mps"],
+            "speed_mph": row["subject_speed_mps"] / .44704}) + "\n" for row in rows))
     (root / "video_frames.jsonl").write_text("".join(json.dumps({
         "video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}) + "\n"
         for i, row in enumerate(rows)))

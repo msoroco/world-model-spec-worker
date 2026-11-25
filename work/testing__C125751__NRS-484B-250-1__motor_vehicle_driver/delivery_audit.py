@@ -22,6 +22,7 @@ CAMERAS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv',
            'driver_reference.mkv')
 REQUIRED = ('construction.json', 'config.json', 'runner.py',
             'acquisition-provenance.json', 'source-packet.json', 'reviewed-packet.json',
+            'source-bindings.json',
             'review.json', 'map.xodr', 'signal-packet.json',
             'signal-history.json', 'trace.jsonl', 'video_frames.jsonl', *CAMERAS)
 
@@ -38,6 +39,8 @@ def verify_sources(case_id, attempt):
     attempt = Path(attempt).resolve()
     if case_id not in {ASSIGNMENT + '__' + suffix for suffix in SUFFIXES}:
         raise ValueError('unknown exact case')
+    if not (attempt / 'capture-seal.json').is_file():
+        raise ValueError('original Native lifecycle unverified')
     seal = read(attempt / 'capture-seal.json')
     if (seal.get('provenance_kind') != 'native' or seal.get('diagnostic_fixture') is not False or
             seal.get('events') != ['capture_finished', 'encoders_closed', 'restoration_verified'] or
@@ -76,6 +79,22 @@ def verify_sources(case_id, attempt):
                 sealed.get(ref['path']) != sha(path)):
             raise ValueError('reviewed original source not sealed: ' + ref['path'])
     signal_packet = read(attempt / 'signal-packet.json')
+    bindings = read(attempt / 'source-bindings.json')
+    expected_bindings = {
+        'case_id': case_id,
+        'source_packet_sha256': sealed['source-packet.json'],
+        'map_sha256': sealed['map.xodr'],
+        'review_sha256': sealed['review.json'],
+        'crossing_id': source_packet['crossing_id'],
+        'ego_route_sha256': signal_packet.get('ego_route_sha256'),
+        'other_route_sha256': signal_packet.get('other_route_sha256'),
+        'camera_plan_sha256': sha(attempt / 'camera-plan.json'),
+        'ego_blueprint': signal_packet.get('ego_blueprint'),
+        'other_blueprint': signal_packet.get('other_blueprint'),
+    }
+    if (bindings != expected_bindings or
+            sealed.get('camera-plan.json') != expected_bindings['camera_plan_sha256']):
+        raise ValueError('reviewed Native source binding receipt differs')
     if (signal_packet.get('map_sha256') != source_packet['map_sha256'] or
             signal_packet.get('review_sha256') != source_packet['review_sha256'] or
             signal_packet.get('crossing_id') != source_packet['crossing_id'] or

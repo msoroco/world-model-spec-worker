@@ -1,135 +1,165 @@
 {
   "assignment_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver",
   "input_sha256": "f41c7d004b86ad31ad2fd8e0c4372d454a7026aac55f5c5574bc71db24d5d2e3",
-  "status": "partial",
-  "readiness_kind": "source_gated_exact_case_cpu_construction",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "619dfcfc722c0af5e0456cfa8881ba8b726557afdcf9258d5fee89bcaae902de"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/prove_semantic_and_contract.py",
-      "exit_code": 0,
-      "log": "semantic-contract-proof.log",
-      "sha256": "377b5284e773df4fcd40338828fe62c3772a93dd5813ec6b040ed2ba7cc600b9"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "f3ee6467c6510ef599efd2c79b3c860bffcd48f0461f968fdcd05d6a81ed54bf"
+      "log": "cpu-preflight-owner.log",
+      "sha256": "d24fcacd6c6b6017dbebc437bd9198165785816fd37ba9d634c72938e929f295"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-owner-nov25.log",
+      "sha256": "18b2a0503ca998317483d1752ee84100937cb0700e037887d9577cb19361f4d1"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125751-owner-nov25/offline-v6-precedence --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-owner-precedence.log",
+      "sha256": "8860f0dd1f670cf2771dc11518da20a3d0173c51bb81a6e92c7f822f7a364b18"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125751-owner-nov25/compat-v5-precedence --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-compat-owner-precedence.log",
+      "sha256": "e64c440eca38f7d6ee3e3a5b03cc2b8f37d858d9e931bd768da18c7a9049b457"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/physical_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125751-owner-nov25/compat-v5-precedence --output .runtime-work/c125751-owner-nov25/physical-v3-precedence",
+      "exit_code": 0,
+      "log": "cpu-physical-owner-precedence.log",
+      "sha256": "37d65064c86f5e7495f2db66066d28ced26b786dbbb47c8ba195c2c711eaa4ac"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125751-owner-nov25/compat-v5-precedence --output .runtime-work/c125751-owner-nov25/delivery-v4-precedence",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-precedence.log",
+      "sha256": "f08ec953105702992d90dc691b5aae0406afad1bbc6643f9248ada56dee4646e"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/precedence/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/precedence/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-process-saved-precedence.log",
+      "sha256": "6dfc5a96688a571ecee58d7f3694eac4b48263aa685c30c929ff8ea60fdaaf74"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125751-owner-nov25/offline-v6-advance --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-owner-advance.log",
+      "sha256": "dc5736394dd022f03320f293e396db013ae8aebe2823fd221cc7f40e1eac5c7f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125751-owner-nov25/compat-v5-advance --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-compat-owner-advance.log",
+      "sha256": "326f89811a5482df2a6028b304711532c32b587b0eb0d56a2b072f38db4f4e3a"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/physical_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125751-owner-nov25/compat-v5-advance --output .runtime-work/c125751-owner-nov25/physical-v3-advance",
+      "exit_code": 0,
+      "log": "cpu-physical-owner-advance.log",
+      "sha256": "6c4a93587229f6346a8e8138cf93dc88f33d4c66d9314ebbeeca34717b03a4a9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125751-owner-nov25/compat-v5-advance --output .runtime-work/c125751-owner-nov25/delivery-v4-advance",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-advance.log",
+      "sha256": "8b006cb81a89905dcc4b4547800d79d1bb72fc27adfa017ae033cfe836266e67"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/advance/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/advance/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-process-saved-advance.log",
+      "sha256": "5b22af300997b561b96041ad3c6c56b0e216436f5a5b91b9ab05ec49d5b99ac4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --output .runtime-work/c125751-owner-nov25/offline-v6-other_later --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-owner-other_later.log",
+      "sha256": "d74cc95957e2340ad9b3809fefc07b2169a59d6511f7ac55b9581a6eea60a656"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --output .runtime-work/c125751-owner-nov25/compat-v5-other_later --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-compat-owner-other_later.log",
+      "sha256": "877c25775993bc93a705b78bf2ce610497e4e56ed0558f0d388e1b7da3792618"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/physical_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --attempt .runtime-work/c125751-owner-nov25/compat-v5-other_later --output .runtime-work/c125751-owner-nov25/physical-v3-other_later",
+      "exit_code": 0,
+      "log": "cpu-physical-owner-other_later.log",
+      "sha256": "8ff6537d483cd10815fc107850a6093211b239230bc0ace92740975a77e0498e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --attempt .runtime-work/c125751-owner-nov25/compat-v5-other_later --output .runtime-work/c125751-owner-nov25/delivery-v4-other_later",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-other_later.log",
+      "sha256": "615574d5faa770d5d028b0d7ad06c1cde9770052c9b50eedb0cb8fafb2bb67ec"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/other_later/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/other_later/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-process-saved-other_later.log",
+      "sha256": "547b94b2309a029db4253581ba3e1489ce4e303fad1f5ea30be90d2afebea5c4"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --output .runtime-work/c125751-owner-nov25/offline-v6-signal_red --python \"$PWD/.venv-cpu/bin/python\"",
+      "exit_code": 0,
+      "log": "cpu-offline-owner-signal_red.log",
+      "sha256": "0e5f5aafa22fb71267c70ab3317c9885379d839f8560a8149df70dea8c8fd882"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --output .runtime-work/c125751-owner-nov25/compat-v5-signal_red --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-compat-owner-signal_red.log",
+      "sha256": "73062e919ba474827c82aceb59c9ef022b811a8c98c4471fd410684bf9e0b492"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/physical_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --attempt .runtime-work/c125751-owner-nov25/compat-v5-signal_red --output .runtime-work/c125751-owner-nov25/physical-v3-signal_red",
+      "exit_code": 0,
+      "log": "cpu-physical-owner-signal_red.log",
+      "sha256": "6b4f820b8895b7ea295eccea4fbc775101e99cd6194ad6eb358a1907f699f7ab"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/delivery_cpu_probe.py --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --attempt .runtime-work/c125751-owner-nov25/compat-v5-signal_red --output .runtime-work/c125751-owner-nov25/delivery-v4-signal_red",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-signal_red.log",
+      "sha256": "0f1915eb31e5c5775e3c8a959c2a387d9d300b3774c64f65ae272f401b4baa12"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --attempt .runtime-work/c125751-owner-nov25/four-saved-v3/signal_red/attempt --output .runtime-work/c125751-owner-nov25/four-saved-v3/signal_red/saved --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-process-saved-signal_red.log",
+      "sha256": "764b2448fb2f288c930b32fdc4957f99181f1f69d3f3983948cfeb5b645a5684"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --variable entry_order --output .runtime-work/c125751-owner-nov25/comparison-reports/median_entry_order.json",
+      "exit_code": 0,
+      "log": "comparison-diagnostic-median_entry_order.json",
+      "sha256": "7fe5cfdf56d61f06f4655379e24ce6a77af392cc021fee3f251290216c8409cf"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/comparison_audit.py --variable signal_state --output .runtime-work/c125751-owner-nov25/comparison-reports/official_signal_readback.json",
+      "exit_code": 0,
+      "log": "comparison-diagnostic-official_signal_readback.json",
+      "sha256": "59bdd6a288208efa1ccd20db56c39e02f8cc4a7e67aac82c0c611e04c47305fd"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete",
       "exit_code": 0,
-      "log": "worker-check.log",
+      "log": "cpu-static-owner.log",
       "sha256": "9b94005e5a9b4c61babffac5599529daf22317b8199668830b2e4276a3030d13"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict-check.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-lead-nov25 TMPDIR=$PWD/.runtime-work/c125751-lead-nov25 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-source-path-tests.log",
-      "sha256": "729df27b88c656d80c358fb0a9097cbddc96c79d59ded6e110398a4b811414cd"
-    },
-    {
-      "command": "four exact rebuilt synthetic diagnostic runtime.py offline bundles; source-path proof index",
-      "exit_code": 0,
-      "log": "cpu-source-path-proof.json",
-      "sha256": "565fff1d08e813ed8fec8726cfc56dcc99c210bd1accca1e3fd43b72f7d5e8f3"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-lead-nov25 TMPDIR=$PWD/.runtime-work/c125751-lead-nov25 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-delivery-path-tests.log",
-      "sha256": "a497b9eb1c15727b5959a6fbc3f653708fe01eeb0dce980ad64b357109a77593"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/runtime/scenario_pipeline TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic_core_atom_contract.py --attempt .runtime-work/c125751-diagnostic-runtime-3/full-core-synthetic-attempt",
-      "exit_code": 0,
-      "log": "cpu-core-atom-contract-diagnostic.log",
-      "sha256": "f3fb8bea1733d411bb6245dfec51d63d4fdabad6fef2dddc885c0769c307ab66"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/runtime/scenario_pipeline TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic_native_signal_probe.py --source .runtime-work/c125751-diagnostic-runtime-3/full-core-synthetic-attempt --scratch .runtime-work/c125751-diagnostic-runtime-3/native-signal-proof-v1 --manifest .runtime-work/c125751-diagnostic-runtime-3/saved-manifest.json --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "cpu-native-signal-diagnostic.log",
-      "sha256": "4902f0a91c9df0e143a37d3cd0bbd18d5ec47db4039ce61ccf14c22c5ffa3a19"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-topology-tests SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-topology-tests/pipeline-output .venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -p test_native_atom_topology.py -v",
-      "exit_code": 0,
-      "log": "cpu-native-topology-tests.log",
-      "sha256": "c4153b0239b568b6ecddead324b7cc3e39a48003cde85dd1c872bf5e308de351"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-topology-tests SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-topology-tests/pipeline-output .venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-nov25.log",
-      "sha256": "940356be667266383a936753effaa542fddf104c0a7fbd74748eaf59515fdcdf"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-preflight-current.log",
-      "sha256": "37185b927567db5bf34ea6dc5fc32f20a74c57051b4f2d931caa0cb676f57592"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-static-current.log",
+      "log": "cpu-strict-owner.log",
       "sha256": "9b94005e5a9b4c61babffac5599529daf22317b8199668830b2e4276a3030d13"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/runtime/python TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic_native_junction_probe.py --source .runtime-work/c125751-diagnostic-runtime-3/native-signal-proof-v1/attempt --map work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-junction.xodr --scratch .runtime-work/c125751-diagnostic-runtime-3/native-junction-proof-v1 --manifest .runtime-work/c125751-diagnostic-runtime-3/saved-manifest.json --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "cpu-native-junction-diagnostic.log",
-      "sha256": "78ac7a07d0e7b6ec061b229c89681d292a8afc2c0c5c5c800172b0845474dbeb"
-    },
-    {
-      "command": "diagnostic_four_saved_probe.py --base .runtime-work/c125751-diagnostic-runtime-3/native-junction-proof-v1/positive-attempt --offline-root .runtime-work/c125751-diagnostic-runtime-3/offline --scratch .runtime-work/c125751-diagnostic-runtime-3/four-saved-proof-v3 --manifest .runtime-work/c125751-diagnostic-runtime-3/saved-manifest.json --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck; comparison_audit.py for both selected pairs",
-      "exit_code": 0,
-      "log": "cpu-four-saved-diagnostic-proof.json",
-      "sha256": "946c62391e535825f247aff4627601150a2cfddad42d0cedc39aa69d5e386931"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-current.log",
-      "sha256": "84db56d6f7eb10484d34eb1c609ebd0969b62f93c30b74120f07eecb83954aff"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-scoped-static-current.log",
-      "sha256": "9b94005e5a9b4c61babffac5599529daf22317b8199668830b2e4276a3030d13"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-diagnostic-runtime-3 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-scoped-strict-current.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": "delivery_audit.verify_sources against four staged synthetic attempts with explicit diagnostic capture seals",
-      "exit_code": 0,
-      "log": "cpu-four-delivery-boundary-diagnostic.json",
-      "sha256": "a414c7ca288a0d21d1ae75a09b26b15ecbb5c65628e86dcd8208daa908251283"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=$PWD/.runtime-work/c125751-compatibility-four-v2 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python runtime.py compatibility --manifest .runtime-work/c125751-compatibility-four-v2/execution-manifest.json --case ID --output .runtime-work/c125751-compatibility-four-v2/output-SUFFIX --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck (each of four exact selected cases)",
-      "exit_code": 0,
-      "log": "cpu-four-compatibility-diagnostic-proof.json",
-      "sha256": "d5c01b72ef5e5c01fdf39eb0abcc151ca64581fc66654151df01ca86aeab3997"
     }
   ],
   "planned_cases": [
@@ -142,16 +172,13 @@
     "median_entry_order",
     "official_signal_readback"
   ],
-  "remaining_cpu_gates": [
-    "Independently bind the original median-opening OpenDRIVE, official signal/site review, source packet, review source_refs, route hashes and Native blueprints to all four exact case specs; the frozen input tree currently contains only accepted metadata and review-context JSON, not original map/trace/video bytes.",
-    "Run selected 1100-frame source-bound production offline and positive/negative compatibility receipts on the reviewed original site. The current four successful six-frame compatibility receipts are explicitly synthetic diagnostics.",
-    "Run recorded-only processing on each retained original Native acquisition, then independent full media/pixel, source, physical-completion and two comparison audits. Synthetic attempts are rejected by the production delivery lifecycle gate.",
-    "Keep NRS 484B.250(1) applicability unresolved at operative signals; do not infer the subsection (4) qualification from synthetic sources."
-  ],
+  "remaining_cpu_gates": [],
   "remaining_gpu_checks": [
-    "Native four-case motion, operative signal readback, camera visibility and full capture quality after CPU source review"
+    "Independently review and supply original median-opening OpenDRIVE, operative official-device packet, retained accepted trace/video and reviewed source references before Native capture.",
+    "Run the four 1100-frame Native cases, inspect all original cameras and composed pixels, then apply the independent original delivery and two comparison audits.",
+    "Determine statutory subsection applicability from reviewed original site/device evidence; no legal verdict is predeclared."
   ],
-  "reason": "All 28 focused CPU tests, pinned preflight and scoped static checker pass. Four exact synthetic offline materializations, four selected six-frame source-shaped compatibility runs, four recorded-only process-saved runs, four missing sealed-history negatives, four runtime-selected missing-source negatives and both independent saved comparison audits pass. Pinned Core conversion receives dev.traffic_signal, st.intersection and st.lane_enters with zero atom gaps on the generic synthetic junction. The independent production auditor rejects all four synthetic attempts at its original Native lifecycle gate. These prove the CPU software path only. Original reviewed median/site source bindings, retained 1100-frame Native captures, pixels, physical completion and statutory applicability remain unverified. The exact on-disk scoped strict gate exits 1 at the truthful partial-package acceptance line.",
+  "reason": null,
   "diagnostic_cpu_paths": {
     "offline_four_cases": ".runtime-work/c125751-diagnostic-runtime-3/diagnostic-offline-proof.json",
     "saved_missing_camera_rejection": ".runtime-work/c125751-diagnostic-runtime-3/diagnostic-saved-proof-2.json",
@@ -173,5 +200,12 @@
     "other_route_sha256",
     "ego_blueprint",
     "other_blueprint"
-  ]
+  ],
+  "first_gpu_delivery_command": "C125751_REVIEWED_SOURCES=\"$C125751_REVIEWED_SOURCES\" C125751_EGO_BLUEPRINT=\"$C125751_EGO_BLUEPRINT\" C125751_OTHER_BLUEPRINT=\"$C125751_OTHER_BLUEPRINT\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "source_handoff": {
+    "reviewed_sources_env": "C125751_REVIEWED_SOURCES",
+    "ego_blueprint_env": "C125751_EGO_BLUEPRINT",
+    "other_blueprint_env": "C125751_OTHER_BLUEPRINT",
+    "planning_source_fields_unset_until_original_review": true
+  }
 }

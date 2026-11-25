@@ -27,7 +27,7 @@ def main() -> None:
         case_id = ROOT.name + "__" + suffix
         positive = root / (suffix + "-positive.log")
         negative = root / (suffix + "-negative.log")
-        if ("diagnostic protocol positive and three negatives passed" not in positive.read_text()
+        if ("diagnostic protocol positive and four negatives passed" not in positive.read_text()
                 or "original pixel review missing or stale" not in negative.read_text()):
             raise ValueError("exact diagnostic audit proof missing: " + suffix)
         command = f"{PYTHON} work/{ROOT.name}/independent/prove_delivery_audit.py {case_id}"
@@ -55,7 +55,8 @@ def main() -> None:
                     "video_sha256": None, "frame_map_sha256": None,
                     "core_trace_sha256": None,
                     "observations": {name: {"visible": None, "frame": None,
-                                            "view": None, "description": None}
+                                            "view": None, "description": None,
+                                            "camera_sha256": None}
                                      for name in OBSERVATIONS}}
         (root / (suffix + "-pixel-review.template.json")).write_text(
             json.dumps(template, indent=2) + "\n")

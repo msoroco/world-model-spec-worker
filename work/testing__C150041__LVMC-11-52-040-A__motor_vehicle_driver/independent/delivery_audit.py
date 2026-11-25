@@ -91,7 +91,8 @@ def verify_inputs(case_id: str, source: dict, physical: dict, pixels: dict,
         index = item.get("frame")
         if (item.get("visible") is not True or type(index) is not int or
                 not 0 <= index < len(frames) or item.get("view") not in VIEWS or
-                not item.get("description")):
+                not item.get("description") or
+                item.get("camera_sha256") != source["source_hashes"].get(item.get("view") + ".mkv")):
             raise ValueError("actual pixels unverified: " + key)
     return {"format": "worker-delivery-audit", "passed": True, "case_id": case_id,
             "checks": {name: True for name in CHECKS}, "frames": len(frames),

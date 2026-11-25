@@ -18,21 +18,28 @@ PAIRS = (
 for kind, left, right in PAIRS:
     first = BASE / left / 'positive'
     second = BASE / right / 'positive'
-    report = audit(first, second, kind)
+    report = audit(first, second, kind, diagnostic=True)
     if report['source_bound'] is not True or report['physical_acceptance_claimed'] is not False:
         raise AssertionError('comparison made an unsupported physical claim')
     try:
-        audit(second, first, kind)
+        audit(first, second, kind)
+    except ValueError as error:
+        if 'original Native acquisition required' not in str(error):
+            raise
+    else:
+        raise AssertionError('diagnostic comparison passed production Native guard')
+    try:
+        audit(second, first, kind, diagnostic=True)
     except ValueError as error:
         if 'wrong exact comparison case pair or order' not in str(error):
             raise
     else:
         raise AssertionError('reversed exact pair was accepted')
     try:
-        audit(BASE / left / 'negative', second, kind)
+        audit(BASE / left / 'negative', second, kind, diagnostic=True)
     except ValueError as error:
         if 'Missing required source: lane-signal-history.jsonl' not in str(error):
             raise
     else:
         raise AssertionError('missing original lane signal was accepted')
-    print(kind, 'exact pair positive, reversed order and missing-source negatives passed')
+    print(kind, 'diagnostic pair positive; Native, reversed order and missing-source negatives passed')

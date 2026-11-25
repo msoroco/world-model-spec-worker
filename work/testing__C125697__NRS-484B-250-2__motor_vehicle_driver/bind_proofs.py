@@ -6,7 +6,7 @@ import shutil
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / ".runtime-work/c125697-2502/final-proof-v5"
+SCRATCH = REPO / ".runtime-work/c125697-2502/final-proof-v6"
 SUFFIXES = ("timing_below_training", "timing_inside_training",
             "timing_above_training", "right_approach_inside")
 
@@ -43,7 +43,7 @@ def build():
                 "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" +
                            ROOT.name + "/execution-manifest.json --case " + case +
                            (" --candidate fallback1" if variant != "primary" else "") +
-                           " --output .runtime-work/c125697-2502/final-proof-v5/offline-" +
+                           " --output .runtime-work/c125697-2502/final-proof-v6/offline-" +
                            token + " --python $PWD/.venv-cpu/bin/python",
                 "exit_code": 0, "construction_sha256": candidate["construction_sha256"],
                 "log": offline_log.name, "log_sha256": sha(offline_log)}
@@ -76,7 +76,7 @@ def build():
             "negative_command": ".venv-cpu/bin/python work/" + ROOT.name +
                                 "/audit_probe.py --case " + case +
                                 " --attempt .runtime-work/c125697-2502/"
-                                "final-proof-v5/saved-attempt-" + suffix +
+                                "final-proof-v6/saved-attempt-" + suffix +
                                 " --negative-camera",
             "negative_exit_code": 1,
             "negative_expected_error": "sealed original missing or changed: overview.mkv",
@@ -96,9 +96,9 @@ def build():
                 "command": ".venv-cpu/bin/python work/" + ROOT.name +
                            "/physical_probe.py --case " + case +
                            " --attempt .runtime-work/c125697-2502/"
-                           "final-proof-v5/saved-attempt-" + suffix +
+                           "final-proof-v6/saved-attempt-" + suffix +
                            " --output .runtime-work/c125697-2502/"
-                           "final-proof-v5/physical-" + suffix,
+                           "final-proof-v6/physical-" + suffix,
                 "exit_code": 0, "log": log.name, "log_sha256": sha(log),
                 "result": result.name, "result_sha256": sha(result)})
         proof = ROOT / ("physical-" + suffix + "-proof.json")
@@ -146,6 +146,11 @@ def build():
         ],
         "termination_rules": ["stop after planned 45 seconds or original-source failure"],
     })
+    for item in root_construction["files"]:
+        if item["path"] == "config.json":
+            config = json.loads(item["content"])
+            config["supported_case_ids"] = [case["case_id"] for case in manifest["cases"]]
+            item["content"] = json.dumps(config, indent=2) + "\n"
     (ROOT / "construction.json").write_text(json.dumps(root_construction, indent=2) + "\n")
     for item in root_construction["files"]:
         target = ROOT / item["path"]

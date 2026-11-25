@@ -6,10 +6,13 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+from PIL import Image
 
 import median_source
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+DIMENSIONS = {"overview": (1920, 1080), "approach": (1280, 720),
+              "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 SOURCE_NAMES = ("native_trace", "opendrive", "device_inventory", "highway_identity") + tuple(
     "camera_" + role for role in CAMERAS)
 
@@ -84,16 +87,64 @@ def audit_sources(attempt, case_id, expected_frames=900, *, diagnostic=False):
             "manifest_sha256": sha(manifest_path)}
 
 
-def _pixels(path):
-    result = subprocess.run([
+def _pixels(root, role, expected_frames=900, dimensions=None):
+    path = required(root, role + ".mkv")
+    width, height = dimensions or DIMENSIONS[role]
+    probe = subprocess.run([
+        "ffprobe", "-v", "error", "-select_streams", "v:0",
+        "-show_entries", "stream=codec_name,width,height,avg_frame_rate",
+        "-of", "json", str(path)], capture_output=True, text=True, check=True,
+        timeout=90)
+    streams = json.loads(probe.stdout).get("streams", [])
+    if (len(streams) != 1 or streams[0].get("codec_name") != "ffv1" or
+            (streams[0].get("width"), streams[0].get("height")) != (width, height) or
+            streams[0].get("avg_frame_rate") != "20/1"):
+        raise ValueError("original camera codec/dimensions/fps differ: " + role)
+    frame_map = read(required(root, "frame-map-" + role + ".json"))
+    global_map = [json.loads(line) for line in required(root, "video_frames.jsonl").read_text().splitlines()]
+    if len(frame_map) != expected_frames or len(global_map) != expected_frames:
+        raise ValueError("original camera frame map incomplete: " + role)
+    for index, (local, global_row) in enumerate(zip(frame_map, global_map)):
+        if (local.get("video_frame") != index or
+                local.get("carla_frame") != global_row.get("carla_frame") or
+                local.get("time_s") != global_row.get("time_s")):
+            raise ValueError("original camera frame map differs: " + role)
+    indices = {0, expected_frames // 2, expected_frames - 1}
+    samples = {}
+    for index in indices:
+        name = f"sample-{role}-{index:06d}.png"
+        with Image.open(required(root, name)) as image:
+            if image.size != (width, height):
+                raise ValueError("original PNG dimensions differ: " + name)
+            samples[index] = image.convert("RGB").tobytes()
+    frame_bytes = width * height * 3
+    process = subprocess.Popen([
         "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
-        "-i", str(path), "-vf", "scale=64:36", "-frames:v", "1",
-        "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
-        capture_output=True, check=True, timeout=90)
-    data = result.stdout
-    if len(data) != 64 * 36 * 3 or len(set(data)) < 5 or sum(value > 12 for value in data) < len(data) // 10:
-        raise ValueError("original view lacks independently visible pixels: " + path.name)
-    return hashlib.sha256(data).hexdigest()
+        "-xerror", "-i", str(path), "-vsync", "0", "-f", "rawvideo",
+        "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    digest = hashlib.sha256()
+    try:
+        for index in range(expected_frames):
+            data = process.stdout.read(frame_bytes)
+            if len(data) != frame_bytes:
+                raise ValueError("original camera full decode incomplete: " + role)
+            digest.update(data)
+            sparse = data[::max(1, len(data) // 8192)]
+            if len(set(sparse)) < 5 or sum(value > 12 for value in sparse) < len(sparse) // 10:
+                raise ValueError("original view lacks independently visible pixels: " + role)
+            if index in samples and data != samples[index]:
+                raise ValueError("original PNG/video pixel join differs: " + role)
+        if process.stdout.read(1) or process.wait(timeout=120) != 0:
+            raise ValueError("original camera full decode count/error differs: " + role)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+        process.stdout.close()
+        process.stderr.close()
+    return {"frame_count": expected_frames, "width": width, "height": height,
+            "fps": 20, "decoded_rgb_sha256": digest.hexdigest(),
+            "sample_frames": sorted(indices)}
 
 
 def audit_delivery(attempt, processing, case_id):
@@ -108,6 +159,13 @@ def audit_delivery(attempt, processing, case_id):
             seal.get("events") != ["capture_finished", "encoders_closed", "restoration_verified"] or
             seal.get("restoration", {}).get("restored") is not True):
         raise ValueError("Native capture lifecycle incomplete")
+    required_video_files = {role + ".mkv" for role in CAMERAS}
+    required_video_files.update("frame-map-" + role + ".json" for role in CAMERAS)
+    required_video_files.update(
+        f"sample-{role}-{index:06d}.png"
+        for role in CAMERAS for index in (0, 450, 899))
+    if not required_video_files.issubset(seal.get("sources", {})):
+        raise ValueError("Native camera pixels or frame maps absent from capture seal")
     for name, checksum in seal.get("sources", {}).items():
         if sha(required(root, name)) != checksum:
             raise ValueError("sealed original missing or changed: " + name)
@@ -136,11 +194,11 @@ def audit_delivery(attempt, processing, case_id):
     if any(physical.get(key, {}).get("status") != "met"
            for key in ("setup", "target", "maneuver", "attempt")):
         raise ValueError("original physical checks incomplete")
-    pixels = {role: _pixels(required(root, role + ".mkv")) for role in CAMERAS}
+    pixels = {role: _pixels(root, role) for role in CAMERAS}
     return {"format": "worker-delivery-audit", "passed": True,
             "case_id": case_id, "original_sources": source,
             "capture_seal_sha256": sha(seal_path),
-            "processing_sha256": sha(processing), "pixel_first_frame_sha256": pixels,
+            "processing_sha256": sha(processing), "original_video_decode": pixels,
             "legal_verdict": None}
 
 
