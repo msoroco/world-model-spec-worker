@@ -1,0 +1,436 @@
+{
+  "assignment_id": "testing__C111329__NRS-484B-287-1c__pedestrian",
+  "cases": [
+    {
+      "acquisition": {
+        "device_operation": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        },
+        "marking_and_junction_context": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        },
+        "walker_crossing_route": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker route and four-camera body visibility may fail in the reviewed two-junction Native site",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed 1.2 to 0.8 m/s on unchanged route"
+          ],
+          "compatibility": {
+            "diagnostic_only": true,
+            "log": "cases/midblock_unmarked_operating/cpu-compat-fallback1-analysis.log",
+            "negative_log": "cases/midblock_unmarked_operating/cpu-compat-fallback1-negative.log",
+            "receipt": "cases/midblock_unmarked_operating/cpu-compat-fallback1-receipt.json",
+            "sha256": "1dc212cc36c88ae357c4485d6ddf19d02462999fd3188c625054f75ba14a78e5"
+          },
+          "construction": "cases/midblock_unmarked_operating/fallback1-construction.json",
+          "construction_sha256": "031052acdb081fc7179d6acda200ce9608bb6219fffb7c224d2653b592ba5266",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1c__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating --output .runtime-work/c111329-287-1c-offline-v2/midblock_unmarked_operating-fallback1 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "031052acdb081fc7179d6acda200ce9608bb6219fffb7c224d2653b592ba5266",
+            "diagnostic_only": true,
+            "exit_code": 0,
+            "log": "cases/midblock_unmarked_operating/cpu-offline-fallback1.log",
+            "log_sha256": "e3c876ba23ec5252e8bdc0cc2a43a1a6acc37c9e525aabf8e3ae0f62c899f3ef"
+          },
+          "trigger": {
+            "failure_condition": "primary speed overshoots the same route or loses camera synchronization",
+            "metric": "walker waypoint overshoot or frame loss",
+            "source": "original walker route and four-camera frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
+      "compatibility": {
+        "diagnostic_only": true,
+        "log": "cases/midblock_unmarked_operating/cpu-compat-primary-analysis.log",
+        "negative_log": "cases/midblock_unmarked_operating/cpu-compat-primary-negative.log",
+        "receipt": "cases/midblock_unmarked_operating/cpu-compat-primary-receipt.json",
+        "sha256": "2bc4d5ea74dd03ec29b1df51e6efe25776f21e6ef4cea48d536f561bbfd343c7"
+      },
+      "construction": "cases/midblock_unmarked_operating/construction.json",
+      "construction_sha256": "f8dffc460a9ea24072ddb269645b5f570d534c5aeacfa043c7bdf39372491620",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/independent_cpu_delivery.py --case-id testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating --attempt .runtime-work/c111329-287-1c-compat-v5-midblock_unmarked_operating-primary --output .runtime-work/c111329-287-1c-independent-v5-midblock_unmarked_operating.json --diagnostic",
+        "diagnostic_only": true,
+        "negative_command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/independent_cpu_delivery.py --case-id testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating --attempt .runtime-work/c111329-287-1c-independent-negative-midblock_unmarked_operating --output .runtime-work/c111329-287-1c-independent-negative-midblock_unmarked_operating.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: effective-site-packet.json",
+        "negative_log": "cases/midblock_unmarked_operating/cpu-independent-negative.log",
+        "negative_log_sha256": "3b6838686cd194a2c90facf6e04875b8e1566ca11fd42d7ea575484d36e5d4bf",
+        "physical_acceptance": false,
+        "positive_receipt": "cases/midblock_unmarked_operating/cpu-independent-positive.json",
+        "positive_receipt_sha256": "92e2e62f0bb2656f5d92cd7550ac175327c70c1ac1a794c31cd26c8035ffc6a2",
+        "script": "independent_cpu_delivery.py",
+        "script_sha256": "a2a8dcc754b74ff71393f9642c65b76a96b595eaf39e9981907128747f229822",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/midblock_unmarked_operating/cpu-independent-positive.log",
+        "test_log_sha256": "cc09a2ba2a468ec24791169a87535fbcba34f816a97c18ed15660bac5cd2ca69"
+      },
+      "fixture_recipe": "work/testing__C111329__NRS-484B-287-1c__pedestrian/cases/midblock_unmarked_operating/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/midblock_unmarked_operating/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "entrypoint": "native_entry.py",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_gate": "reviewed original C111329 site packet and Native capture"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1c__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating --output .runtime-work/c111329-287-1c-offline-v2/midblock_unmarked_operating-primary --python $PWD/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "f8dffc460a9ea24072ddb269645b5f570d534c5aeacfa043c7bdf39372491620",
+        "diagnostic_only": true,
+        "exit_code": 0,
+        "log": "cases/midblock_unmarked_operating/cpu-offline-primary.log",
+        "log_sha256": "aabff98f5ead32549b8e836dfb82def97b1d0e08c247a5a3c65b01032722349a"
+      },
+      "physical_preparation": {
+        "diagnostic_only": true,
+        "receipt": "cases/midblock_unmarked_operating/physical/receipt.json",
+        "sha256": "fe6386ee3216165c2b2c006c08d9862440b9e5eadfc6a4652aa3b62afc3657b1"
+      },
+      "saved_processing": {
+        "diagnostic_only": true,
+        "missing_source_receipt": "cases/midblock_unmarked_operating/cpu-saved-negative-processing.json",
+        "missing_source_sha256": "3f33aef18a118d72e47667f0ead354e1d847860df8cc36680ce994686fb8acae",
+        "positive_receipt": "cases/midblock_unmarked_operating/cpu-saved-positive-processing.json",
+        "positive_sha256": "85adaef5bce4dba086a52f122ab681a4b9c709bad81694a3227ba7dd6c8687ff"
+      }
+    },
+    {
+      "acquisition": {
+        "device_operation": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        },
+        "marking_and_junction_context": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        },
+        "walker_crossing_route": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker route and four-camera body visibility may fail in the reviewed two-junction Native site",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed 1.2 to 0.8 m/s on unchanged route"
+          ],
+          "compatibility": {
+            "diagnostic_only": true,
+            "log": "cases/midblock_marked_operating/cpu-compat-fallback1-analysis.log",
+            "negative_log": "cases/midblock_marked_operating/cpu-compat-fallback1-negative.log",
+            "receipt": "cases/midblock_marked_operating/cpu-compat-fallback1-receipt.json",
+            "sha256": "5897f6fe22b3a76470cd5069834d8206446b9638bd7641b5cc30511c14b1dcb1"
+          },
+          "construction": "cases/midblock_marked_operating/fallback1-construction.json",
+          "construction_sha256": "997270b80d5a6325bc7c62169de4c59f5e5964b1278b98476b847768f5df286b",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1c__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating --output .runtime-work/c111329-287-1c-offline-v2/midblock_marked_operating-fallback1 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "997270b80d5a6325bc7c62169de4c59f5e5964b1278b98476b847768f5df286b",
+            "diagnostic_only": true,
+            "exit_code": 0,
+            "log": "cases/midblock_marked_operating/cpu-offline-fallback1.log",
+            "log_sha256": "07911446c075fea5b1fc23b088a93a56965ec6fac3a7c74ce648800492865524"
+          },
+          "trigger": {
+            "failure_condition": "primary speed overshoots the same route or loses camera synchronization",
+            "metric": "walker waypoint overshoot or frame loss",
+            "source": "original walker route and four-camera frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating",
+      "compatibility": {
+        "diagnostic_only": true,
+        "log": "cases/midblock_marked_operating/cpu-compat-primary-analysis.log",
+        "negative_log": "cases/midblock_marked_operating/cpu-compat-primary-negative.log",
+        "receipt": "cases/midblock_marked_operating/cpu-compat-primary-receipt.json",
+        "sha256": "fcbcfeb9bea2f28c778f35bc1159cfbff881d4bec61981c8eeefdf9ef57a70b5"
+      },
+      "construction": "cases/midblock_marked_operating/construction.json",
+      "construction_sha256": "01e3f0079868763f02297f0652c46b66a3c3ebef5c0875a1d66f2e40dfcd9a73",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/independent_cpu_delivery.py --case-id testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating --attempt .runtime-work/c111329-287-1c-compat-v5-midblock_marked_operating-primary --output .runtime-work/c111329-287-1c-independent-v5-midblock_marked_operating.json --diagnostic",
+        "diagnostic_only": true,
+        "negative_command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/independent_cpu_delivery.py --case-id testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating --attempt .runtime-work/c111329-287-1c-independent-negative-midblock_marked_operating --output .runtime-work/c111329-287-1c-independent-negative-midblock_marked_operating.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: effective-site-packet.json",
+        "negative_log": "cases/midblock_marked_operating/cpu-independent-negative.log",
+        "negative_log_sha256": "3b6838686cd194a2c90facf6e04875b8e1566ca11fd42d7ea575484d36e5d4bf",
+        "physical_acceptance": false,
+        "positive_receipt": "cases/midblock_marked_operating/cpu-independent-positive.json",
+        "positive_receipt_sha256": "014e545d62c6c5ccfc1e0f6d51df6d369f5dfa08e132113c1bad76e8afc58bab",
+        "script": "independent_cpu_delivery.py",
+        "script_sha256": "a2a8dcc754b74ff71393f9642c65b76a96b595eaf39e9981907128747f229822",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/midblock_marked_operating/cpu-independent-positive.log",
+        "test_log_sha256": "195a279f3ed76e9fc08d521e5a9956e5568aefd07c7fa51251fe6be5899f0967"
+      },
+      "fixture_recipe": "work/testing__C111329__NRS-484B-287-1c__pedestrian/cases/midblock_marked_operating/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/midblock_marked_operating/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "entrypoint": "native_entry.py",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_gate": "reviewed original C111329 site packet and Native capture"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1c__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_marked_operating --output .runtime-work/c111329-287-1c-offline-v2/midblock_marked_operating-primary --python $PWD/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "01e3f0079868763f02297f0652c46b66a3c3ebef5c0875a1d66f2e40dfcd9a73",
+        "diagnostic_only": true,
+        "exit_code": 0,
+        "log": "cases/midblock_marked_operating/cpu-offline-primary.log",
+        "log_sha256": "b5824a1a5c2d620ca325d73b2bc89d94d9fc910735027dd4150e56fe605c350d"
+      },
+      "physical_preparation": {
+        "diagnostic_only": true,
+        "receipt": "cases/midblock_marked_operating/physical/receipt.json",
+        "sha256": "0c01ce6de59b6cf467141b2e2ee975ee23d66e12e42455926efe894d900f976a"
+      },
+      "saved_processing": {
+        "diagnostic_only": true,
+        "missing_source_receipt": "cases/midblock_marked_operating/cpu-saved-negative-processing.json",
+        "missing_source_sha256": "b6b2c2e8cce8c7c6922102e80274387c57d75890ff94845afec1352aa3af3fef",
+        "positive_receipt": "cases/midblock_marked_operating/cpu-saved-positive-processing.json",
+        "positive_sha256": "6875ae57c14fa5e9d25ff17532fe2e485e77be9e3b58577984e2ad13e141a6ab"
+      }
+    },
+    {
+      "acquisition": {
+        "device_operation": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        },
+        "marking_and_junction_context": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        },
+        "walker_crossing_route": {
+          "entrypoint": "native_entry.py",
+          "evidence": [
+            "original-site-observation.json",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "effective-site-packet.json"
+          ],
+          "method": "run_native"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Walker route and four-camera body visibility may fail in the reviewed two-junction Native site",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "walker requested speed 1.2 to 0.8 m/s on unchanged route"
+          ],
+          "compatibility": {
+            "diagnostic_only": true,
+            "log": "cases/midblock_unmarked_inactive/cpu-compat-fallback1-analysis.log",
+            "negative_log": "cases/midblock_unmarked_inactive/cpu-compat-fallback1-negative.log",
+            "receipt": "cases/midblock_unmarked_inactive/cpu-compat-fallback1-receipt.json",
+            "sha256": "0a36d78a15a1b8577c2b8641ecef239d10980d434caa58a4684bb3bb520a18bc"
+          },
+          "construction": "cases/midblock_unmarked_inactive/fallback1-construction.json",
+          "construction_sha256": "04ad8b9735d33ec44b56c8b60084ed0c7a2cd414e26302d37de23b112b764209",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1c__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive --output .runtime-work/c111329-287-1c-offline-v2/midblock_unmarked_inactive-fallback1 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "04ad8b9735d33ec44b56c8b60084ed0c7a2cd414e26302d37de23b112b764209",
+            "diagnostic_only": true,
+            "exit_code": 0,
+            "log": "cases/midblock_unmarked_inactive/cpu-offline-fallback1.log",
+            "log_sha256": "23d640d191f077b94256ca9928c658706fbb8bfdae74734d95edd7a81bade2f0"
+          },
+          "trigger": {
+            "failure_condition": "primary speed overshoots the same route or loses camera synchronization",
+            "metric": "walker waypoint overshoot or frame loss",
+            "source": "original walker route and four-camera frame audit"
+          }
+        }
+      ],
+      "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive",
+      "compatibility": {
+        "diagnostic_only": true,
+        "log": "cases/midblock_unmarked_inactive/cpu-compat-primary-analysis.log",
+        "negative_log": "cases/midblock_unmarked_inactive/cpu-compat-primary-negative.log",
+        "receipt": "cases/midblock_unmarked_inactive/cpu-compat-primary-receipt.json",
+        "sha256": "3217a8052ec4ceab0511620c004a95d5557a3c200afc9cb7c6af4f71e983c8d5"
+      },
+      "construction": "cases/midblock_unmarked_inactive/construction.json",
+      "construction_sha256": "178a051d952181c02062682771654a9b07bfe648f9881ee723e90bb8b55a7b58",
+      "delivery_acceptance": {
+        "case_id": "testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/independent_cpu_delivery.py --case-id testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive --attempt .runtime-work/c111329-287-1c-compat-v5-midblock_unmarked_inactive-primary --output .runtime-work/c111329-287-1c-independent-v5-midblock_unmarked_inactive.json --diagnostic",
+        "diagnostic_only": true,
+        "negative_command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/independent_cpu_delivery.py --case-id testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive --attempt .runtime-work/c111329-287-1c-independent-negative-midblock_unmarked_inactive --output .runtime-work/c111329-287-1c-independent-negative-midblock_unmarked_inactive.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: effective-site-packet.json",
+        "negative_log": "cases/midblock_unmarked_inactive/cpu-independent-negative.log",
+        "negative_log_sha256": "3b6838686cd194a2c90facf6e04875b8e1566ca11fd42d7ea575484d36e5d4bf",
+        "physical_acceptance": false,
+        "positive_receipt": "cases/midblock_unmarked_inactive/cpu-independent-positive.json",
+        "positive_receipt_sha256": "65e4b9ce2511a8841863918ec6a40867581cc4d817db71f905e1f8138c5de7ee",
+        "script": "independent_cpu_delivery.py",
+        "script_sha256": "a2a8dcc754b74ff71393f9642c65b76a96b595eaf39e9981907128747f229822",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/midblock_unmarked_inactive/cpu-independent-positive.log",
+        "test_log_sha256": "3f5871cea7592fcb7f6635291fb7919ab686ddd7dd40cfd6d3c6549f612375dc"
+      },
+      "fixture_recipe": "work/testing__C111329__NRS-484B-287-1c__pedestrian/cases/midblock_unmarked_inactive/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/midblock_unmarked_inactive/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "entrypoint": "native_entry.py",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON",
+        "source_gate": "reviewed original C111329 site packet and Native capture"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111329__NRS-484B-287-1c__pedestrian/execution-manifest.draft.json --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_inactive --output .runtime-work/c111329-287-1c-offline-v2/midblock_unmarked_inactive-primary --python $PWD/.venv-cpu/bin/python --candidate primary",
+        "construction_sha256": "178a051d952181c02062682771654a9b07bfe648f9881ee723e90bb8b55a7b58",
+        "diagnostic_only": true,
+        "exit_code": 0,
+        "log": "cases/midblock_unmarked_inactive/cpu-offline-primary.log",
+        "log_sha256": "6ae09cec3e95886fe899c93651f2fa62d8f5a3dc4d9e5a0f017d7fbc294298fa"
+      },
+      "physical_preparation": {
+        "diagnostic_only": true,
+        "receipt": "cases/midblock_unmarked_inactive/physical/receipt.json",
+        "sha256": "694aa898035a0552033bb1d159a29c93d4825fe9c440d09c4b57454414223b86"
+      },
+      "saved_processing": {
+        "diagnostic_only": true,
+        "missing_source_receipt": "cases/midblock_unmarked_inactive/cpu-saved-negative-processing.json",
+        "missing_source_sha256": "737dfad00d6c1e6ec49bd5de64116568ca5f7c14594aa83ceca04a00ff8aca82",
+        "positive_receipt": "cases/midblock_unmarked_inactive/cpu-saved-positive-processing.json",
+        "positive_sha256": "40701fa8f619b223eeccf8fb37c0c759977a00fa5495c60c40aeba33f5fc64fd"
+      }
+    }
+  ],
+  "comparison_audits": {
+    "diagnostic_only": true,
+    "receipt": "cpu-comparison-proofs.json",
+    "sha256": "19b639264fb01e2ea931f6b011db86c3862a4e04e27f593adadf9282d21277df"
+  },
+  "diagnostic_only": true,
+  "format": "worker-execution-manifest",
+  "legal_verdict": null,
+  "physical_acceptance": false,
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "source_gated_cpu_prepared_original_native_pending"
+}

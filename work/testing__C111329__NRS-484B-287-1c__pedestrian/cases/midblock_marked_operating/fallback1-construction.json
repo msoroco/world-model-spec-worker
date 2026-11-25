@@ -87,12 +87,11 @@
     {
       "content": "{\n  \"physical_acceptance\": false,\n  \"source\": \"predeclared engineering route-control alternative\",\n  \"walker_speed_mps\": 0.8\n}\n",
       "path": "controller.json",
-      "source": "work/testing__C111329__NRS-484B-287-1c__pedestrian/cases/midblock_marked_operating/controller.json"
+      "source": "work/testing__C111329__NRS-484B-287-1c__pedestrian/cases/midblock_marked_operating/controller-fallback1.json"
     },
     {
       "content": "import json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\nclass ExactCaseOffline(unittest.TestCase):\n    def test_source_gated_static_bundle(self):\n        root = Path(__file__).resolve().parents[1]\n        selected = check(root)\n        self.assertEqual(selected[\"case_id\"], json.loads((root / \"config.json\").read_text())[\"selected_case_id\"])\n        self.assertEqual(selected[\"source_gate\"], \"reviewed original C111329 site required before Native\")\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
-      "path": "tests/test_offline.py",
-      "source": "embedded exact offline contract"
+      "path": "tests/test_offline.py"
     }
   ],
   "law_id": "NRS-484B-287-1c",

@@ -74,10 +74,14 @@ class CarlaOpposingAdapter:
             raise ValueError('finite original Native elapsed time required')
         images = {}
         for name in CAMERAS:
-            image = self.camera_readers[name](frame)
+            image = self.camera_readers[name](frame, elapsed)
             if not isinstance(image, dict) or image.get('frame') != frame or not isinstance(
                     image.get('png_bytes'), bytes) or not image['png_bytes']:
                 raise ValueError('original camera frame or PNG missing: ' + name)
+            timestamp = image.get('timestamp')
+            if not isinstance(timestamp, (int, float)) or not math.isfinite(timestamp) or not math.isclose(
+                    timestamp, elapsed, abs_tol=.001):
+                raise ValueError('original camera timestamp differs from world tick: ' + name)
             images[name] = image['png_bytes']
         return {'native_frame': frame, 'native_elapsed_s': elapsed,
                 'ego': self._actor(self.ego), 'other': self._actor(self.other),

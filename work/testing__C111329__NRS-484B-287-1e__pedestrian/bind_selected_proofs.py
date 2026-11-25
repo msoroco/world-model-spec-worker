@@ -69,5 +69,30 @@ for entry in manifest['cases']:
     fallback['compatibility'] = compatibility(fallback | {'case_id': entry['case_id']},
                                              suffix, fallback=True)
 
+comparison_receipt = ROOT / 'diagnostic-lifecycle-receipts.json'
+comparison_log = ROOT / 'nov25-selected-comparisons.log'
+compared = json.loads(comparison_receipt.read_text())['comparisons']
+expected = {'diagonal_instruction_permissive_vs_prohibitive',
+            'diagonal_instruction_phase_change'}
+if set(compared) != expected or any(not compared[name]['comparison_verified'] or
+                                   not compared[name]['diagnostic'] for name in expected):
+    raise ValueError('selected diagnostic comparisons incomplete')
+manifest['comparison_audit_protocol'] = {
+    'scope': 'synthetic 900-frame independent comparison tests only',
+    'production_original_attempts_required': True,
+    'receipt': str(comparison_receipt.relative_to(ROOT)),
+    'receipt_sha256': sha(comparison_receipt),
+    'log': str(comparison_log.relative_to(ROOT)),
+    'log_sha256': sha(comparison_log),
+    'comparison_ids': sorted(expected),
+    'physical_realization_claimed': False,
+    'legal_conclusion': 'not_assessed'}
+operator_log = ROOT / 'nov25-selected-operator-gate.log'
+manifest['source_audit_protocol']['native_operator_gate'] = {
+    'script': 'prove_operator_gate.py',
+    'script_sha256': sha(ROOT / 'prove_operator_gate.py'),
+    'log': operator_log.name,
+    'log_sha256': sha(operator_log),
+    'expected_error': 'source-reviewed C111329 Native operator is required'}
 manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + '\n')
 print('canonical selected manifest bound to current-runtime primary, fallback, and saved-only receipts')

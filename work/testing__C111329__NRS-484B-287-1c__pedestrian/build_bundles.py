@@ -99,9 +99,10 @@ def build():
                       "content": (ROOT / name).read_text()} for name in MODULES]
             for name, value in (("config.json", config), ("case-spec.json", spec),
                                 ("controller.json", controller)):
-                files.append({"path": name, "source": str((folder / name).relative_to(ROOT.parents[1])),
+                source_name = "controller-" + candidate + ".json" if name == "controller.json" else name
+                files.append({"path": name, "source": str((folder / source_name).relative_to(ROOT.parents[1])),
                               "content": json.dumps(value, sort_keys=True, indent=2, allow_nan=False) + "\n"})
-            files.append({"path": "tests/test_offline.py", "source": "embedded exact offline contract",
+            files.append({"path": "tests/test_offline.py",
                           "content": OFFLINE_TEST})
             construction = {"law_id": "NRS-484B-287-1c", "cell_id": "C111329",
                 "actor": "pedestrian", "case_id": case_id, "entrypoint": "runner.py",

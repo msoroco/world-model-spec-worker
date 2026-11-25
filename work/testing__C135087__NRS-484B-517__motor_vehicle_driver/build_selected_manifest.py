@@ -35,14 +35,14 @@ def build():
         physical = HERE / f"physical-{suffix}-receipt.json"
         if physical.is_file():
             entry["physical_preparation"] = {"receipt": physical.name, "sha256": sha(physical)}
-        primary_log = HERE / f"cpu-20261125-offline-v11-{suffix}.log"
+        primary_log = HERE / f"cpu-20261125-offline-v12-{suffix}.log"
         if not primary_log.is_file():
             raise ValueError("missing primary offline proof: " + suffix)
         entry["offline"] = {"command": f"runtime.py offline --case {cid} --candidate primary",
                             "construction_sha256": entry["construction_sha256"],
                             "exit_code": 0, "log": primary_log.name, "log_sha256": sha(primary_log)}
         for candidate in entry["candidates"]:
-            alt_log = HERE / f"cpu-20261125-offline-v11-{suffix}-fallback1.log"
+            alt_log = HERE / f"cpu-20261125-offline-v12-{suffix}-fallback1.log"
             if not alt_log.is_file():
                 raise ValueError("missing fallback offline proof: " + suffix)
             candidate["offline"] = {"command": f"runtime.py offline --case {cid} --candidate fallback1",

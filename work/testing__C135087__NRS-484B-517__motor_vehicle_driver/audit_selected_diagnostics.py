@@ -12,7 +12,7 @@ import sys
 from build_bundles import HERE, AID
 
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work" / "c135087-selected-analysis-v5"
+SCRATCH = REPO / ".runtime-work" / "c135087-selected-analysis-v6"
 VIDEO_PROBE = REPO / ".runtime-work" / "c135087-fixture-video-probe"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
@@ -37,6 +37,7 @@ def run_case(entry):
         target = positive / item["path"]
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(item["content"])
+    shutil.copy2(construction_path, positive / "construction.json")
     source_dir = HERE / "diagnostics" / suffix
     recipe = json.loads((HERE / "diagnostics" / (suffix + "-recipe.json")).read_text())
     for item in recipe["sources"]:

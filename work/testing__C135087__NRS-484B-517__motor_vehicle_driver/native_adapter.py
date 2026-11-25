@@ -82,6 +82,7 @@ class _Encoder:
             stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         self.pending = queue.Queue(maxsize=8)
         self.error = None
+        self.completed = False
         self.worker = threading.Thread(target=self._write, daemon=True)
         self.worker.start()
 
@@ -107,6 +108,25 @@ class _Encoder:
         code = self.process.wait(timeout=60)
         _require(self.error is None and code == 0,
                  "original RGB encoder failed: " + stderr.decode(errors="replace")[-500:])
+        self.completed = True
+
+    def abort(self):
+        if self.completed:
+            return
+        if self.process.poll() is None:
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
+                self.process.wait(timeout=5)
+        try:
+            self.pending.put_nowait(None)
+        except queue.Full:
+            pass
+        self.worker.join(timeout=5)
+        _require(not self.worker.is_alive(), "original RGB encoder abort did not finish")
+        self.process.stderr.close()
 
 
 class Session:
@@ -118,6 +138,8 @@ class Session:
         self.encoder_factory = encoder_factory or _Encoder
         self.owned = []
         self.sensors = {}
+        self.encoders = {}
+        self.finished_encoders = set()
         self.frames = []
         self.camera_frames = {name: [] for name in VIEWS}
         self.camera_errors = []
@@ -145,6 +167,12 @@ class Session:
                 sensor.stop()
             except Exception as error:
                 errors.append(str(error))
+        for name, encoder in self.encoders.items():
+            if name not in self.finished_encoders:
+                try:
+                    encoder.abort()
+                except Exception as error:
+                    errors.append("RGB encoder " + name + ": " + str(error))
         for actor in reversed(self.owned):
             try:
                 actor.destroy()
@@ -251,7 +279,7 @@ class Session:
             self.owned.append(sensor)
             self.sensors[name] = sensor
             encoder = self.encoder_factory(self.root / (name + ".mkv"), spec["width"], spec["height"])
-            setattr(self, "encoder_" + name, encoder)
+            self.encoders[name] = encoder
             def receive(image, view=name, sink=encoder):
                 try:
                     sink.feed(image.raw_data)
@@ -335,7 +363,8 @@ class Session:
                 frame == target and abs(time_s - stamp) <= 1e-4
                 for (frame, time_s), (target, stamp) in zip(frames, expected)),
                 "original RGB frame/time join differs: " + name)
-            getattr(self, "encoder_" + name).finish()
+            self.encoders[name].finish()
+            self.finished_encoders.add(name)
             _require((self.root / (name + ".mkv")).is_file() and
                      (self.root / (name + ".mkv")).stat().st_size > 0,
                      "original RGB file missing: " + name)

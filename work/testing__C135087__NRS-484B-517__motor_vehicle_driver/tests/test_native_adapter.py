@@ -181,6 +181,9 @@ class Encoder:
             raise SourceError('fake RGB frames incomplete')
         self.path.write_bytes(b'fake-native-rgb-unit-test')
 
+    def abort(self):
+        self.aborted = True
+
 
 def native_site():
     poses = {name: {'location_m': [10, 10, 2], 'rotation_deg': [0, 0, 0]}
@@ -226,6 +229,40 @@ class NativeAdapterTests(unittest.TestCase):
         del site['native_binding']
         with self.assertRaisesRegex(SourceError, 'reviewed Native stand binding missing'):
             native_adapter.validate_native_sources(site, vehicles())
+
+    def test_encoder_abort_and_world_restoration_after_capture_failure(self):
+        world = World()
+        carla = SimpleNamespace(Location=Location, Rotation=Rotation,
+                                Transform=Transform, Vector3D=Location,
+                                VehicleControl=lambda **kw: SimpleNamespace(**kw),
+                                WalkerControl=lambda **kw: SimpleNamespace(**kw))
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work'
+        with tempfile.TemporaryDirectory(dir=scratch, prefix='c135087-native-abort-') as temp:
+            root = Path(temp)
+            site, roles = native_site(), vehicles()
+            import hashlib
+            refs = []
+            for name, value in (('site', site), ('vehicle', roles)):
+                path = root / (name + '.json')
+                path.write_text(json.dumps(value) + '\n')
+                refs.append({'path': str(path),
+                             'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+            session = native_adapter.open_session('localhost', 2000, {}, carla_module=carla,
+                    client_factory=lambda host, port: Client(world), encoder_factory=Encoder)
+            with self.assertRaisesRegex(RuntimeError, 'capture failed'):
+                with session:
+                    constructed = construct_case(session.adapter, refs[0], refs[1],
+                        {'case_id': 'test', 'loading_mode': 'active',
+                         'entrant_mode': 'about_to_enter', 'access_mode': 'open'})
+                    session.start_cameras(root, [{'name': name, 'width': 4, 'height': 4,
+                                                   'fov_deg': 90} for name in native_adapter.VIEWS],
+                                          constructed)
+                    raise RuntimeError('capture failed')
+            self.assertTrue(session.restoration_verified)
+            self.assertEqual(len(session.encoders), 4)
+            self.assertTrue(all(encoder.aborted for encoder in session.encoders.values()))
+            self.assertTrue(all(sensor.stopped for sensor in session.sensors.values()))
+            self.assertTrue(all(actor.destroyed for actor in session.owned))
 
     def test_900_live_frame_export_and_restoration(self):
         world = World()

@@ -117,7 +117,11 @@ def build():
         "missing_inputs": ["reviewed original C111329 two-junction source",
                            "official-device authority and operation review",
                            "NRS 484B.290 exception review"]}
-    cases_ref = write(PROPOSALS / "cases.json", dict(common, sweep_specs=[sweep], cases=case_rows))
+    write(PROPOSALS / "pending-source-judgment-sweep.json", sweep)
+    cases_ref = write(PROPOSALS / "cases.json", dict(common, sweep_specs=[sweep],
+        sweeps_expanded=True,
+        sweep_expansion_scope="Three selected physical boundary probes are enumerated; original-source judgment remains incomplete.",
+        cases=case_rows))
     write(PROPOSALS / "semantic-index.json", {"format": "worker-semantic-delivery",
         "assignment_id": ROOT.name,
         "stages": {"relevance_batch": batch_ref, "relevance": relevance_ref,

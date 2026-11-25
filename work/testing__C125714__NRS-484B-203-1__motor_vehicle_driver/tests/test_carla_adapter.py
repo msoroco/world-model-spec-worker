@@ -72,7 +72,8 @@ class CarlaOpposingAdapterTests(unittest.TestCase):
         self.ego = Actor(1, -2, -1.7, 6)
         self.other = Actor(2, 2, 1.7, -6)
         self.world.ego, self.world.other = self.ego, self.other
-        self.readers = {name: lambda frame: {'frame': frame, 'png_bytes': b'png'}
+        self.readers = {name: lambda frame, elapsed: {'frame': frame, 'timestamp': elapsed,
+                                                     'png_bytes': b'png'}
                         for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}
 
     def adapter(self):
@@ -101,8 +102,13 @@ class CarlaOpposingAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'map packet changed'):
             adapter.tick()
         self.map_path.write_text(self.map_path.read_text()[:-1])
-        self.readers['approach'] = lambda frame: {'frame': frame+1, 'png_bytes': b'png'}
+        self.readers['approach'] = lambda frame, elapsed: {
+            'frame': frame+1, 'timestamp': elapsed, 'png_bytes': b'png'}
         with self.assertRaisesRegex(ValueError, 'camera frame'):
+            self.adapter().tick()
+        self.readers['approach'] = lambda frame, elapsed: {
+            'frame': frame, 'timestamp': elapsed-.05, 'png_bytes': b'png'}
+        with self.assertRaisesRegex(ValueError, 'camera timestamp'):
             self.adapter().tick()
         self.other.id = self.ego.id
         with self.assertRaisesRegex(ValueError, 'distinct original actors'):
