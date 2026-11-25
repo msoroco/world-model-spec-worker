@@ -101,6 +101,15 @@ def build():
             'measurement_contract': 'native/stand/native-drafts/' + suffix + '/measurement-contract.json',
             'fixture_recipe': 'work/' + ASSIGNMENT + '/diagnostic-' + suffix + '-recipe.json',
             'measurement_procedure': {'entrypoint': 'finalize.py'},
+            'acquisition': {
+                'ru.taxicab': {'entrypoint': 'runner.py', 'method': 'Native vehicle blueprint and independently reviewed cab license', 'evidence': ['actor-poses.jsonl', 'route-survey.json']},
+                'st.curb_zone': {'entrypoint': 'runner.py', 'method': 'Native stand landmark and original source-camera view', 'evidence': ['road.xodr', 'reference_corner.mkv']},
+                'dev.regulatory_sign': {'entrypoint': 'runner.py', 'method': 'Native notice landmark and original source-camera view', 'evidence': ['road.xodr', 'reference_corner.mkv']},
+                'dev.governs': {'entrypoint': 'runner.py', 'method': 'Original stand, sign and first-junction source join', 'evidence': ['route-survey-native.json', 'route-survey.json']},
+                'st.intersection': {'entrypoint': 'runner.py', 'method': 'Native ordered junction readback and independent street review', 'evidence': ['road.xodr', 'route-survey-native.json', 'route-survey.json']},
+                'drv.turning': {'entrypoint': 'runner.py', 'method': 'Original observed taxi heading through first junction', 'evidence': ['actor-poses.jsonl', 'video_frames.jsonl']},
+                'kin.heading': {'entrypoint': 'runner.py', 'method': 'Original actor heading at each Native frame', 'evidence': ['actor-poses.jsonl']},
+                'kin.path_length': {'entrypoint': 'runner.py', 'method': 'Integrated original Native position after stand departure', 'evidence': ['actor-poses.jsonl']}},
             'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                 'host_env_var': 'CARLA_HOST', 'port_env_var': 'CARLA_PORT'},
             'preparation_status': 'incomplete'})

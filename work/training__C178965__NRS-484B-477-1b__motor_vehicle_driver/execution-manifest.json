@@ -1,0 +1,461 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "construction": "draft-alley/controlled_1/primary/construction.json",
+      "construction_sha256": "416a96e0dd782204e0c990583beac15ae3643e47268e2195007ff3020835be9f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "actor spawn may fail or interpenetrate the elevated authored road"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-alley/controlled_1/fallback1/construction.json",
+          "construction_sha256": "90c10fe488075210f719134e32cac2d8090304ce03d3f09997c4af85ac20d31c",
+          "trigger": {
+            "source": "original Native actor spawn and body readback",
+            "metric": "spawn success and pavement intersection",
+            "failure_condition": "primary actor spawn fails or initially intersects paved surface"
+          },
+          "changed_knobs": [
+            "both actor spawn heights 8.8 m to 9.1 m"
+          ],
+          "offline": {
+            "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+            "candidate_id": "fallback1",
+            "construction_sha256": "90c10fe488075210f719134e32cac2d8090304ce03d3f09997c4af85ac20d31c",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c178965-owner/offline-v3-controlled_1-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "controlled_1-fallback1-current-offline.log",
+            "log_sha256": "606acdf7386951358381be175dd8e3661ba287100ee928f1fb50201f0ab59c5e"
+          },
+          "compatibility": {
+            "receipt": "selected-public/controlled_1-fallback1-compatibility.json",
+            "sha256": "e84676d01faf4ac7bc55b2288fe75cafd60e3270e5139cbafcfe2b338cbcdea5",
+            "log": "selected-public/controlled_1-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-public/controlled_1-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_alley.py"
+      },
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "draft-alley/controlled_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/diagnostic-controlled_1-recipe.json",
+      "offline": {
+        "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+        "candidate_id": "primary",
+        "construction_sha256": "416a96e0dd782204e0c990583beac15ae3643e47268e2195007ff3020835be9f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --candidate primary --output .runtime-work/c178965-owner/offline-v3-controlled_1-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "controlled_1-primary-current-offline.log",
+        "log_sha256": "5e95ddf0ea2f3fe6130d208adcfca08254ca8b491af61368771fac3ff0f98c81"
+      },
+      "compatibility": {
+        "receipt": "selected-public/controlled_1-primary-compatibility.json",
+        "sha256": "fcd130c5d81f6c085b9a1c66a787f4fcd0d966e0125c0756941f22ae7bd0d51b",
+        "log": "selected-public/controlled_1-primary-compatibility-analysis.log",
+        "negative_log": "selected-public/controlled_1-primary-negative-analysis.log"
+      },
+      "id": "primary",
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "29a966b6a90d34101978d3dde3d46ad521c8de369d57b182bf15a28b90fb2882"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "selected-public/controlled_1-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "alley_lateral_boundaries": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "st.alley": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "subject_and_other_vehicle_poses": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/execution-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-saved/controlled_1-primary-saved.log",
+        "test_log_sha256": "15b5f0f9d045cbbd994fa36487efec4e0d7b7a1f95cbf73a17e78d26b3c40395",
+        "processing_receipt": "selected-saved/controlled_1-primary-processing.json",
+        "processing_sha256": "15b5f0f9d045cbbd994fa36487efec4e0d7b7a1f95cbf73a17e78d26b3c40395"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b4b2d9a289fa8594731a85ef4571856c34e9c670757c43ceb31219d34bae3b9",
+        "command": ".venv-cpu/bin/python work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/delivery_audit.py --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --self-test",
+        "test_exit_code": 0,
+        "test_log": "selected-public/controlled_1-delivery-positive.log",
+        "test_log_sha256": "d7c9e66784b9ac8f901a924c4078f8e86123c60a0b2c6b161ed13aa9a7a5c60f",
+        "negative_command": ".venv-cpu/bin/python work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/delivery_audit.py --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_1 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "selected-public/controlled_1-delivery-negative.log",
+        "negative_log_sha256": "1ca558b672a550a0da54ab1df298a0ec6541a6a13d7c5a71edfb63ffa581bc80"
+      }
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
+      "kind": "delivery",
+      "construction": "draft-alley/controlled_at_10/primary/construction.json",
+      "construction_sha256": "0caf635396eb3ae0653950c248c46a35e3aff5bb97d92b407cdc7e9f748396f9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "actor spawn may fail or interpenetrate the elevated authored road"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-alley/controlled_at_10/fallback1/construction.json",
+          "construction_sha256": "1afa507141712b963da7466ec4f732cd4824062c976ebe25b4fe9a165fc015d2",
+          "trigger": {
+            "source": "original Native actor spawn and body readback",
+            "metric": "spawn success and pavement intersection",
+            "failure_condition": "primary actor spawn fails or initially intersects paved surface"
+          },
+          "changed_knobs": [
+            "both actor spawn heights 8.8 m to 9.1 m"
+          ],
+          "offline": {
+            "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
+            "candidate_id": "fallback1",
+            "construction_sha256": "1afa507141712b963da7466ec4f732cd4824062c976ebe25b4fe9a165fc015d2",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10 --candidate fallback1 --output .runtime-work/c178965-owner/offline-v3-controlled_at_10-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "controlled_at_10-fallback1-current-offline.log",
+            "log_sha256": "ead3db4675ac350d238f838e9dba5e60b97538f1274a000fa55127baebe8f90f"
+          },
+          "compatibility": {
+            "receipt": "selected-public/controlled_at_10-fallback1-compatibility.json",
+            "sha256": "20930fcf79d09f665576c7177fc5c644913000b6e54f403a1ca21b927c45216f",
+            "log": "selected-public/controlled_at_10-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-public/controlled_at_10-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_alley.py"
+      },
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "draft-alley/controlled_at_10/measurement-contract.json",
+      "fixture_recipe": "work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/diagnostic-controlled_at_10-recipe.json",
+      "offline": {
+        "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
+        "candidate_id": "primary",
+        "construction_sha256": "0caf635396eb3ae0653950c248c46a35e3aff5bb97d92b407cdc7e9f748396f9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10 --candidate primary --output .runtime-work/c178965-owner/offline-v3-controlled_at_10-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "controlled_at_10-primary-current-offline.log",
+        "log_sha256": "5881aae1cb72d0cff34f02d2f14b3972c85e7decb24f3dcafda46d485a166b87"
+      },
+      "compatibility": {
+        "receipt": "selected-public/controlled_at_10-primary-compatibility.json",
+        "sha256": "a07dafe65901d52646a47e6ade782a4b141d7e6cf451ee5f07476306d441861d",
+        "log": "selected-public/controlled_at_10-primary-compatibility-analysis.log",
+        "negative_log": "selected-public/controlled_at_10-primary-negative-analysis.log"
+      },
+      "id": "primary",
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_at_10/proof.json",
+        "sha256": "6b58532618e798193fb83eca9640bc26b2b00bdf11d8ba9d71e9afad8ee155d9"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "selected-public/controlled_at_10-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "alley_lateral_boundaries": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "st.alley": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "subject_and_other_vehicle_poses": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/execution-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-saved/controlled_at_10-primary-saved.log",
+        "test_log_sha256": "4c47d1e1eb39a616f06a7ec660f6064d63fba7563c5464011f6ed10537b1817f",
+        "processing_receipt": "selected-saved/controlled_at_10-primary-processing.json",
+        "processing_sha256": "4c47d1e1eb39a616f06a7ec660f6064d63fba7563c5464011f6ed10537b1817f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b4b2d9a289fa8594731a85ef4571856c34e9c670757c43ceb31219d34bae3b9",
+        "command": ".venv-cpu/bin/python work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/delivery_audit.py --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10 --self-test",
+        "test_exit_code": 0,
+        "test_log": "selected-public/controlled_at_10-delivery-positive.log",
+        "test_log_sha256": "1f79ccd0721bc13c2942696f5854e8f6da848b7134086ae8cca2fb71701557e9",
+        "negative_command": ".venv-cpu/bin/python work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/delivery_audit.py --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_at_10 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "selected-public/controlled_at_10-delivery-negative.log",
+        "negative_log_sha256": "1ca558b672a550a0da54ab1df298a0ec6541a6a13d7c5a71edfb63ffa581bc80"
+      }
+    },
+    {
+      "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "construction": "draft-alley/controlled_2/primary/construction.json",
+      "construction_sha256": "65060479c92d0c3cbadb12868855ce50ab7136269350746763ea45227ea7f3ed",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "actor spawn may fail or interpenetrate the elevated authored road"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-alley/controlled_2/fallback1/construction.json",
+          "construction_sha256": "ead4ccb41537841afc868b5cd787ea8512d39f28df67d39d2b60934e9f84bdeb",
+          "trigger": {
+            "source": "original Native actor spawn and body readback",
+            "metric": "spawn success and pavement intersection",
+            "failure_condition": "primary actor spawn fails or initially intersects paved surface"
+          },
+          "changed_knobs": [
+            "both actor spawn heights 8.8 m to 9.1 m"
+          ],
+          "offline": {
+            "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
+            "candidate_id": "fallback1",
+            "construction_sha256": "ead4ccb41537841afc868b5cd787ea8512d39f28df67d39d2b60934e9f84bdeb",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c178965-owner/offline-v3-controlled_2-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "controlled_2-fallback1-current-offline.log",
+            "log_sha256": "b8471508e94884dfeca3c43851df81aaa05cb7bb40f45a6127e7b004552b8197"
+          },
+          "compatibility": {
+            "receipt": "selected-public/controlled_2-fallback1-compatibility.json",
+            "sha256": "e19a8b9f9146ca46120133e4ffd4938c4c90974c7f076f754599a9a5ccf56cc2",
+            "log": "selected-public/controlled_2-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-public/controlled_2-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_alley.py"
+      },
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "draft-alley/controlled_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/diagnostic-controlled_2-recipe.json",
+      "offline": {
+        "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
+        "candidate_id": "primary",
+        "construction_sha256": "65060479c92d0c3cbadb12868855ce50ab7136269350746763ea45227ea7f3ed",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/draft-alley-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --candidate primary --output .runtime-work/c178965-owner/offline-v3-controlled_2-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "controlled_2-primary-current-offline.log",
+        "log_sha256": "7cdc6b9e1b556a1cf622ce43437bce65773ae1bb9b925e20368f44c820159720"
+      },
+      "compatibility": {
+        "receipt": "selected-public/controlled_2-primary-compatibility.json",
+        "sha256": "cb421c57267c1fd8545f4a0c0f2ca15ee77d74246fdfdb27bf9971b3e1878902",
+        "log": "selected-public/controlled_2-primary-compatibility-analysis.log",
+        "negative_log": "selected-public/controlled_2-primary-negative-analysis.log"
+      },
+      "id": "primary",
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "c49a5fd7eb3ac216842eb3b17e7507031d692411bd6cdd2aaf404b322274262b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "selected-public/controlled_2-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "alley_lateral_boundaries": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "st.alley": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        },
+        "subject_and_other_vehicle_poses": {
+          "entrypoint": "runner.py",
+          "method": "capture original 20 Hz Native transforms, extents, alley geometry and synchronized four-camera frame map; derive source-joined channel during saved analysis",
+          "evidence": "vehicle-poses.jsonl, alley-inventory.json, video_frames.jsonl, trace.jsonl and four original camera files"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/execution-manifest.json --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-saved/controlled_2-primary-saved.log",
+        "test_log_sha256": "db453c4b4b1d00c3078b17708759aa51873e2a5816249f6e1ce01ffff6c9c125",
+        "processing_receipt": "selected-saved/controlled_2-primary-processing.json",
+        "processing_sha256": "db453c4b4b1d00c3078b17708759aa51873e2a5816249f6e1ce01ffff6c9c125"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b4b2d9a289fa8594731a85ef4571856c34e9c670757c43ceb31219d34bae3b9",
+        "command": ".venv-cpu/bin/python work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/delivery_audit.py --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --self-test",
+        "test_exit_code": 0,
+        "test_log": "selected-public/controlled_2-delivery-positive.log",
+        "test_log_sha256": "f13340ad111dc1f78ccc331655fd49948df3157f5349009823b920c3f2459f0c",
+        "negative_command": ".venv-cpu/bin/python work/training__C178965__NRS-484B-477-1b__motor_vehicle_driver/delivery_audit.py --case training__C178965__NRS-484B-477-1b__motor_vehicle_driver__controlled_2 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "selected-public/controlled_2-delivery-negative.log",
+        "negative_log_sha256": "1ca558b672a550a0da54ab1df298a0ec6541a6a13d7c5a71edfb63ffa581bc80"
+      }
+    }
+  ]
+}

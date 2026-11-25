@@ -44,9 +44,9 @@
       "target_type": "controlled_attempt",
       "physical_target": "cab departs designated stand and turns right at first signed intersection",
       "comparison_variable": "first intersection turn direction",
-      "selection_status": "selected_pending_cpu_proof",
+      "selection_status": "selected_for_delivery",
       "expected_label": null,
-      "construction_status": "native_offline_passed_public_compatibility_in_progress",
+      "construction_status": "native_cpu_prepared_original_authority_pending",
       "physical_risk": "First/later Native junction connection, taxi motion and posted notice visibility need original readback",
       "candidate_risk": {
         "status": "physical",
@@ -60,9 +60,9 @@
       "target_type": "controlled_attempt",
       "physical_target": "same signed route with cab turning another direction",
       "comparison_variable": "first intersection turn direction",
-      "selection_status": "selected_pending_cpu_proof",
+      "selection_status": "selected_for_delivery",
       "expected_label": null,
-      "construction_status": "native_offline_passed_public_compatibility_in_progress",
+      "construction_status": "native_cpu_prepared_original_authority_pending",
       "physical_risk": "First/later Native junction connection, taxi motion and posted notice visibility need original readback",
       "candidate_risk": {
         "status": "physical",
@@ -87,7 +87,19 @@
         "camera policy",
         "recording rate and duration",
         "nonvariable context"
-      ]
+      ],
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "e65ab482caad21e9a6b4ac3ac2faaa3bf15614290455be046533d87a9613b6eb",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C110875__LVMC-11-60-090__taxi_driver/comparison_audit.py --comparison training__C110875__LVMC-11-60-090__taxi_driver__planned_comparison --processing training__C110875__LVMC-11-60-090__taxi_driver__probe_01=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_01-primary-1/v0001/processing.json --processing training__C110875__LVMC-11-60-090__taxi_driver__probe_02=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_02-primary-1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-taxi-comparison-positive-1.json",
+        "test_log": "proofs/comparison-positive.log",
+        "test_log_sha256": "5dd69306a5771e4d271bc5858dc17c8dccad1c1867d0e6686d4ace79b5fd8edb",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C110875__LVMC-11-60-090__taxi_driver/comparison_audit.py --comparison training__C110875__LVMC-11-60-090__taxi_driver__planned_comparison --processing training__C110875__LVMC-11-60-090__taxi_driver__probe_01=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_01-primary-1/v0001/processing.json --processing training__C110875__LVMC-11-60-090__taxi_driver__probe_02=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_02-primary-1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-taxi-comparison-positive-1.json --omit-case training__C110875__LVMC-11-60-090__taxi_driver__probe_02",
+        "negative_log": "proofs/comparison-negative.log",
+        "negative_log_sha256": "b06ad2abc35acab7114d8535f773db8847105cc140265432fb5214fc2c4f6ffc",
+        "negative_exit_code": 1
+      }
     }
   ],
   "mandatory_observation_targets": [
@@ -143,9 +155,7 @@
     "Cab stand designation and posted sign authority require external source/context, plus taxi blueprint and first-intersection route."
   ],
   "runtime_gaps": [
-    "Exact public compatibility and recorded-only saved proof still in progress.",
-    "Fallback construction and independent delivery/comparison audits still in progress.",
-    "Original taxi license, stand designation, posted notice, first street identity and physical turn await local review."
+    "Original taxi license, designated stand source, posted notice authority, generated first street identity and physical turn require local original-source review."
   ],
   "observations": [
     {
@@ -201,9 +211,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Exact public compatibility and recorded-only saved proof still in progress.",
-    "Fallback construction and independent delivery/comparison audits still in progress.",
-    "Original taxi license, stand designation, posted notice, first street identity and physical turn await local review."
+    "Original taxi license, designated stand source, posted notice authority, generated first street identity and physical turn require local original-source review."
   ],
   "requirement_dispositions": [
     {
@@ -215,7 +223,7 @@
         "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
         "training__C110875__LVMC-11-60-090__taxi_driver__probe_02"
       ],
-      "evidence_or_gap": "Two selected Native taxi cases have executable offline-passing junction/stand/sign drafts; current-runtime public, saved, semantic and independent audits in progress. No original designation, notice, licensing or first-street identity yet."
+      "evidence_or_gap": "Two selected Native cases passed offline, public compatibility, recorded-only saved processing, semantic and independent audit CPU checks. Original cab license, designation, posted notice and first street identity remain for local source review."
     }
   ],
   "evidence_review": [
@@ -231,10 +239,9 @@
       "disposition": "new_delivery_pair_required"
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "ru.taxicab",
-      "measurement": "source_bound_first_turn",
+  "source_observation_mapping": {
+    "ru.taxicab": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "ru.taxicab"
       ],
@@ -246,9 +253,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "st.curb_zone",
-      "measurement": "source_bound_first_turn",
+    "st.curb_zone": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "st.curb_zone"
       ],
@@ -260,9 +266,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "dev.regulatory_sign",
-      "measurement": "source_bound_first_turn",
+    "dev.regulatory_sign": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "dev.regulatory_sign"
       ],
@@ -274,9 +279,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "dev.governs",
-      "measurement": "source_bound_first_turn",
+    "dev.governs": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "dev.governs"
       ],
@@ -288,9 +292,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "st.intersection",
-      "measurement": "source_bound_first_turn",
+    "st.intersection": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "st.intersection"
       ],
@@ -302,9 +305,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "drv.turning",
-      "measurement": "source_bound_first_turn",
+    "drv.turning": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "drv.turning"
       ],
@@ -316,9 +318,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "kin.heading",
-      "measurement": "source_bound_first_turn",
+    "kin.heading": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "kin.heading"
       ],
@@ -330,9 +331,8 @@
       ],
       "status": "proposed_original_source"
     },
-    {
-      "term": "kin.path_length",
-      "measurement": "source_bound_first_turn",
+    "kin.path_length": {
+      "evidence": "source_bound_first_turn; original actor-poses.jsonl, route-survey.json, road.xodr, reference_corner.mkv",
       "channels": [
         "kin.path_length"
       ],
@@ -344,5 +344,32 @@
       ],
       "status": "proposed_original_source"
     }
-  ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "cab departure, signed first street and later junction",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "cab approach and original first-junction turn",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "stand designation, posted right-turn notice and street identity",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "taxi identity, cab movement and heading change",
+        "interval": "0-30 s"
+      }
+    ]
+  }
 }

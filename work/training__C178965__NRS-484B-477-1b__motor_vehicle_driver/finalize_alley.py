@@ -73,13 +73,32 @@ def alley_width_measurement(attempt):
             'sources': {name: sha(required(attempt, name)) for name in names}}
 
 
+def ordinance_review_context(attempt):
+    path = required(attempt, 'alley-inventory.json')
+    inventory = json.loads(path.read_text())
+    fields = ('local_jurisdiction_source_id', 'local_ordinance_review_source_id',
+              'other_alley_scope_review_source_id', 'public_highway_source_id',
+              'city_block_source_id', 'rear_access_source_id',
+              'abutting_property_source_id', 'non_culdesac_source_id')
+    if any(not inventory.get(field) for field in fields):
+        raise ValueError('Independent alley and ordinance source IDs missing')
+    return {'method': 'ordinance_review_context',
+            'value': {'source_ids': {field: inventory[field] for field in fields},
+                      'site_match_review': inventory.get('site_match_review', 'unverified'),
+                      'ordinance_effect': inventory.get('ordinance_effect', 'undetermined'),
+                      'legal_result': None},
+            'sources': {'alley-inventory.json': sha(path)}}
+
+
 def derive_channels(attempt, config):
     attempt = Path(attempt)
     poses = _jsonl(required(attempt, 'vehicle-poses.jsonl'))
     mapping = _jsonl(required(attempt, 'video_frames.jsonl'))
     inventory = json.loads(required(attempt, 'alley-inventory.json').read_text())
     names = {item['name'] for item in config['recording_description']['channels']}
-    expected = {'subject_and_other_vehicle_poses', 'alley_lateral_boundaries'}
+    expected = {'subject_and_other_vehicle_poses', 'alley_lateral_boundaries',
+                'st.alley', 'drv.standing_or_parked', 'st.lane_width',
+                'kin.extent', 'rel.surface_gap', 'rel.occupies'}
     if names != expected or len(poses) != len(mapping):
         raise ValueError('Declared alley channels or original joins differ')
     channels = {name: [] for name in expected}
@@ -91,6 +110,23 @@ def derive_channels(attempt, config):
         channels['alley_lateral_boundaries'].append(
             {'time_s': frame['time_s'], 'value': {'edges_m': inventory['alley_lateral_edges_m'],
                                                 'source_sha256': sha(attempt / 'alley-inventory.json')}})
+        subject, other = pose['subject'], pose['other']
+        edges = inventory['alley_lateral_edges_m']
+        derived = {
+            'st.alley': {'boundary_source_id': inventory['boundary_measurement_source_id'],
+                         'site_match_review': inventory.get('site_match_review', 'unverified')},
+            'drv.standing_or_parked': {'subject_speed_mps': subject['speed_mps'],
+                                      'halt_proxy': subject['speed_mps'] <= .1,
+                                      'purpose_source_id': inventory['halt_purpose_review_source_id']},
+            'st.lane_width': {'width_m': edges[1] - edges[0], 'edges_m': edges},
+            'kin.extent': {'subject_half_width_m': subject['half_width_m'],
+                           'other_half_width_m': other['half_width_m']},
+            'rel.surface_gap': {'subject_y_m': subject['xy_m'][1],
+                                'other_y_m': other['xy_m'][1]},
+            'rel.occupies': {'subject_xy_m': subject['xy_m'],
+                             'subject_yaw_rad': subject['yaw_rad']}}
+        for name, value in derived.items():
+            channels[name].append({'time_s': frame['time_s'], 'value': value})
     directory = attempt / 'channels'
     directory.mkdir(exist_ok=True)
     for name, rows in channels.items():
@@ -101,6 +137,46 @@ def derive_channels(attempt, config):
                                      'site_match_review': inventory.get('site_match_review', 'unverified'),
                                      'ordinance_effect': inventory.get('ordinance_effect', 'undetermined')}},
         indent=2) + '\n')
+
+
+def measured_parking_completion(attempt, native):
+    """Engineering event criterion from original pose/time joins, not a legal label."""
+    if not native:
+        return False, {}, 'diagnostic fixture cannot prove original Native parking'
+    rows = _jsonl(required(attempt, 'vehicle-poses.jsonl'))
+    if len(rows) != FRAMES:
+        return False, {}, 'original full-duration Native poses missing'
+    stationary = [i for i, row in enumerate(rows)
+                  if row['subject']['speed_mps'] <= .1]
+    runs = []
+    for i in stationary:
+        if not runs or i != runs[-1][-1] + 1:
+            runs.append([i])
+        else:
+            runs[-1].append(i)
+    longest = max(runs, key=len, default=[])
+    if not longest:
+        return False, {}, 'no measured stationary interval'
+    approach = rows[:longest[0]]
+    moved = any(row['subject']['speed_mps'] >= 1 for row in approach)
+    if approach:
+        a = approach[0]['subject']['xy_m']
+        b = rows[longest[0]]['subject']['xy_m']
+        moved = moved and math.dist(a, b) >= 1.0
+    stable = max(math.dist(rows[i]['subject']['xy_m'], rows[longest[0]]['subject']['xy_m'])
+                 for i in longest) <= .5
+    completed = moved and stable and len(longest) >= 40
+    measured = {'halt_duration_s': {'value': len(longest) / 20, 'unit': 's',
+                                     'method': 'original 20 Hz Native pose speed and body stability',
+                                     'time_window': 'full 600-frame capture', 'statistic': 'longest stationary run',
+                                     'reference': 'vehicle-poses.jsonl'},
+                'approach_displacement_m': {'value': math.dist(approach[0]['subject']['xy_m'],
+                                                                rows[longest[0]]['subject']['xy_m']) if approach else 0,
+                                            'unit': 'm', 'method': 'original Native subject pose displacement',
+                                            'time_window': 'approach before longest stationary run',
+                                            'statistic': 'endpoint distance',
+                                            'reference': 'vehicle-poses.jsonl'}}
+    return completed, measured, 'original Native approach, stable body and at least 2 s stationary engineering criterion'
 
 
 def finalize_package(attempt, output):
@@ -117,21 +193,23 @@ def finalize_package(attempt, output):
     matched = abs(observed - target_m) <= .3
     derive_channels(attempt, config)
     report = {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],
-              'measurements': {'source_bound_alley_width': measurement},
+              'measurements': {'source_bound_alley_width': measurement,
+                               'ordinance_review_context': ordinance_review_context(attempt)},
               'scope': 'Original saved footprint and independently reviewed alley context; no legal conclusion'}
     sources = measurement['sources']
     interval = [{'first_frame': 0, 'last_frame': value['frame_count'] - 1}]
     provenance = provenance_record(attempt)
     native = value['source_kind'] == 'native_saved_sample' and provenance['provenance_kind'] == 'native'
     complete = native and value['frame_count'] == FRAMES
+    parked, realized, park_method = measured_parking_completion(attempt, complete)
     checks = {'setup': {'status': 'met' if complete else 'unverified',
                         'method': 'original full-duration source and independent alley-context review',
                         'sources': sources, 'intervals': interval},
               'target': {'status': 'met' if matched else 'not_met',
                          'method': 'source-bound cross-section free-width measurement',
                          'sources': sources, 'intervals': interval},
-              'maneuver': {'status': 'unverified',
-                           'method': 'parking purpose and physical completion need independent original review',
+              'maneuver': {'status': 'met' if parked else ('not_met' if complete else 'unverified'),
+                           'method': park_method,
                            'sources': sources, 'intervals': interval}}
     result = {'case_id': config['case_id'], 'measured_values': value,
               'target_checks': [{'target': 'unobstructed alley width at halted subject',
@@ -141,8 +219,9 @@ def finalize_package(attempt, output):
                                  'physical_cause_confirmed': False,
                                  'cause_evidence': list(sources)}],
               'setup_confirmed': complete, 'behavior_attempted': bool(value['subject_halt_proxy_frames']),
-              'maneuver_completed': False,
-              'termination_reason': 'Source-bound width measured; physical parking and legal review pending',
+              'maneuver_completed': parked,
+              'termination_reason': 'Source-bound physical park measured; legal review pending' if parked else
+                                    'Source-bound width measured; physical park incomplete or unverified',
               'physical_failure_flags': [], 'trace_reference': 'trace.jsonl',
               'video_references': [name + '.mkv' for name in CAMERAS],
               'video_frame_map_reference': 'video_frames.jsonl',
@@ -154,7 +233,7 @@ def finalize_package(attempt, output):
                                         'reference': 'channels/' + item['name'] + '.jsonl'}
                                        for item in config['recording_description']['channels']],
               'context_input_evidence': {'independent_alley_review': 'alley-context.json'},
-              'realized_observables': {}, 'physical_checks': checks,
+              'realized_observables': realized, 'physical_checks': checks,
               'accepted': False, 'legal_verdict_claimed': False,
               **provenance}
     result['recording_evidence'].append({'name': 'independent_alley_review', 'unit': 'structured',

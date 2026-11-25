@@ -37,7 +37,14 @@ def main():
                                       'method': 'alley_width_measurement',
                                       'value_type': 'object', 'kind': 'measured',
                                       'inputs': ['vehicle-poses.jsonl', 'video_frames.jsonl',
-                                                 'alley-inventory.json', 'trace.jsonl']}],
+                                                 'alley-inventory.json', 'trace.jsonl']},
+                                     {'disposition_index': 1,
+                                      'requirement': 'NRS-484B-477-1b',
+                                      'source': 'NRS 484B.477(1)(b)',
+                                      'output_key': 'ordinance_review_context',
+                                      'method': 'ordinance_review_context',
+                                      'value_type': 'object', 'kind': 'sourced_context',
+                                      'inputs': ['alley-inventory.json']}],
                     'negative': {'remove': ['alley-inventory.json'],
                                  'error_contains': 'Missing required source: alley-inventory.json'}}
         path = HERE / 'draft-alley' / suffix / 'measurement-contract.json'

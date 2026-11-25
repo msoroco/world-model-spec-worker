@@ -1,0 +1,54 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__unmarked_midblock",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "between_intersections_crossing",
+      "method": "between_intersections_crossing_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "pedestrian-original.jsonl",
+        "controls-original.jsonl",
+        "native-survey.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "nrs_484b_290_exception",
+      "method": "exception_applicability_measurement",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "exception-applicability-source.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "crossing_scope",
+      "method": "scope_crossing_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "pedestrian-original.jsonl",
+        "controls-original.jsonl",
+        "native-survey.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "controls-original.jsonl"
+    ],
+    "error_contains": "Missing required source: controls-original.jsonl"
+  }
+}

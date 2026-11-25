@@ -72,6 +72,109 @@
       "negative": {
         "log": "proofs/probe_01/negative-analysis.log",
         "log_sha256": "4af3bdab6e892b39000db0237490acae8d21a2a96ec57138129a701fd5f78f7e"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_01/physical-preparation.json",
+        "sha256": "ff6b54e9a5df4f82d0df28355e62be9508199cffa402e34be3879017b74883a2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C110875__LVMC-11-60-090__taxi_driver/execution-manifest.json --case training__C110875__LVMC-11-60-090__taxi_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json",
+        "test_log": "proofs/probe_01/saved.log",
+        "test_log_sha256": "8aaf9dd50cc8fa76200d21e3397d1b0aaec0a809200e88e0483abb0aa5f309af",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "stand_sign_street_authority"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b53709ef0f4c80636bf9644c259cbcc1c5f1093bcca4b1ab451b547db50c4c4a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C110875__LVMC-11-60-090__taxi_driver/delivery_audit.py --case training__C110875__LVMC-11-60-090__taxi_driver__probe_01 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-attempt-probe_01-primary-1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_01-primary-1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-delivery-audit-probe_01-positive-2.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_01/delivery-positive.log",
+        "test_log_sha256": "4b31eb9ef415a9cd79ca0338ead815c6a88ff1ba63bcadc8ed5016a357a9b2e0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C110875__LVMC-11-60-090__taxi_driver/delivery_audit.py --case training__C110875__LVMC-11-60-090__taxi_driver__probe_01 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-attempt-probe_01-primary-1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_01-primary-1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-delivery-audit-probe_01-positive-2.json --diagnostic --omit-source route-survey.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: route-survey.json",
+        "negative_log": "proofs/probe_01/delivery-negative.log",
+        "negative_log_sha256": "07182770430b1906de6ae0c9dba0d82a29c0d5488cd071a2f2c16a5ad23efdad"
+      },
+      "acquisition": {
+        "ru.taxicab": {
+          "entrypoint": "runner.py",
+          "method": "Native vehicle blueprint and independently reviewed cab license",
+          "evidence": [
+            "actor-poses.jsonl",
+            "route-survey.json"
+          ]
+        },
+        "st.curb_zone": {
+          "entrypoint": "runner.py",
+          "method": "Native stand landmark and original source-camera view",
+          "evidence": [
+            "road.xodr",
+            "reference_corner.mkv"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Native notice landmark and original source-camera view",
+          "evidence": [
+            "road.xodr",
+            "reference_corner.mkv"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "Original stand, sign and first-junction source join",
+          "evidence": [
+            "route-survey-native.json",
+            "route-survey.json"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Native ordered junction readback and independent street review",
+          "evidence": [
+            "road.xodr",
+            "route-survey-native.json",
+            "route-survey.json"
+          ]
+        },
+        "drv.turning": {
+          "entrypoint": "runner.py",
+          "method": "Original observed taxi heading through first junction",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Original actor heading at each Native frame",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "Integrated original Native position after stand departure",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        }
       }
     },
     {
@@ -142,6 +245,109 @@
       "negative": {
         "log": "proofs/probe_02/negative-analysis.log",
         "log_sha256": "fba7f72cec98ae8ff211edadfbd0ba0209f51a58c1826cbfe558117560b96658"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_02/physical-preparation.json",
+        "sha256": "7bd244f63940bcd45e5c2e26a09a6b7eb2192beb9925aad2e38b02b2fe4806d1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C110875__LVMC-11-60-090__taxi_driver/execution-manifest.json --case training__C110875__LVMC-11-60-090__taxi_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json",
+        "test_log": "proofs/probe_02/saved.log",
+        "test_log_sha256": "f66be4c9bfba84ceddf020b0eaa91a56fc00fda51d01aecfa246ea603e54e39f",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "stand_sign_street_authority"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b53709ef0f4c80636bf9644c259cbcc1c5f1093bcca4b1ab451b547db50c4c4a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C110875__LVMC-11-60-090__taxi_driver/delivery_audit.py --case training__C110875__LVMC-11-60-090__taxi_driver__probe_02 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-attempt-probe_02-primary-1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_02-primary-1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-delivery-audit-probe_02-positive-2.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_02/delivery-positive.log",
+        "test_log_sha256": "43a76b1eb7f0405f30cd5e238dbccfb3ca473a55cfe040277973e0cda682f44f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C110875__LVMC-11-60-090__taxi_driver/delivery_audit.py --case training__C110875__LVMC-11-60-090__taxi_driver__probe_02 --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-attempt-probe_02-primary-1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-saved-probe_02-primary-1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c110875-delivery-audit-probe_02-positive-2.json --diagnostic --omit-source route-survey.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: route-survey.json",
+        "negative_log": "proofs/probe_02/delivery-negative.log",
+        "negative_log_sha256": "07182770430b1906de6ae0c9dba0d82a29c0d5488cd071a2f2c16a5ad23efdad"
+      },
+      "acquisition": {
+        "ru.taxicab": {
+          "entrypoint": "runner.py",
+          "method": "Native vehicle blueprint and independently reviewed cab license",
+          "evidence": [
+            "actor-poses.jsonl",
+            "route-survey.json"
+          ]
+        },
+        "st.curb_zone": {
+          "entrypoint": "runner.py",
+          "method": "Native stand landmark and original source-camera view",
+          "evidence": [
+            "road.xodr",
+            "reference_corner.mkv"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Native notice landmark and original source-camera view",
+          "evidence": [
+            "road.xodr",
+            "reference_corner.mkv"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "Original stand, sign and first-junction source join",
+          "evidence": [
+            "route-survey-native.json",
+            "route-survey.json"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Native ordered junction readback and independent street review",
+          "evidence": [
+            "road.xodr",
+            "route-survey-native.json",
+            "route-survey.json"
+          ]
+        },
+        "drv.turning": {
+          "entrypoint": "runner.py",
+          "method": "Original observed taxi heading through first junction",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "Original actor heading at each Native frame",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "Integrated original Native position after stand departure",
+          "evidence": [
+            "actor-poses.jsonl"
+          ]
+        }
       }
     }
   ]

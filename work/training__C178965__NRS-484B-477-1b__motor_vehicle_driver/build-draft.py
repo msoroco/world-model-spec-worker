@@ -44,7 +44,14 @@ def main():
                        'sampling_rate_hz': 20, 'method': 'OpenDRIVE and original Native lane-width readback',
                        'time_window': '600 frames', 'reference_frame': 'authored paved road',
                        'uncertainty': 'pending Native readback',
-                       'source': 'channels/alley_lateral_boundaries.jsonl'}],
+                       'source': 'channels/alley_lateral_boundaries.jsonl'}] + [
+                      {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                       'method': 'source-joined original pose, extent and alley inventory',
+                       'time_window': '600 frames', 'reference_frame': 'authored paved road',
+                       'uncertainty': '50 ms sampling; legal identity remains independently reviewed',
+                       'source': 'channels/' + name + '.jsonl'}
+                      for name in ('st.alley', 'drv.standing_or_parked', 'st.lane_width',
+                                   'kin.extent', 'rel.surface_gap', 'rel.occupies')],
                       'context_inputs': [
                           {'name': 'independent_alley_review', 'unit': 'structured',
                            'method': 'source-bound alley identity, jurisdiction, ordinance and purpose review',

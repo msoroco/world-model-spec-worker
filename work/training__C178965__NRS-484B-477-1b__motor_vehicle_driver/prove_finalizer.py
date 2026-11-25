@@ -29,8 +29,10 @@ def main():
             measurements[suffix] = value['minimum_measured_halt_free_width_m']
             if result['setup_confirmed'] or result['maneuver_completed'] or result['accepted']:
                 raise ValueError('Synthetic saved source claimed physical completion')
-            if len(list((attempt / 'channels').glob('*.jsonl'))) != 2:
+            if len(list((attempt / 'channels').glob('*.jsonl'))) != 8:
                 raise ValueError('Declared source channels were not derived')
+            if 'ordinance_review_context' not in report['measurements']:
+                raise ValueError('Independent ordinance context measurement missing')
             if result['provenance_kind'] != 'synthetic_fixture' or result['legal_verdict_claimed']:
                 raise ValueError('Synthetic provenance or legal status differs')
         if not measurements['controlled_1'] > 3.048 or not measurements['controlled_2'] < 3.048:

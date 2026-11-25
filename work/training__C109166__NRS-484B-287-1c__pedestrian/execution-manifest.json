@@ -1,0 +1,72 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C109166__NRS-484B-287-1c__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_draft",
+  "delivery_ready": false,
+  "original_native_observed": false,
+  "cases": [
+    {
+      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__marked_crosswalk",
+      "kind": "delivery",
+      "construction": "cases/marked_crosswalk/primary/construction.json",
+      "construction_sha256": "155a6f6de6df73346ff83eddf5f0b5429aed73581619a4eac59609a4deef18fc",
+      "measurement_contract": "cases/marked_crosswalk/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109166__NRS-484B-287-1c__pedestrian/diagnostic-marked_crosswalk-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The marked-crosswalk and control views may be too high to resolve original pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/marked_crosswalk/fallback1/construction.json",
+          "construction_sha256": "ed01778ba00bd35369fb6bcb2513357c238315ec654e87d5972bcb34d3eb6f7c",
+          "trigger": {
+            "source": "original reference_corner camera pixels",
+            "metric": "marking visible height in pixels",
+            "failure_condition": "marked crossing stripe below 12 pixels in primary"
+          },
+          "changed_knobs": [
+            "detail_camera_height_m: 5.0 to 3.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C109166__NRS-484B-287-1c__pedestrian__unmarked_midblock",
+      "kind": "delivery",
+      "construction": "cases/unmarked_midblock/primary/construction.json",
+      "construction_sha256": "cc05ff29585f0fbc9472cbef3883808384527e3844dd06e1634f62a0297bfbcb",
+      "measurement_contract": "cases/unmarked_midblock/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C109166__NRS-484B-287-1c__pedestrian/diagnostic-unmarked_midblock-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The marked-crosswalk and control views may be too high to resolve original pixels"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/unmarked_midblock/fallback1/construction.json",
+          "construction_sha256": "aae539872d05fd8bcda57036e87a74f6b3bbb5f7b98950a731af2bf021d0dc00",
+          "trigger": {
+            "source": "original reference_corner camera pixels",
+            "metric": "marking visible height in pixels",
+            "failure_condition": "marked crossing stripe below 12 pixels in primary"
+          },
+          "changed_knobs": [
+            "detail_camera_height_m: 5.0 to 3.0"
+          ]
+        }
+      ]
+    }
+  ]
+}

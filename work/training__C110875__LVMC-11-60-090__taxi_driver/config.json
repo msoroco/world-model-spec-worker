@@ -1,0 +1,141 @@
+{
+  "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
+  "selected_case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
+  "supported_case_ids": [
+    "training__C110875__LVMC-11-60-090__taxi_driver__probe_01",
+    "training__C110875__LVMC-11-60-090__taxi_driver__probe_02"
+  ],
+  "candidate_id": "primary",
+  "law_id": "LVMC-11-60-090",
+  "cell_id": "C110875",
+  "actor": "taxi_driver",
+  "statutory_text": "Any cab, upon leaving any stand designated in accordance with the provisions of this Section, shall execute a right-hand turn, when a sign is posted giving notice of this requirement, at the first street intersection after it leaves such stand.",
+  "requested_first_turn": "right",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C110875__LVMC-11-60-090__taxi_driver__probe_01"
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "fixed surveyed roadside original RGB"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "subject-mounted original RGB"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "fixed surveyed roadside original RGB"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "subject-mounted original RGB"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ru.taxicab",
+        "unit": "identity",
+        "sampling_rate_hz": 20,
+        "method": "original Native blueprint plus external taxi-license review",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/ru.taxicab.jsonl"
+      },
+      {
+        "name": "st.curb_zone",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "stand landmark, original RGB and independent designation source",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/st.curb_zone.jsonl"
+      },
+      {
+        "name": "dev.regulatory_sign",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "OpenDRIVE sign landmark, original RGB and notice authority source",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/dev.regulatory_sign.jsonl"
+      },
+      {
+        "name": "dev.governs",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "sign station joined to stand and first junction topology",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/dev.governs.jsonl"
+      },
+      {
+        "name": "st.intersection",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "ordered Native junction and independent street-identity review",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/st.intersection.jsonl"
+      },
+      {
+        "name": "drv.turning",
+        "unit": "degrees",
+        "sampling_rate_hz": 20,
+        "method": "original observed heading through first junction",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/drv.turning.jsonl"
+      },
+      {
+        "name": "kin.heading",
+        "unit": "degrees",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor heading",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/kin.heading.jsonl"
+      },
+      {
+        "name": "kin.path_length",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "original Native position integrated from stand exit",
+        "time_window": "600 original Native frames",
+        "reference_frame": "original Native frame and surveyed street topology",
+        "uncertainty": "50 ms sampling; authority and physical topology require review",
+        "source": "channels/kin.path_length.jsonl"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Designation, posted notice and taxi licensing need independent source review",
+      "Authored road is a request until original Native topology readback"
+    ]
+  },
+  "status": "native_draft_authority_unverified"
+}
