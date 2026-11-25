@@ -33,7 +33,10 @@
       "case_ids": [
         "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
         "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_2",
-        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_3"
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_3",
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4",
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5",
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6"
       ],
       "evidence_or_gap": "Both selected Native CPU drafts pass pinned offline, and synthetic original-shape measurer passes positive/negative diagnostics; source acquisition and full delivery proofs remain open."
     },
@@ -106,6 +109,54 @@
       "gap_ids": [
         "no_accepted_original"
       ]
+    },
+    {
+      "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4",
+      "target_law_id": "NRS-484B-250-4",
+      "kind": "planned_only",
+      "source_branch": "no marked line; before near-side crosswalk",
+      "physical_target": "complete stop before original near-side crosswalk",
+      "comparison_variable": "governing_stop_reference",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "gap_ids": [
+        "no_accepted_original"
+      ]
+    },
+    {
+      "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5",
+      "target_law_id": "NRS-484B-250-4",
+      "kind": "planned_only",
+      "source_branch": "yield to vehicle with previously completed stop",
+      "physical_target": "original synchronized other-vehicle history at ego entry",
+      "comparison_variable": "other_vehicle_context",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "gap_ids": [
+        "no_accepted_original"
+      ]
+    },
+    {
+      "case_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6",
+      "target_law_id": "NRS-484B-250-4",
+      "kind": "planned_only",
+      "source_branch": "yield to vehicle already within intersection",
+      "physical_target": "original synchronized other-vehicle history at ego entry",
+      "comparison_variable": "other_vehicle_context",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "gap_ids": [
+        "no_accepted_original"
+      ]
     }
   ],
   "comparisons": [
@@ -137,7 +188,56 @@
         "frozen one-way cell, motor vehicle actor, inoperative uncovered signal and other participant",
         "route and commanded complete stop",
         "capture channels, rate, camera policy and duration"
-      ]
+      ],
+      "audit_receipt": "native/proofs/3_priority-comparison.json"
+    },
+    {
+      "comparison_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__crosswalk_priority_comparison",
+      "case_ids": [
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_4"
+      ],
+      "deliberate_differences": [
+        "near-side crosswalk present versus absent; corresponding stop reference"
+      ],
+      "fixed_conditions": [
+        "same frozen one-way cell, actor, inoperative signal and other participant",
+        "ego approach lane, initial and terminal route",
+        "capture channels, frame rate, camera policy and duration"
+      ],
+      "audit_receipt": "native/proofs/4_crosswalk-comparison.json"
+    },
+    {
+      "comparison_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__yield_context_5_comparison",
+      "case_ids": [
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_5"
+      ],
+      "deliberate_differences": [
+        "other_vehicle_context: other previously completed stop"
+      ],
+      "fixed_conditions": [
+        "frozen one-way cell, motor vehicle actor and inoperative signal",
+        "ego request including complete stop, approach lane and entry timing",
+        "capture channels, frame rate, cameras and duration"
+      ],
+      "audit_receipt": "native/proofs/5_6_yielding-branch-audit.json"
+    },
+    {
+      "comparison_id": "training__C154537__NRS-484B-250-4__motor_vehicle_driver__yield_context_6_comparison",
+      "case_ids": [
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_1",
+        "training__C154537__NRS-484B-250-4__motor_vehicle_driver__controlled_6"
+      ],
+      "deliberate_differences": [
+        "other_vehicle_context: other within intersection at ego entry"
+      ],
+      "fixed_conditions": [
+        "frozen one-way cell, motor vehicle actor and inoperative signal",
+        "ego request including complete stop, approach lane and entry timing",
+        "capture channels, frame rate, cameras and duration"
+      ],
+      "audit_receipt": "native/proofs/5_6_yielding-branch-audit.json"
     }
   ],
   "mandatory_observation_terms": [
@@ -464,13 +564,13 @@
     {
       "branch": "clearly marked stop line",
       "priority": 1,
-      "status": "CPU saved-source assessor tested; construction and delivery cases pending",
+      "status": "selected controlled_3 Native primary, public compatibility and saved-only CPU diagnostic; original marking review pending",
       "source": "NRS 484B.250(4)"
     },
     {
       "branch": "no line; before near-side crosswalk, including sidewalk-derived crossing",
       "priority": 2,
-      "status": "CPU saved-source assessor tested; construction and delivery cases pending",
+      "status": "selected controlled_4 Native primary, public compatibility and saved-only CPU diagnostic; original crosswalk pixel review pending",
       "source": "NRS 484B.250(4)"
     },
     {
@@ -481,12 +581,12 @@
     },
     {
       "branch": "yield to vehicles that previously completed a stop",
-      "status": "saved-source ordering assessor tested; controlled construction and delivery comparison pending",
+      "status": "selected controlled_5 Native primary, compatibility and saved-only CPU diagnostic; original previous-stop history pending",
       "source": "NRS 484B.250(4)"
     },
     {
       "branch": "yield to vehicles already within intersection",
-      "status": "saved-source occupancy assessor tested; controlled construction and delivery comparison pending",
+      "status": "selected controlled_6 Native primary, compatibility and saved-only CPU diagnostic; original occupancy history pending",
       "source": "NRS 484B.250(4)"
     }
   ],

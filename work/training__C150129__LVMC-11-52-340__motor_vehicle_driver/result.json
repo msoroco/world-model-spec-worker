@@ -1,11 +1,11 @@
 {
   "assignment_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver",
   "input_sha256": "4aef87cdf566fe21ca02d41e2d85cd4dacf20dd3a3216ef8460b3271367315e7",
-  "status": "partial",
-  "reason": "Two exact primary street cases pass current-runtime offline and positive/negative compatibility, and a CPU independent comparison audit checks fixed sources/configuration and measured occupancy difference with negative controls. Delivery selection still lacks risk-based fallbacks, saved-only processing proof, independent delivery audit, canonical semantic proposals and lead-owned queue integration. Actual City authority and vehicle classification source records are absent from frozen inputs; City facility alternative is unbound by one-way-road cell.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
-  "candidate_count": 0,
+  "candidate_count": 2,
   "source_law_review": "Exact law text and witness inspected; summary is recovered_requires_source_review",
   "accepted_membership_count": 0,
   "reuse_count": 0,
@@ -17,16 +17,55 @@
   "primary_cpu_compatibility_count": 2,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --output .runtime-work/c150129-compat-current-1 --library runtime/library --validator .runtime-work/c150129-decoder/.lake/build/bin/adapterCheck",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150129-tests PYTHONPATH=work/training__C150129__LVMC-11-52-340__motor_vehicle_driver:runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "proofs/controlled_1/analysis.log",
+      "log": "proofs/current-unit-tests.log",
+      "sha256": "30c537df7970d5394b55d8d2db0d4d668c7b2ebb5342235b1614add1bbc6cd39"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/prove_saved.py",
+      "exit_code": 0,
+      "log": "proofs/saved-proof.log",
+      "sha256": "fcf4c9eecf9964d5c4d00cb56d3b56e084b238f49a17ef305572a198938cdf89"
+    },
+    {
+      "command": "semantic_delivery.validate and execution_manifest.validate, check_receipts, delivery_handoff.validate_case",
+      "exit_code": 0,
+      "log": "proofs/execution-validation-current.log",
+      "sha256": "eaea959ecb89ec9016543bd04b475c6579447b8e12e316246af9428286c289ef"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c150129-fallback-offline-1",
+      "exit_code": 0,
+      "log": "proofs/fallback-offline-1.log",
+      "sha256": "76879556a3f4228f6a9c164101f97acd86b1b98339da17a976d4fdb565df3d65"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c150129-semantic-compat-1-fallback1 --library runtime/library --validator .runtime-work/c150129-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "proofs/controlled_1/fallback1/analysis.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --output .runtime-work/c150129-compat-current-2 --library runtime/library --validator .runtime-work/c150129-decoder/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c150129-fallback-offline-2",
       "exit_code": 0,
-      "log": "proofs/controlled_2/analysis.log",
+      "log": "proofs/fallback-offline-2.log",
+      "sha256": "18f67d95d213776103a4b4101e357f444f5673c9c4acb8ad89505f3def877b21"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c150129-semantic-compat-2-fallback1 --library runtime/library --validator .runtime-work/c150129-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "proofs/controlled_2/fallback1/analysis.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
-  ]
+  ],
+  "fallback_cpu_compatibility_count": 2,
+  "recorded_only_fixture_count": 2,
+  "delivery_audit_fixture_count": 2,
+  "remaining_gpu_checks": [
+    "Actual one-way street lane readback, City-only posting and four-camera pixels",
+    "Physical parking motion and full-body polygon occupation in both probes",
+    "Independent City-street, Council designation, due posting and subject City-vehicle source review"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C150129__LVMC-11-52-340__motor_vehicle_driver --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

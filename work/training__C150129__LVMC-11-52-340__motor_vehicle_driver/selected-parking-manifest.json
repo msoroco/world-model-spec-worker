@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_street_cpu_proof_in_progress",
+  "status": "selected_street_cpu_proofs_with_fallback_and_saved_audit",
   "delivery_ready": false,
   "original_native_observed": false,
   "cases": [
@@ -36,7 +36,20 @@
           "changed_knobs": [
             "shared approach throttle .28/.11 to .20/.08",
             "shared braking entry from 4 m to 5 m and stronger intermediate brake"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c150129-fallback-offline-1",
+            "exit_code": 0,
+            "construction_sha256": "3ed744f9ecbbc6e077ebc138d22296a3b8893f43a53c418be9dc1cc05d60b650",
+            "log": "proofs/fallback-offline-1.log",
+            "log_sha256": "76879556a3f4228f6a9c164101f97acd86b1b98339da17a976d4fdb565df3d65"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_1/fallback1/compatibility.json",
+            "sha256": "c28d6b1840c806ff88df361f55996391d5537f997d78003c45cea972a31f1e19",
+            "log": "proofs/controlled_1/fallback1/analysis.log",
+            "negative_log": "proofs/controlled_1/fallback1/negative.log"
+          }
         }
       ],
       "measurement_contract": "cases/controlled_1/measurement-contract.json",
@@ -51,7 +64,7 @@
       },
       "compatibility": {
         "receipt": "proofs/controlled_1/compatibility.json",
-        "sha256": "8d6500eaeb498daea1ce78f50e527934ec1dda4460051ab0bc63b2e15bce137f",
+        "sha256": "8f60a51df71400d75fd938d029a2b3e9b6ecfb7a54b1d2d7e9e2d373e16c1f1b",
         "log": "proofs/controlled_1/analysis.log",
         "negative_log": "proofs/controlled_1/negative.log"
       },
@@ -84,6 +97,43 @@
           "method": "Retained original Native source joined to independent source review and frame map",
           "evidence": "parking-inventory.json, review.json, vehicle-poses.jsonl, video_frames.jsonl, four camera videos"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "proofs/saved-controlled_1.json",
+        "test_log_sha256": "c34bf412f4c3f3aa13c2d4943983c1b3a23d2f68c34bb9dd119511d374ab0b1a",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "475b9644d21d1aac83145f06426e1c690b515eaf86fb7eb89278c31bf2ad7f2b",
+        "command": ".venv-cpu/bin/python work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/delivery_audit.py --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --attempt .runtime-work/c150129-saved-attempt-v3-1 --processing work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/proofs/saved-controlled_1.json --diagnostic --output .runtime-work/c150129-delivery-audit-v3-1.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/delivery-audit-1.log",
+        "test_log_sha256": "a0eadd9ffca4c6d860eaf9da92a77d7472c73f836b70af9ff48375b7ef6f80a7",
+        "negative_command": ".venv-cpu/bin/python work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/delivery_audit.py --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_1 --attempt .runtime-work/c150129-saved-attempt-v3-1 --processing .runtime-work/c150129-stale-processing-v3-1.json --diagnostic --output .runtime-work/c150129-delivery-audit-rejected-v3-1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: source_context/posting_or_marking.txt",
+        "negative_log": "proofs/delivery-audit-negative-1.log",
+        "negative_log_sha256": "cfe039d7d9af1d212ce049ac4526e135f3ffed9f29cd2fc9adf6823639bb6d2f"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/controlled_1/proof.json",
+        "sha256": "5a290e7dad7e56a87f83e4c8aab71ed0b07c840b4402b2698f8b0a6a9e774358"
       }
     },
     {
@@ -116,7 +166,20 @@
           "changed_knobs": [
             "shared approach throttle .28/.11 to .20/.08",
             "shared braking entry from 4 m to 5 m and stronger intermediate brake"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c150129-fallback-offline-2",
+            "exit_code": 0,
+            "construction_sha256": "e814f96e5a38c14c921d0d0ebc19dde4777541e07cad1574b67e09c6be653c68",
+            "log": "proofs/fallback-offline-2.log",
+            "log_sha256": "18f67d95d213776103a4b4101e357f444f5673c9c4acb8ad89505f3def877b21"
+          },
+          "compatibility": {
+            "receipt": "proofs/controlled_2/fallback1/compatibility.json",
+            "sha256": "b9da8795b20d72bcb6647da694ffecd841bcb084a73d5fb23f503395687e0f67",
+            "log": "proofs/controlled_2/fallback1/analysis.log",
+            "negative_log": "proofs/controlled_2/fallback1/negative.log"
+          }
         }
       ],
       "measurement_contract": "cases/controlled_2/measurement-contract.json",
@@ -131,7 +194,7 @@
       },
       "compatibility": {
         "receipt": "proofs/controlled_2/compatibility.json",
-        "sha256": "56568b3ce850e25571857b2a2ed3ce328a80701fbb27948e55a02ee1a610bf19",
+        "sha256": "b5a6016bef9ef09bf77d9f57c594becafd0b2a944b2e42380adafca116f33267",
         "log": "proofs/controlled_2/analysis.log",
         "negative_log": "proofs/controlled_2/negative.log"
       },
@@ -164,6 +227,43 @@
           "method": "Retained original Native source joined to independent source review and frame map",
           "evidence": "parking-inventory.json, review.json, vehicle-poses.jsonl, video_frames.jsonl, four camera videos"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/selected-parking-manifest.json --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/feedback.json\" on failure",
+        "test_log": "proofs/saved-controlled_2.json",
+        "test_log_sha256": "f806b3a61a242f05bc69bde2f86ca543749a44ad7dfb9c73a3ab42c0321d850b",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "475b9644d21d1aac83145f06426e1c690b515eaf86fb7eb89278c31bf2ad7f2b",
+        "command": ".venv-cpu/bin/python work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/delivery_audit.py --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --attempt .runtime-work/c150129-saved-attempt-v3-2 --processing work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/proofs/saved-controlled_2.json --diagnostic --output .runtime-work/c150129-delivery-audit-v3-2.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/delivery-audit-2.log",
+        "test_log_sha256": "584ee6339ff02884687eddecf592b882c5f96164876b545e4bef160d337ad208",
+        "negative_command": ".venv-cpu/bin/python work/training__C150129__LVMC-11-52-340__motor_vehicle_driver/delivery_audit.py --case training__C150129__LVMC-11-52-340__motor_vehicle_driver__controlled_2 --attempt .runtime-work/c150129-saved-attempt-v3-2 --processing .runtime-work/c150129-stale-processing-v3-2.json --diagnostic --output .runtime-work/c150129-delivery-audit-rejected-v3-2.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: source_context/posting_or_marking.txt",
+        "negative_log": "proofs/delivery-audit-negative-2.log",
+        "negative_log_sha256": "cfe039d7d9af1d212ce049ac4526e135f3ffed9f29cd2fc9adf6823639bb6d2f"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/controlled_2/proof.json",
+        "sha256": "ef90b4ad7d88643ade976e53391e435479b0e6ecda2e012e1b8dcde0d6fe4a9c"
       }
     }
   ]

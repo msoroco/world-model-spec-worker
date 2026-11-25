@@ -1,6 +1,6 @@
 # Full-train delivery best-effort return
 
-**Status: incomplete.** The complete strict delivery gate has not passed; 84 of 253 assignments are ready and 169 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
+**Status: incomplete.** The complete strict delivery gate has not passed; 85 of 253 assignments are ready and 168 remain partial at the latest validated inventory. No original Native, physical, legal or canonical recording acceptance is claimed. The separate timer handles Git publication.
 
 Older history is preserved in [archive part 1](RETURN-REPORT-ARCHIVE-2026-11-22-01.md) and [archive part 2](RETURN-REPORT-ARCHIVE-2026-11-22-02.md). Both archives are historical; current results and next actions appear below.
 
@@ -3126,3 +3126,17 @@ The independent return audit passes with 84 ready, 169 partial and zero errors. 
 ## 2026-11-25 C111071 selected Native offline package
 
 C111071 now has four exact selected Native construction bundles, each embedding its live actor/camera writer, source-review bridge and authored road. All four pass pinned offline checks with three tests per case; the selected manifest SHA-256 is `d248a68fc8be769508e3c16ee1b87b31d133df8702c4380e4146b32efa1c502a`. The case is still partial: the selected public/saved chains, fallbacks and canonical audits are not yet complete. The current live acquisition proof passes 27 controlled negatives, including the two materialized yield request branches. No physical or legal acceptance is claimed.
+
+## 2026-11-25 C111071 selected CPU evidence checkpoint
+
+Four exact selected Native construction bundles now pass pinned offline checks, public compatibility with missing-source negatives, and recorded-only process-saved against fresh 613-file public fixture attempts. The saved proofs preserve every source hash. The current manifest SHA-256 is `19dc82142725c2efa390e2e9c4c9b35231a8d6e56f6dc69c4cc79dd3e20f442a`; receipts, analysis logs, negative logs and saved processing proofs are under `selected-native/`. The proposals now match each selected construction recording contract. These are synthetic/public CPU proofs, not original CARLA physical evidence. C111071 stays partial pending physical fixtures, candidate fallbacks, semantic/delivery audits, source review and original Native capture. The scoped `--complete` static check passed before the latest proposal recording-description update and will be rerun.
+
+## 2026-11-25 C111071 physical fixture and fallback CPU checkpoint
+
+All four selected cases have validated synthetic complete/incomplete/missing-motion and lifecycle fixtures. Each has a distinct fallback construction moving the motorcycle spawn from y=-30 m to y=-28 m, with an original-body approach failure trigger; all four fallbacks pass exact pinned offline and positive/negative public compatibility. The execution manifest validates on the current runtime and has SHA-256 `63b017f9a3c106beb2c721444e9dfb7345f552ac0ee60ebb64d92e65fe9c97c1`. These CPU proofs do not establish real Native occupancy, source review or a legal verdict; C111071 remains partial.
+
+## 2026-11-25 C150129 LVMC ready on current runtime
+
+`training__C150129__LVMC-11-52-340__motor_vehicle_driver` passed the exact assignment-scoped strict gate independently after its owner completed both selected cases, tested fallback, semantic/physical/delivery audits and saved processing. The two existing shared queue rows are now ready and carry fallback preparation commands. No physical City authority or Native parking realization is claimed. Shared audit-return passes with 85 ready and 168 partial assignments; full strict remains deferred until every package is ready.
+
+The current C111071 manifest additionally declares original Native acquisition methods for all three mandatory channels; its latest SHA-256 is `de07224233d135c42aa12c4a63917febdccb6d3883238277c0993766dfc28374`. The scoped partial static check passes; the exact strict assignment check still rejects the truthful partial status.

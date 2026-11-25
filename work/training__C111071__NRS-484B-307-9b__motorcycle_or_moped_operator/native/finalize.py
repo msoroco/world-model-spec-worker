@@ -52,6 +52,26 @@ def measure_detector_trace(analysis: dict) -> dict:
             "sources": {name: sources[name] for name in ("native_samples.jsonl", "road_geometry.json")}}
 
 
+def measure_device_requirement(analysis: dict) -> dict:
+    """Retain the source-reviewed other-device survey as context, not a verdict."""
+    sources = analysis["sources"]
+    return {"value": {"other_device_prohibition_survey":
+                      analysis["other_device_prohibition_survey"],
+                      "physical_device_visibility_review_pending": True},
+            "method": "measure_device_requirement",
+            "sources": {name: sources[name] for name in ("native_samples.jsonl", "road_geometry.json")}}
+
+
+def measure_yield_requirement(analysis: dict) -> dict:
+    """Measure entry conflict from reviewed participants without a legal verdict."""
+    observed = analysis["case_observation"]
+    sources = analysis["sources"]
+    return {"value": {"entry_frame": observed["entry_frame"],
+                      "yield_clear_at_entry": observed["yield_clear_at_entry"]},
+            "method": "measure_yield_requirement",
+            "sources": {name: sources[name] for name in ("native_samples.jsonl", "road_geometry.json")}}
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     attempt = attempt.resolve()
     output = output.resolve()
@@ -149,6 +169,12 @@ def finalize(attempt: Path, output: Path) -> dict:
     # contract, without writing to the frozen runtime tree.
     from worker_exchange.native_output import validate_result
     validate_result(result)
+    measurements = {"cycle_requirement": measure_cycle_requirement(analysis),
+                    "detector_trace": measure_detector_trace(analysis),
+                    "device_requirement": measure_device_requirement(analysis)}
+    if config["case_id"].endswith(("yield_wait_for_clearance",
+                                    "yield_enter_during_occupancy")):
+        measurements["yield_requirement"] = measure_yield_requirement(analysis)
     report = {"format": "c111071-saved-finalizer-report-v1",
               "case_id": config["case_id"], "case_variant": config["case_variant"],
               "saved_analysis": analysis, "video_frame_counts": counts,
@@ -156,8 +182,7 @@ def finalize(attempt: Path, output: Path) -> dict:
                                              "source_sha256": source_hashes},
               "video_sha256": {path.name: sha(path) for path in video_paths},
               "config_sha256": sha(config_path),
-              "measurements": {"cycle_requirement": measure_cycle_requirement(analysis),
-                               "detector_trace": measure_detector_trace(analysis)},
+              "measurements": measurements,
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False}
     if output.suffix == ".json":
         output.parent.mkdir(parents=True, exist_ok=True)

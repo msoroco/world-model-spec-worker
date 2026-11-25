@@ -25,7 +25,7 @@ def build():
             "sampling_rate_hz": 20, "method": "original Native full-body corners and speed readback",
             "time_window": "600 frames", "reference_frame": "sourced highway and fire-station entrance",
             "uncertainty": "50 ms interval; statutory distance reference unresolved"}],
-            "context_inputs": ["cited station, driveway, highway and activity/direction context"],
+            "context_inputs": [],
             "limitations": ["Raw body-edge gap is not a legal distance verdict",
                 "Actual station, entrance, direction and pixels require independent review"]}
         config = {"case_id": case_id, "case_suffix": suffix, "cell_id": "C229410",

@@ -81,7 +81,7 @@ def main():
     scratch = Path(args.scratch)
     proofs = []
     for number in (1, 2):
-        attempt = scratch / ('c150129-saved-attempt-' + str(number))
+        attempt = scratch / ('c150129-saved-attempt-v3-' + str(number))
         processing = Path(__file__).resolve().parent / 'proofs' / (
             'saved-controlled_' + str(number) + '.json')
         report = verify(number, attempt, processing)
@@ -94,7 +94,7 @@ def main():
                           'saved-controlled_2.json').read_text())
     corrupt['original_source_hashes']['source_context/posting_or_marking.txt'] = '0' * 64
     try:
-        verify(2, scratch / 'c150129-saved-attempt-2', corrupt)
+        verify(2, scratch / 'c150129-saved-attempt-v3-2', corrupt)
     except ValueError as error:
         require(str(error) == 'Original source missing or changed: source_context/posting_or_marking.txt',
                 'Wrong stale-source rejection')

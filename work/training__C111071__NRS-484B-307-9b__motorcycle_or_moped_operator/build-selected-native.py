@@ -39,11 +39,21 @@ def build():
         target = HERE / "selected-native" / suffix / "construction.json"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(construction, indent=2) + "\n")
+        diagnostic_contract = HERE / f"current-v2-{suffix.replace('_', '-')}-measurement-contract.json"
+        contract = json.loads(diagnostic_contract.read_text())
+        contract["requirements"].append({
+            "disposition_index": 2, "requirement": "NRS-484B-307-9b",
+            "source": "NRS 484B.307(9)(b)", "output_key": "device_requirement",
+            "method": "measure_device_requirement", "value_type": "object",
+            "kind": "sourced_context",
+            "inputs": ["native_samples.jsonl", "road_geometry.json"]})
+        selected_contract = target.parent / "measurement-contract.json"
+        selected_contract.write_text(json.dumps(contract, indent=2) + "\n")
         entries.append({"case_id": case_id, "kind": "delivery", "id": "primary",
                         "construction": str(target.relative_to(HERE)),
                         "construction_sha256": sha(target),
                         "fixture_recipe": str((HERE / f"current-v2-{suffix.replace('_', '-')}-fixture-recipe.json").relative_to(REPO)),
-                        "measurement_contract": f"current-v2-{suffix.replace('_', '-')}-measurement-contract.json",
+                        "measurement_contract": str(selected_contract.relative_to(HERE)),
                         "measurement_procedure": {"entrypoint": "finalize.py",
                                                   "output_schema": "c111071-saved-finalizer-report-v1"},
                         "candidate_risk": {"status": "physical",

@@ -9,9 +9,9 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "selected-native/probe_1/construction.json",
-      "construction_sha256": "fe9f9f4ba16e6eec8a4ac95ef2977b6b616f558bd877085a24db294db5e34095",
+      "construction_sha256": "840cb9e03804a6df1b01ef588278d189343e32dd5750dfb33b5711c3437c9a6a",
       "fixture_recipe": "work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/current-v2-probe-1-fixture-recipe.json",
-      "measurement_contract": "current-v2-probe-1-measurement-contract.json",
+      "measurement_contract": "selected-native/probe_1/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "c111071-saved-finalizer-report-v1"
@@ -20,18 +20,89 @@
         "status": "physical",
         "reason": "Original stop, two-cycle timing and conflict occupancy may fail in the imported Native world"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-native/probe_1/fallback1-construction.json",
+          "construction_sha256": "9d82852e5730e309c343173b3389258a8db049b8ae74d3755dc381a51c02683c",
+          "trigger": {
+            "source": "native capture original body readback and approach distance",
+            "metric": "entry progress and stop-line approach within 600 frames",
+            "failure_condition": "primary spawn geometry cannot achieve the required original-body route progression and stop-line approach"
+          },
+          "changed_knobs": [
+            "ego initial longitudinal spawn y: -30 m to -28 m in map waypoint and spawn, preserving exact cell, actor, camera and 30 s capture"
+          ],
+          "offline": {
+            "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
+            "candidate_id": "fallback1",
+            "construction_sha256": "9d82852e5730e309c343173b3389258a8db049b8ae74d3755dc381a51c02683c",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1 --candidate fallback1 --output .runtime-work/c111071-fallback-probe_1-offline-v1 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-native/probe_1/fallback1-offline.log",
+            "log_sha256": "a4331e9cfea0ef913d733103b3dad166fa438efff802dcbf05e397b3961d1042"
+          },
+          "compatibility": {
+            "receipt": "selected-native/compatibility/probe_1-fallback1-compatibility.json",
+            "log": "selected-native/compatibility/probe_1-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-native/compatibility/probe_1-fallback1-negative-analysis.log",
+            "sha256": "cf46f168b3d10bec3f66345d469df8de0d7856c837db62e006c005ef46c2821e"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-selected-probe_1-v2 TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1 --output .runtime-work/c111071-selected-probe_1-offline-v2 --python $PWD/.venv-cpu/bin/python",
+        "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
+        "candidate_id": "primary",
+        "construction_sha256": "840cb9e03804a6df1b01ef588278d189343e32dd5750dfb33b5711c3437c9a6a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1 --output .runtime-work/c111071-selected-probe_1-offline-v4 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "fe9f9f4ba16e6eec8a4ac95ef2977b6b616f558bd877085a24db294db5e34095",
         "log": "selected-native/probe_1/offline.log",
         "log_sha256": "a4331e9cfea0ef913d733103b3dad166fa438efff802dcbf05e397b3961d1042"
+      },
+      "compatibility": {
+        "receipt": "selected-native/compatibility/probe_1-compatibility.json",
+        "log": "selected-native/compatibility/probe_1-compatibility-analysis.log",
+        "negative_log": "selected-native/compatibility/probe_1-negative-analysis.log",
+        "sha256": "a80d686f205059f6d14ecd8cbdabc5406d5027b098c3163a31f185bb893456b9"
+      },
+      "negative": {
+        "log": "selected-native/compatibility/probe_1-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-native/probe_1/saved-command.log",
+        "test_log_sha256": "6875ecf22e9e74bc8e29c85b53e30f15f11c770fa8b90dfb324d9841b632ad8b",
+        "processing_receipt": "selected-native/probe_1/saved-proof.json",
+        "processing_sha256": "cbcae2640017ff07ec14f049819b0a77409fe43fe0764f71779de3cc678bfbc1"
+      },
+      "physical_preparation": {
+        "receipt": "selected-native/probe_1/physical/proof.json",
+        "sha256": "3943c89550626622a1cc66fa5942df0a7346626433356327f15aaf2db72de9a0"
+      },
+      "acquisition": {
+        "ego_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "original Native full-body vertices and velocity readback each tick, then source bridge saved channel",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/ego_body_pose.jsonl"
+        },
+        "signal_phase_readback": {
+          "entrypoint": "live_capture.py",
+          "method": "original governing and cross signal actor phase and detector readback each tick",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/signal_phase_readback.jsonl"
+        },
+        "frame_join": {
+          "entrypoint": "live_capture.py",
+          "method": "same Native frame/time camera and actor map, preserved through source bridge",
+          "evidence": "video_frames.jsonl, native_raw_readback.jsonl, channels/frame_join.jsonl"
+        }
       }
     },
     {
@@ -39,9 +110,9 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "selected-native/probe_2/construction.json",
-      "construction_sha256": "80320cd1e5777af90c1a673883c53fa4d4f348ef3c8ed02181acc6c7f790fdbb",
+      "construction_sha256": "7dccb6ff3d16f71837c4d4826d7cb7bf133d614bb9895131dc2760b4ef036fae",
       "fixture_recipe": "work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/current-v2-probe-2-fixture-recipe.json",
-      "measurement_contract": "current-v2-probe-2-measurement-contract.json",
+      "measurement_contract": "selected-native/probe_2/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "c111071-saved-finalizer-report-v1"
@@ -50,18 +121,89 @@
         "status": "physical",
         "reason": "Original stop, two-cycle timing and conflict occupancy may fail in the imported Native world"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-native/probe_2/fallback1-construction.json",
+          "construction_sha256": "9d90585c0fd4841e5e912faf2527af6837031a5e8e13348211f97a372cd97c0d",
+          "trigger": {
+            "source": "native capture original body readback and approach distance",
+            "metric": "entry progress and stop-line approach within 600 frames",
+            "failure_condition": "primary spawn geometry cannot achieve the required original-body route progression and stop-line approach"
+          },
+          "changed_knobs": [
+            "ego initial longitudinal spawn y: -30 m to -28 m in map waypoint and spawn, preserving exact cell, actor, camera and 30 s capture"
+          ],
+          "offline": {
+            "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
+            "candidate_id": "fallback1",
+            "construction_sha256": "9d90585c0fd4841e5e912faf2527af6837031a5e8e13348211f97a372cd97c0d",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2 --candidate fallback1 --output .runtime-work/c111071-fallback-probe_2-offline-v1 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-native/probe_2/fallback1-offline.log",
+            "log_sha256": "496d412ee3a7096978d9a8ec77876c79940c84b655b19fcc25213eaa299e8910"
+          },
+          "compatibility": {
+            "receipt": "selected-native/compatibility/probe_2-fallback1-compatibility.json",
+            "log": "selected-native/compatibility/probe_2-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-native/compatibility/probe_2-fallback1-negative-analysis.log",
+            "sha256": "d13db6dca11a8fe99d4f0c09e54aaaceda3b298141e2c9c07fc631e328c2d3db"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-selected-probe_2-v2 TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2 --output .runtime-work/c111071-selected-probe_2-offline-v2 --python $PWD/.venv-cpu/bin/python",
+        "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
+        "candidate_id": "primary",
+        "construction_sha256": "7dccb6ff3d16f71837c4d4826d7cb7bf133d614bb9895131dc2760b4ef036fae",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2 --output .runtime-work/c111071-selected-probe_2-offline-v4 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "80320cd1e5777af90c1a673883c53fa4d4f348ef3c8ed02181acc6c7f790fdbb",
         "log": "selected-native/probe_2/offline.log",
         "log_sha256": "496d412ee3a7096978d9a8ec77876c79940c84b655b19fcc25213eaa299e8910"
+      },
+      "compatibility": {
+        "receipt": "selected-native/compatibility/probe_2-compatibility.json",
+        "log": "selected-native/compatibility/probe_2-compatibility-analysis.log",
+        "negative_log": "selected-native/compatibility/probe_2-negative-analysis.log",
+        "sha256": "84e8f5a6e06993c47d0f6308ce688e653d11e6580c7267a138f86fb57c0ea9c4"
+      },
+      "negative": {
+        "log": "selected-native/compatibility/probe_2-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-native/probe_2/saved-command.log",
+        "test_log_sha256": "ab54f50b3a46a2056f6bce3c8a4ec66cad9aad15caed3ca2e735e74d3805ad5b",
+        "processing_receipt": "selected-native/probe_2/saved-proof.json",
+        "processing_sha256": "d59f86eee7dd63981dd582c719374fe4d962eb7f3a86b39c1054f0998ba61617"
+      },
+      "physical_preparation": {
+        "receipt": "selected-native/probe_2/physical/proof.json",
+        "sha256": "1d43e94536dca0a7f875f803ca157e1f20f7d1c76d47242fda944e677183c425"
+      },
+      "acquisition": {
+        "ego_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "original Native full-body vertices and velocity readback each tick, then source bridge saved channel",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/ego_body_pose.jsonl"
+        },
+        "signal_phase_readback": {
+          "entrypoint": "live_capture.py",
+          "method": "original governing and cross signal actor phase and detector readback each tick",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/signal_phase_readback.jsonl"
+        },
+        "frame_join": {
+          "entrypoint": "live_capture.py",
+          "method": "same Native frame/time camera and actor map, preserved through source bridge",
+          "evidence": "video_frames.jsonl, native_raw_readback.jsonl, channels/frame_join.jsonl"
+        }
       }
     },
     {
@@ -69,9 +211,9 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "selected-native/yield_wait_for_clearance/construction.json",
-      "construction_sha256": "02cadefd6772febce26640f81a1b38b2f7bdc96396b8349df05a721e05a2344a",
+      "construction_sha256": "485f1eb7ebbc40f502c3a0b550cfc31b05ffed5e170f5ecda337f525d85ef303",
       "fixture_recipe": "work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/current-v2-yield-wait-for-clearance-fixture-recipe.json",
-      "measurement_contract": "current-v2-yield-wait-for-clearance-measurement-contract.json",
+      "measurement_contract": "selected-native/yield_wait_for_clearance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "c111071-saved-finalizer-report-v1"
@@ -80,18 +222,89 @@
         "status": "physical",
         "reason": "Original stop, two-cycle timing and conflict occupancy may fail in the imported Native world"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-native/yield_wait_for_clearance/fallback1-construction.json",
+          "construction_sha256": "0470fe242d44818004df11b083e13f80097af6c7106810b39b1290ac0ff24402",
+          "trigger": {
+            "source": "native capture original body readback and approach distance",
+            "metric": "entry progress and stop-line approach within 600 frames",
+            "failure_condition": "primary spawn geometry cannot achieve the required original-body route progression and stop-line approach"
+          },
+          "changed_knobs": [
+            "ego initial longitudinal spawn y: -30 m to -28 m in map waypoint and spawn, preserving exact cell, actor, camera and 30 s capture"
+          ],
+          "offline": {
+            "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+            "candidate_id": "fallback1",
+            "construction_sha256": "0470fe242d44818004df11b083e13f80097af6c7106810b39b1290ac0ff24402",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance --candidate fallback1 --output .runtime-work/c111071-fallback-yield_wait_for_clearance-offline-v1 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-native/yield_wait_for_clearance/fallback1-offline.log",
+            "log_sha256": "4fca70ee0d1fe798d9812994060e0331d9dab7ab590189a6838974f6b2b8caea"
+          },
+          "compatibility": {
+            "receipt": "selected-native/compatibility/yield_wait_for_clearance-fallback1-compatibility.json",
+            "log": "selected-native/compatibility/yield_wait_for_clearance-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-native/compatibility/yield_wait_for_clearance-fallback1-negative-analysis.log",
+            "sha256": "14abe8edd5428afed2c3d175184d5636bdf3a9288129862a66030e948a944092"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-selected-yield_wait_for_clearance-v2 TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance --output .runtime-work/c111071-selected-yield_wait_for_clearance-offline-v2 --python $PWD/.venv-cpu/bin/python",
+        "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+        "candidate_id": "primary",
+        "construction_sha256": "485f1eb7ebbc40f502c3a0b550cfc31b05ffed5e170f5ecda337f525d85ef303",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance --output .runtime-work/c111071-selected-yield_wait_for_clearance-offline-v4 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "02cadefd6772febce26640f81a1b38b2f7bdc96396b8349df05a721e05a2344a",
         "log": "selected-native/yield_wait_for_clearance/offline.log",
         "log_sha256": "4fca70ee0d1fe798d9812994060e0331d9dab7ab590189a6838974f6b2b8caea"
+      },
+      "compatibility": {
+        "receipt": "selected-native/compatibility/yield_wait_for_clearance-compatibility.json",
+        "log": "selected-native/compatibility/yield_wait_for_clearance-compatibility-analysis.log",
+        "negative_log": "selected-native/compatibility/yield_wait_for_clearance-negative-analysis.log",
+        "sha256": "b257da4c1688c1b56e7e3369664d6a7b14d039e461c6acdd274294004f8581e2"
+      },
+      "negative": {
+        "log": "selected-native/compatibility/yield_wait_for_clearance-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-native/yield_wait_for_clearance/saved-command.log",
+        "test_log_sha256": "e1c22f314005b0f5b43c07664057a7304d95f92dfd7552cc6e1363715d5c84fc",
+        "processing_receipt": "selected-native/yield_wait_for_clearance/saved-proof.json",
+        "processing_sha256": "491157a612178b048ee706838ae08b950b9962ebfe58b60e5b952edd34c8e823"
+      },
+      "physical_preparation": {
+        "receipt": "selected-native/yield_wait_for_clearance/physical/proof.json",
+        "sha256": "961697c39a56c298691a2673ca3f6ef867a88ee741847d950f22ecd5e2210275"
+      },
+      "acquisition": {
+        "ego_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "original Native full-body vertices and velocity readback each tick, then source bridge saved channel",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/ego_body_pose.jsonl"
+        },
+        "signal_phase_readback": {
+          "entrypoint": "live_capture.py",
+          "method": "original governing and cross signal actor phase and detector readback each tick",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/signal_phase_readback.jsonl"
+        },
+        "frame_join": {
+          "entrypoint": "live_capture.py",
+          "method": "same Native frame/time camera and actor map, preserved through source bridge",
+          "evidence": "video_frames.jsonl, native_raw_readback.jsonl, channels/frame_join.jsonl"
+        }
       }
     },
     {
@@ -99,9 +312,9 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "selected-native/yield_enter_during_occupancy/construction.json",
-      "construction_sha256": "73b5081841d9f173524775584d531f2fa48e0f2b30d6d2a9ced4d235267e17c0",
+      "construction_sha256": "1d8a8a72707aa24b92f1230cc9f07c4164ad12aac9d641f48074f54b9eb14814",
       "fixture_recipe": "work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/current-v2-yield-enter-during-occupancy-fixture-recipe.json",
-      "measurement_contract": "current-v2-yield-enter-during-occupancy-measurement-contract.json",
+      "measurement_contract": "selected-native/yield_enter_during_occupancy/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
         "output_schema": "c111071-saved-finalizer-report-v1"
@@ -110,18 +323,89 @@
         "status": "physical",
         "reason": "Original stop, two-cycle timing and conflict occupancy may fail in the imported Native world"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-native/yield_enter_during_occupancy/fallback1-construction.json",
+          "construction_sha256": "25c78140a7b6c8eeea19fb0c5fec797da5ef37de64be4df1b08387167f63115a",
+          "trigger": {
+            "source": "native capture original body readback and approach distance",
+            "metric": "entry progress and stop-line approach within 600 frames",
+            "failure_condition": "primary spawn geometry cannot achieve the required original-body route progression and stop-line approach"
+          },
+          "changed_knobs": [
+            "ego initial longitudinal spawn y: -30 m to -28 m in map waypoint and spawn, preserving exact cell, actor, camera and 30 s capture"
+          ],
+          "offline": {
+            "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy",
+            "candidate_id": "fallback1",
+            "construction_sha256": "25c78140a7b6c8eeea19fb0c5fec797da5ef37de64be4df1b08387167f63115a",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy --candidate fallback1 --output .runtime-work/c111071-fallback-yield_enter_during_occupancy-offline-v1 --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-native/yield_enter_during_occupancy/fallback1-offline.log",
+            "log_sha256": "3566da5f0835d02825fa182c97d3df1138ae58fdc6b2892b19327f7ccfeb3a1b"
+          },
+          "compatibility": {
+            "receipt": "selected-native/compatibility/yield_enter_during_occupancy-fallback1-compatibility.json",
+            "log": "selected-native/compatibility/yield_enter_during_occupancy-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-native/compatibility/yield_enter_during_occupancy-fallback1-negative-analysis.log",
+            "sha256": "3d0f32f0a2fe04989e2aacddfdcd4127edf9440e6a1bf6f7e282b88483dec26c"
+          }
+        }
+      ],
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-selected-yield_enter_during_occupancy-v2 TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy --output .runtime-work/c111071-selected-yield_enter_during_occupancy-offline-v2 --python $PWD/.venv-cpu/bin/python",
+        "case_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy",
+        "candidate_id": "primary",
+        "construction_sha256": "1d8a8a72707aa24b92f1230cc9f07c4164ad12aac9d641f48074f54b9eb14814",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy --output .runtime-work/c111071-selected-yield_enter_during_occupancy-offline-v4 --python .venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "73b5081841d9f173524775584d531f2fa48e0f2b30d6d2a9ced4d235267e17c0",
         "log": "selected-native/yield_enter_during_occupancy/offline.log",
-        "log_sha256": "3566da5f0835d02825fa182c97d3df1138ae58fdc6b2892b19327f7ccfeb3a1b"
+        "log_sha256": "5d7ede9e543adf56575c897400afc62dfd0d89887752de43ff0baeaf05c0163c"
+      },
+      "compatibility": {
+        "receipt": "selected-native/compatibility/yield_enter_during_occupancy-compatibility.json",
+        "log": "selected-native/compatibility/yield_enter_during_occupancy-compatibility-analysis.log",
+        "negative_log": "selected-native/compatibility/yield_enter_during_occupancy-negative-analysis.log",
+        "sha256": "d7545ee5914c055d7f4736f764def2d4f5f0b020a80b335a9b16d9ba4eb2a51c"
+      },
+      "negative": {
+        "log": "selected-native/compatibility/yield_enter_during_occupancy-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/execution-manifest.json --case training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "selected-native/yield_enter_during_occupancy/saved-command.log",
+        "test_log_sha256": "a1498d3eb614a278f4317a5e67a116185affad7683b134abddb9ceec39ffc64a",
+        "processing_receipt": "selected-native/yield_enter_during_occupancy/saved-proof.json",
+        "processing_sha256": "18c20dff9e0db917bb2e536b998d9f3cdb27256b9bd78f97e2209b8b614ac08b"
+      },
+      "physical_preparation": {
+        "receipt": "selected-native/yield_enter_during_occupancy/physical/proof.json",
+        "sha256": "194684a314c65ae76ebbe035ea8c8fae5e24c9f28c0d01126bfbe0512dd27ef8"
+      },
+      "acquisition": {
+        "ego_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "original Native full-body vertices and velocity readback each tick, then source bridge saved channel",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/ego_body_pose.jsonl"
+        },
+        "signal_phase_readback": {
+          "entrypoint": "live_capture.py",
+          "method": "original governing and cross signal actor phase and detector readback each tick",
+          "evidence": "native_raw_readback.jsonl, native_samples.jsonl, channels/signal_phase_readback.jsonl"
+        },
+        "frame_join": {
+          "entrypoint": "live_capture.py",
+          "method": "same Native frame/time camera and actor map, preserved through source bridge",
+          "evidence": "video_frames.jsonl, native_raw_readback.jsonl, channels/frame_join.jsonl"
+        }
       }
     }
   ]
