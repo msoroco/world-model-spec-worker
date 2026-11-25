@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from branch_scenarios import BRANCHES, rows
-from build_selected import SELECTED
+from build_selected import SELECTED, SOURCE_TERMS
 
 ROOT = Path(__file__).resolve().parents[1]
 AID = ROOT.name
@@ -20,6 +20,12 @@ def dump(path, value):
 
 
 def channel(name):
+    if name in SOURCE_TERMS:
+        return {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                'method': 'per-frame original source references for independent review; no legal classification',
+                'time_window': '600 frames / 30 seconds',
+                'reference_frame': 'original world and frame time',
+                'uncertainty': 'Observation and lawful status remain unverified'}
     return {'name': name, 'unit': 'video' if name == 'four_camera_video' else 'structured', 'sampling_rate_hz': 20,
             'method': '600 source-joined original Native actor and signal-request rows',
             'time_window': '600 frames / 30 seconds',
@@ -49,7 +55,7 @@ def build():
                      if branch.startswith('pedestrian_')
                      else ('ego_motion', 'arrow_request', 'concurrent_request'))
             construction['recording_description'] = {
-                'channels': [channel(name) for name in (*names, 'turn_history', 'four_camera_video')],
+                'channels': [channel(name) for name in (*names, 'turn_history', 'four_camera_video', *SOURCE_TERMS)],
                 'context_inputs': [
                     {'name': 'source_law_and_signal_governance', 'unit': 'structured',
                      'method': 'source-hashed exact law and signal-request context; governance review pending'},

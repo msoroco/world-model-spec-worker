@@ -338,8 +338,9 @@
     "dev.traffic_signal": {
       "evidence": "Original signal-request history and four camera pixels need independent arrow/concurrent indication review",
       "channels": [
-        "arrow_request",
-        "concurrent_request"
+        "dev.traffic_signal",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
@@ -347,7 +348,11 @@
     },
     "dev.governs": {
       "evidence": "Signal orientation and controlling approach remain unverified until original scene and pixel review",
-      "channels": [],
+      "channels": [
+        "dev.governs",
+        "turn_history",
+        "four_camera_video"
+      ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/native_runner_concurrent.py",
         "inputs/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/assignment.json"
@@ -355,7 +360,11 @@
     },
     "st.lane_enters": {
       "evidence": "Source OpenDRIVE and original ego route support later lane-entry review; requested road does not prove governance",
-      "channels": [],
+      "channels": [
+        "st.lane_enters",
+        "turn_history",
+        "four_camera_video"
+      ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/request.py"
       ]
@@ -363,7 +372,9 @@
     "drv.turning": {
       "evidence": "Original ego position/yaw history and four videos support turn-path measurement; legal movement permission remains unverified",
       "channels": [
-        "ego_motion"
+        "drv.turning",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
@@ -372,7 +383,9 @@
     "drv.entering_intersection": {
       "evidence": "600-frame source-joined ego position with an engineering intersection bound, not legal cautiousness",
       "channels": [
-        "ego_motion"
+        "drv.entering_intersection",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
@@ -381,7 +394,9 @@
     "kin.speed": {
       "evidence": "Original velocity/position source can measure speed; no legal caution threshold inferred",
       "channels": [
-        "ego_motion"
+        "kin.speed",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/native_runner_concurrent.py"
@@ -390,7 +405,9 @@
     "ru.pedestrian": {
       "evidence": "Pedestrian actor position in selected pedestrian branches; lawful status requires independent source review",
       "channels": [
-        "pedestrian_motion"
+        "ru.pedestrian",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_branches.py"
@@ -398,7 +415,11 @@
     },
     "st.crosswalk": {
       "evidence": "OpenDRIVE adjacent crosswalk geometry and original video require physical review",
-      "channels": [],
+      "channels": [
+        "st.crosswalk",
+        "turn_history",
+        "four_camera_video"
+      ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/road-template.xodr"
       ]
@@ -406,7 +427,9 @@
     "drv.in_intersection": {
       "evidence": "Original other-vehicle source history supports occupancy; lawful status requires independent review",
       "channels": [
-        "other_motion"
+        "drv.in_intersection",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_selected.py"
@@ -415,9 +438,9 @@
     "drv.yields_to": {
       "evidence": "Source-joined relative entry timing is a measurement only; right-of-way judgment remains external",
       "channels": [
-        "ego_motion",
-        "other_motion",
-        "pedestrian_motion"
+        "drv.yields_to",
+        "turn_history",
+        "four_camera_video"
       ],
       "source_refs": [
         "work/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/native/finalize_selected.py",
@@ -426,7 +449,11 @@
     },
     "drv.time_to_conflict": {
       "evidence": "Optional engineering relative-timing cue is not a statutory cautiousness definition",
-      "channels": [],
+      "channels": [
+        "drv.time_to_conflict",
+        "turn_history",
+        "four_camera_video"
+      ],
       "source_refs": [
         "inputs/training__C111603__NRS-484B-307-7a__motor_vehicle_driver/assignment.json"
       ]

@@ -9,6 +9,10 @@ AID = ROOT.name
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SELECTED = ('controlled_1', 'controlled_2', 'pedestrian_clearance',
             'pedestrian_overlap', 'concurrent_absent', 'concurrent_present')
+SOURCE_TERMS = ('dev.traffic_signal', 'dev.governs', 'st.lane_enters',
+                'drv.turning', 'drv.entering_intersection', 'kin.speed',
+                'ru.pedestrian', 'st.crosswalk', 'drv.in_intersection',
+                'drv.yields_to', 'drv.time_to_conflict')
 
 
 def sha(path):
@@ -20,6 +24,12 @@ def dump(path, value):
 
 
 def channel(name):
+    if name in SOURCE_TERMS:
+        return {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+                'method': 'per-frame original source references for independent review; no legal classification',
+                'time_window': '600 frames / 30 seconds',
+                'reference_frame': 'original world and frame time',
+                'uncertainty': 'Observation and lawful status remain unverified'}
     return {'name': name, 'unit': 'video' if name == 'four_camera_video' else 'structured', 'sampling_rate_hz': 20,
             'method': 'source-joined original Native actor history and four synchronized cameras',
             'time_window': '600 frames / 30 seconds',
@@ -33,7 +43,7 @@ def build():
         base = json.loads((ROOT / f'current-v2-{source}-construction.json').read_text())
         recording = {'channels': [channel(x) for x in
                                   ('ego_motion', 'other_motion', 'arrow_request',
-                                   'turn_history', 'four_camera_video')],
+                                   'turn_history', 'four_camera_video', *SOURCE_TERMS)],
                      'context_inputs': [
                          {'name': 'source_law_and_signal_governance', 'unit': 'structured',
                           'method': 'source-hashed exact law and signal-request context; governance review pending'},

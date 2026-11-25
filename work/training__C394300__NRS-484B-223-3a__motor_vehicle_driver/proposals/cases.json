@@ -1,11 +1,19 @@
 {
+  "cell_id": "C394300",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
-      "target_law_id": "NRS-484B-223-3a",
-      "target_type": "controlled_comparison",
-      "cell_id": "C394300",
-      "actor": "motor_vehicle_driver",
+      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected common center-lane map, actor and capture context.",
+      "variable_assignments": {
+        "requested_center_lane_movement": {
+          "kind": "controller",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -96,14 +104,146 @@
           "CPU synthetic rows are not physical observations"
         ]
       },
-      "sweep_measurements": []
+      "unresolved_judgment_calls": [
+        "a single center lane to be used only for turning by traffic moving in both directions",
+        "only for the purpose of making a left-hand turn onto or from the highway"
+      ]
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
+      "target_law_id": "NRS-484B-223-3a",
+      "target_type": "boundary_probe",
+      "rationale": "Compare original full-body center-lane use and subsequent movement with shared geometry, capture and actor.",
+      "paired_probe_id": "c394300-center-turn-purpose-pair",
+      "deliberate_differences": [
+        "requested_center_lane_movement"
+      ],
+      "probe": {
+        "primary_variable": "requested_center_lane_movement",
+        "comparison_or_standard": "entire original center-lane occupancy and next movement",
+        "target_value_or_branch": "left_turn_at_first_opportunity"
+      },
+      "variable_assignments": {
+        "requested_center_lane_movement": {
+          "kind": "controller",
+          "value": "left_turn_at_first_opportunity"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "st.centre_turn_lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "native_body_pose_control",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame/body/lane survey and controlled route; see runner.py",
+            "time_window": "entire 24 s / 480 frame attempt",
+            "reference_frame": "surveyed Native map and original frame",
+            "uncertainty": "50 ms frame bracket; physical purpose unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored purpose is not observed driver intent",
+          "CPU synthetic rows are not physical observations"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "a single center lane to be used only for turning by traffic moving in both directions",
+        "only for the purpose of making a left-hand turn onto or from the highway"
+      ]
     },
     {
       "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-223-3a",
-      "target_type": "controlled_comparison",
-      "cell_id": "C394300",
-      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
+      "rationale": "Compare original full-body center-lane use and subsequent movement with shared geometry, capture and actor.",
+      "paired_probe_id": "c394300-center-turn-purpose-pair",
+      "deliberate_differences": [
+        "requested_center_lane_movement"
+      ],
+      "probe": {
+        "primary_variable": "requested_center_lane_movement",
+        "comparison_or_standard": "entire original center-lane occupancy and next movement",
+        "target_value_or_branch": "through_first_opportunity_then_later_turn"
+      },
+      "variable_assignments": {
+        "requested_center_lane_movement": {
+          "kind": "controller",
+          "value": "through_first_opportunity_then_later_turn"
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -194,7 +334,33 @@
           "CPU synthetic rows are not physical observations"
         ]
       },
-      "sweep_measurements": []
+      "unresolved_judgment_calls": [
+        "a single center lane to be used only for turning by traffic moving in both directions",
+        "only for the purpose of making a left-hand turn onto or from the highway"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c394300-original-center-turn-review",
+      "target_law_id": "NRS-484B-223-3a",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "a single center lane to be used only for turning by traffic moving in both directions",
+          "note": "Authored bidirectional center design and original Native lane survey must agree."
+        },
+        {
+          "phrase": "only for the purpose of making a left-hand turn onto or from the highway",
+          "note": "Declared experimental purpose is separate from observed movement and driver intent."
+        }
+      ],
+      "rationale": "Two software-prepared movement cases await original Native lane, body and purpose review.",
+      "missing_inputs": [
+        "Original Native center-lane and full-body evidence",
+        "Independent driver-purpose and movement review"
+      ]
     }
   ]
 }

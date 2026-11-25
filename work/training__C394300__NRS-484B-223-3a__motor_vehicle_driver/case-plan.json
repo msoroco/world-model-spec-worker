@@ -32,7 +32,7 @@
         "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
         "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Native runner, four distinct candidate plans per case, exact offline and diagnostic v1 compatibility proofs, saved result finalization, synthetic positive/negative fixtures and independent diagnostic comparison audits are built. Explicit-source v2 diagnostic recipes materialize and pass independent frame, graph and video audit; selected v2 package compatibility, independent delivery audit, physical realization, statutory closure and ordered GPU queue remain unverified."
+      "evidence_or_gap": "Source-bound exact center-turn cases and current CPU delivery proofs are being prepared; actual Native lane design, driver purpose, body movement and original pixels remain for local independent review."
     }
   ],
   "neutral_baseline": {
@@ -43,7 +43,7 @@
     {
       "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-223-3a",
-      "kind": "planned_only",
+      "kind": "delivery",
       "source_branch": "Purpose restriction throughout center-turn-lane driving.",
       "physical_target": "use center turn lane for left turn",
       "comparison_variable": "purpose and actual movement from center turn lane",
@@ -55,7 +55,7 @@
     {
       "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2",
       "target_law_id": "NRS-484B-223-3a",
-      "kind": "planned_only",
+      "kind": "delivery",
       "source_branch": "Purpose restriction throughout center-turn-lane driving.",
       "physical_target": "use center turn lane for through travel",
       "comparison_variable": "purpose and actual movement from center turn lane",
@@ -116,34 +116,49 @@
   ],
   "observations": [
     {
+      "name": "st.intersection",
+      "mandatory": true,
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
+    },
+    {
       "name": "st.centre_turn_lane",
       "mandatory": true,
-      "reason": "the single centre lane for turning in both directions"
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
-      "reason": "the subject is in it"
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
     },
     {
-      "name": "drv.turning",
+      "name": "kin.position",
       "mandatory": true,
-      "reason": "the left turn the lane may be used for"
-    },
-    {
-      "name": "st.driveway_or_alley_entrance",
-      "mandatory": true,
-      "reason": "the way turned onto or from"
-    },
-    {
-      "name": "st.intersection",
-      "mandatory": true,
-      "reason": "where the turn is made"
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
     },
     {
       "name": "kin.path_length",
       "mandatory": true,
-      "reason": "travel along the lane as the evidence of use for anything else"
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
+    },
+    {
+      "name": "kin.heading",
+      "mandatory": true,
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
+    },
+    {
+      "name": "drv.turning",
+      "mandatory": true,
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
+    },
+    {
+      "name": "native_body_pose_control",
+      "mandatory": true,
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
+    },
+    {
+      "name": "camera_frame_join",
+      "mandatory": true,
+      "reason": "Retained source-bound original frame, body, lane, route or camera evidence"
     }
   ],
   "sources": [
@@ -172,5 +187,107 @@
   "blockers": [
     "Native runner, four distinct candidate plans per case, exact offline and diagnostic v1 compatibility proofs, saved result finalization, synthetic positive/negative fixtures and independent diagnostic comparison audits are built. Explicit-source v2 diagnostic recipes materialize and pass independent frame, graph and video audit; selected v2 package compatibility, independent delivery audit, physical realization, statutory closure and ordered GPU queue remain unverified."
   ],
-  "source_context_review": "Center lane must be designed for left turns in both travel directions. Preserve an explicit source-declared turn purpose separately from measured movement."
+  "source_context_review": "Center lane must be designed for left turns in both travel directions. Preserve an explicit source-declared turn purpose separately from measured movement.",
+  "source_observation_mapping": {
+    "st.centre_turn_lane": {
+      "evidence": "Authored bidirectional turn-only lane type and original Native lane survey with frame/body joins; physical Native proof remains pending",
+      "channels": [
+        "st.centre_turn_lane",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Full-body footprint measured against authored center-lane polygons at original frame times",
+      "channels": [
+        "rel.occupies",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "body_history.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Declared experimental purpose is separate from observed Native road, lane, body and trajectory; driver intent remains unverified",
+      "channels": [
+        "drv.turning",
+        "kin.position",
+        "kin.heading"
+      ],
+      "source_refs": [
+        "declared_purpose.json",
+        "native_samples.jsonl",
+        "trace.jsonl"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Authored first and later left-turn connectors and exits are checked in map and source route; their actual use awaits Native capture",
+      "channels": [
+        "st.intersection",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    },
+    "st.intersection": {
+      "evidence": "Authored two-opportunity junction geometry and Native lane readback at both opportunities",
+      "channels": [
+        "st.intersection",
+        "native_body_pose_control"
+      ],
+      "source_refs": [
+        "scene.xodr",
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Cumulative traveled path derived from joined original Native positions, distinct from desired route length",
+      "channels": [
+        "kin.path_length",
+        "kin.position"
+      ],
+      "source_refs": [
+        "native_samples.jsonl",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 24,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full roadway, both turn opportunities and subject body",
+        "interval": "all 480 frames / 0-24 s"
+      },
+      {
+        "view": "approach",
+        "subject": "center-turn-lane entry and first junction",
+        "interval": "all 480 frames / 0-24 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "first turn connector and subject movement",
+        "interval": "all 480 frames / 0-24 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject approach and later turn opportunity",
+        "interval": "all 480 frames / 0-24 s"
+      }
+    ]
+  }
 }

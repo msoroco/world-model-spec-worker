@@ -111,6 +111,17 @@ def finalize(attempt, output):
         {'video_frame': frame['video_frame'],
          'source_views': [view + '.mkv' for view in VIEWS]}
         for frame in mapping]
+    source_terms = ('dev.traffic_signal', 'dev.governs', 'st.lane_enters',
+                    'drv.turning', 'drv.entering_intersection', 'kin.speed',
+                    'ru.pedestrian', 'st.crosswalk', 'drv.in_intersection',
+                    'drv.yields_to', 'drv.time_to_conflict')
+    for term in source_terms:
+        metric['channels'][term] = [
+            {'frame': frame['video_frame'],
+             'source_refs': ['channels/turn_history.jsonl', 'channels/four_camera_video.jsonl'],
+             'review_status': 'original_source_review_pending',
+             'legal_classification': None}
+            for frame in mapping]
     description = construction['recording_description']
     channels = attempt / 'channels'
     channels.mkdir()
