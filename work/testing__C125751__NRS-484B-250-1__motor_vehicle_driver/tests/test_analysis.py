@@ -80,6 +80,20 @@ class AnalysisTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'time join differs'):
                 build_report(root)
 
+    def test_byte_identical_source_symlink_rejected(self):
+        scratch = REPO / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        with TemporaryDirectory(dir=scratch) as temporary:
+            root = Path(temporary)
+            write_attempt(root)
+            source = root / 'signal-history.json'
+            alias = root / 'alias-signal-history.json'
+            alias.write_bytes(source.read_bytes())
+            source.unlink()
+            source.symlink_to(alias.name)
+            with self.assertRaisesRegex(ValueError, 'Missing required source: signal-history.json'):
+                build_report(root)
+
     def test_provenance_binding_rejects_tamper(self):
         scratch = REPO / '.runtime-work'
         scratch.mkdir(exist_ok=True)

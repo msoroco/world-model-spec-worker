@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver",
   "input_sha256": "1511cfcf7c15fd69a12f0eb306eb57227be5a0c8d094a83ca67a495188600094",
-  "status": "partial",
-  "readiness_kind": "exact_cases_measurement_native_acquisition_partial",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -10,25 +10,19 @@
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-preflight.log",
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+      "sha256": "a6e8b59585179e38f3dad3f3120625f0378f03bffc63fb0efff222ec37ad31c5"
     },
     {
       "name": "focused_tests",
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-access-tests.log",
-      "sha256": "1f002e66ef57d467e473b45ca0e7ebc3972d773f37480bf3070ea00128d80eb9"
-    },
-    {
-      "name": "static",
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-static-check.log",
-      "sha256": "889b7e0aa9d5d7629bed94f73abfad95cb86d301a8f9adf4acd5b2bbd59bd893"
+      "sha256": "16c7840eaca23868d32f829e2fc193a63669b8cc217dbe91ed557d4c9ed98813"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA parking motion, four-camera visibility and original source review after CPU delivery preparation"
   ],
-  "reason": "Four exact cases and pair comparisons are planned. Eleven CPU tests pass for source-bound measurements, surveyed targets, parking control, injected 900-frame/four-camera Native acquisition, and saved-source audit including PNG decode. Actual CARLA adapter/map, exact diagnostics, compatibility, proposals, manifest, fallback and delivery proofs remain CPU work."
+  "reason": "Independent lead review found production_delivery_audit.py only counts FFV1 frames and decodes four sampled PNGs per camera; it does not fully decode all 900 original video frames. Worker-owned repair and focused failure proof are required, followed by refreshed bindings and exact scoped strict gate. Existing offline, compatibility, semantic and fixture proofs remain retained.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --case testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_clear --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

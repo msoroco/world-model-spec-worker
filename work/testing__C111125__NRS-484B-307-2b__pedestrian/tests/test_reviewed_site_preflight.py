@@ -99,6 +99,24 @@ class ReviewedSitePreflightTests(unittest.TestCase):
         with self.assertRaisesRegex(SourceError, 'source hash mismatch'):
             review(self.site_path())
 
+    def test_each_device_case_requires_its_source_cited_provision(self):
+        prefix = ROOT.name + '__'
+        self.assertEqual(review(self.site_path(), prefix + 'walk_cross')['case_id'],
+                         prefix + 'walk_cross')
+        for suffix in ('flashing_countdown_cross', 'flashing_no_countdown_wait',
+                       'walk_then_flash_continue', 'walk_then_steady_continue'):
+            with self.assertRaisesRegex(SourceError, 'missing case provision'):
+                review(self.site_path(), prefix + suffix)
+        device = json.loads((self.root / 'devices.json').read_text())
+        device['route_applicability']['law_refs'] = [
+            'NRS-484B-283-1d1', 'NRS-484B-283-1d2',
+            'NRS-484B-283-1d3', 'NRS-484B-283-1d4']
+        self.sources[2] = self.write('devices.json', device)
+        for suffix in ('flashing_countdown_cross', 'flashing_no_countdown_wait',
+                       'walk_then_flash_continue', 'walk_then_steady_continue'):
+            self.assertEqual(review(self.site_path(), prefix + suffix)['case_id'],
+                             prefix + suffix)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -13,9 +13,19 @@ from native_crossing import SourceError, source, verify_site
 
 
 DEVICE_LAWS = {f"NRS-484B-283-1d{part}" for part in range(1, 5)}
+CASE_PROVISIONS = {
+    'other_device_stop': {'NRS-484B-283-1d4'},
+    'other_device_cross': {'NRS-484B-283-1d4'},
+    'walk_cross': {'NRS-484B-283-1d1'},
+    'flashing_countdown_cross': {'NRS-484B-283-1d2'},
+    'flashing_no_countdown_wait': {'NRS-484B-283-1d3'},
+    'walk_then_flash_continue': {'NRS-484B-283-1d1', 'NRS-484B-283-1d3'},
+    'walk_then_steady_continue': {'NRS-484B-283-1d1', 'NRS-484B-283-1d4'},
+}
+ASSIGNMENT = 'testing__C111125__NRS-484B-307-2b__pedestrian'
 
 
-def review(path: Path) -> dict:
+def review(path: Path, case_id: str | None = None) -> dict:
     path = Path(path).resolve(strict=True)
     site = json.loads(path.read_text())
     if (site.get("diagnostic_fixture") is not False or
@@ -42,6 +52,17 @@ def review(path: Path) -> dict:
         raise SourceError("applicable device lacks cited NRS 484B.283 provision")
     if not applicability.get("review_basis"):
         raise SourceError("device applicability review basis missing")
+    if case_id is not None:
+        if not case_id.startswith(ASSIGNMENT + '__'):
+            raise SourceError('reviewed applicability wrong case identity')
+        suffix = case_id.removeprefix(ASSIGNMENT + '__')
+        if suffix not in CASE_PROVISIONS | {'marked_cross': set(), 'unmarked_cross': set(),
+                                            'outside_cross': set()}:
+            raise SourceError('reviewed applicability unknown case')
+        required = CASE_PROVISIONS.get(suffix, set())
+        if required and (applicability['applies'] is not True or
+                         not required <= set(law_refs)):
+            raise SourceError('reviewed applicability missing case provision')
     return {
         "format": "worker-pedestrian-site-preflight",
         "review_source_id": site["review_source_id"],
@@ -50,6 +71,7 @@ def review(path: Path) -> dict:
         "device_applies_to_route": applicability["applies"],
         "referenced_provisions": law_refs,
         "device_inventory_sha256": device_ref["sha256"],
+        "case_id": case_id,
         "legal_verdict": None,
         "physical_acceptance": False,
     }
@@ -58,8 +80,9 @@ def review(path: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", type=Path, required=True)
+    parser.add_argument("--case")
     args = parser.parse_args()
-    print(json.dumps(review(args.site), sort_keys=True))
+    print(json.dumps(review(args.site, args.case), sort_keys=True))
 
 
 if __name__ == "__main__":

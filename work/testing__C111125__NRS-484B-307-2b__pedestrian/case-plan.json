@@ -405,12 +405,41 @@
     }
   ],
   "observations": [
-    "original frame/time and actor identity",
-    "official facing signal head with circular green as sole lit aspect",
-    "other-device identity, route applicability and frame indication",
-    "public-highway and marked or qualifying unmarked crosswalk geometry from map source",
-    "pedestrian location, highway entry and crosswalk membership per original frame",
-    "original pedestrian-device mode and countdown at every frame, with first highway entry, clearance, zero and steady transition"
+    {
+      "name": "pedestrian_body_center_xy_m",
+      "mandatory": true,
+      "evidence": "same-frame original Native body trace and graph"
+    },
+    {
+      "name": "original frame/time and actor identity",
+      "mandatory": false,
+      "evidence": "source-verified original Native site and saved frame timeline; checked by independent delivery audit"
+    },
+    {
+      "name": "official facing signal head with circular green as sole lit aspect",
+      "mandatory": false,
+      "evidence": "source-verified original Native site and saved frame timeline; checked by independent delivery audit"
+    },
+    {
+      "name": "other-device identity, route applicability and frame indication",
+      "mandatory": false,
+      "evidence": "source-verified original Native site and saved frame timeline; checked by independent delivery audit"
+    },
+    {
+      "name": "public-highway and marked or qualifying unmarked crosswalk geometry from map source",
+      "mandatory": false,
+      "evidence": "source-verified original Native site and saved frame timeline; checked by independent delivery audit"
+    },
+    {
+      "name": "pedestrian location, highway entry and crosswalk membership per original frame",
+      "mandatory": false,
+      "evidence": "source-verified original Native site and saved frame timeline; checked by independent delivery audit"
+    },
+    {
+      "name": "original pedestrian-device mode and countdown at every frame, with first highway entry, clearance, zero and steady transition",
+      "mandatory": false,
+      "evidence": "source-verified original Native site and saved frame timeline; checked by independent delivery audit"
+    }
   ],
   "sources": [
     {
@@ -531,14 +560,33 @@
     }
   ],
   "camera_plan": {
+    "profile": "overview1080-capability",
     "fps": 20,
-    "duration_seconds": 30,
-    "sources": [
-      "front",
-      "left",
-      "right",
-      "rear"
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian, crosswalk, official signal and other applicable device",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian approach, highway entry and body motion",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "marked or qualifying unmarked crosswalk boundaries and signal heads",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian clearance and device indication transitions",
+        "interval": "all 900 original frames"
+      }
     ],
     "limitation": "Native source and pixel visibility await local site review."
-  }
+  },
+  "source_observation_mapping": {}
 }

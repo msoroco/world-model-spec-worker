@@ -1,6 +1,6 @@
 # testing__C227749__LVMC-11-30-050__pedestrian
 
-Status: **partial**. Exact law LVMC 11.30.050; frozen accepted evidence is empty. Conditional witness and authored geometry do not establish a physical crossing or legal verdict.
+Current CPU status: **ready for local acquisition**. Exact law LVMC 11.30.050; frozen accepted evidence is empty. Conditional witness and authored geometry do not establish a physical crossing or legal verdict.
 
 ## Built exact CPU package
 
@@ -143,3 +143,13 @@ All ten current selected-manifest offline and positive/negative compatibility pr
 The assigned `inputs/.../evidence.json` contains no accepted recordings or original municipal site documents. Needed for source grounding are independently reviewed original curb endpoints, roadway/public-use status, crosswalk boundaries, municipal jurisdiction and governing control, each with its original record and case/map binding; actual 400-frame Native pixels and walker motion require local capture. The authored OpenDRIVE geometry and synthetic media cannot supply those original facts. Resume by acquiring and reviewing those records, materializing them as `reviewed-site.json` and `reviewed-source-documents/` in each fresh Native attempt, then rerunning the exact production pixel and comparison audits and the strict assignment gate.
 
 The three exact saved comparison positive and wrong-review negative CLI pairs were rerun after their pixel-audit dependency changed; current hashes are in `comparisons/proofs.json`. The scoped static gate again passed (`cpu-static-audit-hardening-final.log`).
+
+## 2026-11-25 CPU delivery preparation
+
+The current pinned runtime verify and preflight pass. Exact primary and fallback offline and compatibility proofs for all five selected cases, five saved-only processing proofs, positive/missing-source and original-pixel negative proofs, three controlled comparison proofs and 64 focused tests are retained. The exact scoped strict check now exits 0 with `static_checks_passed: true` after binding the existing negative-source and acquisition entries in `execution-manifest.json`, adding recorded-only post-capture commands for each case, and matching the plan's six source requirements to four actual recorded channel names. The requirements remain explicit in the observation source text and Native reviewed-site gate. Root `construction.json` and `config.json` mirror the tested first exact case for the canonical package contract. Legacy failed and stale proof entries were removed from `result.json`; only passing, source-hash-current test logs remain.
+
+The supplied `inputs/testing__C227749__LVMC-11-30-050__pedestrian/judgment_ranges.json` contains no matching LVMC-11-30-050 training range. The three judgment phrases in the canonical proposal remain unresolved legal judgments; no numeric legal angle, route-length or crosswalk tolerance has been invented. Exact cases are `outside_right_angle`, `outside_shortest_endpoint`, `outside_neither`, `outside_endpoint_detour` and `inside_crosswalk_oblique`. The three comparisons are `right_angle_vs_neither`, `shortest_vs_neither` and `outside_vs_crosswalk_exception`.
+
+CPU ready means the package can be dispatched for original-site and Native evidence acquisition with fail-closed checks. Before any actual capture, the local operator must supply independently reviewed municipal site documents for curbs, crosswalks, roadway/public use, jurisdiction and control; `reviewed_site.py` rejects missing or changed sources. Native map crosswalk readback, walker route, original four-camera visibility, physical completion, independent physical/comparison review and canonical acceptance remain unverified. The authored OpenDRIVE and synthetic diagnostic media establish no physical or legal conclusion.
+
+Resume: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C227749__LVMC-11-30-050__pedestrian --complete --require-delivery-ready` for the CPU package, then use the exact canonical `first_gpu_delivery_command` in `result.json` under the local owner. All temporary attempts and outputs belong under `.runtime-work/`.

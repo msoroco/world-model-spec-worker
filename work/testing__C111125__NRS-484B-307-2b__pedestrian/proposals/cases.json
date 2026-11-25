@@ -77,7 +77,7 @@
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "boundary_probe",
+      "target_type": "compliant_attempt",
       "rationale": "Marked crosswalk crossing while facing circular green alone; no contrary device",
       "variable_assignments": {
         "circular_green_alone": {
@@ -398,7 +398,7 @@
     {
       "case_id": "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
       "target_law_id": "NRS-484B-307-2b",
-      "target_type": "boundary_probe",
+      "target_type": "violating_attempt",
       "rationale": "Circular green entry outside measured crosswalk boundaries",
       "variable_assignments": {
         "circular_green_alone": {
@@ -885,24 +885,69 @@
       ]
     }
   ],
-  "sweep_specs": [
-    {
-      "sweep_id": "device_applicability_source_review",
-      "target_law_id": "NRS-484B-307-2b",
-      "judgment_refs": [
-        {
-          "phrase": "unless directed otherwise by another device as provided in NRS 484B.283",
-          "note": "Device route applicability and source-governed entry or continuation cannot be decided from a synthetic indication label."
-        }
-      ],
-      "status": "incomplete",
-      "rationale": "No reviewed Native device inventory or crosswalk route supports a source-bound applicability sweep.",
-      "missing_inputs": [
-        "reviewed Native intersection and official signal head",
-        "source-verified device route applicability and phase timing",
-        "physical pedestrian clearance feasibility"
-      ]
-    }
-  ],
+  "sweep_specs": [],
+  "applicability_review": {
+    "kind": "categorical source-gated branch review",
+    "route_preflight": "reviewed_site_preflight.py",
+    "original_frame_observation": "device_timeline.py",
+    "provisions": [
+      {
+        "law_id": "NRS-484B-283-1d1",
+        "source_path": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
+        "source_sha256": "7e33d00b26ae35c9bbc893e7e3a8d2ae7fb853b952b0f02410844ff1a61b4332",
+        "quoted_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Walk” indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.",
+        "case_ids": [
+          "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
+          "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+          "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue"
+        ]
+      },
+      {
+        "law_id": "NRS-484B-283-1d2",
+        "source_path": "inputs/testing__C150911__NRS-484B-283-1d2__pedestrian/assignment.json",
+        "source_sha256": "cac30ea2ef137b1a4d12da4c941eb0868d2b79d53e6e40948022a8101751a43e",
+        "quoted_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.",
+        "case_ids": [
+          "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross"
+        ]
+      },
+      {
+        "law_id": "NRS-484B-283-1d3",
+        "source_path": "inputs/testing__C143766__NRS-484B-283-1d3__pedestrian/assignment.json",
+        "source_sha256": "e1a02ad2f1713c2c0e96c779bf3e0f419397d0349396fa86066a6fabd6d1063f",
+        "quoted_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and steady.",
+        "case_ids": [
+          "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
+          "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue"
+        ]
+      },
+      {
+        "law_id": "NRS-484B-283-1d4",
+        "source_path": "inputs/testing__C143766__NRS-484B-283-1d4__pedestrian/assignment.json",
+        "source_sha256": "28ca62012d77fe2c085f295871d0299ae92e8cfc6c5d03bb074446a957a1d563",
+        "quoted_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated and steady a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) or (2) [NRS-484B-283-1d1, NRS-484B-283-1d2] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety as soon as possible.",
+        "case_ids": [
+          "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+          "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+          "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue"
+        ]
+      }
+    ],
+    "case_ids": [
+      "testing__C111125__NRS-484B-307-2b__pedestrian__marked_cross",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__unmarked_cross",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_stop",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__other_device_cross",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__outside_cross",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__walk_cross",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_countdown_cross",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__flashing_no_countdown_wait",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_flash_continue",
+      "testing__C111125__NRS-484B-307-2b__pedestrian__walk_then_steady_continue"
+    ],
+    "numeric_sweep_reason": "Frozen judgment range inventory has no range for this clause; device alternatives are categorical and original applicability is source reviewed.",
+    "reviewed_site_required": true,
+    "legal_verdict": null
+  },
   "diagnostic_only": false
 }

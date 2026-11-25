@@ -54,7 +54,7 @@ def build():
                                               'description': phrase, 'numeric_conditions': []}],
                               'timing': {'description': 'Original signal, device mode, entry and clearance are joined by frame.',
                                          'numeric_conditions': []},
-                              'judgment_calls_needed': [{'phrase': phrase, 'note': note}]},
+                              'judgment_calls_needed': []},
                 'parameter_refs': [{'name': name, 'kind': kind, 'range_or_domain': domain}
                                    for name, kind, domain in parameters]}
     write(ROOT / 'proposals/template.json', template)
@@ -100,8 +100,12 @@ def build():
         values_map = values(case['scenario_parameters'])
         changed = [key for key in names if values_map[key] != baseline['variable_assignments'][key]]
         primary = changed[0] if changed else 'crosswalk_kind'
+        suffix = case['case_id'].split('__')[-1]
+        target_type = ('compliant_attempt' if suffix == 'marked_cross' else
+                       'violating_attempt' if suffix == 'outside_cross' else
+                       'boundary_probe')
         cases.append({'case_id': case['case_id'], 'target_law_id': law_id,
-                      'target_type': 'boundary_probe', 'rationale': case['purpose'],
+                      'target_type': target_type, 'rationale': case['purpose'],
                       'variable_assignments': values_map,
                       'paired_probe_id': 'reference_vs_' + case['case_id'].split('__')[-1],
                       'deliberate_differences': changed,
@@ -110,20 +114,52 @@ def build():
                                 'target_value_or_branch': case['purpose']},
                       'recording_description': record,
                       'unresolved_judgment_calls': [phrase]})
+    provisions = []
+    for part in range(1, 5):
+        provision_id = f'NRS-484B-283-1d{part}'
+        paths = list((REPO / 'inputs').glob(
+            f'*__{provision_id}__pedestrian/assignment.json'))
+        if len(paths) != 1:
+            raise ValueError('exact frozen pedestrian device source missing: ' + provision_id)
+        path = paths[0]
+        frozen = json.loads(path.read_text())
+        if frozen['law']['id'] != provision_id or not frozen['law']['text']:
+            raise ValueError('frozen pedestrian device clause identity mismatch')
+        provisions.append({'law_id': provision_id,
+                           'source_path': str(path.relative_to(REPO)),
+                           'source_sha256': sha(path),
+                           'quoted_text': frozen['law']['text']})
+    provision_cases = {
+        'NRS-484B-283-1d1': ['walk_cross', 'walk_then_flash_continue',
+                              'walk_then_steady_continue'],
+        'NRS-484B-283-1d2': ['flashing_countdown_cross'],
+        'NRS-484B-283-1d3': ['flashing_no_countdown_wait',
+                              'walk_then_flash_continue'],
+        'NRS-484B-283-1d4': ['other_device_stop', 'other_device_cross',
+                              'walk_then_steady_continue'],
+    }
+    for provision in provisions:
+        provision['case_ids'] = [ROOT.name + '__' + suffix for suffix in
+                                 provision_cases[provision['law_id']]]
     proposal = {'cell_id': cell, 'actor': actor, 'status': 'draft', 'cases': cases,
-                'sweep_specs': [{'sweep_id': 'device_applicability_source_review',
-                                 'target_law_id': law_id,
-                                 'judgment_refs': [{'phrase': phrase, 'note': note}],
-                                 'status': 'incomplete',
-                                 'rationale': 'No reviewed Native device inventory or crosswalk route supports a source-bound applicability sweep.',
-                                 'missing_inputs': ['reviewed Native intersection and official signal head',
-                                                    'source-verified device route applicability and phase timing',
-                                                    'physical pedestrian clearance feasibility']}],
+                'sweep_specs': [],
+                'applicability_review': {
+                    'kind': 'categorical source-gated branch review',
+                    'route_preflight': 'reviewed_site_preflight.py',
+                    'original_frame_observation': 'device_timeline.py',
+                    'provisions': provisions,
+                    'case_ids': [case['case_id'] for case in plan['cases']],
+                    'numeric_sweep_reason': ('Frozen judgment range inventory has no range for '
+                                             'this clause; device alternatives are categorical '
+                                             'and original applicability is source reviewed.'),
+                    'reviewed_site_required': True,
+                    'legal_verdict': None,
+                },
                 'diagnostic_only': False}
     write(ROOT / 'proposals/cases.json', proposal)
     refs = {'relevance_batch': 'proposals/relevance_batch.json',
             'relevance': 'proposals/relevance.json', 'template': 'proposals/template.json',
-            'judgment_observables': ['proposals/judgment-1.json'],
+            'judgment_observables': [],
             'bindings': 'proposals/bindings.json', 'cases': 'proposals/cases.json'}
     stages = {key: ([{'path': path, 'sha256': sha(ROOT / path)} for path in value]
                     if isinstance(value, list) else {'path': value, 'sha256': sha(ROOT / value)})

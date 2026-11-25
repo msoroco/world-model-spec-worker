@@ -36,6 +36,9 @@ def ffprobe_frames(path):
     stream = json.loads(result.stdout)["streams"][0]
     if stream.get("codec_name") != "ffv1":
         raise ValueError("original camera video is not lossless FFV1")
+    subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                    "-xerror", "-i", str(path), "-map", "0:v:0", "-f", "null", "-"],
+                   check=True, capture_output=True, timeout=180)
     return int(stream["nb_read_frames"])
 
 

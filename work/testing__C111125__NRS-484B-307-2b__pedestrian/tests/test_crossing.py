@@ -9,6 +9,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+REPO = ROOT.parents[1]
 
 
 def module(name):
@@ -34,7 +35,9 @@ finalizer = module('saved_finalizer')
 
 class CrossingTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = REPO / '.runtime-work/c111125-crossing-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.refs = [
@@ -42,7 +45,10 @@ class CrossingTests(unittest.TestCase):
                                                'crosswalk_polygon_xy':[[0,4],[10,4],[10,6],[0,6]],
                                                'crosswalk_kind':'marked', 'crosswalk_qualifies':True})),
             self.write('head.json', json.dumps({'official':True,'control':'traffic_light','head_id':'head1','pedestrian_faces_head':True})),
-            self.write('devices.json', json.dumps({'other_device_id':'ped1','inventory_complete':True})),
+            self.write('devices.json', json.dumps({'other_device_id':'ped1','inventory_complete':True,
+                'route_applicability':{'route_id':'route1','device_id':'ped1','applies':True,
+                    'law_refs':['NRS-484B-283-1d1', 'NRS-484B-283-1d4'],
+                    'review_basis':'test-only original route inventory'}})),
         ]
         self.site = {
             'cell_id': 'C111125', 'actor': 'pedestrian', 'original_sources': self.refs,
@@ -53,6 +59,7 @@ class CrossingTests(unittest.TestCase):
             'highway_polygon_xy': [[0,0],[10,0],[10,10],[0,10]],
             'crosswalk_polygon_xy': [[0,4],[10,4],[10,6],[0,6]],
             'pedestrian_route_xy': [[-2,5],[2,5],[11,5]], 'other_device_id': 'ped1',
+            'pedestrian_route_id': 'route1',
             'pedestrian_blueprint_id': 'walker.pedestrian.0001', 'pedestrian_spawn_xyz': [-2,5,0],
         }
 
@@ -406,6 +413,10 @@ class CrossingTests(unittest.TestCase):
         reviewed_result = delivery.audit(attempt, receipt['reviewed_site_source'],
                                        'other_device_stop', require_reviewed=True)
         self.assertEqual(reviewed_result['decoded_images'], 3600)
+        from production_delivery_audit import verify as verify_production
+        production_result = verify_production(case_id, attempt)
+        self.assertEqual(production_result['saved_protocol']['decoded_images'], 3600)
+        self.assertFalse(production_result['physical_acceptance'])
         selected = json.loads((ROOT / 'cases/other_device_stop/delivery-construction.draft.json').read_text())
         selected_config = json.loads(next(item['content'] for item in selected['files']
                                          if item['path'] == 'config.json'))

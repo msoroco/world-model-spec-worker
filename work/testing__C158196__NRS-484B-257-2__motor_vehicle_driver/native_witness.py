@@ -168,8 +168,8 @@ def measure(packet, expected_control, expected_relation="within"):
     if occupied[0] == 0 or occupied[-1] == FRAMES - 1:
         raise ValueError("intersection entry/clearance brackets missing")
     if expected_relation == "within":
-        if not any(other_inside[i] for i in occupied):
-            raise ValueError("no counterpart fully within intersection during ego crossing")
+        if not any(other_inside[:occupied[-1] + 1]):
+            raise ValueError("no counterpart fully within intersection during approach or crossing")
     else:
         entry = occupied[0]
         if entry < 2:
@@ -185,6 +185,8 @@ def measure(packet, expected_control, expected_relation="within"):
         "entry_frame": occupied[0],
         "clearance_frame": occupied[-1] + 1,
         "counterpart_within_frames": [i for i in occupied if other_inside[i]],
+        "counterpart_pre_entry_within_frames": [i for i in range(occupied[0])
+                                                if other_inside[i]],
         "counterpart_relation_observed": expected_relation,
         "counterpart_center_station_at_entry_m": hypot(
             other_center[occupied[0]][0] - (rect[0] + rect[2]) / 2,

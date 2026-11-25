@@ -85,6 +85,14 @@ class WitnessTest(unittest.TestCase):
         self.assertEqual(result["legal_hazard_judgment"], "unresolved")
         self.assertEqual(len(result["counterpart_within_frames"]), 60)
 
+    def test_yield_waits_for_within_vehicle_to_clear_before_entry(self):
+        original = packet()
+        for i, frame in enumerate(original["frames"]):
+            frame["counterpart"]["body_vertices_xy"] = body(0, min(5, i * .08))
+        result = mod.measure(original, "stop_sign")
+        self.assertTrue(result["counterpart_pre_entry_within_frames"])
+        self.assertEqual(result["counterpart_within_frames"], [])
+
     def test_original_native_frames_may_start_after_world_initialization(self):
         p = packet()
         for frame in p["frames"]:

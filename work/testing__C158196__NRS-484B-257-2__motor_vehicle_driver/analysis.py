@@ -36,6 +36,7 @@ def measure_stop_yield(value, context):
 
 def measure_priority_within(value):
     return {"counterpart_within_frames": value["counterpart_within_frames"],
+            "counterpart_pre_entry_within_frames": value["counterpart_pre_entry_within_frames"],
             "priority_verdict": None}
 
 

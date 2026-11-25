@@ -22,7 +22,7 @@ def _sha(path):
 
 def _original(attempt, inventory, name):
     path = attempt / name
-    if not path.is_file():
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(attempt.resolve()):
         raise ValueError('Missing required source: ' + name)
     entry = inventory.get(name, {})
     if entry.get('kind') != 'original_native' or entry.get('sha256') != _sha(path):
