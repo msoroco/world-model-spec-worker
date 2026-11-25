@@ -186,7 +186,7 @@ def main():
     kind = 'over' if args.case.endswith('__reverse_over_crosswalk') else 'short'
     if kind == 'short' and not args.case.endswith('__reverse_stops_before_crosswalk'):
         raise ValueError('Unselected reverse case')
-    attempt = REPO / '.runtime-work' / 'c215286-full-stage' / '.runtime-work' / (kind + '-primary')
+    attempt = REPO / '.runtime-work' / 'c215286-current-full-stage' / '.runtime-work' / (kind + '-primary')
     if args.mode in ('native-preflight', 'native-delivery'):
         if args.attempt is None or args.owner_receipt is None:
             raise ValueError('Native audit requires attempt and owner-release receipt')
