@@ -82,6 +82,19 @@ class ArrowTests(unittest.TestCase):
         world=World(); world.fail_second=True
         with self.assertRaises(scene.ArrowError): scene.construct_native(self.site,self.root,world,Carla(),'vehicle','walker','pedestrian')
         self.assertTrue(world.spawned[0].destroyed)
+    def test_concurrent_movement_requires_surveyed_distinct_route(self):
+        self.site['case_id']='testing__C111610__NRS-484B-307-7a__motor_vehicle_driver__arrow_concurrent_movement'
+        self.site['concurrent_route_xy']=[[0,-8],[0,0],[0,8]]
+        self.site['concurrent_route_source_path']='concurrent_route.json'
+        with self.assertRaisesRegex(scene.ArrowError,'route source missing'):
+            scene.verify_site(self.site,self.root)
+        route=self.root/'concurrent_route.json'
+        route.write_text(json.dumps({'route_xy':self.site['concurrent_route_xy']}))
+        self.site['original_sources'].append({'path':route.name,'sha256':hashlib.sha256(route.read_bytes()).hexdigest()})
+        self.assertTrue(scene.verify_site(self.site,self.root))
+        route.write_text(json.dumps({'route_xy':[[0,-8],[1,0],[0,8]]}))
+        with self.assertRaisesRegex(scene.ArrowError,'hash mismatch'):
+            scene.verify_site(self.site,self.root)
     def test_comparison_rejects_missing_source_and_wrong_region(self):
         def rec(suffix,user=[]):
             return {'case_suffix':suffix,'map_sha256':'a','route_source_sha256':'b','crosswalk_source_sha256':'c','signal_source_sha256':'d','duration_frames':3,'camera_profile_sha256':'e','official_head_id':'17','ego_approach_id':'north','concurrent_indications':[],'ego_movement':'left','records':[{'lit_aspects':['flashing_yellow_turn_arrow'] if i!=1 else [],'other_users':user} for i in range(3)]}

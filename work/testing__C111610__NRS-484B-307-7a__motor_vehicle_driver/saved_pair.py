@@ -29,7 +29,8 @@ def _record(site_path, attempt, suffix, diagnostic):
     return {
         "case_suffix": suffix,
         "map_sha256": source("map_source_path"),
-        "route_source_sha256": source("route_source_path"),
+        "route_source_sha256": source("concurrent_route_source_path" if
+            suffix == "arrow_concurrent_movement" else "route_source_path"),
         "crosswalk_source_sha256": source("crosswalk_source_path"),
         "signal_source_sha256": source("signal_source_path"),
         "duration_frames": final["frame_count"],

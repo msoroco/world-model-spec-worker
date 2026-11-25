@@ -77,6 +77,7 @@ def construct_plan(site: dict, root: Path, case_suffix: str) -> dict:
     variants = {
         "two_cycles_failed_detection": (2, True, True, "yield"),
         "one_cycle": (1, True, True, "yield"),
+        "three_cycles": (3, True, True, "yield"),
         "signal_changes": (2, False, True, "yield"),
         "no_prior_stop": (2, True, False, "yield"),
         "fails_to_yield": (2, True, True, "enter_conflict"),
@@ -138,10 +139,7 @@ def control_step(plan: dict, observed: dict) -> dict:
         _require(key in observed, "live readback missing: " + key)
     _require(observed["complete_device_cycles"] >= 0, "invalid cycle count")
     suffix = plan["case_suffix"]
-    if suffix == "one_cycle":
-        proceed = observed["complete_device_cycles"] >= 1
-    else:
-        proceed = observed["complete_device_cycles"] >= 2
+    proceed = observed["complete_device_cycles"] >= plan["requested_full_cycles"]
     if suffix == "signal_changes":
         proceed = proceed and observed["subject_signal"] == "green"
     else:

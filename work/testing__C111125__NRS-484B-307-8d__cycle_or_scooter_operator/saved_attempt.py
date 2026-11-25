@@ -16,7 +16,7 @@ from zipfile import BadZipFile
 BASE = Path(__file__).resolve().parent
 ASSIGNMENT_ID = "testing__C111125__NRS-484B-307-8d__cycle_or_scooter_operator"
 SUFFIXES = {
-    "two_cycles_failed_detection", "one_cycle", "signal_changes",
+    "two_cycles_failed_detection", "one_cycle", "three_cycles", "signal_changes",
     "no_prior_stop", "fails_to_yield",
 }
 

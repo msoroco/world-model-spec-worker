@@ -58,6 +58,24 @@ def verify_site(site, root):
     cross=(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0])
     require(abs(cross)>1.0, 'route has no turn geometry')
     require((cross>0)==(site['arrow_movement']=='left'), 'route disagrees with arrow direction')
+    if str(site.get('case_id', '')).endswith('__arrow_concurrent_movement'):
+        require(site.get('concurrent_route_source_path') in paths,
+                'concurrent movement route source missing')
+        concurrent=site.get('concurrent_route_xy')
+        require(isinstance(concurrent,list) and len(concurrent)>=3 and
+                all(len(p)==2 and all(math.isfinite(float(v)) for v in p) for p in concurrent),
+                'concurrent movement route missing')
+        require(concurrent[0]==route[0] and
+                not in_polygon(concurrent[0],site['intersection_polygon_xy']) and
+                any(in_polygon(p,site['intersection_polygon_xy']) for p in concurrent[1:-1]),
+                'concurrent movement route lacks same approach and intersection entry')
+        a,b,c=concurrent[0],concurrent[len(concurrent)//2],concurrent[-1]
+        other_cross=(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0])
+        require(abs(other_cross)<1e-8 and concurrent!=route,
+                'concurrent movement needs a distinct through route')
+        route_ref=next(r for r in refs if r['path']==site['concurrent_route_source_path'])
+        require(json.loads(original(route_ref,root).read_text()).get('route_xy')==concurrent,
+                'concurrent movement route source differs from surveyed route')
     return True
 
 def construct_native(site, root, world, carla, ego_blueprint, other_blueprint=None, other_kind=None):
@@ -79,7 +97,10 @@ def construct_native(site, root, world, carla, ego_blueprint, other_blueprint=No
             other=world.try_spawn_actor(other_blueprint,pose(site['other_spawn_xy'],site['other_yaw_deg']))
             require(other is not None, 'participant spawn failed')
             spawned.append(other)
-        return {'actors':spawned,'route_xy':site['ego_route_xy'],'official_head_id':site['official_head_id'],'map_name':site['native_map_name']}
+        selected_route=(site['concurrent_route_xy'] if
+            str(site.get('case_id', '')).endswith('__arrow_concurrent_movement')
+            else site['ego_route_xy'])
+        return {'actors':spawned,'route_xy':selected_route,'official_head_id':site['official_head_id'],'map_name':site['native_map_name']}
     except Exception:
         for actor in reversed(spawned):
             actor.destroy()

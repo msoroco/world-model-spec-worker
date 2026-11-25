@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 from zipfile import ZipFile
 
 from PIL import Image
@@ -23,6 +24,7 @@ def module(name):
 capture = module("native_capture")
 media = module("saved_media_audit")
 saved = module("saved_attempt")
+runner = module("native_runner")
 
 
 class OriginalCaptureTests(unittest.TestCase):
@@ -99,6 +101,82 @@ class OriginalCaptureTests(unittest.TestCase):
         audit = media.audit_saved_media(attempt, self.case_id)
         self.assertEqual(audit["frame_count"], 900)
         self.assertEqual(audit["decoded_original_images"], 3600)
+
+    def test_owner_tick_loop_binds_world_frame_and_releases_actor(self):
+        class Actor:
+            id = 23
+            type_id = "vehicle.bicycle.test"
+            destroyed = False
+            def destroy(self):
+                self.destroyed = True
+        class Library:
+            def find(self, identifier):
+                return SimpleNamespace(id=identifier)
+        class World:
+            frame = 99
+            actor = Actor()
+            def get_settings(self):
+                return SimpleNamespace(synchronous_mode=True, fixed_delta_seconds=0.05)
+            def get_blueprint_library(self):
+                return Library()
+            def try_spawn_actor(self, blueprint, transform):
+                return self.actor
+            def tick(self):
+                self.frame += 1
+                return self.frame
+            def get_snapshot(self):
+                return SimpleNamespace(frame=self.frame,
+                                       timestamp=SimpleNamespace(elapsed_seconds=5 + (self.frame - 100) / 20))
+        self.count = 9
+        world = World()
+        requests = []
+        receipt = runner.execute_case(
+            world=world, authority_root=self.authority, site=self.site,
+            case_suffix="two_cycles_failed_detection", transform="bicycle spawn",
+            apply_device_policy=lambda plan, site: self.policy,
+            apply_motion=lambda actor, request: requests.append(request),
+            read_original=lambda index, actor, frame: self.tick(index)[0],
+            camera_pngs=lambda index, frame: self.tick(index)[1],
+            attempt_root=self.root / "owner-tick", frame_count=9,
+            diagnostic_fixture=True)
+        self.assertEqual(receipt["frame_count"], 9)
+        self.assertEqual(len(requests), 9)
+        self.assertTrue(world.actor.destroyed)
+        self.assertEqual(media.audit_saved_media(self.root / "owner-tick", self.case_id)["decoded_original_images"], 36)
+
+    def test_owner_tick_loop_rejects_clock_mismatch_and_releases_actor(self):
+        class Actor:
+            id = 23
+            type_id = "vehicle.bicycle.test"
+            destroyed = False
+            def destroy(self):
+                self.destroyed = True
+        class World:
+            actor = Actor()
+            def get_settings(self):
+                return SimpleNamespace(synchronous_mode=True, fixed_delta_seconds=0.05)
+            def get_blueprint_library(self):
+                return SimpleNamespace(find=lambda identifier: SimpleNamespace(id=identifier))
+            def try_spawn_actor(self, blueprint, transform):
+                return self.actor
+            def tick(self):
+                return 100
+            def get_snapshot(self):
+                return SimpleNamespace(frame=100, timestamp=SimpleNamespace(elapsed_seconds=6.0))
+        self.count = 9
+        world = World()
+        with self.assertRaisesRegex(ValueError, "Native world time"):
+            runner.execute_case(
+                world=world, authority_root=self.authority, site=self.site,
+                case_suffix="two_cycles_failed_detection", transform="bicycle spawn",
+                apply_device_policy=lambda plan, site: self.policy,
+                apply_motion=lambda actor, request: None,
+                read_original=lambda index, actor, frame: self.tick(index)[0],
+                camera_pngs=lambda index, frame: self.tick(index)[1],
+                attempt_root=self.root / "bad-clock", frame_count=9,
+                diagnostic_fixture=True)
+        self.assertTrue(world.actor.destroyed)
+        self.assertFalse((self.root / "bad-clock" / "attempt.json").exists())
 
     def test_saved_processor_requires_camera_audit_for_original_attempt(self):
         self.full_profile = True

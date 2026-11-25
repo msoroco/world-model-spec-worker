@@ -14,7 +14,9 @@ def audit(name,left,right):
     ls,rs,kind,region=PAIRS[name]
     if (left.get('case_suffix'),right.get('case_suffix'))!=(ls,rs):
         raise AuditError('wrong exact case pair')
-    fixed=('map_sha256','route_source_sha256','crosswalk_source_sha256','signal_source_sha256','duration_frames','camera_profile_sha256','official_head_id','ego_approach_id')
+    fixed=('map_sha256','crosswalk_source_sha256','signal_source_sha256','duration_frames','camera_profile_sha256','official_head_id','ego_approach_id')
+    if name!='concurrent_indication':
+        fixed+=('route_source_sha256',)
     for key in fixed:
         if not left.get(key) or left[key]!=right.get(key):
             raise AuditError('fixed condition differs: '+key)
@@ -41,9 +43,11 @@ def audit(name,left,right):
         if left['ego_movement']!=right['ego_movement']:
             raise AuditError('movement changed')
     else:
+        if not left.get('route_source_sha256') or not right.get('route_source_sha256') or left['route_source_sha256']==right['route_source_sha256']:
+            raise AuditError('concurrent movement lacks a distinct sourced route')
         if present(right):
             raise AuditError('concurrent contrast has participant')
-        if left['concurrent_indications'] or not right['concurrent_indications']:
+        if any(left['concurrent_indications']) or not any(right['concurrent_indications']):
             raise AuditError('concurrent indication contrast absent')
         if left['ego_movement']==right['ego_movement']:
             raise AuditError('movement contrast absent')

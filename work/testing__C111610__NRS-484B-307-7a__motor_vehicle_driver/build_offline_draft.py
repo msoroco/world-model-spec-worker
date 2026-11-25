@@ -15,9 +15,10 @@ VARIANTS = (
 SOURCES = (
     "native_arrow.py", "turn_control.py", "aspect_capture.py",
     "event_capture.py", "saved_aspect.py", "saved_finalizer.py",
-    "comparison_audit.py",
+    "comparison_audit.py", "saved_pair.py", "native_camera_capture.py",
+    "saved_camera_audit.py", "analysis.py",
 )
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 RUNNER = '''"""Preflight an exact arrow case without inventing display readback."""
 import argparse
@@ -27,7 +28,7 @@ from pathlib import Path
 
 
 VARIANTS = {"arrow_clear", "arrow_ped_crosswalk", "arrow_ped_intersection", "arrow_vehicle_intersection", "arrow_concurrent_movement"}
-CAMERAS = ["front", "rear", "left", "right"]
+CAMERAS = ["overview", "approach", "reference_corner", "driver_reference"]
 
 
 def check():
@@ -95,6 +96,8 @@ if __name__ == "__main__":
 def build():
     source = (HERE / "case-plan.json").read_bytes()
     plan = json.loads(source)
+    semantic = json.loads((HERE / "proposals/cases.json").read_text())
+    semantic_cases = {row["case_id"]: row for row in semantic["cases"]}
     if len(plan["cases"]) != len(VARIANTS) or {row["case_suffix"] for row in plan["cases"]} != set(VARIANTS):
         raise ValueError("Exact arrow cases changed")
     rows = []
@@ -102,6 +105,8 @@ def build():
         case_id, suffix = item["case_id"], item["case_suffix"]
         if case_id != AID + "__" + suffix:
             raise ValueError("Foreign arrow case")
+        if case_id not in semantic_cases:
+            raise ValueError("Exact arrow case lacks semantic proposal")
         config = {
             "assignment_id": AID, "law_id": "NRS-484B-307-7a", "cell_id": "C111610",
             "actor": "motor_vehicle_driver", "selected_case_id": case_id,
@@ -120,7 +125,7 @@ def build():
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case_id,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_original_arrow_sources_pending", "channels": config["cameras"]},
+            "recording_description": semantic_cases[case_id]["recording_description"],
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         output = HERE / ("construction-" + suffix + ".json")

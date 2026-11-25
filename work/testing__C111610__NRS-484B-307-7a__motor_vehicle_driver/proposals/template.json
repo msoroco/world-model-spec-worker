@@ -1,0 +1,75 @@
+{
+  "template_id": "NRS-484B-307-7a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-7a",
+  "actor": "motor_vehicle_driver",
+  "quote": "Where the signal is a flashing yellow turn arrow, displayed alone or in combination with another signal: Vehicular traffic facing the signal is permitted to cautiously enter the intersection only to make the movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time. Such vehicular traffic must yield the right-of-way to pedestrians lawfully within the intersection or an adjacent crosswalk and yield the right-of-way to other traffic lawfully within the intersection.",
+  "structure": {
+    "law_id": "NRS-484B-307-7a",
+    "activation": {
+      "condition": "An official flashing yellow turn arrow faces vehicular traffic, alone or with another signal.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Cautious intersection entry for the indicated or concurrently permitted movement, yielding to lawfully present pedestrians and traffic in their stated regions.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Another indication displayed at the same time permits another movement.",
+        "effect": "That movement may also be made.",
+        "replacement_obligation": "Preserve cautious entry and the pedestrian and traffic yield duties.",
+        "source_clause": "or other such movement as is permitted by other signal indications displayed at the same time"
+      }
+    ],
+    "timing": {
+      "description": "Original arrow on/off phases, concurrent display, participant entry and ego movement joined by Native frame.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "cautiously enter the intersection",
+        "note": "Caution has no numeric cutoff in the exact law."
+      },
+      {
+        "phrase": "other such movement as is permitted by other signal indications displayed at the same time",
+        "note": "The contemporaneous other official indication and its governed movement require original source review."
+      },
+      {
+        "phrase": "yield the right-of-way to pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "note": "Lawful presence and right of way require original pedestrian entry and movement context; no numeric cutoff is supplied."
+      },
+      {
+        "phrase": "yield the right-of-way to other traffic lawfully within the intersection",
+        "note": "Lawful traffic presence and right of way require original entry and movement context; no numeric cutoff is supplied."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "pedestrian_region",
+      "kind": "world_setup",
+      "range_or_domain": "absent, adjacent crosswalk, or intersection"
+    },
+    {
+      "name": "other_traffic_region",
+      "kind": "world_setup",
+      "range_or_domain": "absent or intersection"
+    },
+    {
+      "name": "concurrent_indication",
+      "kind": "world_setup",
+      "range_or_domain": "absent or externally sourced contemporaneous indication"
+    },
+    {
+      "name": "selected_movement_route",
+      "kind": "world_setup",
+      "range_or_domain": "surveyed arrow turn or separately surveyed permitted movement"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "source-gated route attempt, not a legal outcome"
+    }
+  ]
+}

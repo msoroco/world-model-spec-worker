@@ -35,6 +35,13 @@ class SavedFinalizerTests(unittest.TestCase):
 
     def build(self, suffix, *, users=None, movement="left", concurrent=None):
         self.site["case_id"] = ASSIGNMENT + "__" + suffix
+        if suffix == "arrow_concurrent_movement":
+            route = self.root / "concurrent_route.json"
+            self.site["concurrent_route_xy"] = [[0,-8],[0,0],[0,8]]
+            route.write_text(json.dumps({"route_xy": self.site["concurrent_route_xy"]}) + "\n")
+            self.site["concurrent_route_source_path"] = route.name
+            self.site["original_sources"].append({"path": route.name,
+                "sha256": hashlib.sha256(route.read_bytes()).hexdigest()})
         self.site_path.write_text(json.dumps(self.site) + "\n")
         concurrent = concurrent or []
         def step(i):
