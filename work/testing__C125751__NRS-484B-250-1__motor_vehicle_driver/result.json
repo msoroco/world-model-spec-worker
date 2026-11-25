@@ -2,24 +2,58 @@
   "assignment_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver",
   "input_sha256": "f41c7d004b86ad31ad2fd8e0c4372d454a7026aac55f5c5574bc71db24d5d2e3",
   "status": "partial",
-  "readiness_kind": "construction_and_saved_audit_checkpoint",
+  "readiness_kind": "source_gated_exact_case_cpu_construction",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "18de31a8647e8ffa0a2dc69aa1f5078b1d5eda0d390f937a7ee297264bc14709"
+      "sha256": "4b36debccd389f3086fed0069a05d8056273127a4e3b655f1204e87832dd5ff3"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125751-proof .venv-cpu/bin/python work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/prove_semantic_and_contract.py",
+      "exit_code": 0,
+      "log": "semantic-contract-proof.log",
+      "sha256": "80a9d8c101ad2601cb1a0d4ecb106f494a53c0f00b2bb712a76e70784fff33f8"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "preflight.log",
       "sha256": "f3ee6467c6510ef599efd2c79b3c860bffcd48f0461f968fdcd05d6a81ed54bf"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "worker-check.log",
+      "sha256": "9b94005e5a9b4c61babffac5599529daf22317b8199668830b2e4276a3030d13"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "strict-check.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "planned_cases": [
+    "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence",
+    "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance",
+    "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later",
+    "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red"
   ],
-  "reason": "Nine CPU tests pass source-bound Native route and signal pre-spawn checks, sealed original-frame measurement CLI with tamper rejection, and independent comparison CLI with fixed-condition rejection. Four exact cases and two comparisons are planned. Original accepted traces, reviewed highway/device facts, complete delivery bundles, semantic proposals and pinned positive/negative compatibility proofs remain worker-owned CPU work; physical outcomes remain unverified."
+  "planned_comparisons": [
+    "median_entry_order",
+    "official_signal_readback"
+  ],
+  "remaining_cpu_gates": [
+    "Reviewed original map, highway, device, route and accepted recording bytes are absent from this export; case source bindings remain null.",
+    "Pinned exact offline and positive/negative compatibility receipts cannot pass on production case specs before reviewed original source bindings exist.",
+    "A process-saved proof requires a retained Native attempt and complete video source; no original Native attempt is present.",
+    "Independent delivery and comparison production audits require original sealed attempts, full decode, Core frame joins and actual pixel review."
+  ],
+  "remaining_gpu_checks": [
+    "Native four-case motion, operative signal readback, camera visibility and full capture quality after CPU source review"
+  ],
+  "reason": "Twenty-three focused CPU tests pass, including source, provenance, lifecycle, media, pixel and comparison rejection paths. Canonical seven-stage semantic proposal and four measurement contracts validate. Static worker check passes; strict readiness rejects truthful partial status because no reviewed original source or Native attempt exists."
 }

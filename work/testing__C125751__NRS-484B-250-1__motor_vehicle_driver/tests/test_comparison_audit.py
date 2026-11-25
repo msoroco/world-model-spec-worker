@@ -3,9 +3,11 @@ import unittest
 import subprocess
 import tempfile
 import json
+import hashlib
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from comparison_audit import audit_pair
+from comparison_audit import audit_pair, audit_saved_pair
+from test_analysis import write_attempt
 
 
 def report(case, order, signal):
@@ -18,8 +20,38 @@ def report(case, order, signal):
 
 
 class ComparisonAuditTest(unittest.TestCase):
+    def test_saved_original_comparison_rejects_stale_source(self):
+        repo = Path(__file__).resolve().parents[3]
+        scratch = repo / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            left, right = Path(temporary)/'left', Path(temporary)/'right'
+            left.mkdir(); right.mkdir()
+            write_attempt(left); write_attempt(right)
+            history_path = right/'signal-history.json'
+            history = json.loads(history_path.read_text())
+            history['frames'][0]['ego_light_readback'] = 'Red'
+            history_path.write_text(json.dumps(history))
+            seal_path = right/'signal-packet.json'
+            seal = json.loads(seal_path.read_text())
+            seal['case_id'] = 'case-2'
+            seal['payload_sha256'] = hashlib.sha256(history_path.read_bytes()).hexdigest()
+            seal_path.write_text(json.dumps(seal))
+            inventory_path = right/'acquisition.json'
+            inventory = json.loads(inventory_path.read_text())
+            for name in ('signal-history.json', 'signal-packet.json'):
+                inventory[name]['sha256'] = hashlib.sha256((right/name).read_bytes()).hexdigest()
+            inventory_path.write_text(json.dumps(inventory))
+            result = audit_saved_pair(left, right, variable='signal_state')
+            self.assertEqual(result['case_ids'], ['case-1', 'case-2'])
+            (right/'review.json').write_bytes((right/'review.json').read_bytes()+b' ')
+            with self.assertRaisesRegex(ValueError, 'stale original'):
+                audit_saved_pair(left, right, variable='signal_state')
+
     def test_cli_rejects_uncontrolled_change(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
             root = Path(temporary)
             (root/'left.json').write_text(json.dumps(report('a', True, 'Green')))
             (root/'right.json').write_text(json.dumps(report('b', False, 'Green')))

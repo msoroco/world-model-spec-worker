@@ -63,11 +63,12 @@ def audit_delivery(manifest: dict, *, attempt_root: Path, media_probe=probe_and_
         require(manifest.get(field), f"missing delivery identity: {field}")
     native = manifest.get("sources", {}).get("native_result", {})
     require(native.get("sha256") == manifest["native_result_sha256"], "Native result seal mismatch")
-    measured = audit_source_bundle(manifest, case_id=case_id, variant=variant)
+    attempt_root = attempt_root.resolve(strict=True)
+    measured = audit_source_bundle(manifest, case_id=case_id, variant=variant,
+                                   source_root=attempt_root, require_raw=True)
     completion = require_case_completion(measured)
     media = manifest.get("media")
     require(isinstance(media, dict) and set(media) == set(CAMERAS), "four original camera sources required")
-    attempt_root = attempt_root.resolve(strict=True)
     media_digests = {}
     for name, size in CAMERAS.items():
         ref = media[name]

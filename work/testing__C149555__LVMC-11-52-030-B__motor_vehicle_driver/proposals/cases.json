@@ -1,580 +1,760 @@
 {
-  "format": "worker-canonical-draft",
-  "assignment_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver",
   "cell_id": "C149555",
   "actor": "motor_vehicle_driver",
   "status": "draft",
+  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
-      "target_law_id": "LVMC-11-52-030-B",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Commercial freight loading during a posted civil window inside the yellow zone.",
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared sourced one-way yellow-curb and sign setup; no original recording or legal outcome is claimed.",
       "variable_assignments": {
-        "world_setup": {
-          "cell_id": "C149555",
-          "one_way_road": true,
-          "yellow_curb": true,
-          "posted_sign": "source_gated",
-          "commercial_dossier": "source_gated"
+        "freight_action": {
+          "kind": "controller",
+          "value": "loading"
         },
-        "controller": {
-          "variant": "freight_loading"
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": true
         },
-        "subject_behavior": {
-          "value": null
+        "posted_window": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Whether source facts establish municipal commercial-vehicle status and posted-condition application remains a legal review question."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
-            "name": "native_frame_map",
-            "rate_hz": 20,
-            "method": "original Native frame identities and time stamps"
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "ego_motion",
-            "rate_hz": 20,
-            "method": "original actor position, station and speed"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "freight_activity",
-            "rate_hz": 20,
-            "method": "original cargo actor identity and transfer samples"
-          },
-          {
-            "name": "yellow_curb_zone",
-            "rate_hz": 20,
-            "method": "observed curb pixels and zone bounds"
-          },
-          {
-            "name": "posted_sign",
-            "rate_hz": 20,
-            "method": "observed sign text and posted conditions"
-          },
-          {
-            "name": "civil_time",
-            "rate_hz": 20,
-            "method": "source-bound civil date/time and timezone"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "four_camera_media",
-            "rate_hz": 20,
-            "method": "synchronized original cameras and decoded pixels"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           }
         ],
-        "context": [
+        "context_inputs": [
           {
-            "name": "commercial_vehicle_status",
-            "method": "source-reviewed enterprise primary-use dossier, vehicle identity join"
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
           },
           {
-            "name": "native_road_lane",
-            "method": "Native map road/lane and one-way readback"
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
           }
         ],
         "limitations": [
-          "Requested controller and case names do not prove observed activity, zone position, sign contents or legality."
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
+      "target_law_id": "LVMC-11-52-030-B",
+      "target_type": "compliant_attempt",
+      "status": "draft",
+      "rationale": "Commercial freight loading during a posted civil window inside the yellow zone. Construction target only; original evidence and legal outcome remain unverified.",
+      "paired_probe_id": "commercial_freight_controlled",
+      "deliberate_differences": [
+        "freight_action",
+        "commercial_status",
+        "posted_window",
+        "stop_zone"
+      ],
+      "probe": {
+        "primary_variable": "freight_action",
+        "comparison_or_standard": "source-grounded qualitative commercial-freight branch",
+        "target_value_or_branch": "loading"
+      },
+      "variable_assignments": {
+        "freight_action": {
+          "kind": "controller",
+          "value": "loading"
+        },
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "posted_window": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
+          },
+          {
+            "name": "ego_motion",
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
+          },
+          {
+            "name": "freight_activity",
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
+          },
+          {
+            "name": "four_camera_media",
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
+          },
+          {
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
+          }
+        ],
+        "limitations": [
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
         ]
       }
     },
     {
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading",
       "target_law_id": "LVMC-11-52-030-B",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Same setup with actual freight unloading.",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Same setup with actual freight unloading. Construction target only; original evidence and legal outcome remain unverified.",
+      "paired_probe_id": "commercial_freight_controlled",
+      "deliberate_differences": [
+        "freight_action",
+        "commercial_status",
+        "posted_window",
+        "stop_zone"
+      ],
+      "probe": {
+        "primary_variable": "freight_action",
+        "comparison_or_standard": "source-grounded qualitative commercial-freight branch",
+        "target_value_or_branch": "unloading"
+      },
       "variable_assignments": {
-        "world_setup": {
-          "cell_id": "C149555",
-          "one_way_road": true,
-          "yellow_curb": true,
-          "posted_sign": "source_gated",
-          "commercial_dossier": "source_gated"
+        "freight_action": {
+          "kind": "controller",
+          "value": "unloading"
         },
-        "controller": {
-          "variant": "freight_unloading"
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": true
         },
-        "subject_behavior": {
-          "value": null
+        "posted_window": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Whether source facts establish municipal commercial-vehicle status and posted-condition application remains a legal review question."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
-            "name": "native_frame_map",
-            "rate_hz": 20,
-            "method": "original Native frame identities and time stamps"
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "ego_motion",
-            "rate_hz": 20,
-            "method": "original actor position, station and speed"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "freight_activity",
-            "rate_hz": 20,
-            "method": "original cargo actor identity and transfer samples"
-          },
-          {
-            "name": "yellow_curb_zone",
-            "rate_hz": 20,
-            "method": "observed curb pixels and zone bounds"
-          },
-          {
-            "name": "posted_sign",
-            "rate_hz": 20,
-            "method": "observed sign text and posted conditions"
-          },
-          {
-            "name": "civil_time",
-            "rate_hz": 20,
-            "method": "source-bound civil date/time and timezone"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "four_camera_media",
-            "rate_hz": 20,
-            "method": "synchronized original cameras and decoded pixels"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           }
         ],
-        "context": [
+        "context_inputs": [
           {
-            "name": "commercial_vehicle_status",
-            "method": "source-reviewed enterprise primary-use dossier, vehicle identity join"
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
           },
           {
-            "name": "native_road_lane",
-            "method": "Native map road/lane and one-way readback"
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
           }
         ],
         "limitations": [
-          "Requested controller and case names do not prove observed activity, zone position, sign contents or legality."
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
         ]
       }
     },
     {
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity",
       "target_law_id": "LVMC-11-52-030-B",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Commercial vehicle halts without observed freight transfer.",
+      "target_type": "violating_attempt",
+      "status": "draft",
+      "rationale": "Commercial vehicle halts without observed freight transfer. Construction target only; original evidence and legal outcome remain unverified.",
+      "paired_probe_id": "commercial_freight_controlled",
+      "deliberate_differences": [
+        "freight_action",
+        "commercial_status",
+        "posted_window",
+        "stop_zone"
+      ],
+      "probe": {
+        "primary_variable": "freight_action",
+        "comparison_or_standard": "source-grounded qualitative commercial-freight branch",
+        "target_value_or_branch": "none"
+      },
       "variable_assignments": {
-        "world_setup": {
-          "cell_id": "C149555",
-          "one_way_road": true,
-          "yellow_curb": true,
-          "posted_sign": "source_gated",
-          "commercial_dossier": "source_gated"
+        "freight_action": {
+          "kind": "controller",
+          "value": "none"
         },
-        "controller": {
-          "variant": "no_freight_activity"
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": true
         },
-        "subject_behavior": {
-          "value": null
+        "posted_window": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Whether source facts establish municipal commercial-vehicle status and posted-condition application remains a legal review question."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
-            "name": "native_frame_map",
-            "rate_hz": 20,
-            "method": "original Native frame identities and time stamps"
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "ego_motion",
-            "rate_hz": 20,
-            "method": "original actor position, station and speed"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "freight_activity",
-            "rate_hz": 20,
-            "method": "original cargo actor identity and transfer samples"
-          },
-          {
-            "name": "yellow_curb_zone",
-            "rate_hz": 20,
-            "method": "observed curb pixels and zone bounds"
-          },
-          {
-            "name": "posted_sign",
-            "rate_hz": 20,
-            "method": "observed sign text and posted conditions"
-          },
-          {
-            "name": "civil_time",
-            "rate_hz": 20,
-            "method": "source-bound civil date/time and timezone"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "four_camera_media",
-            "rate_hz": 20,
-            "method": "synchronized original cameras and decoded pixels"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           }
         ],
-        "context": [
+        "context_inputs": [
           {
-            "name": "commercial_vehicle_status",
-            "method": "source-reviewed enterprise primary-use dossier, vehicle identity join"
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
           },
           {
-            "name": "native_road_lane",
-            "method": "Native map road/lane and one-way readback"
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
           }
         ],
         "limitations": [
-          "Requested controller and case names do not prove observed activity, zone position, sign contents or legality."
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
         ]
       }
     },
     {
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading",
       "target_law_id": "LVMC-11-52-030-B",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Comparable freight transfer with source-reviewed noncommercial vehicle status.",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Comparable freight transfer with source-reviewed noncommercial vehicle status. Construction target only; original evidence and legal outcome remain unverified.",
+      "paired_probe_id": "commercial_freight_controlled",
+      "deliberate_differences": [
+        "freight_action",
+        "commercial_status",
+        "posted_window",
+        "stop_zone"
+      ],
+      "probe": {
+        "primary_variable": "commercial_status",
+        "comparison_or_standard": "source-grounded qualitative commercial-freight branch",
+        "target_value_or_branch": "False"
+      },
       "variable_assignments": {
-        "world_setup": {
-          "cell_id": "C149555",
-          "one_way_road": true,
-          "yellow_curb": true,
-          "posted_sign": "source_gated",
-          "commercial_dossier": "source_gated"
+        "freight_action": {
+          "kind": "controller",
+          "value": "loading"
         },
-        "controller": {
-          "variant": "noncommercial_loading"
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": false
         },
-        "subject_behavior": {
-          "value": null
+        "posted_window": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Whether source facts establish municipal commercial-vehicle status and posted-condition application remains a legal review question."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
-            "name": "native_frame_map",
-            "rate_hz": 20,
-            "method": "original Native frame identities and time stamps"
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "ego_motion",
-            "rate_hz": 20,
-            "method": "original actor position, station and speed"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "freight_activity",
-            "rate_hz": 20,
-            "method": "original cargo actor identity and transfer samples"
-          },
-          {
-            "name": "yellow_curb_zone",
-            "rate_hz": 20,
-            "method": "observed curb pixels and zone bounds"
-          },
-          {
-            "name": "posted_sign",
-            "rate_hz": 20,
-            "method": "observed sign text and posted conditions"
-          },
-          {
-            "name": "civil_time",
-            "rate_hz": 20,
-            "method": "source-bound civil date/time and timezone"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "four_camera_media",
-            "rate_hz": 20,
-            "method": "synchronized original cameras and decoded pixels"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           }
         ],
-        "context": [
+        "context_inputs": [
           {
-            "name": "commercial_vehicle_status",
-            "method": "source-reviewed enterprise primary-use dossier, vehicle identity join"
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
           },
           {
-            "name": "native_road_lane",
-            "method": "Native map road/lane and one-way readback"
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
           }
         ],
         "limitations": [
-          "Requested controller and case names do not prove observed activity, zone position, sign contents or legality."
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
         ]
       }
     },
     {
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time",
       "target_law_id": "LVMC-11-52-030-B",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Comparable freight loading outside the sign-governed civil window; legal status remains unresolved.",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Comparable freight loading outside the sign-governed civil window; legal status remains unresolved. Construction target only; original evidence and legal outcome remain unverified.",
+      "paired_probe_id": "commercial_freight_controlled",
+      "deliberate_differences": [
+        "freight_action",
+        "commercial_status",
+        "posted_window",
+        "stop_zone"
+      ],
+      "probe": {
+        "primary_variable": "posted_window",
+        "comparison_or_standard": "source-grounded qualitative commercial-freight branch",
+        "target_value_or_branch": "False"
+      },
       "variable_assignments": {
-        "world_setup": {
-          "cell_id": "C149555",
-          "one_way_road": true,
-          "yellow_curb": true,
-          "posted_sign": "source_gated",
-          "commercial_dossier": "source_gated"
+        "freight_action": {
+          "kind": "controller",
+          "value": "loading"
         },
-        "controller": {
-          "variant": "outside_posted_time"
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": true
         },
-        "subject_behavior": {
-          "value": null
+        "posted_window": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": true
         }
       },
-      "unresolved_judgment_calls": [
-        "Whether source facts establish municipal commercial-vehicle status and posted-condition application remains a legal review question."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
-            "name": "native_frame_map",
-            "rate_hz": 20,
-            "method": "original Native frame identities and time stamps"
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "ego_motion",
-            "rate_hz": 20,
-            "method": "original actor position, station and speed"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "freight_activity",
-            "rate_hz": 20,
-            "method": "original cargo actor identity and transfer samples"
-          },
-          {
-            "name": "yellow_curb_zone",
-            "rate_hz": 20,
-            "method": "observed curb pixels and zone bounds"
-          },
-          {
-            "name": "posted_sign",
-            "rate_hz": 20,
-            "method": "observed sign text and posted conditions"
-          },
-          {
-            "name": "civil_time",
-            "rate_hz": 20,
-            "method": "source-bound civil date/time and timezone"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "four_camera_media",
-            "rate_hz": 20,
-            "method": "synchronized original cameras and decoded pixels"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           }
         ],
-        "context": [
+        "context_inputs": [
           {
-            "name": "commercial_vehicle_status",
-            "method": "source-reviewed enterprise primary-use dossier, vehicle identity join"
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
           },
           {
-            "name": "native_road_lane",
-            "method": "Native map road/lane and one-way readback"
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
           }
         ],
         "limitations": [
-          "Requested controller and case names do not prove observed activity, zone position, sign contents or legality."
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
         ]
       }
     },
     {
       "case_id": "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone",
       "target_law_id": "LVMC-11-52-030-B",
-      "target_type": "qualitative_controlled_comparison",
-      "rationale": "Comparable freight loading with stopped footprint beyond the marked zone.",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Comparable freight loading with stopped footprint beyond the marked zone. Construction target only; original evidence and legal outcome remain unverified.",
+      "paired_probe_id": "commercial_freight_controlled",
+      "deliberate_differences": [
+        "freight_action",
+        "commercial_status",
+        "posted_window",
+        "stop_zone"
+      ],
+      "probe": {
+        "primary_variable": "stop_zone",
+        "comparison_or_standard": "source-grounded qualitative commercial-freight branch",
+        "target_value_or_branch": "False"
+      },
       "variable_assignments": {
-        "world_setup": {
-          "cell_id": "C149555",
-          "one_way_road": true,
-          "yellow_curb": true,
-          "posted_sign": "source_gated",
-          "commercial_dossier": "source_gated"
+        "freight_action": {
+          "kind": "controller",
+          "value": "loading"
         },
-        "controller": {
-          "variant": "outside_yellow_zone"
+        "commercial_status": {
+          "kind": "world_setup",
+          "value": true
         },
-        "subject_behavior": {
-          "value": null
+        "posted_window": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "stop_zone": {
+          "kind": "world_setup",
+          "value": false
         }
       },
-      "unresolved_judgment_calls": [
-        "Whether source facts establish municipal commercial-vehicle status and posted-condition application remains a legal review question."
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
-            "name": "native_frame_map",
-            "rate_hz": 20,
-            "method": "original Native frame identities and time stamps"
+            "name": "original_frame_map",
+            "unit": "native frame identity",
+            "sampling_rate_hz": 20,
+            "method": "Native 20 Hz frame identities and timestamps",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "ego_motion",
-            "rate_hz": 20,
-            "method": "original actor position, station and speed"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original ego station, speed and full body footprint",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "freight_activity",
-            "rate_hz": 20,
-            "method": "original cargo actor identity and transfer samples"
-          },
-          {
-            "name": "yellow_curb_zone",
-            "rate_hz": 20,
-            "method": "observed curb pixels and zone bounds"
-          },
-          {
-            "name": "posted_sign",
-            "rate_hz": 20,
-            "method": "observed sign text and posted conditions"
-          },
-          {
-            "name": "civil_time",
-            "rate_hz": 20,
-            "method": "source-bound civil date/time and timezone"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Original cargo actor and transfer frame history",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           },
           {
             "name": "four_camera_media",
-            "rate_hz": 20,
-            "method": "synchronized original cameras and decoded pixels"
+            "unit": "structured original source record",
+            "sampling_rate_hz": 20,
+            "method": "Four synchronized original camera streams with full decode",
+            "time_window": "Full original 45-second approach, halt and activity episode",
+            "reference_frame": "Original Native 20 Hz frame map",
+            "uncertainty": "Physical realization and pixel visibility require independent local review."
           }
         ],
-        "context": [
+        "context_inputs": [
           {
-            "name": "commercial_vehicle_status",
-            "method": "source-reviewed enterprise primary-use dossier, vehicle identity join"
+            "name": "reviewed_native_site",
+            "unit": "structured original source record",
+            "method": "Source-hashed OpenDRIVE, one-way road and lane"
           },
           {
-            "name": "native_road_lane",
-            "method": "Native map road/lane and one-way readback"
+            "name": "reviewed_yellow_curb",
+            "unit": "structured original source record",
+            "method": "Original curb pixels and station extent"
+          },
+          {
+            "name": "reviewed_sign",
+            "unit": "structured original source record",
+            "method": "Original sign pixels, text and posted civil windows"
+          },
+          {
+            "name": "reviewed_commercial_status",
+            "unit": "structured original source record",
+            "method": "Municipal enterprise-use dossier joined to vehicle identity"
+          },
+          {
+            "name": "reviewed_civil_time",
+            "unit": "structured original source record",
+            "method": "Source-hashed local civil datetime and time zone"
           }
         ],
         "limitations": [
-          "Requested controller and case names do not prove observed activity, zone position, sign contents or legality."
+          "Requested construction variants do not establish observed conditions, legality or physical visibility.",
+          "The taxicab passenger alternative is outside this motor-vehicle commercial-freight assignment."
         ]
       }
     }
   ],
-  "sweep_specs": [],
-  "comparisons": [
-    {
-      "comparison_id": "activity_direction",
-      "case_ids": [
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_unloading"
-      ],
-      "fixed_conditions": [
-        "same reviewed one-way Native road and lane",
-        "same yellow curb and zone extents",
-        "same sign wording and source",
-        "same four-camera and 900-frame 20 Hz capture",
-        "same ego controller and freight prop except deliberate difference",
-        "same cargo action except when action is deliberate difference",
-        "same commercial-status dossier except when status is deliberate difference",
-        "same civil date/time relation except when posted window is deliberate difference",
-        "same stop footprint except when zone footprint is deliberate difference"
-      ],
-      "deliberate_differences": [
-        "freight_action"
-      ],
-      "audit": "freight_contract.audit_comparison"
-    },
-    {
-      "comparison_id": "activity_presence",
-      "case_ids": [
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__no_freight_activity"
-      ],
-      "fixed_conditions": [
-        "same reviewed one-way Native road and lane",
-        "same yellow curb and zone extents",
-        "same sign wording and source",
-        "same four-camera and 900-frame 20 Hz capture",
-        "same ego controller and freight prop except deliberate difference",
-        "same cargo action except when action is deliberate difference",
-        "same commercial-status dossier except when status is deliberate difference",
-        "same civil date/time relation except when posted window is deliberate difference",
-        "same stop footprint except when zone footprint is deliberate difference"
-      ],
-      "deliberate_differences": [
-        "freight_action"
-      ],
-      "audit": "freight_contract.audit_comparison"
-    },
-    {
-      "comparison_id": "commercial_status",
-      "case_ids": [
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__noncommercial_loading"
-      ],
-      "fixed_conditions": [
-        "same reviewed one-way Native road and lane",
-        "same yellow curb and zone extents",
-        "same sign wording and source",
-        "same four-camera and 900-frame 20 Hz capture",
-        "same ego controller and freight prop except deliberate difference",
-        "same cargo action except when action is deliberate difference",
-        "same commercial-status dossier except when status is deliberate difference",
-        "same civil date/time relation except when posted window is deliberate difference",
-        "same stop footprint except when zone footprint is deliberate difference"
-      ],
-      "deliberate_differences": [
-        "commercial_status"
-      ],
-      "audit": "freight_contract.audit_comparison"
-    },
-    {
-      "comparison_id": "posted_time",
-      "case_ids": [
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_posted_time"
-      ],
-      "fixed_conditions": [
-        "same reviewed one-way Native road and lane",
-        "same yellow curb and zone extents",
-        "same sign wording and source",
-        "same four-camera and 900-frame 20 Hz capture",
-        "same ego controller and freight prop except deliberate difference",
-        "same cargo action except when action is deliberate difference",
-        "same commercial-status dossier except when status is deliberate difference",
-        "same civil date/time relation except when posted window is deliberate difference",
-        "same stop footprint except when zone footprint is deliberate difference"
-      ],
-      "deliberate_differences": [
-        "posted_window"
-      ],
-      "audit": "freight_contract.audit_comparison"
-    },
-    {
-      "comparison_id": "zone_footprint",
-      "case_ids": [
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__freight_loading",
-        "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver__outside_yellow_zone"
-      ],
-      "fixed_conditions": [
-        "same reviewed one-way Native road and lane",
-        "same yellow curb and zone extents",
-        "same sign wording and source",
-        "same four-camera and 900-frame 20 Hz capture",
-        "same ego controller and freight prop except deliberate difference",
-        "same cargo action except when action is deliberate difference",
-        "same commercial-status dossier except when status is deliberate difference",
-        "same civil date/time relation except when posted window is deliberate difference",
-        "same stop footprint except when zone footprint is deliberate difference"
-      ],
-      "deliberate_differences": [
-        "stop_zone"
-      ],
-      "audit": "freight_contract.audit_comparison"
-    }
-  ],
-  "source_law_text": "The parking of vehicles is prohibited or restricted in certain zones as set forth in this Section. The location of such zones shall be established by posting appropriate signage or other durable markings, by painting curbs or the edges of road surfaces in accordance with the colors listed below, or by a combination thereof: Yellow indicates a zone for: (1) Commercial vehicles to stop, stand or park for the purpose of loading or unloading freight in accordance with the conditions and times posted on an accompanying sign; and (2) Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.",
-  "source_assignment": "inputs/testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver/assignment.json"
+  "sweep_specs": []
 }

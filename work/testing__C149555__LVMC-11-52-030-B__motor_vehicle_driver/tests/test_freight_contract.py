@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 SOURCE = Path(__file__).resolve().parents[1] / "freight_contract.py"
+SCRATCH = Path.cwd() / ".runtime-work"
+SCRATCH.mkdir(exist_ok=True)
 spec = importlib.util.spec_from_file_location("freight_contract", SOURCE)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
@@ -35,20 +37,25 @@ class Adapter:
 
 
 def packet(variant="freight_loading"):
+    conditions = {"verbatim_text": "Freight 8-18", "freight_permitted": True,
+                  "civil_windows": [{"weekdays": list(range(7)), "start": "08:00", "end": "18:00"}]}
     return {"case_id": "case", "variant": variant, "native_result_sha256": "r", "frame_map_sha256": "f",
             "native_map_sha256": "m", "curb_observation_sha256": "c", "sign_observation_sha256": "s",
             "commercial_dossier_sha256": "d", "freight_activity_source_sha256": "a",
+            "civil_time_source_sha256": "clock",
             "curb_color_observed": "yellow", "one_way_native_readback": True,
             "native_map_readback": {"native_road_id": 2, "native_lane_id": -1, "one_way_native_readback": True},
             "curb_observation": {"start_station_m": 20, "end_station_m": 40, "independent_pixel_review": True},
             "sign_observation": {"independent_pixel_review": True},
-            "sign_text_readback": "Freight 8-18", "posted_conditions": {"verbatim_text": "Freight 8-18"},
+            "sign_text_readback": "Freight 8-18", "posted_conditions": conditions,
             "vehicle_id": "truck-1", "commercial_dossier": {"vehicle_id": "truck-1", "enterprise_use_reviewed": True, "qualifies_commercial": True},
-            "frames": [{"original_frame": i, "time_s": i / 20, "ego_station_m": 30,
-                        "ego_body_station_min_m": 28, "ego_body_station_max_m": 32,
-                        "ego_speed_mps": 0.0} for i in range(900)],
+            "frames": [{"original_frame": i, "time_s": i / 20,
+                        "ego_station_m": 5 + 25 * min(i, 200) / 200,
+                        "ego_body_station_min_m": 3 + 25 * min(i, 200) / 200,
+                        "ego_body_station_max_m": 7 + 25 * min(i, 200) / 200,
+                        "ego_speed_mps": 2.5 if i < 200 else 0.0} for i in range(900)],
             "zone": {"start_station_m": 20, "end_station_m": 40},
-            "freight_activity": {"vehicle_id": "truck-1", "observed_action": "loading", "cargo_actor_id": "cargo-1", "observed_transfer_frames": [50, 51]},
+            "freight_activity": {"vehicle_id": "truck-1", "observed_action": "loading", "cargo_actor_id": "cargo-1", "observed_transfer_frames": [250, 251]},
             "civil_time": {"source_sha256": "clock", "timezone": "America/Los_Angeles", "local_datetime": "2026-11-23T12:00:00"},
             "posted_window_check": {"source_sha256": "window", "derived_from_sign_sha256": "s", "inside": True}}
 
@@ -79,6 +86,8 @@ class FreightContractTests(unittest.TestCase):
         result = module.audit_saved_original(packet(), case_id="case", variant="freight_loading")
         self.assertEqual(result["frames_checked"], 900)
         self.assertTrue(result["stopped_inside_zone"])
+        self.assertEqual(result["final_halt_original_frames"], [200, 899])
+        self.assertEqual(result["final_halt_duration_s"], 35.0)
         p = packet()
         del p["freight_activity_source_sha256"]
         with self.assertRaisesRegex(module.SourceError, "freight_activity_source_sha256"):
@@ -99,6 +108,35 @@ class FreightContractTests(unittest.TestCase):
             with self.subTest(rejection=rejection), self.assertRaisesRegex(module.SourceError, rejection):
                 module.audit_saved_original(p, case_id="case", variant="freight_loading")
 
+    def test_rejects_stationary_spawn_and_incomplete_hold(self):
+        p = packet()
+        for frame in p["frames"]:
+            frame.update(ego_station_m=30, ego_body_station_min_m=28,
+                         ego_body_station_max_m=32, ego_speed_mps=0.0)
+        with self.assertRaisesRegex(module.SourceError, "approach does not begin"):
+            module.audit_saved_original(p, case_id="case", variant="freight_loading")
+        p = packet()
+        p["frames"][-1]["ego_speed_mps"] = 1.0
+        with self.assertRaisesRegex(module.SourceError, "final hold missing"):
+            module.audit_saved_original(p, case_id="case", variant="freight_loading")
+        p = packet()
+        p["freight_activity"]["observed_transfer_frames"] = [50]
+        with self.assertRaisesRegex(module.SourceError, "during original halt"):
+            module.audit_saved_original(p, case_id="case", variant="freight_loading")
+
+    def test_posted_time_is_derived_from_original_sign_and_civil_clock(self):
+        p = packet()
+        p["posted_window_check"]["inside"] = False
+        with self.assertRaisesRegex(module.SourceError, "contradicts sourced civil time"):
+            module.audit_saved_original(p, case_id="case", variant="freight_loading")
+        p = packet()
+        p["posted_conditions"]["civil_windows"] = [
+            {"weekdays": [0], "start": "22:00", "end": "02:00"}]
+        p["civil_time"]["local_datetime"] = "2026-11-24T01:00:00"
+        self.assertTrue(module.inside_posted_window(p["civil_time"], p["posted_conditions"]))
+        p["civil_time"]["local_datetime"] = "2026-11-24T03:00:00"
+        self.assertFalse(module.inside_posted_window(p["civil_time"], p["posted_conditions"]))
+
     def test_comparison_rejects_changed_sign_and_non_deliberate_activity(self):
         left, right = packet(), packet()
         right["case_id"] = "other"
@@ -112,16 +150,20 @@ class FreightContractTests(unittest.TestCase):
             module.audit_comparison(left, right, "posted_window")
 
     def test_original_source_bundle_seals_files_and_joins_subject(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
             base = Path(temporary)
             p = packet()
             sources = {
                 "frame_map": {"case_id": "case", "frames": list(range(900))},
                 "native_map": {"map_name": "reviewed-map", **p["native_map_readback"]},
                 "curb_observation": {"color": "yellow", **p["curb_observation"]},
-                "sign_observation": {"verbatim_text": "Freight 8-18", **p["sign_observation"]},
+                "sign_observation": {"verbatim_text": "Freight 8-18",
+                                     "civil_windows": p["posted_conditions"]["civil_windows"],
+                                     "freight_permitted": True, **p["sign_observation"]},
                 "commercial_dossier": dict(p["commercial_dossier"]),
                 "freight_activity": dict(p["freight_activity"]),
+                "civil_time": {"timezone": p["civil_time"]["timezone"],
+                               "local_datetime": p["civil_time"]["local_datetime"]},
             }
             entries = {}
             for name, value in sources.items():
@@ -132,6 +174,7 @@ class FreightContractTests(unittest.TestCase):
             for name, field in module.SOURCE_FIELDS.items():
                 if name != "native_result":
                     p[field] = entries[name]["sha256"]
+            p["civil_time"]["source_sha256"] = entries["civil_time"]["sha256"]
             p["posted_window_check"]["derived_from_sign_sha256"] = entries["sign_observation"]["sha256"]
             path = base / "native_result.json"
             path.write_text(json.dumps(p), encoding="utf-8")

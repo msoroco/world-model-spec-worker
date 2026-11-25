@@ -16,19 +16,26 @@ def main():
     parser.add_argument('--rider-kind', required=True)
     parser.add_argument('--left-attempt', type=Path, required=True)
     parser.add_argument('--right-attempt', type=Path, required=True)
-    parser.add_argument('--mode', choices=('positive', 'negative'), required=True)
+    parser.add_argument('--mode', choices=('positive', 'negative',
+                                           'negative_candidate'), required=True)
     args = parser.parse_args()
     comparison_audit.audit_delivery = lambda attempt, case, review: delivery_audit(
         attempt, case, review, expected_frames=3, diagnostic_fixture=True)
     left_review = args.left_attempt / 'pixel-review.json'
-    if args.mode == 'negative':
+    if args.mode in ('negative', 'negative_candidate'):
         with tempfile.TemporaryDirectory(dir=args.right_attempt.parent) as temporary:
             right = Path(temporary) / 'right'
             shutil.copytree(args.right_attempt, right)
             right_review = right / 'pixel-review.json'
-            review = json.loads(right_review.read_text())
-            review['views']['reference_corner']['framemd5_sha256'] = '0' * 64
-            right_review.write_text(json.dumps(review, indent=2) + '\n')
+            if args.mode == 'negative':
+                review = json.loads(right_review.read_text())
+                review['views']['reference_corner']['framemd5_sha256'] = '0' * 64
+                right_review.write_text(json.dumps(review, indent=2) + '\n')
+            else:
+                config_path = right / 'config.json'
+                config = json.loads(config_path.read_text())
+                config['rider_throttle_scale'] = 1.15
+                config_path.write_text(json.dumps(config, indent=2) + '\n')
             result = comparison_audit.audit_saved(args.left_attempt, right,
                                                   left_review, right_review, args.rider_kind)
     else:

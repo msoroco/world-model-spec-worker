@@ -11,8 +11,17 @@ from signal_crossing import validate_source_packet, controller_request, construc
 from saved_signal_audit import audit
 
 MAP = b'<OpenDRIVE>reviewed test map</OpenDRIVE>'
-REVIEW = b'operator-reviewed highway and device inventory'
 SHA = hashlib.sha256
+REVIEW_OBJECT = {
+    'schema': 'median-signal-site-review-v1', 'reviewer': 'CPU fixture reviewer',
+    'source_refs': [{'path': 'map.xodr', 'sha256': SHA(MAP).hexdigest()}],
+    'map_sha256': SHA(MAP).hexdigest(), 'crossing_id': 'median-1',
+    'highway_review': {'ego': 'A', 'other': 'B', 'public_access': True,
+                       'public_dedication': True},
+    'driver_scope': {'human_driver': True, 'conventional_motor_vehicle': True},
+    'device_review': {'id': 'light-1', 'type': 'traffic_light', 'official': True,
+                      'controls_crossing': True, 'operative_status': 'operative'}}
+REVIEW = json.dumps(REVIEW_OBJECT, sort_keys=True).encode()
 
 
 def packet():
@@ -31,11 +40,17 @@ def sealed_history():
     # Other enters at 1 and clears at 3; ego enters at 3 and clears at 5.
     ego = [[-8, 0], [-6, 0], [-4, 0], [0, 0], [1, 0], [6, 0]]
     other = [[0, -6], [0, 0], [0, 1], [0, 6], [0, 8], [0, 10]]
+    def body(xy):
+        x, y = xy
+        return [[x-.2, y-.2], [x+.2, y-.2], [x+.2, y+.2], [x-.2, y+.2]]
     for i in range(6):
         rows.append({'frame': i, 'time_s': i/20, 'ego_light_readback': 'Green',
-                     'ego': {'actor_id': 11, 'alive': True, 'xy_m': ego[i]},
-                     'other': {'actor_id': 12, 'alive': True, 'xy_m': other[i]}})
+                     'ego': {'actor_id': 11, 'alive': True, 'xy_m': ego[i],
+                             'body_vertices_xy_m': body(ego[i])},
+                     'other': {'actor_id': 12, 'alive': True, 'xy_m': other[i],
+                               'body_vertices_xy_m': body(other[i])}})
     payload = json.dumps({'map_sha256': SHA(MAP).hexdigest(),
+                          'crossing_id': 'median-1',
                           'crossing_bounds_xy_m': [-2, -2, 2, 2],
                           'ego_actor_id': 11, 'other_actor_id': 12,
                           'frames': rows}).encode()
@@ -51,7 +66,9 @@ def sealed_history():
 class SignalCrossingTest(unittest.TestCase):
     def test_saved_cli_uses_sealed_payload(self):
         seal, payload = sealed_history()
-        with tempfile.TemporaryDirectory() as temporary:
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
             root = Path(temporary)
             (root/'packet.json').write_text(json.dumps(seal))
             (root/'frames.json').write_bytes(payload)
@@ -127,6 +144,17 @@ class SignalCrossingTest(unittest.TestCase):
             construct_native(World(m), p, MAP, REVIEW,
                              lambda x, y: Point(x, y), resolve, spawn)
         self.assertEqual(created, [])
+        m.other[0].successor = [m.other[1]]
+        destroyed = []
+        class Actor:
+            def destroy(self):
+                destroyed.append('ego')
+        def second_fails(party, transform):
+            return Actor() if party == 'ego' else None
+        with self.assertRaisesRegex(ValueError, 'other spawn failed'):
+            construct_native(World(m), p, MAP, REVIEW,
+                             lambda x, y: Point(x, y), resolve, second_fails)
+        self.assertEqual(destroyed, ['ego'])
 
     def test_source_and_geometry(self):
         self.assertEqual(validate_source_packet(packet(), MAP, REVIEW)['crossing_id'], 'median-1')
@@ -136,6 +164,19 @@ class SignalCrossingTest(unittest.TestCase):
             p = packet(); p[key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):
                 validate_source_packet(p, MAP, REVIEW)
+        for key, value in [('public_access', False), ('public_dedication', False)]:
+            review = json.loads(REVIEW)
+            review['highway_review'][key] = value
+            body = json.dumps(review).encode()
+            p = packet(); p['review_sha256'] = SHA(body).hexdigest()
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'highway premise'):
+                validate_source_packet(p, MAP, body)
+        review = json.loads(REVIEW)
+        review['device_review']['operative_status'] = 'inoperative'
+        body = json.dumps(review).encode()
+        p = packet(); p['review_sha256'] = SHA(body).hexdigest()
+        with self.assertRaisesRegex(ValueError, 'operative official signal'):
+            validate_source_packet(p, MAP, body)
 
     def test_route_crossing_and_signal_controller(self):
         p = packet(); p['other_route_xy_m'] = [[0, -8], [0, -4], [0, -3]]
@@ -161,7 +202,7 @@ class SignalCrossingTest(unittest.TestCase):
     def test_missing_readback_and_actor(self):
         seal, payload = sealed_history()
         history = json.loads(payload)
-        for mutation in ('light', 'actor', 'frame', 'position'):
+        for mutation in ('light', 'actor', 'frame', 'position', 'body', 'cadence', 'crossing'):
             h = json.loads(payload)
             if mutation == 'light':
                 h['frames'][2].pop('ego_light_readback')
@@ -169,8 +210,14 @@ class SignalCrossingTest(unittest.TestCase):
                 h['frames'][2]['other']['actor_id'] = 99
             elif mutation == 'frame':
                 h['frames'][2]['frame'] = 8
-            else:
+            elif mutation == 'position':
                 h['frames'][2]['ego']['xy_m'] = None
+            elif mutation == 'body':
+                h['frames'][2]['ego'].pop('body_vertices_xy_m')
+            elif mutation == 'cadence':
+                h['frames'][2]['time_s'] = .18
+            else:
+                h['crossing_id'] = 'another-crossing'
             changed = json.dumps(h).encode()
             s = dict(seal, payload_sha256=SHA(changed).hexdigest())
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
@@ -178,6 +225,16 @@ class SignalCrossingTest(unittest.TestCase):
         seal['expected_frames'] = 900
         with self.assertRaises(ValueError):
             audit(seal, payload, 'case-1', SHA(REVIEW).hexdigest())
+
+    def test_body_crosses_when_center_remains_outside(self):
+        seal, payload = sealed_history()
+        history = json.loads(payload)
+        history['frames'][2]['ego']['body_vertices_xy_m'] = [
+            [-3, -.4], [-1, -.4], [-1, .4], [-3, .4]]
+        changed = json.dumps(history).encode()
+        seal['payload_sha256'] = SHA(changed).hexdigest()
+        report = audit(seal, changed, 'case-1', SHA(REVIEW).hexdigest())
+        self.assertEqual(report['ego_entry_frame'], 2)
 
 
 if __name__ == '__main__':

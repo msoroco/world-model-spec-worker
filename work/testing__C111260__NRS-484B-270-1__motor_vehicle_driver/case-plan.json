@@ -191,11 +191,26 @@
     }
   ],
   "observations": [
-    "source-hashed Native intersection map and crossing geometry",
-    "distinct ego motor vehicle and human-powered bicycle with visible rider",
-    "Original 20 Hz identities, blueprints, positions and controller commands",
-    "rider conduct and applicable rules, with lawful-riding verdict unresolved",
-    "four-view image visibility, pending physical capture"
+    {
+      "name": "rider_identity",
+      "mandatory": true,
+      "evidence": "distinct ego motor vehicle and human-powered bicycle with visible rider; Original 20 Hz identities, blueprints, positions and controller commands"
+    },
+    {
+      "name": "encounter_motion",
+      "mandatory": true,
+      "evidence": "source-hashed Native intersection map and crossing geometry; Original 20 Hz identities, blueprints, positions and controller commands"
+    },
+    {
+      "name": "rider_conduct",
+      "mandatory": true,
+      "evidence": "rider conduct and applicable rules, with lawful-riding verdict unresolved"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "evidence": "four-view image visibility, pending physical capture"
+    }
   ],
   "sources": [
     {
@@ -294,5 +309,33 @@
         "testing__C111260__NRS-484B-270-1__motor_vehicle_driver__electric_scooter__cross_rider_path"
       ]
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "motor vehicle and each mounted rider full encounter",
+        "interval": "full 45 s source recording"
+      },
+      {
+        "view": "approach",
+        "subject": "rider approach, crossing position and response onset",
+        "interval": "full 45 s source recording"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "conflict point, rider clearance and crossing geometry",
+        "interval": "full 45 s source recording"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego speed, position and relative approach to rider",
+        "interval": "full 45 s source recording"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

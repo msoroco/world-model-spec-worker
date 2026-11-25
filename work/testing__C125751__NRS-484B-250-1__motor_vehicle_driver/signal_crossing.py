@@ -5,6 +5,7 @@ CARLA remains an injected runtime dependency; this module is CPU importable.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 
 
@@ -30,6 +31,33 @@ def validate_source_packet(packet: dict, map_bytes: bytes, review_bytes: bytes):
         raise ValueError('map source hash mismatch')
     if packet.get('review_sha256') != sha256(review_bytes):
         raise ValueError('roadway and device review hash mismatch')
+    try:
+        review = json.loads(review_bytes)
+    except (ValueError, UnicodeDecodeError, TypeError) as exc:
+        raise ValueError('roadway and device review is not structured source') from exc
+    if (review.get('schema') != 'median-signal-site-review-v1' or
+            review.get('map_sha256') != packet.get('map_sha256') or
+            review.get('crossing_id') != packet.get('crossing_id') or
+            not review.get('reviewer') or not review.get('source_refs')):
+        raise ValueError('reviewed crossing source/provenance absent')
+    highway = review.get('highway_review', {})
+    if (highway.get('ego') != packet.get('ego_highway') or
+            highway.get('other') != packet.get('other_highway') or
+            highway.get('public_access') is not True or
+            highway.get('public_dedication') is not True):
+        raise ValueError('public and different-highway premise unreviewed')
+    scope = review.get('driver_scope', {})
+    if scope.get('human_driver') is not True or scope.get('conventional_motor_vehicle') is not True:
+        raise ValueError('human conventional motor driver scope unreviewed')
+    device = review.get('device_review', {})
+    inventory = packet.get('official_device_inventory')
+    first_device = inventory[0] if isinstance(inventory, list) and inventory else {}
+    if (device.get('id') != first_device.get('id') or
+            device.get('type') != 'traffic_light' or
+            device.get('official') is not True or
+            device.get('controls_crossing') is not True or
+            device.get('operative_status') != 'operative'):
+        raise ValueError('operative official signal control unreviewed')
     if packet.get('cell_id') != 'C125751' or packet.get('law_id') != 'NRS-484B-250-1':
         raise ValueError('wrong cell or law')
     if packet.get('driver_scope_reviewed') is not True:
@@ -97,11 +125,16 @@ def construct_native(world, packet: dict, map_bytes: bytes, review_bytes: bytes,
     if state not in {'Red', 'Yellow', 'Green'}:
         raise ValueError('live device state unreadable')
     actors = {}
-    for party in ('ego', 'other'):
-        actor = spawn_vehicle(party, routes[party][0].transform)
-        if actor is None:
-            raise ValueError(f'{party} spawn failed')
-        actors[party] = actor
+    try:
+        for party in ('ego', 'other'):
+            actor = spawn_vehicle(party, routes[party][0].transform)
+            if actor is None:
+                raise ValueError(f'{party} spawn failed')
+            actors[party] = actor
+    except Exception:
+        for actor in reversed(list(actors.values())):
+            actor.destroy()
+        raise
     return {'routes': routes, 'actors': actors, 'device': live_device,
             'initial_light_readback': state}
 

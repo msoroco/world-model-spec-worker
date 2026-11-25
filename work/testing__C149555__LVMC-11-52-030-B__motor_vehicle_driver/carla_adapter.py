@@ -30,6 +30,11 @@ class NativeCarlaAdapter:
         self.cargo = None
         self.carrier = None
         self.civil_window_selected = None
+        self.target_station_m = None
+        self.hold_requested = False
+        self.transfer_action = None
+        self.transfer_frame_count = 0
+        self.phase = "unconfigured"
 
     def assert_native_map(self, expected_sha256: str) -> None:
         actual = hashlib.sha256(self.map.to_opendrive().encode("utf-8")).hexdigest()
@@ -131,32 +136,16 @@ class NativeCarlaAdapter:
         target = self.map.get_waypoint_xodr(self.site["native_road_id"], self.site["native_lane_id"], target_station_m)
         if target is None:
             raise SourceError("target station lacks Native waypoint")
-        # Closed-loop station control. No teleportation or inferred completion.
-        max_ticks = int(self.site.get("approach_max_ticks", 500))
-        for _ in range(max_ticks):
-            station = self._current_station()
-            distance = target_station_m - station
-            if distance < -self.site.get("station_tolerance_m", 1.0):
-                raise SourceError("ego overshot curb target")
-            if abs(distance) <= self.site.get("station_tolerance_m", 1.0):
-                return
-            speed = self.ego.get_velocity().length()
-            desired = min(self.site.get("approach_speed_mps", 4.0), max(0.8, distance * 0.4))
-            throttle = 0.35 if speed < desired else 0.0
-            brake = 0.35 if speed > desired + 0.5 else 0.0
-            self.ego.apply_control(self.carla.VehicleControl(throttle=throttle, brake=brake))
-            self.world.tick()
-        raise SourceError("ego did not reach reviewed curb station")
+        # Motion starts only when the synchronized capture loop calls
+        # step_capture. Ticking here would finish the approach before cameras
+        # and frame map begin, leaving no original approach evidence.
+        self.target_station_m = target_station_m
+        self.phase = "approach"
 
     def stop_and_hold(self, ego_id):
         if self.ego is None or ego_id != self.ego.id:
             raise SourceError("wrong ego actor")
-        for _ in range(int(self.site.get("brake_max_ticks", 80))):
-            self.ego.apply_control(self.carla.VehicleControl(throttle=0.0, brake=1.0, hand_brake=True))
-            self.world.tick()
-            if self.ego.get_velocity().length() <= 0.1:
-                return
-        raise SourceError("ego did not stop at reviewed curb station")
+        self.hold_requested = True
 
     def spawn_freight(self, blueprint_id: str, zone: dict):
         station = (zone["start_station_m"] + zone["end_station_m"]) / 2
@@ -168,20 +157,97 @@ class NativeCarlaAdapter:
             raise SourceError("cargo/ego identity mismatch")
         if action not in ("loading", "unloading"):
             raise SourceError("unsupported freight action")
-        # A walker carries the authored cargo prop across the curb. This is
-        # scripted prop motion, and the saved audit still requires original
-        # pixels and actor trajectories before a transfer can be reported.
+        self.transfer_action = action
+
+    def step_capture(self, frame_index: int) -> dict:
+        """Apply one controller step before the capture loop's single world tick.
+
+        The caller records original pose, cargo pose and camera frames after
+        that tick. This method never advances the world independently.
+        """
+        if not 0 <= frame_index < 900 or self.target_station_m is None or not self.hold_requested:
+            raise SourceError("capture controller not configured for original frame")
         station = self._current_station()
-        self.carrier = self._spawn(self.site["carrier_blueprint_id"], self._station_transform(station, self.site["carrier_start_lateral_m"]))
-        direction = 1.0 if action == "unloading" else -1.0
-        right = self._station_transform(station).get_right_vector()
-        walk_direction = self.carla.Vector3D(right.x * direction, right.y * direction, 0.0)
-        for _ in range(int(self.site.get("transfer_ticks", 80))):
-            self.carrier.apply_control(self.carla.WalkerControl(direction=walk_direction, speed=self.site.get("carrier_speed_mps", 0.8)))
-            self.world.tick()
-            cargo_transform = self.carrier.get_transform()
-            cargo_transform.location.z += self.site["cargo_carry_height_m"]
-            self.cargo.set_transform(cargo_transform)
+        speed = self.ego.get_velocity().length()
+        if self.phase == "approach":
+            distance = self.target_station_m - station
+            if distance < -self.site.get("station_tolerance_m", 1.0):
+                raise SourceError("ego overshot curb target")
+            if distance <= self.site.get("station_tolerance_m", 1.0):
+                self.phase = "braking"
+            else:
+                desired = min(self.site.get("approach_speed_mps", 4.0), max(0.8, distance * 0.4))
+                self.ego.apply_control(self.carla.VehicleControl(
+                    throttle=0.35 if speed < desired else 0.0,
+                    brake=0.35 if speed > desired + 0.5 else 0.0))
+                return {"phase": "approach", "frame": frame_index}
+        if self.phase == "braking":
+            self.ego.apply_control(self.carla.VehicleControl(throttle=0.0, brake=1.0))
+            if speed <= 0.1:
+                self.phase = "hold"
+        if self.phase in ("hold", "transfer", "complete"):
+            self.ego.apply_control(self.carla.VehicleControl(throttle=0.0, brake=1.0, hand_brake=True))
+            if self.phase == "hold" and self.transfer_action:
+                self.carrier = self._spawn(self.site["carrier_blueprint_id"],
+                                           self._station_transform(station, self.site["carrier_start_lateral_m"]))
+                self.phase = "transfer"
+            if self.phase == "transfer":
+                direction = 1.0 if self.transfer_action == "unloading" else -1.0
+                right = self._station_transform(station).get_right_vector()
+                self.carrier.apply_control(self.carla.WalkerControl(
+                    direction=self.carla.Vector3D(right.x * direction, right.y * direction, 0.0),
+                    speed=self.site.get("carrier_speed_mps", 0.8)))
+                cargo_transform = self.carrier.get_transform()
+                cargo_transform.location.z += self.site["cargo_carry_height_m"]
+                self.cargo.set_transform(cargo_transform)
+                self.transfer_frame_count += 1
+                if self.transfer_frame_count >= int(self.site.get("transfer_ticks", 80)):
+                    self.phase = "complete"
+        return {"phase": self.phase, "frame": frame_index}
+
+    def sample_original(self, index: int, native_frame: int, snapshot) -> dict:
+        """Read post-tick body footprint and cargo position from live actors."""
+        if self.ego is None or snapshot.frame != native_frame:
+            raise SourceError("original actor/snapshot frame mismatch")
+        transform = self.ego.get_transform()
+        station = self._current_station()
+        body_stations = []
+        for vertex in self.ego.bounding_box.get_world_vertices(transform):
+            waypoint = self.map.get_waypoint(vertex, project_to_road=True)
+            if waypoint is None or waypoint.road_id != self.site["native_road_id"]:
+                raise SourceError("original body vertex left reviewed road")
+            body_stations.append(waypoint.s)
+        if not body_stations:
+            raise SourceError("original ego body footprint missing")
+        speed = self.ego.get_velocity().length()
+        sample = {
+            "original_frame": index,
+            "native_frame": native_frame,
+            "time_s": snapshot.timestamp.elapsed_seconds,
+            "ego_station_m": station,
+            "ego_body_station_min_m": min(body_stations),
+            "ego_body_station_max_m": max(body_stations),
+            "ego_speed_mps": speed,
+            "ego_position_m": [transform.location.x, transform.location.y,
+                               transform.location.z],
+            "ego_heading_deg": transform.rotation.yaw,
+            "cargo_actor_id": None if self.cargo is None else self.cargo.id,
+            "cargo_position_m": None,
+            "cargo_lateral_offset_m": None,
+            "carrier_actor_id": None if self.carrier is None else self.carrier.id,
+            "carrier_position_m": None,
+        }
+        if self.cargo is not None:
+            location = self.cargo.get_location()
+            sample["cargo_position_m"] = [location.x, location.y, location.z]
+            right = transform.get_right_vector()
+            sample["cargo_lateral_offset_m"] = (
+                (location.x - transform.location.x) * right.x +
+                (location.y - transform.location.y) * right.y)
+        if self.carrier is not None:
+            location = self.carrier.get_location()
+            sample["carrier_position_m"] = [location.x, location.y, location.z]
+        return sample
 
     def cleanup(self):
         for actor in reversed(self.owned):

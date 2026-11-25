@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from freight_contract import SourceError, audit_source_bundle, read_sealed, require_case_completion
+from saved_delivery import audit_delivery, probe_and_decode
 
 
 ASSIGNMENT = "testing__C149555__LVMC-11-52-030-B__motor_vehicle_driver"
@@ -28,25 +29,42 @@ def require(condition: bool, reason: str) -> None:
         raise SourceError(reason)
 
 
-def audit_pair(left_manifest: dict, right_manifest: dict, comparison_id: str) -> dict:
+def audit_pair(left_manifest: dict, right_manifest: dict, comparison_id: str,
+               *, attempt_roots: tuple[Path, Path] | None = None,
+               media_probe=None) -> dict:
     require(comparison_id in PAIRS, "unknown freight comparison")
     left_variant, right_variant, changed_measurement = PAIRS[comparison_id]
     packets = []
     measured = []
-    for manifest, variant in ((left_manifest, left_variant), (right_manifest, right_variant)):
+    delivery_audits = []
+    for side, (manifest, variant) in enumerate(((left_manifest, left_variant), (right_manifest, right_variant))):
         case_id = f"{ASSIGNMENT}__{variant}"
         require(manifest.get("case_id") == case_id, "comparison exact case mismatch")
         require(manifest.get("kind") == "delivery", "comparison requires delivery source")
         require(manifest.get("acquisition_kind") == "original_native", "diagnostic source cannot satisfy delivery comparison")
-        result = audit_source_bundle(manifest, case_id=case_id, variant=variant)
+        root = attempt_roots[side].resolve(strict=True) if attempt_roots else None
+        if root is not None:
+            delivery_audits.append(audit_delivery(
+                manifest, attempt_root=root, media_probe=media_probe or probe_and_decode))
+        result = audit_source_bundle(manifest, case_id=case_id, variant=variant,
+                                     source_root=root, require_raw=root is not None)
         require_case_completion(result)
         context_ref = manifest.get("sources", {}).get("comparison_context", {})
         require(context_ref.get("path") and context_ref.get("sha256"), "missing sealed comparison context")
-        packet = read_sealed(context_ref["path"], context_ref["sha256"])
+        context_path = Path(context_ref["path"])
         native_ref = manifest["sources"]["native_result"]
-        native = read_sealed(native_ref["path"], native_ref["sha256"])
+        native_path = Path(native_ref["path"])
+        if root is not None:
+            context_path = (root / context_path).resolve(strict=True)
+            native_path = (root / native_path).resolve(strict=True)
+            require(context_path.is_relative_to(root) and native_path.is_relative_to(root),
+                    "comparison source escapes original attempt")
+        packet = read_sealed(context_path, context_ref["sha256"])
+        native = read_sealed(native_path, native_ref["sha256"])
         require(native.get("comparison_context_sha256") == context_ref["sha256"], "comparison context seal mismatch")
         require(packet.get("case_id") == case_id, "comparison context case mismatch")
+        require(packet.get("civil_time_source_sha256") == manifest["sources"]["civil_time"]["sha256"],
+                "comparison civil-time source mismatch")
         packets.append(packet)
         measured.append(result)
 
@@ -86,6 +104,11 @@ def audit_pair(left_manifest: dict, right_manifest: dict, comparison_id: str) ->
         "case_ids": [left_manifest["case_id"], right_manifest["case_id"]],
         "source_integrity": True,
         "physical_case_completion": True,
+        "actual_pixels_reviewed": False,
+        "delivery_audits": [{"native_result_sha256": audit["native_result_sha256"],
+                             "media_sha256": audit["media_sha256"],
+                             "frames_checked": audit["frames_checked"]}
+                            for audit in delivery_audits],
         "fixed_conditions_checked": list(fixed),
         "deliberate_measurement": changed_measurement,
         "legal_conclusion": "unresolved",
@@ -97,10 +120,14 @@ def main() -> None:
     parser.add_argument("--comparison", required=True, choices=PAIRS)
     parser.add_argument("--left", required=True, type=Path)
     parser.add_argument("--right", required=True, type=Path)
+    parser.add_argument("--left-attempt", required=True, type=Path)
+    parser.add_argument("--right-attempt", required=True, type=Path)
     args = parser.parse_args()
     left = json.loads(args.left.read_text(encoding="utf-8"))
     right = json.loads(args.right.read_text(encoding="utf-8"))
-    print(json.dumps(audit_pair(left, right, args.comparison), indent=2, sort_keys=True))
+    print(json.dumps(audit_pair(left, right, args.comparison,
+                                attempt_roots=(args.left_attempt, args.right_attempt)),
+                     indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":
