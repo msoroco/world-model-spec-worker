@@ -23,12 +23,12 @@ def analysis_attempt(root, variant):
     (root/'trace.jsonl').write_text(''.join(json.dumps({
         'frame':r['frame'],'time_s':r['time_s'],
         'position_m':r['pedestrian_xyz_m']})+'\n' for r in original))
-    manifest = json.loads((root/'source-manifest.json').read_text())
+    manifest = json.loads((root/'original-sources.json').read_text())
     for key,new in (('map','candidate-overpass.xodr'),
                     ('body_history','body-history.jsonl'),
                     ('frame_map','video_frames.jsonl')):
         manifest[key] = {'path':new,'sha256':sha(root/new)}
-    (root/'source-manifest.json').write_text(json.dumps(manifest))
+    (root/'original-sources.json').write_text(json.dumps(manifest))
     description = {'channels':[{'name':name,'unit':'structured'} for name in
                    ('crossing_order','roadway_vehicle_inventory',
                     'provided_overhead_crossing','designated_place_prohibition')],

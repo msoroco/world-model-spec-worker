@@ -129,7 +129,7 @@ def run(scene_path, map_path, output, host, port):
                'municipal_source':'municipal-designation-source.txt'}
     sources.update({'video_'+name:name+'.mkv' for name in
                     ('overview','approach','reference_corner','driver_reference')})
-    write(output/'source-manifest.json', {'format':'c188132-original-sources-v1',
+    write(output/'original-sources.json', {'format':'c188132-original-sources-v1',
           **{key:{'path':name,'sha256':sha(output/name)} for key,name in sources.items()}})
     write(output/'media-audit.json', audit_media(output))
     write(output/'acquisition.json', {name:{'kind':'original_native','sha256':sha(output/name)}

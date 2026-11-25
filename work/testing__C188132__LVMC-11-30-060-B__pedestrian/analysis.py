@@ -13,7 +13,7 @@ from overpass_source import audit_saved, sha
 
 
 REQUIRED = ('scene.json', 'candidate-overpass.xodr', 'body-history.jsonl',
-            'video_frames.jsonl', 'trace.jsonl', 'source-manifest.json',
+            'video_frames.jsonl', 'trace.jsonl', 'original-sources.json',
             'reviewed-site.json', 'reviewed-site-source.txt',
             'municipal-designation-source.txt')
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -77,7 +77,7 @@ def analyze(attempt, output):
               'roadway_vehicle_inventory':(measure_roadway_vehicle_inventory(audit),
                                            ('body-history.jsonl','reviewed-site.json')),
               'provided_overhead_crossing':(measure_provided_overhead_crossing(audit),
-                                            ('candidate-overpass.xodr','reviewed-site.json',
+                                            ('reviewed-site.json',
                                              'reviewed-site-source.txt')),
               'designated_place_prohibition':(measure_designated_place(audit),
                                               ('reviewed-site.json',

@@ -1,19 +1,76 @@
 {
   "cell_id": "C188132",
   "actor": "pedestrian",
-  "status": "proposed",
+  "status": "draft",
   "sweeps_expanded": true,
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c188132-judgment-1",
+      "target_law_id": "LVMC-11-30-060-B",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "overhead pedestrian crossing has been provided",
+          "note": "Source review and original pixels must establish provided overhead structure and access."
+        }
+      ],
+      "rationale": "No numerical legal boundary follows from candidate geometry or controller requests.",
+      "missing_inputs": [
+        "independently reviewed original Native source and legal site context"
+      ]
+    },
+    {
+      "sweep_id": "c188132-judgment-2",
+      "target_law_id": "LVMC-11-30-060-B",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "yield the right-of-way to all vehicles upon the roadway",
+          "note": "Retain original pedestrian crossing timing and every Native roadway vehicle; legal yielding remains unresolved."
+        }
+      ],
+      "rationale": "No numerical legal boundary follows from candidate geometry or controller requests.",
+      "missing_inputs": [
+        "independently reviewed original Native source and legal site context"
+      ]
+    },
+    {
+      "sweep_id": "c188132-judgment-3",
+      "target_law_id": "LVMC-11-30-060-B",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "pedestrians are prohibited from crossing at certain designated places",
+          "note": "The Section 11.30.070 designation requires independently sourced municipal review."
+        }
+      ],
+      "rationale": "No numerical legal boundary follows from candidate geometry or controller requests.",
+      "missing_inputs": [
+        "independently reviewed original Native source and legal site context"
+      ]
+    }
+  ],
   "cases": [
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__semantic_baseline",
       "target_law_id": "LVMC-11-30-060-B",
       "target_type": "baseline",
       "rationale": "Shared semantic overpass route baseline; no extra recording.",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "entry_control_policy": {
+          "kind": "controller",
+          "value": "hold_until_vehicle_passes"
+        },
+        "designated_prohibition_context": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      },
       "deliberate_differences": [],
       "unresolved_judgment_calls": [
-        "yield the right-of-way"
+        "overhead pedestrian crossing has been provided",
+        "yield the right-of-way to all vehicles upon the roadway",
+        "pedestrians are prohibited from crossing at certain designated places"
       ],
       "recording_description": {
         "channels": [
@@ -63,14 +120,25 @@
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
       "target_law_id": "LVMC-11-30-060-B",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "rationale": "Exact reviewed overpass crossing source comparison",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "entry_control_policy": {
+          "kind": "controller",
+          "value": "hold_until_vehicle_passes"
+        },
+        "designated_prohibition_context": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      },
       "deliberate_differences": [
-        "requested_hold_until_vehicle_passes"
+        "entry_control_policy"
       ],
       "unresolved_judgment_calls": [
-        "yield the right-of-way"
+        "overhead pedestrian crossing has been provided",
+        "yield the right-of-way to all vehicles upon the roadway",
+        "pedestrians are prohibited from crossing at certain designated places"
       ],
       "recording_description": {
         "channels": [
@@ -115,19 +183,36 @@
         "limitations": [
           "Original structure, accessible deck, pixels and legal judgment require independent local review"
         ]
+      },
+      "paired_probe_id": "entry_timing",
+      "probe": {
+        "primary_variable": "entry_control_policy",
+        "comparison_or_standard": "controlled pedestrian entry timing",
+        "target_value_or_branch": "yield_before_vehicle"
       }
     },
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
       "target_law_id": "LVMC-11-30-060-B",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "rationale": "Exact reviewed overpass crossing source comparison",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "entry_control_policy": {
+          "kind": "controller",
+          "value": "enter_without_hold"
+        },
+        "designated_prohibition_context": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      },
       "deliberate_differences": [
-        "pedestrian entry timing"
+        "entry_control_policy"
       ],
       "unresolved_judgment_calls": [
-        "yield the right-of-way"
+        "overhead pedestrian crossing has been provided",
+        "yield the right-of-way to all vehicles upon the roadway",
+        "pedestrians are prohibited from crossing at certain designated places"
       ],
       "recording_description": {
         "channels": [
@@ -172,19 +257,36 @@
         "limitations": [
           "Original structure, accessible deck, pixels and legal judgment require independent local review"
         ]
+      },
+      "paired_probe_id": "entry_timing",
+      "probe": {
+        "primary_variable": "entry_control_policy",
+        "comparison_or_standard": "controlled pedestrian entry timing",
+        "target_value_or_branch": "enter_ahead_of_vehicle"
       }
     },
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition",
       "target_law_id": "LVMC-11-30-060-B",
-      "target_type": "exception_probe",
+      "target_type": "boundary_probe",
       "rationale": "Exact reviewed overpass crossing source comparison",
-      "variable_assignments": {},
+      "variable_assignments": {
+        "entry_control_policy": {
+          "kind": "controller",
+          "value": "enter_without_hold"
+        },
+        "designated_prohibition_context": {
+          "kind": "world_setup",
+          "value": "designated_prohibition"
+        }
+      },
       "deliberate_differences": [
-        "designated_prohibition"
+        "designated_prohibition_context"
       ],
       "unresolved_judgment_calls": [
-        "yield the right-of-way"
+        "overhead pedestrian crossing has been provided",
+        "yield the right-of-way to all vehicles upon the roadway",
+        "pedestrians are prohibited from crossing at certain designated places"
       ],
       "recording_description": {
         "channels": [
@@ -229,6 +331,12 @@
         "limitations": [
           "Original structure, accessible deck, pixels and legal judgment require independent local review"
         ]
+      },
+      "paired_probe_id": "designated_exception",
+      "probe": {
+        "primary_variable": "designated_prohibition_context",
+        "comparison_or_standard": "controlled source context contrast",
+        "target_value_or_branch": "designated_prohibition"
       }
     }
   ]

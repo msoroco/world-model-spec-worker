@@ -52,10 +52,14 @@ def build(variant):
         frames.append({'video_frame':i,'carla_frame':frame,
                        'native_frame':frame,'time_s':t})
         observation={'frame':frame,'time_s':t,'map_context':{},'participants':[]}
+        footprint=[[x,y] for x,y in ((-.2,walker_y-.2),(.2,walker_y-.2),
+                                      (.2,walker_y+.2),(-.2,walker_y+.2))]
+        vertices=[[p[0],p[1],z] for p in footprint for z in (0.0,1.8)]
         evidence.append({'actor_id':11,'original_frame':frame,
                          'recording_time_s':t,'replay_frame':frame,
                          'replay_simulation_time_s':t,
                          'ego':{'position_m':[0.0,walker_y,.2],
+                                'body_vertices_m':vertices,'heading_deg':90,
                                 'speed_mps':trace[-1]['speed_mps'],
                                 'speed_provenance':'synthetic_native_sample'},
                          'original_observations':observation,'world':{'weather':{}}})
@@ -101,11 +105,11 @@ def build(variant):
     manifest={'format':'c188132-original-sources-v1'}
     manifest.update({key:{'path':name,'sha256':checksum}
                      for key,(name,checksum) in source_files.items()})
-    files['source-manifest.json']=json.dumps(manifest,separators=(',',':'))+'\n'
+    files['original-sources.json']=json.dumps(manifest,separators=(',',':'))+'\n'
     files['capture/manifest.json']=json.dumps({'acquisition':'original_live_run',
         'case_id':case_id,'complete_driving_lanes':False,
         'extraction_confirmed':True,'frames':FRAMES,
-        'sources':{'candidate-overpass.xodr':sha(ROOT/'candidate-overpass.xodr'),
+        'sources':{'road.xodr':sha(ROOT/'candidate-overpass.xodr'),
                    'trace.jsonl':digest(files['trace.jsonl'])},'status':'draft'},
         separators=(',',':'))+'\n'
     videos=[{'path':name+'.mkv','frames':FRAMES,

@@ -64,11 +64,13 @@ def main():
                    'overpass_source.py':'overpass_source.py',
                    'native_capture.py':'native_capture.py',
                    'media_audit.py':'media_audit.py',
+                   'delivery_audit.py':'delivery_audit.py',
                    'site_review.py':'site_review.py',
                    'analysis.py':'analysis.py',
                    'walker_pipeline_capture.py':'walker_pipeline_capture.py',
                    'scene.json':scene_file.name,
-                   'candidate-overpass.xodr':'candidate-overpass.xodr'}
+                   'candidate-overpass.xodr':'candidate-overpass.xodr',
+                   'road.xodr':'candidate-overpass.xodr'}
         for destination, source in sources.items():
             files.append({'path':destination,'source':'work/'+ASSIGNMENT+'/'+source,
                           'content':(ROOT/source).read_text()})

@@ -217,7 +217,7 @@ def measure_original(scene, rows):
 def audit_saved(attempt, *, diagnostic=False):
     """Independent hash and frame audit; no synthetic physical acceptance."""
     attempt = Path(attempt).resolve()
-    manifest = json.loads((attempt/"source-manifest.json").read_text())
+    manifest = json.loads((attempt/"original-sources.json").read_text())
     if manifest.get("format") != "c188132-original-sources-v1":
         raise ValueError("original source manifest absent")
     def source(key):
@@ -253,9 +253,20 @@ def audit_saved(attempt, *, diagnostic=False):
 def audit_pair(first, second, comparison, *, diagnostic=False):
     """Compare original histories with only declared source changes."""
     roots = [Path(first).resolve(), Path(second).resolve()]
-    saved = [audit_saved(root, diagnostic=diagnostic) for root in roots]
+    if diagnostic:
+        saved = [audit_saved(root, diagnostic=True) for root in roots]
+    else:
+        from delivery_audit import audit as audit_delivery
+        saved = [audit_delivery(root, pixel_review=root/'original-pixel-review.json')
+                 for root in roots]
     scenes = [json.loads((root/"scene.json").read_text()) for root in roots]
-    if saved[0]["source_hashes"]["map"] != saved[1]["source_hashes"]["map"]:
+    if diagnostic:
+        first_map = saved[0]['source_hashes']['map']
+        second_map = saved[1]['source_hashes']['map']
+    else:
+        first_map = sha(roots[0]/'candidate-overpass.xodr')
+        second_map = sha(roots[1]/'candidate-overpass.xodr')
+    if first_map != second_map:
         raise ValueError("comparison physical map differs")
     baseline = {k:v for k,v in scenes[0].items() if k not in
                 ("case_id", "variant", "requested_hold_until_vehicle_passes",
@@ -283,7 +294,7 @@ def audit_pair(first, second, comparison, *, diagnostic=False):
         raise ValueError("unknown comparison")
     rows = []
     for root in roots:
-        manifest = json.loads((root/"source-manifest.json").read_text())
+        manifest = json.loads((root/"original-sources.json").read_text())
         entry = manifest["body_history"]
         rows.append([json.loads(line) for line in (root/entry["path"]).read_text().splitlines() if line])
     if [(r["frame"],r["time_s"]) for r in rows[0]] != [
@@ -306,3 +317,17 @@ def audit_pair(first, second, comparison, *, diagnostic=False):
             "case_ids":[s["case_id"] for s in scenes],
             "original_sources_verified":True, "physical_acceptance_claimed":False,
             "legal_right_of_way":"unresolved"}
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--first', required=True)
+    parser.add_argument('--second', required=True)
+    parser.add_argument('--comparison', required=True, choices=('entry_timing', 'designated_exception'))
+    args = parser.parse_args()
+    print(json.dumps(audit_pair(args.first, args.second, args.comparison), indent=2))
+
+
+if __name__ == '__main__':
+    main()

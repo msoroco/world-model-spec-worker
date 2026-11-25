@@ -14,7 +14,7 @@ REQUIREMENTS = (
     ('Pedestrian roadway crossing at a point with a provided overhead pedestrian crossing',
      'LVMC 11.30.060(B)', 'provided_overhead_crossing',
      'measure_provided_overhead_crossing', 'object',
-     ['candidate-overpass.xodr','reviewed-site.json','reviewed-site-source.txt']),
+     ['reviewed-site.json','reviewed-site-source.txt']),
     ('Observed pedestrian entry and exit relative to all vehicles upon the roadway',
      'LVMC 11.30.060(B)', 'crossing_order', 'measure_crossing_order', 'object',
      ['body-history.jsonl','video_frames.jsonl']),

@@ -172,6 +172,7 @@ def run(world, carla, site, site_root, attempt, mode, camera_builder=build_camer
                          'rider_blueprint_id': site['bicycle_blueprint_id'],
                          'mode_command': mode, 'command_source': 'controller_log',
                          'target_speed_mps': target,
+                         'ego_speed_mps': _speed(actors[0]),
                          'rider_visual_present': False,
                          'ego_xy': _position(actors[0]),
                          'rider_xy': _position(actors[1]),
@@ -182,7 +183,13 @@ def run(world, carla, site, site_root, attempt, mode, camera_builder=build_camer
                                              encoding='utf-8')
         (attempt / 'trace.jsonl').write_text(''.join(
             json.dumps({'frame': event['frame'], 'time_s': mapping['time_s'],
-                        'position_m': event['ego_xy']}, separators=(',', ':')) + '\n'
+                        'position_m': event['ego_xy'],
+                        'position': {'x': event['ego_xy'][0],
+                                     'y': event['ego_xy'][1],
+                                     'z': site['spawn_z_m']},
+                        'heading_deg': site['ego_yaw_deg'],
+                        'speed_mps': event['ego_speed_mps']},
+                       separators=(',', ':')) + '\n'
             for event, mapping in zip(rows, frame_map)), encoding='utf-8')
         # Preserve the reviewed packet and its original references verbatim.
         source_root = Path(site_root).resolve()

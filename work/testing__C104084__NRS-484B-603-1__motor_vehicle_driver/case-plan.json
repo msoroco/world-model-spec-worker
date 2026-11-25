@@ -2,10 +2,28 @@
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver",
   "camera_plan": {
+    "composition": "synchronized_four_view_primary",
     "coverage": [
-      "front overview: ego hill crest and opposing lane",
-      "left and right details: original road grade and passing body context",
-      "rear detail: postcrest progress and other vehicle history"
+      {
+        "interval": "all original 900 world ticks at 20 Hz",
+        "subject": "ego body, opposing vehicle, lane and crest approach",
+        "view": "overview"
+      },
+      {
+        "interval": "all original 900 world ticks at 20 Hz",
+        "subject": "forward road grade and precrest approach",
+        "view": "approach"
+      },
+      {
+        "interval": "all original 900 world ticks at 20 Hz",
+        "subject": "right-side road and opposing vehicle context",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all original 900 world ticks at 20 Hz",
+        "subject": "rear road and postcrest vehicle progress",
+        "view": "driver_reference"
+      }
     ],
     "duration_s": 45,
     "physical_visibility_unverified": true,
@@ -250,38 +268,45 @@
   "observations": [
     {
       "mandatory": true,
-      "name": "crest_station_and_grade",
-      "source": "original Native map waypoint samples"
+      "name": "native_grade",
+      "source": "original Native map waypoint samples",
+      "observation": "crest_station_and_grade"
     },
     {
       "mandatory": true,
-      "name": "ego_precrest_speed_history",
-      "source": "original Native ego frame samples"
+      "name": "precrest_speed",
+      "source": "original Native ego frame samples",
+      "observation": "ego_precrest_speed_history"
     },
     {
       "mandatory": true,
-      "name": "other_vehicle_route_and_body",
-      "source": "original Native route and actor transforms"
+      "name": "other_vehicle",
+      "source": "original Native route and actor transforms",
+      "observation": "other_vehicle_route_and_body"
     },
     {
       "mandatory": true,
-      "name": "same_frame_body_clearance",
-      "source": "original Native bounding boxes"
+      "name": "other_vehicle",
+      "source": "original Native bounding boxes",
+      "observation": "same_frame_body_clearance"
     },
     {
       "mandatory": true,
-      "name": "prescribed_limit_and_highway",
-      "source": "source-bound setup/context"
+      "name": "prescribed_limit",
+      "source": "source-bound setup/context",
+      "observation": "prescribed_limit_and_highway"
+    },
+    {
+      "mandatory": false,
+      "name": "camera_frame_map",
+      "source": "four synchronized original videos; physical visibility requires independent Native review receipt",
+      "observation": "visibility_and_sight_lines"
     },
     {
       "mandatory": true,
-      "name": "visibility_and_sight_lines",
-      "source": "Native ray samples and synchronized cameras"
-    },
-    {
-      "mandatory": true,
-      "name": "frame_and_camera_join",
-      "source": "Native frame map and four original video streams"
+      "name": "camera_frame_map",
+      "source": "Native frame map and four original video streams",
+      "observation": "frame_and_camera_join"
     }
   ],
   "planning_status": "partial_exact_cases_and_measurement_code",
@@ -345,7 +370,7 @@
     "The legal necessity of slowing, applicable limits, lawful highway entry and due care remain unadjudicated."
   ],
   "saved_comparison_audit": {
-    "cli": "saved_crest_comparison.py --left-attempt LEFT --left-manifest LEFT/crest-audit-manifest.json --right-attempt RIGHT --right-manifest RIGHT/crest-audit-manifest.json --left-profile PROFILE --right-profile PROFILE --output OUTPUT",
+    "cli": "comparison_delivery.py COMPARISON_ID --left LEFT_ATTEMPT --right RIGHT_ATTEMPT --left-processing LEFT_PROCESSING --right-processing RIGHT_PROCESSING --left-review LEFT_REVIEW --right-review RIGHT_REVIEW",
     "comparisons": [
       "early_vs_late_precrest_decrease",
       "decrease_vs_steady_approach"
@@ -361,39 +386,39 @@
       "duration",
       "initial speed"
     ],
-    "implementation": "saved_crest_comparison.py:compare_saved",
+    "implementation": "comparison_delivery.py:_packet, delivery_acceptance.py:accept, comparison_audit.py:compare",
     "limits": "Requires real saved attempt sources; fixture comparison is software proof, not physical or legal completion.",
     "positive_and_negative_tests": "tests/test_saved_crest_comparison.py",
     "proofs": [
       {
-        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py early_vs_late_precrest_decrease --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-late-attempt",
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py early_vs_late_precrest_decrease --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-late-attempt --left-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-early_decrease-receipt.json --right-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-late_decrease-receipt.json --left-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-early_decrease.json --right-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-late_decrease.json --diagnostic-test",
         "comparison_id": "early_vs_late_precrest_decrease",
         "diagnostic_fixture": true,
-        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py early_vs_late_precrest_decrease --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-late-attempt --negative-context",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py early_vs_late_precrest_decrease --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-late-attempt --left-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-early_decrease-receipt.json --right-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-late_decrease-receipt.json --left-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-early_decrease.json --right-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-late_decrease.json --diagnostic-test --negative-context",
         "negative_exit_code": 1,
         "negative_log": "comparison-early_vs_late_precrest_decrease-negative.log",
-        "negative_log_sha256": "5bcc1a05335519a7f51085aef177c7f045547c65be1ea5f28616b970f90a464e",
+        "negative_log_sha256": "a0e7eb6204571f1a47ac6d298e57634de1b04092fdf611b7df0d4ba1e1f9a71b",
         "physical_acceptance_claimed": false,
         "script": "comparison_delivery.py",
-        "script_sha256": "30c2a3f8e37b206c3e613f0a8c46715d63ad99ac326b2b1fa9b4cd14a56d6333",
+        "script_sha256": "51fc41ce56cf0e6b5cbadd1ec99dd986b88e9978534089f4425ae66c1d75d6e5",
         "test_exit_code": 0,
         "test_log": "comparison-early_vs_late_precrest_decrease-positive.log",
-        "test_log_sha256": "20c75b1beb678447e126f0225004062656387b6adf7914068dcb2a183a79337f"
+        "test_log_sha256": "97e21e509bc7d9686496b89480e05c8c10b797673d956dde9ffa4014de55c4fd"
       },
       {
-        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py decrease_vs_steady_approach --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-steady-attempt",
+        "command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py decrease_vs_steady_approach --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-steady-attempt --left-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-early_decrease-receipt.json --right-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-steady_approach-receipt.json --left-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-early_decrease.json --right-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-steady_approach.json --diagnostic-test",
         "comparison_id": "decrease_vs_steady_approach",
         "diagnostic_fixture": true,
-        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py decrease_vs_steady_approach --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-steady-attempt --negative-context",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/comparison_delivery.py decrease_vs_steady_approach --left .runtime-work/c104084-current/saved-lifecycle-attempt-v2 --right .runtime-work/c104084-current/saved-steady-attempt --left-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-early_decrease-receipt.json --right-processing work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/saved-steady_approach-receipt.json --left-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-early_decrease.json --right-review work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/review-diagnostic-steady_approach.json --diagnostic-test --negative-context",
         "negative_exit_code": 1,
         "negative_log": "comparison-decrease_vs_steady_approach-negative.log",
-        "negative_log_sha256": "5bcc1a05335519a7f51085aef177c7f045547c65be1ea5f28616b970f90a464e",
+        "negative_log_sha256": "a0e7eb6204571f1a47ac6d298e57634de1b04092fdf611b7df0d4ba1e1f9a71b",
         "physical_acceptance_claimed": false,
         "script": "comparison_delivery.py",
-        "script_sha256": "30c2a3f8e37b206c3e613f0a8c46715d63ad99ac326b2b1fa9b4cd14a56d6333",
+        "script_sha256": "51fc41ce56cf0e6b5cbadd1ec99dd986b88e9978534089f4425ae66c1d75d6e5",
         "test_exit_code": 0,
         "test_log": "comparison-decrease_vs_steady_approach-positive.log",
-        "test_log_sha256": "ba5ac359547b03f25d34198ad0c1f475a1de8122738ae602d3eeb33b974083ca"
+        "test_log_sha256": "3da97deee7e7a80f183df3e7791325990c764e8795068bf386721c8306cf3b27"
       }
     ]
   },
@@ -452,7 +477,7 @@
       "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
-  "source_observation_mapping": [],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json",

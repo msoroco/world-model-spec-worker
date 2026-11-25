@@ -30,7 +30,7 @@ def fixture(root):
     manifest = {"format": "c188132-original-sources-v1",
                 **{key: {"path": value, "sha256": sha(root / value)}
                    for key, value in sources.items()}}
-    (root / "source-manifest.json").write_text(json.dumps(manifest))
+    (root / "original-sources.json").write_text(json.dumps(manifest))
 
 
 class MediaAuditTests(unittest.TestCase):
@@ -55,7 +55,7 @@ class MediaAuditTests(unittest.TestCase):
             lines = [json.loads(line) for line in joins.read_text().splitlines()]
             del lines[0]["cameras"]["approach"]
             joins.write_text(''.join(json.dumps(row) + '\n' for row in lines))
-            manifest_path = root / "source-manifest.json"
+            manifest_path = root / "original-sources.json"
             manifest = json.loads(manifest_path.read_text())
             manifest["camera_joins"]["sha256"] = sha(joins)
             manifest_path.write_text(json.dumps(manifest))

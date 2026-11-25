@@ -150,7 +150,7 @@ def write_attempt(root, variant, *, vehicle_shift=0):
     manifest = {'format':'c188132-original-sources-v1'}
     manifest.update({key:{'path':name,'sha256':sha(root/name)}
                      for key,name in paths.items()})
-    (root/'source-manifest.json').write_text(json.dumps(manifest))
+    (root/'original-sources.json').write_text(json.dumps(manifest))
 
 
 class OverpassSourceTests(unittest.TestCase):
@@ -239,7 +239,7 @@ class OverpassSourceTests(unittest.TestCase):
                 'actor_id':33, 'xyz_m':[12.0,-1.75,.3],
                 'velocity_xyz_mps':[0.0,0.0,0.0]})
             rows_path.write_text(''.join(json.dumps(row)+'\n' for row in source))
-            manifest_path = second/'source-manifest.json'
+            manifest_path = second/'original-sources.json'
             manifest = json.loads(manifest_path.read_text())
             manifest['body_history']['sha256'] = sha(rows_path)
             manifest_path.write_text(json.dumps(manifest))

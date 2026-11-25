@@ -1,5 +1,12 @@
 """Independent fixed-condition and source-completeness check for exact cases."""
 from __future__ import annotations
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+from bicycle_encounter import ASSIGNMENT, CASE_VARIANTS
+from delivery_audit import audit as audit_delivery
 
 class ComparisonError(ValueError):
     pass
@@ -22,3 +29,66 @@ def audit(left,right):
     if left.get('waiting_command_frames',0)<=0 or right.get('travel_command_frames',0)<=0:
         raise ComparisonError('commanded behavior difference not evidenced')
     return {'comparison_id':'bicycle_encounter_behavior','fixed_conditions_checked':len(fixed),'legal_verdict':None,'physical_acceptance':False}
+
+
+def audit_saved(left_attempt, right_attempt, left_review, right_review, rider_kind):
+    """Compare two source-bound Originals only after both independent audits pass."""
+    variants = [(suffix, row) for suffix, row in CASE_VARIANTS.items()
+                if row['rider_kind'] == rider_kind]
+    by_mode = {row['mode']: ASSIGNMENT + '__' + suffix for suffix, row in variants}
+    if set(by_mode) != {'maintain_clearance', 'cross_rider_path'}:
+        raise ComparisonError('unknown exact rider modality')
+    attempts = (Path(left_attempt).resolve(), Path(right_attempt).resolve())
+    if attempts[0] == attempts[1]:
+        raise ComparisonError('comparison requires distinct Original attempts')
+    ids = (by_mode['maintain_clearance'], by_mode['cross_rider_path'])
+    receipts = [audit_delivery(path, case, review)
+                for path, case, review in zip(attempts, ids, (left_review, right_review))]
+    sites = [json.loads((path / 'site.json').read_text(encoding='utf-8'))
+             for path in attempts]
+    fixed = ('cell_id', 'layout', 'maneuver', 'control', 'rider_kind',
+             'native_map_name', 'jurisdiction', 'ego_blueprint_id',
+             'bicycle_blueprint_id', 'bicycle_classification', 'ego_route_xy',
+             'rider_route_xy', 'camera_poses', 'rider_throttle', 'spawn_z_m')
+    for key in fixed:
+        if sites[0].get(key) is None or sites[0][key] != sites[1].get(key):
+            raise ComparisonError('fixed condition missing or differs: ' + key)
+    source_keys = ('map_source_path', 'bicycle_classification_source_path',
+                   'rider_rules_source_path', 'rider_inventory_source_path')
+    for key in source_keys:
+        values = []
+        for path, site in zip(attempts, sites):
+            relative = site.get(key)
+            if not isinstance(relative, str):
+                raise ComparisonError('fixed source missing: ' + key)
+            target = (path / relative).resolve()
+            if not target.is_relative_to(path) or not target.is_file():
+                raise ComparisonError('fixed source unavailable: ' + key)
+            values.append(hashlib.sha256(target.read_bytes()).hexdigest())
+        if values[0] != values[1]:
+            raise ComparisonError('fixed source differs: ' + key)
+    comparison_prefix = ('bicycle' if rider_kind == 'human_powered_bicycle'
+                         else rider_kind)
+    return {'format': 'c111260-independent-comparison-v1',
+            'comparison_id': comparison_prefix + '_encounter_behavior',
+            'case_ids': list(ids), 'delivery_audits': receipts,
+            'fixed_conditions_checked': len(fixed) + len(source_keys),
+            'legal_verdict': None, 'physical_acceptance': False}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--left-attempt', required=True)
+    parser.add_argument('--right-attempt', required=True)
+    parser.add_argument('--left-pixel-review', required=True)
+    parser.add_argument('--right-pixel-review', required=True)
+    parser.add_argument('--rider-kind', required=True,
+                        choices=sorted({row['rider_kind'] for row in CASE_VARIANTS.values()}))
+    args = parser.parse_args()
+    print(json.dumps(audit_saved(args.left_attempt, args.right_attempt,
+                                  args.left_pixel_review, args.right_pixel_review,
+                                  args.rider_kind), indent=2))
+
+
+if __name__ == '__main__':
+    main()

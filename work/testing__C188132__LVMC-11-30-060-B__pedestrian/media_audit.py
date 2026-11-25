@@ -11,7 +11,7 @@ from overpass_source import FRAMES, sha
 
 def audit_media(attempt, *, expected_frames=FRAMES, specs=CAMERA_SPECS):
     root = Path(attempt).resolve()
-    manifest = json.loads((root / "source-manifest.json").read_text())
+    manifest = json.loads((root / "original-sources.json").read_text())
     if manifest.get("format") != "c188132-original-sources-v1":
         raise ValueError("original camera source manifest absent")
 

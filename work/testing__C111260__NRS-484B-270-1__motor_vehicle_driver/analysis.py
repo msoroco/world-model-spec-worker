@@ -38,12 +38,23 @@ def analyze(root):
     mode = variant['mode']
     index_path = required(root, 'capture/source-index.json')
     index = json.loads(index_path.read_text(encoding='utf-8'))
+    provenance_path = root / 'acquisition-provenance.json'
+    provenance = (json.loads(provenance_path.read_text(encoding='utf-8'))
+                  if provenance_path.is_file() else {})
+    diagnostic = (provenance.get('provenance_kind') == 'synthetic_fixture'
+                  and provenance.get('diagnostic_fixture') is True)
+    config['_diagnostic_fixture'] = diagnostic
     require(index.get('format') == 'c111260-original-index-v1' and
             index.get('case_id') == case and
             index.get('frame_count') == config['frame_count'],
             'original bicycle source index case or duration mismatch')
     capture = root / 'capture'
     refs = index['sources']
+    originals = index.get('camera_originals', {})
+    require(isinstance(originals, dict) and set(originals) == set(VIEWS) and
+            (diagnostic or all(len(originals[view]) == config['frame_count']
+                               for view in VIEWS)),
+            'original four-camera PNG inventory missing')
     site_path = required(capture, refs['site']['path'])
     require(sha(site_path) == refs['site']['sha256'],
             'original bicycle site source hash mismatch')
@@ -149,8 +160,9 @@ def build_result(root, config, site, events, mapping, measured, measurement):
         'recording_description': description,
         'recording_evidence': evidence,
         'realized_observables': {},
-        'provenance_kind': 'original_saved_source',
-        'diagnostic_fixture': False,
+        'provenance_kind': ('synthetic_fixture' if config['_diagnostic_fixture']
+                            else 'original_saved_source'),
+        'diagnostic_fixture': config['_diagnostic_fixture'],
         'legal_verdict_claimed': False,
         'physical_acceptance_claimed': False}
     from worker_exchange.native_output import physical_result, write_result
@@ -172,7 +184,7 @@ def main():
               'analysis_complete': True, 'measurements': measured,
               'physical_checks': result['physical_checks'],
               'realized_observables': result['realized_observables'],
-              'diagnostic_fixture': False,
+              'diagnostic_fixture': config['_diagnostic_fixture'],
               'legal_verdict_claimed': False,
               'physical_acceptance_claimed': False,
               'limitations': ['Original pixel and actual rider conduct require independent review.',
