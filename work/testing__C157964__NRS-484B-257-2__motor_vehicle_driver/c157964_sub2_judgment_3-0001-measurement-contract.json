@@ -1,0 +1,76 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "c157964_sub2_judgment_3-0001",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Signed non-through entrance and all entrance device obligations",
+      "source": "NRS 484B.257(2); inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "signed_entrance",
+      "method": "measure_signed_entrance",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "source_review/source-packet.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Whether a police officer actually controls traffic at ego entry or sourced hold",
+      "source": "NRS 484B.257(2); inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "officer_control",
+      "method": "measure_officer_control",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "officer_review.json",
+        "capture-receipt.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Original-camera officer direction at ego entry or sourced hold",
+      "source": "NRS 484B.257(2); inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "officer_direction",
+      "method": "measure_officer_direction",
+      "value_type": "text",
+      "kind": "measured",
+      "inputs": [
+        "officer_review.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Other non-obligated vehicle within intersection or approaching during ego crossing",
+      "source": "NRS 484B.257(2); inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "other_traffic",
+      "method": "measure_other_traffic",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "officer_review.json",
+        "capture-receipt.json"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Ego signed-entrance response, entry, and cautious movement observation",
+      "source": "NRS 484B.257(2); inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/assignment.json; inputs/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/witnesses.json",
+      "output_key": "ego_response",
+      "method": "measure_ego_response",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "capture-receipt.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "officer_review.json"
+    ],
+    "error_contains": "Missing required source: officer_review.json"
+  }
+}

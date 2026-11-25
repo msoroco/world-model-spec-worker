@@ -18,6 +18,12 @@ class OfficerRunnerTests(unittest.TestCase):
         self.assertEqual(runner.other_control(359, 600, drive),
                          {"throttle": 0.0, "brake": 1.0, "steer": 0.0})
         self.assertEqual(runner.other_control(360, 600, drive), drive)
+        self.assertEqual(runner.other_control(359, 600, drive, 320), drive)
+        self.assertEqual(runner.other_control(359, 600, drive, 320.0), drive)
+        self.assertEqual(runner.other_control(359, 600, drive, 400),
+                         {"throttle": 0.0, "brake": 1.0, "steer": 0.0})
+        with self.assertRaisesRegex(ValueError, "release frame outside capture"):
+            runner.other_control(359, 600, drive, 600)
         with self.assertRaisesRegex(ValueError, "construction command"):
             runner.other_control(600, 600, drive)
 
@@ -38,6 +44,20 @@ class OfficerRunnerTests(unittest.TestCase):
         invalid["cameras"][0]["width"] = 100
         with self.assertRaisesRegex(ValueError, "capture profile"):
             runner.validate_config(invalid)
+        changed = json.loads(json.dumps(original))
+        changed["sweep_controls"] = {"ego_target_speed_mps": 3.0,
+                                     "other_release_frame": 400.0}
+        self.assertEqual(runner.validate_config(changed)["sweep_controls"],
+                         changed["sweep_controls"])
+        changed["sweep_controls"]["other_release_frame"] = 600
+        with self.assertRaisesRegex(ValueError, "release frame"):
+            runner.validate_config(changed)
+        for case_id in sorted(runner.SWEEP_CASES):
+            sweep = json.loads(json.dumps(original))
+            sweep["selected_case_id"] = case_id
+            sweep["case"]["case_id"] = case_id
+            sweep["sweep_controls"] = {"other_release_frame": 360.0}
+            self.assertEqual(runner.validate_config(sweep)["selected_case_id"], case_id)
 
     def test_hash_bound_source_copy_and_complete_approach_plan(self):
         with tempfile.TemporaryDirectory() as dirname:

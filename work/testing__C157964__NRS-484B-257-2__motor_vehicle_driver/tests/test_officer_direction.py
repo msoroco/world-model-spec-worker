@@ -65,6 +65,15 @@ class OfficerDirectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'lacks officer arm bones'):
             DIRECTION.apply_direction(actor, missing, go, 12, 20)
 
+    def test_expanded_physical_sweep_cases_use_go_program(self):
+        for judgment in (3, 5):
+            for rank in range(3):
+                case = f'c157964_sub2_judgment_{judgment}-{rank:04d}'
+                self.assertEqual([p.direction for p in DIRECTION.phases(case, 20)],
+                                 ['stop', 'go'])
+        with self.assertRaisesRegex(ValueError, 'Unknown exact'):
+            DIRECTION.phases('c157964_sub2_judgment_5-9999', 20)
+
 
 if __name__ == '__main__':
     unittest.main()

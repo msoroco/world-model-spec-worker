@@ -13,7 +13,7 @@ from officer_camera import CAMERAS, CAMERA_SIZES
 from officer_camera_media import CameraMedia
 from officer_capture_sequence import run as capture_sequence, write_receipt
 from officer_construction import spawn_officer_performer
-from officer_direction import PREFIX, SUFFIXES, native_bone_adapter
+from officer_direction import PREFIX, SUFFIXES, native_bone_adapter, behavior_suffix
 from officer_site import SITE, validate_site
 from officer_source_intake import load_and_validate
 from officer_traffic_sampler import native_sampler
@@ -21,6 +21,8 @@ from officer_traffic_sampler import native_sampler
 
 ASSIGNMENT = PREFIX[:-2]
 CASES = {PREFIX + suffix for suffix in SUFFIXES}
+SWEEP_CASES = {f"c157964_sub2_judgment_{judgment}-{rank:04d}"
+               for judgment in (3, 5) for rank in range(3)}
 
 
 def _sha(path):
@@ -33,16 +35,25 @@ def validate_config(config):
             config.get("law_id") != "NRS-484B-257-2" or
             config.get("cell_id") != "C157964" or
             config.get("actor") != "motor_vehicle_driver" or
-            config.get("selected_case_id") not in CASES or
+            config.get("selected_case_id") not in CASES | SWEEP_CASES or
             config.get("case", {}).get("case_id") != config.get("selected_case_id") or
             set(config.get("supported_case_ids", ())) != CASES):
         raise ValueError("Exact subsection 2 officer case identity required")
     if (config.get("rate_hz"), config.get("duration_s")) != (20, 30):
         raise ValueError("Exact officer capture requires 20 Hz and 30 seconds")
-    target_speed = config.get("sweep_controls", {}).get("ego_target_speed_mps", 5.0)
+    controls = config.get("sweep_controls", {})
+    if not isinstance(controls, dict) or set(controls) - {"ego_target_speed_mps", "other_release_frame"}:
+        raise ValueError("Unknown physical sweep control")
+    target_speed = controls.get("ego_target_speed_mps", 5.0)
     if (type(target_speed) not in (int, float) or not math.isfinite(target_speed)
             or not 0.0 <= target_speed <= 8.0):
         raise ValueError("Physical ego speed setpoint must be finite in the tested 0-8 m/s range")
+    release = controls.get("other_release_frame", 360)
+    if (type(release) not in (int, float) or not math.isfinite(release)
+            or int(release) != release):
+        raise ValueError("Physical other release frame must be an integer frame")
+    if not 0 <= release < 600:
+        raise ValueError("Physical other release frame must be within the 600-frame capture")
     if (config.get("site", {}).get("xodr_sha256") != site["site_sha256"] or
             config["site"].get("native_map_id") != "OpenDriveMap" or
             config["site"].get("ego_lane") != [site["ego_road_id"], site["ego_lane_id"]] or
@@ -114,14 +125,21 @@ def _hazard_plan(path, intake, frames):
     return rows
 
 
-def other_control(frame_index, frame_count, drive):
+def other_control(frame_index, frame_count, drive, release_frame=None):
     """Stage the other approach until ego's go phase; physical overlap is audited later."""
     if (type(frame_index) is not int or type(frame_count) is not int or
             frame_count < 3 or not 0 <= frame_index < frame_count or
             not isinstance(drive, dict) or
             set(drive) != {"throttle", "brake", "steer"}):
         raise ValueError("Complete other-vehicle construction command required")
-    if frame_index < frame_count * 3 // 5:
+    if release_frame is None:
+        release_frame = frame_count * 3 // 5
+    if (type(release_frame) not in (int, float) or
+            not math.isfinite(release_frame) or
+            int(release_frame) != release_frame or
+            not 0 <= release_frame < frame_count):
+        raise ValueError("Other-vehicle release frame outside capture")
+    if frame_index < release_frame:
         return {"throttle": 0.0, "brake": 1.0, "steer": 0.0}
     return dict(drive)
 
@@ -209,7 +227,8 @@ def capture(config, output_dir, host, port):
                         target_speed_mps=config.get("sweep_controls", {}).get("ego_target_speed_mps", 5.0),
                         before_tick=lambda i: actors["other"].apply_control(
                             carla.VehicleControl(**other_control(
-                                i, frames, config["drive"]["other"]))),
+                                i, frames, config["drive"]["other"],
+                                config.get("sweep_controls", {}).get("other_release_frame")))),
                         after_tick=lambda frame, time_s: graph.capture(frame, time_s))
                 except BaseException:
                     graph.close(confirmed=False)

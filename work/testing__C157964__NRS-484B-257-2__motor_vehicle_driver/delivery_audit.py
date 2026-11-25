@@ -11,6 +11,8 @@ HERE = Path(__file__).resolve().parent
 CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
            "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 SUFFIXES = ("officer_controls_go", "officer_controls_hold", "officer_present_inactive")
+SWEEP_CASES = tuple(f"c157964_sub2_judgment_{judgment}-{index:04d}"
+                    for judgment in (3, 5) for index in range(3))
 
 
 def sha(path):
@@ -34,9 +36,9 @@ def audit(attempt, case_id, diagnostic_fixture=False):
     from worker_exchange.measurement_contract import validate, verify_report
 
     attempt = Path(attempt).resolve()
-    if case_id not in {HERE.name + "__" + suffix for suffix in SUFFIXES}:
+    if case_id not in {HERE.name + "__" + suffix for suffix in SUFFIXES} | set(SWEEP_CASES):
         raise ValueError("Wrong exact subsection 2 case")
-    suffix = case_id.rsplit("__", 1)[1]
+    suffix = case_id.rsplit("__", 1)[-1]
     config, result = read(attempt / "config.json"), read(attempt / "result.json")
     if (config.get("selected_case_id") != case_id or config.get("rate_hz") != 20
             or config.get("duration_s") != 30 or result.get("case_id") != case_id):

@@ -4,6 +4,7 @@ The approaching-hazard input is a reviewed source observation, never inferred
 from an invented statutory distance or time threshold.
 """
 import math
+from officer_direction import behavior_suffix
 
 PREFIX = 'testing__C157964__NRS-484B-257-2__motor_vehicle_driver__'
 CASES = {'officer_controls_go', 'officer_controls_hold',
@@ -12,11 +13,7 @@ CASES = {'officer_controls_go', 'officer_controls_hold',
 
 def command(case_id, direction, *, other_inside, approaching_hazard,
             current_speed_mps, target_speed_mps=5.0):
-    if not isinstance(case_id, str) or not case_id.startswith(PREFIX):
-        raise ValueError('Unknown exact officer exception case')
-    suffix = case_id[len(PREFIX):]
-    if suffix not in CASES:
-        raise ValueError('Unknown exact officer exception case')
+    suffix = behavior_suffix(case_id)
     if type(other_inside) is not bool or type(approaching_hazard) is not bool:
         raise ValueError('Original other-body and approaching-hazard source required')
     for name, value in (('current speed', current_speed_mps),

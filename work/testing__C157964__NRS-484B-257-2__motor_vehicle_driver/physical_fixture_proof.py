@@ -13,6 +13,8 @@ from worker_exchange.native_output import physical_result
 
 
 CASES = ("officer_controls_go", "officer_controls_hold", "officer_present_inactive")
+SWEEP_CASES = tuple(f"c157964_sub2_judgment_{judgment}-{index:04d}"
+                    for judgment in (3, 5) for index in range(3))
 EXPECTED = {"complete_motion": "met", "incomplete_motion": "not_met",
             "missing_evidence": "unverified"}
 
@@ -22,9 +24,9 @@ def body(x, y=0):
 
 
 def run(suffix, kind, output):
-    if suffix not in CASES or kind not in EXPECTED:
+    if suffix not in CASES + SWEEP_CASES or kind not in EXPECTED:
         raise ValueError("Unknown selected physical fixture")
-    case_id = HERE.name + "__" + suffix
+    case_id = suffix if suffix in SWEEP_CASES else HERE.name + "__" + suffix
     manifest = json.loads((HERE / "execution-manifest-draft.json").read_text())
     entry = next(item for item in manifest["cases"] if item["case_id"] == case_id)
     construction = json.loads((HERE / entry["construction"]).read_text())
@@ -74,7 +76,7 @@ def run(suffix, kind, output):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--case", choices=CASES, required=True)
+    parser.add_argument("--case", choices=CASES + SWEEP_CASES, required=True)
     parser.add_argument("--kind", choices=sorted(EXPECTED), required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()

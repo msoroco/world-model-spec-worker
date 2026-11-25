@@ -109,6 +109,18 @@ def finalize(attempt, output, *, assessor=None, writer=None):
         "ego_speed_mps", "other_speed_mps")))
     other_speeds = [row["native_actor_source"]["other"]["speed_mps"]
                     for row in capture["rows"]]
+    sweep_measurements = config["case"].get("sweep_measurements", [])
+    sweep_names = {axis["observable"] for axis in sweep_measurements}
+    first_other_entry = next((sample["frame"] for sample in samples
+                              if sample["other_body_in_intersection"]), None)
+    if "other_first_body_entry_frame" in sweep_names:
+        if first_other_entry is None:
+            raise ValueError("Other complete body never entered the original intersection source")
+        with (channels / "other_first_body_entry_frame.jsonl").open("x") as stream:
+            for sample in samples:
+                stream.write(json.dumps({"original_frame": sample["frame"],
+                                         "time_s": sample["time_s"],
+                                         "value": first_other_entry}, allow_nan=False) + "\n")
     for name, key in channel_keys.items():
         with (channels / (name + ".jsonl")).open("x") as stream:
             for index, sample in enumerate(samples):
@@ -159,7 +171,8 @@ def finalize(attempt, output, *, assessor=None, writer=None):
             {"name": name, "unit": next(channel["unit"] for channel in
                                          config["recording_description"]["channels"] if channel["name"] == name),
              "reference": "channels/" + name + ".jsonl"}
-            for name in CHANNELS
+            for name in CHANNELS + (("other_first_body_entry_frame",)
+                                    if "other_first_body_entry_frame" in sweep_names else ())
         ] + [{"name": "officer_context", "unit": "structured record",
               "reference": "channels/officer_context.json"}],
         "source_evidence_hashes": sources,
@@ -170,6 +183,14 @@ def finalize(attempt, output, *, assessor=None, writer=None):
         assessor = physical_result
         writer = write_result
     result = assessor(attempt, result)
+    for axis in sweep_measurements:
+        observable = axis["observable"]
+        result.setdefault("realized_observables", {})[observable] = dict(
+            axis["measurement"], unit=axis["unit"],
+            reference="channels/" + observable + ".jsonl",
+            value=(max(sample["ego_speed_mps"] for sample in samples)
+                   if observable == "ego_speed_mps" else first_other_entry),
+            sample_window_s=[samples[0]["time_s"], samples[-1]["time_s"]])
     writer(attempt, result)
     measurement_spec = {
         "signed_entrance": (measure_signed_entrance, ("source_review/source-packet.json",)),

@@ -7,6 +7,7 @@ programmed direction is never substituted for an original-camera observation.
 
 from dataclasses import dataclass
 import math
+import re
 
 
 SUFFIXES = (
@@ -15,6 +16,17 @@ SUFFIXES = (
     "officer_present_inactive",
 )
 PREFIX = "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__"
+SWEEP_CASE = re.compile(r"c157964_sub2_judgment_[35]-000[0-2]\Z")
+
+
+def behavior_suffix(case_id):
+    if isinstance(case_id, str) and case_id.startswith(PREFIX):
+        suffix = case_id[len(PREFIX):]
+        if suffix in SUFFIXES:
+            return suffix
+    if isinstance(case_id, str) and SWEEP_CASE.fullmatch(case_id):
+        return "officer_controls_go"
+    raise ValueError("Unknown exact subsection 2 officer case")
 
 
 @dataclass(frozen=True)
@@ -27,9 +39,7 @@ class DirectionPhase:
 def phases(case_id: str, frames: int = 600) -> tuple[DirectionPhase, ...]:
     if type(frames) is not int or frames < 3:
         raise ValueError("Officer program needs a complete 20 Hz capture")
-    suffix = case_id[len(PREFIX):] if isinstance(case_id, str) and case_id.startswith(PREFIX) else None
-    if suffix not in SUFFIXES:
-        raise ValueError("Unknown exact subsection 2 officer case")
+    suffix = behavior_suffix(case_id)
     if suffix == "officer_controls_go":
         switch = frames // 2
         return (DirectionPhase(0, switch, "stop"),

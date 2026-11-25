@@ -118,7 +118,8 @@ def case_spec(case_id, template, camera_hashes):
 def main():
     template = json.loads(TEMPLATE.read_text())
     hashes = videos_with_hashes(template["videos"])
-    for case in json.loads((ROOT / "case-plan.json").read_text())["cases"]:
+    cases = json.loads((ROOT / "case-plan.json").read_text())["cases"]
+    for case in cases:
         case_id = case["case_id"]
         suffix = case_id.rsplit("__", 1)[-1]
         spec_path = ROOT / (suffix + "-diagnostic-sources.json")

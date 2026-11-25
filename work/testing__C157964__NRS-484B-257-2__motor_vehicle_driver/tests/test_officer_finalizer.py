@@ -70,7 +70,9 @@ class OfficerFinalizerTests(unittest.TestCase):
             self.assertTrue(report["measurements"]["signed_entrance"]["value"]["non_through_highway"])
             self.assertEqual(report["measurements"]["other_traffic"]["value"]["immediate_hazard_judgment"],
                              "unresolved")
-            self.assertEqual(len(observed[0]["recording_evidence"]), 8)
+            self.assertEqual(len(observed[0]["recording_evidence"]),
+                             len(json.loads((attempt / "config.json").read_text())
+                                 ["recording_description"]["channels"]) + 1)
             self.assertEqual(len((attempt / "channels/officer_direction_observed.jsonl").read_text().splitlines()), 3)
             with self.assertRaisesRegex(ValueError, "Retain prior saved finalization"):
                 finalizer.finalize(attempt, attempt / "analysis.json",

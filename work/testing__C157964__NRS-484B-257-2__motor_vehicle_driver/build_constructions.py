@@ -108,6 +108,43 @@ def main():
         fallback_construction = fallback_dir / "construction.json"
         write_json(fallback_construction, construction(case_id, fallback_path))
         print(case_id, "fallback1", hashlib.sha256(fallback_construction.read_bytes()).hexdigest())
+    proposal = json.loads((ROOT / "proposals/cases.json").read_text())
+    for case in proposal["cases"]:
+        if case.get("target_type") != "judgment_sweep":
+            continue
+        case_id = case["case_id"]
+        point = case["sweep_point"]
+        if set(point) == {"commanded_approach_speed"}:
+            controls = {"ego_target_speed_mps": point["commanded_approach_speed"]}
+        elif set(point) == {"other_release_frame"}:
+            controls = {"other_release_frame": point["other_release_frame"]}
+        else:
+            raise ValueError("Unsupported physical sweep setpoint")
+        config = deepcopy(root_config)
+        config["selected_case_id"] = case_id
+        config["case"] = deepcopy(case)
+        config["sweep_controls"] = controls
+        config["recording_description"] = case["recording_description"]
+        case_dir = ROOT / "cases" / case_id
+        config_path = case_dir / "config.json"
+        write_json(config_path, config)
+        primary = case_dir / "construction.json"
+        write_json(primary, construction(case_id, config_path))
+        print(case_id, hashlib.sha256(primary.read_bytes()).hexdigest())
+        fallback = deepcopy(config)
+        fallback["camera_mounts"]["overview"]["pose"]["location"].update(
+            {"x": -4.0, "y": -2.0, "z": 22.0})
+        fallback["camera_mounts"]["overview"]["pose"]["rotation"].update(
+            {"yaw": -145.0, "pitch": -60.0})
+        fallback["camera_mounts"]["reference_corner"]["pose"]["location"].update(
+            {"x": -9.0, "y": -10.0, "z": 10.0})
+        fallback["camera_mounts"]["reference_corner"]["pose"]["rotation"].update(
+            {"yaw": 35.0, "pitch": -30.0})
+        fallback_path = case_dir / "fallback1/config.json"
+        write_json(fallback_path, fallback)
+        alternate = case_dir / "fallback1/construction.json"
+        write_json(alternate, construction(case_id, fallback_path))
+        print(case_id, "fallback1", hashlib.sha256(alternate.read_bytes()).hexdigest())
 
 
 if __name__ == "__main__":
