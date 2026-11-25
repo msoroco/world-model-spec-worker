@@ -25,7 +25,9 @@ def build():
     outputs = []
     for case_id in sorted(expected):
         suffix = case_id.removeprefix(AID + '__')
-        config = dict(base_config, selected_case_id=case_id)
+        config = dict(base_config, selected_case_id=case_id,
+                      case={'case_id': case_id,
+                            'recording_description': plans[case_id]['recording_description']})
         files = [{'path': path, 'source': 'work/' + AID + '/' + path,
                   'content': (HERE / path).read_text()} for path in MODULES]
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})

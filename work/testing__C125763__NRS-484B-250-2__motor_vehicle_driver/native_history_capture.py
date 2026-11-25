@@ -134,6 +134,11 @@ def capture(world, packet_path: Path, ego, other, output: Path, frame_count: int
     for name, rows in histories.items():
         files[name + "-body-history.jsonl"] = "".join(
             json.dumps(row, sort_keys=True) + "\n" for row in rows).encode()
+    files['video_frames.jsonl'] = ''.join(
+        json.dumps({'video_frame': index, 'carla_frame': row['frame'],
+                    'native_frame': row['frame'], 'time_s': row['time_s']},
+                   sort_keys=True) + '\n'
+        for index, row in enumerate(histories['ego'])).encode()
     if camera_readers is not None:
         files['camera-frame-map.jsonl'] = ''.join(
             json.dumps(row, sort_keys=True) + '\n' for row in camera_rows).encode()
@@ -152,7 +157,8 @@ def audit_media(attempt, *, camera_dimensions):
     if set(camera_dimensions) != set(CAMERAS):
         raise ValueError('four original camera dimensions required')
     sources = {}
-    for name in ('ego-body-history.jsonl', 'other-body-history.jsonl', 'camera-frame-map.jsonl'):
+    for name in ('ego-body-history.jsonl', 'other-body-history.jsonl',
+                 'camera-frame-map.jsonl', 'video_frames.jsonl'):
         binding = manifest.get(name)
         if not isinstance(binding, dict) or binding.get('kind') != 'original_native':
             raise ValueError('original camera/body source missing')
@@ -160,15 +166,18 @@ def audit_media(attempt, *, camera_dimensions):
         if hashlib.sha256(data).hexdigest() != binding.get('sha256'):
             raise ValueError('original camera/body source changed')
         sources[name] = [json.loads(line) for line in data.decode('utf-8').splitlines()]
-    ego, other, cameras = (sources[name] for name in
+    ego, other, cameras, mapping = (sources[name] for name in
                            ('ego-body-history.jsonl', 'other-body-history.jsonl',
-                            'camera-frame-map.jsonl'))
-    if not ego or len(ego) != len(other) or len(ego) != len(cameras):
+                            'camera-frame-map.jsonl', 'video_frames.jsonl'))
+    if not ego or len(ego) != len(other) or len(ego) != len(cameras) or len(ego) != len(mapping):
         raise ValueError('original camera/body frame count differs')
     for index, (a, b, row) in enumerate(zip(ego, other, cameras)):
         if (a['frame'], a['time_s']) != (b['frame'], b['time_s']) or (
                 row.get('frame'), row.get('time_s')) != (a['frame'], a['time_s']):
             raise ValueError('original camera/body clock differs')
+        if mapping[index] != {'video_frame': index, 'carla_frame': a['frame'],
+                              'native_frame': a['frame'], 'time_s': a['time_s']}:
+            raise ValueError('canonical original video frame map differs')
         if not isinstance(row.get('views'), dict) or set(row['views']) != set(CAMERAS):
             raise ValueError('four original camera views required')
         for name in CAMERAS:

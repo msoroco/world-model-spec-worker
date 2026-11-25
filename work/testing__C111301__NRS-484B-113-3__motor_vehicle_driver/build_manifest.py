@@ -34,6 +34,34 @@ def build():
             'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                'host_env_var': 'CARLA_HOST',
                                'port_env_var': 'CARLA_PORT'}})
+        entry = cases[-1]
+        entry['acquisition'] = {
+            'vehicle_reverse_response': {
+                'entrypoint': 'native_backing_capture.py',
+                'method': 'original actor control and velocity readback on each Native world tick',
+                'evidence': ['telemetry.json', 'frame-map.json', 'trace.jsonl']},
+            'moving_pedestrian_corridor_exposure': {
+                'entrypoint': 'native_backing_capture.py',
+                'method': 'original pedestrian pose and velocity with sealed route geometry',
+                'evidence': ['telemetry.json', 'map.json', 'road.xodr']}}
+        case_folder = HERE / 'cases' / suffix
+        receipt = case_folder / 'compatibility.json'
+        if receipt.is_file() and json.loads(receipt.read_text()).get('construction_sha256') == entry['construction_sha256']:
+            entry['compatibility'] = {
+                'receipt': str(receipt.relative_to(HERE)), 'sha256': sha(receipt),
+                'log': str((case_folder / 'cpu-analysis.log').relative_to(HERE))}
+            entry['negative'] = {'log': str((case_folder / 'cpu-negative.log').relative_to(HERE)),
+                                 'expected_error': 'Missing required source: map.json'}
+        offline = case_folder / 'cpu-offline.log'
+        if offline.is_file():
+            entry['offline'] = {
+                'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + aid +
+                           '/execution-manifest.json --case ' + case_id +
+                           ' --output .runtime-work/c111301-nov25/offline-' + suffix +
+                           '-v1 --python $PWD/.venv-cpu/bin/python',
+                'construction_sha256': entry['construction_sha256'],
+                'exit_code': 0, 'log': str(offline.relative_to(HERE)),
+                'log_sha256': sha(offline)}
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': aid,
                 'runtime_manifest_sha256': sha(REPO / 'runtime/SOURCE-MANIFEST.json'),
                 'cases': cases}

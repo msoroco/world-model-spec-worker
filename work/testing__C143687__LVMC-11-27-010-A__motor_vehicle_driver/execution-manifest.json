@@ -22,6 +22,78 @@
         "exit_code": 0,
         "log": "cpu-offline-all_prerequisites.log",
         "log_sha256": "9381a0adde33e5f4590ee3d53be3438df51fb87ea9e687e463a756bf44981dec"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-all_prerequisites.json",
+        "sha256": "02661346f84e635c76c761611f6a3d049b65970d65b05f9a5a29f5099d896803",
+        "log": "cpu-compatibility-analysis-all_prerequisites.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-all_prerequisites.log"
+      },
+      "acquisition": {
+        "original_vehicle_position": {
+          "entrypoint": "native_runner.py",
+          "method": "record original vehicle pose per tick",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "trail_administrative_context": {
+          "entrypoint": "trail_capture.py",
+          "method": "bind source packet and original per-tick context",
+          "evidence": "original-history.jsonl and acquisition.json"
+        },
+        "sign_face_and_access": {
+          "entrypoint": "trail_capture.py",
+          "method": "record actual sign callback and source packet",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        },
+        "exception_use": {
+          "entrypoint": "trail_capture.py",
+          "method": "record original exception-use branch per tick",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-all_prerequisites.json",
+        "sha256": "7777e51aa086a3a3e845265c8a0b2a23ded845d000cc8ea80caca247a6d901d1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/execution-manifest.json --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $ADAPTER_CHECK --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $SAVED_OUTPUT/v0001/feedback.json # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "test_log": "cpu-saved-all_prerequisites.log",
+        "test_log_sha256": "a79ee062d531518daca35ace48c985f9fcb4136c4692b0e33590d31ff1c9aadc",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "05ba6009fde4b52394ddde48fb215dddcc0eff81de481d5ddbe24cac7fa0ad5c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case all_prerequisites --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites --mode positive --scratch .runtime-work/c143687-current",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-all_prerequisites-positive.log",
+        "test_log_sha256": "6a6a305573f7719b22a53b7cb0562e5e55c0cd766c57ae30816b1ebf71e08308",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case all_prerequisites --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__all_prerequisites --mode negative --scratch .runtime-work/c143687-current",
+        "negative_exit_code": 1,
+        "negative_expected_error": "overview camera hash mismatch",
+        "negative_log": "cpu-delivery-all_prerequisites-negative.log",
+        "negative_log_sha256": "1188fb5939b3a6c9e2b8074d4ca469f159ed0d33c7bd636676c86f492cfebf41"
       }
     },
     {
@@ -44,6 +116,79 @@
         "exit_code": 0,
         "log": "cpu-offline-emergency_vehicle.log",
         "log_sha256": "daa135d999f3bc4eb30cb0f94cd6dd059e5f6c12bb4ed8311a4e0610e2e5f4ca"
+      },
+      "fixture_recipe": "work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/diagnostic-emergency_vehicle-recipe.json",
+      "compatibility": {
+        "receipt": "cpu-compatibility-emergency_vehicle.json",
+        "sha256": "83a499cfbcd7ee168bd2550f84153d0020e69642c1d1c6c477d4f22db88a9ee4",
+        "log": "cpu-compatibility-analysis-emergency_vehicle.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-emergency_vehicle.log"
+      },
+      "acquisition": {
+        "original_vehicle_position": {
+          "entrypoint": "native_runner.py",
+          "method": "record original vehicle pose per tick",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "trail_administrative_context": {
+          "entrypoint": "trail_capture.py",
+          "method": "bind source packet and original per-tick context",
+          "evidence": "original-history.jsonl and acquisition.json"
+        },
+        "sign_face_and_access": {
+          "entrypoint": "trail_capture.py",
+          "method": "record actual sign callback and source packet",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        },
+        "exception_use": {
+          "entrypoint": "trail_capture.py",
+          "method": "record original exception-use branch per tick",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-emergency_vehicle.json",
+        "sha256": "3e2a071881ed49a922d3fd568c4c5f3d7428d865ae970b7108385860dd9e0b6a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/execution-manifest.json --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $ADAPTER_CHECK --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $SAVED_OUTPUT/v0001/feedback.json # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle",
+        "test_log": "cpu-saved-emergency_vehicle.log",
+        "test_log_sha256": "e16116b0513159b147e0c445e70f04bf12b0ac2cebecf487b309c261d6d04005",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "05ba6009fde4b52394ddde48fb215dddcc0eff81de481d5ddbe24cac7fa0ad5c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case emergency_vehicle --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle --mode positive --scratch .runtime-work/c143687-current",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-emergency_vehicle-positive.log",
+        "test_log_sha256": "7ae1b47782d1ea6181e625b3b8d037af00e8a052b692f2bc13d6a8650937dc34",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case emergency_vehicle --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__emergency_vehicle --mode negative --scratch .runtime-work/c143687-current",
+        "negative_exit_code": 1,
+        "negative_expected_error": "overview camera hash mismatch",
+        "negative_log": "cpu-delivery-emergency_vehicle-negative.log",
+        "negative_log_sha256": "1188fb5939b3a6c9e2b8074d4ca469f159ed0d33c7bd636676c86f492cfebf41"
       }
     },
     {
@@ -66,6 +211,79 @@
         "exit_code": 0,
         "log": "cpu-offline-maintenance_vehicle.log",
         "log_sha256": "81788226cf0bdd332d8945969d915d3492e510d3f3ce412dab393a8ed28166d0"
+      },
+      "fixture_recipe": "work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/diagnostic-maintenance_vehicle-recipe.json",
+      "compatibility": {
+        "receipt": "cpu-compatibility-maintenance_vehicle.json",
+        "sha256": "12191fcf20a6d367e720f0fff049979bfa7540acc1987fa69b146f182bc52e6c",
+        "log": "cpu-compatibility-analysis-maintenance_vehicle.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-maintenance_vehicle.log"
+      },
+      "acquisition": {
+        "original_vehicle_position": {
+          "entrypoint": "native_runner.py",
+          "method": "record original vehicle pose per tick",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "trail_administrative_context": {
+          "entrypoint": "trail_capture.py",
+          "method": "bind source packet and original per-tick context",
+          "evidence": "original-history.jsonl and acquisition.json"
+        },
+        "sign_face_and_access": {
+          "entrypoint": "trail_capture.py",
+          "method": "record actual sign callback and source packet",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        },
+        "exception_use": {
+          "entrypoint": "trail_capture.py",
+          "method": "record original exception-use branch per tick",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-maintenance_vehicle.json",
+        "sha256": "cfaa1c152976bebf175f78b34dd6ff853c84081c4080212f9a34c08a83f742fd"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/execution-manifest.json --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $ADAPTER_CHECK --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $SAVED_OUTPUT/v0001/feedback.json # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle",
+        "test_log": "cpu-saved-maintenance_vehicle.log",
+        "test_log_sha256": "1d839f712ff289f207e2883ee95b8222b8c6bf617fc548273820fad97e380f6e",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "05ba6009fde4b52394ddde48fb215dddcc0eff81de481d5ddbe24cac7fa0ad5c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case maintenance_vehicle --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle --mode positive --scratch .runtime-work/c143687-current",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-maintenance_vehicle-positive.log",
+        "test_log_sha256": "621c3ea0a15f473db58f7737f2364602116a3b3faa8fcc49b4dfec201dd3a669",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case maintenance_vehicle --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle --mode negative --scratch .runtime-work/c143687-current",
+        "negative_exit_code": 1,
+        "negative_expected_error": "overview camera hash mismatch",
+        "negative_log": "cpu-delivery-maintenance_vehicle-negative.log",
+        "negative_log_sha256": "1188fb5939b3a6c9e2b8074d4ca469f159ed0d33c7bd636676c86f492cfebf41"
       }
     },
     {
@@ -88,6 +306,79 @@
         "exit_code": 0,
         "log": "cpu-offline-no_prohibition_sign.log",
         "log_sha256": "f2ca7e2b5a2106399d093be96b8d46df030401a8b550a21a3851bf06d4676467"
+      },
+      "fixture_recipe": "work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/diagnostic-no_prohibition_sign-recipe.json",
+      "compatibility": {
+        "receipt": "cpu-compatibility-no_prohibition_sign.json",
+        "sha256": "f978f5d8d1c5dcda931f39bca215d49ef5aeec79604ebc147700cffe96ad710e",
+        "log": "cpu-compatibility-analysis-no_prohibition_sign.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-no_prohibition_sign.log"
+      },
+      "acquisition": {
+        "original_vehicle_position": {
+          "entrypoint": "native_runner.py",
+          "method": "record original vehicle pose per tick",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "trail_administrative_context": {
+          "entrypoint": "trail_capture.py",
+          "method": "bind source packet and original per-tick context",
+          "evidence": "original-history.jsonl and acquisition.json"
+        },
+        "sign_face_and_access": {
+          "entrypoint": "trail_capture.py",
+          "method": "record actual sign callback and source packet",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        },
+        "exception_use": {
+          "entrypoint": "trail_capture.py",
+          "method": "record original exception-use branch per tick",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-no_prohibition_sign.json",
+        "sha256": "1feefffc61ac805676159acbedf0e3da00d5b400dc0f2020169ee5c42b306fd4"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/execution-manifest.json --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $ADAPTER_CHECK --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $SAVED_OUTPUT/v0001/feedback.json # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign",
+        "test_log": "cpu-saved-no_prohibition_sign.log",
+        "test_log_sha256": "592a75a5faacc0a4d5bd701108c3a72863d6cbd22a05e4102e0a964c25a417f3",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "05ba6009fde4b52394ddde48fb215dddcc0eff81de481d5ddbe24cac7fa0ad5c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case no_prohibition_sign --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign --mode positive --scratch .runtime-work/c143687-current",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-no_prohibition_sign-positive.log",
+        "test_log_sha256": "41d735756a61e49536d9086d488d6ef62ef438de07f4b2ade3731e8dfddf1884",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case no_prohibition_sign --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__no_prohibition_sign --mode negative --scratch .runtime-work/c143687-current",
+        "negative_exit_code": 1,
+        "negative_expected_error": "overview camera hash mismatch",
+        "negative_log": "cpu-delivery-no_prohibition_sign-negative.log",
+        "negative_log_sha256": "1188fb5939b3a6c9e2b8074d4ca469f159ed0d33c7bd636676c86f492cfebf41"
       }
     },
     {
@@ -110,6 +401,79 @@
         "exit_code": 0,
         "log": "cpu-offline-not_dedicated.log",
         "log_sha256": "a08e5db135f2f3b072e766b847749bc81e20a81ff83db87de25d4a49125e4e8b"
+      },
+      "fixture_recipe": "work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/diagnostic-not_dedicated-recipe.json",
+      "compatibility": {
+        "receipt": "cpu-compatibility-not_dedicated.json",
+        "sha256": "e4dde28dec419941c3e7be7826b905bcc75a1c9fe183da75ebc1db5b16d22ed6",
+        "log": "cpu-compatibility-analysis-not_dedicated.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-not_dedicated.log"
+      },
+      "acquisition": {
+        "original_vehicle_position": {
+          "entrypoint": "native_runner.py",
+          "method": "record original vehicle pose per tick",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "trail_administrative_context": {
+          "entrypoint": "trail_capture.py",
+          "method": "bind source packet and original per-tick context",
+          "evidence": "original-history.jsonl and acquisition.json"
+        },
+        "sign_face_and_access": {
+          "entrypoint": "trail_capture.py",
+          "method": "record actual sign callback and source packet",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        },
+        "exception_use": {
+          "entrypoint": "trail_capture.py",
+          "method": "record original exception-use branch per tick",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-not_dedicated.json",
+        "sha256": "e2c5c7e117187793d2bd3cd799e9dff397fcfffb80faaa9ad39548b8982738e3"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/execution-manifest.json --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $ADAPTER_CHECK --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $SAVED_OUTPUT/v0001/feedback.json # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated",
+        "test_log": "cpu-saved-not_dedicated.log",
+        "test_log_sha256": "b4041e3e50c87aba5d647cce192d0b2e58b0050b6280861f7feed1185a5b199e",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "05ba6009fde4b52394ddde48fb215dddcc0eff81de481d5ddbe24cac7fa0ad5c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case not_dedicated --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated --mode positive --scratch .runtime-work/c143687-current",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-not_dedicated-positive.log",
+        "test_log_sha256": "8d685c7627ae70bf5f6e02b5e333c5e8a0c9a308d25cab10ae31550a3f779d48",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case not_dedicated --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_dedicated --mode negative --scratch .runtime-work/c143687-current",
+        "negative_exit_code": 1,
+        "negative_expected_error": "overview camera hash mismatch",
+        "negative_log": "cpu-delivery-not_dedicated-negative.log",
+        "negative_log_sha256": "1188fb5939b3a6c9e2b8074d4ca469f159ed0d33c7bd636676c86f492cfebf41"
       }
     },
     {
@@ -132,6 +496,79 @@
         "exit_code": 0,
         "log": "cpu-offline-not_designated.log",
         "log_sha256": "38835de05a38447cbbbc5f72012f534831e5b8846a3333fd71de08ffce500541"
+      },
+      "fixture_recipe": "work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/diagnostic-not_designated-recipe.json",
+      "compatibility": {
+        "receipt": "cpu-compatibility-not_designated.json",
+        "sha256": "7bba73b46c9105b6003971c3388bf397a68b40315bf44d83278ac5f90d8855ef",
+        "log": "cpu-compatibility-analysis-not_designated.log"
+      },
+      "negative": {
+        "log": "cpu-negative-analysis-not_designated.log"
+      },
+      "acquisition": {
+        "original_vehicle_position": {
+          "entrypoint": "native_runner.py",
+          "method": "record original vehicle pose per tick",
+          "evidence": "trace.jsonl and video_frames.jsonl"
+        },
+        "trail_administrative_context": {
+          "entrypoint": "trail_capture.py",
+          "method": "bind source packet and original per-tick context",
+          "evidence": "original-history.jsonl and acquisition.json"
+        },
+        "sign_face_and_access": {
+          "entrypoint": "trail_capture.py",
+          "method": "record actual sign callback and source packet",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        },
+        "exception_use": {
+          "entrypoint": "trail_capture.py",
+          "method": "record original exception-use branch per tick",
+          "evidence": "original-history.jsonl and original-history-packets.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-not_designated.json",
+        "sha256": "2096cd76af8c97fa812d40502f6b6f0f74b8d3f042b6699f9b0c6236e6d6f47e"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c143687-current/output .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/execution-manifest.json --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $ADAPTER_CHECK --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python -m json.tool $SAVED_OUTPUT/v0001/feedback.json # testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated",
+        "test_log": "cpu-saved-not_designated.log",
+        "test_log_sha256": "87790e9c0dc2cb997b74c9df7a729a6c526f60d6d16eca7cf6b17b9d67fbd879",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "05ba6009fde4b52394ddde48fb215dddcc0eff81de481d5ddbe24cac7fa0ad5c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case not_designated --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated --mode positive --scratch .runtime-work/c143687-current",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-not_designated-positive.log",
+        "test_log_sha256": "e9568c93b538426631208c7311f78d27a223c197033978f1f19cbca175fb4ac0",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c143687-current/output .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/prove_delivery.py --case not_designated --case-id testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated --mode negative --scratch .runtime-work/c143687-current",
+        "negative_exit_code": 1,
+        "negative_expected_error": "overview camera hash mismatch",
+        "negative_log": "cpu-delivery-not_designated-negative.log",
+        "negative_log_sha256": "1188fb5939b3a6c9e2b8074d4ca469f159ed0d33c7bd636676c86f492cfebf41"
       }
     }
   ],

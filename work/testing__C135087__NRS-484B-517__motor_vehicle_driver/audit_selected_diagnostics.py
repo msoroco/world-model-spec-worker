@@ -12,7 +12,7 @@ import sys
 from build_bundles import HERE, AID
 
 REPO = HERE.parents[1]
-SCRATCH = REPO / ".runtime-work" / "c135087-selected-analysis-v1"
+SCRATCH = REPO / ".runtime-work" / "c135087-selected-analysis-v2"
 VIDEO_PROBE = REPO / ".runtime-work" / "c135087-fixture-video-probe"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 

@@ -48,6 +48,7 @@ def build():
                 'position_m': [*row['vehicle_xy'], 0.0], 'heading_deg': 0.0,
                 'speed_mps': abs(row['vehicle_velocity_xy'][0]),
                 'speed_mph': abs(row['vehicle_velocity_xy'][0]) / 0.44704,
+                'velocity_mps': [*row['vehicle_velocity_xy'], 0.0],
                 'control': {'brake': row['brake'], 'throttle': 0.0,
                             'steer': 0.0, 'reverse': row['reverse_gear']}}) + '\n'
                 for i, row in enumerate(frames)), encoding='utf-8')
@@ -76,9 +77,8 @@ def build():
                         'speed_mps': abs(row['vehicle_velocity_xy'][0]),
                         'body_vertices_m': [
                             [row['vehicle_xy'][0] + dx,
-                             row['vehicle_xy'][1] + dy, dz]
-                            for dx in (-1.0, 1.0) for dy in (-0.9, 0.9)
-                            for dz in (0.0, 1.5)],
+                             row['vehicle_xy'][1] + dy, 0.0]
+                            for dx in (-1.0, 1.0) for dy in (-0.9, 0.9)],
                         'speed_provenance': 'synthetic_native_sample'},
                 'world': {'weather': {}, 'road_projection': {}},
                 'original_observations': {'frame': i, 'time_s': row['time_s'],

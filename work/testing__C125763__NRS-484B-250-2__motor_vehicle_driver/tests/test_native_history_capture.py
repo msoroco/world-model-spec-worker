@@ -15,6 +15,7 @@ sys.path.insert(0, str(PACKAGE))
 from native_history_capture import capture, audit_media, CAMERAS
 from crossing_timing import measure
 from saved_finalizer import finalize
+from encode_views import encode
 
 
 class Vertex:
@@ -179,11 +180,28 @@ class CaptureTest(unittest.TestCase):
         receipt = capture(self.world, self.packet, self.ego, self.other, output, 4,
                           camera_readers=readers, camera_dimensions=dims)
         self.assertEqual(receipt['camera_view_frames'], 16)
+        self.assertIn('video_frames.jsonl', receipt['source_manifest'])
         self.assertEqual(audit_media(output, camera_dimensions=dims)['decoded_camera_frames'], 16)
         path = output / 'original-frames/approach-000001.png'
         path.write_bytes(b'changed')
         with self.assertRaisesRegex(ValueError, 'bytes changed'):
             audit_media(output, camera_dimensions=dims)
+
+    def test_canonical_video_frame_map_is_source_bound(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2)).save(stream, format='PNG')
+        image = stream.getvalue()
+        readers = {name: lambda frame, image=image: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        attempt = self.root / 'frame-map'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4,
+                camera_readers=readers,
+                camera_dimensions={name: (2, 2) for name in CAMERAS})
+        lines = (attempt / 'video_frames.jsonl').read_text().splitlines()
+        self.assertEqual(json.loads(lines[0])['video_frame'], 0)
+        (attempt / 'video_frames.jsonl').write_text('{}\n')
+        with self.assertRaisesRegex(ValueError, 'source changed'):
+            audit_media(attempt, camera_dimensions={name: (2, 2) for name in CAMERAS})
 
     def test_rejects_camera_tick_mismatch(self):
         stream = io.BytesIO()
@@ -216,6 +234,23 @@ class CaptureTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'bytes changed'):
             finalize(output, self.root / 'stale-camera-result.json',
                      expected_manifest_sha256=digest, probe_id='entry_inside')
+
+    def test_audited_pngs_encode_lossless_four_views(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2), (7, 8, 9)).save(stream, format='PNG')
+        image = stream.getvalue()
+        readers = {name: lambda frame, image=image: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        attempt = self.root / 'encode-capture'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 4,
+                camera_readers=readers,
+                camera_dimensions={name: (2, 2) for name in CAMERAS})
+        receipt = encode(attempt, self.root / 'encoded',
+                         camera_dimensions={name: (2, 2) for name in CAMERAS})
+        self.assertEqual(set(receipt['videos']), set(CAMERAS))
+        self.assertEqual([item['decoded_frames'] for item in receipt['videos'].values()],
+                         [4] * 4)
+        self.assertFalse(receipt['physical_acceptance'])
 
 
 if __name__ == "__main__":
