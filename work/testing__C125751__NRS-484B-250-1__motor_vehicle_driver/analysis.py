@@ -206,7 +206,14 @@ def saved_result(attempt, report):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': description,
               'recording_evidence': evidence,
-              'realized_observables': {},
+              'realized_observables': {
+                  name: {'value': observed[name], 'unit': 'frame',
+                         'method': 'sealed original body-outline crossing entry',
+                         'time_window': 'approach through clearance',
+                         'statistic': 'first overlapping frame',
+                         'reference': 'channels/' + name + '.jsonl'}
+                  for name in ('ego_entry_frame', 'other_entry_frame')
+              },
               'physical_checks': physical, 'legal_verdict_claimed': False,
               'physical_acceptance_claimed': False,
               'provenance_kind': provenance['provenance_kind'],

@@ -23,6 +23,19 @@ from source_tick_capture import verify_seal
 
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
+REQUIREMENT_INDICES = {
+    "nearest_view_response": (2, 6, 7, 8),
+    "nearest_view_uninterrupted": (2, 6),
+    "marked_stop_line_response": (3,),
+    "marked_stop_line_uninterrupted": (3,),
+    "near_side_marked_crosswalk_response": (4,),
+    "near_side_marked_crosswalk_uninterrupted": (4,),
+    "near_side_sidewalk_derived_crosswalk_response": (5,),
+    "near_side_sidewalk_derived_crosswalk_uninterrupted": (5,),
+    "approaching_phase_probe": (7, 8),
+    "later_history_probe": (7, 8),
+    "nearest_view_stopped": (2, 6),
+}
 REQUIRED = ("capture-identity.json", "nearest-view-tick-seal.json",
             "nearest-view-original-ticks.jsonl", "nearest-view-saved-packet.json")
 
@@ -108,7 +121,9 @@ def measure_nearest_view(stage: Path) -> dict:
         validate_site_branch(site, identity["case_id"])
         if site.get("capture_geometry") != packet["geometry"] or site.get("reviewed_context") != packet["reviewed_context"]:
             raise ValueError("reviewed site geometry or context differs from sealed original ticks")
-    elif (root / "scene.json").is_file():
+    elif (identity["case_id"].rsplit("__", 1)[-1] not in
+          ("nearest_view_response", "nearest_view_uninterrupted") and
+          (root / "scene.json").is_file()):
         scene = json.loads((root / "scene.json").read_text())
         if scene.get("source_kind") != "synthetic_reviewed_fixture":
             raise ValueError("diagnostic branch scene provenance differs")
@@ -158,6 +173,30 @@ def measure_governing_control(stage: Path) -> dict:
     observed = {name: value for name, value in context.items()
                 if isinstance(value, bool) and value}
     return {"method": "measure_governing_control", "value": observed,
+            "sources": joined["sources"], "diagnostic_fixture": joined["diagnostic_fixture"],
+            "case_id": joined["case_id"]}
+
+
+def measure_statutory_requirement(joined: dict, index: int) -> dict:
+    value = joined["value"]
+    if index in (2, 3, 4, 5):
+        keys = ("reference_branch", "reference_station_m", "reference_crossing_frame",
+                "ego_entry_frame")
+        observed = ({key: value[key] for key in keys} if "reference_branch" in value else
+                    {"first_view": value["first_view"],
+                     "intersection_entry": value["intersection_entry"]})
+    elif index == 6:
+        observed = {"minimum_approach_speed_mps": value["minimum_approach_speed_mps"]}
+    elif index in (7, 8):
+        observed = ({"observed_history": value["observed_history"],
+                     "through_occupied_during_ego_crossing": value["through_occupied_during_ego_crossing"],
+                     "through_approaching_before_ego_entry": value["through_approaching_before_ego_entry"]}
+                    if "observed_history" in value else
+                    {"through_vehicle_history": value["through_vehicle_history"],
+                     "intersection_entry": value["intersection_entry"]})
+    else:
+        raise ValueError("unknown selected statutory requirement")
+    return {"method": "measure_statutory_requirement", "value": observed,
             "sources": joined["sources"], "diagnostic_fixture": joined["diagnostic_fixture"],
             "case_id": joined["case_id"]}
 
@@ -269,9 +308,12 @@ def analyze(stage: Path, output: Path) -> dict:
     control = measure_governing_control(root)
     history_name = ("nearest_view_history" if nearest["method"] == "measure_nearest_view"
                     else "statutory_branch_history")
+    measurements = {history_name: nearest, "governing_control_context": control}
+    kind = nearest["case_id"].rsplit("__", 1)[-1]
+    for index in REQUIREMENT_INDICES[kind]:
+        measurements[f"statutory_requirement_{index}_history"] = measure_statutory_requirement(nearest, index)
     report = {"format": "worker-analysis-report", "case_id": nearest["case_id"],
-              "measurements": {history_name: nearest,
-                               "governing_control_context": control},
+              "measurements": measurements,
               "diagnostic_fixture": nearest["diagnostic_fixture"],
               "legal_judgment": None,
               "limitations": ["Original source measurements do not determine immediate hazard or right of way."]}

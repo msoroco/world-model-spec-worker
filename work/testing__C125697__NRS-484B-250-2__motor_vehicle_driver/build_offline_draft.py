@@ -47,7 +47,8 @@ def check():
         raise ValueError("Exact-case timing or approach request changed")
     if (config["rate_hz"] != 20 or config["frame_count"] != 900 or
             config["duration_s"] != 45 or
-            config["cameras"] != ["overview", "approach", "reference_corner", "driver_reference"]):
+            [camera["name"] for camera in config["cameras"]] !=
+            ["overview", "approach", "reference_corner", "driver_reference"]):
         raise ValueError("Original source capture contract changed")
     if config["required_sources"] != ["native_trace", "opendrive", "device_inventory",
                                        "highway_identity",
@@ -138,11 +139,16 @@ def build():
                 "engineering_tolerances_not_legal": True,
             },
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
-            "physical_completion": {"criterion": "intersection_clearance",
-                "motion_source": "crossing_history.jsonl", "body_key": "ego_vertices_m",
-                "intersection_polygon_xy_m": [[-2, -2], [2, -2], [2, 2], [-2, 2]],
-                "exit_axis": 1, "exit_sign": 1, "minimum_progress_m": 1.0},
-            "cameras": list(CAMERAS), "required_atoms": [],
+            "cameras": [
+                {"name": "overview", "width": 1920, "height": 1080,
+                 "pose_strategy": "fixed reviewed crossing view", "fov_deg": 90},
+                {"name": "approach", "width": 1280, "height": 720,
+                 "pose_strategy": "fixed reviewed crossing view", "fov_deg": 90},
+                {"name": "reference_corner", "width": 1280, "height": 720,
+                 "pose_strategy": "fixed reviewed crossing view", "fov_deg": 90},
+                {"name": "driver_reference", "width": 1280, "height": 720,
+                 "pose_strategy": "ego mounted", "fov_deg": 90}],
+            "required_atoms": [],
             "required_sources": ["native_trace", "opendrive", "device_inventory",
                                  "highway_identity",
                                  "camera_overview", "camera_approach", "camera_reference_corner",

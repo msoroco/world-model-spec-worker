@@ -60,6 +60,13 @@ class DeliveryAuditTests(unittest.TestCase):
             image.save(samples[1])
             with self.assertRaisesRegex(ValueError, "PNG/video pixel join differs"):
                 delivery_audit._pixels(root, "overview", 3, (32, 18))
+            subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                            "-framerate", "20", "-i", str(root / "sample-overview-%06d.png"),
+                            "-frames:v", "2", "-c:v", "ffv1", str(root / "short.mkv")],
+                           check=True)
+            (root / "overview.mkv").write_bytes((root / "short.mkv").read_bytes())
+            with self.assertRaisesRegex(ValueError, "full decode incomplete"):
+                delivery_audit._pixels(root, "overview", 3, (32, 18))
             samples[1].unlink()
             with self.assertRaisesRegex(ValueError, "sealed original missing or changed"):
                 delivery_audit._pixels(root, "overview", 3, (32, 18))

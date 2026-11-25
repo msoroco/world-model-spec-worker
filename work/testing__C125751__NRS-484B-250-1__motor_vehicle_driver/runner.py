@@ -22,13 +22,14 @@ def main():
     args = parser.parse_args()
     spec = json.loads(args.case_spec.read_text())
     suffix = spec['case_id'].removeprefix(ASSIGNMENT + '__')
-    validate_case(spec, suffix)
-    packet = bind_sources(spec, suffix, args.sources, args.camera_plan)
     if args.check:
-        print(json.dumps({'case_id': spec['case_id'], 'source_bound': True,
-                          'crossing_id': packet['crossing_id'],
+        validate_case(spec, suffix, require_source=False)
+        print(json.dumps({'case_id': spec['case_id'], 'source_bound': False,
+                          'source_binding': 'required_before_Native_capture',
                           'native_started': False}))
     elif args.output_dir:
+        validate_case(spec, suffix)
+        bind_sources(spec, suffix, args.sources, args.camera_plan)
         from native_capture import run_native
         run_native(spec, suffix, args.sources, args.camera_plan,
                    args.output_dir, args.host, args.port)

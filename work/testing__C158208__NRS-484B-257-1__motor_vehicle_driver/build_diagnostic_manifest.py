@@ -8,10 +8,10 @@ import hashlib
 import json
 from pathlib import Path
 from build_semantic_proposals import recording_description
+from build_semantic_proposals import KINDS
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-KINDS = ("nearest_view_response", "nearest_view_uninterrupted")
 
 
 def sha(path: Path) -> str:
@@ -25,7 +25,11 @@ def build() -> dict:
         if original.get("diagnostic_only") is not True:
             raise ValueError("diagnostic source construction changed")
         files = {item["path"]: item["content"] for item in original["files"]}
-        for name in ("analysis.py", "prepare_derived_media.py"):
+        for name in ("analysis.py", "prepare_derived_media.py",
+                     "statutory_branch_measurement.py", "branch_site_preflight.py",
+                     "build_semantic_proposals.py", "through_traffic_control.py",
+                     "yield_control.py", "source_tick_capture.py", "camera_sources.py",
+                     "native_attempt.py", "carla_scene_adapter.py", "delivery_audit.py"):
             files[name] = (HERE / name).read_text(encoding="utf-8")
         original["recording_description"] = recording_description()
         original["files"] = [{"path": name, "content": code}

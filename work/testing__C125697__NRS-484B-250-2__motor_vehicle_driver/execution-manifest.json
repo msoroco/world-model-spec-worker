@@ -1,0 +1,471 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+      "kind": "delivery",
+      "construction": "construction-timing_below_training.json",
+      "construction_sha256": "8f52ae24df6ef54b1f78fa5d2a2b18ac306a7a9993742aadafd218aa17ba0f85",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "measurement-timing_below_training.json",
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/fixture-recipe-timing_below_training.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary bounded control may overshoot the median approach or fail to complete a settled crossing within 45 seconds."
+      },
+      "acquisition": {
+        "intersection_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original synchronized Native vehicle body and entry history",
+          "evidence": "native_trace.json"
+        },
+        "governing_signal_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing signal readback each Native frame",
+          "evidence": "native_trace.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-timing_below_training-construction.json",
+          "construction_sha256": "56a3cb972382c524ab572b5b531fe26966503e4ae21816f8479a1d819b78cec0",
+          "changed_knobs": [
+            "requested approach target 8 to 5 m/s",
+            "throttle cap 0.55 to 0.35",
+            "steering error divisor 0.5 to 0.7"
+          ],
+          "trigger": {
+            "source": "original native_trace.json body/speed history and scene.json crossing bounds",
+            "metric": "ego speed and body exit across 900 original frames",
+            "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --candidate fallback1 --output .runtime-work/c125697-2502/final-proof-v4/offline-fallback-timing_below_training --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "56a3cb972382c524ab572b5b531fe26966503e4ae21816f8479a1d819b78cec0",
+            "log": "cpu-offline-fallback-timing_below_training.log",
+            "log_sha256": "e317cce5f802de97c611476fbb366ad65147cabc4c1fe0a1b385511da63f38f7"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback-timing_below_training-receipt.json",
+            "sha256": "19743252398c6613ff813dc85d2f547c13d8fa1c079703d7c287effa7dfc8d4a",
+            "log": "compat-fallback-timing_below_training-analysis.log",
+            "negative_log": "compat-fallback-timing_below_training-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --output .runtime-work/c125697-2502/final-proof-v4/offline-timing_below_training --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8f52ae24df6ef54b1f78fa5d2a2b18ac306a7a9993742aadafd218aa17ba0f85",
+        "log": "cpu-offline-timing_below_training.log",
+        "log_sha256": "a768a9eb194c77b99d0688e5169f8a11b5aad3a0f651544cc0b2d104fdbcf1c2"
+      },
+      "compatibility": {
+        "receipt": "compat-timing_below_training-receipt.json",
+        "sha256": "bf43ed435a03ae6b333c2f513cb27eecc545ca186f5b80372a91614f7404b6fd",
+        "log": "compat-timing_below_training-analysis.log",
+        "negative_log": "compat-timing_below_training-negative.log"
+      },
+      "negative": {
+        "log": "compat-timing_below_training-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit_probe.py",
+        "script_sha256": "af382c71915675940262dff92f2cbaf84f5cfe674a972743e859983b34d7f2da",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --production --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --attempt $ATTEMPT --processing $PROCESSING_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "audit-timing_below_training-positive.log",
+        "test_log_sha256": "45fe7dac6ffe5de5f58ffcacdf4694c87ade168ff743d0eb7e2ebb0e76e502ef",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --attempt .runtime-work/c125697-2502/final-proof-v4/saved-attempt-timing_below_training --negative-camera",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed: overview.mkv",
+        "negative_log": "audit-timing_below_training-negative.log",
+        "negative_log_sha256": "db622d26573e73d6f88b579e1849d68b8b8e5d84e93d45bd5860f00532c26385"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-timing_below_training-proof.json",
+        "sha256": "5bf3418e52972028ac6a04271398c8475d724a077eb2c85b587b9e9e1fa66076"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_below_training --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_log": "process-timing_below_training.log",
+        "test_log_sha256": "e98ac0e05fec9fdf77f8ac5623d6d087fe13ec533c80d4e7e48347d21ebd3c78",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+      "kind": "delivery",
+      "construction": "construction-timing_inside_training.json",
+      "construction_sha256": "5be053e40ec2df1f9a445e7f8f2e507d82637d2d183f245f29c1e65389f53d4a",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "measurement-timing_inside_training.json",
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/fixture-recipe-timing_inside_training.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary bounded control may overshoot the median approach or fail to complete a settled crossing within 45 seconds."
+      },
+      "acquisition": {
+        "intersection_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original synchronized Native vehicle body and entry history",
+          "evidence": "native_trace.json"
+        },
+        "governing_signal_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing signal readback each Native frame",
+          "evidence": "native_trace.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-timing_inside_training-construction.json",
+          "construction_sha256": "8c38adf8fafa0d711cd2c6b2b8f982a8ff6e1308bdb265e94916463ea7c19c76",
+          "changed_knobs": [
+            "requested approach target 8 to 5 m/s",
+            "throttle cap 0.55 to 0.35",
+            "steering error divisor 0.5 to 0.7"
+          ],
+          "trigger": {
+            "source": "original native_trace.json body/speed history and scene.json crossing bounds",
+            "metric": "ego speed and body exit across 900 original frames",
+            "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --candidate fallback1 --output .runtime-work/c125697-2502/final-proof-v4/offline-fallback-timing_inside_training --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "8c38adf8fafa0d711cd2c6b2b8f982a8ff6e1308bdb265e94916463ea7c19c76",
+            "log": "cpu-offline-fallback-timing_inside_training.log",
+            "log_sha256": "64eee5062fef4872a757b814dc1b8e541ea09d7a67fd7a15b5a40cad09f70a95"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback-timing_inside_training-receipt.json",
+            "sha256": "1c44bed930baf3120fc871b94cfda8a8b1425469d26617e3d1b2e25e3e79e9dc",
+            "log": "compat-fallback-timing_inside_training-analysis.log",
+            "negative_log": "compat-fallback-timing_inside_training-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --output .runtime-work/c125697-2502/final-proof-v4/offline-timing_inside_training --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "5be053e40ec2df1f9a445e7f8f2e507d82637d2d183f245f29c1e65389f53d4a",
+        "log": "cpu-offline-timing_inside_training.log",
+        "log_sha256": "257e8d842d4ab587cf8e86cfd0a01517b64abbc63fdfa82bc11b820a05358436"
+      },
+      "compatibility": {
+        "receipt": "compat-timing_inside_training-receipt.json",
+        "sha256": "20fb27f84dcb3e08acbe0d6fddaf1dc8b96d0427ab4aa26d3876ddd3410bebed",
+        "log": "compat-timing_inside_training-analysis.log",
+        "negative_log": "compat-timing_inside_training-negative.log"
+      },
+      "negative": {
+        "log": "compat-timing_inside_training-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit_probe.py",
+        "script_sha256": "af382c71915675940262dff92f2cbaf84f5cfe674a972743e859983b34d7f2da",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --production --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --attempt $ATTEMPT --processing $PROCESSING_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "audit-timing_inside_training-positive.log",
+        "test_log_sha256": "5029ad9ae07cd328271b5dbf4bb1dcb366a96c8ba4545c2ad07eadf76f928bca",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --attempt .runtime-work/c125697-2502/final-proof-v4/saved-attempt-timing_inside_training --negative-camera",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed: overview.mkv",
+        "negative_log": "audit-timing_inside_training-negative.log",
+        "negative_log_sha256": "db622d26573e73d6f88b579e1849d68b8b8e5d84e93d45bd5860f00532c26385"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-timing_inside_training-proof.json",
+        "sha256": "9700ebc1e3164aa70e47dd9039d1450be98e2ac5555bd2639a1412535020c77c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_inside_training --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_log": "process-timing_inside_training.log",
+        "test_log_sha256": "675d2b1d095dab10c1a1c14b50d5b31a190bdf74fe5ceb4b3d29516f52fa4edc",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+      "kind": "delivery",
+      "construction": "construction-timing_above_training.json",
+      "construction_sha256": "c5da1f5bd55e130b8563df7a2a7caf153cc5d4a8261364d581d720ed97642733",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "measurement-timing_above_training.json",
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/fixture-recipe-timing_above_training.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary bounded control may overshoot the median approach or fail to complete a settled crossing within 45 seconds."
+      },
+      "acquisition": {
+        "intersection_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original synchronized Native vehicle body and entry history",
+          "evidence": "native_trace.json"
+        },
+        "governing_signal_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing signal readback each Native frame",
+          "evidence": "native_trace.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-timing_above_training-construction.json",
+          "construction_sha256": "b8f73f6337c27ef1726b3bf7ff34fd7454bde8d0ea499b2fef9164a2f2845e28",
+          "changed_knobs": [
+            "requested approach target 8 to 5 m/s",
+            "throttle cap 0.55 to 0.35",
+            "steering error divisor 0.5 to 0.7"
+          ],
+          "trigger": {
+            "source": "original native_trace.json body/speed history and scene.json crossing bounds",
+            "metric": "ego speed and body exit across 900 original frames",
+            "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --candidate fallback1 --output .runtime-work/c125697-2502/final-proof-v4/offline-fallback-timing_above_training --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "b8f73f6337c27ef1726b3bf7ff34fd7454bde8d0ea499b2fef9164a2f2845e28",
+            "log": "cpu-offline-fallback-timing_above_training.log",
+            "log_sha256": "21729385284627c111a28649953b903966f49c22d427a70264453c4276179379"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback-timing_above_training-receipt.json",
+            "sha256": "6d6f6937f9ce78aaafe1fc96dc7df548fd2ec83aa225118554987145d2a865f6",
+            "log": "compat-fallback-timing_above_training-analysis.log",
+            "negative_log": "compat-fallback-timing_above_training-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --output .runtime-work/c125697-2502/final-proof-v4/offline-timing_above_training --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c5da1f5bd55e130b8563df7a2a7caf153cc5d4a8261364d581d720ed97642733",
+        "log": "cpu-offline-timing_above_training.log",
+        "log_sha256": "751bacfc449ef6f3b2db78ff36c163c19bde7bbcbf2c1e0ca5092931e6736405"
+      },
+      "compatibility": {
+        "receipt": "compat-timing_above_training-receipt.json",
+        "sha256": "27056c6841109e237eded1ee39eaa6459a2f3a89e139a62fc94c33ca95f34f92",
+        "log": "compat-timing_above_training-analysis.log",
+        "negative_log": "compat-timing_above_training-negative.log"
+      },
+      "negative": {
+        "log": "compat-timing_above_training-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit_probe.py",
+        "script_sha256": "af382c71915675940262dff92f2cbaf84f5cfe674a972743e859983b34d7f2da",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --production --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --attempt $ATTEMPT --processing $PROCESSING_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "audit-timing_above_training-positive.log",
+        "test_log_sha256": "5517e2ac27866a25c519d9b25022fe45b05151b2506142aba508773a95ed136d",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --attempt .runtime-work/c125697-2502/final-proof-v4/saved-attempt-timing_above_training --negative-camera",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed: overview.mkv",
+        "negative_log": "audit-timing_above_training-negative.log",
+        "negative_log_sha256": "db622d26573e73d6f88b579e1849d68b8b8e5d84e93d45bd5860f00532c26385"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-timing_above_training-proof.json",
+        "sha256": "cb16a55d19d039f4eabbafd5e7b4d973ddb79b2110b7db0024a1c27303db8ae8"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__timing_above_training --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_log": "process-timing_above_training.log",
+        "test_log_sha256": "4a807c9129cf59694b495428d8a9e23fa4f7fe5446c158358923d0dae35fb3fd",
+        "test_exit_code": 0
+      }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside",
+      "kind": "delivery",
+      "construction": "construction-right_approach_inside.json",
+      "construction_sha256": "c6535bf0f06be070e7353769c87a19cb174018f97d4fd443b219ae56f5d05030",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "measurement-right_approach_inside.json",
+      "fixture_recipe": "work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/fixture-recipe-right_approach_inside.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Primary bounded control may overshoot the median approach or fail to complete a settled crossing within 45 seconds."
+      },
+      "acquisition": {
+        "intersection_body_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original synchronized Native vehicle body and entry history",
+          "evidence": "native_trace.json"
+        },
+        "governing_signal_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original governing signal readback each Native frame",
+          "evidence": "native_trace.json"
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-right_approach_inside-construction.json",
+          "construction_sha256": "769722c978b3d340ba6e1d039773e9b24431dda3f895a4a7ec35fcee12c6b4bb",
+          "changed_knobs": [
+            "requested approach target 8 to 5 m/s",
+            "throttle cap 0.55 to 0.35",
+            "steering error divisor 0.5 to 0.7"
+          ],
+          "trigger": {
+            "source": "original native_trace.json body/speed history and scene.json crossing bounds",
+            "metric": "ego speed and body exit across 900 original frames",
+            "failure_condition": "ego exceeds 8 m/s within 5 m of the median crossing or does not exit it within 900 frames"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside --candidate fallback1 --output .runtime-work/c125697-2502/final-proof-v4/offline-fallback-right_approach_inside --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "769722c978b3d340ba6e1d039773e9b24431dda3f895a4a7ec35fcee12c6b4bb",
+            "log": "cpu-offline-fallback-right_approach_inside.log",
+            "log_sha256": "4ea668e514496508c30614a8c7ee8a41519b8e1064f0b7344b94846f7ae45279"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback-right_approach_inside-receipt.json",
+            "sha256": "12c738e248e621c71eb3ec67f7d95fb2da288a36d9403ca37274873b768e5798",
+            "log": "compat-fallback-right_approach_inside-analysis.log",
+            "negative_log": "compat-fallback-right_approach_inside-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside --output .runtime-work/c125697-2502/final-proof-v4/offline-right_approach_inside --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c6535bf0f06be070e7353769c87a19cb174018f97d4fd443b219ae56f5d05030",
+        "log": "cpu-offline-right_approach_inside.log",
+        "log_sha256": "7913ec3140875366b5194af3b7bfd4eda7a1ca983ee9b30e89b40961d8fd35d1"
+      },
+      "compatibility": {
+        "receipt": "compat-right_approach_inside-receipt.json",
+        "sha256": "4e3a3c0bbeb97fdd252d691b5ea339e50e63096440dedd265634a000f4b25423",
+        "log": "compat-right_approach_inside-analysis.log",
+        "negative_log": "compat-right_approach_inside-negative.log"
+      },
+      "negative": {
+        "log": "compat-right_approach_inside-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "audit_probe.py",
+        "script_sha256": "af382c71915675940262dff92f2cbaf84f5cfe674a972743e859983b34d7f2da",
+        "command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --production --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside --attempt $ATTEMPT --processing $PROCESSING_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "audit-right_approach_inside-positive.log",
+        "test_log_sha256": "81bcbf030beacf0ee35751b6b7361ef65e5d169678196be7eee2837daac89adc",
+        "negative_command": ".venv-cpu/bin/python work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/audit_probe.py --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside --attempt .runtime-work/c125697-2502/final-proof-v4/saved-attempt-right_approach_inside --negative-camera",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed: overview.mkv",
+        "negative_log": "audit-right_approach_inside-negative.log",
+        "negative_log_sha256": "db622d26573e73d6f88b579e1849d68b8b8e5d84e93d45bd5860f00532c26385"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-right_approach_inside-proof.json",
+        "sha256": "42e00054569a4e239816ac79e6a5c5a57b6570b6dc4d2fac4a2b40124c758b19"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125697__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125697__NRS-484B-250-2__motor_vehicle_driver__right_approach_inside --attempt $ATTEMPT --output $PROCESSING_OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_log": "process-right_approach_inside.log",
+        "test_log_sha256": "c54e46a08c50686a637b30de1691c94e118f3f176ee86932f2938ca811d0847d",
+        "test_exit_code": 0
+      }
+    }
+  ]
+}

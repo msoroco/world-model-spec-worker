@@ -71,6 +71,10 @@ def construction(spec, relative):
         files.append({'path': name,
                       'source': 'work/' + ASSIGNMENT + '/' + name,
                       'content': (ROOT / name).read_text()})
+    bundle_test = ROOT / 'tests/test_offline_bundle.py'
+    files.append({'path': 'tests/test_offline_bundle.py',
+                  'source': 'work/' + ASSIGNMENT + '/tests/test_offline_bundle.py',
+                  'content': bundle_test.read_text()})
     for name, source in (('case-spec.json', relative / 'case-spec.json'),
                          ('camera-plan.json', ROOT / 'camera-plan.json'),
                          ('config.json', relative / 'config.json')):

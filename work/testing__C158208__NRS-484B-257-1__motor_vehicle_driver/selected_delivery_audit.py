@@ -9,6 +9,8 @@ import subprocess
 
 from camera_sources import CAMERAS, DIMENSIONS, audit_camera_sources
 from source_tick_capture import verify_seal
+from build_semantic_proposals import KINDS
+from analysis import REQUIREMENT_INDICES
 
 ASSIGNMENT = "testing__C158208__NRS-484B-257-1__motor_vehicle_driver"
 BASE_SOURCES = {"capture-identity.json", "nearest-view-tick-seal.json",
@@ -41,7 +43,7 @@ def video(path: Path, frames: int, dimensions: tuple[int, int]) -> dict:
 
 def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
     stage = Path(stage)
-    if not case_id.startswith(ASSIGNMENT + "__"):
+    if case_id not in {ASSIGNMENT + "__" + kind for kind in KINDS}:
         raise ValueError("selected delivery case outside assignment")
     packet = verify_seal(stage)
     sample_count = len(packet["samples"])
@@ -52,6 +54,16 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
         raise ValueError("selected delivery identity differs")
     if identity.get("provenance_kind") != ("synthetic_fixture" if diagnostic_fixture else "original_capture"):
         raise ValueError("selected delivery provenance differs")
+    if diagnostic_fixture and case_id.rsplit("__", 1)[-1] not in (
+            "nearest_view_response", "nearest_view_uninterrupted"):
+        scene = json.loads((stage / "scene.json").read_text())
+        site_name = scene.get("site_source")
+        if (scene.get("source_kind") != "synthetic_reviewed_fixture" or
+                not isinstance(site_name, str) or Path(site_name).name != site_name):
+            raise ValueError("selected diagnostic site identity differs")
+        site_path = stage / site_name
+        if sha(site_path) != scene.get("site_sha256") or sha(site_path) != identity.get("site_packet_sha256"):
+            raise ValueError("selected diagnostic site packet differs")
     if not diagnostic_fixture:
         construction = stage / "construction.json"
         if not construction.is_file() or sha(construction) != identity.get("construction_sha256"):
@@ -69,7 +81,13 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
             or report.get("legal_judgment") is not None):
         raise ValueError("selected delivery report identity or judgment differs")
     measurements = report.get("measurements", {})
-    if set(measurements) != {"nearest_view_history", "governing_control_context"}:
+    history = ("nearest_view_history" if case_id.rsplit("__", 1)[-1] in
+               ("nearest_view_response", "nearest_view_uninterrupted") else
+               "statutory_branch_history")
+    expected_measurements = {history, "governing_control_context"} | {
+        f"statutory_requirement_{index}_history"
+        for index in REQUIREMENT_INDICES[case_id.rsplit("__", 1)[-1]]}
+    if set(measurements) != expected_measurements:
         raise ValueError("selected delivery measurement inventory differs")
     expected_sources = BASE_SOURCES | ({"diagnostic-compatibility.json"} if diagnostic_fixture and
         (stage / "diagnostic-compatibility.json").is_file() else {"nearest-view-camera-manifest.json"})
@@ -88,7 +106,7 @@ def audit(stage: Path, *, case_id: str, diagnostic_fixture: bool) -> dict:
             path = stage / name
             if not path.is_file() or sha(path) != digest:
                 raise ValueError("selected measurement source differs: " + name)
-    if source_maps[0] != source_maps[1]:
+    if any(source_map != source_maps[0] for source_map in source_maps[1:]):
         raise ValueError("selected measurements disagree on original sources")
     result = json.loads((stage / "result.json").read_text())
     if result.get("case_id") != case_id or result.get("diagnostic_fixture") is not diagnostic_fixture:

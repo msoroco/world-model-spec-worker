@@ -5,6 +5,8 @@ import hashlib
 import json
 from pathlib import Path
 
+from delivery_audit import verify_sources
+from case_protocol import ASSIGNMENT, SUFFIXES
 from saved_signal_audit import audit as audit_history
 from signal_crossing import validate_source_packet
 from source_bindings import validate_review_refs
@@ -44,14 +46,20 @@ def audit_pair(left: dict, right: dict, *, variable: str):
 
 
 def _source_report(attempt):
-    attempt = Path(attempt)
+    attempt = Path(attempt).resolve()
+    if not attempt.is_dir() or attempt.is_symlink():
+        raise ValueError('original Native attempt directory missing or redirected')
+    selected = json.loads((attempt / 'config.json').read_text()).get('selected_case_id')
+    if selected not in {ASSIGNMENT + '__' + suffix for suffix in SUFFIXES}:
+        raise ValueError('comparison attempt selects another exact case')
+    verify_sources(selected, attempt)
     acquisition = json.loads((attempt / 'acquisition.json').read_text())
     names = ('signal-packet.json', 'signal-history.json', 'review.json',
              'map.xodr', 'source-packet.json', 'reviewed-packet.json',
              'acquisition-provenance.json', 'trace.jsonl', 'video_frames.jsonl')
     for name in names:
         path = attempt / name
-        if not path.is_file():
+        if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(attempt):
             raise ValueError('Missing required source: ' + name)
         actual = hashlib.sha256(path.read_bytes()).hexdigest()
         entry = acquisition.get(name, {})

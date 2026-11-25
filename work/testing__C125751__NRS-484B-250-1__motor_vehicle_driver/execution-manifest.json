@@ -8,32 +8,91 @@
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence",
       "kind": "delivery",
       "construction": "cases/precedence/construction.json",
-      "construction_sha256": "7833052da5681dbe6ea8866acf0145241cac77bca54973dc21b00da7b61f9657",
+      "construction_sha256": "476925677e40fb0c998f98e0602756b7a8b0f522675b7f6776fb4b0561004d00",
       "measurement_contract": "cases/precedence/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Unreviewed median-opening route connectivity, two-vehicle clearance and four-camera visibility can fail physically; no source-backed trigger or fallback knobs can be frozen before site review."
+        "status": "none",
+        "reason": "The reviewed median geometry and official-device source identity are prerequisites. A spawn or controller fallback cannot repair missing or changed original site evidence; source review must precede physical tuning."
       },
       "candidates": [],
       "acquisition": {
+        "ego_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "ego_light_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "st.intersection": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "different_highway_identity": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
+        "ego_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "controller_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "kin.speed": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "official_device_inventory": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
         "ego_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         },
         "other_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
-        },
-        "official_signal": {
-          "entrypoint": "native_capture.py",
-          "method": "live signal readback per frame"
-        },
-        "camera_views": {
-          "entrypoint": "native_capture.py",
-          "method": "four synchronized original camera streams"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         }
       },
       "delivery_acceptance": {
@@ -65,51 +124,118 @@
         "process-saved complete adapter source",
         "independent original delivery and comparison audits"
       ],
-      "diagnostic_software_proof": {
-        "scope": "six-frame synthetic; no reviewed original site or physical delivery",
-        "proof": "cpu-four-saved-diagnostic-proof.json",
-        "proof_sha256": "946c62391e535825f247aff4627601150a2cfddad42d0cedc39aa69d5e386931",
-        "saved_processing_sha256": "88f290283a5fd068c6a3ee75b70e2b63b0fefa0b6c272b29862e851e7c286648",
-        "core_adapter_report_sha256": "e571fd3b0583c90270cd754b45eea03885ea8e569b1fb7d3fb6066bad86cd67d",
-        "missing_source_rejected": "signal-history.json",
-        "original_site_reviewed": false,
-        "physical_delivery_proven": false,
-        "compatibility_proof": "cpu-four-compatibility-diagnostic-proof.json",
-        "compatibility_proof_sha256": "d5c01b72ef5e5c01fdf39eb0abcc151ca64581fc66654151df01ca86aeab3997",
-        "compatibility_receipt_sha256": "721fb59d97f52277bdefdd82f32597f25466bb56934c331577b8ca5c085fd891",
-        "negative_removed": "reviewed-packet.json"
+      "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-precedence-native.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__precedence --output .runtime-work/c125751-owner-nov25/offline-v4-precedence --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "476925677e40fb0c998f98e0602756b7a8b0f522675b7f6776fb4b0561004d00",
+        "log": "cpu-offline-owner-precedence.log",
+        "log_sha256": "cd70db77aa0a5031b9781e87bcf5f2f9183693482fab6785bdcbbb64b4b97a3f"
+      },
+      "compatibility": {
+        "receipt": "package-compat-precedence.json",
+        "sha256": "0322c99b0ddff59b1bec8c19c634bd351db623b91459aa84033dcf70141f4d95",
+        "log": "package-compat-analysis-precedence.log"
+      },
+      "negative": {
+        "log": "negative-analysis-precedence.log"
       }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance",
       "kind": "delivery",
       "construction": "cases/advance/construction.json",
-      "construction_sha256": "558cc546dc845d25ebbb597d265c83c4e2eebfbbde43a061d8afd642def6d404",
+      "construction_sha256": "9e0639b5a610eeacba94d82ff0f475e6c8e2983b35f1dd63c771fd2203b25562",
       "measurement_contract": "cases/advance/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Unreviewed median-opening route connectivity, two-vehicle clearance and four-camera visibility can fail physically; no source-backed trigger or fallback knobs can be frozen before site review."
+        "status": "none",
+        "reason": "The reviewed median geometry and official-device source identity are prerequisites. A spawn or controller fallback cannot repair missing or changed original site evidence; source review must precede physical tuning."
       },
       "candidates": [],
       "acquisition": {
+        "ego_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "ego_light_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "st.intersection": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "different_highway_identity": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
+        "ego_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "controller_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "kin.speed": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "official_device_inventory": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
         "ego_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         },
         "other_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
-        },
-        "official_signal": {
-          "entrypoint": "native_capture.py",
-          "method": "live signal readback per frame"
-        },
-        "camera_views": {
-          "entrypoint": "native_capture.py",
-          "method": "four synchronized original camera streams"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         }
       },
       "delivery_acceptance": {
@@ -141,51 +267,118 @@
         "process-saved complete adapter source",
         "independent original delivery and comparison audits"
       ],
-      "diagnostic_software_proof": {
-        "scope": "six-frame synthetic; no reviewed original site or physical delivery",
-        "proof": "cpu-four-saved-diagnostic-proof.json",
-        "proof_sha256": "946c62391e535825f247aff4627601150a2cfddad42d0cedc39aa69d5e386931",
-        "saved_processing_sha256": "76cc66cfa228b3f4af0bffed842853f4fb2a073738cba4da41391f8d856977e4",
-        "core_adapter_report_sha256": "8bf4091188d0c122d493089122e3dfe6103a73f180442bb9a0cfd507a51a2cbf",
-        "missing_source_rejected": "signal-history.json",
-        "original_site_reviewed": false,
-        "physical_delivery_proven": false,
-        "compatibility_proof": "cpu-four-compatibility-diagnostic-proof.json",
-        "compatibility_proof_sha256": "d5c01b72ef5e5c01fdf39eb0abcc151ca64581fc66654151df01ca86aeab3997",
-        "compatibility_receipt_sha256": "e7d45f24cb1b4b830056992f7948da7861ea233d21b3d73b6d44194490e78958",
-        "negative_removed": "reviewed-packet.json"
+      "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-advance-native.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__advance --output .runtime-work/c125751-owner-nov25/offline-v4-advance --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "9e0639b5a610eeacba94d82ff0f475e6c8e2983b35f1dd63c771fd2203b25562",
+        "log": "cpu-offline-owner-advance.log",
+        "log_sha256": "04f21c13b5a4c80e61d15f165f102e8f6647401134950a27cbac887b10c45f2e"
+      },
+      "compatibility": {
+        "receipt": "package-compat-advance.json",
+        "sha256": "dbd08106047674258c8ab51eb898aa2bf7f5faa23b7617b1a63a1b8ff8b72363",
+        "log": "package-compat-analysis-advance.log"
+      },
+      "negative": {
+        "log": "negative-analysis-advance.log"
       }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later",
       "kind": "delivery",
       "construction": "cases/other_later/construction.json",
-      "construction_sha256": "f2b179fc3a1883f9249ecbfb80a328904d2a49cc8698519203ce8cc5e6d1daf2",
+      "construction_sha256": "48c260b3a0d517bfd1ef7b45823c9e7132b8459a6df732dbdbd26f026a746a08",
       "measurement_contract": "cases/other_later/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Unreviewed median-opening route connectivity, two-vehicle clearance and four-camera visibility can fail physically; no source-backed trigger or fallback knobs can be frozen before site review."
+        "status": "none",
+        "reason": "The reviewed median geometry and official-device source identity are prerequisites. A spawn or controller fallback cannot repair missing or changed original site evidence; source review must precede physical tuning."
       },
       "candidates": [],
       "acquisition": {
+        "ego_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "ego_light_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "st.intersection": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "different_highway_identity": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
+        "ego_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "controller_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "kin.speed": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "official_device_inventory": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
         "ego_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         },
         "other_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
-        },
-        "official_signal": {
-          "entrypoint": "native_capture.py",
-          "method": "live signal readback per frame"
-        },
-        "camera_views": {
-          "entrypoint": "native_capture.py",
-          "method": "four synchronized original camera streams"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         }
       },
       "delivery_acceptance": {
@@ -217,51 +410,118 @@
         "process-saved complete adapter source",
         "independent original delivery and comparison audits"
       ],
-      "diagnostic_software_proof": {
-        "scope": "six-frame synthetic; no reviewed original site or physical delivery",
-        "proof": "cpu-four-saved-diagnostic-proof.json",
-        "proof_sha256": "946c62391e535825f247aff4627601150a2cfddad42d0cedc39aa69d5e386931",
-        "saved_processing_sha256": "f4a8565c137971cf309b93fcc3f55d21895540e98b1b6f4c2dc1aa5fd9e45092",
-        "core_adapter_report_sha256": "3441d7c1e7be08bd6a293df89cab9f47e77eeb104f93c6c1b1457ba0677bcce4",
-        "missing_source_rejected": "signal-history.json",
-        "original_site_reviewed": false,
-        "physical_delivery_proven": false,
-        "compatibility_proof": "cpu-four-compatibility-diagnostic-proof.json",
-        "compatibility_proof_sha256": "d5c01b72ef5e5c01fdf39eb0abcc151ca64581fc66654151df01ca86aeab3997",
-        "compatibility_receipt_sha256": "524a5104188d2095f02cb5e259b119e196989e30ee26feaf2dddd3dde96da90b",
-        "negative_removed": "reviewed-packet.json"
+      "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-other_later-native.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__other_later --output .runtime-work/c125751-owner-nov25/offline-v4-other_later --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "48c260b3a0d517bfd1ef7b45823c9e7132b8459a6df732dbdbd26f026a746a08",
+        "log": "cpu-offline-owner-other_later.log",
+        "log_sha256": "906775e9cdc9ffb24d20d8364845fdb29a62c5c2eb2e1010351f75906ee70724"
+      },
+      "compatibility": {
+        "receipt": "package-compat-other_later.json",
+        "sha256": "7007beca38565f7ca0ba60d021a9fe0cc0ca2d1bac30c1ec20ced9f146b5f8b9",
+        "log": "package-compat-analysis-other_later.log"
+      },
+      "negative": {
+        "log": "negative-analysis-other_later.log"
       }
     },
     {
       "case_id": "testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red",
       "kind": "delivery",
       "construction": "cases/signal_red/construction.json",
-      "construction_sha256": "b73f2a925b70d202c846c8b9dd87f27e6ee93f57ce25ec9f929d2e5adf4b31bf",
+      "construction_sha256": "0a92d68d43cff9c48806a9126e96d0f2284d0d282849d851d5592f6a7586b00a",
       "measurement_contract": "cases/signal_red/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Unreviewed median-opening route connectivity, two-vehicle clearance and four-camera visibility can fail physically; no source-backed trigger or fallback knobs can be frozen before site review."
+        "status": "none",
+        "reason": "The reviewed median geometry and official-device source identity are prerequisites. A spawn or controller fallback cannot repair missing or changed original site evidence; source review must precede physical tuning."
       },
       "candidates": [],
       "acquisition": {
+        "ego_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "ego_light_readback": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_clear_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "st.intersection": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "different_highway_identity": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
+        "ego_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "controller_history": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "other_entry_frame": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
+        },
+        "kin.speed": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "trace.jsonl"
+        },
+        "st.lane_enters": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "capture/native_map_facts.json"
+        },
+        "official_device_inventory": {
+          "entrypoint": "native_capture.py",
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "review.json"
+        },
         "ego_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         },
         "other_body_history": {
           "entrypoint": "native_capture.py",
-          "method": "original CARLA body outline per frame"
-        },
-        "official_signal": {
-          "entrypoint": "native_capture.py",
-          "method": "live signal readback per frame"
-        },
-        "camera_views": {
-          "entrypoint": "native_capture.py",
-          "method": "four synchronized original camera streams"
+          "method": "original CARLA and reviewed-source capture",
+          "evidence": "signal-history.json"
         }
       },
       "delivery_acceptance": {
@@ -293,19 +553,27 @@
         "process-saved complete adapter source",
         "independent original delivery and comparison audits"
       ],
-      "diagnostic_software_proof": {
-        "scope": "six-frame synthetic; no reviewed original site or physical delivery",
-        "proof": "cpu-four-saved-diagnostic-proof.json",
-        "proof_sha256": "946c62391e535825f247aff4627601150a2cfddad42d0cedc39aa69d5e386931",
-        "saved_processing_sha256": "bacab7ed02131936f28f4f546ef4214224fe045ae476500d6629bf4c3982b0ce",
-        "core_adapter_report_sha256": "bceba9b3aecd1c0124da144f62d6679cd689d4ac036cfb501d5a22acd652a79f",
-        "missing_source_rejected": "signal-history.json",
-        "original_site_reviewed": false,
-        "physical_delivery_proven": false,
-        "compatibility_proof": "cpu-four-compatibility-diagnostic-proof.json",
-        "compatibility_proof_sha256": "d5c01b72ef5e5c01fdf39eb0abcc151ca64581fc66654151df01ca86aeab3997",
-        "compatibility_receipt_sha256": "a56d654e0d54b2fbe33e75ca61e5cc74a6c6b84d1768d6e71f1754046ce70db9",
-        "negative_removed": "reviewed-packet.json"
+      "fixture_recipe": "work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/diagnostic-fixture-recipe-signal_red-native.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "source_dir_env_var": "C125751_REVIEWED_SOURCES"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C125751__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125751__NRS-484B-250-1__motor_vehicle_driver__signal_red --output .runtime-work/c125751-owner-nov25/offline-v4-signal_red --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "0a92d68d43cff9c48806a9126e96d0f2284d0d282849d851d5592f6a7586b00a",
+        "log": "cpu-offline-owner-signal_red.log",
+        "log_sha256": "fe0caadf1eeaa58e1e629910bd4726aabd194a07639d8eab3689e33d843ee6b1"
+      },
+      "compatibility": {
+        "receipt": "package-compat-signal_red.json",
+        "sha256": "a2f52dff6e67a7ab9eedaf55ac8130e97e856bcaa125ca17c8c73e769f5a2eb2",
+        "log": "package-compat-analysis-signal_red.log"
+      },
+      "negative": {
+        "log": "negative-analysis-signal_red.log"
       }
     }
   ],

@@ -7,6 +7,7 @@ import hashlib
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from comparison_audit import audit_pair, audit_saved_pair
+from case_protocol import ASSIGNMENT
 from test_analysis import write_attempt
 
 
@@ -20,7 +21,7 @@ def report(case, order, signal):
 
 
 class ComparisonAuditTest(unittest.TestCase):
-    def test_saved_original_comparison_rejects_stale_source(self):
+    def test_saved_original_comparison_rejects_synthetic_lifecycle(self):
         repo = Path(__file__).resolve().parents[3]
         scratch = repo / '.runtime-work'
         scratch.mkdir(exist_ok=True)
@@ -42,10 +43,14 @@ class ComparisonAuditTest(unittest.TestCase):
             for name in ('signal-history.json', 'signal-packet.json'):
                 inventory[name]['sha256'] = hashlib.sha256((right/name).read_bytes()).hexdigest()
             inventory_path.write_text(json.dumps(inventory))
-            result = audit_saved_pair(left, right, variable='signal_state')
-            self.assertEqual(result['case_ids'], ['case-1', 'case-2'])
-            (right/'review.json').write_bytes((right/'review.json').read_bytes()+b' ')
-            with self.assertRaisesRegex(ValueError, 'stale original'):
+            for attempt, suffix in ((left, 'precedence'), (right, 'signal_red')):
+                config = json.loads((attempt/'config.json').read_text())
+                config['selected_case_id'] = ASSIGNMENT + '__' + suffix
+                (attempt/'config.json').write_text(json.dumps(config))
+                (attempt/'capture-seal.json').write_text(json.dumps({
+                    'provenance_kind': 'synthetic_fixture',
+                    'diagnostic_fixture': True, 'sources': {}}))
+            with self.assertRaisesRegex(ValueError, 'original Native lifecycle unverified'):
                 audit_saved_pair(left, right, variable='signal_state')
 
     def test_cli_rejects_uncontrolled_change(self):

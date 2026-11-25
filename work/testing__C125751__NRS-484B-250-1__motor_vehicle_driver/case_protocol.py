@@ -33,7 +33,7 @@ def load_case(folder: Path, suffix: str) -> dict:
     return json.loads((folder / 'cases' / suffix / 'case-spec.json').read_text())
 
 
-def validate_case(spec: dict, suffix: str):
+def validate_case(spec: dict, suffix: str, *, require_source: bool = True):
     if suffix not in SUFFIXES or spec.get('case_id') != ASSIGNMENT + '__' + suffix:
         raise ValueError('exact case identity differs')
     for key, expected in (('law_id', 'NRS-484B-250-1'), ('cell_id', 'C125751'),
@@ -46,9 +46,10 @@ def validate_case(spec: dict, suffix: str):
         raise ValueError('case request differs from declared variant')
     if spec.get('source_status') != 'original_review_required':
         raise ValueError('source review boundary absent')
-    for key in FIXED[6:]:
-        if not spec.get(key):
-            raise ValueError('source or capture binding absent: ' + key)
+    if require_source:
+        for key in FIXED[6:]:
+            if not spec.get(key):
+                raise ValueError('source or capture binding absent: ' + key)
     if spec.get('rate_hz') != 20 or spec.get('duration_frames') != 1100:
         raise ValueError('shared 20 Hz capture contract differs')
     return spec

@@ -1,5 +1,6 @@
 import json
 import hashlib
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -17,6 +18,7 @@ from test_camera_sources import GEOMETRY, raw, png
 from test_branch_site_preflight import BranchSitePreflightTests
 from source_tick_capture import TickCapture, write_capture_identity
 from camera_sources import CAMERAS
+from selected_delivery_audit import audit as audit_delivery
 
 
 class AnalysisTests(unittest.TestCase):
@@ -128,13 +130,29 @@ class AnalysisTests(unittest.TestCase):
                 (diagnostic / "scene.json").write_text(json.dumps({
                     "source_kind": "synthetic_reviewed_fixture", "site_source": site_path.name,
                     "site_sha256": hashlib.sha256(site_path.read_bytes()).hexdigest()}) + "\n")
-                write_camera_sources(diagnostic, frames, diagnostic_fixture=True)
+                (diagnostic / "diagnostic-compatibility.json").write_text(json.dumps({
+                    "format": "c158208-generated-compatibility-v1", "case_id": case,
+                    "frame_count": 3, "source_kind": "synthetic_fixture"}) + "\n")
+                for name in CAMERAS:
+                    size = "1920x1080" if name == "overview" else "1280x720"
+                    subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                                    "-n", "-f", "lavfi", "-i", f"color=c=blue:s={size}:r=20",
+                                    "-frames:v", "3", "-an", "-c:v", "ffv1", "-threads", "1",
+                                    str(diagnostic / (name + ".mkv"))], check=True)
+                (diagnostic / "config.json").write_text(json.dumps({
+                    "selected_case_id": case, "rate_hz": 20, "duration_s": 45}) + "\n")
+                (diagnostic / "construction.json").write_text(json.dumps({
+                    "case_id": case, "recording_description": recording_description()}) + "\n")
                 report = analyze(diagnostic, self.root / (kind + "-analysis.json"))
                 measured = report["measurements"]["statutory_branch_history"]
                 self.assertEqual(measured["method"], "measure_statutory_branch")
                 self.assertEqual(measured["value"]["case_id"], case)
                 self.assertEqual(measured["value"]["sample_count"], 3)
                 self.assertEqual(measured["value"]["legal_status"], "unresolved")
+                (diagnostic / "analysis-report.json").write_text(json.dumps(report) + "\n")
+                audited = audit_delivery(diagnostic, case_id=case, diagnostic_fixture=True)
+                self.assertEqual(audited["source_frames"], 3)
+                self.assertEqual(len(audited["camera_sources"]), 4)
 
 
 if __name__ == "__main__":

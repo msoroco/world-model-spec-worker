@@ -59,6 +59,9 @@ class AnalysisTest(unittest.TestCase):
             result = saved_result(root, report)
             self.assertTrue(result['target_checks'][0]['matched'])
             self.assertEqual(result['physical_checks']['maneuver']['status'], 'met')
+            self.assertEqual(result['realized_observables']['ego_entry_frame']['value'],
+                             report['measurements']['signal_crossing']['value']['ego_entry_frame'])
+            self.assertEqual(result['realized_observables']['other_entry_frame']['value'], 1)
             self.assertTrue((root / 'channels' / 'ego_body_history.jsonl').is_file())
             (root / 'review.json').write_bytes(REVIEW + b' ')
             with self.assertRaisesRegex(ValueError, 'stale original'):
