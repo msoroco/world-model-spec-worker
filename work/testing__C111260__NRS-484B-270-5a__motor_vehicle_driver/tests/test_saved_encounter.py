@@ -85,9 +85,9 @@ class SavedEncounterTests(unittest.TestCase):
                 root = pathlib.Path(tmp)
                 packet, _, _, cameras = attempt(root)
                 if defect == "missing":
-                    del cameras["left"]
+                    del cameras["reference_corner"]
                 else:
-                    cameras["left"][300] += 1
+                    cameras["reference_corner"][300] += 1
                 packet["camera_frames"] = write_json(root, "camera-frames.json", cameras)
                 write_json(root, "encounter-packet.json", packet)
                 with self.assertRaisesRegex(ValueError, "camera"):

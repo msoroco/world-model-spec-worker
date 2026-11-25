@@ -1,0 +1,125 @@
+{
+  "assignment_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver",
+  "law_id": "NRS-484B-270-5a",
+  "cell_id": "C111260",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain",
+  "supported_case_ids": [
+    "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake",
+    "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain",
+    "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake",
+    "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain",
+    "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake",
+    "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "frame_count": 900,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "independently reviewed Native RGB source transform showing motorist, rider and conflict route"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "independently reviewed Native RGB source transform showing motorist, rider and conflict route"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "independently reviewed Native RGB source transform showing motorist, rider and conflict route"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "independently reviewed Native RGB source transform showing motorist, rider and conflict route"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain",
+    "rider_kind": "electric_bicycle",
+    "motorist_response": "maintain",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "rider_classification",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "original rider blueprint, reviewed asset bytes and mounted person actor identity",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "source observation requires physical and independent review; no due-care cutoff inferred"
+        },
+        {
+          "name": "driver_response",
+          "unit": "throttle/brake fraction",
+          "sampling_rate_hz": 20,
+          "method": "original motor vehicle control readback joined to encounter frames",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "source observation requires physical and independent review; no due-care cutoff inferred"
+        },
+        {
+          "name": "separation",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "original actor bounding boxes and center separation",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "source observation requires physical and independent review; no due-care cutoff inferred"
+        },
+        {
+          "name": "contact",
+          "unit": "boolean",
+          "sampling_rate_hz": 20,
+          "method": "original collision sensor event frame identity",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "source observation requires physical and independent review; no due-care cutoff inferred"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "four original RGB camera frame identities and image hashes",
+          "time_window": "full original 45-second attempt",
+          "reference_frame": "original Native frame and elapsed time",
+          "uncertainty": "source observation requires physical and independent review; no due-care cutoff inferred"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_original_site",
+          "unit": "structured record",
+          "method": "source-sealed OpenDRIVE, projected Native waypoints, rider asset and camera plan"
+        }
+      ],
+      "limitations": [
+        "Physical mounted rider motion and visibility require original local review.",
+        "No engineering gap or brake threshold defines legal due care."
+      ]
+    },
+    "source_site_env": "C111260_SITE_ROOT",
+    "camera_review_env": "C111260_CAMERA_REVIEW"
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 3,
+    "minimum_samples": 900,
+    "engineering_tolerances_not_legal": true
+  }
+}

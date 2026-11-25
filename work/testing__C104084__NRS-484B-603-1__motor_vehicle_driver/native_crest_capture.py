@@ -75,6 +75,15 @@ class NativeTickRecorder:
                  'other_actor_id': self.other_actor_id,
                  'other_source_ref': other['source_ref'],
                  'source_ref': ego['source_ref']}
+        if 'position' in ego and 'heading_deg' in ego:
+            position = ego['position']
+            heading = ego['heading_deg']
+            if (not isinstance(position, dict) or set(position) != {'x', 'y', 'z'}
+                    or not all(_finite(position[key]) for key in position)
+                    or not _finite(heading)):
+                raise ValueError('finite original ego pose required')
+            frame['position'] = position
+            frame['heading_deg'] = heading
         identity = {'video_frame': index, 'carla_frame': world_frame, 'time_s': time_s}
         self.motion.append(frame)
         self.frame_map.append(identity)

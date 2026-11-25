@@ -20,12 +20,13 @@ def write(path: Path, value) -> None:
 
 def build() -> None:
     from worker_exchange.native_output import physical_result
+    from worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release, _closure
     manifest_path = ROOT / "execution-manifest.json"
     manifest = json.loads(manifest_path.read_text())
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         suffix = case_id.removeprefix(ROOT.name + "__")
-        source = REPO / ".runtime-work" / f"c104081-selected-compat-{suffix}-primary"
+        source = REPO / ".runtime-work" / f"c104081-selected-v2-compat-{suffix}-primary"
         if not (source / "result.json").is_file():
             raise ValueError("selected compatibility fixture missing: " + suffix)
         fixtures = []
@@ -62,8 +63,24 @@ def build() -> None:
                     "command": f"PYTHONPATH=runtime .venv-cpu/bin/python {ROOT.relative_to(REPO) / 'build_physical_proof.py'}",
                     "exit_code": 0, "log": log.name, "log_sha256": sha(log),
                     "result": result_file.name, "result_sha256": sha(result_file)})
+        with TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c104081-lifecycle-") as temporary:
+            scratch = Path(temporary)
+            (scratch / "construction.json").write_bytes((source / "construction.json").read_bytes())
+            (scratch / "runner.py").write_bytes((source / "runner.py").read_bytes())
+            write(scratch / "capture-seal.json", {
+                "events": ["capture_finished", "encoders_closed", "restoration_verified"],
+                "native_revision": {"construction_sha256": sha(scratch / "construction.json"),
+                                    "runner_sha256": sha(scratch / "runner.py")},
+                "sources": {"construction.json": sha(scratch / "construction.json"),
+                            "runner.py": sha(scratch / "runner.py")}})
+            exit_receipt = record_native_exit(scratch)
+            release_path = scratch / "owner-release.json"
+            release = acknowledge_owner_release(scratch, release_path, True)
+            _closure(scratch, release_path, "native", False)
+            if exit_receipt["event"] != "native_exit" or release["event"] != "owner_released":
+                raise ValueError("Native closure fixture did not reach saved-processing gate")
         life_log = ROOT / f"physical-{suffix}-lifecycle.log"
-        life_log.write_text("synthetic lifecycle ordering: capture, encoder close, restoration, Native exit, owner release, saved processing\n")
+        life_log.write_text("synthetic Native closure fixture: capture_finished, encoders_closed, restoration_verified, native_exit, owner_released, saved_processing_started; _closure passed\n")
         proof = {"format": "worker-pedestrian-physical-preparation",
                  "case_id": case_id, "construction_sha256": entry["construction_sha256"],
                  "fixtures": fixtures,

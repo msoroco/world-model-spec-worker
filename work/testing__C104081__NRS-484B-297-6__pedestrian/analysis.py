@@ -30,7 +30,6 @@ def analyze(attempt: Path, output: Path, *, diagnostic: bool = False) -> dict:
         raise ValueError("prior result or analysis report exists")
     config = json.loads((attempt / "config.json").read_text())
     case_id = config["selected_case_id"]
-    diagnostic = diagnostic or config.get("diagnostic_only") is True
     packet = attempt / "source-packet.json"
     retained_packet = attempt / "pedestrian-packet.json"
     if retained_packet.is_file():
@@ -38,6 +37,8 @@ def analyze(attempt: Path, output: Path, *, diagnostic: bool = False) -> dict:
             raise ValueError("saved pedestrian packet differs from retained acquisition")
         if not packet.exists():
             packet.write_bytes(retained_packet.read_bytes())
+    packet_kind = json.loads(packet.read_text()).get("source_kind") if packet.is_file() else None
+    diagnostic = diagnostic or config.get("diagnostic_only") is True or packet_kind == "synthetic_fixture"
     for name in REQUIRED:
         if not (attempt / name).is_file():
             raise ValueError("Missing required source: " + name)

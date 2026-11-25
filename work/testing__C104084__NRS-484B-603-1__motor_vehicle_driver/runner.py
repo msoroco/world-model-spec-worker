@@ -9,8 +9,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+import tempfile
+import uuid
 
+from canonical_crest import publish
 from native_crest_runner import capture
 from saved_crest_audit import ASSIGNMENT, PROFILES
 
@@ -44,38 +48,68 @@ def reviewed_site(path, case_id):
         raise ValueError('reviewed prescribed limit does not bind this crest road')
     return {'site': site, 'map_path': files['map'],
             'map_sha256': site['map']['sha256'],
+            'limit_path': files['limit'],
             'limit_mps': limit['prescribed_limit_mps'],
             'limit_source_ref': f'{files["limit"].name}:{site["limit"]["sha256"]}'}
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--case', required=True)
-    parser.add_argument('--site', required=True)
-    parser.add_argument('--attempt', required=True)
-    parser.add_argument('--scratch-root', required=True)
+    parser.add_argument('--case')
+    parser.add_argument('--site')
+    parser.add_argument('--attempt')
+    parser.add_argument('--output-dir')
+    parser.add_argument('--scratch-root')
+    parser.add_argument('--capture-ref')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args(argv)
-    if args.case not in {ASSIGNMENT + '__' + profile for profile in PROFILES}:
+    config_path = Path(__file__).resolve().with_name('config.json')
+    config = json.loads(config_path.read_text(encoding='utf-8')) if config_path.is_file() else {}
+    selected_case = args.case or config.get('selected_case_id')
+    if selected_case not in {ASSIGNMENT + '__' + profile for profile in PROFILES}:
         raise ValueError('selected exact crest case required')
-    selected = reviewed_site(args.site, args.case)
+    if config and (config.get('assignment_id') != ASSIGNMENT or
+                   config.get('selected_case_id') != selected_case or
+                   config.get('duration_s') != 45 or config.get('rate_hz') != 20):
+        raise ValueError('exact materialized crest config differs')
+    site_path = args.site
+    if not site_path and not args.check:
+        site_root = os.environ.get('C104084_SITE_ROOT')
+        if not site_root:
+            raise ValueError('C104084_SITE_ROOT reviewed site directory required')
+        site_path = str(Path(site_root) / (selected_case.split('__')[-1] + '.json'))
+    selected = reviewed_site(site_path, selected_case) if site_path else None
     if args.check:
-        print(json.dumps({'case_id': args.case, 'site_sha256':
-            hashlib.sha256(Path(args.site).read_bytes()).hexdigest(),
-            'map_sha256': selected['map_sha256'],
-            'limit_source_ref': selected['limit_source_ref']}))
+        print(json.dumps({'case_id': selected_case, 'source_checked': bool(selected),
+                          'site_sha256': hashlib.sha256(Path(site_path).read_bytes()).hexdigest()
+                          if site_path else None}))
         return 0
+    destination = args.attempt or args.output_dir
+    if not destination:
+        raise ValueError('fresh original Native attempt directory required')
+    scratch_root = args.scratch_root or os.environ.get('C104084_SCRATCH_ROOT')
+    if not scratch_root:
+        raise ValueError('C104084_SCRATCH_ROOT under .runtime-work required')
+    scratch_root = Path(scratch_root).resolve()
+    if '.runtime-work' not in scratch_root.parts:
+        raise ValueError('capture scratch must be under .runtime-work')
+    scratch_root.mkdir(parents=True, exist_ok=True)
     import carla
     client = carla.Client(args.host, args.port)
     client.set_timeout(30.0)
-    receipt = capture(client, carla, map_path=selected['map_path'],
-        map_sha256=selected['map_sha256'], case_id=args.case,
-        destination=args.attempt, limit_mps=selected['limit_mps'],
-        limit_source_ref=selected['limit_source_ref'],
-        capture_ref=hashlib.sha256(Path(args.site).read_bytes()).hexdigest(),
-        scratch_root=args.scratch_root)
+    with tempfile.TemporaryDirectory(dir=scratch_root, prefix='c104084-attempt-') as temporary:
+        bundle = Path(temporary) / 'bundle'
+        pipeline = Path(temporary) / 'pipeline'
+        receipt = capture(client, carla, map_path=selected['map_path'],
+            map_sha256=selected['map_sha256'], case_id=selected_case,
+            destination=bundle, limit_mps=selected['limit_mps'],
+            limit_source_ref=selected['limit_source_ref'],
+            limit_path=selected['limit_path'],
+            capture_ref=args.capture_ref or uuid.uuid4().hex,
+            scratch_root=scratch_root, pipeline_destination=pipeline)
+        publish(bundle, destination, selected_case, pipeline=pipeline)
     print(json.dumps({'case_id': receipt['case_id'],
                       'source_manifest_sha256': receipt['source_manifest_sha256'],
                       'physical_completion': False}))

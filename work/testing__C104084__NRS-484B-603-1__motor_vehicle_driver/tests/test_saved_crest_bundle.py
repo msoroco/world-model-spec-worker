@@ -32,7 +32,7 @@ class SavedCrestBundleTests(unittest.TestCase):
                                 **{key: str(original / fixture[key]['path'])
                                 for key in ('grade_source', 'motion_source',
                                             'context_source', 'other_route_source',
-                                            'frame_map_source')}},
+                                            'frame_map_source', 'prescribed_limit_source')}},
                     'cameras': {key: str(original / binding['path'])
                                 for key, binding in fixture['camera_sources'].items()}}
             case = ASSIGNMENT + '__early_decrease'

@@ -1,0 +1,440 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "ef91bf2ea286da899a345f21c78d338fc30cc5f56302413632bad0e7448e4226",
+      "measurement_contract": "cases/bicycle_brake/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/diagnostics/bicycle_brake/fixture-recipe.json",
+      "acquisition": {
+        "rider_classification": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "driver_response": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "separation": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "contact": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_attempt",
+          "evidence": "original Native frame-indexed capture and source review"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reviewed source route can have a hairpin or cross-track drift that prevents the mounted rider and motorist entering the conflict window within the 45-second capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/bicycle_brake/fallback1-construction.json",
+          "construction_sha256": "6e7fd12962ec8ba53ecc07b8d0e0467ddcefc2a0d5ba7b24e61734d58ae43035",
+          "changed_knobs": [
+            "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
+          ],
+          "trigger": {
+            "source": "original Native 20 Hz actor positions and reviewed route coordinates",
+            "metric": "ego cross-track error and entry into reviewed 20 m conflict window",
+            "failure_condition": "primary capture does not enter the reviewed conflict window within 900 ticks or exhibits sustained route tracking error"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --candidate fallback1 --output .runtime-work/c111260-5a-proof/bicycle_brake/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "6e7fd12962ec8ba53ecc07b8d0e0467ddcefc2a0d5ba7b24e61734d58ae43035",
+            "exit_code": 0,
+            "log": "proof-offline-bicycle_brake-fallback1.log",
+            "log_sha256": "0cc3c2a48beda5d84492b7a89dc4b15039e5c0925e8850e0904a7ce636a63bb2"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --candidate primary --output .runtime-work/c111260-5a-proof/bicycle_brake/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "ef91bf2ea286da899a345f21c78d338fc30cc5f56302413632bad0e7448e4226",
+        "exit_code": 0,
+        "log": "proof-offline-bicycle_brake-primary.log",
+        "log_sha256": "57ad002550c350fa1e84b8ea9f6c45097249a7802fed1655811e49009939f5e0"
+      }
+    },
+    {
+      "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain",
+      "kind": "delivery",
+      "construction": "cases/bicycle_maintain/construction.json",
+      "construction_sha256": "47f49f936f8ce498b64b9a3dd3ef6b93f821164db1e07b29dd5a9926054f02df",
+      "measurement_contract": "cases/bicycle_maintain/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/diagnostics/bicycle_maintain/fixture-recipe.json",
+      "acquisition": {
+        "rider_classification": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "driver_response": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "separation": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "contact": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_attempt",
+          "evidence": "original Native frame-indexed capture and source review"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reviewed source route can have a hairpin or cross-track drift that prevents the mounted rider and motorist entering the conflict window within the 45-second capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/bicycle_maintain/fallback1-construction.json",
+          "construction_sha256": "df5f3988bdc9aea6dee5042f1c3c055c52929b57cf15290be71386548369a792",
+          "changed_knobs": [
+            "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
+          ],
+          "trigger": {
+            "source": "original Native 20 Hz actor positions and reviewed route coordinates",
+            "metric": "ego cross-track error and entry into reviewed 20 m conflict window",
+            "failure_condition": "primary capture does not enter the reviewed conflict window within 900 ticks or exhibits sustained route tracking error"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --candidate fallback1 --output .runtime-work/c111260-5a-proof/bicycle_maintain/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "df5f3988bdc9aea6dee5042f1c3c055c52929b57cf15290be71386548369a792",
+            "exit_code": 0,
+            "log": "proof-offline-bicycle_maintain-fallback1.log",
+            "log_sha256": "279538fe812d165bb22f5a84ab94b40efa9072957816601b6c80f1ba281fa35e"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --candidate primary --output .runtime-work/c111260-5a-proof/bicycle_maintain/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "47f49f936f8ce498b64b9a3dd3ef6b93f821164db1e07b29dd5a9926054f02df",
+        "exit_code": 0,
+        "log": "proof-offline-bicycle_maintain-primary.log",
+        "log_sha256": "e84af6fb3183f2e6c929d3188feaa38c20151c825192a5117c1911fec8992ee5"
+      }
+    },
+    {
+      "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake",
+      "kind": "delivery",
+      "construction": "cases/electric_bicycle_brake/construction.json",
+      "construction_sha256": "35c316bbcb8d130395fc97c82e57d250f60f728d784afda03c80c1d265807887",
+      "measurement_contract": "cases/electric_bicycle_brake/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/diagnostics/electric_bicycle_brake/fixture-recipe.json",
+      "acquisition": {
+        "rider_classification": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "driver_response": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "separation": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "contact": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_attempt",
+          "evidence": "original Native frame-indexed capture and source review"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reviewed source route can have a hairpin or cross-track drift that prevents the mounted rider and motorist entering the conflict window within the 45-second capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_bicycle_brake/fallback1-construction.json",
+          "construction_sha256": "6bd8bafafc8ea05b4943583ad40ef0722b94dbbf1933156de5cbaef073f8360d",
+          "changed_knobs": [
+            "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
+          ],
+          "trigger": {
+            "source": "original Native 20 Hz actor positions and reviewed route coordinates",
+            "metric": "ego cross-track error and entry into reviewed 20 m conflict window",
+            "failure_condition": "primary capture does not enter the reviewed conflict window within 900 ticks or exhibits sustained route tracking error"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_bicycle_brake/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "6bd8bafafc8ea05b4943583ad40ef0722b94dbbf1933156de5cbaef073f8360d",
+            "exit_code": 0,
+            "log": "proof-offline-electric_bicycle_brake-fallback1.log",
+            "log_sha256": "cc4ce8d54ec0f6a2d972abf34157488e5e132e9d71efaebb422979f2bf3356f8"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --candidate primary --output .runtime-work/c111260-5a-proof/electric_bicycle_brake/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "35c316bbcb8d130395fc97c82e57d250f60f728d784afda03c80c1d265807887",
+        "exit_code": 0,
+        "log": "proof-offline-electric_bicycle_brake-primary.log",
+        "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+      }
+    },
+    {
+      "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain",
+      "kind": "delivery",
+      "construction": "cases/electric_bicycle_maintain/construction.json",
+      "construction_sha256": "68d903aba692b0539c8b76c7981ee70af6e3ba6f85c74b2bce3b2bb89b6b3e35",
+      "measurement_contract": "cases/electric_bicycle_maintain/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/diagnostics/electric_bicycle_maintain/fixture-recipe.json",
+      "acquisition": {
+        "rider_classification": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "driver_response": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "separation": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "contact": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_attempt",
+          "evidence": "original Native frame-indexed capture and source review"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reviewed source route can have a hairpin or cross-track drift that prevents the mounted rider and motorist entering the conflict window within the 45-second capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_bicycle_maintain/fallback1-construction.json",
+          "construction_sha256": "e5798f2a3999a80fc7de9c78c899c7b3abcf5eeac768dc244ef581caeb813f06",
+          "changed_knobs": [
+            "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
+          ],
+          "trigger": {
+            "source": "original Native 20 Hz actor positions and reviewed route coordinates",
+            "metric": "ego cross-track error and entry into reviewed 20 m conflict window",
+            "failure_condition": "primary capture does not enter the reviewed conflict window within 900 ticks or exhibits sustained route tracking error"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_bicycle_maintain/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "e5798f2a3999a80fc7de9c78c899c7b3abcf5eeac768dc244ef581caeb813f06",
+            "exit_code": 0,
+            "log": "proof-offline-electric_bicycle_maintain-fallback1.log",
+            "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --candidate primary --output .runtime-work/c111260-5a-proof/electric_bicycle_maintain/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "68d903aba692b0539c8b76c7981ee70af6e3ba6f85c74b2bce3b2bb89b6b3e35",
+        "exit_code": 0,
+        "log": "proof-offline-electric_bicycle_maintain-primary.log",
+        "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+      }
+    },
+    {
+      "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake",
+      "kind": "delivery",
+      "construction": "cases/electric_scooter_brake/construction.json",
+      "construction_sha256": "f2b0042d3ecf7b3e40be39ce89f36077095e8da9bc5923d15336408e05fa7259",
+      "measurement_contract": "cases/electric_scooter_brake/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/diagnostics/electric_scooter_brake/fixture-recipe.json",
+      "acquisition": {
+        "rider_classification": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "driver_response": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "separation": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "contact": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_attempt",
+          "evidence": "original Native frame-indexed capture and source review"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reviewed source route can have a hairpin or cross-track drift that prevents the mounted rider and motorist entering the conflict window within the 45-second capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_scooter_brake/fallback1-construction.json",
+          "construction_sha256": "f770cddc4d10bf88f9b4d3acca8e27653c76d432cf0534ca2c0446c189cbe3e3",
+          "changed_knobs": [
+            "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
+          ],
+          "trigger": {
+            "source": "original Native 20 Hz actor positions and reviewed route coordinates",
+            "metric": "ego cross-track error and entry into reviewed 20 m conflict window",
+            "failure_condition": "primary capture does not enter the reviewed conflict window within 900 ticks or exhibits sustained route tracking error"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_scooter_brake/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "f770cddc4d10bf88f9b4d3acca8e27653c76d432cf0534ca2c0446c189cbe3e3",
+            "exit_code": 0,
+            "log": "proof-offline-electric_scooter_brake-fallback1.log",
+            "log_sha256": "30b7db73967acdb055ef826f6af2556d423ce2ebb08c1494e1a654e3b2b89a3a"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --candidate primary --output .runtime-work/c111260-5a-proof/electric_scooter_brake/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "f2b0042d3ecf7b3e40be39ce89f36077095e8da9bc5923d15336408e05fa7259",
+        "exit_code": 0,
+        "log": "proof-offline-electric_scooter_brake-primary.log",
+        "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+      }
+    },
+    {
+      "case_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain",
+      "kind": "delivery",
+      "construction": "cases/electric_scooter_maintain/construction.json",
+      "construction_sha256": "efad0ccf9ea4c42dcb8b4e246724d7b03fc4b1ee79cd9b662438dea8c4279a2f",
+      "measurement_contract": "cases/electric_scooter_maintain/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "output": "analysis-report.json"
+      },
+      "fixture_recipe": "work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/diagnostics/electric_scooter_maintain/fixture-recipe.json",
+      "acquisition": {
+        "rider_classification": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "driver_response": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "separation": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "contact": {
+          "entrypoint": "native_run.py",
+          "method": "sample",
+          "evidence": "original Native frame-indexed capture and source review"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture_attempt",
+          "evidence": "original Native frame-indexed capture and source review"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The reviewed source route can have a hairpin or cross-track drift that prevents the mounted rider and motorist entering the conflict window within the 45-second capture."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/electric_scooter_maintain/fallback1-construction.json",
+          "construction_sha256": "6c2a87c2add381e4506cd7befbdaecbc7260e359c34829c86d4d812fdcd6a9c5",
+          "changed_knobs": [
+            "steering_error_divisor from 1.5 to 1.2 radians per unit steering for the same reviewed route and case"
+          ],
+          "trigger": {
+            "source": "original Native 20 Hz actor positions and reviewed route coordinates",
+            "metric": "ego cross-track error and entry into reviewed 20 m conflict window",
+            "failure_condition": "primary capture does not enter the reviewed conflict window within 900 ticks or exhibits sustained route tracking error"
+          },
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --candidate fallback1 --output .runtime-work/c111260-5a-proof/electric_scooter_maintain/fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "6c2a87c2add381e4506cd7befbdaecbc7260e359c34829c86d4d812fdcd6a9c5",
+            "exit_code": 0,
+            "log": "proof-offline-electric_scooter_maintain-fallback1.log",
+            "log_sha256": "279538fe812d165bb22f5a84ab94b40efa9072957816601b6c80f1ba281fa35e"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --candidate primary --output .runtime-work/c111260-5a-proof/electric_scooter_maintain/primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "efad0ccf9ea4c42dcb8b4e246724d7b03fc4b1ee79cd9b662438dea8c4279a2f",
+        "exit_code": 0,
+        "log": "proof-offline-electric_scooter_maintain-primary.log",
+        "log_sha256": "d1276a2d9d79b9ed0a61446aa751886a8b573a45c52c4fe838159bc8be061837"
+      }
+    }
+  ],
+  "preparation_status": "draft_cpu_offline"
+}

@@ -1,6 +1,7 @@
 """CPU checks of the independent original-source review joins."""
 import hashlib
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -28,7 +29,7 @@ class OriginalReviewTests(unittest.TestCase):
         self.scratch = TemporaryDirectory(dir=REPO / ".runtime-work")
         self.addCleanup(self.scratch.cleanup)
         self.root = Path(self.scratch.name)
-        self.case = ROOT.name + "__blocked_intervening"
+        self.case = os.environ.get("C104081_PROOF_CASE", ROOT.name + "__blocked_intervening")
         self.sample_frames = (0, 450, 800)
         frame_map = self.root / "video_frames.jsonl"
         frame_map.write_text("".join(json.dumps({"carla_frame": 500 + frame,

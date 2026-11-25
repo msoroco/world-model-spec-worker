@@ -49,15 +49,18 @@ def load_and_bind(client, map_path, *, expected_file_sha256):
     loaded_text = native_map.to_opendrive()
     if _road_profile(loaded_text) != authored_profile:
         raise ValueError('loaded Native crest geometry differs from authored source')
+    spawn = native_map.get_waypoint_xodr(603, -1, 170.0)
     first = native_map.get_waypoint_xodr(603, -1, 230.0)
     opposite = native_map.get_waypoint_xodr(603, 1, 270.0)
-    if first is None or opposite is None:
+    if spawn is None or first is None or opposite is None:
         raise ValueError('original opposing spawn lanes unavailable')
+    if (spawn.road_id, spawn.lane_id) != (603, -1):
+        raise ValueError('original upstream approach spawn lane differs')
     native_sha256 = hashlib.sha256(loaded_text.encode('utf-8')).hexdigest()
     routes = survey_map_pair(native_map, first, opposite,
                              expected_map_sha256=native_sha256, step_m=5.0, count=9)
     return {'world': world, 'map_file_sha256': expected_file_sha256,
             'native_map_sha256': native_sha256, 'routes': routes,
-            'native_spawn_stations': {'ego_road_s_m': 230.0,
+            'native_spawn_stations': {'ego_road_s_m': 170.0,
                                       'other_road_s_m': 270.0},
             'limitation': 'Loaded map and lane continuity only; vehicle motion and visibility require original capture.'}

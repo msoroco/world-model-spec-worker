@@ -1,0 +1,64 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: capture/crest-source/reviewed-limit.json",
+    "remove": [
+      "capture/crest-source/reviewed-limit.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "capture/crest-source/reviewed-limit.json",
+        "capture/crest-source/context.json"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_limit",
+      "output_key": "prescribed_limit_measurement",
+      "requirement": "below_prescribed_limit_not_exempt",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "capture/crest-source/grade.json",
+        "capture/crest-source/native-map.xodr",
+        "capture/crest-source/motion.json"
+      ],
+      "kind": "measured",
+      "method": "measure_crest",
+      "output_key": "crest_measurement",
+      "requirement": "approaching_hill_crest",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "capture/crest-source/motion.json",
+        "capture/crest-source/context.json"
+      ],
+      "kind": "measured",
+      "method": "measure_speed",
+      "output_key": "speed_decrease_measurement",
+      "requirement": "speed_decrease_as_necessary",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 3,
+      "inputs": [
+        "capture/crest-source/motion.json",
+        "capture/crest-source/other-route.json"
+      ],
+      "kind": "measured",
+      "method": "measure_other",
+      "output_key": "other_vehicle_measurement",
+      "requirement": "other_vehicle_and_due_care",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "value_type": "object"
+    }
+  ]
+}

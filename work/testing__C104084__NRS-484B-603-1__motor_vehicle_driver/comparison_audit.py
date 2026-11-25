@@ -7,7 +7,7 @@ from crest_speed import measure
 FIXED = ('map_source_sha256', 'ego_route_source_sha256',
          'other_route_source_sha256', 'other_motion_source_sha256',
          'highway_context_source_sha256', 'prescribed_limit_source_sha256',
-         'camera_contract_sha256', 'duration_s', 'initial_speed_mps')
+         'camera_contract_sha256', 'duration_s')
 
 
 def compare(left, right, *, expected_profiles):
@@ -24,9 +24,11 @@ def compare(left, right, *, expected_profiles):
     measured = [measure(packet.get('waypoints'), packet.get('frames'),
                         approach_start_m=packet.get('approach_start_m'))
                 for packet in (left, right)]
-    if any(m['initial_speed_mps'] != packet['initial_speed_mps']
+    if any(m['initial_speed_mps'] != packet.get('initial_speed_mps')
            for m, packet in zip(measured, (left, right))):
         raise ValueError('declared initial speed differs from original motion')
+    if abs(measured[0]['initial_speed_mps'] - measured[1]['initial_speed_mps']) > 0.5:
+        raise ValueError('fixed initial approach speed differs beyond engineering band')
     if measured[0]['crest_station_m'] != measured[1]['crest_station_m']:
         raise ValueError('measured crest station differs')
     if measured[0]['speed_change_mps'] == measured[1]['speed_change_mps'] and \

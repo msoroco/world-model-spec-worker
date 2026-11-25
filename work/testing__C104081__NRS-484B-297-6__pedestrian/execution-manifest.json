@@ -6,7 +6,7 @@
     {
       "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening",
       "construction": "construction-selected-clear_intervening.json",
-      "construction_sha256": "8362998d10148c53c1ae36c14fe53e43e36462479efb964bef22a806e7493065",
+      "construction_sha256": "e1caf8d709d8b15912467a273e6c44a7c9f2653c7a448b43d677a017a551a71b",
       "measurement_contract": "measurement-contract-clear_intervening.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -21,7 +21,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-clear_intervening.json",
-          "construction_sha256": "7091067485bf5c7f8f6cd15b7cf387d40640f4bae60a36bd9948f9dff95bf5f7",
+          "construction_sha256": "4c047be960856b11ae9a4f078b39f13730002e710acc46dab4c2615ea3d9eb8f",
           "changed_knobs": [
             "requested pedestrian walking speed: 1.4 to 1.2 m/s"
           ],
@@ -31,11 +31,18 @@
             "failure_condition": "source-complete primary misses a surveyed waypoint by more than 0.25 m"
           },
           "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --candidate fallback1 --output .runtime-work/c104081-selected-v2-offline-clear_intervening-fallback1",
+            "construction_sha256": "4c047be960856b11ae9a4f078b39f13730002e710acc46dab4c2615ea3d9eb8f",
             "exit_code": 0,
-            "construction_sha256": "7091067485bf5c7f8f6cd15b7cf387d40640f4bae60a36bd9948f9dff95bf5f7",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --candidate fallback1 --output .runtime-work/c104081-selected-offline-clear_intervening-fallback1",
             "log": "proof-selected-offline-clear_intervening-fallback1.log",
-            "log_sha256": "7795f6ca562bc1c5fec4831753ddc992d61cae74cea8afbc9509b02b20f48a88"
+            "log_sha256": "a271f1007bd48fbd35a7bb0574af0e1cd371016bc5aa8d7f392931ab3f118699"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --candidate fallback1 --output .runtime-work/c104081-selected-v2-compat-clear_intervening-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+            "receipt": "selected-clear_intervening-fallback1-compatibility.json",
+            "sha256": "d199e9c306c58fe6d91c2ccaf3ae6c6a5bee8b75e5b23a1db69bfcc5a8190f76",
+            "log": "selected-clear_intervening-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-clear_intervening-fallback1-negative-analysis.log"
           }
         }
       ],
@@ -45,18 +52,79 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "SCENARIO_PEDESTRIAN_SOURCE_ROOT"
       },
+      "physical_preparation": {
+        "receipt": "physical-clear_intervening-proof.json",
+        "sha256": "2495fccd81ef7f584bb97129ca4f00902829a34362a84509b963f80e53b5c4b9"
+      },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --candidate primary --output .runtime-work/c104081-selected-v2-offline-clear_intervening-primary",
+        "construction_sha256": "e1caf8d709d8b15912467a273e6c44a7c9f2653c7a448b43d677a017a551a71b",
         "exit_code": 0,
-        "construction_sha256": "8362998d10148c53c1ae36c14fe53e43e36462479efb964bef22a806e7493065",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --candidate primary --output .runtime-work/c104081-selected-offline-clear_intervening-primary",
         "log": "proof-selected-offline-clear_intervening-primary.log",
-        "log_sha256": "88711e1d97b0337ab27a814ea3eda9572de5073e511404545f694eee87cc16f9"
+        "log_sha256": "88c64a9e56b1bcce37b6b1f97a1c4de38a0584e510ed4e793c70b007f9f8cd05"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --candidate primary --output .runtime-work/c104081-selected-v2-compat-clear_intervening-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "receipt": "selected-clear_intervening-primary-compatibility.json",
+        "sha256": "665e86453961b8f1237314fe5d01da71a9eed7ab3e0c72ce5f57bd31897bea6b",
+        "log": "selected-clear_intervening-primary-compatibility-analysis.log",
+        "negative_log": "selected-clear_intervening-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-clear_intervening-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "pedestrian_body_center_xy_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker body vertices and synchronized camera frames",
+          "evidence": "channels/pedestrian_body_center_xy_m.jsonl"
+        },
+        "nearest_traffic_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker and surveyed traffic actor centers",
+          "evidence": "channels/nearest_traffic_distance_m.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "5bbf7d93991f41411b90eeed5b581a1c49e0fcc3c422089c8ea68c07135f2c10",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "test_log": "proof-delivery-clear_intervening-positive.log",
+        "test_log_sha256": "1de71f44769124d6c5fe52fc07c30f315ba35080784b3307f9a70191c139abb1",
+        "negative_log": "proof-delivery-clear_intervening-negative.log",
+        "negative_log_sha256": "fc0fa5907ec5a9a1459330d6f9d9619d1d80210f12ea73e9606319c1ebfd3115",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-clear_intervening.log",
+        "test_log_sha256": "ace109de9bbc223de05947fc7661d52f451010193083ff6a873204602e482e64",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending"
       }
     },
     {
       "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening",
       "construction": "construction-selected-blocked_intervening.json",
-      "construction_sha256": "47c28a6eb084a3087ca6d920a86639dfc5d43ac38d16f8ed64649a050e23a75e",
+      "construction_sha256": "af2b58e062797943692cdff44671d9f76c3c06a85b90b1ab5e8540f4466993e9",
       "measurement_contract": "measurement-contract-blocked_intervening.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -71,7 +139,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-blocked_intervening.json",
-          "construction_sha256": "03e80ebe8f72d375452cecebef729ad174c3b2c0580250ad9ecbc633feadfca4",
+          "construction_sha256": "5b8090158deee554d9b578340083378bb913972d7b11b219ea83f42ca7fd4c70",
           "changed_knobs": [
             "requested pedestrian walking speed: 1.4 to 1.2 m/s"
           ],
@@ -81,11 +149,18 @@
             "failure_condition": "source-complete primary misses a surveyed waypoint by more than 0.25 m"
           },
           "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --candidate fallback1 --output .runtime-work/c104081-selected-v2-offline-blocked_intervening-fallback1",
+            "construction_sha256": "5b8090158deee554d9b578340083378bb913972d7b11b219ea83f42ca7fd4c70",
             "exit_code": 0,
-            "construction_sha256": "03e80ebe8f72d375452cecebef729ad174c3b2c0580250ad9ecbc633feadfca4",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --candidate fallback1 --output .runtime-work/c104081-selected-offline-blocked_intervening-fallback1",
             "log": "proof-selected-offline-blocked_intervening-fallback1.log",
-            "log_sha256": "583c4c74aac6d934211530cef5568b0c081a9151717476477538f4fa5c99ec7b"
+            "log_sha256": "093aebf625dfc6c591e82a7f7957088e48232f7e1f585029756776b714ede52c"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --candidate fallback1 --output .runtime-work/c104081-selected-v2-compat-blocked_intervening-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+            "receipt": "selected-blocked_intervening-fallback1-compatibility.json",
+            "sha256": "c96ef7564a517b7510b474e7626e226cec1b9e9d6accbf6a6ae86c3d6ac139c5",
+            "log": "selected-blocked_intervening-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-blocked_intervening-fallback1-negative-analysis.log"
           }
         }
       ],
@@ -95,18 +170,79 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "SCENARIO_PEDESTRIAN_SOURCE_ROOT"
       },
+      "physical_preparation": {
+        "receipt": "physical-blocked_intervening-proof.json",
+        "sha256": "338ea070748970d83832a0ca8455b3b55de2bfe813e3ef0d6ee298222916e9c0"
+      },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --candidate primary --output .runtime-work/c104081-selected-v2-offline-blocked_intervening-primary",
+        "construction_sha256": "af2b58e062797943692cdff44671d9f76c3c06a85b90b1ab5e8540f4466993e9",
         "exit_code": 0,
-        "construction_sha256": "47c28a6eb084a3087ca6d920a86639dfc5d43ac38d16f8ed64649a050e23a75e",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --candidate primary --output .runtime-work/c104081-selected-offline-blocked_intervening-primary",
         "log": "proof-selected-offline-blocked_intervening-primary.log",
-        "log_sha256": "2ce3a3b047ab279cb0c234a31f0e81a1aa622c6b5910896c685cf0e8f387db50"
+        "log_sha256": "c7514ba8750cca4197954b92265d250522fea6fa77983a1a1a6c1c4208fa2504"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --candidate primary --output .runtime-work/c104081-selected-v2-compat-blocked_intervening-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "receipt": "selected-blocked_intervening-primary-compatibility.json",
+        "sha256": "182965066ca86677c5bebe282da6403dcfb286941397ef55d901c646b1bf7f93",
+        "log": "selected-blocked_intervening-primary-compatibility-analysis.log",
+        "negative_log": "selected-blocked_intervening-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-blocked_intervening-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "pedestrian_body_center_xy_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker body vertices and synchronized camera frames",
+          "evidence": "channels/pedestrian_body_center_xy_m.jsonl"
+        },
+        "nearest_traffic_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker and surveyed traffic actor centers",
+          "evidence": "channels/nearest_traffic_distance_m.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "5bbf7d93991f41411b90eeed5b581a1c49e0fcc3c422089c8ea68c07135f2c10",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "test_log": "proof-delivery-blocked_intervening-positive.log",
+        "test_log_sha256": "a90036620b9c9b98e21eeac314ab0d3a1d4b9dc51c7c5a0f27e70d03dc12c2fb",
+        "negative_log": "proof-delivery-blocked_intervening-negative.log",
+        "negative_log_sha256": "fc0fa5907ec5a9a1459330d6f9d9619d1d80210f12ea73e9606319c1ebfd3115",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-blocked_intervening.log",
+        "test_log_sha256": "f84942022d430472685b7ba14bbbde07ab90e4bd021b688b87dd769554a02e37",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending"
       }
     },
     {
       "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite",
       "construction": "construction-selected-blocked_opposite.json",
-      "construction_sha256": "e011d16434b710205cd5cff968cb734378bac8ce8aa5e1e740ba9e6a906a26f5",
+      "construction_sha256": "ffdee419be582d0345c9a0ec1eb8d9274a9d826c13a3246558efa87253d23509",
       "measurement_contract": "measurement-contract-blocked_opposite.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -121,7 +257,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-blocked_opposite.json",
-          "construction_sha256": "3a6de1986b5e03f637c6b75281fd621fa160c08d2ec8c4fbf04a0725a780135c",
+          "construction_sha256": "ec8229add8646a95f44c623835c4d3046fd912f4794bf91fb9198cc6cd64a54b",
           "changed_knobs": [
             "requested pedestrian walking speed: 1.4 to 1.2 m/s"
           ],
@@ -131,11 +267,18 @@
             "failure_condition": "source-complete primary misses a surveyed waypoint by more than 0.25 m"
           },
           "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --candidate fallback1 --output .runtime-work/c104081-selected-v2-offline-blocked_opposite-fallback1",
+            "construction_sha256": "ec8229add8646a95f44c623835c4d3046fd912f4794bf91fb9198cc6cd64a54b",
             "exit_code": 0,
-            "construction_sha256": "3a6de1986b5e03f637c6b75281fd621fa160c08d2ec8c4fbf04a0725a780135c",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --candidate fallback1 --output .runtime-work/c104081-selected-offline-blocked_opposite-fallback1",
             "log": "proof-selected-offline-blocked_opposite-fallback1.log",
-            "log_sha256": "38ddf6d1552aaeb952e64fb28df0926d267ec64be6a6eca499d96b63fe2ec8b5"
+            "log_sha256": "faefe24e4122a361e471ebbb8720a502bd4c6aad16a7d718aceb35ffc72732ca"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --candidate fallback1 --output .runtime-work/c104081-selected-v2-compat-blocked_opposite-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+            "receipt": "selected-blocked_opposite-fallback1-compatibility.json",
+            "sha256": "1084438311669dcee2c7e9ec176e7946dfc85e38ee4852e5f5fafb62a406d4c7",
+            "log": "selected-blocked_opposite-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-blocked_opposite-fallback1-negative-analysis.log"
           }
         }
       ],
@@ -145,18 +288,79 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "SCENARIO_PEDESTRIAN_SOURCE_ROOT"
       },
+      "physical_preparation": {
+        "receipt": "physical-blocked_opposite-proof.json",
+        "sha256": "b53f6fd3349c0dcbb17c31bf19a69ec5412d4cc2ab500735bb4b98f0da7425c4"
+      },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --candidate primary --output .runtime-work/c104081-selected-v2-offline-blocked_opposite-primary",
+        "construction_sha256": "ffdee419be582d0345c9a0ec1eb8d9274a9d826c13a3246558efa87253d23509",
         "exit_code": 0,
-        "construction_sha256": "e011d16434b710205cd5cff968cb734378bac8ce8aa5e1e740ba9e6a906a26f5",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --candidate primary --output .runtime-work/c104081-selected-offline-blocked_opposite-primary",
         "log": "proof-selected-offline-blocked_opposite-primary.log",
-        "log_sha256": "3fcf9d9b18779da3670f912f6a60d7a614c4e288e06ae162aca4514d3037e21e"
+        "log_sha256": "fad2ad6ae5b593938bc8d1142f44966bef0b3f795e1022cf21befeca2114fd02"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --candidate primary --output .runtime-work/c104081-selected-v2-compat-blocked_opposite-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "receipt": "selected-blocked_opposite-primary-compatibility.json",
+        "sha256": "aa5e3cd9dff531b2281f60f6d0be1d16d9be3c738d1c645021784feb3891499c",
+        "log": "selected-blocked_opposite-primary-compatibility-analysis.log",
+        "negative_log": "selected-blocked_opposite-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-blocked_opposite-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "pedestrian_body_center_xy_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker body vertices and synchronized camera frames",
+          "evidence": "channels/pedestrian_body_center_xy_m.jsonl"
+        },
+        "nearest_traffic_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker and surveyed traffic actor centers",
+          "evidence": "channels/nearest_traffic_distance_m.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "5bbf7d93991f41411b90eeed5b581a1c49e0fcc3c422089c8ea68c07135f2c10",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "test_log": "proof-delivery-blocked_opposite-positive.log",
+        "test_log_sha256": "d8320971d5fe9e59b17e2ec7f584b04384f2a72badec340b6a52994b866b0bb7",
+        "negative_log": "proof-delivery-blocked_opposite-negative.log",
+        "negative_log_sha256": "fc0fa5907ec5a9a1459330d6f9d9619d1d80210f12ea73e9606319c1ebfd3115",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-blocked_opposite.log",
+        "test_log_sha256": "767101c8a8ffcf39e64509a2ce598d39f82bdce7ae930a557957a11ca57dac17",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending"
       }
     },
     {
       "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return",
       "construction": "construction-selected-blocked_late_return.json",
-      "construction_sha256": "6c7303bb2590d4c47f5165bf4d240ae0e0be7dfc914f8fe243a6fe5e0668d613",
+      "construction_sha256": "0b5f423de70f754cc61a3875cc2fea1c5593b13571664291803540ae8a37b5d3",
       "measurement_contract": "measurement-contract-blocked_late_return.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -171,7 +375,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-blocked_late_return.json",
-          "construction_sha256": "e289f99e69b4b38108d40ed09c7f9183743ac2dbb4bf30708f7fb11c814e3427",
+          "construction_sha256": "601b81e099a2f9fb1e5b2db306c9041f5ab7273d31d99df253b7c49fb6b40fea",
           "changed_knobs": [
             "requested pedestrian walking speed: 1.4 to 1.2 m/s"
           ],
@@ -181,11 +385,18 @@
             "failure_condition": "source-complete primary misses a surveyed waypoint by more than 0.25 m"
           },
           "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --candidate fallback1 --output .runtime-work/c104081-selected-v2-offline-blocked_late_return-fallback1",
+            "construction_sha256": "601b81e099a2f9fb1e5b2db306c9041f5ab7273d31d99df253b7c49fb6b40fea",
             "exit_code": 0,
-            "construction_sha256": "e289f99e69b4b38108d40ed09c7f9183743ac2dbb4bf30708f7fb11c814e3427",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --candidate fallback1 --output .runtime-work/c104081-selected-offline-blocked_late_return-fallback1",
             "log": "proof-selected-offline-blocked_late_return-fallback1.log",
-            "log_sha256": "c61e490bdc5d877124087fa2dfb87025c7a8e5099d20ee5440e42beeffab2d4c"
+            "log_sha256": "f7dfcdc626446d82312c4ba66feca18fdd28c50471a7da1703d5559a5dcba07c"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --candidate fallback1 --output .runtime-work/c104081-selected-v2-compat-blocked_late_return-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+            "receipt": "selected-blocked_late_return-fallback1-compatibility.json",
+            "sha256": "291998c65fdf32012c5e081a0b21a28996b178a7c050131658fdf00fb181b6ee",
+            "log": "selected-blocked_late_return-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-blocked_late_return-fallback1-negative-analysis.log"
           }
         }
       ],
@@ -195,18 +406,79 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "SCENARIO_PEDESTRIAN_SOURCE_ROOT"
       },
+      "physical_preparation": {
+        "receipt": "physical-blocked_late_return-proof.json",
+        "sha256": "b8f00b862ad9dc1e05793da7b1b733135c5ed197edde917992189b7c13385cd3"
+      },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --candidate primary --output .runtime-work/c104081-selected-v2-offline-blocked_late_return-primary",
+        "construction_sha256": "0b5f423de70f754cc61a3875cc2fea1c5593b13571664291803540ae8a37b5d3",
         "exit_code": 0,
-        "construction_sha256": "6c7303bb2590d4c47f5165bf4d240ae0e0be7dfc914f8fe243a6fe5e0668d613",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --candidate primary --output .runtime-work/c104081-selected-offline-blocked_late_return-primary",
         "log": "proof-selected-offline-blocked_late_return-primary.log",
-        "log_sha256": "e19f7b9bf55b2791885b4fa34a7878fc5911dd0caf52957da848dc7e73934354"
+        "log_sha256": "aaa303d016190d71a2ea88e511ecf5ef806701cd1ad6d72eb7f189b280b83020"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --candidate primary --output .runtime-work/c104081-selected-v2-compat-blocked_late_return-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "receipt": "selected-blocked_late_return-primary-compatibility.json",
+        "sha256": "598189e44fb609f61cf4c47e907da784e607c6631f2da5a6422afd0534ef9cab",
+        "log": "selected-blocked_late_return-primary-compatibility-analysis.log",
+        "negative_log": "selected-blocked_late_return-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-blocked_late_return-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "pedestrian_body_center_xy_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker body vertices and synchronized camera frames",
+          "evidence": "channels/pedestrian_body_center_xy_m.jsonl"
+        },
+        "nearest_traffic_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker and surveyed traffic actor centers",
+          "evidence": "channels/nearest_traffic_distance_m.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "5bbf7d93991f41411b90eeed5b581a1c49e0fcc3c422089c8ea68c07135f2c10",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "test_log": "proof-delivery-blocked_late_return-positive.log",
+        "test_log_sha256": "7503069c080f698e3bed236f9d3ae5c65806b201c6b47bfbcaf6b87ad38f601e",
+        "negative_log": "proof-delivery-blocked_late_return-negative.log",
+        "negative_log_sha256": "fc0fa5907ec5a9a1459330d6f9d9619d1d80210f12ea73e9606319c1ebfd3115",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-blocked_late_return.log",
+        "test_log_sha256": "530c4d03f23bdb8a776d14ed19c87f3f85292921fd263a5a3cdea3cf71a8d84b",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending"
       }
     },
     {
       "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk",
       "construction": "construction-selected-missing_sidewalk.json",
-      "construction_sha256": "de175e17c07246b5687f57c8adb62b2fa2f454e05839462ee6ae0ec65eac7fbc",
+      "construction_sha256": "12a2ce40a6fecce24b5defcf859e0abb777ba787fc4bafbda73c09f6cb276675",
       "measurement_contract": "measurement-contract-missing_sidewalk.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -221,7 +493,7 @@
         {
           "id": "fallback1",
           "construction": "construction-fallback1-missing_sidewalk.json",
-          "construction_sha256": "9f64e658852893c96ede80b24da5edcc30bb9f97725d0601cf7d6a6a87cc77e1",
+          "construction_sha256": "fb4b85f09d660f7fb458377c0070cf521d6c3da5f473e419b4592f6006a884b0",
           "changed_knobs": [
             "requested pedestrian walking speed: 1.4 to 1.2 m/s"
           ],
@@ -231,11 +503,18 @@
             "failure_condition": "source-complete primary misses a surveyed waypoint by more than 0.25 m"
           },
           "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --candidate fallback1 --output .runtime-work/c104081-selected-v2-offline-missing_sidewalk-fallback1",
+            "construction_sha256": "fb4b85f09d660f7fb458377c0070cf521d6c3da5f473e419b4592f6006a884b0",
             "exit_code": 0,
-            "construction_sha256": "9f64e658852893c96ede80b24da5edcc30bb9f97725d0601cf7d6a6a87cc77e1",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --candidate fallback1 --output .runtime-work/c104081-selected-offline-missing_sidewalk-fallback1",
             "log": "proof-selected-offline-missing_sidewalk-fallback1.log",
-            "log_sha256": "c69dc649b55f44bdc224e2b2a51397453fad694fd7e6de67612b79a99cdc74be"
+            "log_sha256": "6eeaf6a0bfef4352e17982c870a30340e3d4fc543c45ff06b160ec7136098604"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --candidate fallback1 --output .runtime-work/c104081-selected-v2-compat-missing_sidewalk-fallback1 --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+            "receipt": "selected-missing_sidewalk-fallback1-compatibility.json",
+            "sha256": "e8fa78357de7ff8f55dd5c02cdc63cba5d50415155c803f7c83051015e166283",
+            "log": "selected-missing_sidewalk-fallback1-compatibility-analysis.log",
+            "negative_log": "selected-missing_sidewalk-fallback1-negative-analysis.log"
           }
         }
       ],
@@ -245,12 +524,73 @@
         "port_env_var": "CARLA_PORT",
         "site_root_env_var": "SCENARIO_PEDESTRIAN_SOURCE_ROOT"
       },
+      "physical_preparation": {
+        "receipt": "physical-missing_sidewalk-proof.json",
+        "sha256": "bcc581e5733428bff30e8a75d147b603958687fd53ddbd8bf378a982a21e82f3"
+      },
       "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --candidate primary --output .runtime-work/c104081-selected-v2-offline-missing_sidewalk-primary",
+        "construction_sha256": "12a2ce40a6fecce24b5defcf859e0abb777ba787fc4bafbda73c09f6cb276675",
         "exit_code": 0,
-        "construction_sha256": "de175e17c07246b5687f57c8adb62b2fa2f454e05839462ee6ae0ec65eac7fbc",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --candidate primary --output .runtime-work/c104081-selected-offline-missing_sidewalk-primary",
         "log": "proof-selected-offline-missing_sidewalk-primary.log",
-        "log_sha256": "4e99cb7aece1a46b12592f35c823981584bdf2e9ec1ca0e56cd8c7629802a1a8"
+        "log_sha256": "46c9ced6fd65edf12e9ac06363044dad2bb7d0a092e570ccebc0f4b1aac876e6"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --candidate primary --output .runtime-work/c104081-selected-v2-compat-missing_sidewalk-primary --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "receipt": "selected-missing_sidewalk-primary-compatibility.json",
+        "sha256": "595e79b877f0fd4d8d16ea78bc33d7333bc6c65664b99492c98927af3fee7374",
+        "log": "selected-missing_sidewalk-primary-compatibility-analysis.log",
+        "negative_log": "selected-missing_sidewalk-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-missing_sidewalk-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "pedestrian_body_center_xy_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker body vertices and synchronized camera frames",
+          "evidence": "channels/pedestrian_body_center_xy_m.jsonl"
+        },
+        "nearest_traffic_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "Twenty hertz source-bound projection of original Native walker and surveyed traffic actor centers",
+          "evidence": "channels/nearest_traffic_distance_m.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk",
+        "negative_command": ".venv-cpu/bin/python work/testing__C104081__NRS-484B-297-6__pedestrian/prove_delivery_audit.py testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --negative",
+        "script": "prove_delivery_audit.py",
+        "script_sha256": "5bbf7d93991f41411b90eeed5b581a1c49e0fcc3c422089c8ea68c07135f2c10",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "test_log": "proof-delivery-missing_sidewalk-positive.log",
+        "test_log_sha256": "4cd378b6d18dcf4fd5126d45d5a4f749becc3b2a3a7681dafca22594f64c8605",
+        "negative_log": "proof-delivery-missing_sidewalk-negative.log",
+        "negative_log_sha256": "fc0fa5907ec5a9a1459330d6f9d9619d1d80210f12ea73e9606319c1ebfd3115",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C104081__NRS-484B-297-6__pedestrian/execution-manifest.json --case testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-missing_sidewalk.log",
+        "test_log_sha256": "a1ede56b7261d5676f02d0c3d3405d974f18ebcf2d28321b85a91b048abe9e33",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending"
       }
     }
   ]

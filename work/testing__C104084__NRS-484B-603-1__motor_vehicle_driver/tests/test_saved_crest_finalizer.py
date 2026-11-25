@@ -26,6 +26,13 @@ class SavedCrestFinalizerTests(unittest.TestCase):
         self.assertEqual(profile_witness(steady, 'steady_approach')['profile'], 'steady_approach')
         with self.assertRaisesRegex(ValueError, 'does not realize'):
             profile_witness(steady, 'early_decrease')
+        jitter = dict(steady, first_speed_decrease_station_m=105,
+                      first_material_speed_decrease_station_m=None,
+                      speed_change_mps=-0.2, material_speed_band_mps=0.5)
+        self.assertEqual(profile_witness(jitter, 'steady_approach')['profile'],
+                         'steady_approach')
+        with self.assertRaisesRegex(ValueError, 'does not realize'):
+            profile_witness(dict(jitter, speed_change_mps=-1.0), 'steady_approach')
 
     def test_cli_finalizes_full_source_decode_and_rejects_changed_case(self):
         with tempfile.TemporaryDirectory() as tmp:

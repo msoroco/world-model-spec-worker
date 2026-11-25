@@ -33,12 +33,12 @@ def compare_saved(left_attempt, left_manifest, right_attempt, right_manifest,
                   'approach_start_m': manifest['approach_start_m'],
                   'map_source_sha256': grade_sha,
                   'duration_s': manifest['duration_s'],
-                  'initial_speed_mps': motion[0]['ego_speed_mps']}
+                  'initial_speed_mps': proof['physical_measurements']['initial_speed_mps']}
         packet.update({key: _source(Path(root), fixed[key])[1] for key in CONTEXT})
         expected_bound = {
             'other_route_source_sha256': proof['source_sha256']['other_route'],
             'highway_context_source_sha256': proof['source_sha256']['context'],
-            'prescribed_limit_source_sha256': proof['source_sha256']['context'],
+            'prescribed_limit_source_sha256': proof['source_sha256']['prescribed_limit'],
         }
         for key, expected_sha in expected_bound.items():
             if packet[key] != expected_sha:

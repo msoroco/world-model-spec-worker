@@ -66,6 +66,12 @@ def audit(attempt, manifest: dict) -> dict:
     waypoints, grade_sha = _json_source(root, manifest.get('grade_source'))
     frames, motion_sha = _json_source(root, manifest.get('motion_source'))
     context, context_sha = _json_source(root, manifest.get('context_source'))
+    prescribed_limit, limit_sha = _json_source(root, manifest.get('prescribed_limit_source'))
+    if (prescribed_limit.get('source_kind') != 'reviewed_original_limit' or
+            prescribed_limit.get('road_id') != 603 or
+            prescribed_limit.get('prescribed_limit_mps') != context.get('prescribed_limit_mps') or
+            context.get('limit_source_ref') != f'reviewed-limit.json:{limit_sha}'):
+        raise ValueError('reviewed original prescribed limit source differs')
     other_route, other_route_sha = _json_source(root, manifest.get('other_route_source'))
     frame_map_path, map_sha = _source(root, manifest.get('frame_map_source'))
     frame_map = [json.loads(line) for line in frame_map_path.read_text(encoding='utf-8').splitlines()]
@@ -97,7 +103,8 @@ def audit(attempt, manifest: dict) -> dict:
     return {
         'format': 'worker-crest-saved-source-audit', 'case_id': case_id,
         'source_sha256': {'grade': grade_sha, 'motion': motion_sha,
-                          'context': context_sha, 'other_route': other_route_sha,
+                          'context': context_sha, 'prescribed_limit': limit_sha,
+                          'other_route': other_route_sha,
                           'frame_map': map_sha,
                           'cameras': media_sha}, 'frame_count': FRAME_COUNT,
         'physical_measurements': measured, 'crest_crossing': crossing,

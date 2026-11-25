@@ -2,8 +2,8 @@
   "applied_update": 0,
   "assignment_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver",
   "input_sha256": "38b13d9d59685358ed7300890a61ea22fbf1c240b4e98c1d2fe79c3cc6af41f0",
-  "readiness_kind": "partial_native_tick_join_and_saved_crest_bundle_tested",
-  "reason": "NativeTickRecorder now joins two original actor observations and four camera image frame identities to each of 900 ordered 20 Hz world ticks and writes motion/frame-map sources only on complete capture. Forty-three focused tests, pinned preflight and scoped static pass. Exact strict remains partial. A CARLA spawning/tick/video-encoding runner, canonical three-case bundles, semantic proposals and runtime compatibility/process-saved delivery proofs remain CPU work; actual motion and pixels remain unverified.",
+  "readiness_kind": "partial_native_runner_and_reviewed_site_gate_tested",
+  "reason": "Native runner and CLI now bind an exact reviewed map/limit site, spawn two vehicles and four cameras, join 900 original ticks, stream FFV1, restore world settings, and seal source-bound saved attempts. Focused suite, pinned preflight and scoped static pass; strict remains partial. Canonical selected constructions, semantic proposals, pinned offline/compatibility/process-saved receipts and full delivery audit remain CPU work. Actual Native geometry, motion and camera visibility remain unverified.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
@@ -91,6 +91,30 @@
       "command": "TMPDIR=$PWD/.runtime-work/c104084-capture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c104084-capture/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-603-1__motor_vehicle_driver --complete --require-delivery-ready",
       "exit_code": 1,
       "log": "cpu-native-tick-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-runner-suite.log",
+      "sha256": "8017cb80ff206a0d6b6d5f379278c60b044546397e8c9683e09628b13012e068"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-runner-preflight.log",
+      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-603-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-runner-static.log",
+      "sha256": "7ace128df65b22b23fbbb0b08e986dffa5d4589ba2d422b32e7a436a453be5c6"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C104084__NRS-484B-603-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-runner-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ]

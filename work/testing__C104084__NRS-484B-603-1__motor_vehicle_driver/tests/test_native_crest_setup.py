@@ -46,6 +46,8 @@ class Map:
     def get_waypoint_xodr(self, road_id, lane_id, station):
         if road_id != 603:
             return None
+        if lane_id == -1 and station == 170:
+            return Waypoint(170, -1)
         if lane_id == -1 and station == 230:
             return lane(range(230, 271, 5), -1)
         if lane_id == 1 and station == 270:
@@ -70,6 +72,7 @@ class NativeCrestSetupTests(unittest.TestCase):
         self.assertEqual(len(client.loads), 1)
         self.assertEqual(result['map_file_sha256'], FILE_HASH)
         self.assertEqual(result['routes']['binding']['forward_lane_id'], -1)
+        self.assertEqual(result['native_spawn_stations']['ego_road_s_m'], 170)
         self.assertEqual(result['routes']['binding']['opposing_lane_id'], 1)
         self.assertAlmostEqual(result['routes']['binding']['crest_separation_m'], 3.5)
         self.assertEqual(result['routes']['forward']['crest_world_xyz_m'][0], 250)

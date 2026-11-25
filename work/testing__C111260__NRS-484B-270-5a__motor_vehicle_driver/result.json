@@ -2,7 +2,7 @@
   "assignment_id": "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver",
   "input_sha256": "7a15dcb6740754d27c56bbd17b65fcdee2dc311aa7ee359355bc7f34eeb38d25",
   "status": "partial",
-  "readiness_kind": "partial_original_lossless_video_source_audit",
+  "readiness_kind": "partial_six_exact_offline_bundles_and_saved_finalizer",
   "applied_update": 0,
   "tests": [
     {
@@ -76,10 +76,88 @@
       "exit_code": 1,
       "log": "cpu-video-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-native-site-preflight.log",
+      "sha256": "7615794efacb7a1cf4f9f9d268dd763eae358a625222008b1100fd7a19ae9ee9"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-native-site-tests.log",
+      "sha256": "aac62b057c7005e7a70106b37dcc0eda99eb66d1ed1cff247c740c177a2f2353"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-native-site-static.log",
+      "sha256": "f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-analysis-tests.log",
+      "sha256": "3f9412aa3875e4badd3eb250ba764b029eedbabadca1fe2296138144240794e8"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-bundle-preflight.log",
+      "sha256": "d7ee401269a2d06c3bb2f6b646f3f6fa6b1b847023a1af02a05060e448170450"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-bundle-static.log",
+      "sha256": "f64ad44f5d127b586b1fb76505cab0d9d90073885ce063d9098ced2614020366"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111260__NRS-484B-270-5a__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-bundle-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_brake --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-5a-offline/bicycle_brake",
+      "exit_code": 0,
+      "log": "proof-offline-bicycle_brake.log",
+      "sha256": "254bd3b39db1c2d70e33c6486cf4a567d1284505413f5921a9a60458d88187b2"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__bicycle_maintain --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-5a-offline/bicycle_maintain",
+      "exit_code": 0,
+      "log": "proof-offline-bicycle_maintain.log",
+      "sha256": "0f79ea4dc022842dcf3e6908e70f48b303b9e264b22622d7b7138d465e762b68"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_brake --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-5a-offline/electric_bicycle_brake",
+      "exit_code": 0,
+      "log": "proof-offline-electric_bicycle_brake.log",
+      "sha256": "4afc36ec23e307d45085dfb5047e5d2a3bf6a528326fff43a31d0fa93e966393"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_bicycle_maintain --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-5a-offline/electric_bicycle_maintain",
+      "exit_code": 0,
+      "log": "proof-offline-electric_bicycle_maintain.log",
+      "sha256": "5a5aa4c69548d2c31f30e9d27056b646e6a86d34c257a3f7450e0ca87c05f58a"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_brake --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-5a-offline/electric_scooter_brake",
+      "exit_code": 0,
+      "log": "proof-offline-electric_scooter_brake.log",
+      "sha256": "e94b74b09d07c16cb5e462d79172fc88459bde63d0fc8ea348dc6e2a55ce6e3c"
+    },
+    {
+      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C111260__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case testing__C111260__NRS-484B-270-5a__motor_vehicle_driver__electric_scooter_maintain --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c111260-5a-offline/electric_scooter_maintain",
+      "exit_code": 0,
+      "log": "proof-offline-electric_scooter_maintain.log",
+      "sha256": "c46fe52fd27dad7c897b88f094e36b0c2caa837b2723d6b84d3daa92a841764d"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Sealed 900-frame four-camera PNG archives now compose into source-hashed lossless 20 Hz FFV1 videos; independent ffprobe and full decode verify frame count, dimensions and source hashes. Saved delivery audit can require an externally sealed video manifest and rejoin case/duration before marking full_video_decode true. Pinned preflight, 28 focused tests and scoped static pass; exact strict rejects truthful partial. Reviewed Native site/adapter, six executable bundles, semantic proposals/manifest, compatibility and canonical acceptance receipts remain CPU work. No physical or legal claim is made."
+  "reason": "Six exact source-inline constructions and case configurations each pass canonical runtime.py offline. Source-gated Native capture, canonical trace/frame map/seal, and saved-only finalizer with positive/negative CPU tests are implemented. Semantic proposals, diagnostic compatibility recipes and receipts, justified physical fallbacks, physical preparation, saved processing and independent delivery/comparison acceptance still need CPU proof. Original mounted-rider visibility and motion remain unreviewed. Exact scoped strict rejects truthful partial."
 }

@@ -19,10 +19,14 @@ def fixture(root):
     grades = [{'s_m': s, 'z_m': z, 'source_ref': 'native-map'} for s, z in
               ((0, 0), (100, 1), (200, 3), (250, 4), (300, 3), (400, 0))]
     grade_source = write(root, 'grade.json', json.dumps(grades))
+    prescribed_limit_source = write(root, 'reviewed-limit.json', json.dumps({
+        'road_id': 603, 'source_kind': 'reviewed_original_limit',
+        'prescribed_limit_mps': 15.0}))
     context = {'map_grade_sha256': grade_source['sha256'], 'road_id': 603,
                'highway_status': 'source_observed_road',
                'highway_source_ref': 'original-native-map',
-               'prescribed_limit_mps': 15.0, 'limit_source_ref': 'original-setup-limit',
+               'prescribed_limit_mps': 15.0,
+               'limit_source_ref': 'reviewed-limit.json:' + prescribed_limit_source['sha256'],
                'ego_actor_id': 'ego-1', 'other_actor_id': 'other-2',
                'lawful_entry_review': 'unresolved', 'due_care_review': 'unresolved'}
     other_route = [{'road_id': 603, 'lane_id': 1, 's_m': s,
@@ -43,6 +47,7 @@ def fixture(root):
                 'acquisition_kind': 'original_native', 'duration_s': 45,
                 'rate_hz': 20, 'approach_start_m': 100,
                 'grade_source': grade_source,
+                'prescribed_limit_source': prescribed_limit_source,
                 'context_source': write(root, 'context.json', json.dumps(context)),
                 'other_route_source': write(root, 'other-route.json', json.dumps(other_route)),
                 'motion_source': write(root, 'motion.json', json.dumps(frames)),
@@ -109,7 +114,7 @@ class SavedCrestAuditTests(unittest.TestCase):
             context = json.loads((root/'context.json').read_text())
             del context['limit_source_ref']
             manifest['context_source'] = write(root, 'context.json', json.dumps(context))
-            with self.assertRaisesRegex(ValueError, 'prescribed speed limit'):
+            with self.assertRaisesRegex(ValueError, 'prescribed limit source'):
                 audit(root, manifest)
             manifest = fixture(root)
             route = json.loads((root/'other-route.json').read_text())
@@ -130,8 +135,31 @@ class SavedCrestAuditTests(unittest.TestCase):
             manifest = fixture(root)
             context = json.loads((root/'context.json').read_text())
             context['prescribed_limit_mps'] = 10.0
+            limit = json.loads((root/'reviewed-limit.json').read_text())
+            limit['prescribed_limit_mps'] = 10.0
+            manifest['prescribed_limit_source'] = write(root, 'reviewed-limit.json', json.dumps(limit))
+            context['limit_source_ref'] = ('reviewed-limit.json:' +
+                                           manifest['prescribed_limit_source']['sha256'])
             manifest['context_source'] = write(root, 'context.json', json.dumps(context))
             with self.assertRaisesRegex(ValueError, 'below-limit precrest'):
+                audit(root, manifest)
+
+    def test_rejects_changed_or_decoy_reviewed_limit_bytes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = fixture(root)
+            (root / 'reviewed-limit.json').write_text('changed\n', encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'hash'):
+                audit(root, manifest)
+            manifest = fixture(root)
+            decoy = json.loads((root / 'reviewed-limit.json').read_text())
+            decoy['road_id'] = 604
+            manifest['prescribed_limit_source'] = write(root, 'reviewed-limit.json', json.dumps(decoy))
+            context = json.loads((root / 'context.json').read_text())
+            context['limit_source_ref'] = ('reviewed-limit.json:' +
+                                           manifest['prescribed_limit_source']['sha256'])
+            manifest['context_source'] = write(root, 'context.json', json.dumps(context))
+            with self.assertRaisesRegex(ValueError, 'prescribed limit source'):
                 audit(root, manifest)
 
 

@@ -22,7 +22,8 @@ class Map:
     def get_waypoint(self, location, project_to_road=True):
         junction = abs(location.x) < 0.01 and abs(location.y) < 0.01
         return SimpleNamespace(
-            transform=SimpleNamespace(location=location), road_id=1, lane_id=1,
+            transform=SimpleNamespace(location=location,
+                                      rotation=SimpleNamespace(yaw=0.0)), road_id=1, lane_id=1,
             id=100 if junction else 101, is_junction=junction,
             get_junction=lambda: SimpleNamespace(id=7))
 
@@ -40,8 +41,12 @@ CARLA = SimpleNamespace(Location=lambda **values: SimpleNamespace(**values))
 
 
 def request(root):
+    asset = root / "asset.source"
+    asset.write_bytes(b"source-reviewed-Native-rider-asset")
     review = {"format": "c111260-reviewed-rider-asset-v1", "kind": "bicycle",
-              "asset_source_sha256": "a" * 64, "person_actor_id": 42,
+              "asset_source_path": str(asset),
+              "asset_source_sha256": hashlib.sha256(asset.read_bytes()).hexdigest(),
+              "person_actor_id": 42,
               "blueprint_id": "vehicle.bicycle", "moped": False,
               "motorized": False, "wheel_diameters_in": [26, 26]}
     path = root / "review.json"
@@ -61,9 +66,25 @@ class NativeSiteTests(unittest.TestCase):
             packet = SITE.verify(base / "survey", refs["site"], expected_kind="bicycle")
             self.assertEqual(packet["junction_id"], 7)
             self.assertEqual(packet["physical_visibility"], "pending")
+            self.assertEqual(SITE.verify_live(World(), CARLA, base / "survey", refs["site"],
+                                              expected_kind="bicycle")["map_sha256"], packet["map_sha256"])
             (base / "survey" / "native-map.xodr").write_text("altered", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "hash drift"):
                 SITE.verify(base / "survey", refs["site"], expected_kind="bicycle")
+
+    def test_changed_loaded_native_map_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            refs = SITE.survey(World(), CARLA, request(base), base / "survey")
+            class ChangedMap(Map):
+                def to_opendrive(self):
+                    return "<OpenDRIVE>different loaded map</OpenDRIVE>"
+            class ChangedWorld(World):
+                def get_map(self):
+                    return ChangedMap()
+            with self.assertRaisesRegex(ValueError, "loaded Native map differs"):
+                SITE.verify_live(ChangedWorld(), CARLA, base / "survey", refs["site"],
+                                 expected_kind="bicycle")
 
     def test_review_hash_and_route_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:

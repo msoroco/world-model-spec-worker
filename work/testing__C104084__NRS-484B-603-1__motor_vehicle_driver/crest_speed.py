@@ -64,6 +64,15 @@ def measure(waypoints, frames, *, approach_start_m):
     minimum_clearance = min(frames, key=lambda f: f['body_clearance_m'])
     first_decrease = next((f for a, f in zip(approach, approach[1:])
                            if f['ego_speed_mps'] < a['ego_speed_mps']), None)
+    # A half-metre/second band separates intended controller profiles from
+    # ordinary per-tick speed jitter. It is an engineering comparison band,
+    # never a statutory definition of slowing.
+    material_band_mps = 0.5
+    first_material = next((f for f in approach[1:]
+                           if f['ego_speed_mps'] < start['ego_speed_mps'] - material_band_mps),
+                          None)
+    maximum_drawdown = max(start['ego_speed_mps'] - f['ego_speed_mps']
+                           for f in approach)
     return {
         'crest_station_m': crest_s,
         'approach_start_m': approach_start_m,
@@ -73,6 +82,9 @@ def measure(waypoints, frames, *, approach_start_m):
         'speed_change_mps': end['ego_speed_mps'] - start['ego_speed_mps'],
         'first_speed_decrease_frame_id': first_decrease['frame_id'] if first_decrease else None,
         'first_speed_decrease_station_m': first_decrease['ego_s_m'] if first_decrease else None,
+        'first_material_speed_decrease_station_m': first_material['ego_s_m'] if first_material else None,
+        'maximum_precrest_drawdown_mps': maximum_drawdown,
+        'material_speed_band_mps': material_band_mps,
         'minimum_body_clearance_m': minimum_clearance['body_clearance_m'],
         'minimum_clearance_frame_id': minimum_clearance['frame_id'],
         'source_frame_refs': [f['source_ref'] for f in frames],

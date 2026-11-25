@@ -17,7 +17,7 @@ from saved_crest_finalizer import finalize
 
 
 SOURCES = ('native_map_source', 'grade_source', 'motion_source', 'context_source',
-           'other_route_source', 'frame_map_source')
+           'other_route_source', 'frame_map_source', 'prescribed_limit_source')
 
 
 def _copy_source(source, destination: Path, name: str) -> dict:
@@ -54,7 +54,7 @@ def assemble(source_spec: dict, destination, *, expected_case: str) -> dict:
         raise ValueError('original Native capture reference required')
     paths = source_spec.get('sources')
     if not isinstance(paths, dict) or set(paths) != set(SOURCES):
-        raise ValueError('all six original crest sources required')
+        raise ValueError('all seven original crest sources required')
     cameras = source_spec.get('cameras')
     if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
         raise ValueError('four original camera files required')
@@ -88,7 +88,8 @@ def _assemble_into(source_spec, root, expected_case, profile, map_hash, paths,
                  'grade_source': 'grade.json', 'motion_source': 'motion.json',
                  'context_source': 'context.json',
                  'other_route_source': 'other-route.json',
-                 'frame_map_source': 'frame-map.jsonl'}
+                 'frame_map_source': 'frame-map.jsonl',
+                 'prescribed_limit_source': 'reviewed-limit.json'}
     for key in SOURCES:
         manifest[key] = _copy_source(paths[key], root, filenames[key])
     if manifest['native_map_source']['sha256'] != map_hash:

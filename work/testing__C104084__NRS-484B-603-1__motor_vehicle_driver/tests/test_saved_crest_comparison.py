@@ -29,7 +29,7 @@ def attempts(root):
                                      for key in CONTEXT}
         manifest['fixed_sources']['other_route_source_sha256'] = manifest['other_route_source']
         manifest['fixed_sources']['highway_context_source_sha256'] = manifest['context_source']
-        manifest['fixed_sources']['prescribed_limit_source_sha256'] = manifest['context_source']
+        manifest['fixed_sources']['prescribed_limit_source_sha256'] = manifest['prescribed_limit_source']
     return left, a, right, b
 
 

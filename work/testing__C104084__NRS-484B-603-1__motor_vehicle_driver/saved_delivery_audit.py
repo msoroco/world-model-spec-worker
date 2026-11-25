@@ -10,7 +10,8 @@ from saved_crest_bundle import verify_bundle
 
 
 EXPECTED_FILES = {'manifest.json', 'finalized.json', 'native-map.xodr',
-                  'grade.json', 'motion.json', 'context.json', 'other-route.json',
+                  'grade.json', 'motion.json', 'context.json', 'reviewed-limit.json',
+                  'other-route.json',
                   'frame-map.jsonl', *(f'{name}.mkv' for name in CAMERAS)}
 
 

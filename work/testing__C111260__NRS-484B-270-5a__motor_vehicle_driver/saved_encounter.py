@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ASSIGNMENT = "testing__C111260__NRS-484B-270-5a__motor_vehicle_driver"
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 KINDS = ("bicycle", "electric_bicycle", "electric_scooter")
 RESPONSES = ("brake", "maintain")
 SPEC = importlib.util.spec_from_file_location("cyclist_encounter", Path(__file__).with_name("cyclist_encounter.py"))
@@ -67,8 +67,15 @@ def finalize_saved(attempt):
     map_packet = _load_source(root, packet.get("site"))
     site = ENCOUNTER.validate_site(map_packet, kind)
     rows = _load_source(root, packet.get("history"))
-    if not isinstance(rows, list) or len(rows) != 900:
-        raise ValueError("900 original encounter frames required")
+    diagnostic = packet.get("diagnostic_fixture") is True
+    if diagnostic:
+        marker = root / "acquisition-provenance.json"
+        if (not marker.is_file() or
+                json.loads(marker.read_text(encoding="utf-8")).get("diagnostic_fixture") is not True):
+            raise ValueError("diagnostic encounter marker missing")
+    expected_frames = 9 if diagnostic else 900
+    if not isinstance(rows, list) or len(rows) != expected_frames:
+        raise ValueError("expected encounter frame count missing")
     for row in rows:
         if row.get("case_id") != packet["case_id"]:
             raise ValueError("original history case drift")
@@ -82,7 +89,7 @@ def finalize_saved(attempt):
         raise ValueError("four camera frame maps required")
     for camera in CAMERAS:
         stream = camera_frames[camera]
-        if not isinstance(stream, list) or len(stream) != 900:
+        if not isinstance(stream, list) or len(stream) != expected_frames:
             raise ValueError("camera frame count incomplete: " + camera)
         if stream != original_frames:
             raise ValueError("camera frame identity mismatch: " + camera)

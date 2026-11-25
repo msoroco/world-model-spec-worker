@@ -20,20 +20,23 @@ def profile_witness(measurement, profile):
         raise ValueError('unknown exact crest profile')
     start = measurement['approach_start_m']
     crest = measurement['crest_station_m']
-    first = measurement['first_speed_decrease_station_m']
+    first = measurement.get('first_material_speed_decrease_station_m',
+                            measurement['first_speed_decrease_station_m'])
     change = measurement['speed_change_mps']
     midpoint = (start + crest) / 2
+    band = measurement.get('material_speed_band_mps', 0.5)
     if profile == 'early_decrease':
-        matched = first is not None and start <= first < midpoint and change < 0
+        matched = first is not None and start <= first < midpoint and change < -band
     elif profile == 'late_decrease':
-        matched = first is not None and midpoint <= first < crest and change < 0
+        matched = first is not None and midpoint <= first < crest and change < -band
     else:
-        matched = first is None and change == 0
+        matched = first is None and abs(change) <= band
     if not matched:
         raise ValueError('original approach does not realize exact crest profile')
     return {'profile': profile, 'approach_midpoint_m': midpoint,
             'first_speed_decrease_station_m': first,
             'precrest_speed_change_mps': change,
+            'engineering_speed_band_mps': band,
             'basis': 'original_frame_speed_and_station',
             'legal_judgment': 'unresolved'}
 

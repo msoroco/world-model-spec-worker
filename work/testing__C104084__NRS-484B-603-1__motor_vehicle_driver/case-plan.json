@@ -1,64 +1,61 @@
 {
-  "assignment_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C104084",
-  "law_id": "NRS-484B-603-1",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-603-1",
-      "cell_id": "C104084",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-603-1",
-      "branch": "Approaching a hill crest.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 469,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "The fact that the speed of a vehicle is lower than the prescribed limits does not relieve a driver from the duty to decrease speed when approaching and crossing an intersection, when approaching and going around a curve, when approaching a hill crest, when traveling upon any narrow or winding highway, or when special hazards exist or may exist with respect to pedestrians or other traffic, or by reason of weather or other highway conditions, and speed must be decreased as may be necessary to avoid colliding with any person, vehicle or other conveyance on or entering a highway in compliance with legal requirements and the duty of all persons to use due care.",
-  "law_source": "NRS 484B.603(1)",
-  "topic_inventory": {
-    "below_limit_not_exempt": "A speed below the prescribed limit does not remove the decrease-speed duty; capture actual limit and speed separately.",
-    "enumerated_crest": "The selected hill_crest cell covers approaching a hill crest; other listed circumstances are separate assigned branches.",
-    "necessary_decrease": "Whether and how much decrease is necessary to avoid collision depends on actual people/vehicles/conveyances and conditions; no numeric legal cutoff is supplied.",
-    "lawful_entry_and_due_care": "Record source context for on/entering highway and legal compliance; simulation motion cannot establish due care."
+  "assignment_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver",
+  "camera_plan": {
+    "coverage": [
+      "front overview: ego hill crest and opposing lane",
+      "left and right details: original road grade and passing body context",
+      "rear detail: postcrest progress and other vehicle history"
+    ],
+    "duration_s": 45,
+    "physical_visibility_unverified": true,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
-      "target_law_id": "NRS-484B-603-1",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "purpose": "Ego begins a measured speed decrease during the precrest approach; another vehicle is on its own original route.",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
-        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests."
+      "comparison_variable": {
+        "intended_variant": "early_decrease",
+        "name": "measured_precrest_speed_profile",
+        "source": "original Native frame history, not commanded target"
+      },
+      "construction": {
+        "candidate_opendrive": {
+          "path": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/candidate-crest-road.xodr",
+          "sha256": "44c27432ff4b84595cd4a4d50cda78235f1b0546e8017bc158c2d27d3b340edd",
+          "status": "authored_candidate_cpu_geometry_tested_native_load_unverified"
+        },
+        "controller": "crest_controller.py:step",
+        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence.",
+        "map_binding": "Candidate 500 m two-way OpenDRIVE road has a 4 m source-defined grade crest at station 250 m. crest_route.py:survey_map_pair must hash loaded Native OpenDRIVE and verify both travel directions before capture; no Native load or actual sight line is yet established.",
+        "measurement": "crest_speed.py:measure",
+        "native_map_load": "native_crest_setup.py:load_and_bind verifies authored file SHA256 before CARLA generate_opendrive_world, compares loaded Native road/lane/elevation profile, then source-hashes and surveys both directions; no Native execution has been performed.",
+        "profile": "early_decrease",
+        "route_survey": "crest_route.py:survey_map_pair hashes original Native OpenDRIVE and surveys connected same-road opposing driving lanes, grade peaks and crest colocation before capture."
       },
       "fixed_context": {
-        "layout": "hill_crest",
-        "maneuver": "travel",
-        "control": "other_vehicle",
         "actor": "motor_vehicle_driver",
-        "duration_s": 45,
-        "frame_rate_hz": 20,
         "camera_sources": [
           "front",
           "left",
           "right",
           "rear"
-        ]
+        ],
+        "control": "other_vehicle",
+        "duration_s": 45,
+        "frame_rate_hz": 20,
+        "layout": "hill_crest",
+        "maneuver": "travel"
       },
-      "comparison_variable": {
-        "name": "measured_precrest_speed_profile",
-        "intended_variant": "early_decrease",
-        "source": "original Native frame history, not commanded target"
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests.",
+        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
+        "status": "physical"
       },
+      "purpose": "Ego begins a measured speed decrease during the precrest approach; another vehicle is on its own original route.",
       "required_measurements": [
         "original grade crest station",
         "ego precrest speed history",
@@ -68,52 +65,52 @@
         "prescribed limit and highway source context",
         "camera/frame joins"
       ],
-      "construction": {
-        "map_binding": "Candidate 500 m two-way OpenDRIVE road has a 4 m source-defined grade crest at station 250 m. crest_route.py:survey_map_pair must hash loaded Native OpenDRIVE and verify both travel directions before capture; no Native load or actual sight line is yet established.",
-        "controller": "crest_controller.py:step",
-        "profile": "early_decrease",
-        "measurement": "crest_speed.py:measure",
-        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence.",
-        "route_survey": "crest_route.py:survey_map_pair hashes original Native OpenDRIVE and surveys connected same-road opposing driving lanes, grade peaks and crest colocation before capture.",
-        "candidate_opendrive": {
-          "path": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/candidate-crest-road.xodr",
-          "sha256": "44c27432ff4b84595cd4a4d50cda78235f1b0546e8017bc158c2d27d3b340edd",
-          "status": "authored_candidate_cpu_geometry_tested_native_load_unverified"
-        },
-        "native_map_load": "native_crest_setup.py:load_and_bind verifies authored file SHA256 before CARLA generate_opendrive_world, compares loaded Native road/lane/elevation profile, then source-hashes and surveys both directions; no Native execution has been performed."
-      }
+      "target_law_id": "NRS-484B-603-1"
     },
     {
       "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
-      "target_law_id": "NRS-484B-603-1",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "purpose": "Ego holds its prior speed until near the measured crest, then decreases before reaching it; same other vehicle route.",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
-        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests."
+      "comparison_variable": {
+        "intended_variant": "late_decrease",
+        "name": "measured_precrest_speed_profile",
+        "source": "original Native frame history, not commanded target"
+      },
+      "construction": {
+        "candidate_opendrive": {
+          "path": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/candidate-crest-road.xodr",
+          "sha256": "44c27432ff4b84595cd4a4d50cda78235f1b0546e8017bc158c2d27d3b340edd",
+          "status": "authored_candidate_cpu_geometry_tested_native_load_unverified"
+        },
+        "controller": "crest_controller.py:step",
+        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence.",
+        "map_binding": "Candidate 500 m two-way OpenDRIVE road has a 4 m source-defined grade crest at station 250 m. crest_route.py:survey_map_pair must hash loaded Native OpenDRIVE and verify both travel directions before capture; no Native load or actual sight line is yet established.",
+        "measurement": "crest_speed.py:measure",
+        "native_map_load": "native_crest_setup.py:load_and_bind verifies authored file SHA256 before CARLA generate_opendrive_world, compares loaded Native road/lane/elevation profile, then source-hashes and surveys both directions; no Native execution has been performed.",
+        "profile": "late_decrease",
+        "route_survey": "crest_route.py:survey_map_pair hashes original Native OpenDRIVE and surveys connected same-road opposing driving lanes, grade peaks and crest colocation before capture."
       },
       "fixed_context": {
-        "layout": "hill_crest",
-        "maneuver": "travel",
-        "control": "other_vehicle",
         "actor": "motor_vehicle_driver",
-        "duration_s": 45,
-        "frame_rate_hz": 20,
         "camera_sources": [
           "front",
           "left",
           "right",
           "rear"
-        ]
+        ],
+        "control": "other_vehicle",
+        "duration_s": 45,
+        "frame_rate_hz": 20,
+        "layout": "hill_crest",
+        "maneuver": "travel"
       },
-      "comparison_variable": {
-        "name": "measured_precrest_speed_profile",
-        "intended_variant": "late_decrease",
-        "source": "original Native frame history, not commanded target"
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests.",
+        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
+        "status": "physical"
       },
+      "purpose": "Ego holds its prior speed until near the measured crest, then decreases before reaching it; same other vehicle route.",
       "required_measurements": [
         "original grade crest station",
         "ego precrest speed history",
@@ -123,52 +120,52 @@
         "prescribed limit and highway source context",
         "camera/frame joins"
       ],
-      "construction": {
-        "map_binding": "Candidate 500 m two-way OpenDRIVE road has a 4 m source-defined grade crest at station 250 m. crest_route.py:survey_map_pair must hash loaded Native OpenDRIVE and verify both travel directions before capture; no Native load or actual sight line is yet established.",
-        "controller": "crest_controller.py:step",
-        "profile": "late_decrease",
-        "measurement": "crest_speed.py:measure",
-        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence.",
-        "route_survey": "crest_route.py:survey_map_pair hashes original Native OpenDRIVE and surveys connected same-road opposing driving lanes, grade peaks and crest colocation before capture.",
-        "candidate_opendrive": {
-          "path": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/candidate-crest-road.xodr",
-          "sha256": "44c27432ff4b84595cd4a4d50cda78235f1b0546e8017bc158c2d27d3b340edd",
-          "status": "authored_candidate_cpu_geometry_tested_native_load_unverified"
-        },
-        "native_map_load": "native_crest_setup.py:load_and_bind verifies authored file SHA256 before CARLA generate_opendrive_world, compares loaded Native road/lane/elevation profile, then source-hashes and surveys both directions; no Native execution has been performed."
-      }
+      "target_law_id": "NRS-484B-603-1"
     },
     {
       "case_id": "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach",
-      "target_law_id": "NRS-484B-603-1",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
-      "purpose": "Ego maintains measured speed through the approach; same other vehicle route. This is a physical contrast, not a legal verdict.",
-      "physical_risk_assessment": {
-        "status": "physical",
-        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
-        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests."
+      "comparison_variable": {
+        "intended_variant": "steady_approach",
+        "name": "measured_precrest_speed_profile",
+        "source": "original Native frame history, not commanded target"
+      },
+      "construction": {
+        "candidate_opendrive": {
+          "path": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/candidate-crest-road.xodr",
+          "sha256": "44c27432ff4b84595cd4a4d50cda78235f1b0546e8017bc158c2d27d3b340edd",
+          "status": "authored_candidate_cpu_geometry_tested_native_load_unverified"
+        },
+        "controller": "crest_controller.py:step",
+        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence.",
+        "map_binding": "Candidate 500 m two-way OpenDRIVE road has a 4 m source-defined grade crest at station 250 m. crest_route.py:survey_map_pair must hash loaded Native OpenDRIVE and verify both travel directions before capture; no Native load or actual sight line is yet established.",
+        "measurement": "crest_speed.py:measure",
+        "native_map_load": "native_crest_setup.py:load_and_bind verifies authored file SHA256 before CARLA generate_opendrive_world, compares loaded Native road/lane/elevation profile, then source-hashes and surveys both directions; no Native execution has been performed.",
+        "profile": "steady_approach",
+        "route_survey": "crest_route.py:survey_map_pair hashes original Native OpenDRIVE and surveys connected same-road opposing driving lanes, grade peaks and crest colocation before capture."
       },
       "fixed_context": {
-        "layout": "hill_crest",
-        "maneuver": "travel",
-        "control": "other_vehicle",
         "actor": "motor_vehicle_driver",
-        "duration_s": 45,
-        "frame_rate_hz": 20,
         "camera_sources": [
           "front",
           "left",
           "right",
           "rear"
-        ]
+        ],
+        "control": "other_vehicle",
+        "duration_s": 45,
+        "frame_rate_hz": 20,
+        "layout": "hill_crest",
+        "maneuver": "travel"
       },
-      "comparison_variable": {
-        "name": "measured_precrest_speed_profile",
-        "intended_variant": "steady_approach",
-        "source": "original Native frame history, not commanded target"
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "physical_risk_assessment": {
+        "fallback_policy": "Source-gated map candidate selection required; no alternate construction has yet passed CPU tests.",
+        "risk": "An original Native two-way road with a source-measured crest, connected approach route and synchronized other-vehicle motion has not yet been bound; available map grade or sight lines may not realize the intended approach.",
+        "status": "physical"
       },
+      "purpose": "Ego maintains measured speed through the approach; same other vehicle route. This is a physical contrast, not a legal verdict.",
       "required_measurements": [
         "original grade crest station",
         "ego precrest speed history",
@@ -178,93 +175,252 @@
         "prescribed limit and highway source context",
         "camera/frame joins"
       ],
-      "construction": {
-        "map_binding": "Candidate 500 m two-way OpenDRIVE road has a 4 m source-defined grade crest at station 250 m. crest_route.py:survey_map_pair must hash loaded Native OpenDRIVE and verify both travel directions before capture; no Native load or actual sight line is yet established.",
-        "controller": "crest_controller.py:step",
-        "profile": "steady_approach",
-        "measurement": "crest_speed.py:measure",
-        "limitations": "Control targets are engineering probes; actual speed, sight lines, clearance and prescribed limit require original evidence.",
-        "route_survey": "crest_route.py:survey_map_pair hashes original Native OpenDRIVE and surveys connected same-road opposing driving lanes, grade peaks and crest colocation before capture.",
-        "candidate_opendrive": {
-          "path": "work/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/candidate-crest-road.xodr",
-          "sha256": "44c27432ff4b84595cd4a4d50cda78235f1b0546e8017bc158c2d27d3b340edd",
-          "status": "authored_candidate_cpu_geometry_tested_native_load_unverified"
-        },
-        "native_map_load": "native_crest_setup.py:load_and_bind verifies authored file SHA256 before CARLA generate_opendrive_world, compares loaded Native road/lane/elevation profile, then source-hashes and surveys both directions; no Native execution has been performed."
-      }
+      "target_law_id": "NRS-484B-603-1"
     }
   ],
+  "cell_id": "C104084",
+  "comparison_audit": {
+    "fixed_fields": [
+      "map_source_sha256",
+      "ego_route_source_sha256",
+      "other_route_source_sha256",
+      "other_motion_source_sha256",
+      "highway_context_source_sha256",
+      "prescribed_limit_source_sha256",
+      "camera_contract_sha256",
+      "duration_s",
+      "initial_speed_mps"
+    ],
+    "implementation": "comparison_audit.py:compare",
+    "limitation": "CPU source-shaped fixtures are not original capture evidence.",
+    "positive_and_negative_tests": "tests/test_comparison_audit.py"
+  },
   "comparisons": [
     {
-      "comparison_id": "early_vs_late_precrest_decrease",
       "case_ids": [
         "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
         "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease"
       ],
+      "comparison_id": "early_vs_late_precrest_decrease",
+      "deliberate_differences": [
+        "original measured station and frame at which ego first decreases speed before crest"
+      ],
       "fixed_conditions": [
         "same source-bound crest road/grade and ego route",
         "same other vehicle route and motion",
         "same prescribed limit/highway context",
         "same actor, cameras, duration and initial speed"
-      ],
-      "deliberate_differences": [
-        "original measured station and frame at which ego first decreases speed before crest"
       ]
     },
     {
-      "comparison_id": "decrease_vs_steady_approach",
       "case_ids": [
         "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
         "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
       ],
+      "comparison_id": "decrease_vs_steady_approach",
+      "deliberate_differences": [
+        "original measured precrest ego speed change; no legal decrease magnitude is assumed"
+      ],
       "fixed_conditions": [
         "same source-bound crest road/grade and ego route",
         "same other vehicle route and motion",
         "same prescribed limit/highway context",
         "same actor, cameras, duration and initial speed"
-      ],
-      "deliberate_differences": [
-        "original measured precrest ego speed change; no legal decrease magnitude is assumed"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "Source-measured hill-crest approach with actual speed history, other vehicle context, and controlled profile comparison",
+        "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen accepted recording inventory is empty."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-603-1",
+  "law_source": "NRS 484B.603(1)",
+  "law_text": "The fact that the speed of a vehicle is lower than the prescribed limits does not relieve a driver from the duty to decrease speed when approaching and crossing an intersection, when approaching and going around a curve, when approaching a hill crest, when traveling upon any narrow or winding highway, or when special hazards exist or may exist with respect to pedestrians or other traffic, or by reason of weather or other highway conditions, and speed must be decreased as may be necessary to avoid colliding with any person, vehicle or other conveyance on or entering a highway in compliance with legal requirements and the duty of all persons to use due care.",
   "observations": [
     {
-      "name": "crest_station_and_grade",
       "mandatory": true,
+      "name": "crest_station_and_grade",
       "source": "original Native map waypoint samples"
     },
     {
-      "name": "ego_precrest_speed_history",
       "mandatory": true,
+      "name": "ego_precrest_speed_history",
       "source": "original Native ego frame samples"
     },
     {
-      "name": "other_vehicle_route_and_body",
       "mandatory": true,
+      "name": "other_vehicle_route_and_body",
       "source": "original Native route and actor transforms"
     },
     {
-      "name": "same_frame_body_clearance",
       "mandatory": true,
+      "name": "same_frame_body_clearance",
       "source": "original Native bounding boxes"
     },
     {
-      "name": "prescribed_limit_and_highway",
       "mandatory": true,
+      "name": "prescribed_limit_and_highway",
       "source": "source-bound setup/context"
     },
     {
-      "name": "visibility_and_sight_lines",
       "mandatory": true,
+      "name": "visibility_and_sight_lines",
       "source": "Native ray samples and synchronized cameras"
     },
     {
-      "name": "frame_and_camera_join",
       "mandatory": true,
+      "name": "frame_and_camera_join",
       "source": "Native frame map and four original video streams"
     }
   ],
+  "planning_status": "partial_exact_cases_and_measurement_code",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "reviewed-limit.json and original Native precrest speed frames; no legal cutoff is inferred",
+      "explanation": "Measured speed below the prescribed limit does not end the decrease-speed inquiry.",
+      "requirement": "below_prescribed_limit_not_exempt",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "loaded Native OpenDRIVE, surveyed grade and measured body station",
+      "explanation": "Ego approaches and crosses an original grade crest.",
+      "requirement": "approaching_hill_crest",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
+      ],
+      "disposition_index": 2,
+      "evidence_or_gap": "original Native speed/station frames; necessity is unresolved legal/context review",
+      "explanation": "Compare measured early, late and steady precrest speed histories.",
+      "requirement": "speed_decrease_as_necessary",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+        "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
+      ],
+      "disposition_index": 3,
+      "evidence_or_gap": "opposing original actor/route/body history; lawful entry and due care remain unresolved",
+      "explanation": "Record other vehicle on the highway, clearance, lawful-entry and due-care context.",
+      "requirement": "other_vehicle_and_due_care",
+      "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json#summary.text",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
+    "No exact execution manifest, source-bound finalizer/diagnostic recipe, semantic proposals, offline/compatibility/saved-only proof, complete delivery audit yet.",
+    "The legal necessity of slowing, applicable limits, lawful highway entry and due care remain unadjudicated."
+  ],
+  "saved_comparison_audit": {
+    "cli": "saved_crest_comparison.py --left-attempt LEFT --left-manifest LEFT/crest-audit-manifest.json --right-attempt RIGHT --right-manifest RIGHT/crest-audit-manifest.json --left-profile PROFILE --right-profile PROFILE --output OUTPUT",
+    "comparisons": [
+      "early_vs_late_precrest_decrease",
+      "decrease_vs_steady_approach"
+    ],
+    "fixed_sources": [
+      "ego route",
+      "other route",
+      "other motion",
+      "highway context",
+      "prescribed limit",
+      "camera contract",
+      "grade map",
+      "duration",
+      "initial speed"
+    ],
+    "implementation": "saved_crest_comparison.py:compare_saved",
+    "limits": "Requires real saved attempt sources; fixture comparison is software proof, not physical or legal completion.",
+    "positive_and_negative_tests": "tests/test_saved_crest_comparison.py"
+  },
+  "saved_context_audit": {
+    "fixed_comparison_bindings": [
+      "other_route_source_sha256",
+      "highway_context_source_sha256",
+      "prescribed_limit_source_sha256"
+    ],
+    "implementation": "saved_crest_context.py:audit_context",
+    "limits": "Source-shaped CPU evidence binds declared original setup and participant context; lawful entry, due care, actual Native motion and prescribed-limit applicability remain unresolved.",
+    "positive_and_negative_tests": [
+      "tests/test_saved_crest_audit.py",
+      "tests/test_saved_crest_comparison.py"
+    ],
+    "sources": [
+      "source-bound highway road identity",
+      "prescribed limit with original setup reference",
+      "distinct ego and other vehicle actor IDs",
+      "opposing Native route waypoints",
+      "every original motion frame joined to both actor IDs",
+      "first original precrest approach speed measured below the retained prescribed limit"
+    ]
+  },
+  "saved_source_audit": {
+    "checks": [
+      "case identity",
+      "original Native acquisition claim",
+      "900 motion and frame-map rows at 20 Hz",
+      "four attempt-confined SHA256-bound camera files",
+      "source-measured precrest speed and grade"
+    ],
+    "cli": "saved_crest_audit.py --attempt ATTEMPT --manifest ATTEMPT/crest-audit-manifest.json --output OUTPUT",
+    "exact_cases": [
+      "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
+      "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
+      "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
+    ],
+    "implementation": "saved_crest_audit.py:audit",
+    "limits": "Source integrity only; no full video decode, actual pixels, physical completion or legal verdict.",
+    "positive_and_negative_tests": "tests/test_saved_crest_audit.py"
+  },
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Approaching a hill crest.",
+      "cell_id": "C104084",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-603-1",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-603-1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 469,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": [],
   "sources": [
     {
       "path": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/assignment.json",
@@ -287,35 +443,18 @@
       "sha256": "6183c611ca699bceb4a55ed9f1616b970e258ef699447792f845b97bbc8415dc"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact execution manifest, source-bound finalizer/diagnostic recipe, semantic proposals, offline/compatibility/saved-only proof, complete delivery audit yet.",
-    "The legal necessity of slowing, applicable limits, lawful highway entry and due care remain unadjudicated."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_evidence",
-        "requirement": "Source-measured hill-crest approach with actual speed history, other vehicle context, and controlled profile comparison",
-        "source": "inputs/testing__C104084__NRS-484B-603-1__motor_vehicle_driver/evidence.json",
-        "why_existing_insufficient": "Frozen accepted recording inventory is empty."
-      }
-    ]
+  "topic_inventory": {
+    "below_limit_not_exempt": "A speed below the prescribed limit does not remove the decrease-speed duty; capture actual limit and speed separately.",
+    "enumerated_crest": "The selected hill_crest cell covers approaching a hill crest; other listed circumstances are separate assigned branches.",
+    "lawful_entry_and_due_care": "Record source context for on/entering highway and legal compliance; simulation motion cannot establish due care.",
+    "necessary_decrease": "Whether and how much decrease is necessary to avoid collision depends on actual people/vehicles/conveyances and conditions; no numeric legal cutoff is supplied."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_exact_cases_and_measurement_code",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 469,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Approaching a hill crest.",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "The unreserved hill-crest cell directly matches an enumerated approach circumstance.",
       "required_context": [
         "Document applicable legal requirements and participant priority without presuming compliance or due care.",
         "Establish crest location, grade, sight lines, ego approach route and separate other-vehicle route and motion.",
@@ -326,83 +465,9 @@
         "Retain speed, longitudinal acceleration, route position, visibility, relative motion, stopping distance and time to conflict as physical context.",
         "Verify crest geometry, location, grade, sight lines and actor-specific routes."
       ],
-      "reason": "The unreserved hill-crest cell directly matches an enumerated approach circumstance."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 469,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "comparison_audit": {
-    "implementation": "comparison_audit.py:compare",
-    "fixed_fields": [
-      "map_source_sha256",
-      "ego_route_source_sha256",
-      "other_route_source_sha256",
-      "other_motion_source_sha256",
-      "highway_context_source_sha256",
-      "prescribed_limit_source_sha256",
-      "camera_contract_sha256",
-      "duration_s",
-      "initial_speed_mps"
-    ],
-    "positive_and_negative_tests": "tests/test_comparison_audit.py",
-    "limitation": "CPU source-shaped fixtures are not original capture evidence."
-  },
-  "saved_source_audit": {
-    "implementation": "saved_crest_audit.py:audit",
-    "cli": "saved_crest_audit.py --attempt ATTEMPT --manifest ATTEMPT/crest-audit-manifest.json --output OUTPUT",
-    "exact_cases": [
-      "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__early_decrease",
-      "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__late_decrease",
-      "testing__C104084__NRS-484B-603-1__motor_vehicle_driver__steady_approach"
-    ],
-    "checks": [
-      "case identity",
-      "original Native acquisition claim",
-      "900 motion and frame-map rows at 20 Hz",
-      "four attempt-confined SHA256-bound camera files",
-      "source-measured precrest speed and grade"
-    ],
-    "positive_and_negative_tests": "tests/test_saved_crest_audit.py",
-    "limits": "Source integrity only; no full video decode, actual pixels, physical completion or legal verdict."
-  },
-  "saved_comparison_audit": {
-    "implementation": "saved_crest_comparison.py:compare_saved",
-    "cli": "saved_crest_comparison.py --left-attempt LEFT --left-manifest LEFT/crest-audit-manifest.json --right-attempt RIGHT --right-manifest RIGHT/crest-audit-manifest.json --left-profile PROFILE --right-profile PROFILE --output OUTPUT",
-    "comparisons": [
-      "early_vs_late_precrest_decrease",
-      "decrease_vs_steady_approach"
-    ],
-    "fixed_sources": [
-      "ego route",
-      "other route",
-      "other motion",
-      "highway context",
-      "prescribed limit",
-      "camera contract",
-      "grade map",
-      "duration",
-      "initial speed"
-    ],
-    "positive_and_negative_tests": "tests/test_saved_crest_comparison.py",
-    "limits": "Requires real saved attempt sources; fixture comparison is software proof, not physical or legal completion."
-  },
-  "saved_context_audit": {
-    "implementation": "saved_crest_context.py:audit_context",
-    "sources": [
-      "source-bound highway road identity",
-      "prescribed limit with original setup reference",
-      "distinct ego and other vehicle actor IDs",
-      "opposing Native route waypoints",
-      "every original motion frame joined to both actor IDs",
-      "first original precrest approach speed measured below the retained prescribed limit"
-    ],
-    "fixed_comparison_bindings": [
-      "other_route_source_sha256",
-      "highway_context_source_sha256",
-      "prescribed_limit_source_sha256"
-    ],
-    "positive_and_negative_tests": [
-      "tests/test_saved_crest_audit.py",
-      "tests/test_saved_crest_comparison.py"
-    ],
-    "limits": "Source-shaped CPU evidence binds declared original setup and participant context; lawful entry, due care, actual Native motion and prescribed-limit applicability remain unresolved."
-  }
+  ]
 }

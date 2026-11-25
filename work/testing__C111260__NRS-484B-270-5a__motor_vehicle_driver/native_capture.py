@@ -47,16 +47,17 @@ def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_ori
     _SAVED.ENCOUNTER.validate_site(site, kind)
     native_site_ref = None
     if attest_original:
-        if not isinstance(site_source, dict) or set(site_source) != {"root", "ref"}:
+        if not isinstance(site_source, dict) or set(site_source) != {"root", "ref", "world", "carla"}:
             raise ValueError("attested capture requires sealed Native site survey")
         spec = importlib.util.spec_from_file_location("native_site", Path(__file__).with_name("native_site.py"))
         native_site = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(native_site)
         source_root = Path(site_source["root"]).resolve()
-        original = native_site.verify(source_root, site_source["ref"], expected_kind=kind)
+        original = native_site.verify_live(site_source["world"], site_source["carla"],
+                                           source_root, site_source["ref"], expected_kind=kind)
         if site != original:
             raise ValueError("capture site differs from sealed Native survey")
-        for name in ("native-map.xodr", "rider-asset-review.json", "site-survey.json"):
+        for name in ("native-map.xodr", "rider-asset-review.json", "rider-asset.source", "site-survey.json"):
             shutil.copyfile(source_root / name, root / name)
         native_site_ref = {"path": "site-survey.json", "sha256":
                            hashlib.sha256((root / "site-survey.json").read_bytes()).hexdigest()}
@@ -116,7 +117,7 @@ def capture_attempt(root, *, case_id, site, tick, sample, camera_png, attest_ori
     return packet
 
 
-def audit_original_pixels(root):
+def audit_original_pixels(root, expected_dimensions=None):
     """Reopen every saved PNG and require a complete 4 x 900 frame join."""
     root = Path(root).resolve()
     packet = json.loads((root / "encounter-packet.json").read_text(encoding="utf-8"))
@@ -159,6 +160,8 @@ def audit_original_pixels(root):
                         with Image.open(source) as image:
                             if image.format != "PNG" or min(image.size) <= 0:
                                 raise ValueError("invalid original camera image")
+                            if expected_dimensions and image.size != tuple(expected_dimensions[camera]):
+                                raise ValueError("original camera dimensions differ: " + camera)
                             image.load()
                 except (OSError, UnidentifiedImageError) as error:
                     raise ValueError("original camera image decode failed") from error

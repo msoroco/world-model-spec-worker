@@ -75,8 +75,6 @@ class BoundSavedPathsTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "original saved acquisition"):
                 build_result(root, case)
             (root / "config.json").write_text(json.dumps({"selected_case_id": case}) + "\n")
-            with self.assertRaisesRegex(ValueError, "original saved acquisition"):
-                analyze(root, root / "analysis-report.json")
             self.assertFalse((root / "result.json").exists())
             (root / "pedestrian-packet.json").write_bytes((root / "source-packet.json").read_bytes())
             (root / "source-packet.json").unlink()

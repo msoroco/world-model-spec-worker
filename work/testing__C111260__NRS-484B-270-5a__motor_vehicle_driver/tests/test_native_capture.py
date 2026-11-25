@@ -82,14 +82,14 @@ class NativeCaptureTests(unittest.TestCase):
             pixels = CAPTURE.audit_original_pixels(tmp)
             self.assertEqual(pixels["decoded_images"], 3600)
             self.assertEqual(pixels["physical_review"], "pending")
-            path = pathlib.Path(tmp) / "front.png.zip"
+            path = pathlib.Path(tmp) / "overview.png.zip"
             path.write_bytes(path.read_bytes() + b"tamper")
             with self.assertRaisesRegex(ValueError, "hash drift"):
                 CAPTURE.audit_original_pixels(tmp)
 
     def test_missing_sensor_callback_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
-            tick, sample, camera_png = callbacks(missing=("rear", 120))
+            tick, sample, camera_png = callbacks(missing=("approach", 120))
             with self.assertRaisesRegex(ValueError, "camera PNG missing"):
                 CAPTURE.capture_attempt(tmp, case_id=CASE, site=SITE,
                                         tick=tick, sample=sample, camera_png=camera_png)
@@ -117,7 +117,7 @@ class NativeCaptureTests(unittest.TestCase):
             root = pathlib.Path(tmp)
             media_path = root / "media.json"
             media = json.loads(media_path.read_text(encoding="utf-8"))
-            archive_path = root / media["front"]["path"]
+            archive_path = root / media["overview"]["path"]
             with ZipFile(archive_path) as archive:
                 names = archive.namelist()
                 contents = {name: archive.read(name) for name in names}
@@ -125,7 +125,7 @@ class NativeCaptureTests(unittest.TestCase):
             with ZipFile(archive_path, "w", compression=ZIP_STORED) as archive:
                 for name in names:
                     archive.writestr(name, contents[name])
-            media["front"]["sha256"] = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+            media["overview"]["sha256"] = hashlib.sha256(archive_path.read_bytes()).hexdigest()
             media_path.write_text(json.dumps(media), encoding="utf-8")
             packet_path = root / "encounter-packet.json"
             packet = json.loads(packet_path.read_text(encoding="utf-8"))

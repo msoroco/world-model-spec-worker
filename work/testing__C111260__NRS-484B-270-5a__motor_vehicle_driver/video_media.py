@@ -14,6 +14,10 @@ _SPEC.loader.exec_module(_CAPTURE)
 CAMERAS = _CAPTURE.CAMERAS
 FRAMES = _CAPTURE.FRAMES
 audit_original_pixels = _CAPTURE.audit_original_pixels
+PRODUCTION_PROFILE = {"overview": (1920, 1080),
+                      "approach": (1280, 720),
+                      "reference_corner": (1280, 720),
+                      "driver_reference": (1280, 720)}
 
 
 def _sealed(root, ref):
@@ -54,10 +58,10 @@ def compose(root, *, profile, diagnostic_fixture=False):
     root = Path(root).resolve()
     if set(profile) != set(CAMERAS):
         raise ValueError('four original camera dimensions required')
-    if not diagnostic_fixture and any(tuple(profile[name]) not in ((1920, 1080), (1280, 720))
+    if not diagnostic_fixture and any(tuple(profile[name]) != PRODUCTION_PROFILE[name]
                                       for name in CAMERAS):
         raise ValueError('production camera dimensions required')
-    audit_original_pixels(root)
+    audit_original_pixels(root, expected_dimensions=None if diagnostic_fixture else PRODUCTION_PROFILE)
     if (root / 'video-media.json').exists():
         raise ValueError('composed media already exists')
     packet = json.loads((root / 'encounter-packet.json').read_text(encoding='utf-8'))
@@ -99,6 +103,7 @@ def compose(root, *, profile, diagnostic_fixture=False):
                             'width': width, 'height': height, 'frames': FRAMES}
         manifest = {'case_id': packet['case_id'], 'fps': 20,
                     'original_frames': FRAMES, 'camera_videos': refs,
+                    'diagnostic_fixture': diagnostic_fixture,
                     'physical_review': 'pending', 'legal_judgment': 'unresolved'}
         path = root / 'video-media.json'
         path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + '\n')
@@ -118,6 +123,10 @@ def audit_composed(root, manifest_ref):
     refs = manifest.get('camera_videos')
     if not isinstance(refs, dict) or set(refs) != set(CAMERAS) or manifest.get('fps') != 20:
         raise ValueError('four composed 20 Hz videos required')
+    if manifest.get('diagnostic_fixture') is not True and any(
+            (refs[camera].get('width'), refs[camera].get('height')) != PRODUCTION_PROFILE[camera]
+            for camera in CAMERAS):
+        raise ValueError('production camera profile differs')
     for camera in CAMERAS:
         item = refs[camera]
         path = _sealed(root, {'path': item['path'], 'sha256': item['sha256']})

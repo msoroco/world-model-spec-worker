@@ -92,8 +92,8 @@ def _spawn(world, blueprint, transform):
 
 
 def capture(client, carla, *, map_path, map_sha256, case_id, destination,
-            limit_mps, limit_source_ref, capture_ref, scratch_root,
-            encoder_factory=FFV1Encoder):
+            limit_mps, limit_source_ref, limit_path, capture_ref, scratch_root,
+            encoder_factory=FFV1Encoder, pipeline_destination=None):
     """Capture one complete original Native attempt and seal it after audits.
 
     The caller must supply a reviewed prescribed limit and its source reference.
@@ -109,6 +109,15 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
             or limit_mps <= 12 or not isinstance(limit_source_ref, str)
             or not limit_source_ref.strip()):
         raise ValueError('reviewed above-approach prescribed limit source required')
+    limit_path = Path(limit_path)
+    if (not limit_path.is_file() or limit_path.is_symlink() or
+            limit_source_ref != f'{limit_path.name}:{_sha(limit_path)}'):
+        raise ValueError('reviewed original prescribed limit bytes differ')
+    limit_packet = json.loads(limit_path.read_text(encoding='utf-8'))
+    if (limit_packet.get('road_id') != 603 or
+            limit_packet.get('source_kind') != 'reviewed_original_limit' or
+            limit_packet.get('prescribed_limit_mps') != limit_mps):
+        raise ValueError('reviewed original prescribed limit context differs')
     destination = Path(destination)
     if destination.exists():
         raise FileExistsError(destination)
@@ -119,8 +128,10 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
     scratch_root.mkdir(parents=True, exist_ok=True)
     source_dir = Path(tempfile.mkdtemp(prefix='crest-native-', dir=scratch_root))
     actors, encoders = [], {}
+    pipeline = None
     world = None
     original_settings = None
+    capture_complete = False
     try:
         bound = load_and_bind(client, map_path, expected_file_sha256=map_sha256)
         world = bound['world']
@@ -141,8 +152,10 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
         grade_sha = _sha(source_dir / 'grade.json')
         blueprint_library = world.get_blueprint_library()
         vehicle_blueprint = blueprint_library.find('vehicle.tesla.model3')
-        ego_wp = native_map.get_waypoint_xodr(603, -1, 230.0)
-        other_wp = native_map.get_waypoint_xodr(603, 1, 270.0)
+        ego_wp = native_map.get_waypoint_xodr(
+            603, -1, bound['native_spawn_stations']['ego_road_s_m'])
+        other_wp = native_map.get_waypoint_xodr(
+            603, 1, bound['native_spawn_stations']['other_road_s_m'])
         if ego_wp is None or other_wp is None:
             raise ValueError('surveyed original spawn waypoints unavailable')
         ego = _spawn(world, vehicle_blueprint, ego_wp.transform)
@@ -172,14 +185,27 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
             'highway_status': 'source_observed_road',
             'highway_source_ref': f'native-map:{bound["native_map_sha256"]}',
             'prescribed_limit_mps': limit_mps,
-            'limit_source_ref': limit_source_ref,
+            'limit_source_ref': f'reviewed-limit.json:{_sha(limit_path)}',
             'ego_actor_id': str(ego.id), 'other_actor_id': str(other.id),
             'lawful_entry_review': 'unresolved', 'due_care_review': 'unresolved'})
         recorder = NativeTickRecorder(ego_actor_id=str(ego.id),
             other_actor_id=str(other.id), native_capture_ref=capture_ref)
+        if pipeline_destination is not None:
+            pipeline_destination = Path(pipeline_destination)
+            if pipeline_destination.exists():
+                raise ValueError('fresh canonical pipeline destination required')
+            pipeline_destination.mkdir(parents=True)
+            # The pinned collector records original Native graph frames and
+            # observations needed by the saved TrafficSpec adapter.
+            shutil.copyfile(Path(__file__).with_name('config.json'),
+                            pipeline_destination / 'config.json')
+            from pipeline_capture import PipelineCapture
+            pipeline = PipelineCapture(client, ego, pipeline_destination, case_id)
         crest = bound['routes']['forward']['crest_station_m']
         for index in range(FRAME_COUNT):
             frame = world.tick()
+            if pipeline is not None:
+                pipeline.capture(frame, index / 20)
             images = {name: camera_queues[name].get(timeout=10) for name in CAMERAS}
             if any(image.frame != frame for image in images.values()):
                 raise ValueError('original camera world-frame join differs')
@@ -192,12 +218,17 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
                     other_waypoint.road_id, other_waypoint.lane_id) != (603, 1):
                 raise ValueError('original vehicles left surveyed driving lanes')
             velocity = ego.get_velocity()
+            ego_transform = ego.get_transform()
             speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
             station = waypoint.s - 230.0
             other_station = other_waypoint.s - 230.0
             recorder.append(world_frame=frame,
                 ego={'actor_id': str(ego.id), 'station_m': station,
                      'speed_mps': speed, 'body_clearance_m': _distance_clearance(ego, other),
+                     'position': {'x': ego_transform.location.x,
+                                  'y': ego_transform.location.y,
+                                  'z': ego_transform.location.z},
+                     'heading_deg': ego_transform.rotation.yaw,
                      'source_ref': f'{capture_ref}:ego:{frame}'},
                 other={'actor_id': str(other.id), 'station_m': other_station,
                        'source_ref': f'{capture_ref}:other:{frame}'},
@@ -208,6 +239,9 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
                  ego_s_m=station, measured_speed_mps=speed,
                  route_end_s_m=270.0)
         recorder.write(source_dir)
+        if pipeline is not None:
+            pipeline.close()
+            pipeline = None
         for encoder in encoders.values():
             encoder.close()
         encoders.clear()
@@ -221,16 +255,30 @@ def capture(client, carla, *, map_path, map_sha256, case_id, destination,
                     'other_route_source': 'other-route.json',
                     'frame_map_source': 'frame-map.jsonl'}.items()},
                 'cameras': {name: str(source_dir / f'{name}.mkv') for name in CAMERAS}}
-        return assemble(spec, destination, expected_case=case_id)
+        spec['sources']['prescribed_limit_source'] = str(limit_path)
+        result = assemble(spec, source_dir / 'sealed', expected_case=case_id)
+        capture_complete = True
+        return result
     finally:
-        for encoder in encoders.values():
-            encoder.abort()
-        for actor in reversed(actors):
-            try:
-                actor.stop() if hasattr(actor, 'stop') else None
-                actor.destroy()
-            except Exception:
-                pass
-        if world is not None and original_settings is not None:
-            world.apply_settings(original_settings)
-        shutil.rmtree(source_dir)
+        try:
+            if pipeline is not None:
+                pipeline.close(confirmed=False)
+            for encoder in encoders.values():
+                encoder.abort()
+            for actor in reversed(actors):
+                try:
+                    actor.stop() if hasattr(actor, 'stop') else None
+                    actor.destroy()
+                except Exception:
+                    pass
+            if world is not None and original_settings is not None:
+                world.apply_settings(original_settings)
+                restored = world.get_settings()
+                for key in ('synchronous_mode', 'fixed_delta_seconds',
+                            'no_rendering_mode'):
+                    if getattr(restored, key) != getattr(original_settings, key):
+                        raise ValueError('original Native world settings not restored')
+            if capture_complete:
+                (source_dir / 'sealed').rename(destination)
+        finally:
+            shutil.rmtree(source_dir)
