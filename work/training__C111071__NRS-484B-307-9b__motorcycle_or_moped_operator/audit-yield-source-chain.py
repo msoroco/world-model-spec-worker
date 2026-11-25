@@ -33,6 +33,12 @@ def audit():
         for ref in row['source_refs']:
             if not (ROOT / ref if ref.startswith('inputs/') else HERE / ref).is_file():
                 raise ValueError('Semantic source absent: ' + ref)
+    device_proof = load(HERE / 'device-antecedents-cpu-proof.json')
+    if not device_proof.get('passed') or device_proof.get('original_native_observed'):
+        raise ValueError('Device antecedent diagnostic provenance differs')
+    device_cases = {case['case_id']: case for case in device_proof['cases']}
+    if len(device_cases) != 4:
+        raise ValueError('Device antecedent case roster differs')
     summaries = {}
     for label, clear, frame in (('wait-for-clearance', True, 340),
                                 ('enter-during-occupancy', False, 260)):
@@ -45,8 +51,24 @@ def audit():
         native = HERE / f'{stem}-fixture/native_samples.jsonl'
         if not receipt['passed'] or not saved_receipt['passed']:
             raise ValueError('Public or saved proof failed: ' + label)
-        if receipt['measurement_keys'] != ['cycle_requirement', 'yield_requirement']:
+        if receipt['measurement_keys'] != ['cycle_requirement', 'detector_trace', 'yield_requirement']:
             raise ValueError('Source-bound measurement roster differs')
+        if not receipt.get('passed') or receipt.get('runtime_manifest_sha256') != sha(ROOT / 'runtime/SOURCE-MANIFEST.json'):
+            raise ValueError('Current public compatibility binding differs')
+        if receipt['case_id'] not in device_cases:
+            raise ValueError('Device antecedent case identity differs')
+        antecedent = device_cases[receipt['case_id']]
+        if antecedent['native_samples_sha256'] != sha(native):
+            raise ValueError('Device antecedent source hash differs')
+        if antecedent['source_diagnostic']['entry_frame'] != frame:
+            raise ValueError('Device antecedent entry differs')
+        detector = receipt['measurement_examples']['detector_trace']
+        if detector['sources']['native_samples.jsonl'] != sha(native):
+            raise ValueError('Detector measurement source hash differs')
+        if detector['value'] != {'entry_frame': frame,
+                                 'detector_request_unserviced_before_entry': True,
+                                 'physical_failure_cause_verified': False}:
+            raise ValueError('Detector measurement overclaims cause or entry')
         observed = receipt['measurement_examples']['yield_requirement']['value']
         if observed != {'entry_frame': frame, 'yield_clear_at_entry': clear}:
             raise ValueError('Measured entry/occupation differs')
@@ -67,9 +89,10 @@ def audit():
     comparison = load(HERE / 'yield-comparison-proof.json')
     if not comparison['passed'] or comparison['entry_frames'] != [340, 260]:
         raise ValueError('Yield comparison proof differs')
-    return {'format': 'c111071-yield-source-chain-audit-v1', 'passed': True,
+    return {'format': 'c111071-yield-source-chain-audit-v2', 'passed': True,
             'frozen_assignment_sha256': sha(frozen), 'mapped_terms': len(mapping),
             'source_channels': sorted(allowed), 'cases': summaries,
+            'device_antecedents_sha256': sha(HERE / 'device-antecedents-cpu-proof.json'),
             'comparison_sha256': sha(HERE / 'yield-comparison-proof.json'),
             'source_kind': 'synthetic_native_shaped_diagnostic',
             'original_native_observed': False, 'lawful_status_verified': False,

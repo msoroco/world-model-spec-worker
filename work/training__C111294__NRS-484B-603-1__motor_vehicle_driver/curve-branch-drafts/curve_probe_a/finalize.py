@@ -76,7 +76,7 @@ def finalize(folder: Path, contract: dict, expected_source_sha256: str) -> dict:
               "source_complete": True, "selected": False, "accepted": False,
               "legal_verdict": None, "measurements": {}}
     for req in contract["requirements"]:
-        if req["output_key"] != "curve_approach" or req["method"] != "measure_curve_approach":
+        if req["output_key"] not in ("curve_approach", "winding_approach") or req["method"] != "measure_curve_approach":
             raise ValueError("Measurement method differs from saved finalizer")
         result["measurements"][req["output_key"]] = {
             "method": req["method"], "value": value,

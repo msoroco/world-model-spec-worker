@@ -23,8 +23,9 @@ def main():
                 'actor':'motor_vehicle_driver','approaching_conflict_requested':conflict,
                 'rate_hz':20,'duration_s':30,'required_atoms':[],'source_packets':[],
                 'case':{'case_id':case},
-                'cameras':[{'name':name,'width':1280,'height':720} for name in
-                    ('overview','curb_initial','traffic_approach','merge_conflict')],
+                'cameras':[{'name':name,'width':1920 if name=='overview' else 1280,
+                            'height':1080 if name=='overview' else 720} for name in
+                    ('overview','approach','reference_corner','driver_reference')],
                 'recording_description':{'channels':[
                     {'name':'participant_footprints','unit':'structured','sampling_rate_hz':20,
                      'method':'original Native actor bounding boxes and transforms',
@@ -34,19 +35,22 @@ def main():
                      'method':'original Native actor velocity readback',
                      'time_window':'600 frames','reference_frame':'curbside highway',
                      'uncertainty':'physics and identity require physical review'}],
+                     'context_inputs':[],
                      'limitations':['Safety is a legal judgment, never a numeric gap cutoff',
                                     'Highway dedication, parking permission and purpose require sources',
                                     'Physical curb and camera pixels remain unverified']},
                 'status':'partial_cpu_draft'}
         files=[{'path':name,'content':(HERE/'native'/name).read_text()}
-               for name in ('runner.py','geometry.py','tests/test_native.py')]
+               for name in ('runner.py','geometry.py','source_context.py','tests/test_native.py')]
         files.append({'path':'departure_saved_measure.py',
                       'content':(HERE/'departure_saved_measure.py').read_text()})
+        files.append({'path':'finalize.py',
+                      'content':(HERE/'finalize.py').read_text()})
         files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})
         construction={'case_id':case,'law_id':config['law_id'],'cell_id':config['cell_id'],
             'actor':config['actor'],'entrypoint':'runner.py','files':files,
             'recording_description':config['recording_description'],
-            'measurement_plan':{'entrypoint':'departure_saved_measure.py',
+            'measurement_plan':{'entrypoint':'finalize.py',
                 'required_sources':['departure-trace.jsonl','departure-context.json',
                                     'road.xodr','video_frames.jsonl'],
                 'source_review_required':True},

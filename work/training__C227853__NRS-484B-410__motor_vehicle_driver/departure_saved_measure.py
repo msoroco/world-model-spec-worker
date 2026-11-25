@@ -11,7 +11,7 @@ import math
 from shapely.geometry import Polygon
 
 ASSIGNMENT = 'training__C227853__NRS-484B-410__motor_vehicle_driver'
-CAMERAS = ('overview', 'curb_initial', 'traffic_approach', 'merge_conflict')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def require(ok, message):
@@ -121,7 +121,7 @@ def measure_original(raw_trace, raw_frame_map, raw_context, raw_opendrive):
                     ('video_frame','native_frame','camera_native_frames')) and
                 abs(trace['time_s']-row['time_s']) < 1e-8,
                 'original frame map join mismatch')
-    packet = {'assignment_id':ASSIGNMENT, 'source_kind':'native_saved_sample',
+    packet = {'assignment_id':ASSIGNMENT, 'source_kind':context.get('source_kind'),
               'ego_id':traces[0]['ego_id'], 'traffic_id':traces[0]['traffic_id'],
               'frames':traces}
     result = measure(json.dumps(packet,sort_keys=True,separators=(',',':')).encode(),raw_context)

@@ -5,17 +5,19 @@ import json
 import math
 from pathlib import Path
 import queue
+import shutil
 import subprocess
 
 from geometry import check as geometry_check, open_drive
+from source_context import load_source_context
 
 FRAMES=600
 RATE=20
 CAMERAS=(
-    ('overview',1280,720,0,-22,18,-40),
-    ('curb_initial',1280,720,0,-13,8,-20),
-    ('traffic_approach',1280,720,-30,-10,9,-22),
-    ('merge_conflict',1280,720,25,-14,10,-30),
+    ('overview',1920,1080,0,-22,18,-40),
+    ('approach',1280,720,0,-13,8,-20),
+    ('reference_corner',1280,720,-30,-10,9,-22),
+    ('driver_reference',1280,720,25,-14,10,-30),
 )
 
 
@@ -55,11 +57,15 @@ def corners(actor):
                           (extent.x,extent.y),(-extent.x,extent.y))]
 
 
-def execute(output_dir,conflict,host,port):
+def execute(output_dir,conflict,host,port,source_context):
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import seal_capture
+    from worker_exchange.saved_processing import record_native_exit
     from worker_exchange.world_restore import snapshot,restore
     check()
+    authority = load_source_context(source_context)
     output=Path(output_dir).resolve()
     if (output/'road.xodr').exists() or (output/'departure-trace.jsonl').exists():
         raise ValueError('choose a fresh original Native attempt directory')
@@ -71,6 +77,8 @@ def execute(output_dir,conflict,host,port):
             ('vehicle.','walker.','sensor.','controller.')) for a in old.get_actors()):
         raise RuntimeError('requires an exclusive idle asynchronous Native world')
     owned,encoders,queues=[],{},{}
+    encoder_exit_codes={}
+    capture=None
     changed=False
     try:
         world=client.generate_opendrive_world(open_drive(),carla.OpendriveGenerationParameters(
@@ -87,6 +95,11 @@ def execute(output_dir,conflict,host,port):
         world.apply_settings(settings)
         readback=survey(world,carla)
         output.mkdir(parents=True,exist_ok=True)
+        authority_dir=output/'authority'
+        authority_dir.mkdir()
+        shutil.copyfile(authority['manifest_path'],authority_dir/'manifest.json')
+        for fact,source in authority['source_paths'].items():
+            shutil.copyfile(source,authority_dir/(fact+'.source'))
         source_map=world.get_map().to_opendrive().encode()
         (output/'road.xodr').write_bytes(source_map)
         (output/'departure-context.json').write_text(json.dumps({
@@ -94,12 +107,15 @@ def execute(output_dir,conflict,host,port):
             'source_kind':'native_saved_sample','road_id':'1',
             'map_source_sha256':hashlib.sha256(source_map).hexdigest(),
             'highway_boundary_source_sha256':hashlib.sha256(source_map).hexdigest(),
-            'highway_dedication_source_sha256':None,
-            'public_access_source_sha256':None,
-            'curb_permission_source_sha256':None,
-            'parking_purpose_source_sha256':None,
-            'state':'Nevada','public_highway':None,'parking_permitted':None,
-            'initial_status':None,'native_survey':readback,
+            'highway_dedication_source_sha256':authority['highway_dedication_source_sha256'],
+            'public_access_source_sha256':authority['public_access_source_sha256'],
+            'curb_permission_source_sha256':authority['curb_permission_source_sha256'],
+            'parking_purpose_source_sha256':authority['parking_purpose_source_sha256'],
+            'state':'Nevada','public_highway':authority['public_highway'],
+            'parking_permitted':authority['parking_permitted'],
+            'initial_status':authority['initial_status'],
+            'authority_manifest_sha256':authority['manifest_sha256'],
+            'native_survey':readback,
             'source_review_required':True},indent=2)+'\n')
         blueprints=world.get_blueprint_library()
         ego_bp=blueprints.find('vehicle.tesla.model3')
@@ -130,6 +146,9 @@ def execute(output_dir,conflict,host,port):
                 '-r',str(RATE),'-i','-','-frames:v',str(FRAMES),
                 '-c:v','ffv1','-level','1',str(output/(name+'.mkv'))],
                 stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+        case_id='training__C227853__NRS-484B-410__motor_vehicle_driver__'+(
+            'controlled_2' if conflict else 'controlled_1')
+        capture=PipelineCapture(client,ego,output,case_id,required_observations=[])
         with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'departure-trace.jsonl').open('x') as trace:
             first_elapsed=None
             for index in range(FRAMES):
@@ -161,7 +180,7 @@ def execute(output_dir,conflict,host,port):
                     encoders[name].stdin.write(image.raw_data)
                     mapped[name]=image.frame
                 frame_map.append(native_frame,relative,camera_native_frames=mapped)
-                trace.write(json.dumps({'video_frame':index,'native_frame':native_frame,
+                sample={'video_frame':index,'native_frame':native_frame,
                     'time_s':relative,'native_elapsed_seconds':absolute,
                     'camera_native_frames':mapped,
                     'ego_id':str(ego.id),'traffic_id':str(other.id),
@@ -170,16 +189,23 @@ def execute(output_dir,conflict,host,port):
                     'traffic_xy_m':[other.get_transform().location.x,other.get_transform().location.y],
                     'ego_footprint_xy_m':corners(ego),'traffic_footprint_xy_m':corners(other),
                     'ego_speed_mps':ego.get_velocity().length(),
-                    'traffic_speed_mps':other.get_velocity().length()})+'\n')
+                    'traffic_speed_mps':other.get_velocity().length()}
+                capture.capture(native_frame,relative,extra={'c227853_departure':sample})
+                trace.write(json.dumps(sample,allow_nan=False)+'\n')
         for name,process in encoders.items():
             process.stdin.close()
             stderr=process.stderr.read()
-            if process.wait(timeout=180) or not (output/(name+'.mkv')).is_file():
+            encoder_exit_codes[name]=process.wait(timeout=180)
+            if encoder_exit_codes[name] or not (output/(name+'.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed: '+name+': '+stderr.decode()[-400:])
+        capture.close(confirmed=True)
+        capture=None
         return {'frames':FRAMES,'conflict_requested':conflict,
                 'native_survey':readback,'source_review_required':True,
                 'physical_acceptance_claimed':False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -192,7 +218,13 @@ def execute(output_dir,conflict,host,port):
             except Exception:
                 pass
         if changed:
-            restore(client,saved)
+            restored=restore(client,saved)
+            if capture is None and len(encoder_exit_codes)==4:
+                seal_capture(output,frames=FRAMES,restoration=restored,errors=[],
+                    encoder_exit_codes=encoder_exit_codes,context={'case_id':
+                    'training__C227853__NRS-484B-410__motor_vehicle_driver__'+
+                    ('controlled_2' if conflict else 'controlled_1')})
+                record_native_exit(output)
 
 
 if __name__=='__main__':
@@ -201,6 +233,7 @@ if __name__=='__main__':
     p.add_argument('--output-dir')
     p.add_argument('--host',default='127.0.0.1')
     p.add_argument('--port',type=int,default=2000)
+    p.add_argument('--source-context')
     a=p.parse_args()
     if a.check:
         if a.output_dir:
@@ -209,5 +242,7 @@ if __name__=='__main__':
     else:
         if not a.output_dir:
             raise SystemExit('--output-dir required for Native execution')
+        if not a.source_context:
+            raise SystemExit('--source-context required for source-grounded Native execution')
         conflict=json.loads((Path(__file__).parent/'config.json').read_text())['approaching_conflict_requested']
-        print(json.dumps(execute(a.output_dir,conflict,a.host,a.port)))
+        print(json.dumps(execute(a.output_dir,conflict,a.host,a.port,a.source_context)))

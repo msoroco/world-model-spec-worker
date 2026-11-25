@@ -41,6 +41,8 @@ def check_result(result, case):
         required.update(('obstruction_pose', 'highway_obstruction'))
     if 'crest_probe' in case:
         required.add('crest_design')
+    if 'curve_probe' in case:
+        required.add('curve_design')
     if not required <= names:
         raise ValueError('Ego, other-traffic or weather recording missing')
     if not result.get('target_checks') or not result.get('realized_observables'):
@@ -115,6 +117,20 @@ def check_review(review, attempt, frame_map, trace, case):
                 heights[peak] - min(heights[:peak]) < .5 or
                 heights[peak] - min(heights[peak + 1:500]) < .5):
             raise ValueError('Original hill crest grade and ego rise/fall unverified')
+    if 'curve_probe' in case:
+        import xml.etree.ElementTree as ET
+        for name in ('context.json', 'capture/evidence.jsonl'):
+            expected[name] = source(attempt, name)
+        context = json.loads(expected['context.json'].read_text())
+        evidence = [json.loads(line) for line in expected['capture/evidence.jsonl'].read_text().splitlines()]
+        samples = [json.loads(line) for line in expected['native_samples.jsonl'].read_text().splitlines()]
+        road = ET.fromstring(expected['road.xodr'].read_text())
+        road_one = next((row for row in road.findall('road') if row.get('id') == '1'), None)
+        stations = set() if road_one is None else {int(float(row.get('s', -1))) for row in road_one.findall('lanes/laneOffset')}
+        lateral = [row['ego_position_m'][0] for row in samples]
+        if (not context.get('curve_design') or len(evidence) != 600 or len(lateral) != 600 or
+                not {100, 145, 190} <= stations or max(lateral) - min(lateral) < .6):
+            raise ValueError('Original road curve and ego lateral route unverified')
     for name, path in expected.items():
         if review.get('source_sha256', {}).get(name) != digest(path):
             raise ValueError('Review lacks exact original source hash: ' + name)
@@ -128,6 +144,8 @@ def check_review(review, attempt, frame_map, trace, case):
         raise ValueError('Original highway obstruction review incomplete')
     if 'crest_probe' in case and any(row.get('hill_crest_reviewed') is not True for row in rows):
         raise ValueError('Original hill crest review incomplete')
+    if 'curve_probe' in case and any(row.get('road_curve_reviewed') is not True for row in rows):
+        raise ValueError('Original road curve review incomplete')
 
 
 def audit(args):
@@ -171,7 +189,7 @@ def selftest(case, negative):
               'accepted': False, 'legal_verdict_claimed': False, 'setup_confirmed': False,
               'behavior_attempted': True, 'maneuver_completed': True, 'target_checks': [{'target': 'speed_profile', 'matched': True}],
               'realized_observables': {'ego_speed': {'value': 10}},
-              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'pedestrian_pose', 'pedestrian_hazard') if 'pedestrian_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'obstruction_pose', 'highway_obstruction') if 'obstruction_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'crest_design') if 'crest_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
+              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'pedestrian_pose', 'pedestrian_hazard') if 'pedestrian_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'obstruction_pose', 'highway_obstruction') if 'obstruction_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'crest_design') if 'crest_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'curve_design') if 'curve_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
               'measured_values': {'frames': 600, 'approach_start_mph': 28.8, 'preentry_mph': 20.0,
                                   'crossing_peak_mph': 20.0, 'measured_decrease_mph': 8.8,
                                   'reduction_necessity_legally_verified': False}}

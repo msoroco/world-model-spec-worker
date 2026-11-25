@@ -71,7 +71,7 @@ def measure_curve_approach(folder: Path, value: dict) -> dict:
                 'value = measure_curve_approach(folder, measure_intersection_approach(rows, relation, road))')
     text = once(text,
         'req["output_key"] != "intersection_approach" or req["method"] != "measure_intersection_approach"',
-        'req["output_key"] != "curve_approach" or req["method"] != "measure_curve_approach"')
+        'req["output_key"] not in ("curve_approach", "winding_approach") or req["method"] != "measure_curve_approach"')
     text = once(text, 'report["measurements"]["intersection_approach"]["value"]',
                 'report["measurements"]["curve_approach"]["value"]')
     return text
@@ -102,6 +102,10 @@ def build(old, new, candidate='primary'):
             data['requirements'][0].update(disposition_index=1,
                 output_key='curve_approach', method='measure_curve_approach',
                 inputs=['native_samples.jsonl', 'road.xodr', 'context.json'])
+            import copy
+            winding = copy.deepcopy(data['requirements'][0])
+            winding.update(disposition_index=3, output_key='winding_approach')
+            data['requirements'].append(winding)
             content = json.dumps(data, indent=2) + '\n'
         elif path == 'config.json':
             data = json.loads(content)

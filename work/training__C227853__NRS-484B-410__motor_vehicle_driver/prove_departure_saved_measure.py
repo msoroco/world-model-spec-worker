@@ -86,7 +86,7 @@ def main():
        'initial parked purpose unresolved'),
       ('changed_traffic',lambda p,c:p['frames'][300].__setitem__('traffic_id','other'),
        'participant identity changed'),
-      ('missing_camera',lambda p,c:p['frames'][300]['camera_native_frames'].pop('curb_initial'),
+      ('missing_camera',lambda p,c:p['frames'][300]['camera_native_frames'].pop('approach'),
        'four-camera frame join missing'),
       ('missing_frame',lambda p,c:p['frames'].pop(300),
        'recording shorter than 30 seconds'),
