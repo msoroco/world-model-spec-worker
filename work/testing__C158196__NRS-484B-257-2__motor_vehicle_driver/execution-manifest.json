@@ -1,0 +1,446 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_delivery_draft",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls",
+      "construction": "construction.json",
+      "construction_sha256": "1c04c1e4dd8e687119547674caa0ed4dfc25601473508f7e39a5f9b21c26d408",
+      "measurement_contract": "cases/active_signal_controls-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/active_signal_controls-fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Governing versus nongoverning signal head may be outside the original approach view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/active_signal_controls-fallback1-construction.json",
+          "construction_sha256": "6bba7a29e1d90be3f688bb66311d4c9c7cccae4d1f09c080958c2e2db46218c4",
+          "trigger": {
+            "source": "original synchronized camera frames and frame map",
+            "metric": "governing-head lane and signal state visible in original approach frames",
+            "failure_condition": "Original approach frames omit the head or cannot distinguish its affected lane"
+          },
+          "changed_knobs": [
+            "approach camera height 1.6 to 2.2 m",
+            "approach camera pitch 0 to 5 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --candidate fallback1 --output .runtime-work/c158196-fallback1-active_signal_controls/offline",
+            "exit_code": 0,
+            "construction_sha256": "6bba7a29e1d90be3f688bb66311d4c9c7cccae4d1f09c080958c2e2db46218c4",
+            "log": "cases/active_signal_controls-fallback1-offline.log",
+            "log_sha256": "5908dbb08691d01266851cdf03250dbcc214d68a682e9cabad09e043c47b1469"
+          },
+          "compatibility": {
+            "receipt": "cases/active_signal_controls-fallback1-compatibility.json",
+            "sha256": "3e7e7a3c2c80d77390c966d4d036c714429ec3fed8dd664d00704630eb5c86e8",
+            "log": "cases/active_signal_controls-fallback1-analysis.log",
+            "negative_log": "cases/active_signal_controls-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__active_signal_controls --output .runtime-work/c158196-257-2-active_signal_controls-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "1c04c1e4dd8e687119547674caa0ed4dfc25601473508f7e39a5f9b21c26d408",
+        "log": "cases/active_signal_controls-offline.log",
+        "log_sha256": "a8232592ea2eebc939f76694d8df1852bb57b94d038865564b14bb4b1abb6c5a"
+      },
+      "physical_preparation": {
+        "receipt": "cases/active_signal_controls-physical-proofs/receipt.json",
+        "sha256": "19a1ce39ca407e6e102a990a8c34473b036db80e83f412a435192a052072aee5"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/active_signal_controls-compatibility.json",
+        "sha256": "ee488d5f5634ba34993bb3f29caa11e362c0aa4059a03875ba6ac9a27f1d2f94",
+        "log": "cases/active_signal_controls-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/active_signal_controls-negative-analysis.log"
+      },
+      "post_capture": {
+        "receipt": "cases/active_signal_controls-process-saved.json",
+        "sha256": "d4081694b14a9cb9b75b44ab8b9b271577b429fbdb4f81435659452e82ce4661",
+        "log": "cases/active_signal_controls-process-saved-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty",
+      "construction": "cases/signal_off_signed_duty-construction.json",
+      "construction_sha256": "987e4554250f3f1503fac4a1b7e142d2805a35620db75b531aaaa358567e7643",
+      "measurement_contract": "cases/signal_off_signed_duty-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_off_signed_duty-fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signed entrance device may be outside the original reference-corner view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/signal_off_signed_duty-fallback1-construction.json",
+          "construction_sha256": "ce421369054f30e10b7f416b722f717a71fad7a03a28b645a764d3a973c46dd7",
+          "trigger": {
+            "source": "original synchronized camera frames and frame map",
+            "metric": "entrance sign face and ego lane visible in original reference-corner frames",
+            "failure_condition": "Original reference-corner frames omit the sign face or its entrance relation"
+          },
+          "changed_knobs": [
+            "reference-corner camera moved to (-27,-10,6) m",
+            "reference-corner yaw 45 to 41 and pitch -20 to -24 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --candidate fallback1 --output .runtime-work/c158196-fallback1-signal_off_signed_duty/offline",
+            "exit_code": 0,
+            "construction_sha256": "ce421369054f30e10b7f416b722f717a71fad7a03a28b645a764d3a973c46dd7",
+            "log": "cases/signal_off_signed_duty-fallback1-offline.log",
+            "log_sha256": "a79b7ec6be9591c74ee987c6dc2b3741181b67355d91289c0f9480a5484804c0"
+          },
+          "compatibility": {
+            "receipt": "cases/signal_off_signed_duty-fallback1-compatibility.json",
+            "sha256": "7e349324eafa6b1634671494283ef450f2eb2856c8bea91ca98944a342a6a85a",
+            "log": "cases/signal_off_signed_duty-fallback1-analysis.log",
+            "negative_log": "cases/signal_off_signed_duty-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_signed_duty --output .runtime-work/c158196-257-2-signal_off_signed_duty-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "987e4554250f3f1503fac4a1b7e142d2805a35620db75b531aaaa358567e7643",
+        "log": "cases/signal_off_signed_duty-offline.log",
+        "log_sha256": "29bc53364fa39d7e1a2203808083dbc2a43a4e76c91a086d200404253b1e900f"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_off_signed_duty-physical-proofs/receipt.json",
+        "sha256": "96d839d6d8b3cadbfce287ee64176edf84a69c82a2ccc0143329879683e1e3a0"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/signal_off_signed_duty-compatibility.json",
+        "sha256": "9bbe5e686ff3423e5012ab097f24c9017ad356a46ad6c38241ac12acc392b9aa",
+        "log": "cases/signal_off_signed_duty-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/signal_off_signed_duty-negative-analysis.log"
+      },
+      "post_capture": {
+        "receipt": "cases/signal_off_signed_duty-process-saved.json",
+        "sha256": "ae8bdba144f8a8d5960928458675b25effaf033edd4f331432de1d35030f53bf",
+        "log": "cases/signal_off_signed_duty-process-saved-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control",
+      "construction": "cases/signal_elsewhere_no_control-construction.json",
+      "construction_sha256": "ef0fdc0563cb2ef4e0cb7107e14784ee6c73618e2168dd5b1dd03778bad1ac16",
+      "measurement_contract": "cases/signal_elsewhere_no_control-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_elsewhere_no_control-fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Governing versus nongoverning signal head may be outside the original approach view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/signal_elsewhere_no_control-fallback1-construction.json",
+          "construction_sha256": "08ff18fbe692c5977b2e45f2298f53226fc15b4a055fdcc852d792d99638b6ca",
+          "trigger": {
+            "source": "original synchronized camera frames and frame map",
+            "metric": "governing-head lane and signal state visible in original approach frames",
+            "failure_condition": "Original approach frames omit the head or cannot distinguish its affected lane"
+          },
+          "changed_knobs": [
+            "approach camera height 1.6 to 2.2 m",
+            "approach camera pitch 0 to 5 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --candidate fallback1 --output .runtime-work/c158196-fallback1-signal_elsewhere_no_control/offline",
+            "exit_code": 0,
+            "construction_sha256": "08ff18fbe692c5977b2e45f2298f53226fc15b4a055fdcc852d792d99638b6ca",
+            "log": "cases/signal_elsewhere_no_control-fallback1-offline.log",
+            "log_sha256": "77c36d89a41fe1a147cc3f7e725299e091d907d3f4273324518b0dc6688335c6"
+          },
+          "compatibility": {
+            "receipt": "cases/signal_elsewhere_no_control-fallback1-compatibility.json",
+            "sha256": "7814130b932bd859c7be97bbc895761aff874862a170fb86670698590264c7c7",
+            "log": "cases/signal_elsewhere_no_control-fallback1-analysis.log",
+            "negative_log": "cases/signal_elsewhere_no_control-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_elsewhere_no_control --output .runtime-work/c158196-257-2-signal_elsewhere_no_control-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "ef0fdc0563cb2ef4e0cb7107e14784ee6c73618e2168dd5b1dd03778bad1ac16",
+        "log": "cases/signal_elsewhere_no_control-offline.log",
+        "log_sha256": "c4991353bd6f7b5172f5bc5753e2c77d1bac24de782a1def555c617e7104466f"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_elsewhere_no_control-physical-proofs/receipt.json",
+        "sha256": "5f509ad25fb22be2419d968fbe4c9ff7ab8cbf2ab213a195c89ab8cdde6c61e6"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/signal_elsewhere_no_control-compatibility.json",
+        "sha256": "35e740f3e446b518e5450259810c3a01826b8dc1ccbd2268604ee46745233ec9",
+        "log": "cases/signal_elsewhere_no_control-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/signal_elsewhere_no_control-negative-analysis.log"
+      },
+      "post_capture": {
+        "receipt": "cases/signal_elsewhere_no_control-process-saved.json",
+        "sha256": "235033444f3eee7a4cb0c224a962fcb352668b46a8db3248b854ea6e67f82237",
+        "log": "cases/signal_elsewhere_no_control-process-saved-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty",
+      "construction": "cases/signal_off_stop_signed_duty-construction.json",
+      "construction_sha256": "d8afe1b41dcbc2f2d4cca274d7b639dcd4f880f1ad80417ed1fbff3458988c8b",
+      "measurement_contract": "cases/signal_off_stop_signed_duty-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/signal_off_stop_signed_duty-fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Signed entrance device may be outside the original reference-corner view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/signal_off_stop_signed_duty-fallback1-construction.json",
+          "construction_sha256": "2ffcb85a8623621b9b253d3e568b400151e3733d0d4a66544702d4055bfa87e4",
+          "trigger": {
+            "source": "original synchronized camera frames and frame map",
+            "metric": "entrance sign face and ego lane visible in original reference-corner frames",
+            "failure_condition": "Original reference-corner frames omit the sign face or its entrance relation"
+          },
+          "changed_knobs": [
+            "reference-corner camera moved to (-27,-10,6) m",
+            "reference-corner yaw 45 to 41 and pitch -20 to -24 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --candidate fallback1 --output .runtime-work/c158196-fallback1-signal_off_stop_signed_duty/offline",
+            "exit_code": 0,
+            "construction_sha256": "2ffcb85a8623621b9b253d3e568b400151e3733d0d4a66544702d4055bfa87e4",
+            "log": "cases/signal_off_stop_signed_duty-fallback1-offline.log",
+            "log_sha256": "4a963d7d14ff25fbf2c8be1c94dcd7750b7b822f525629d3c27ad6df15b852dc"
+          },
+          "compatibility": {
+            "receipt": "cases/signal_off_stop_signed_duty-fallback1-compatibility.json",
+            "sha256": "cc797343dc91b462a671607b8713297b9e806eed17dd0dd06cfe29decc07ef26",
+            "log": "cases/signal_off_stop_signed_duty-fallback1-analysis.log",
+            "negative_log": "cases/signal_off_stop_signed_duty-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__signal_off_stop_signed_duty --output .runtime-work/c158196-257-2-signal_off_stop_signed_duty-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d8afe1b41dcbc2f2d4cca274d7b639dcd4f880f1ad80417ed1fbff3458988c8b",
+        "log": "cases/signal_off_stop_signed_duty-offline.log",
+        "log_sha256": "ea11bd819c6e0872c24e2e4455e6e71a7345317c8e7a8c6703486a0a7b2144e0"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_off_stop_signed_duty-physical-proofs/receipt.json",
+        "sha256": "aecf7a0f7ef75a4f4c47c15ea733599b039e171fe53fd2a5f9a8ee206342a4f5"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/signal_off_stop_signed_duty-compatibility.json",
+        "sha256": "35136db3b4b387b5cc8b2c4d6380199b4967e4b0898e8b08f4601061aca4eb44",
+        "log": "cases/signal_off_stop_signed_duty-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/signal_off_stop_signed_duty-negative-analysis.log"
+      },
+      "post_capture": {
+        "receipt": "cases/signal_off_stop_signed_duty-process-saved.json",
+        "sha256": "fa07d9975be7a9faf690944731627bb076a4e6dc4e44a49ea269701d2bbe82e8",
+        "log": "cases/signal_off_stop_signed_duty-process-saved-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close",
+      "construction": "cases/approaching_traffic_close-construction.json",
+      "construction_sha256": "fc04182a9d1a6e2e97f43aabea257097e3260087ee85a390dbde533b848f0442",
+      "measurement_contract": "cases/approaching_traffic_close-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/approaching_traffic_close-fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Other vehicle approach or complete body may leave the original overview."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approaching_traffic_close-fallback1-construction.json",
+          "construction_sha256": "1db0ba1aa3514c4c489967c1d6c9e886dcf019459823fac4874d345bd37ceddb",
+          "trigger": {
+            "source": "original synchronized camera frames and frame map",
+            "metric": "both complete bodies and conflict region visible in original overview frames",
+            "failure_condition": "Original overview frames omit the other approach or complete crossing body"
+          },
+          "changed_knobs": [
+            "overview camera height 18 to 24 m",
+            "overview pitch -55 to -65 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --candidate fallback1 --output .runtime-work/c158196-fallback1-approaching_traffic_close/offline",
+            "exit_code": 0,
+            "construction_sha256": "1db0ba1aa3514c4c489967c1d6c9e886dcf019459823fac4874d345bd37ceddb",
+            "log": "cases/approaching_traffic_close-fallback1-offline.log",
+            "log_sha256": "fcaa69c658c63fa5f103f6863a9ee9b3691a2f417905dcd56357e2b927f442d1"
+          },
+          "compatibility": {
+            "receipt": "cases/approaching_traffic_close-fallback1-compatibility.json",
+            "sha256": "734bbadfd51063f2ce2222c13b0a18b8337ce531fa3e0b3aaf9a1eab80b6df14",
+            "log": "cases/approaching_traffic_close-fallback1-analysis.log",
+            "negative_log": "cases/approaching_traffic_close-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_close --output .runtime-work/c158196-257-2-approaching_traffic_close-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "fc04182a9d1a6e2e97f43aabea257097e3260087ee85a390dbde533b848f0442",
+        "log": "cases/approaching_traffic_close-offline.log",
+        "log_sha256": "da2008c7788cc02c2eb05a132b6c8aa6ddef97feba3cb3d0a311e76ca8518a35"
+      },
+      "physical_preparation": {
+        "receipt": "cases/approaching_traffic_close-physical-proofs/receipt.json",
+        "sha256": "321f7ecc12f9fe6b3fa218ce4c837792286cf99b210e4b353e5b7352f2b0e10a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/approaching_traffic_close-compatibility.json",
+        "sha256": "a6ead333506cdbd7e2940995ddc7f4b3d0098c33f4cacf99c3538f81e9fe54eb",
+        "log": "cases/approaching_traffic_close-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/approaching_traffic_close-negative-analysis.log"
+      },
+      "post_capture": {
+        "receipt": "cases/approaching_traffic_close-process-saved.json",
+        "sha256": "9fa022d4310fdefaf35fed1b36051db6f4fa3ad0ba4a25dc154bc00086ecf325",
+        "log": "cases/approaching_traffic_close-process-saved-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far",
+      "construction": "cases/approaching_traffic_far-construction.json",
+      "construction_sha256": "3aaaded4e196d5b046df0965c22ad30120cab22d2922fd9b7cd892845f1f5b86",
+      "measurement_contract": "cases/approaching_traffic_far-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "saved_finalizer.py"
+      },
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/cases/approaching_traffic_far-fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Other vehicle approach or complete body may leave the original overview."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approaching_traffic_far-fallback1-construction.json",
+          "construction_sha256": "1a928d112097a399279e554723eb1a1a456150f4ae193a8813725c2e09b7f1cd",
+          "trigger": {
+            "source": "original synchronized camera frames and frame map",
+            "metric": "both complete bodies and conflict region visible in original overview frames",
+            "failure_condition": "Original overview frames omit the other approach or complete crossing body"
+          },
+          "changed_knobs": [
+            "overview camera height 18 to 24 m",
+            "overview pitch -55 to -65 degrees"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/fallback-diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --candidate fallback1 --output .runtime-work/c158196-fallback1-approaching_traffic_far/offline",
+            "exit_code": 0,
+            "construction_sha256": "1a928d112097a399279e554723eb1a1a456150f4ae193a8813725c2e09b7f1cd",
+            "log": "cases/approaching_traffic_far-fallback1-offline.log",
+            "log_sha256": "f1cb4c1e4a75605fb893a51cf6fa8dac9e67c994f695ce82f5a1621253387fbc"
+          },
+          "compatibility": {
+            "receipt": "cases/approaching_traffic_far-fallback1-compatibility.json",
+            "sha256": "5f94b5415151dce5fc11fac20411c5d88079923391a40a2125ec5cc6d5ad2777",
+            "log": "cases/approaching_traffic_far-fallback1-analysis.log",
+            "negative_log": "cases/approaching_traffic_far-fallback1-negative.log"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-2__motor_vehicle_driver/diagnostic-manifest.json --case testing__C158196__NRS-484B-257-2__motor_vehicle_driver__approaching_traffic_far --output .runtime-work/c158196-257-2-approaching_traffic_far-offline-r10 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-demo/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3aaaded4e196d5b046df0965c22ad30120cab22d2922fd9b7cd892845f1f5b86",
+        "log": "cases/approaching_traffic_far-offline.log",
+        "log_sha256": "ffce3988d3ba64775f3f59ee79f86c611b3531f6b1c093a8daf44466d826f5cc"
+      },
+      "physical_preparation": {
+        "receipt": "cases/approaching_traffic_far-physical-proofs/receipt.json",
+        "sha256": "8893f075d167890e536fc843e9dd28b7d4000c1fba267baa14d84d34b58a2eec"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "cases/approaching_traffic_far-compatibility.json",
+        "sha256": "8e43ac931167c93b08be75810556d882653f72042997093f22317d07ed79d102",
+        "log": "cases/approaching_traffic_far-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "cases/approaching_traffic_far-negative-analysis.log"
+      },
+      "post_capture": {
+        "receipt": "cases/approaching_traffic_far-process-saved.json",
+        "sha256": "ba10aaf7266ac1185b331d18e86fa687b76590f8f44ba65b686f5650ae395a37",
+        "log": "cases/approaching_traffic_far-process-saved-analysis.log"
+      }
+    }
+  ]
+}
