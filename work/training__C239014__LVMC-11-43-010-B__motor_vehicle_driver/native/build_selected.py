@@ -32,6 +32,14 @@ def build():
     for comparison in plan["comparisons"]:
         comparison["status"] = "selected_cpu_preparation_in_progress"
         comparison["audit_gap"] = "Independent saved comparison and original Native outcomes pending."
+    for observation in plan["observations"]:
+        name = observation["name"]
+        observation["status"] = "source_channel_defined_original_review_pending"
+        plan["source_observation_mapping"][name] = {
+            "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+            "channels": [name],
+            "source_refs": ["native-raw-actors.jsonl", "video_frames.jsonl",
+                            "roundabout-map-readback.json"]}
     write(FOLDER / "case-plan.json", plan)
     draft = json.loads((HERE / "draft-manifest.json").read_text())
     entries = []

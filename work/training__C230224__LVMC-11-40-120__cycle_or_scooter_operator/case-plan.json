@@ -24,7 +24,7 @@
       "source_index": 25,
       "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "recording_ids": [],
-      "disposition": "planned_unproven"
+      "disposition": "selected_required"
     }
   ],
   "accepted_membership_snapshot": {
@@ -46,40 +46,52 @@
       "comparison_variable": "rider path choice",
       "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "native_primary_offline_passed",
-      "construction_path": "native/selected-primary-construction.json",
-      "construction_sha256": "c033299368bc6bd40fe1642eb83e9774884b89230ba71f509c2e9448d4def2e6",
-      "selection_reason": "Exact law and witness explicitly require affirmative use of a usable adjacent path. No accepted full-train membership exists. Select path-use probe for source-bound physical attempt, leaving usability for independent review."
+      "construction_status": "pinned_offline_passed_original_native_unexecuted",
+      "construction_path": "selected-primary-construction.json",
+      "construction_sha256": "c3508cea582d72647192d8164a70281dfe05a3b32fdaeab15c402413d96c1b9a",
+      "selection_reason": "Exact law and witness explicitly require affirmative use of a usable adjacent path. No accepted full-train membership exists. Select path-use probe for source-bound physical attempt, leaving usability for independent review.",
+      "fixture_recipe": "cases/probe_01/recipe.json",
+      "selection_targets": [
+        "full-train"
+      ],
+      "requested_not_measured": true
     },
     {
       "case_id": "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_02",
       "target_law_id": "LVMC-11-40-120",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "same path available while rider uses roadway",
       "comparison_variable": "rider path choice",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "pinned_offline_passed_original_native_unexecuted",
+      "construction_path": "cases/probe_02/selected-primary-construction.json",
+      "construction_sha256": "7ca1404ec5971ea90b91cc23c6dbe45df28925abe19fdc49024f6e6eba8588ad",
+      "fixture_recipe": "cases/probe_02/recipe.json",
+      "selection_targets": [
+        "full-train"
+      ],
+      "requested_not_measured": true,
+      "selection_reason": "Exact law and witness require prohibited roadway-use contrast while the same adjacent path remains source-reviewed usable; no accepted membership exists."
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__planned_comparison",
+      "comparison_id": "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__path_choice",
       "case_ids": [
         "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_01",
         "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_02"
       ],
       "deliberate_differences": [
-        "rider path choice"
+        "measured rider/device path versus roadway occupancy"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
+        "frozen cell, actor and device subtype",
+        "reviewed adjacent path continuity, surface, obstruction and usability",
+        "roadway geometry and participant identities",
+        "controller policy except surveyed lateral spawn path choice",
+        "camera profile, capture rate and duration"
       ]
     }
   ],
@@ -133,54 +145,51 @@
     }
   ],
   "unverified_physical_assumptions": [
-    "Usability is a judgment/physical condition; presence of path geometry alone is insufficient."
+    "A continuous adjacent usable path, roadway, rideable device and attached rider are survey-gated and must be confirmed locally."
   ],
   "runtime_gaps": [
-    "Selected path-use primary passes pinned offline, but full manifest compatibility, saved processing, semantic proposal, audit, and comparison CPU proofs remain.",
-    "Probe_02 roadway-use comparison needs exact Native construction and controlled path-choice audit.",
-    "Local map survey must verify a continuous adjacent path, surface/usability evidence, a rideable cycle/scooter and visible rider.",
-    "No CARLA capture, original source review, accepted recording, or legal usability verdict is claimed."
+    "Original Native source review, physical acceptance and legal judgment remain local."
   ],
   "observations": [
     {
       "name": "st.bicycle_lane_or_path",
       "mandatory": true,
-      "reason": "the path provided adjacent to the roadway"
+      "reason": "Source-reviewed adjacent path polygon, surface, continuity and usability joined to Native frame"
     },
     {
       "name": "st.roadway",
       "mandatory": true,
-      "reason": "the roadway the rider may not use"
+      "reason": "Source-reviewed roadway polygon joined to Native frame"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
-      "reason": "which of them the machine is on"
+      "reason": "Native device footprint intersection with reviewed path and roadway polygons"
     },
     {
       "name": "ru.bicycle",
       "mandatory": true,
-      "reason": "the machine"
+      "reason": "Reviewed bicycle device subtype and attached rider identity"
     },
     {
       "name": "ru.electric_bicycle",
       "mandatory": true,
-      "reason": "or an electric bicycle"
+      "reason": "Reviewed electric bicycle device subtype and attached rider identity"
     },
     {
       "name": "ru.electric_scooter",
       "mandatory": true,
-      "reason": "or an electric scooter"
+      "reason": "Reviewed electric scooter device subtype and attached rider identity"
     },
     {
       "name": "st.obstruction",
       "mandatory": true,
-      "reason": "what would make the path unusable"
+      "reason": "Reviewed obstruction polygon and path intersection"
     },
     {
       "name": "kin.position",
       "mandatory": true,
-      "reason": "the lateral position relative to the path"
+      "reason": "Original Native device footprint centroid and world pose"
     }
   ],
   "sources": [
@@ -195,12 +204,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Usability is a judgment/physical condition; presence of path geometry alone is insufficient.",
-    "No CARLA execution or accepted recording is claimed."
+    "Original Native device/rider, actual path usability, four-camera visibility and physical completion require local source review.",
+    "Legal outcome remains unclaimed."
   ],
   "requirement_dispositions": [
     {
@@ -212,49 +217,116 @@
         "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_01",
         "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_02"
       ],
-      "evidence_or_gap": "Probe_01 selected with inline Native primary, pinned offline and synthetic source-measurement proof; complete CPU delivery and path-choice comparison remain open."
+      "evidence_or_gap": "Two exact selected path-vs-roadway cases share reviewed adjacent-path usability and source-bound original footprint measurements; no legal or physical outcome asserted by CPU diagnostics."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "st.bicycle_lane_or_path",
-      "measurement": "reviewed path polygon, surface, continuity, adjacency and usability context",
+  "source_observation_mapping": {
+    "st.bicycle_lane_or_path": {
+      "evidence": "the path provided adjacent to the roadway; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "st.bicycle_lane_or_path"
+      ],
       "source_refs": [
-        "path_context.json:path_surface_source",
-        "path_context.json:path_continuity_source",
-        "path_context.json:path_adjacency_source",
-        "path_context.json:path_usability_review_source"
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
       ]
     },
-    {
-      "term": "st.roadway",
-      "measurement": "reviewed roadway polygon",
+    "st.roadway": {
+      "evidence": "the roadway the rider may not use; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "st.roadway"
+      ],
       "source_refs": [
-        "path_context.json:roadway_boundary_source"
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
       ]
     },
-    {
-      "term": "rel.occupies / kin.position",
-      "measurement": "Native footprint overlap with path and roadway on moving frames",
+    "rel.occupies": {
+      "evidence": "which of them the machine is on; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "rel.occupies"
+      ],
       "source_refs": [
-        "native_rider_trace.jsonl:device_footprint_xy_m"
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
       ]
     },
-    {
-      "term": "ru.bicycle / ru.electric_bicycle / ru.electric_scooter",
-      "measurement": "reviewed device subtype and rider/device ID join",
+    "ru.bicycle": {
+      "evidence": "the machine; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "ru.bicycle"
+      ],
       "source_refs": [
-        "path_context.json:device_subtype_source",
-        "path_context.json:rider_identity_source",
-        "native_rider_trace.jsonl:rider_actor_id"
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
       ]
     },
-    {
-      "term": "st.obstruction",
-      "measurement": "reviewed obstruction polygon and intersection area with adjacent path",
+    "ru.electric_bicycle": {
+      "evidence": "or an electric bicycle; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "ru.electric_bicycle"
+      ],
       "source_refs": [
-        "path_context.json:path_obstruction_source"
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "or an electric scooter; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "ru.electric_scooter"
+      ],
+      "source_refs": [
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
+      ]
+    },
+    "st.obstruction": {
+      "evidence": "what would make the path unusable; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "st.obstruction"
+      ],
+      "source_refs": [
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
+      ]
+    },
+    "kin.position": {
+      "evidence": "the lateral position relative to the path; reviewed original geometry/device context joined to 600 Native frames",
+      "channels": [
+        "kin.position"
+      ],
+      "source_refs": [
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/assignment.json",
+        "inputs/training__C230224__LVMC-11-40-120__cycle_or_scooter_operator/witnesses.json"
       ]
     }
-  ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "rider, device footprint, adjacent path, roadway and obstruction",
+        "interval": "entire 30 s / 600-frame capture"
+      },
+      {
+        "view": "approach",
+        "subject": "rider, device footprint, adjacent path, roadway and obstruction",
+        "interval": "entire 30 s / 600-frame capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "rider, device footprint, adjacent path, roadway and obstruction",
+        "interval": "entire 30 s / 600-frame capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "rider, device footprint, adjacent path, roadway and obstruction",
+        "interval": "entire 30 s / 600-frame capture"
+      }
+    ]
+  }
 }

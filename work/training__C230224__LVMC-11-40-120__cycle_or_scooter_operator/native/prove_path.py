@@ -54,10 +54,10 @@ def main():
     with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as tmp:
         root = Path(tmp)
         for name in CAMERAS:
-            video = root/('camera_'+name+'.mkv')
+            video = root/(name+'.mkv')
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=64x48:r=20',
                             '-frames:v', '600', '-c:v', 'ffv1', str(video)], check=True)
-        hashes = {('camera_'+name+'.mkv'): hashlib.sha256((root/('camera_'+name+'.mkv')).read_bytes()).hexdigest()
+        hashes = {(name+'.mkv'): hashlib.sha256((root/(name+'.mkv')).read_bytes()).hexdigest()
                   for name in CAMERAS}
         frames = [{'video_frame': i, 'native_frame': 1000+i, 'time_s': round(i*.05, 4)} for i in range(600)]
         (root/'video_frames.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in frames))
@@ -68,6 +68,8 @@ def main():
                    'path_adjacency_source': 'synthetic fixture', 'path_obstruction_source': 'synthetic fixture',
                    'path_usability_review_source': 'synthetic fixture', 'roadway_boundary_source': 'synthetic fixture',
                    'path_continuous': True, 'path_adjacent': True, 'path_usable_reviewed': True,
+                   'path_context': {'path_continuous': True, 'path_adjacent': True,
+                                    'path_usable_reviewed': True, 'source_kind': 'synthetic_diagnostic'},
                    'rider_actor_id': 7, 'device_actor_id': 8,
                    'path_polygon_xy_m': [[0, 2], [100, 2], [100, 4], [0, 4]],
                    'roadway_polygon_xy_m': [[0, -4], [100, -4], [100, 0], [0, 0]],
@@ -81,9 +83,11 @@ def main():
             if obstruction:
                 context['path_obstruction_polygon_xy_m'] = [[30, 2.5], [31, 2.5], [31, 3.5], [30, 3.5]]
                 context['path_usable_reviewed'] = False
+                context['path_context']['path_usable_reviewed'] = False
             else:
                 context['path_obstruction_polygon_xy_m'] = [[30, 5], [31, 5], [31, 6], [30, 6]]
                 context['path_usable_reviewed'] = True
+                context['path_context']['path_usable_reviewed'] = True
             save(root/'path_context.json', context)
             trace = [{'video_frame': i, 'native_frame': 1000+i, 'source_kind': 'synthetic_native_sample',
                       'rider_actor_id': 7, 'device_actor_id': 8, 'device_speed_mps': 3.0,

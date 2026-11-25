@@ -71,7 +71,7 @@
       "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a",
       "target_law_id": "LVMC-11-43-010-B",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "selected_cpu_preparation_in_progress",
+      "planning_status": "selected_delivery_cpu_prepared",
       "source_branch": "Yield precedence and wait for a traffic gap before entry.",
       "comparison_variable": "roundabout_entry_gap_and_yield",
       "condition_index": 0,
@@ -93,7 +93,7 @@
       "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b",
       "target_law_id": "LVMC-11-43-010-B",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "selected_cpu_preparation_in_progress",
+      "planning_status": "selected_delivery_cpu_prepared",
       "source_branch": "Yield precedence and wait for a traffic gap before entry.",
       "comparison_variable": "roundabout_entry_gap_and_yield",
       "condition_index": 1,
@@ -133,8 +133,18 @@
           "full-train"
         ]
       },
-      "status": "selected_cpu_preparation_in_progress",
-      "audit_gap": "Independent saved comparison and original Native outcomes pending."
+      "status": "selected_delivery_cpu_prepared",
+      "audit_gap": "Diagnostic comparison passed; original Native physical outcomes pending.",
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "63d86aa04dc3a779b26fad1f647ef34b72e77cf4c065a793b62d3c3da84dad7b",
+        "positive_log": "proofs/comparison-final-positive.log",
+        "positive_log_sha256": "87a2b013c5599f816d463ee7b3ebc6133822eb77071639723fd85264d233a160",
+        "negative_log": "proofs/comparison-final-negative.log",
+        "negative_log_sha256": "af97b7e9b0ccb538525f20f2b66265da3f1399f823fc37443694157570122b79",
+        "diagnostic_fixture": true,
+        "original_native_outcome_pending": true
+      }
     }
   ],
   "observations": [
@@ -142,61 +152,61 @@
       "name": "st.roundabout",
       "mandatory": true,
       "source_note": "the roundabout and its entry approaches",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.approaching",
       "mandatory": true,
       "source_note": "the subject approaching an entry",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.entering_intersection",
       "mandatory": true,
       "source_note": "the entry into the circulatory roadway",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
       "source_note": "vehicles already in the roundabout",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.yields_to",
       "mandatory": true,
       "source_note": "the yield owed to them",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "rel.surface_gap",
       "mandatory": true,
       "source_note": "the gap in circulating traffic accepted",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.time_to_conflict",
       "mandatory": true,
       "source_note": "whether the entry forced a circulating vehicle to react",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.hard_deceleration",
       "mandatory": true,
       "source_note": "that reaction",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.stopped",
       "mandatory": true,
       "source_note": "the wait before entering",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     },
     {
       "name": "drv.arrival_order",
       "mandatory": true,
       "source_note": "the order through the conflict point",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_channel_defined_original_review_pending"
     }
   ],
   "sources": [
@@ -252,86 +262,149 @@
     }
   ],
   "runtime_uncertainties": [
-    "Build a physical roundabout with circulating vehicle already inside; measure entry wait, yielded trajectory and actual traffic gap.",
-    "Entry timing without circulating traffic does not test the stated precedence.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "Original CARLA map realization, actor ring occupancy, actual pixels, physical completion and legal sufficient-gap judgment require Native capture and independent review."
   ],
   "source_observation_mapping": {
     "st.roundabout": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "st.roundabout"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.approaching": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.approaching"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.entering_intersection": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.entering_intersection"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "rel.occupies"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.yields_to": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.yields_to"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "rel.surface_gap"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.time_to_conflict": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.hard_deceleration": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.hard_deceleration"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.stopped": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.stopped"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     },
     "drv.arrival_order": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Saved-only source-joined channel from original Native actor/map/frame capture; original physical and legal review pending.",
+      "channels": [
+        "drv.arrival_order"
+      ],
       "source_refs": [
-        "inputs/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/assignment.json"
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl",
+        "roundabout-map-readback.json"
       ]
     }
   },
-  "legal_analysis_note": "The statutory text-1 clause is required for the selected draft scope. Other source alternatives or exceptions remain pending where listed. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
-  "readiness": "planning_only",
-  "physical_prerequisites": "Build a physical roundabout with circulating vehicle already inside; measure entry wait, yielded trajectory and actual traffic gap.",
-  "legal_interpretation_limit": "Entry timing without circulating traffic does not test the stated precedence."
+  "legal_analysis_note": "The frozen reviewed-scope witness selects two entry-gap comparison conditions. Original Native roundabout boundary, participant occupancy, actual pixels, physical completion and legal sufficient-gap judgment remain unresolved; synthetic fixtures carry no legal verdict.",
+  "readiness": "cpu_delivery_prepared_original_capture_pending",
+  "physical_prerequisites": "Run the selected Native capture against an owner-held CARLA endpoint; verify connected roundabout roads, ego and two circulating actor histories, full four-view pixels, and sealed original sources before saved-only processing.",
+  "legal_interpretation_limit": "Six-metre proximity and frame gap are engineering diagnostics only. No statutory sufficient-gap cutoff or legal outcome is inferred from synthetic fixtures.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego entry and both circulating vehicles",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego entry and both circulating vehicles",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego entry and both circulating vehicles",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego entry and both circulating vehicles",
+        "interval": "all 600 source frames"
+      }
+    ]
+  }
 }

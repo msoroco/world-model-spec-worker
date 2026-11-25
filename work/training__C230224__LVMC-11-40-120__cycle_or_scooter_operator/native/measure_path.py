@@ -47,7 +47,7 @@ def measure(root):
         raise ValueError('Assignment or source provenance mismatch')
     hashes = {}
     for name in CAMERAS:
-        path = root/('camera_'+name+'.mkv')
+        path = root/(name+'.mkv')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError('Missing source camera: ' + name)
         run = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -74,6 +74,10 @@ def measure(root):
     for key in ('path_continuous', 'path_adjacent', 'path_usable_reviewed'):
         if type(context.get(key)) is not bool:
             raise ValueError('Missing reviewed path fact: ' + key)
+    authored = context.get('path_context')
+    if not isinstance(authored, dict) or any(authored.get(key) != context[key]
+            for key in ('path_continuous', 'path_adjacent', 'path_usable_reviewed')):
+        raise ValueError('Authored path context differs from reviewed source facts')
     path_poly = polygon(context.get('path_polygon_xy_m'), 'adjacent path')
     road_poly = polygon(context.get('roadway_polygon_xy_m'), 'roadway')
     obstruction = polygon(context.get('path_obstruction_polygon_xy_m'), 'path obstruction')

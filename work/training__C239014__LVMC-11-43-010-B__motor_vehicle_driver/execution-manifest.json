@@ -2,43 +2,369 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_delivery_cpu_in_progress",
+  "status": "cpu_prepared_original_source_pending",
   "cases": [
     {
       "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a",
       "kind": "delivery",
       "construction": "native/condition_a-construction.json",
-      "construction_sha256": "1a4748c0b88a2f0b4fcc120f095ff57ca8848eeec21c5221fcf6cfe513c13beb",
+      "construction_sha256": "081a742735085ebfe85aafb0e5c50c17aa4e4ccb5bbf821882dcc99e3f302a38",
       "candidate_risk": {
-        "status": "none",
-        "reason": "Primary map/controller realization needs original Native review before a fallback trigger can be chosen."
+        "status": "physical",
+        "reason": "Primary lane-following may miss the ring lane or overshoot the entry under physical steering dynamics."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/condition_a/fallback1/construction.json",
+          "construction_sha256": "6148a6ae1d02b51037bc65e539b5867fdf82a72c7bafc11adbefca4ed0676f49",
+          "trigger": {
+            "source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
+            "metric": "ring-road occupancy and entry continuity",
+            "failure_condition": "primary ego fails to enter a recorded ring road or a circulating actor leaves the ring"
+          },
+          "changed_knobs": [
+            "steer_gain 1.3 to 2.0",
+            "max_steer .75 to .95"
+          ],
+          "compatibility": {
+            "receipt": "proofs/condition_a/public-fallback1/receipt.json",
+            "sha256": "267834d0086259dde9df45df456a6b09857e466ed05e885ea58f4bdc99d99b26",
+            "log": "proofs/condition_a/public-fallback1/analysis.log",
+            "negative_log": "proofs/condition_a/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/execution-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --candidate fallback1 --output .runtime-work/c239014-final-offline-a-fallback1",
+            "construction_sha256": "6148a6ae1d02b51037bc65e539b5867fdf82a72c7bafc11adbefca4ed0676f49",
+            "exit_code": 0,
+            "log": "proofs/condition_a/public-fallback1/static.log",
+            "log_sha256": "3f0a7240fd5c16890300cb6059e5ae61c3fa9b5a02c558305bd2d98643fa3ee0"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
       "measurement_contract": "selected-measurements/condition_a/measurement-contract.json",
       "fixture_recipe": "work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/diagnostic-condition_a-recipe.json",
-      "delivery_readiness": "incomplete",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/condition_a/public-primary/receipt.json",
+        "sha256": "232d393b562e1622e3d64053062ce89e1185453be336656c45fd13d689db0715",
+        "log": "proofs/condition_a/public-primary/analysis.log",
+        "negative_log": "proofs/condition_a/public-primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/condition_a/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/execution-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --candidate primary --output .runtime-work/c239014-final-offline-a-primary",
+        "construction_sha256": "081a742735085ebfe85aafb0e5c50c17aa4e4ccb5bbf821882dcc99e3f302a38",
+        "exit_code": 0,
+        "log": "proofs/condition_a/public-primary/static.log",
+        "log_sha256": "3f0a7240fd5c16890300cb6059e5ae61c3fa9b5a02c558305bd2d98643fa3ee0"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/execution-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/condition_a/saved-processing.json",
+        "test_log_sha256": "2ce35e6f262852d072673a380ffdca9c36d9a4d8b375b484fee2573b52c96f52"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_ego_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_circulating_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "st.roundabout": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.entering_intersection": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.yields_to": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.arrival_order": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/condition_a/proof.json",
+        "sha256": "f0dee5d17e241897bf4e7d59ad95fd7bcdc7b42442611348e06931e12ba61e0a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d46ae40c9b853a1fcedc22ba6e6957212c96e2b4253b998394d522c89bc8d8a4",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/delivery_audit.py --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --attempt .runtime-work/c239014-final-saved-attempt-a --processing .runtime-work/c239014-final-saved-output-a/v0001/processing.json --output .runtime-work/c239014-final-delivery-a.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/condition_a/delivery-final-positive.log",
+        "test_log_sha256": "c42481dba2ebfd81322a9898ac212a283b9858d8b1b4424aa4161a70ba5710a2",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/delivery_audit.py --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --attempt .runtime-work/c239014-final-saved-attempt-a --processing .runtime-work/c239014-final-negative-processing-a.json --output .runtime-work/c239014-final-delivery-negative-a.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: roundabout-map-readback.json",
+        "negative_log": "proofs/condition_a/delivery-final-negative.log",
+        "negative_log_sha256": "41920ff89f06dcf8a46b0059bc55b4271b4f0c2070832be974f5c4ce07c63896"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b",
       "kind": "delivery",
       "construction": "native/condition_b-construction.json",
-      "construction_sha256": "22ed60f4481176da9225c665ff49354797106d1ee4c9e0024b3ab922057dfe0d",
+      "construction_sha256": "1297636772ffbda5df9fde5e5e8d5097125c2f81c2846406a7b46a3aca30a2b1",
       "candidate_risk": {
-        "status": "none",
-        "reason": "Primary map/controller realization needs original Native review before a fallback trigger can be chosen."
+        "status": "physical",
+        "reason": "Primary lane-following may miss the ring lane or overshoot the entry under physical steering dynamics."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/condition_b/fallback1/construction.json",
+          "construction_sha256": "1d1754087689090dd321795098c2e942f98e677ef2b0a7ed422346249a2f723a",
+          "trigger": {
+            "source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
+            "metric": "ring-road occupancy and entry continuity",
+            "failure_condition": "primary ego fails to enter a recorded ring road or a circulating actor leaves the ring"
+          },
+          "changed_knobs": [
+            "steer_gain 1.3 to 2.0",
+            "max_steer .75 to .95"
+          ],
+          "compatibility": {
+            "receipt": "proofs/condition_b/public-fallback1/receipt.json",
+            "sha256": "6d067fecfb9c7e64bfa5d5c3b95c8da5a731a973554b8891e0d0709b42859ded",
+            "log": "proofs/condition_b/public-fallback1/analysis.log",
+            "negative_log": "proofs/condition_b/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/execution-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b --candidate fallback1 --output .runtime-work/c239014-final-offline-b-fallback1",
+            "construction_sha256": "1d1754087689090dd321795098c2e942f98e677ef2b0a7ed422346249a2f723a",
+            "exit_code": 0,
+            "log": "proofs/condition_b/public-fallback1/static.log",
+            "log_sha256": "3f0a7240fd5c16890300cb6059e5ae61c3fa9b5a02c558305bd2d98643fa3ee0"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
       "measurement_contract": "selected-measurements/condition_b/measurement-contract.json",
       "fixture_recipe": "work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/diagnostic-condition_b-recipe.json",
-      "delivery_readiness": "incomplete",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/condition_b/public-primary/receipt.json",
+        "sha256": "c09f31d7e88a464b5fd2786df0f9357be221b78a337a637310f91358e79894d7",
+        "log": "proofs/condition_b/public-primary/analysis.log",
+        "negative_log": "proofs/condition_b/public-primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/condition_b/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/execution-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b --candidate primary --output .runtime-work/c239014-final-offline-b-primary",
+        "construction_sha256": "1297636772ffbda5df9fde5e5e8d5097125c2f81c2846406a7b46a3aca30a2b1",
+        "exit_code": 0,
+        "log": "proofs/condition_b/public-primary/static.log",
+        "log_sha256": "3f0a7240fd5c16890300cb6059e5ae61c3fa9b5a02c558305bd2d98643fa3ee0"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/execution-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "inspect \"$OUTPUT/v0001/feedback.json\" for training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/condition_b/saved-processing.json",
+        "test_log_sha256": "5ff17ebdbf1025e7687bf8ec9bff541a9d783145300cb925ce519909269fda76"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_ego_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "raw_circulating_motion": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "st.roundabout": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.entering_intersection": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.yields_to": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        },
+        "drv.arrival_order": {
+          "entrypoint": "finalize.py",
+          "method": "saved-only exact original actor/map/frame source join",
+          "evidence": "native-raw-actors.jsonl; control-intent.jsonl; roundabout-map-readback.json; video_frames.jsonl; four camera videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/condition_b/proof.json",
+        "sha256": "11979f27e95a466de72f8f0f5964116053d97a9d8e0552e67f8b4f0a22875df4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d46ae40c9b853a1fcedc22ba6e6957212c96e2b4253b998394d522c89bc8d8a4",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/delivery_audit.py --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b --attempt .runtime-work/c239014-final-saved-attempt-b --processing .runtime-work/c239014-final-saved-output-b/v0001/processing.json --output .runtime-work/c239014-final-delivery-b.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/condition_b/delivery-final-positive.log",
+        "test_log_sha256": "c64870456f06f5bf3519a77cc4be37df62bec2103755e3bf5f07d6803df7c4fd",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/delivery_audit.py --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b --attempt .runtime-work/c239014-final-saved-attempt-b --processing .runtime-work/c239014-final-negative-processing-b.json --output .runtime-work/c239014-final-delivery-negative-b.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original source missing or stale: roundabout-map-readback.json",
+        "negative_log": "proofs/condition_b/delivery-final-negative.log",
+        "negative_log_sha256": "41920ff89f06dcf8a46b0059bc55b4271b4f0c2070832be974f5c4ce07c63896"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }

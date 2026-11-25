@@ -1,39 +1,38 @@
-# training__C239014__LVMC-11-43-010-B__motor_vehicle_driver
+# C239014 roundabout entry handoff
 
-Status: partial CPU construction checkpoint. Neither exact case is promoted to selected delivery; original Native, physical and legal outcomes are unclaimed.
+Status: **ready for first GPU delivery**, based on CPU preparation and the exact assignment-scoped strict gate. No Native capture or legal/physical acceptance is claimed.
 
-The exact law requires a roundabout entering driver to yield to vehicles already inside and wait for a traffic gap. The frozen cell is a roundabout entry with another vehicle. `case-plan.json` preserves the two planned comparison IDs. Six historical accepted rows are membership-only; no source-hashed equivalence receipt exists and no original is proposed for replay.
+## Selected scope
 
-## Current exact construction and tests
+LVMC 11.43.010(B) requires the entering driver to yield to vehicles already within the roundabout and wait for a traffic gap. The frozen reviewed witness selects two exact conditions that vary only the requested ego entry-release time (17.0 s and 12.5 s). All ten frozen observation terms have source-joined channels. Original roundabout boundary, actual circulating occupancy, traffic response, sufficient-gap judgment and visible source pixels remain delivery review items.
 
-`native/gap_request.py` generates two 600-frame, 20 Hz, 30-second authored entry requests for the exact planned case IDs. The waited condition releases the ego at 17.0 s; the early-entry condition releases it at 12.5 s. Circulating actors cross the modeled entry conflict neighborhood at about 12 s and 24 s in both conditions. The diagnostic checks source identity, 600 frame/time joins, both circulating actor rows, ego continuity, wait/entry order, and the previous and following conflict brackets. It rejects missing actor sources, a missing frame and a forged `original_native` label. Its six-metre neighborhood is an engineering proxy, never a statutory gap threshold.
+The six-metre conflict neighborhood, 0.2 m/s stop proxy, and frame timing are engineering diagnostics. They are not legal thresholds. The six accepted full-train recording IDs in the frozen inventory are membership rows, with no source-hashed equivalence reuse.
 
-`native/build_draft.py` authors `condition_a-construction.json` and `condition_b-construction.json` with exact IDs, 30-second capture and four named source-camera contracts. The pinned `runtime.py offline` command passed for each. These remain unselected inline drafts because they do not yet include Native capture, source-bound compatibility or process-saved finalization.
+## CPU proof
 
-`native/measurement-contract.json` maps all ten summary observation terms to the original actor, map, frame and camera sources to retain. It is a draft measurement plan, not a completed saved finalizer.
+The authored OpenDRIVE ring and approach, three-actor Native controller, PipelineCapture path, four FFV1 cameras, source-sealed capture lifecycle, and saved-only finalizer are in `native/`. Both primary and risk-based steering fallback candidates pass pinned offline checks and positive/missing-map public compatibility. Recorded-only saved processing passes for both primary source-shaped fixtures. Independent delivery and controlled-comparison diagnostic audits pass, and source-tamper negatives reject. The seven-stage semantic chain validates; its judgment sweep remains explicitly incomplete pending original physical and legal review. Synthetic fixtures are identified as such throughout.
 
-Proof and hashes:
+Execution manifest SHA-256: `08fda4047d06c8e1315392fb88d1ab421e76cd073534fcc92cf0b89b26a4403e`. Semantic index SHA-256: `6d4edf3b1af0387a9349b0127e87097ebd10064c3963c5c7a4b7647b9e254c09`.
 
-- `native/gap_request.py`: `ac7577eee77331f148c5cf7d8e3bb50bd8863d85b6171f401234f8f18c81de0f`
-- `native/gap-diagnostic-proof.json`: `1b799c911bffe955def1b1986f22a23da46f0dfb253b57e9ce53f1984e6f3bb8`
-- `native/measurement-contract.json`: `42f9104a444a39f36074bea82b9dde20211572da481699b149cd29e567f54be7`
-- `native/condition_a-construction.json`: `727f61a1a1bd29ee56c2240f9169abe00027df3eb32856c11a58753c541e1639`; passing `native/condition-a-offline.log`: `1964d08abef53a00d5139c86b1302367e404a83a989853237bd873f53f210663`
-- `native/condition_b-construction.json`: `f5f23270ecd8c0f589810db306e002b23e594c48f8e9ef0274ff5c277fd06c5d`; passing `native/condition-b-offline.log`: `41fdf2b4067b1937379bd317753540a41db54505a5cc6d81d6ac619498f32ee3`
+| Condition | Primary construction | Fallback construction | Primary compatibility | Fallback compatibility |
+| --- | --- | --- | --- | --- |
+| condition_a | `081a742735085ebfe85aafb0e5c50c17aa4e4ccb5bbf821882dcc99e3f302a38` | `6148a6ae1d02b51037bc65e539b5867fdf82a72c7bafc11adbefca4ed0676f49` | `232d393b562e1622e3d64053062ce89e1185453be336656c45fd13d689db0715` | `267834d0086259dde9df45df456a6b09857e466ed05e885ea58f4bdc99d99b26` |
+| condition_b | `1297636772ffbda5df9fde5e5e8d5097125c2f81c2846406a7b46a3aca30a2b1` | `1d1754087689090dd321795098c2e942f98e677ef2b0a7ed422346249a2f723a` | `c09f31d7e88a464b5fd2786df0f9357be221b78a337a637310f91358e79894d7` | `6d067fecfb9c7e64bfa5d5c3b95c8da5a731a973554b8891e0d0709b42859ded` |
 
-The generated request rows and negative fixtures are under ignored `.runtime-work/c239014-gap/`. The two offline bundles are under `.runtime-work/c239014-gap-offline-a/` and `-b/`.
+## Delivery
 
-Passed commands:
+Run the canonical exact job with the owner-held CARLA endpoint, then inspect the sealed original source, four decoded camera streams, physical completion, participant histories, entry chronology and legal applicability. The independent original-mode audit requires `original-physical-review.json` and rejects missing or stale original source hashes.
 
-```text
-.venv-cpu/bin/python runtime.py preflight
-PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/native/gap_request.py prove --output .runtime-work/c239014-gap
-PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/native/draft-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --output .runtime-work/c239014-gap-offline-a
-PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C239014__LVMC-11-43-010-B__motor_vehicle_driver/native/draft-manifest.json --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_b --output .runtime-work/c239014-gap-offline-b
-.venv-cpu/bin/python worker_check.py --assignment training__C239014__LVMC-11-43-010-B__motor_vehicle_driver --complete
+First job command:
+
+```sh
+PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C239014__LVMC-11-43-010-B__motor_vehicle_driver --case training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT
 ```
 
-## Next CPU work
+The exact scoped gate passed:
 
-Implement connected Native roundabout geometry and actual ego/circulating actor controllers for both exact cases, retaining all four synchronized source cameras. Bind original actor/map/frame readback and sealed capture to a saved finalizer. Add current source-bound positive/negative `runtime.py compatibility` receipts and actual `process-saved` fixtures for the two exact cases. Build and test candidate fallbacks for concrete physical risks, independent delivery and comparison audits, canonical semantic proposals, and execution-manifest bindings. Run the assignment-scoped strict gate before any ready status. These are worker-owned CPU gaps.
+```sh
+.venv-cpu/bin/python worker_check.py --assignment training__C239014__LVMC-11-43-010-B__motor_vehicle_driver --complete --require-delivery-ready
+```
 
-Later physical review must confirm realized ring topology, yield behavior, cameras and observed gap. Neither diagnostic condition assigns a legal outcome.
+The selected manifest binds exact offline logs, primary and fallback public receipts, saved processing summaries, three synthetic physical outcomes, a six-event owner lifecycle, and positive/negative independent delivery audit logs. `case-plan.json` binds the positive/negative comparison audit. All generated videos and attempt trees remain under `.runtime-work`.

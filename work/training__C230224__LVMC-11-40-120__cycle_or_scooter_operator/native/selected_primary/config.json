@@ -13,12 +13,125 @@
   "duration_s": 30,
   "frames": 600,
   "cameras": [
-    {"name": "forward", "width": 1920, "height": 1080},
-    {"name": "rear", "width": 1280, "height": 720},
-    {"name": "left", "width": 1280, "height": 720},
-    {"name": "right", "width": 1280, "height": 720}
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed_world_transform"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed_world_transform"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed_world_transform"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed_world_transform"
+    }
   ],
-  "recording_description": "Thirty-second rider travel on source-reviewed usable adjacent path, original rider and device identities, device footprint, path and roadway geometry, and four source cameras",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "st.bicycle_lane_or_path",
+        "unit": "structured",
+        "method": "Source-reviewed adjacent path polygon, surface, continuity and usability joined to Native frame",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "st.roadway",
+        "unit": "structured",
+        "method": "Source-reviewed roadway polygon joined to Native frame",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "method": "Native device footprint intersection with reviewed path and roadway polygons",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "ru.bicycle",
+        "unit": "structured",
+        "method": "Reviewed bicycle device subtype and attached rider identity",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "ru.electric_bicycle",
+        "unit": "structured",
+        "method": "Reviewed electric bicycle device subtype and attached rider identity",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "ru.electric_scooter",
+        "unit": "structured",
+        "method": "Reviewed electric scooter device subtype and attached rider identity",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "st.obstruction",
+        "unit": "structured",
+        "method": "Reviewed obstruction polygon and path intersection",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      },
+      {
+        "name": "kin.position",
+        "unit": "m",
+        "method": "Original Native device footprint centroid and world pose",
+        "reference_frame": "original Native frame and reviewed facility geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "full 30 s capture",
+        "uncertainty": "50 ms sample; path usability and device subtype require original source review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "path_context",
+        "unit": "structured",
+        "method": "source-reviewed path condition and device subtype"
+      }
+    ],
+    "limitations": [
+      "Diagnostic fixture does not establish physical path usability or legal compliance"
+    ]
+  },
   "physical_acceptance_claimed": false,
-  "legal_verdict": null
+  "legal_verdict": null,
+  "supported_case_ids": [
+    "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_01",
+    "training__C230224__LVMC-11-40-120__cycle_or_scooter_operator__probe_02"
+  ]
 }

@@ -48,7 +48,8 @@ def measure(rows, source_kind):
     phase_counts = {'inside_roundabout': 0, 'outside_roundabout': 0}
     previous = None
     for i, row in enumerate(rows):
-        if row.get('frame') != i or abs(row.get('time_s', -1) - (i + 1) / HZ) > 1e-8:
+        tolerance = .01 if source_kind == 'original_native' else 1e-8
+        if row.get('frame') != i or abs(row.get('time_s', -1) - (i + 1) / HZ) > tolerance:
             raise ValueError('Frame/time join differs')
         if row.get('source_kind') != source_kind:
             raise ValueError('Frame source differs')

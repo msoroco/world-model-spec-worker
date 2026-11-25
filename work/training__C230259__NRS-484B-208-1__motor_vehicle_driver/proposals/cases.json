@@ -1,0 +1,555 @@
+{
+  "format": "worker-case-proposals",
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-208-1",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__reference",
+      "target_law_id": "NRS-484B-208-1",
+      "target_type": "controlled_comparison",
+      "rationale": "Measure slower left-lane continuation during a faster rear overtake; preserve activation, notice and subsection 2 review.",
+      "variable_assignments": {
+        "slow_extreme_left_lane_continuation": {
+          "kind": "controller",
+          "unit": "boolean",
+          "value": true
+        },
+        "road_and_rear_overtake": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "same two-lane road, ego speed, faster rear actor, clear weather and four cameras"
+        }
+      },
+      "paired_probe_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__left_lane_pair",
+      "deliberate_differences": [
+        "slow_extreme_left_lane_continuation"
+      ],
+      "probe": {
+        "primary_variable": "slow_extreme_left_lane_continuation",
+        "comparison_or_standard": "measured post-overtake left occupancy, not legal verdict",
+        "target_value_or_branch": true
+      },
+      "unresolved_judgment_calls": [
+        "controlled-access highway classification",
+        "driver knows or reasonably should know posted speed",
+        "subsection 2 exceptions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.controlled_access",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.extreme_lane",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.slower_than_posted",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "dev.speed_limit_sign",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.following",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.overtaking",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "st.reserved_lane",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "dev.temporary_traffic_control",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "rear_overtake_crossing",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "posted_speed_source",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "driver_notice_context",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "subsection_2_exception_context",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "left_lane_statutory_context",
+            "unit": "structured",
+            "method": "Source-hashed map, speed posting, knowledge and exception inventory"
+          }
+        ],
+        "limitations": [
+          "Authored speed target is not an original posted-limit source.",
+          "Scripted actor trajectories test acquisition and measurement, not ordinary driving behavior or legal compliance."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__contrast",
+      "target_law_id": "NRS-484B-208-1",
+      "target_type": "controlled_comparison",
+      "rationale": "Measure slower left-lane continuation during a faster rear overtake; preserve activation, notice and subsection 2 review.",
+      "variable_assignments": {
+        "slow_extreme_left_lane_continuation": {
+          "kind": "controller",
+          "unit": "boolean",
+          "value": false
+        },
+        "road_and_rear_overtake": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "same two-lane road, ego speed, faster rear actor, clear weather and four cameras"
+        }
+      },
+      "paired_probe_id": "training__C230259__NRS-484B-208-1__motor_vehicle_driver__left_lane_pair",
+      "deliberate_differences": [
+        "slow_extreme_left_lane_continuation"
+      ],
+      "probe": {
+        "primary_variable": "slow_extreme_left_lane_continuation",
+        "comparison_or_standard": "measured post-overtake left occupancy, not legal verdict",
+        "target_value_or_branch": false
+      },
+      "unresolved_judgment_calls": [
+        "controlled-access highway classification",
+        "driver knows or reasonably should know posted speed",
+        "subsection 2 exceptions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.controlled_access",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.laned_roadway",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.extreme_lane",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.slower_than_posted",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "dev.speed_limit_sign",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.following",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.overtaking",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "st.reserved_lane",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "dev.temporary_traffic_control",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "ego_speed",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "rear_overtake_crossing",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "ego_lane_id",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "posted_speed_source",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "driver_notice_context",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "subsection_2_exception_context",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          },
+          {
+            "name": "camera_frame_join",
+            "unit": "structured",
+            "method": "Original 600-frame ego/rear actor, lane readback and four-camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "Controlled-access posting, notice, exception and physical review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "left_lane_statutory_context",
+            "unit": "structured",
+            "method": "Source-hashed map, speed posting, knowledge and exception inventory"
+          }
+        ],
+        "limitations": [
+          "Authored speed target is not an original posted-limit source.",
+          "Scripted actor trajectories test acquisition and measurement, not ordinary driving behavior or legal compliance."
+        ]
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

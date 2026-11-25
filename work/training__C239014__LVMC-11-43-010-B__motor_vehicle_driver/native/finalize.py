@@ -163,11 +163,49 @@ def finalize(attempt, output):
     channels.mkdir()
     actor_rows = rows(attempt / "native-raw-actors.jsonl")
     frame_rows = rows(attempt / "video_frames.jsonl")
-    for name, values in (("raw_ego_motion", [next(a for a in row["actors"] if a["role"] == "ego")
-                                             for row in actor_rows]),
-                         ("raw_circulating_motion", [[a for a in row["actors"] if a["role"] != "ego"]
-                                                     for row in actor_rows]),
-                         ("frame_join", frame_rows)):
+    ego_rows = [next(a for a in row["actors"] if a["role"] == "ego")
+                for row in actor_rows]
+    traffic_rows = [[a for a in row["actors"] if a["role"] != "ego"]
+                    for row in actor_rows]
+    derived = {name: [] for name in (
+        "st.roundabout", "drv.approaching", "drv.entering_intersection",
+        "rel.occupies", "drv.yields_to", "rel.surface_gap",
+        "drv.time_to_conflict", "drv.hard_deceleration", "drv.stopped",
+        "drv.arrival_order")}
+    for index, (ego, traffic) in enumerate(zip(ego_rows, traffic_rows)):
+        in_ring = ego["road_id"] in RING_ROADS
+        distances = {a["role"]: math.dist((a["x_m"], a["y_m"]), (0, -20))
+                     for a in traffic}
+        previous = traffic_rows[index - 1] if index else traffic
+        deceleration = {a["role"]: (previous[j]["speed_mps"] - a["speed_mps"]) * 20
+                        for j, a in enumerate(traffic)}
+        derived["st.roundabout"].append({"map_road_ids": [1, 2, 3, 4, 5],
+            "ego_road_id": ego["road_id"], "source_review_complete": False})
+        derived["drv.approaching"].append({"approach_road_observed": ego["road_id"] == APPROACH_ROAD,
+            "distance_to_authored_entry_center_m": math.dist((ego["x_m"], ego["y_m"]), (0, -20))})
+        derived["drv.entering_intersection"].append({"ring_road_observed": in_ring,
+            "first_entry_frame": measurement["first_entry_frame"]})
+        derived["rel.occupies"].append({"traffic_ring_road_ids":
+            {a["role"]: a["road_id"] for a in traffic}, "physical_occupancy_review_complete": False})
+        derived["drv.yields_to"].append({"ego_stopped_before_entry":
+            ego["road_id"] == APPROACH_ROAD and ego["speed_mps"] <= .2,
+            "legal_yield_verdict": None})
+        derived["rel.surface_gap"].append({"distance_to_authored_conflict_center_m": distances,
+            "six_meter_engineering_proxy_near": any(d <= 6 for d in distances.values()),
+            "statutory_sufficient_gap": None})
+        derived["drv.time_to_conflict"].append({"distance_to_authored_conflict_center_m": distances,
+            "physical_time_to_conflict_s": None})
+        derived["drv.hard_deceleration"].append({"traffic_speed_drop_rate_mps2": deceleration,
+            "hard_deceleration_judgment": None})
+        derived["drv.stopped"].append({"ego_speed_mps": ego["speed_mps"],
+            "engineering_stop_proxy": ego["speed_mps"] <= .2})
+        derived["drv.arrival_order"].append({"entry_frame": measurement["first_entry_frame"],
+            "previous_conflict_frame": measurement["previous_conflict_frame"],
+            "next_conflict_frame": measurement["next_conflict_frame"],
+            "source_conflict_point_review_complete": False})
+    for name, values in (("raw_ego_motion", ego_rows),
+                         ("raw_circulating_motion", traffic_rows),
+                         ("frame_join", frame_rows), *derived.items()):
         with (channels / (name + ".jsonl")).open("x") as stream:
             for frame, value in zip(frame_rows, values):
                 stream.write(json.dumps({"time_s": frame["time_s"], "value": value}) + "\n")
@@ -196,7 +234,8 @@ def finalize(attempt, output):
         "recording_description": config["recording_description"],
         "recording_evidence": ([{"name": name, "unit": "structured",
             "reference": "channels/" + name + ".jsonl"} for name in
-            ("raw_ego_motion", "raw_circulating_motion", "frame_join")] +
+            ("raw_ego_motion", "raw_circulating_motion", "frame_join",
+             *derived)] +
             [{"name": "roundabout_map", "unit": "source_record",
               "reference": "channels/roundabout_map.json"}]),
         "realized_observables": {"entry_frame": {"value": measurement["first_entry_frame"],

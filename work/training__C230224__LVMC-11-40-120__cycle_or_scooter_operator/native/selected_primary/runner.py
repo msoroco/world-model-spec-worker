@@ -117,7 +117,7 @@ def capture(survey, output, host, port):
                 ['ffmpeg', '-v', 'error', '-f', 'rawvideo', '-pixel_format', 'bgra',
                  '-video_size', f"{camera_spec['width']}x{camera_spec['height']}", '-framerate', '20',
                  '-i', '-', '-frames:v', str(COUNT), '-c:v', 'ffv1',
-                 str(output/('camera_'+camera_spec['name']+'.mkv'))], stdin=subprocess.PIPE)
+                 str(output/(camera_spec['name']+'.mkv'))], stdin=subprocess.PIPE)
         first_elapsed = None
         with (output/'video_frames.jsonl').open('w') as frame_file, (output/'native_rider_trace.jsonl').open('w') as trace_file:
             for i in range(COUNT):
@@ -131,6 +131,7 @@ def capture(survey, output, host, port):
                     first_elapsed = snapshot.timestamp.elapsed_seconds
                 velocity = device.get_velocity()
                 frame_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
+                                             'carla_frame': native_frame,
                                              'time_s': snapshot.timestamp.elapsed_seconds-first_elapsed})+'\n')
                 trace_file.write(json.dumps({'video_frame': i, 'native_frame': native_frame,
                                              'source_kind': 'original_native_pose', 'device_actor_id': device.id,
@@ -146,7 +147,8 @@ def capture(survey, output, host, port):
             if proc.wait(timeout=120):
                 raise RuntimeError('Source camera encoding failed')
         (output/'path_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'review_kind': 'original_source_review',
+            'assignment_id': AID, 'case_id': CASE, 'review_kind': 'original_source_review',
+            'path_context': {'review_required': True},
             'device_subtype': survey['device_subtype'], 'device_actor_id': device.id,
             'rider_actor_id': rider.id, 'camera_sha256': {}, 'review_required': True}, indent=2)+'\n')
         return {'case_id': CASE, 'source_frames': COUNT, 'physical_acceptance_claimed': False}
