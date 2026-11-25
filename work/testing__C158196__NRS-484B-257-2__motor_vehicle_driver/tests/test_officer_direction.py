@@ -48,6 +48,9 @@ class OfficerDirectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Unknown exact'):
             DIRECTION.phases(PREFIX + 'unknown', 20)
         self.assertEqual(DIRECTION.phases(go, 20, 8)[0].end_frame, 8)
+        for suffix in DIRECTION.REFERENCE_SUFFIXES:
+            self.assertEqual(DIRECTION.apply_direction(None, None, PREFIX + suffix,
+                                                       4, 20)['programmed_direction'], 'none')
 
     def test_native_pose_readback_and_missing_bone(self):
         carla = NS(Rotation=lambda **angles: NS(**angles),

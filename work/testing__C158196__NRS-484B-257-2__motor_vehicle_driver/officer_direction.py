@@ -13,7 +13,12 @@ SUFFIXES = (
     "officer_controls_go",
     "officer_controls_hold",
     "officer_present_inactive",
+    "stop_line_reference",
+    "crosswalk_reference",
+    "nearest_view_reference",
 )
+REFERENCE_SUFFIXES = ("stop_line_reference", "crosswalk_reference",
+                      "nearest_view_reference")
 PREFIX = "testing__C158196__NRS-484B-257-2__motor_vehicle_driver__"
 
 
