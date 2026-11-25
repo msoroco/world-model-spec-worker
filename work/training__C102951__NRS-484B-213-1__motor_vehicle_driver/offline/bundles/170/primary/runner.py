@@ -134,8 +134,8 @@ def execute(bundle, distance, candidate, output, host, port):
     if output.exists():
         raise ValueError('Native output must be a fresh directory')
     output.mkdir(parents=True)
-    sys.path.insert(0, str(ROOT/'runtime/pipeline/scenario_pipeline'))
-    sys.path.insert(0, str(ROOT/'runtime/pipeline/python'))
+    sys.path.insert(0, str(ROOT/'runtime/scenario_pipeline'))
+    sys.path.insert(0, str(ROOT/'runtime/python'))
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture

@@ -10,7 +10,7 @@ from pathlib import Path
 import shutil
 
 from road_entry_measure import measure
-from source_review import write_bound_rows
+from source_review import bind, write_bound_rows
 
 
 RAW = ('road-boundary.json', 'native-pedestrian-frames.jsonl',
@@ -38,12 +38,27 @@ def analyze(attempt, review='independent-review.json'):
         provenance.get('native_executed') is False
     if provenance and not diagnostic_fixture and provenance.get('provenance_kind') != 'native':
         raise ValueError('Unrecognized saved-source provenance')
+    for name in RAW + REVIEWED:
+        if not (attempt / name).is_file():
+            raise ValueError('Missing required source: ' + name)
     original_hashes = {name: digest(attempt / name) for name in RAW + REVIEWED}
     original_hashes[review] = digest(review_path)
     output = attempt / 'reviewed-source'
-    count = write_bound_rows(attempt, review_path, output, diagnostic_fixture)
-    for name in RAW:
-        shutil.copyfile(attempt / name, output / name)
+    if output.exists():
+        signals, devices = bind(attempt, review_path, diagnostic_fixture)
+        for name, rows in (('native-signal-frames.jsonl', signals),
+                           ('native-pedestrian-device-frames.jsonl', devices)):
+            expected = ''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows)
+            if (output / name).read_text() != expected:
+                raise ValueError('Retained reviewed source differs from original review: ' + name)
+        for name in RAW:
+            if digest(output / name) != original_hashes[name]:
+                raise ValueError('Retained original Native source differs: ' + name)
+        count = len(signals)
+    else:
+        count = write_bound_rows(attempt, review_path, output, diagnostic_fixture)
+        for name in RAW:
+            shutil.copyfile(attempt / name, output / name)
     observation = measure(output, diagnostic_fixture)
     if observation['frame_count'] != count:
         raise ValueError('Reviewed signal and Native measurement counts differ')
@@ -61,5 +76,10 @@ def analyze(attempt, review='independent-review.json'):
         'physical_acceptance_claimed': False,
         'legal_verdict': None,
     }
-    (output / 'measurement.json').write_text(json.dumps(report, indent=2) + '\n')
+    measurement_path = output / 'measurement.json'
+    if measurement_path.exists():
+        if json.loads(measurement_path.read_text()) != report:
+            raise ValueError('Retained source measurement differs from replayed analysis')
+    else:
+        measurement_path.write_text(json.dumps(report, indent=2) + '\n')
     return report

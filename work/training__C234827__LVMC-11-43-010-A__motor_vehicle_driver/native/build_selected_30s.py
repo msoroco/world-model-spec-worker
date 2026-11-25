@@ -26,7 +26,7 @@ def build(index,candidate='primary'):
     config=json.loads(files['config.json'])
     config.update(format='c234827-rotary-delivery-v2',selected_case_id=old['case_id'],
                   supported_case_ids=[old['case_id']],candidate_id=candidate,
-                  required_atoms=['st.roundabout','rel.occupies','kin.heading','kin.position','kin.yaw_rate'],
+                  required_atoms=['rel.occupies','kin.heading','kin.position','kin.yaw_rate'],
                   source_packets=[],mandatory_channels=list(CHANNELS),
                   case={'case_id':old['case_id']},status='selected_native_runner_cpu_prepared',
                   native_execution_integrated=True,original_native_observed=False,

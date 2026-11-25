@@ -99,74 +99,74 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "pedestrian_footprint",
+      "unit": "m",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Original walker footprint relative to reviewed road boundary"
     },
     {
-      "name": "ego_speed",
-      "unit": "m/s",
+      "name": "governing_red_and_turn_arrow",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Original signal actor state joined to pixel/facing review"
     },
     {
-      "name": "pedestrian_enters_highway",
+      "name": "other_device_permission",
       "unit": "bool",
       "mandatory": true,
-      "purpose": "road entry versus no entry while facing red plus turn arrow"
+      "purpose": "Other-device permission source and authority review"
     }
   ],
   "source_observation_mapping": {
     "dev.traffic_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source rows plus independent authority and four-camera indication review; synthetic diagnostic does not establish governing status.",
       "channels": [
-        "pedestrian_enters_highway"
+        "governing_red_and_turn_arrow"
       ],
       "source_refs": [
         "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
       ]
     },
     "dev.governs": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source rows plus independent authority and four-camera indication review; synthetic diagnostic does not establish governing status.",
       "channels": [
-        "pedestrian_enters_highway"
+        "governing_red_and_turn_arrow"
       ],
       "source_refs": [
         "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
       ]
     },
     "ru.subject": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source rows plus independent authority and four-camera indication review; synthetic diagnostic does not establish governing status.",
       "channels": [
-        "pedestrian_enters_highway"
+        "pedestrian_footprint"
       ],
       "source_refs": [
         "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
       ]
     },
     "drv.entering_intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source rows plus independent authority and four-camera indication review; synthetic diagnostic does not establish governing status.",
       "channels": [
-        "pedestrian_enters_highway"
+        "pedestrian_footprint"
       ],
       "source_refs": [
         "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native source rows plus independent authority and four-camera indication review; synthetic diagnostic does not establish governing status.",
       "channels": [
-        "pedestrian_enters_highway"
+        "pedestrian_footprint"
       ],
       "source_refs": [
         "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
       ]
     },
     "dev.pedestrian_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Recorded other-device permission and independent NRS 484B.283 authority review; dev.pedestrian_signal is a frozen source term, not a supported Core atom.",
       "channels": [
-        "pedestrian_enters_highway"
+        "other_device_permission"
       ],
       "source_refs": [
         "inputs/training__C228133__NRS-484B-307-9c__pedestrian/assignment.json"
@@ -203,5 +203,32 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian and road boundary",
+        "interval": "entire 30 s attempt"
+      },
+      {
+        "view": "approach",
+        "subject": "facing steady-red signal and turn arrow",
+        "interval": "entire 30 s attempt"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other potential governing device and walker position",
+        "interval": "entire 30 s attempt"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian first road entry and indication pixels",
+        "interval": "entire 30 s attempt"
+      }
+    ]
+  }
 }

@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -30,6 +31,33 @@ def rows(path, data):
                             for item in data))
 
 
+def road_source():
+    root = ET.Element('OpenDRIVE')
+    ET.SubElement(root, 'header', revMajor='1', revMinor='4',
+                  name='C228133 pedestrian road-entry diagnostic', version='1',
+                  date='2026-11-24', north='50', south='-50', east='50', west='-50',
+                  vendor='full-train-worker')
+    road = ET.SubElement(root, 'road', id='7', name='C228133_7', length='40', junction='-1')
+    ET.SubElement(road, 'link')
+    geometry = ET.SubElement(ET.SubElement(road, 'planView'), 'geometry',
+                             s='0', x='-20', y='0', hdg='0', length='40')
+    ET.SubElement(geometry, 'line')
+    ET.SubElement(ET.SubElement(road, 'elevationProfile'), 'elevation',
+                  s='0', a='0', b='0', c='0', d='0')
+    lanes = ET.SubElement(road, 'lanes')
+    ET.SubElement(lanes, 'laneOffset', s='0', a='0', b='0', c='0', d='0')
+    section = ET.SubElement(lanes, 'laneSection', s='0')
+    for side, lane_id in (('left', 1), ('center', 0), ('right', -1)):
+        lane = ET.SubElement(ET.SubElement(section, side), 'lane', id=str(lane_id),
+                             type='none' if lane_id == 0 else 'driving', level='false')
+        if lane_id:
+            ET.SubElement(lane, 'width', sOffset='0', a='3.5', b='0', c='0', d='0')
+        ET.SubElement(lane, 'roadMark', sOffset='0', type='solid', color='white', width='0.12')
+    ET.SubElement(road, 'objects')
+    ET.SubElement(road, 'signals')
+    return ET.tostring(root, encoding='unicode') + '\n'
+
+
 def build(suffix):
     folder = HERE / 'selected-v2-source' / suffix
     folder.parent.mkdir(exist_ok=True)
@@ -42,6 +70,7 @@ def build(suffix):
                              if item['path'] == 'config.json'))
     write(folder / 'config.json', config)
     write(folder / 'construction.json', construction)
+    (folder / 'road.xodr').write_text(road_source())
     mapping = [json.loads(line) for line in (folder / 'video_frames.jsonl').read_text().splitlines()]
     evidence = []
     trace = []
@@ -53,6 +82,7 @@ def build(suffix):
                       'position': {'x': 0.0, 'y': y, 'z': 1.0},
                       'position_m': position, 'heading_deg': 90,
                       'speed_mps': 0.0, 'speed_mph': 0.0,
+                      'velocity_mps': [0.0, 0.0, 0.0],
                       'speed_provenance': 'synthetic_native_sample',
                       'control': {}, 'synthetic_diagnostic': True})
         evidence.append({'original_frame': frame, 'replay_frame': frame,
@@ -70,7 +100,8 @@ def build(suffix):
     rows(folder / 'capture/evidence.jsonl', evidence)
     write(folder / 'capture/manifest.json', {'extraction_confirmed': True,
           'frames': 600, 'required_observations': [],
-          'sources': {'trace.jsonl': sha(folder / 'trace.jsonl')},
+          'sources': {'trace.jsonl': sha(folder / 'trace.jsonl'),
+                      'road.xodr': sha(folder / 'road.xodr')},
           'synthetic_diagnostic': True})
     (folder / 'capture/recorder_info.txt').write_text('Create 17: walker.pedestrian.0001\n')
     rows(folder / 'capture/native/frames.jsonl', [
@@ -80,7 +111,7 @@ def build(suffix):
         for row in mapping])
     names = ['native-signal-frames.jsonl', 'native-pedestrian-device-frames.jsonl',
              'native-pedestrian-frames.jsonl', 'video_frames.jsonl', 'trace.jsonl',
-             'road-boundary.json', 'governing-device-authority.json',
+             'road-boundary.json', 'road.xodr', 'governing-device-authority.json',
              'highway-authority.json', 'independent-review.json',
              'acquisition-provenance.json', 'capture/evidence.jsonl',
              'capture/manifest.json', 'capture/recorder_info.txt',

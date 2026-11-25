@@ -12,10 +12,10 @@ CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def read(path):
-    if not Path(path).is_file():raise ValueError('Missing required source: '+str(path))
+    if not Path(path).is_file():raise ValueError('Missing required source: '+Path(path).name)
     return json.loads(Path(path).read_text())
 def lines(path):
-    if not Path(path).is_file():raise ValueError('Missing required source: '+str(path))
+    if not Path(path).is_file():raise ValueError('Missing required source: '+Path(path).name)
     return [json.loads(x) for x in Path(path).read_text().splitlines()]
 def finite(x):return type(x) in (float,int) and math.isfinite(x)
 
