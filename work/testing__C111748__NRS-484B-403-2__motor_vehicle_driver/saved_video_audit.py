@@ -13,8 +13,8 @@ _spec = importlib.util.spec_from_file_location("device_source_audit_for_video", 
 _sources = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_sources)
 
-PROFILE = {"overview": (1920, 1080), "detail_left": (1280, 720),
-           "detail_center": (1280, 720), "detail_right": (1280, 720)}
+PROFILE = {"overview": (1920, 1080), "approach": (1280, 720),
+           "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 LOSSLESS = {"ffv1", "png", "huffyuv", "rawvideo"}
 
 
@@ -67,9 +67,10 @@ def decode(path: Path, *, size: tuple[int, int], frames: int = 900) -> dict:
 
 
 def audit(attempt: Path, *, case_id: str, profile: dict | None = None,
-          expected_frames: int = 900) -> dict:
+          expected_frames: int = 900, diagnostic_allowed: bool = False) -> dict:
     """Join four decoded streams to an independently checked Native attempt."""
-    source = _sources.audit(attempt, case_id=case_id)
+    source = _sources.audit(attempt, case_id=case_id,
+                            diagnostic_allowed=diagnostic_allowed)
     require(source["frame_count"] == expected_frames, "Native and video frame counts differ")
     root = attempt.resolve()
     manifest = json.loads((root / "saved-sources.json").read_text(encoding="utf-8"))

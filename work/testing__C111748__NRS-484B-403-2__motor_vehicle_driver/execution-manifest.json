@@ -7,39 +7,222 @@
       "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey",
       "kind": "delivery",
       "construction": "cases/prohibited_obey/construction.json",
-      "construction_sha256": "cef7f8f86f1cb4da420cbe1127644c837f8952d5d4340017527195c4c06c1527",
+      "construction_sha256": "26a9067d3ab39e97d75a9b1d3a8ea9c029f327dead4b67f71e4a21733121748f",
+      "measurement_contract": "measurement-contract-prohibited_obey.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/fixture-recipe-prohibited_obey.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "official_device_context": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        },
+        "display_and_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        },
+        "u_turn_action": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        }
+      },
+      "negative": {
+        "log": "proof-compatibility-negative-prohibited_obey.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original sign legibility and U-turn path envelope may fail; choose a reviewed closer camera pose and reduced turn control only after source-confirmed visibility or motion failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/prohibited_obey/fallback1-construction.json",
+          "construction_sha256": "ad2ef7962531eb4c3419ad1a9af8cd93ef2a350add957e7dbcf9a466c18f4345",
+          "trigger": {
+            "source": "original Native capture and pixel review",
+            "metric": "reviewed device legibility or completed opposite-lane reversal",
+            "failure_condition": "sign face unreadable in original approach view or route reversal incomplete"
+          },
+          "changed_knobs": [
+            "camera_pose_variant=near_device_oblique",
+            "controller_variant=fallback1; turn throttle 0.18 and steer clamp 0.45"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-final-prohibited_obey-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "ad2ef7962531eb4c3419ad1a9af8cd93ef2a350add957e7dbcf9a466c18f4345",
+            "log": "proof-offline-final-prohibited_obey-fallback1.log",
+            "log_sha256": "e15748bacc772c4fc088fd70eaa23f4b709f1cf3ffce18d2d489ad83be707aae"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-prohibited_obey.json",
+        "sha256": "1393e228922ef7fd9edd76526833f0dd31933935609ea83d3976b244eb2669ab"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-obey --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_obey --output .runtime-work/c111748-owner/offline-final-prohibited_obey-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "cef7f8f86f1cb4da420cbe1127644c837f8952d5d4340017527195c4c06c1527",
-        "log": "proof-offline-prohibited_obey.log",
-        "log_sha256": "4b84ce401875f37ab3769519501d062b85eaf4f1d1cada7f3788afad6797d778"
+        "construction_sha256": "26a9067d3ab39e97d75a9b1d3a8ea9c029f327dead4b67f71e4a21733121748f",
+        "log": "proof-offline-final-prohibited_obey-primary.log",
+        "log_sha256": "1067de5d2441db17a2fcb0cd0ed8a8a58ae5fdf1bb1e343e0a41e33b388bffc4"
       }
     },
     {
       "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt",
       "kind": "delivery",
       "construction": "cases/prohibited_attempt/construction.json",
-      "construction_sha256": "c474a728ae767f8a11bb19139549e48b218ba4aa52efa8244ccbf986c0492db7",
+      "construction_sha256": "714a3832726866dd7ea236a97b38912f77dcb2d637a31099bf473a1a0c4ceb62",
+      "measurement_contract": "measurement-contract-prohibited_attempt.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/fixture-recipe-prohibited_attempt.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "official_device_context": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        },
+        "display_and_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        },
+        "u_turn_action": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        }
+      },
+      "negative": {
+        "log": "proof-compatibility-negative-prohibited_attempt.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original sign legibility and U-turn path envelope may fail; choose a reviewed closer camera pose and reduced turn control only after source-confirmed visibility or motion failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/prohibited_attempt/fallback1-construction.json",
+          "construction_sha256": "a67a96b900ae70fc99d1084a61d71b938ddffd73d5911ac43c8e3e6ada45c774",
+          "trigger": {
+            "source": "original Native capture and pixel review",
+            "metric": "reviewed device legibility or completed opposite-lane reversal",
+            "failure_condition": "sign face unreadable in original approach view or route reversal incomplete"
+          },
+          "changed_knobs": [
+            "camera_pose_variant=near_device_oblique",
+            "controller_variant=fallback1; turn throttle 0.18 and steer clamp 0.45"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-final-prohibited_attempt-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "a67a96b900ae70fc99d1084a61d71b938ddffd73d5911ac43c8e3e6ada45c774",
+            "log": "proof-offline-final-prohibited_attempt-fallback1.log",
+            "log_sha256": "ba1771f76b2607b3ece623dc9aa4324231675c69b7beef07ccb07c264c5ca732"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-prohibited_attempt.json",
+        "sha256": "319a3e1b4e220c1a19e40032ef90938c094c68b44244c60ca78567cc45fed3da"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-prohibited_attempt --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt --output .runtime-work/c111748-owner/offline-final-prohibited_attempt-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "c474a728ae767f8a11bb19139549e48b218ba4aa52efa8244ccbf986c0492db7",
-        "log": "proof-offline-prohibited_attempt.log",
-        "log_sha256": "a4ee2f7829647f7da7457e92456103d1c805d8917f9735d480474c859fba4227"
+        "construction_sha256": "714a3832726866dd7ea236a97b38912f77dcb2d637a31099bf473a1a0c4ceb62",
+        "log": "proof-offline-final-prohibited_attempt-primary.log",
+        "log_sha256": "0aa8fcf41818fa1052d7c1b460a04e6eedbab6d4b9aa0642a669cebded562003"
       }
     },
     {
       "case_id": "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn",
       "kind": "delivery",
       "construction": "cases/neutral_device_turn/construction.json",
-      "construction_sha256": "747920b1eaf945ee74861adc3bfa5afce77ada248a1edbf5bf8b338f2ac967cd",
+      "construction_sha256": "97c0cd10b08f0ece7b91a1ef6d36a122bc8498e27a3cf5545c836a7d04917a9e",
+      "measurement_contract": "measurement-contract-neutral_device_turn.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/fixture-recipe-neutral_device_turn.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "official_device_context": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        },
+        "display_and_observation": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        },
+        "u_turn_action": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "original Native device/ego and synchronized camera frame readbacks"
+        }
+      },
+      "negative": {
+        "log": "proof-compatibility-negative-neutral_device_turn.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original sign legibility and U-turn path envelope may fail; choose a reviewed closer camera pose and reduced turn control only after source-confirmed visibility or motion failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/neutral_device_turn/fallback1-construction.json",
+          "construction_sha256": "e21b0d4948833048be76d68ed92e0b10353779e4ab0f236bd802cdfba0775e95",
+          "trigger": {
+            "source": "original Native capture and pixel review",
+            "metric": "reviewed device legibility or completed opposite-lane reversal",
+            "failure_condition": "sign face unreadable in original approach view or route reversal incomplete"
+          },
+          "changed_knobs": [
+            "camera_pose_variant=near_device_oblique",
+            "controller_variant=fallback1; turn throttle 0.18 and steer clamp 0.45"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-final-neutral_device_turn-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "construction_sha256": "e21b0d4948833048be76d68ed92e0b10353779e4ab0f236bd802cdfba0775e95",
+            "log": "proof-offline-final-neutral_device_turn-fallback1.log",
+            "log_sha256": "ef2b3aa067d9c36d2e07b89c240d8e4a0839b18815edb8161ee9f2ccb692a707"
+          }
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-preparation-neutral_device_turn.json",
+        "sha256": "f28fbb1ff0cc5c8aaf3170bf79486aad6bca56e1fdb5f7d70401ee5073f5f772"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-neutral_device_turn --python \"$PWD/.venv-cpu/bin/python\"",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C111748__NRS-484B-403-2__motor_vehicle_driver/execution-manifest.json --case testing__C111748__NRS-484B-403-2__motor_vehicle_driver__neutral_device_turn --output .runtime-work/c111748-owner/offline-final-neutral_device_turn-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
-        "construction_sha256": "747920b1eaf945ee74861adc3bfa5afce77ada248a1edbf5bf8b338f2ac967cd",
-        "log": "proof-offline-neutral_device_turn.log",
-        "log_sha256": "25b72b9103cb71a01c16de5c4194f67b1dfc70f17db5fc5985f85dbf2079a2e2"
+        "construction_sha256": "97c0cd10b08f0ece7b91a1ef6d36a122bc8498e27a3cf5545c836a7d04917a9e",
+        "log": "proof-offline-final-neutral_device_turn-primary.log",
+        "log_sha256": "cc5bcef29e0b2ea96e41273091dea8b2ae6707ac120c871ae1d841820b11a39c"
       }
     }
   ]

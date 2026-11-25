@@ -35,10 +35,10 @@ def attach(entry, variant, candidate_id):
         'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + ASSIGNMENT +
                    '/execution-manifest.json --case ' + entry['case_id'] +
                    ' --candidate ' + candidate_id +
-                   ' --output .runtime-work/c188132-nov25-offline-' + variant + '-' + candidate_id +
+                   ' --output .runtime-work/c188132-nov25b-offline-' + variant + '-' + candidate_id +
                    ' --python .venv-cpu/bin/python',
         'log': offline_log.name, 'log_sha256': sha(offline_log)}
-    output = REPO / '.runtime-work' / ('c188132-nov25-compat-' + variant + '-' + candidate_id)
+    output = REPO / '.runtime-work' / ('c188132-nov25b-compat-' + variant + '-' + candidate_id)
     proof = json.loads((output / 'compatibility.json').read_text())
     if (proof.get('passed') is not True or proof.get('case_id') != entry['case_id'] or
             proof.get('candidate_id') != candidate_id or

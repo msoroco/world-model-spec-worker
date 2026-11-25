@@ -106,6 +106,25 @@ class DeliveryAuditTests(unittest.TestCase):
                 write(review, value)
                 with self.assertRaisesRegex(ValueError, 'physical completion review incomplete'):
                     audit(root, pixel_review=review, processing_receipt=processing_path)
+                value['physical_review']['usable_deck_access'] = True
+                write(review, value)
+                seal = root / 'capture-seal.json'
+                sealed = json.loads(seal.read_text())
+                sealed['source_digest'] = 'stale'
+                write(seal, sealed)
+                with self.assertRaisesRegex(ValueError, 'sealed Native source digest differs'):
+                    audit(root, pixel_review=review, processing_receipt=processing_path)
+                sealed['source_digest'] = __import__('hashlib').sha256(json.dumps(
+                    sealed['sources'], sort_keys=True, separators=(',', ':'),
+                    ensure_ascii=False).encode()).hexdigest()
+                write(seal, sealed)
+                receipt = json.loads(processing_path.read_text())
+                receipt['original_source_hashes']['scene.json'] = 'stale'
+                write(processing_path, receipt)
+                with self.assertRaisesRegex(ValueError, 'saved physical processing does not bind'):
+                    audit(root, pixel_review=review, processing_receipt=processing_path)
+                receipt['original_source_hashes']['scene.json'] = sealed['sources']['scene.json']
+                write(processing_path, receipt)
                 (root / 'overview.mkv').write_text('changed\n')
                 with self.assertRaisesRegex(ValueError, 'sealed Native source hash differs'):
                     audit(root, pixel_review=review, processing_receipt=processing_path)

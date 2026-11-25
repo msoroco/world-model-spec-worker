@@ -23,7 +23,7 @@ _spec = importlib.util.spec_from_file_location("device_measurement_for_capture",
 _measure = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_measure)
 
-CAMERAS = ("overview", "detail_left", "detail_center", "detail_right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 FPS = 20
 DELIVERY_FRAMES = 900
 

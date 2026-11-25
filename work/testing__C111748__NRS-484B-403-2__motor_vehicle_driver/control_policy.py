@@ -22,11 +22,13 @@ def require(ok, reason):
 
 
 def command(case_id: str, site: dict, ego: dict, device_readback: dict,
-            *, first_visible_frame: int | None, original_frame: int) -> dict:
+            *, first_visible_frame: int | None, original_frame: int,
+            controller_variant: str = 'primary') -> dict:
     """Plan one command; no intended action is accepted as observed evidence."""
     suffix = case_id.removeprefix(BASE)
     require(suffix in CASES and case_id == BASE + suffix, "unknown exact case")
     expected_display, should_turn = CASES[suffix]
+    require(controller_variant in ('primary', 'fallback1'), 'unknown controller variant')
     device = site.get("device", {})
     require(device.get("prohibits_u_turn") is expected_display, "reviewed display differs from case")
     require(device_readback.get("device_id") == device.get("device_id"), "live device identity mismatch")
@@ -58,6 +60,8 @@ def command(case_id: str, site: dict, ego: dict, device_readback: dict,
     require(dx * dx + dy * dy > 1e-9, "zero-length route segment")
     desired = math.degrees(math.atan2(dy, dx))
     error = (desired - ego["yaw_deg"] + 180.0) % 360.0 - 180.0
-    steer = max(-0.7, min(0.7, error / 90.0))
-    return {"throttle": 0.25, "brake": 0.0, "steer": steer,
+    limit = 0.45 if controller_variant == 'fallback1' else 0.7
+    steer = max(-limit, min(limit, error / 90.0))
+    return {"throttle": 0.18 if controller_variant == 'fallback1' else 0.25,
+            "brake": 0.0, "steer": steer,
             "phase": "route_turn", "requested_turn": True}

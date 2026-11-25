@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location("device_native_for_saved", ROOT / "native_device.py")
 native = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(native)
-CAMERAS = ("overview", "detail_left", "detail_center", "detail_right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 BASE = "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__"
 CASES = {BASE + suffix for suffix in ("prohibited_obey", "prohibited_attempt", "neutral_device_turn")}
 
@@ -103,7 +103,8 @@ def audit(attempt: Path, *, case_id: str, diagnostic_allowed: bool = False) -> d
             "site_review_binding": packet.get("site_review_binding")}
 
 
-def audit_complete(attempt: Path, *, case_id: str, profile: dict | None = None) -> dict:
+def audit_complete(attempt: Path, *, case_id: str, profile: dict | None = None,
+                   diagnostic_allowed: bool = False) -> dict:
     """Require source integrity and four complete lossless video decodes.
 
     This saved-only path is separate from physical and pixel review. Importing
@@ -113,7 +114,8 @@ def audit_complete(attempt: Path, *, case_id: str, profile: dict | None = None) 
                                                    ROOT / "saved_video_audit.py")
     video = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(video)
-    decoded = video.audit(attempt, case_id=case_id, profile=profile)
+    decoded = video.audit(attempt, case_id=case_id, profile=profile,
+                          diagnostic_allowed=diagnostic_allowed)
     require(decoded.get("full_video_decode") is True and
             len(decoded.get("decoded_media", {})) == len(CAMERAS) and
             all(row.get("frame_count") == 900 for row in decoded["decoded_media"].values()),

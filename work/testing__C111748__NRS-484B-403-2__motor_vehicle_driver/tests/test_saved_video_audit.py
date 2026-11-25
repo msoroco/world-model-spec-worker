@@ -10,6 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 _spec = importlib.util.spec_from_file_location("device_video_test", ROOT / "saved_video_audit.py")
 video = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(video)
+_spec = importlib.util.spec_from_file_location('device_delivery_full_test', ROOT / 'delivery_audit.py')
+delivery = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(delivery)
 CASE = "testing__C111748__NRS-484B-403-2__motor_vehicle_driver__prohibited_attempt"
 
 
@@ -96,7 +99,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(complete["format"], "worker-saved-source-and-video-integrity")
         self.assertTrue(complete["full_video_decode"])
         self.assertFalse(complete["physical_completion"])
-        media["detail_right"]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(delivery.AuditError, 'original site review references missing'):
+            delivery.audit(self.root, CASE, profile=profile)
+        media["driver_reference"]["sha256"] = "0" * 64
         (self.root / "saved-sources.json").write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "media hash"):
             video.audit(self.root, case_id=CASE, profile=profile)

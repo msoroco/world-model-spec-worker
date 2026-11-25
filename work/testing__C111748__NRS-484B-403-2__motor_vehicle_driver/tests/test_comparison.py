@@ -1,6 +1,8 @@
 import hashlib
 import importlib.util
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -54,3 +56,16 @@ class Tests(unittest.TestCase):
         p,c,h=src[1]; p.write_text('{}')
         with self.assertRaisesRegex(ValueError,'hash'):
             mod.audit('device_obedience',src)
+    def test_production_cli_rejects_source_only_comparison(self):
+        src=self.sources([packet('prohibited_obey',True,False),packet('prohibited_attempt',True,True)])
+        command=[sys.executable,str(ROOT/'comparison_audit.py'),'--comparison','device_obedience']
+        for path,case,digest in src:
+            command.extend(['--source',str(path),case,digest])
+        command.extend(['--output',str(Path(src[0][0]).parent/'comparison.json')])
+        completed=subprocess.run(command,capture_output=True,text=True)
+        self.assertNotEqual(completed.returncode,0)
+        self.assertIn('production comparison needs two original attempts',completed.stderr)
+    def test_production_pair_rejects_missing_delivery_attempt(self):
+        src=self.sources([packet('prohibited_obey',True,False),packet('prohibited_attempt',True,True)])
+        with self.assertRaisesRegex(ValueError,'saved source manifest missing'):
+            mod.audit_attempts('device_obedience',[(p,c) for p,c,_ in src])

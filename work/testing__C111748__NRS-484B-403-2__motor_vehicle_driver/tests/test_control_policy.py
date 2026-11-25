@@ -50,6 +50,20 @@ class Tests(unittest.TestCase):
         self.assertEqual(out["phase"], "route_turn")
         self.assertGreater(out["steer"], 0)
 
+    def test_fallback_reduces_control_without_changing_case(self):
+        case = BASE + "prohibited_attempt"
+        primary = mod.command(case, site(), ego(9, 0), readback(),
+                              first_visible_frame=100, original_frame=101)
+        fallback = mod.command(case, site(), ego(9, 0), readback(),
+                               first_visible_frame=100, original_frame=101,
+                               controller_variant='fallback1')
+        self.assertTrue(primary['requested_turn'] and fallback['requested_turn'])
+        self.assertLess(fallback['throttle'], primary['throttle'])
+        self.assertLess(abs(fallback['steer']), abs(primary['steer']))
+        with self.assertRaisesRegex(mod.PolicyError, 'controller variant'):
+            mod.command(case, site(), ego(), readback(), first_visible_frame=100,
+                        original_frame=101, controller_variant='unknown')
+
     def test_reject_display_and_governed_approach_drift(self):
         with self.assertRaisesRegex(mod.PolicyError, "reviewed display"):
             mod.command(BASE + "neutral_device_turn", site(), ego(), readback(False),

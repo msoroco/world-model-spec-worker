@@ -46,16 +46,17 @@ def audit_media(attempt, *, expected_frames=FRAMES, specs=CAMERA_SPECS):
         path = source("video_" + name)
         probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames",
                                 "-select_streams", "v:0", "-show_entries",
-                                "stream=width,height,r_frame_rate,nb_read_frames",
+                                "stream=codec_name,width,height,r_frame_rate,nb_read_frames",
                                 "-of", "json", str(path)], capture_output=True, text=True)
         if probe.returncode:
             raise ValueError(name + " ffprobe failed: " + probe.stderr.strip())
         streams = json.loads(probe.stdout).get("streams", [])
-        if len(streams) != 1 or any((int(streams[0]["width"]) != width,
+        if len(streams) != 1 or any((streams[0].get("codec_name") != "ffv1",
+                                     int(streams[0]["width"]) != width,
                                      int(streams[0]["height"]) != height,
                                      streams[0]["r_frame_rate"] != "20/1",
                                      int(streams[0].get("nb_read_frames", -1)) != expected_frames)):
-            raise ValueError(name + " original video dimensions, rate or frame count differ")
+            raise ValueError(name + " original video codec, dimensions, rate or frame count differ")
         decode = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-xerror",
                                  "-i", str(path), "-map", "0:v:0", "-f", "null", "-"],
                                 capture_output=True, text=True)

@@ -286,6 +286,14 @@ class OverpassSourceTests(unittest.TestCase):
                                     second_processing=second/'processing.json')
                 self.assertEqual(answer['comparison_id'], 'entry_timing')
                 self.assertEqual(original.call_count, 2)
+            with patch('delivery_audit.audit', side_effect=[
+                    audit_saved(first, diagnostic=True),
+                    ValueError('second original pixel visibility review incomplete')]) as original:
+                with self.assertRaisesRegex(ValueError, 'second original pixel visibility'):
+                    audit_pair(first, second, 'entry_timing',
+                               first_processing=first/'processing.json',
+                               second_processing=second/'processing.json')
+                self.assertEqual(original.call_count, 2)
             with self.assertRaisesRegex(ValueError, 'both saved processing receipts required'):
                 audit_pair(first, second, 'entry_timing')
 

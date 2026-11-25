@@ -26,6 +26,66 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _verify_acquisition(attempt, capture, case_id, expected_frames, *, diagnostic_fixture):
+    """Bind original packets to the attempt's acquisition marker and seal."""
+    from worker_exchange.common import digest, within
+
+    marker_path = attempt / 'acquisition-provenance.json'
+    require(marker_path.is_file() and not marker_path.is_symlink(),
+            'acquisition provenance marker missing')
+    marker = json.loads(marker_path.read_text(encoding='utf-8'))
+    kind = 'synthetic_fixture' if diagnostic_fixture else 'native'
+    require(marker.get('provenance_kind') == kind and
+            marker.get('diagnostic_fixture') is diagnostic_fixture and
+            marker.get('source_index_sha256') == _sha(capture / 'source-index.json'),
+            'acquisition provenance kind or source index differs')
+    if diagnostic_fixture:
+        return
+    seal_path = attempt / 'capture-seal.json'
+    require(seal_path.is_file() and not seal_path.is_symlink(),
+            'Native capture seal missing')
+    seal = json.loads(seal_path.read_text(encoding='utf-8'))
+    require(seal.get('format') == 'worker-sealed-capture' and
+            seal.get('provenance_kind') == 'native' and
+            seal.get('diagnostic_fixture') is False and
+            seal.get('frames') == expected_frames and
+            seal.get('events') == ['capture_finished', 'encoders_closed',
+                                   'restoration_verified'] and
+            seal.get('restoration', {}).get('restored') is True and
+            isinstance(seal.get('encoder_exit_codes'), dict) and
+            set(seal['encoder_exit_codes']) == set(VIEWS) and
+            all(code == 0 for code in seal['encoder_exit_codes'].values()),
+            'Native capture seal lifecycle differs')
+    context_path = attempt / 'acquisition-context.json'
+    require(context_path.is_file() and not context_path.is_symlink(),
+            'Native acquisition context missing')
+    context = json.loads(context_path.read_text(encoding='utf-8'))
+    require(context.get('case_id') == case_id and
+            context.get('source_index_sha256') == marker['source_index_sha256'],
+            'Native acquisition context differs')
+    sources = seal.get('sources')
+    require(isinstance(sources, dict) and sources and
+            sources.get('capture/source-index.json') == marker['source_index_sha256'] and
+            {'construction.json', 'runner.py', 'trace.jsonl',
+             'video_frames.jsonl', 'acquisition-provenance.json',
+             'acquisition-context.json', 'capture/site.json',
+             'capture/events.json', 'capture/video_frames.jsonl',
+             *(f'capture/{view}.mkv' for view in VIEWS)}.issubset(sources) and
+            seal.get('source_digest') == digest(sources),
+            'Native source seal/index digest differs')
+    for name, expected_sha in sources.items():
+        require(isinstance(name, str) and isinstance(expected_sha, str) and
+                len(expected_sha) == 64, 'Native seal source entry malformed')
+        source = within(attempt, name)
+        require(source.is_file() and _sha(source) == expected_sha,
+                'Native sealed source changed: ' + name)
+    revisions = seal.get('native_revision')
+    require(isinstance(revisions, dict) and
+            revisions.get('construction_sha256') == sources.get('construction.json') and
+            revisions.get('runner_sha256') == sources.get('runner.py'),
+            'Native runner/construction revision differs')
+
+
 def compare_original_image_to_video(video, frame, png, width, height):
     """Compare a reviewed original PNG with its decoded encoded video frame.
 
@@ -46,9 +106,15 @@ def compare_original_image_to_video(video, frame, png, width, height):
             'original PNG and encoded video frame differ')
 
 
-def audit(attempt, case_id, pixel_review, *, expected_frames=900):
-    root = Path(attempt).resolve()
-    require(root.is_dir(), 'saved original attempt missing')
+def audit(attempt, case_id, pixel_review, *, expected_frames=900,
+          diagnostic_fixture=False):
+    attempt_root = Path(attempt).resolve()
+    require(attempt_root.is_dir(), 'saved original attempt missing')
+    root = attempt_root / 'capture'
+    if diagnostic_fixture and not root.exists():
+        root = attempt_root
+    require(root.is_dir() and not root.is_symlink(),
+            'sealed original capture directory missing')
     require(case_id in {ASSIGNMENT + '__' + suffix for suffix in CASE_VARIANTS},
             'wrong exact bicycle case')
     mode = CASE_VARIANTS[case_id.removeprefix(ASSIGNMENT + '__')]['mode']
@@ -59,6 +125,8 @@ def audit(attempt, case_id, pixel_review, *, expected_frames=900):
             index.get('case_id') == case_id and
             index.get('frame_count') == expected_frames,
             'original source index identity or duration mismatch')
+    _verify_acquisition(attempt_root, root, case_id, expected_frames,
+                        diagnostic_fixture=diagnostic_fixture)
     refs = index.get('sources')
     require(isinstance(refs, dict) and set(refs) ==
             {'site', 'events', 'frame_map', *VIEWS},
@@ -176,7 +244,7 @@ def audit(attempt, case_id, pixel_review, *, expected_frames=900):
             'case_id': case_id, 'original_source_index_sha256': _sha(index_path),
             'original_event_sha256': refs['events']['sha256'],
             'pixel_review_sha256': _sha(review_path), 'frame_count': expected_frames,
-            'checks': {'native_source': True, 'all_participants': True,
+            'checks': {'native_source': not diagnostic_fixture, 'all_participants': True,
                        'time_join': True, 'full_video_decode': True,
                        'actual_pixels': True, 'physical_completion': True},
             'legal_verdict': None, 'canonical_acceptance': False}

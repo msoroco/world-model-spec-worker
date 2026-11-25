@@ -86,16 +86,16 @@ class Tests(unittest.TestCase):
             mod.audit(self.attempt, case_id=CASE)
 
     def test_reject_media_hash_and_escape(self):
-        (self.attempt / "detail_left.txt").write_text("tampered")
+        (self.attempt / "approach.txt").write_text("tampered")
         with self.assertRaisesRegex(mod.DeliverySourceError, "media hash"):
             mod.audit(self.attempt, case_id=CASE)
-        self.manifest["media"]["detail_left"]["path"] = "../outside.txt"
+        self.manifest["media"]["approach"]["path"] = "../outside.txt"
         self.write_manifest()
         with self.assertRaisesRegex(mod.DeliverySourceError, "escapes attempt"):
             mod.audit(self.attempt, case_id=CASE)
 
     def test_reject_frame_join_and_case(self):
-        self.native["frames"][400]["cameras"]["detail_right"] = 999
+        self.native["frames"][400]["cameras"]["driver_reference"] = 999
         self.write_native()
         self.manifest["native"]["sha256"] = mod.sha_file(self.path)
         self.write_manifest()

@@ -6,7 +6,7 @@
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
       "construction": "cases/yield_before_vehicle/construction.json",
-      "construction_sha256": "e4357a3b1048365e81991fd38841f6c0a5cd85e93ff8a4574dcc699f69c7f4b1",
+      "construction_sha256": "f0754c6b49f0ffdfebc50417284b11278a8012e3f89c8bf7b3e27868eaf3eac7",
       "kind": "delivery",
       "candidate_risk": {
         "status": "physical",
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "cases/yield_before_vehicle/fallback1/construction.json",
-          "construction_sha256": "da88b01e9e499bf59f09f61016deb77907bf2d403961d5bfb3b40a909a1153b1",
+          "construction_sha256": "047dc0873fb6a79113e4e98cf7bd342fad6d56762d18f2508f2bb4e7d460d853",
           "trigger": {
             "source": "original-pixel-review.json",
             "metric": "overpass_structure_visible and participant visibility in all four camera views",
@@ -24,7 +24,20 @@
           },
           "changed_knobs": [
             "four fixed camera world poses while retaining the same camera names, resolutions, FOV, rate and duration"
-          ]
+          ],
+          "offline": {
+            "construction_sha256": "047dc0873fb6a79113e4e98cf7bd342fad6d56762d18f2508f2bb4e7d460d853",
+            "exit_code": 0,
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --candidate fallback1 --output .runtime-work/c188132-nov25b-offline-yield_before_vehicle-fallback1 --python .venv-cpu/bin/python",
+            "log": "proof-final-offline-yield_before_vehicle-fallback1.log",
+            "log_sha256": "b300181d74fde357cb617f5031fffae09a0c4137abe19d09cd0701872390bb86"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-yield_before_vehicle-fallback1.json",
+            "sha256": "2076c0469f8351f862ee0dfb7dc8d2ec47ff3bef869f9922ad6584bee5ecdafb",
+            "log": "proof-analysis-yield_before_vehicle-fallback1.log",
+            "negative_log": "proof-negative-yield_before_vehicle-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "measurement-contract-yield_before_vehicle.json",
@@ -40,13 +53,87 @@
       },
       "physical_preparation": {
         "receipt": "cases/yield_before_vehicle/physical-preparation.json",
-        "sha256": "8ba31109fcde60d367d99b7856760cf1c840aa2201675888a1210b13827a57cd"
+        "sha256": "3fa322108a8aeb00677adcda9d319145c4402847d838019d03b32832cea7f008"
+      },
+      "offline": {
+        "construction_sha256": "f0754c6b49f0ffdfebc50417284b11278a8012e3f89c8bf7b3e27868eaf3eac7",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --candidate primary --output .runtime-work/c188132-nov25b-offline-yield_before_vehicle-primary --python .venv-cpu/bin/python",
+        "log": "proof-final-offline-yield_before_vehicle-primary.log",
+        "log_sha256": "315c539d8481a2ba7e203ed1e611b8dd32d4f93bf018b0a112388ef117b9b74c"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-yield_before_vehicle-primary.json",
+        "sha256": "0d1c5af765f9805b2a3568c1de44ba4347f3ac02a31cd14140a61e932a85e6a2",
+        "log": "proof-analysis-yield_before_vehicle-primary.log",
+        "negative_log": "proof-negative-yield_before_vehicle-primary.log"
+      },
+      "negative": {
+        "log": "proof-negative-yield_before_vehicle-primary.log",
+        "exit_code": 1,
+        "expected_error": "Missing required source: body-history.jsonl"
+      },
+      "acquisition": {
+        "crossing_order": {
+          "entrypoint": "analysis.py",
+          "method": "measure_crossing_order",
+          "evidence": "body-history.jsonl"
+        },
+        "roadway_vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "measure_roadway_vehicle_inventory",
+          "evidence": "body-history.jsonl"
+        },
+        "provided_overhead_crossing": {
+          "entrypoint": "analysis.py",
+          "method": "measure_provided_overhead_crossing",
+          "evidence": "reviewed-site.json"
+        },
+        "designated_place_prohibition": {
+          "entrypoint": "analysis.py",
+          "method": "measure_designated_place",
+          "evidence": "municipal-designation-source.txt"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v*/feedback.json # testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
+        "test_log": "proof-process-saved-yield_before_vehicle.log",
+        "test_log_sha256": "9b97b6eb3923cadc37da6b0c3484e175c7d1deeb1479b76f1804a9101deecfbe",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5baf79b768bdafe5bd8ab3d66aaa5b7eb6493d6f7b1f7ee2739a09d95f00c352",
+        "command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --self-test",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-yield_before_vehicle.log",
+        "test_log_sha256": "72a7798097aac85754cfabb753c3a999de708ea56c294b29b55096bf7e624b90",
+        "negative_command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__yield_before_vehicle --negative-missing-seal",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing or escaped original source: capture-seal.json",
+        "negative_log": "proof-delivery-negative-yield_before_vehicle.log",
+        "negative_log_sha256": "2db3728049b0929a8ce4ddf91b44396ca8169fb2804d8178fb211885b9bb948d",
+        "production_command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/delivery_audit.py --attempt \"$ATTEMPT\" --pixel-review \"$ATTEMPT/original-pixel-review.json\" --processing-receipt \"$OUTPUT/v0001/processing.json\""
       }
     },
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
       "construction": "cases/enter_ahead_of_vehicle/construction.json",
-      "construction_sha256": "0f1347f8b8f724f9208cdc6261ae22c51b07933387cd8f9f0d6bfaf80fb71f5e",
+      "construction_sha256": "9e9762a8c962ad22f3399851b9439f75d5a74dd27fadef3899a04e6159c9c3f6",
       "kind": "delivery",
       "candidate_risk": {
         "status": "physical",
@@ -56,7 +143,7 @@
         {
           "id": "fallback1",
           "construction": "cases/enter_ahead_of_vehicle/fallback1/construction.json",
-          "construction_sha256": "18fe8dbe0275b5b3bbc2b8222480d4ae957dd23f1d08accda5b300598ba285ee",
+          "construction_sha256": "c4434e458d75f064e228e561486f9cfb8f32bfd56ab0c27af5109c9c8ae9ee49",
           "trigger": {
             "source": "original-pixel-review.json",
             "metric": "overpass_structure_visible and participant visibility in all four camera views",
@@ -64,7 +151,20 @@
           },
           "changed_knobs": [
             "four fixed camera world poses while retaining the same camera names, resolutions, FOV, rate and duration"
-          ]
+          ],
+          "offline": {
+            "construction_sha256": "c4434e458d75f064e228e561486f9cfb8f32bfd56ab0c27af5109c9c8ae9ee49",
+            "exit_code": 0,
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --candidate fallback1 --output .runtime-work/c188132-nov25b-offline-enter_ahead_of_vehicle-fallback1 --python .venv-cpu/bin/python",
+            "log": "proof-final-offline-enter_ahead_of_vehicle-fallback1.log",
+            "log_sha256": "3b92ba8a2de6826e6e4926a31943333c4bb52e38b3a34a22812f8724dc1e6ac5"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-enter_ahead_of_vehicle-fallback1.json",
+            "sha256": "fc2b8349d07705e98728b0681ae17248254f791a66b49bc125c3b02c28aacc00",
+            "log": "proof-analysis-enter_ahead_of_vehicle-fallback1.log",
+            "negative_log": "proof-negative-enter_ahead_of_vehicle-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "measurement-contract-enter_ahead_of_vehicle.json",
@@ -80,13 +180,87 @@
       },
       "physical_preparation": {
         "receipt": "cases/enter_ahead_of_vehicle/physical-preparation.json",
-        "sha256": "5ec7cba8f859b01f54a08d8038f88027ffcb0092e9d15ae41ead4d9ead6f017c"
+        "sha256": "ac3cde9a8c4bdb452d2adf64ee6f6ceb606441f3ffdcb8e760bb705b499c7231"
+      },
+      "offline": {
+        "construction_sha256": "9e9762a8c962ad22f3399851b9439f75d5a74dd27fadef3899a04e6159c9c3f6",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --candidate primary --output .runtime-work/c188132-nov25b-offline-enter_ahead_of_vehicle-primary --python .venv-cpu/bin/python",
+        "log": "proof-final-offline-enter_ahead_of_vehicle-primary.log",
+        "log_sha256": "44dab407c9c5359deecd71e81a760220ffc00447bb85a9c00f6eefcee5ffafb6"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-enter_ahead_of_vehicle-primary.json",
+        "sha256": "037bf5f4f7664b9e0f5c5c01df82c52ab2faa7c6e9ecb859b6adf31c276bc31e",
+        "log": "proof-analysis-enter_ahead_of_vehicle-primary.log",
+        "negative_log": "proof-negative-enter_ahead_of_vehicle-primary.log"
+      },
+      "negative": {
+        "log": "proof-negative-enter_ahead_of_vehicle-primary.log",
+        "exit_code": 1,
+        "expected_error": "Missing required source: body-history.jsonl"
+      },
+      "acquisition": {
+        "crossing_order": {
+          "entrypoint": "analysis.py",
+          "method": "measure_crossing_order",
+          "evidence": "body-history.jsonl"
+        },
+        "roadway_vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "measure_roadway_vehicle_inventory",
+          "evidence": "body-history.jsonl"
+        },
+        "provided_overhead_crossing": {
+          "entrypoint": "analysis.py",
+          "method": "measure_provided_overhead_crossing",
+          "evidence": "reviewed-site.json"
+        },
+        "designated_place_prohibition": {
+          "entrypoint": "analysis.py",
+          "method": "measure_designated_place",
+          "evidence": "municipal-designation-source.txt"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v*/feedback.json # testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
+        "test_log": "proof-process-saved-enter_ahead_of_vehicle.log",
+        "test_log_sha256": "6e42083846d28b063cb18306e87a90bab7e0597e1062d194790d252709d69e3d",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5baf79b768bdafe5bd8ab3d66aaa5b7eb6493d6f7b1f7ee2739a09d95f00c352",
+        "command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --self-test",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-enter_ahead_of_vehicle.log",
+        "test_log_sha256": "51da70a8f1982599c918ce2ed6596d35e451b9521dafc1fcc53fe606416dae42",
+        "negative_command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__enter_ahead_of_vehicle --negative-missing-seal",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing or escaped original source: capture-seal.json",
+        "negative_log": "proof-delivery-negative-enter_ahead_of_vehicle.log",
+        "negative_log_sha256": "2db3728049b0929a8ce4ddf91b44396ca8169fb2804d8178fb211885b9bb948d",
+        "production_command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/delivery_audit.py --attempt \"$ATTEMPT\" --pixel-review \"$ATTEMPT/original-pixel-review.json\" --processing-receipt \"$OUTPUT/v0001/processing.json\""
       }
     },
     {
       "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition",
       "construction": "cases/designated_prohibition/construction.json",
-      "construction_sha256": "cf0acb195607f502928e179e0fe830bcbf10564d5d17e6cc2ddfe23ba3905a1e",
+      "construction_sha256": "8ab54fce950dfcf6d3d9709a74372bbeb6cb5469eb0268e101add15f4068ae09",
       "kind": "delivery",
       "candidate_risk": {
         "status": "physical",
@@ -96,7 +270,7 @@
         {
           "id": "fallback1",
           "construction": "cases/designated_prohibition/fallback1/construction.json",
-          "construction_sha256": "893b17958ef7a370df2105a3f2b4185ebe3abd538b55f753bd6aff0c6811ef63",
+          "construction_sha256": "4a0256b316bdf09842ab12ed1a00bba535a6ca0c70d183e5a105ca7c5aa59c74",
           "trigger": {
             "source": "original-pixel-review.json",
             "metric": "overpass_structure_visible and participant visibility in all four camera views",
@@ -104,7 +278,20 @@
           },
           "changed_knobs": [
             "four fixed camera world poses while retaining the same camera names, resolutions, FOV, rate and duration"
-          ]
+          ],
+          "offline": {
+            "construction_sha256": "4a0256b316bdf09842ab12ed1a00bba535a6ca0c70d183e5a105ca7c5aa59c74",
+            "exit_code": 0,
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --candidate fallback1 --output .runtime-work/c188132-nov25b-offline-designated_prohibition-fallback1 --python .venv-cpu/bin/python",
+            "log": "proof-final-offline-designated_prohibition-fallback1.log",
+            "log_sha256": "e7d0d687209856d01aa31793998a424e76aaf60b1f0b914d4d19b3cb4860b23a"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-designated_prohibition-fallback1.json",
+            "sha256": "e178e7862b85fd8327babb3fb7fe51c42d6746073b7530d4fb126a50c7d16c55",
+            "log": "proof-analysis-designated_prohibition-fallback1.log",
+            "negative_log": "proof-negative-designated_prohibition-fallback1.log"
+          }
         }
       ],
       "measurement_contract": "measurement-contract-designated_prohibition.json",
@@ -120,7 +307,81 @@
       },
       "physical_preparation": {
         "receipt": "cases/designated_prohibition/physical-preparation.json",
-        "sha256": "ba7468dd98248f5de42b1c2a621334cdc66c5823a3d9e0ee041c90e6f953b44f"
+        "sha256": "9edca5c4af3f1cd3db3a293b66e11f97dec291ba6924c488ca7504c4fc31c431"
+      },
+      "offline": {
+        "construction_sha256": "8ab54fce950dfcf6d3d9709a74372bbeb6cb5469eb0268e101add15f4068ae09",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --candidate primary --output .runtime-work/c188132-nov25b-offline-designated_prohibition-primary --python .venv-cpu/bin/python",
+        "log": "proof-final-offline-designated_prohibition-primary.log",
+        "log_sha256": "3a05584cd93bc2cb2efdffc090257fd507b7ab2234064c5dbfeb9ebc66359567"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-designated_prohibition-primary.json",
+        "sha256": "d98b16762c4a3acadee4b9af30ca9687ce2a492ccfc879f2bcf50e4115a7bb6f",
+        "log": "proof-analysis-designated_prohibition-primary.log",
+        "negative_log": "proof-negative-designated_prohibition-primary.log"
+      },
+      "negative": {
+        "log": "proof-negative-designated_prohibition-primary.log",
+        "exit_code": 1,
+        "expected_error": "Missing required source: body-history.jsonl"
+      },
+      "acquisition": {
+        "crossing_order": {
+          "entrypoint": "analysis.py",
+          "method": "measure_crossing_order",
+          "evidence": "body-history.jsonl"
+        },
+        "roadway_vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "measure_roadway_vehicle_inventory",
+          "evidence": "body-history.jsonl"
+        },
+        "provided_overhead_crossing": {
+          "entrypoint": "analysis.py",
+          "method": "measure_provided_overhead_crossing",
+          "evidence": "reviewed-site.json"
+        },
+        "designated_place_prohibition": {
+          "entrypoint": "analysis.py",
+          "method": "measure_designated_place",
+          "evidence": "municipal-designation-source.txt"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C188132__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT\"/v*/feedback.json # testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition",
+        "test_log": "proof-process-saved-designated_prohibition.log",
+        "test_log_sha256": "360034ffb18ff220a32d6e4102f6967ad4149e34bd1b9761a0e1edc987a557c7",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5baf79b768bdafe5bd8ab3d66aaa5b7eb6493d6f7b1f7ee2739a09d95f00c352",
+        "command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --self-test",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-designated_prohibition.log",
+        "test_log_sha256": "0e64e2c69832f12ade971703719863e018a2f5a727c347e0600bf77a29cb883e",
+        "negative_command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/prove_delivery.py --case testing__C188132__LVMC-11-30-060-B__pedestrian__designated_prohibition --negative-missing-seal",
+        "negative_exit_code": 1,
+        "negative_expected_error": "missing or escaped original source: capture-seal.json",
+        "negative_log": "proof-delivery-negative-designated_prohibition.log",
+        "negative_log_sha256": "2db3728049b0929a8ce4ddf91b44396ca8169fb2804d8178fb211885b9bb948d",
+        "production_command": ".venv-cpu/bin/python work/testing__C188132__LVMC-11-30-060-B__pedestrian/delivery_audit.py --attempt \"$ATTEMPT\" --pixel-review \"$ATTEMPT/original-pixel-review.json\" --processing-receipt \"$OUTPUT/v0001/processing.json\""
       }
     }
   ]

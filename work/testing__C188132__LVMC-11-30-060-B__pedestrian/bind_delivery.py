@@ -31,8 +31,7 @@ def main():
     manifest = json.loads(manifest_path.read_text())
     for entry in manifest['cases']:
         variant = entry['case_id'].split('__')[-1]
-        process_root = safe / ('c188132-process-saved-yield' if variant == 'yield_before_vehicle'
-                               else 'c188132-process-saved-' + variant)
+        process_root = safe / ('c188132-nov25-process-saved-' + variant)
         receipt = json.loads((process_root / 'v0001' / 'processing.json').read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True or
                 receipt.get('missing_evidence') is not False or
@@ -40,8 +39,7 @@ def main():
                 receipt.get('timestamp_joins', {}).get('frames') != 900):
             raise ValueError('positive saved-only proof missing: ' + variant)
         saved_log = HERE / ('proof-process-saved-' + variant + '.log')
-        clean(safe / ('c188132-process-saved-yield.log' if variant == 'yield_before_vehicle'
-                      else 'c188132-process-saved-' + variant + '.log'), saved_log)
+        clean(safe / ('c188132-nov25-process-saved-' + variant + '.log'), saved_log)
         command = ('.venv-cpu/bin/python runtime.py process-saved --manifest work/' + ASSIGNMENT +
                    '/execution-manifest.json --case ' + entry['case_id'] +
                    ' --attempt "$ATTEMPT" --output "$OUTPUT" --library runtime/library --validator "$VALIDATOR"')
@@ -77,7 +75,8 @@ def main():
             'negative_expected_error': expected,
             'negative_log': bad_log.name, 'negative_log_sha256': sha(bad_log),
             'production_command': '.venv-cpu/bin/python work/' + ASSIGNMENT +
-                                  '/delivery_audit.py --attempt "$ATTEMPT" --pixel-review "$ATTEMPT/original-pixel-review.json"'}
+                                  '/delivery_audit.py --attempt "$ATTEMPT" --pixel-review "$ATTEMPT/original-pixel-review.json"' +
+                                  ' --processing-receipt "$OUTPUT/v0001/processing.json"'}
         print(variant, 'saved-only and delivery audit fixture proofs bound')
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 

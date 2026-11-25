@@ -62,6 +62,22 @@ class MediaAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "four original camera"):
                 audit_media(root, expected_frames=2, specs=SPECS)
 
+    def test_reject_source_bound_wrong_codec(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            fixture(root)
+            video = root / 'overview.mkv'
+            video.unlink()
+            subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-f', 'lavfi',
+                            '-i', 'color=c=red:s=16x16:r=20', '-frames:v', '2',
+                            '-c:v', 'mpeg4', str(video)], check=True)
+            path = root / 'original-sources.json'
+            manifest = json.loads(path.read_text())
+            manifest['video_overview']['sha256'] = sha(video)
+            path.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, 'original video codec'):
+                audit_media(root, expected_frames=2, specs=SPECS)
+
 
 if __name__ == "__main__":
     unittest.main()

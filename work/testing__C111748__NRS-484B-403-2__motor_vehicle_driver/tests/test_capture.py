@@ -56,7 +56,7 @@ class Tests(unittest.TestCase):
                     "device_readback": {"device_id": 77,
                                         "prohibits_u_turn": not bad_display,
                                         "visible_to_ego": i >= 1},
-                    "cameras": {name: frame + (1 if bad_camera and name == "detail_left" else 0)
+                    "cameras": {name: frame + (1 if bad_camera and name == "approach" else 0)
                                 for name in capture.CAMERAS}}
 
         return capture.capture(self.source, "wrong" if bad_source else self.sha,

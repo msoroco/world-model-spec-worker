@@ -323,6 +323,9 @@ class EncounterTests(unittest.TestCase):
                                                  'sha256':hashlib.sha256(image.read_bytes()).hexdigest()}})
         index=build_original_index(self.root,case,expected_frames=3)
         index_path=self.root/'source-index.json'
+        (self.root/'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind':'synthetic_fixture','diagnostic_fixture':True,
+            'source_index_sha256':hashlib.sha256(index_path.read_bytes()).hexdigest()}))
         measured=finalize_delivery(self.site,self.root,refs['events'],
                                    {view:refs[view] for view in ('overview','approach','reference_corner','driver_reference')},
                                    'cross_rider_path',3)
@@ -342,7 +345,7 @@ class EncounterTests(unittest.TestCase):
                 'interference_verdict':None}
         review_path=self.root/'pixel-review.json'
         review_path.write_text(json.dumps(review),encoding='utf-8')
-        result=audit_delivery(self.root,case,review_path,expected_frames=3)
+        result=audit_delivery(self.root,case,review_path,expected_frames=3,diagnostic_fixture=True)
         self.assertTrue(result['checks']['actual_pixels'])
         self.assertTrue(result['checks']['physical_completion'])
         from PIL import Image
@@ -354,22 +357,22 @@ class EncounterTests(unittest.TestCase):
         bad['views']['approach']['framemd5_sha256']='0'*64
         review_path.write_text(json.dumps(bad),encoding='utf-8')
         with self.assertRaisesRegex(ValueError,'pixel review video/decode binding differs'):
-            audit_delivery(self.root,case,review_path,expected_frames=3)
+            audit_delivery(self.root,case,review_path,expected_frames=3,diagnostic_fixture=True)
         bad=copy.deepcopy(review)
         bad['physical_review']['completed']=False
         review_path.write_text(json.dumps(bad),encoding='utf-8')
         with self.assertRaisesRegex(ValueError,'physical encounter review'):
-            audit_delivery(self.root,case,review_path,expected_frames=3)
+            audit_delivery(self.root,case,review_path,expected_frames=3,diagnostic_fixture=True)
         bad=copy.deepcopy(review)
         bad['views']['overview']['samples'][0]['original_png_sha256']='0'*64
         review_path.write_text(json.dumps(bad),encoding='utf-8')
         with self.assertRaisesRegex(ValueError,'unresolved rider pixel review'):
-            audit_delivery(self.root,case,review_path,expected_frames=3)
+            audit_delivery(self.root,case,review_path,expected_frames=3,diagnostic_fixture=True)
         review_path.write_text(json.dumps(review),encoding='utf-8')
         index['case_id']=self.site['assignment_id']+'__maintain_clearance'
         index_path.write_text(json.dumps(index),encoding='utf-8')
         with self.assertRaisesRegex(ValueError,'original source index identity'):
-            audit_delivery(self.root,case,review_path,expected_frames=3)
+            audit_delivery(self.root,case,review_path,expected_frames=3,diagnostic_fixture=True)
         index_path.unlink()
         (self.root/'camera-originals'/'overview'/'00000001.png').unlink()
         with self.assertRaisesRegex(ValueError,'original camera image count mismatch'):
