@@ -17,3 +17,5 @@ Proofs and commands: `source_verified_*-primary-offline.log`, `source_verified_*
 Historical handoff text is indexed at `work/_shared/c125751-handoff-before-current-readiness-20261125.md`. Its embedded base64 archive fragment was truncated and could not be opened as gzip/tar; it was removed from this returned file. All current proof artifacts are plain text under `work/` and generated recordings remain under `.runtime-work/`.
 
 The shared queue includes all three C125751 exact cases and both comparisons (55 current-runtime case rows, 21 comparison rows overall). The batch-wide strict gate exited 1 on a retained prior-ready package manifest bound to the previous runtime; 29 such retained manifests remain by the `PREVIOUS_READINESS.json` preservation policy. This does not change C125751’s passing scoped strict result. See `work/_shared/full-strict-20261125.log` and `RETURN-REPORT.md`.
+
+The no-flags whole-batch checker likewise exited 1 on the previous-runtime manifest binding; see `work/_shared/quick-worker-check-20261125.log`.
