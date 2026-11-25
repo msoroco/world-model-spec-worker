@@ -1,0 +1,181 @@
+{
+  "recording_description": {
+    "channels": [
+      {
+        "name": "curve_geometry",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "grade_profile",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "reversal_motion",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "two_direction_visibility",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "source_camera_views",
+        "unit": "video",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "native_body_pose_control",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "camera_frame_join",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor, generated road, body-ray and synchronized camera source join",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame and generated road station",
+        "uncertainty": "50 ms sampling; actual source geometry and recognition pending"
+      },
+      {
+        "name": "native_map_and_lanes",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original generated road readback",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "generated roadway station",
+        "uncertainty": "original map readback pending"
+      },
+      {
+        "name": "drv.u_turn",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from reversal_motion, native_body_pose_control",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "Commanded three-point route is not observed completion"
+      },
+      {
+        "name": "st.curvature",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from curve_geometry, native_map_and_lanes",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "Curve classification requires original generated road readback"
+      },
+      {
+        "name": "st.grade",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from grade_profile, native_map_and_lanes",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "No legal numerical near-crest threshold inferred"
+      },
+      {
+        "name": "st.sight_distance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from two_direction_visibility, source_camera_views",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "Virtual rays and analytic geometry do not establish human recognition"
+      },
+      {
+        "name": "rel.oncoming",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from native_body_pose_control",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "Opposing approach is a virtual observer; no second physical vehicle claimed"
+      },
+      {
+        "name": "drv.approaching",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from two_direction_visibility",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "Observer viewpoints are source geometry proxies"
+      },
+      {
+        "name": "kin.position",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "derived from native_body_pose_control, reversal_motion",
+        "time_window": "35 seconds / 700 joined frames",
+        "reference_frame": "original Native frame",
+        "uncertainty": "Only original Native joins support realized position"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "native_map_and_lanes",
+        "unit": "structured",
+        "method": "source-hashed generated OpenDRIVE and lane readback"
+      }
+    ],
+    "limitations": [
+      "CPU geometry and requests do not prove original CARLA visibility, physical reversal or legal judgment."
+    ]
+  },
+  "measurement_plan": [
+    "case-specific saved ray, grade and turn source joins"
+  ],
+  "static_checks": [
+    "authored road/lane geometry",
+    "exact 700-frame request"
+  ],
+  "termination_rules": [
+    "700 joined 20 Hz frames",
+    "abort on missing original source"
+  ],
+  "mechanisms": [
+    "three-point reversal request",
+    "two-direction observer rays"
+  ],
+  "law_id": "NRS-484B-407",
+  "cell_id": "C104496",
+  "actor": "motor_vehicle_driver",
+  "entrypoint": "runner.py",
+  "status": "CPU delivery prepared; original realization pending",
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Dispatch one exact C104496 case through the pinned prospective runtime.\"\"\"\nimport argparse\nimport os\nimport subprocess\nimport sys\nfrom pathlib import Path\n\nROOT = Path(__file__).resolve().parents[2]\nHERE = Path(__file__).resolve().parent\n\n\ndef main():\n    p = argparse.ArgumentParser()\n    p.add_argument(\"--case\", required=True)\n    p.add_argument(\"--candidate\", default=\"primary\")\n    p.add_argument(\"--output\", required=True)\n    p.add_argument(\"--python\", default=os.environ.get(\"CARLA_PYTHON\"))\n    p.add_argument(\"--host\", default=os.environ.get(\"CARLA_HOST\", \"localhost\"))\n    p.add_argument(\"--port\", default=os.environ.get(\"CARLA_PORT\", \"2000\"))\n    args = p.parse_args()\n    if not args.python:\n        raise ValueError(\"Supply original CARLA Python\")\n    command = [sys.executable, str(ROOT / \"runtime.py\"), \"capture\", \"--manifest\", str(HERE / \"execution-manifest.json\"), \"--case\", args.case, \"--candidate\", args.candidate, \"--output\", args.output, \"--python\", args.python, \"--host\", args.host, \"--port\", str(args.port)]\n    subprocess.run(command, check=True)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"assignment_id\": \"training__C104496__NRS-484B-407__motor_vehicle_driver\",\n  \"assignment_sha256\": \"969fe6087ce77e1a1cda87e8c332f54bca8772d25d4499d13b32c5c8e2a5aac2\",\n  \"camera_policy\": \"standard\",\n  \"candidate_id\": \"primary\",\n  \"case_id\": \"training__C104496__NRS-484B-407__motor_vehicle_driver__probe_01\",\n  \"case_plan_sha256\": \"e876c13eb41a8c99363b2d365ef12b12607117bf35bf20676bd8c372495e5033\",\n  \"crest_station_m\": 200,\n  \"ego_blueprint\": \"vehicle.tesla.model3\",\n  \"format\": \"c104496-assignment-dispatch-config-v1\",\n  \"frames\": 700,\n  \"grade_height_m\": 0.8,\n  \"legal_verdict\": null,\n  \"original_native_observed\": false,\n  \"other_vehicle_blueprint\": \"vehicle.audi.a2\",\n  \"rate_hz\": 20,\n  \"requested_speed_mps\": 5.0,\n  \"road_sha256\": \"0e24a030b822d750904193324cace1a1a9772c0c5e4242c3e76c72f03538c22b\",\n  \"source_text\": \"A vehicle shall not be turned so as to proceed in the opposite direction upon any curve, or upon the approach to or near the crest of a grade, where such vehicle cannot be seen by the driver of any other vehicle approaching from either direction within 500 feet.\",\n  \"status\": \"selected_for_delivery_preparation\",\n  \"stop_before_crest\": false,\n  \"tracks_sha256\": \"a21f0708acd9c4d07d0b549a27a86de684987ad7c3cefa13cbfdffffca628c19\",\n  \"cell_id\": \"C104496\",\n  \"law_id\": \"NRS-484B-407\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"duration_s\": 35,\n  \"selected_case_id\": null,\n  \"supported_case_ids\": [\n    \"training__C104496__NRS-484B-407__motor_vehicle_driver__probe_01\",\n    \"training__C104496__NRS-484B-407__motor_vehicle_driver__probe_02\",\n    \"training__C104496__NRS-484B-407__motor_vehicle_driver__probe_03\"\n  ],\n  \"case\": null,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fov_deg\": 80,\n      \"pose_strategy\": \"fixed elevated view over the authored reversal interval\"\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 80,\n      \"pose_strategy\": \"fixed source-direction observer at the western 500-foot station\"\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 80,\n      \"pose_strategy\": \"fixed opposing-direction observer at the eastern 500-foot station\"\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 80,\n      \"pose_strategy\": \"fixed auxiliary road and body view near the reversal interval\"\n    }\n  ]\n}\n"
+    }
+  ]
+}

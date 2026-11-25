@@ -14,6 +14,25 @@ spec.loader.exec_module(finalizer)
 
 
 class OriginalReviewTest(unittest.TestCase):
+    def test_reviewed_channels_preserve_original_acquisition(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "channels").mkdir()
+            original = root / "channels" / "ru.rider_posture.jsonl"
+            original.write_text('{"time_s": 0.05, "value": {"original_pixel_review": "pending"}}\n')
+            before = original.read_bytes()
+            survey = {"official_sign_status": "unreviewed", "original_pixel_visibility": "unreviewed"}
+            (root / "road_geometry.json").write_text(json.dumps(survey) + "\n")
+            (root / "context.json").write_text(json.dumps({"signed_hill_crest": survey}) + "\n")
+            description = {"channels": [{"name": "ru.rider_posture"}]}
+            native = [{"time_s": .05}]
+            rider = [{"mounted": True}]
+            finalizer.rebuild_channels(root, description, native, [{}], rider, [{}], {}, True)
+            self.assertEqual(original.read_bytes(), before)
+            reviewed = root / "reviewed_channels" / "ru.rider_posture.jsonl"
+            self.assertTrue(reviewed.is_file())
+            self.assertEqual(json.loads(reviewed.read_text())["value"]["mounted"], True)
+
     def test_sealed_original_review_and_mutations(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

@@ -41,17 +41,17 @@ def main():
                  '--library', str(REPO / 'runtime/library'), '--validator', str(VALIDATOR)],
             ]
             if not offline_out.exists():
-                with (target / 'offline-command.log').open('w', encoding='utf-8') as stream:
+                with (target / 'build-command.log').open('w', encoding='utf-8') as stream:
                     result = subprocess.run([sys.executable, str(REPO / 'runtime.py'), *commands[0]],
                                             cwd=REPO, env=env, stdout=stream, stderr=subprocess.STDOUT,
                                             timeout=300)
                 if result.returncode:
                     raise ValueError(f'Offline failed: {key}')
             else:
-                if not (target / 'offline-command.log').exists():
-                    (target / 'offline-command.log').write_text('Reused exact selected offline diagnostic\n')
+                if not (target / 'build-command.log').exists():
+                    (target / 'build-command.log').write_text('Reused exact selected offline diagnostic\n')
             if not compat_out.exists():
-                with (target / 'compatibility-command.log').open('w', encoding='utf-8') as stream:
+                with (target / 'compat-command.log').open('w', encoding='utf-8') as stream:
                     result = subprocess.run([sys.executable, str(REPO / 'runtime.py'), *commands[1]],
                                             cwd=REPO, env=env, stdout=stream, stderr=subprocess.STDOUT,
                                             timeout=360)

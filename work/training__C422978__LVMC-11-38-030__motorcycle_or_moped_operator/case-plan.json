@@ -1,133 +1,187 @@
 {
-  "assignment_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator",
-  "law_id": "LVMC-11-38-030",
-  "cell_id": "C422978",
-  "actor": "motorcycle_or_moped_operator",
-  "frozen_cell": {
-    "layout": "two_lane_two_way",
-    "maneuver": "travel",
-    "control": "sidewalk"
-  },
-  "selection_targets": [
-    "full-train"
-  ],
-  "source_law": {
-    "source": "LVMC 11.38.030",
-    "text": "No motorcycle or motor scooter shall be ridden upon any sidewalk of the City.",
-    "sha256": "cb1c16e1d0a27af50e509126459d604593ada97e480dea9b232fe4a9acf023be"
-  },
-  "summary_status": "recovered_requires_source_review",
-  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
-  "witness_branches": [
-    "Motorcycle riding upon a sidewalk"
-  ],
-  "selected_branch": null,
-  "requirement_dispositions": [
-    {
-      "requirement": "LVMC-11-38-030",
-      "source": "LVMC 11.38.030",
-      "branch": "Motorcycle riding upon a sidewalk",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-        "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2"
-      ],
-      "evidence_or_gap": "Eight exact primary/fallback bundles pass pinned offline, saved-source, finalization, synthetic Core/Lean/video and independent CPU audits; four synthetic controlled comparisons and source-tamper negatives pass. Original Native motorcycle/sidewalk occupancy, four-camera capture, real City jurisdiction and driveway-rule composition remain unverified."
-    }
-  ],
   "activation_conditions": [
     "the subject rides a motorcycle or motor scooter upon a sidewalk of the City"
   ],
-  "timing_requirements": [
+  "actor": "motorcycle_or_moped_operator",
+  "assignment_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator",
+  "blockers": [
+    "Original Native runner capture and four-camera evidence, original saved measurement, actual City-sidewalk qualification, driveway rule composition, strict selected v2 recipe and independent selected audit remain unfinished. Synthetic exact full-package compatibility is proven."
+  ],
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 600 synchronized frames",
+        "subject": "motorcycle body, roadway and connected sidewalk context",
+        "view": "overview"
+      },
+      {
+        "interval": "all 600 synchronized frames",
+        "subject": "motorcycle approach, rider posture and sidewalk entry",
+        "view": "approach"
+      },
+      {
+        "interval": "all 600 synchronized frames",
+        "subject": "sidewalk edges, driveway context and motorcycle body overlap",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 600 synchronized frames",
+        "subject": "rider view, connected sidewalk and road surface",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
+  },
+  "candidate_plans": [
     {
-      "kind": "continuous",
-      "requirement": "judged at every instant the machine is ridden on the sidewalk"
+      "candidate_id": "primary",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
+      "changed_knobs": [],
+      "construction": "selected-30s/witness_1/primary/construction.json",
+      "construction_sha256": "76702e4f6d47c2a13abe0c8020496455ece47fe4f31ccdce2d60cffe015bcafa",
+      "status": "selected_cpu_preparation",
+      "trigger_method": "primary exact construction"
+    },
+    {
+      "candidate_id": "fallback1",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
+      "changed_knobs": [
+        "lateral_start_frame"
+      ],
+      "construction": "selected-30s/witness_1/fallback1/construction.json",
+      "construction_sha256": "23381ee12b56297ffa0a97d5db7fef46e7d002f032361b5cab14013ea0a9fdf0",
+      "status": "selected_cpu_preparation",
+      "trigger_method": "Requested lateral transition is not reached in the original window"
+    },
+    {
+      "candidate_id": "fallback2",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
+      "changed_knobs": [
+        "lateral_duration_frames"
+      ],
+      "construction": "selected-30s/witness_1/fallback2/construction.json",
+      "construction_sha256": "2f9e4a21d27efff867c63e9413e021067401e1c915f15a1752cfeae17d1aa8e0",
+      "status": "selected_cpu_preparation",
+      "trigger_method": "Primary motorcycle transition is unstable or misses the sidewalk window"
+    },
+    {
+      "candidate_id": "primary",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
+      "changed_knobs": [],
+      "construction": "selected-30s/witness_2/primary/construction.json",
+      "construction_sha256": "8382697ac660acbacd072e981168c262ff7b6cb2a111776e0c8fc967f5cfd7a2",
+      "status": "selected_cpu_preparation",
+      "trigger_method": "primary exact construction"
+    },
+    {
+      "candidate_id": "fallback1",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
+      "changed_knobs": [
+        "lateral_start_frame"
+      ],
+      "construction": "selected-30s/witness_2/fallback1/construction.json",
+      "construction_sha256": "2d6bcd4009f79386361359aa9e79daa56a2b571b7ed53b371fc3f57fde1f4b3d",
+      "status": "selected_cpu_preparation",
+      "trigger_method": "Requested lateral transition is not reached in the original window"
+    },
+    {
+      "candidate_id": "fallback2",
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
+      "changed_knobs": [
+        "lateral_duration_frames"
+      ],
+      "construction": "selected-30s/witness_2/fallback2/construction.json",
+      "construction_sha256": "37de5a7e604d9206beb2df68a2a99438f745cf54fd3344c8826af1198be93250",
+      "status": "selected_cpu_preparation",
+      "trigger_method": "Primary motorcycle transition is unstable or misses the sidewalk window"
     }
   ],
-  "unresolved_judgment_calls": [
-    "the state rule permits crossing a sidewalk at a driveway; a reading must say how the municipal ban and that permission compose"
-  ],
-  "neutral_baseline": {
-    "kind": "unselected_baseline",
-    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording."
-  },
   "cases": [
     {
       "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-      "target_law_id": "LVMC-11-38-030",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "rider travels on roadway without entering sidewalk",
       "comparison_variable": "sidewalk_motorcycle_occupancy",
-      "source_branch": "Motorcycle riding upon a sidewalk",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
-      ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "two_lane_two_way",
-          "maneuver": "travel",
-          "control": "sidewalk"
-        },
-        "activation_conditions_to_verify": [
-          "the subject rides a motorcycle or motor scooter upon a sidewalk of the City"
-        ]
-      },
       "controller": {
         "requested_behavior": "rider travels on roadway without entering sidewalk"
       },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
       "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": [
-        "the state rule permits crossing a sidewalk at a driveway; a reading must say how the municipal ban and that permission compose"
-      ]
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
-      "target_law_id": "LVMC-11-38-030",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "rider rides motorcycle on city sidewalk",
-      "comparison_variable": "sidewalk_motorcycle_occupancy",
-      "source_branch": "Motorcycle riding upon a sidewalk",
+      "gap_ids": [
+        "unrecorded_sidewalk_motorcycle_pair"
+      ],
+      "kind": "delivery",
+      "physical_target": "rider travels on roadway without entering sidewalk",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
+      "source_branch": "Motorcycle riding upon a sidewalk",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "LVMC-11-38-030",
+      "target_type": "controlled_attempt",
+      "unresolved_judgment_calls": [
+        "the state rule permits crossing a sidewalk at a driveway; a reading must say how the municipal ban and that permission compose"
+      ],
       "world_setup": {
-        "frozen_cell": {
-          "layout": "two_lane_two_way",
-          "maneuver": "travel",
-          "control": "sidewalk"
-        },
         "activation_conditions_to_verify": [
           "the subject rides a motorcycle or motor scooter upon a sidewalk of the City"
-        ]
-      },
+        ],
+        "frozen_cell": {
+          "control": "sidewalk",
+          "layout": "two_lane_two_way",
+          "maneuver": "travel"
+        }
+      }
+    },
+    {
+      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
+      "comparison_variable": "sidewalk_motorcycle_occupancy",
       "controller": {
         "requested_behavior": "rider rides motorcycle on city sidewalk"
       },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
       "expected_scenario_outcome": null,
+      "gap_ids": [
+        "unrecorded_sidewalk_motorcycle_pair"
+      ],
+      "kind": "delivery",
+      "physical_target": "rider rides motorcycle on city sidewalk",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "Motorcycle riding upon a sidewalk",
+      "subject_behavior": {
+        "status": "unobserved",
+        "value": null
+      },
+      "target_law_id": "LVMC-11-38-030",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
         "the state rule permits crossing a sidewalk at a driveway; a reading must say how the municipal ban and that permission compose"
-      ]
+      ],
+      "world_setup": {
+        "activation_conditions_to_verify": [
+          "the subject rides a motorcycle or motor scooter upon a sidewalk of the City"
+        ],
+        "frozen_cell": {
+          "control": "sidewalk",
+          "layout": "two_lane_two_way",
+          "maneuver": "travel"
+        }
+      }
     }
   ],
+  "cell_id": "C422978",
   "comparisons": [
     {
-      "comparison_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_comparison",
       "case_ids": [
         "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
         "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2"
       ],
+      "comparison_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_comparison",
       "deliberate_differences": [
         "sidewalk_motorcycle_occupancy"
       ],
@@ -138,144 +192,188 @@
       ]
     }
   ],
+  "cpu_construction": {
+    "delivery_ready": false,
+    "draft_manifest": "native/drafts/manifest.json",
+    "exact_finalization_proof": "exact-finalization-proof.json",
+    "exact_manifest": "draft-execution-manifest.json",
+    "exact_saved_package_proof": "exact-saved-package-proof.json",
+    "independent_audit": "native/construction-audit.json",
+    "independent_offline_audit": "draft-offline-audit.json",
+    "offline_summary": "draft-offline-summary.json",
+    "original_native_observed": false,
+    "road": "native/road.xodr",
+    "spatial_context_proof": "native/context-proof.json",
+    "status": "exact_unselected_offline_passed",
+    "synthetic_comparison_proof": "synthetic-controlled-comparison.json",
+    "synthetic_full_package_summary": "full-package-summary.json",
+    "trigger_proof": "native/trigger-proof.json"
+  },
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "unrecorded_sidewalk_motorcycle_pair",
+        "requirement": "LVMC-11-38-030",
+        "source": "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json",
+        "why_existing_insufficient": "The frozen assignment has zero accepted membership rows and no accepted recording inventory for original motorcycle sidewalk occupancy."
+      }
+    ],
+    "method": "Exact frozen assignment membership and available accepted-evidence inventory review",
+    "reviewer": "worker CPU source audit"
+  },
+  "existing_evidence": [],
+  "frozen_cell": {
+    "control": "sidewalk",
+    "layout": "two_lane_two_way",
+    "maneuver": "travel"
+  },
+  "law_id": "LVMC-11-38-030",
   "mandatory_observation_terms": [
     {
-      "term": "ru.motorcycle",
       "purpose": "the motorcycle or motor scooter",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "ru.motorcycle"
     },
     {
-      "term": "ru.subject",
       "purpose": "the rider judged",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "ru.subject"
     },
     {
-      "term": "st.sidewalk",
       "purpose": "the sidewalk",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "st.sidewalk"
     },
     {
-      "term": "rel.occupies",
       "purpose": "the machine's footprint on it",
-      "status": "measurement_mapping_pending"
+      "status": "measurement_mapping_pending",
+      "term": "rel.occupies"
     },
     {
-      "term": "kin.velocity",
-      "purpose": "'ridden' — the machine is in motion",
-      "status": "measurement_mapping_pending"
+      "purpose": "'ridden' \u2014 the machine is in motion",
+      "status": "measurement_mapping_pending",
+      "term": "kin.velocity"
     }
   ],
+  "neutral_baseline": {
+    "description": "Frozen cell and actor with target rule inactive or neutral; not a selected recording.",
+    "kind": "unselected_baseline"
+  },
   "observations": [
     {
-      "name": "ru.motorcycle",
       "mandatory": true,
-      "reason": "the motorcycle or motor scooter"
+      "name": "motorcycle_body_speed",
+      "purpose": "Original motorcycle identity, rider posture, full body and speed every frame",
+      "unit": "structured"
     },
     {
-      "name": "ru.subject",
       "mandatory": true,
-      "reason": "the rider judged"
+      "name": "sidewalk_lane_readback",
+      "purpose": "Original Native sidewalk lane and body join",
+      "unit": "structured"
     },
     {
-      "name": "st.sidewalk",
       "mandatory": true,
-      "reason": "the sidewalk"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the machine's footprint on it"
-    },
-    {
-      "name": "kin.velocity",
-      "mandatory": true,
-      "reason": "'ridden' — the machine is in motion"
+      "name": "camera_frame_join",
+      "purpose": "Original four-camera synchronized pixel/frame mapping",
+      "unit": "structured"
     }
   ],
-  "candidate_plans": [
+  "readiness_limitation": "Eight exact unselected CPU bundles pass offline, saved, finalization and synthetic v1 full-package proofs, with independent audits and four synthetic controlled comparisons; no original Native capture, real City-sidewalk qualification, strict selected v2 receipt or legal outcome.",
+  "requirement_dispositions": [
     {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-      "candidate_id": "primary",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_1/primary/config.json",
-      "changed_knobs": [],
-      "trigger_method": "baseline"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-      "candidate_id": "fallback1",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_1/fallback1/config.json",
-      "changed_knobs": [
-        "lateral_start_frame"
+      "branch": "Motorcycle riding upon a sidewalk",
+      "case_ids": [
+        "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
+        "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2"
       ],
-      "trigger_method": "saved full-body first sidewalk overlap or unwanted overlap"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-      "candidate_id": "fallback2",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_1/fallback2/config.json",
-      "changed_knobs": [
-        "lateral_duration_frames"
-      ],
-      "trigger_method": "saved full-body sidewalk occupancy or roadway separation"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_1",
-      "candidate_id": "fallback3",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_1/fallback3/config.json",
-      "changed_knobs": [
-        "camera_fov_deg"
-      ],
-      "trigger_method": "source-hashed original-camera motorcycle visibility fraction"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
-      "candidate_id": "primary",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_2/primary/config.json",
-      "changed_knobs": [],
-      "trigger_method": "baseline"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
-      "candidate_id": "fallback1",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_2/fallback1/config.json",
-      "changed_knobs": [
-        "lateral_start_frame"
-      ],
-      "trigger_method": "saved full-body first sidewalk overlap or unwanted overlap"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
-      "candidate_id": "fallback2",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_2/fallback2/config.json",
-      "changed_knobs": [
-        "lateral_duration_frames"
-      ],
-      "trigger_method": "saved full-body sidewalk occupancy or roadway separation"
-    },
-    {
-      "case_id": "training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator__witness_2",
-      "candidate_id": "fallback3",
-      "status": "unselected_cpu_request",
-      "config": "native/drafts/witness_2/fallback3/config.json",
-      "changed_knobs": [
-        "camera_fov_deg"
-      ],
-      "trigger_method": "source-hashed original-camera motorcycle visibility fraction"
+      "evidence_or_gap": "Eight exact primary/fallback bundles pass pinned offline, saved-source, finalization, synthetic Core/Lean/video and independent CPU audits; four synthetic controlled comparisons and source-tamper negatives pass. Original Native motorcycle/sidewalk occupancy, four-camera capture, real City jurisdiction and driveway-rule composition remain unverified.",
+      "requirement": "LVMC-11-38-030",
+      "source": "LVMC 11.38.030",
+      "status": "selected_required"
     }
   ],
-  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Native import of authored sidewalk lane and two-wheel motorcycle blueprint is unverified.",
+    "Original saved body/camera measurements and local city-sidewalk context are unverified.",
+    "Synthetic exact v1 full-package compatibility passes; strict selected v2 recipe and selected delivery are unverified."
+  ],
+  "selected_branch": null,
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "sha256": "cb1c16e1d0a27af50e509126459d604593ada97e480dea9b232fe4a9acf023be",
+    "source": "LVMC 11.38.030",
+    "text": "No motorcycle or motor scooter shall be ridden upon any sidewalk of the City."
+  },
+  "source_observation_mapping": {
+    "kin.velocity": {
+      "channels": [
+        "motorcycle_body_speed"
+      ],
+      "evidence": "Original Native body, lane, speed and camera sources are required; authored diagnostics do not establish physical or City/legal status",
+      "source_refs": [
+        "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "channels": [
+        "motorcycle_body_speed",
+        "sidewalk_lane_readback"
+      ],
+      "evidence": "Original Native body, lane, speed and camera sources are required; authored diagnostics do not establish physical or City/legal status",
+      "source_refs": [
+        "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "ru.motorcycle": {
+      "channels": [
+        "motorcycle_body_speed"
+      ],
+      "evidence": "Original Native body, lane, speed and camera sources are required; authored diagnostics do not establish physical or City/legal status",
+      "source_refs": [
+        "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "ru.subject": {
+      "channels": [
+        "motorcycle_body_speed",
+        "camera_frame_join"
+      ],
+      "evidence": "Original Native body, lane, speed and camera sources are required; authored diagnostics do not establish physical or City/legal status",
+      "source_refs": [
+        "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json"
+      ]
+    },
+    "st.sidewalk": {
+      "channels": [
+        "sidewalk_lane_readback",
+        "camera_frame_join"
+      ],
+      "evidence": "Original Native body, lane, speed and camera sources are required; authored diagnostics do not establish physical or City/legal status",
+      "source_refs": [
+        "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json"
+      ]
+    }
+  },
   "sources": [
     {
       "path": "inputs/training__C422978__LVMC-11-38-030__motorcycle_or_moped_operator/assignment.json",
       "sha256": "5177c1265baf6f81fd57cbf367236d862991949cc6a22c08c036bb775c28bf49"
     }
+  ],
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "summary_status": "recovered_requires_source_review",
+  "timing_requirements": [
+    {
+      "kind": "continuous",
+      "requirement": "judged at every instant the machine is ridden on the sidewalk"
+    }
+  ],
+  "unresolved_judgment_calls": [
+    "the state rule permits crossing a sidewalk at a driveway; a reading must say how the municipal ban and that permission compose"
   ],
   "unverified_physical_assumptions": [
     "Native map realizes frozen layout, maneuver and control",
@@ -283,30 +381,7 @@
     "Four camera views and saved channels can establish every decisive relation",
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
-  "blockers": [
-    "Original Native runner capture and four-camera evidence, original saved measurement, actual City-sidewalk qualification, driveway rule composition, strict selected v2 recipe and independent selected audit remain unfinished. Synthetic exact full-package compatibility is proven."
-  ],
-  "runtime_uncertainties": [
-    "Native import of authored sidewalk lane and two-wheel motorcycle blueprint is unverified.",
-    "Original saved body/camera measurements and local city-sidewalk context are unverified.",
-    "Synthetic exact v1 full-package compatibility passes; strict selected v2 recipe and selected delivery are unverified."
-  ],
-  "readiness_limitation": "Eight exact unselected CPU bundles pass offline, saved, finalization and synthetic v1 full-package proofs, with independent audits and four synthetic controlled comparisons; no original Native capture, real City-sidewalk qualification, strict selected v2 receipt or legal outcome.",
-  "cpu_construction": {
-    "status": "exact_unselected_offline_passed",
-    "road": "native/road.xodr",
-    "draft_manifest": "native/drafts/manifest.json",
-    "trigger_proof": "native/trigger-proof.json",
-    "independent_audit": "native/construction-audit.json",
-    "original_native_observed": false,
-    "delivery_ready": false,
-    "exact_manifest": "draft-execution-manifest.json",
-    "offline_summary": "draft-offline-summary.json",
-    "independent_offline_audit": "draft-offline-audit.json",
-    "exact_saved_package_proof": "exact-saved-package-proof.json",
-    "exact_finalization_proof": "exact-finalization-proof.json",
-    "synthetic_full_package_summary": "full-package-summary.json",
-    "synthetic_comparison_proof": "synthetic-controlled-comparison.json",
-    "spatial_context_proof": "native/context-proof.json"
-  }
+  "witness_branches": [
+    "Motorcycle riding upon a sidewalk"
+  ]
 }

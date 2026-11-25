@@ -541,10 +541,9 @@
       }
     ]
   },
-  "source_observation_mapping": [
-    {
-      "term": "drv.u_turn",
-      "measurement": "observed_reverse_frames and observed_opposite_heading_frames over joined original actor poses",
+  "source_observation_mapping": {
+    "drv.u_turn": {
+      "evidence": "observed_reverse_frames and observed_opposite_heading_frames over joined original actor poses",
       "channels": [
         "reversal_motion",
         "native_body_pose_control"
@@ -555,9 +554,8 @@
       ],
       "uncertainty": "Commanded three-point route is not observed completion"
     },
-    {
-      "term": "st.curvature",
-      "measurement": "generated OpenDRIVE lane centerline curvature at the observed turn station",
+    "st.curvature": {
+      "evidence": "generated OpenDRIVE lane centerline curvature at the observed turn station",
       "channels": [
         "curve_geometry",
         "native_map_and_lanes"
@@ -568,9 +566,8 @@
       ],
       "uncertainty": "Curve classification requires original generated road readback"
     },
-    {
-      "term": "st.grade",
-      "measurement": "generated road elevation and crest station relative to observed turn interval",
+    "st.grade": {
+      "evidence": "generated road elevation and crest station relative to observed turn interval",
       "channels": [
         "grade_profile",
         "native_map_and_lanes"
@@ -581,9 +578,8 @@
       ],
       "uncertainty": "No legal numerical near-crest threshold inferred"
     },
-    {
-      "term": "st.sight_distance",
-      "measurement": "both incoming-lane observer stations at 152.4 m graded-road arc length, nine subject-body rays and reviewed source pixels per turn frame",
+    "st.sight_distance": {
+      "evidence": "both incoming-lane observer stations at 152.4 m graded-road arc length, nine subject-body rays and reviewed source pixels per turn frame",
       "channels": [
         "two_direction_visibility",
         "source_camera_views"
@@ -594,9 +590,8 @@
       ],
       "uncertainty": "Virtual rays and analytic geometry do not establish human recognition"
     },
-    {
-      "term": "rel.oncoming",
-      "measurement": "original physical approaching-vehicle position and route in west incoming lane",
+    "rel.oncoming": {
+      "evidence": "original physical approaching-vehicle position and route in west incoming lane",
       "channels": [
         "native_body_pose_control"
       ],
@@ -605,9 +600,8 @@
       ],
       "uncertainty": "Opposing approach is a virtual observer; no second physical vehicle claimed"
     },
-    {
-      "term": "drv.approaching",
-      "measurement": "original both-direction incoming-lane observer placement and route direction",
+    "drv.approaching": {
+      "evidence": "original both-direction incoming-lane observer placement and route direction",
       "channels": [
         "two_direction_visibility"
       ],
@@ -617,9 +611,8 @@
       ],
       "uncertainty": "Observer viewpoints are source geometry proxies"
     },
-    {
-      "term": "kin.position",
-      "measurement": "original subject body pose joined by frame to generated road station during full reversal",
+    "kin.position": {
+      "evidence": "original subject body pose joined by frame to generated road station during full reversal",
       "channels": [
         "native_body_pose_control",
         "reversal_motion"
@@ -630,5 +623,33 @@
       ],
       "uncertainty": "Only original Native joins support realized position"
     }
-  ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 35,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego full reversal, other vehicle and both approaches",
+        "interval": "0-35 s"
+      },
+      {
+        "view": "approach",
+        "subject": "west incoming lane, ego and other vehicle",
+        "interval": "0-35 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "east incoming lane and ego body",
+        "interval": "0-35 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego body and road station",
+        "interval": "0-35 s"
+      }
+    ],
+    "physical_verification_pending": true
+  }
 }

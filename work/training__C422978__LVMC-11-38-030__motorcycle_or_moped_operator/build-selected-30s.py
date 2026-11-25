@@ -22,6 +22,18 @@ def main():
     selected = []
     for case in manifest['cases']:
         copied = dict(case)
+        witness = case['case_id'].rsplit('__', 1)[-1]
+        fallback1 = next(item for item in case['candidates'] if item['id'] == 'fallback1')
+        fallback2_path = HERE / 'extended-primary' / witness / 'fallback2/construction.json'
+        fallback2 = {'id': 'fallback2',
+                     'construction': fallback2_path.relative_to(HERE).as_posix(),
+                     'construction_sha256': sha(fallback2_path),
+                     'changed_knobs': ['lateral_duration_frames'],
+                     'requested_overlap_frames': 0 if witness == 'witness_1' else 512,
+                     'trigger': {'source': 'original native-observed.jsonl',
+                                 'metric': 'lateral transition stability and moving sidewalk overlap',
+                                 'failure_condition': 'Primary motorcycle transition is unstable or misses the sidewalk window'}}
+        copied['candidates'] = [fallback1, fallback2]
         for candidate in [copied, *copied['candidates']]:
             source = HERE / candidate['construction']
             assert sha(source) == candidate['construction_sha256']
