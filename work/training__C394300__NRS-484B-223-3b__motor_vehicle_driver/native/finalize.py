@@ -114,6 +114,61 @@ def measure_entry_to_turn(attempt):
             'sources':{name:sha(attempt/name) for name in ('native_samples.jsonl','road_geometry.json')}}
 
 
+def derive_channels(attempt, count, description):
+    """Build delivery channels from retained original sources when absent."""
+    attempt=Path(attempt)
+    mapping=rows(attempt/'video_frames.jsonl')
+    motion=rows(attempt/'native_samples.jsonl')
+    evidence=rows(attempt/'capture/evidence.jsonl')
+    survey=json.loads((attempt/'road_geometry.json').read_text())
+    if any(len(source)!=count for source in (mapping,motion,evidence)):
+        raise ValueError('Cannot derive channels from incomplete original sources')
+    expected={item['name'] for item in description['channels']}
+    channels=attempt/'channels'
+    channels.mkdir(exist_ok=True)
+    existing={p.stem for p in channels.glob('*.jsonl')}
+    if not existing <= expected:
+        raise ValueError('Unexpected original Native channel')
+    for name in existing:
+        source=rows(channels/(name+'.jsonl'))
+        if len(source)!=count or any(abs(float(row['time_s'])-float(mapping[index]['time_s']))>1e-4
+                                     for index,row in enumerate(source)):
+            raise ValueError('Original Native channel frame/time join differs: '+name)
+    missing=expected-existing
+    streams={name:(channels/(name+'.jsonl')).open('x') for name in missing}
+    cumulative=0.0;previous=None
+    try:
+        for frame,sample,record in zip(mapping,motion,evidence):
+            xy=sample['native_center_xy_m']
+            if previous is not None:
+                cumulative+=math.dist(previous,xy)
+            previous=xy
+            forward=sample['native_forward_xy']
+            heading=math.degrees(math.atan2(forward[1],forward[0]))
+            values={
+                'st.turn_lane':survey,
+                'st.centre_turn_lane':survey,
+                'rel.occupies':sample['native_body_xy_m'],
+                'drv.turning':{'observed_forward':forward,
+                               'observed_road_id':sample['native_road_id'],
+                               'left_turn_status':'source_review_pending'},
+                'kin.heading':heading,
+                'kin.position':xy,
+                'kin.path_length':{'observed_cumulative_m':round(cumulative,6)},
+                'st.intersection':survey,
+                'native_body_pose_control':sample,
+                'camera_frame_join':{'native_frame':frame['native_frame'],
+                                     'video_frame':frame['video_frame']}}
+            if expected-set(values):
+                raise ValueError('No source derivation for selected channel')
+            for name,stream in streams.items():
+                stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name]},
+                                        allow_nan=False)+'\n')
+    finally:
+        for stream in streams.values():
+            stream.close()
+
+
 def finalize(attempt,output):
     attempt=Path(attempt).resolve();output=Path(output).resolve()
     if output.exists() or (attempt/'result.json').exists():
@@ -125,6 +180,7 @@ def finalize(attempt,output):
     original=verify_original_joins(attempt,count)
     provenance,native=capture_provenance(attempt,count)
     measured=measure_entry_to_turn(attempt)
+    derive_channels(attempt,count,config['recording_description'])
     videos=[f'{name}.mkv' for name in ('overview','approach','reference_corner','driver_reference')]
     video_counts={name:video_frames(attempt/name) for name in videos}
     if any(frames!=count for frames in video_counts.values()):

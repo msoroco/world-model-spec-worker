@@ -63,7 +63,9 @@ def finalize(attempt, output):
         raise ValueError('Unselected case identity')
     for name in SOURCES:
         required(attempt, name)
-    measurement = selected_lighting_measurement(attempt, attempt / 'derived-lighting')
+    lighting_name = ('derived-lighting-saved' if (attempt / 'derived-lighting').exists()
+                     else 'derived-lighting')
+    measurement = selected_lighting_measurement(attempt, attempt / lighting_name)
     source_hashes = {name: sha(attempt / name) for name in SOURCES}
     sets = {
         'equipment_observations': (equipment_observations(measurement),
@@ -83,11 +85,54 @@ def finalize(attempt, output):
               'source_kind': 'diagnostic' if measurement['diagnostic_only'] else 'original_review_pending',
               'physical_visibility_verified': False,
               'legal_verdict_claimed': False}
-    evidence = [{'name': channel['name'], 'unit': channel['unit'],
-                 'reference': 'native-lighting-frames.jsonl' if channel['name'] in
-                 ('speed_mps', 'ego_pose', 'native_lighting_frames') else
-                 'lighting-review.jsonl'}
-                for channel in config['recording_description']['channels']]
+    # Preserve the acquisition rows and expose one source-bound, regularly
+    # sampled stream per declared channel for the current recording validator.
+    native_rows = [json.loads(line) for line in (attempt / 'native-lighting-frames.jsonl').read_text().splitlines()]
+    review_rows = [json.loads(line) for line in (attempt / 'lighting-review.jsonl').read_text().splitlines()]
+    context = json.loads((attempt / 'lighting-measure-context.json').read_text())
+    recording_name = ('derived-recording-saved' if (attempt / 'derived-recording').exists()
+                      else 'derived-recording')
+    derived = attempt / recording_name
+    derived.mkdir()
+    evidence = []
+    for channel in config['recording_description']['channels']:
+        name = channel['name']
+        records = []
+        for index, (native, review) in enumerate(zip(native_rows, review_rows)):
+            if name in review:
+                value, source_name = review[name], 'lighting-review.jsonl'
+            elif name in native:
+                value, source_name = native[name], 'native-lighting-frames.jsonl'
+            elif name in context:
+                value, source_name = context[name], 'lighting-measure-context.json'
+            elif name == 'speed_mps':
+                value, source_name = native['velocity_mps'][0], 'native-lighting-frames.jsonl'
+            elif name == 'ego_pose':
+                value, source_name = {'velocity_mps': native['velocity_mps']}, 'native-lighting-frames.jsonl'
+            elif name == 'native_lighting_frames':
+                value, source_name = native, 'native-lighting-frames.jsonl'
+            elif name == 'four_camera_video':
+                value, source_name = {key: source_hashes[key] for key in
+                                      ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')}, 'lighting-review-context.json'
+            else:
+                raise ValueError('Declared recording channel lacks source: ' + name)
+            records.append({'time_s': index / 20, 'value': value,
+                            'source': source_name, 'source_sha256': source_hashes[source_name]})
+        reference = f'{recording_name}/{name}.jsonl'
+        (attempt / reference).write_text(''.join(json.dumps(row) + '\n' for row in records))
+        evidence.append({'name': name, 'unit': channel['unit'], 'reference': reference})
+    context_values = {
+        'independent_lamp_range_review': context['range_calibration_source'],
+        'sunset_sunrise': {'sunset_utc_s': context['sunset_utc_s'],
+                           'next_sunrise_utc_s': context['next_sunrise_utc_s']},
+    }
+    for channel in config['recording_description']['context_inputs']:
+        name = channel['name']
+        reference = f'{recording_name}/{name}.json'
+        (attempt / reference).write_text(json.dumps({name: context_values[name],
+            'source': 'lighting-measure-context.json',
+            'source_sha256': source_hashes['lighting-measure-context.json']}) + '\n')
+        evidence.append({'name': name, 'unit': channel['unit'], 'reference': reference})
     result = {
         'case_id': case_id,
         'measured_values': measurement['counts'],

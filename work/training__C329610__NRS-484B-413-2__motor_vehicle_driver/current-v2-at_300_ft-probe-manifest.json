@@ -1,0 +1,66 @@
+{
+  "assignment_id": "training__C329610__NRS-484B-413-2__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Original signal timing, tracking and pixel visibility require Native observation",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "start_x_m -112 to -116"
+          ],
+          "construction": "draft-candidates/at_300_ft/fallback1/construction.json",
+          "construction_sha256": "fee5b4b17c0e25d50782ef63a3d6f682e92da41a9041c5050249906ccd4c52ae",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "below 12 m",
+            "metric": "runway_to_signal_onset_m",
+            "source": "source-hashed original Native samples or reviewed source pixels"
+          }
+        },
+        {
+          "changed_knobs": [
+            "target_speed_mps 5 to 4"
+          ],
+          "construction": "draft-candidates/at_300_ft/fallback2/construction.json",
+          "construction_sha256": "f2302a7af38890c0e56b6ea4b77de935210b245a640be89274a9c09472d539fc",
+          "id": "fallback2",
+          "trigger": {
+            "failure_condition": "above 0.35 m",
+            "metric": "max_signal_window_route_error_m",
+            "source": "source-hashed original Native samples or reviewed source pixels"
+          }
+        },
+        {
+          "changed_knobs": [
+            "approach camera height/FOV changed"
+          ],
+          "construction": "draft-candidates/at_300_ft/fallback3/construction.json",
+          "construction_sha256": "18017b280d8ac755b786b59f1d4e9e10614cd3b8cf6911bdef13427f34cfdf13",
+          "id": "fallback3",
+          "trigger": {
+            "failure_condition": "below 95%",
+            "metric": "signal_visibility_fraction",
+            "source": "source-hashed original Native samples or reviewed source pixels"
+          }
+        }
+      ],
+      "case_id": "training__C329610__NRS-484B-413-2__motor_vehicle_driver__at_300_ft",
+      "construction": "current-v2-at_300_ft-primary-construction.json",
+      "construction_sha256": "a2ff27d2949e2e061daa18918e8ee5fd04bfbe09463fe1dfbc37993c1b7b74bc",
+      "fixture_recipe": "work/training__C329610__NRS-484B-413-2__motor_vehicle_driver/current-v2-at_300_ft-recipe.json",
+      "id": "primary",
+      "kind": "draft_not_selected",
+      "measurement_contract": "current-v2-at_300_ft-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      }
+    }
+  ],
+  "format": "worker-unselected-current-v2-probe-manifest",
+  "runtime_manifest_sha256": "0d9a74f44af88236ebed007ae6e020a134b420ad6fe8f2f87c8869184ebee555",
+  "status": "draft_not_selected"
+}

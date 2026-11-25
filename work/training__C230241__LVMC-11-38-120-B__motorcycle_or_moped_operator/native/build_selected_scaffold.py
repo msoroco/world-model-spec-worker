@@ -26,6 +26,8 @@ def build():
     config = json.loads(next(item['content'] for item in draft['files']
                              if item['path'] == 'config.json'))
     config['supported_case_ids'] = [case['case_id'] for case in plan['cases']]
+    config['case'] = {'case_id': config['case_id'],
+                      'requested_setting': 'reference'}
     config['recording_description'] = {
         'channels': [{'name': name, 'unit': 'structured' if name not in
                       ('speed_mps', 'front_visible_ft', 'rear_visible_ft', 'utc_s',
@@ -39,6 +41,7 @@ def build():
         'context_inputs': draft['recording_description']['context_inputs'],
         'limitations': draft['recording_description']['limitations'],
     }
+    config['case']['recording_description'] = config['recording_description']
     write(PACKAGE / 'config.json', config)
     runner = next(item['content'] for item in draft['files'] if item['path'] == 'runner.py')
     (PACKAGE / 'runner.py').write_text(runner)
