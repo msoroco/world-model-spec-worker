@@ -15,7 +15,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parent
 CASE = "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_02"
-VIEWS = ("overview", "ego_front", "property_side", "cross_street")
+ROAD_CASE = "training__C151707__NRS-484B-307-8e__motor_vehicle_driver__probe_01"
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def require(ok, message):
@@ -24,7 +25,7 @@ def require(ok, message):
 
 
 def check(config):
-    require(config["case_id"] == CASE, "exact case mismatch")
+    require(config["case_id"] in (CASE, ROAD_CASE), "exact case mismatch")
     require(config["law_id"] == "NRS-484B-307-8e" and config["cell_id"] == "C151707"
             and config["actor"] == "motor_vehicle_driver", "exact assignment mismatch")
     require(config["frozen_cell"] == {"layout": "one_way_to_one_way_intersection",
@@ -33,6 +34,7 @@ def check(config):
             and config["frames"] == 600, "600-frame contract required")
     require(tuple(c["name"] for c in config["cameras"]) == VIEWS, "four source cameras required")
     require(all(c["fps"] == 20 and c["width"] >= 1280 and c["height"] >= 720
+                and c.get("pose_strategy")
                 and len(c["location_xyz_m"]) == 3 and len(c["rotation_pyr_deg"]) == 3
                 for c in config["cameras"]), "camera contract incomplete")
     require(config["physical_completion"] is False and config["legal_verdict"] is None,
@@ -56,8 +58,10 @@ def read_survey(path):
             "map/parcel authority missing")
     require(survey["approach_signal_actor_id"] and survey["cross_signal_actor_id"],
             "signal identity missing")
-    require(len(survey["spawn_xyz_yaw_deg"]) == 4 and len(survey["route_xyz_m"]) >= 3
-            and all(len(point) == 3 for point in survey["route_xyz_m"]), "survey route missing")
+    require(len(survey["spawn_xyz_yaw_deg"]) == 4 and
+            all(len(survey.get(key, [])) >= 3 and all(len(point) == 3 for point in survey[key])
+                for key in ("route_xyz_m", "road_only_route_xyz_m")),
+            "surveyed property and road-only routes required")
     require(len(survey["property_polygon_xy_m"]) >= 3
             and len(survey["cross_street_polygon_xy_m"]) >= 3
             and all(len(point) == 2 for key in ("property_polygon_xy_m", "cross_street_polygon_xy_m")
@@ -97,7 +101,8 @@ def execute(config, output_dir, survey_path, host, port):
     require(".runtime-work" in output_root, "set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     require(Path(output_dir).resolve().is_relative_to(Path(output_root).resolve()),
             "Native output must stay under SCENARIO_PIPELINE_OUTPUT_ROOT")
-    repo = ROOT.parents[2]
+    repo = next((parent for parent in ROOT.parents if (parent / "runtime.py").is_file()), None)
+    require(repo is not None, "worker repository root missing")
     sys.path.insert(0, str(repo / "runtime"))
     sys.path.insert(1, str(repo / "runtime" / "python"))
     import carla
@@ -114,7 +119,7 @@ def execute(config, output_dir, survey_path, host, port):
     (output / "purpose-declaration.json").write_text(json.dumps({
         "source_kind": "original_controller_purpose_declaration",
         "assignment_id": CASE.rsplit("__", 1)[0],
-        "declaration_source_id": "native-controller-config:" + CASE,
+        "declaration_source_id": "native-controller-plan:" + CASE.rsplit("__", 1)[0],
         "declared_purpose": config["purpose_declaration"]}, sort_keys=True) + "\n")
     client = carla.Client(host, port)
     client.set_timeout(15)
@@ -155,17 +160,22 @@ def execute(config, output_dir, survey_path, host, port):
             (output / camera["name"]).mkdir()
             sensor.listen(lambda image, name=camera["name"]: images.put((name, image)))
         target_index = 0
-        with PipelineCapture(client, ego, output, CASE, required_observations=config["required_atoms"]) as capture, \
+        route = survey["road_only_route_xyz_m" if config["case_id"] == ROAD_CASE else "route_xyz_m"]
+        with PipelineCapture(client, ego, output, config["case_id"], required_observations=config["required_atoms"]) as capture, \
                 FrameMap(output / "video_frames.jsonl") as frame_map, \
                 (output / "property-route-native.jsonl").open("x", buffering=1) as trace:
             for frame in range(config["frames"]):
                 pose, velocity = ego.get_transform(), ego.get_velocity()
-                target = survey["route_xyz_m"][target_index]
+                target = route[target_index]
                 throttle, brake, steer, speed, distance = control(pose, velocity, target)
-                if distance < 3 and target_index < len(survey["route_xyz_m"]) - 1:
+                if distance < 3 and target_index < len(route) - 1:
                     target_index += 1
                 ego.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=steer))
                 native_frame = world.tick()
+                observed_pose, observed_velocity = ego.get_transform(), ego.get_velocity()
+                observed_speed = math.sqrt(observed_velocity.x**2 + observed_velocity.y**2 + observed_velocity.z**2)
+                body_vertices = [[vertex.x, vertex.y] for vertex in
+                                 ego.bounding_box.get_world_vertices(observed_pose)]
                 seen = set()
                 while len(seen) < 4:
                     name, image = images.get(timeout=15)
@@ -179,10 +189,11 @@ def execute(config, output_dir, survey_path, host, port):
                 trace.write(json.dumps({"source_kind": "original_native_observation",
                                         "frame": frame, "native_frame": native_frame,
                                         "t_s": frame / 20, "vehicle_id": ego.id,
-                                        "x_m": pose.location.x, "y_m": pose.location.y,
-                                        "speed_mps": speed, "route_target_index": target_index,
-                                        "zone": ("property" if inside_polygon(pose.location.x, pose.location.y, survey["property_polygon_xy_m"])
-                                                 else "intersecting_street" if inside_polygon(pose.location.x, pose.location.y, survey["cross_street_polygon_xy_m"])
+                                        "x_m": observed_pose.location.x, "y_m": observed_pose.location.y,
+                                        "body_vertices_xy_m": body_vertices,
+                                        "speed_mps": observed_speed, "route_target_index": target_index,
+                                        "zone": ("property" if inside_polygon(observed_pose.location.x, observed_pose.location.y, survey["property_polygon_xy_m"])
+                                                 else "intersecting_street" if inside_polygon(observed_pose.location.x, observed_pose.location.y, survey["cross_street_polygon_xy_m"])
                                                  else "approach_road"),
                                         "approach_signal_native_state": str(approach_signal.get_state()),
                                         "cross_signal_native_state": str(cross_signal.get_state()),

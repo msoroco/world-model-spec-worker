@@ -77,7 +77,7 @@ def main():
          'device timing source missing'),
         ('changed_vehicle', lambda p,c: p['frames'][200].__setitem__('vehicle_id','other'),
          'vehicle identity changed'),
-        ('missing_camera', lambda p,c: p['frames'][200]['camera_native_frames'].pop('device_face'),
+        ('missing_camera', lambda p,c: p['frames'][200]['camera_native_frames'].pop('reference_corner'),
          'four-camera frame join missing'),
         ('missing_frame', lambda p,c: p['frames'].pop(200),
          'recording shorter than 30 seconds'),

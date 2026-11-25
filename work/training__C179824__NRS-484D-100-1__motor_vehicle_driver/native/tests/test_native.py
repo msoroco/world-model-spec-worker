@@ -44,6 +44,9 @@ class NativeDraft(unittest.TestCase):
         self.assertEqual(geometry_check()['sign_text'], SIGN_NAME)
         self.assertEqual(runner_check()['frames'], 600)
         self.assertEqual(len(CAMERAS), 4)
+        self.assertEqual([(row[0],row[1],row[2]) for row in CAMERAS], [
+            ('overview',1920,1080),('approach',1280,720),
+            ('reference_corner',1280,720),('driver_reference',1280,720)])
 
     def test_sign_and_lane_survey(self):
         self.assertEqual(len(survey(FakeWorld(), FakeCarla)['roadway']), 3)

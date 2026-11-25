@@ -20,8 +20,9 @@ def audit(road: dict, property_route: dict) -> dict:
     require(road.get("assignment_id") == ASSIGNMENT and
             property_route.get("assignment_id") == ASSIGNMENT,
             "comparison assignment mismatch")
-    require(road.get("source_kind") == property_route.get("source_kind") == "native_saved_sample",
-            "original saved Native sources required")
+    require(road.get("source_kind") == property_route.get("source_kind") and
+            road.get("source_kind") in {"native_saved_sample", "synthetic_native_sample"},
+            "matching original saved Native or explicit synthetic source kinds required")
     for key in ("map_inventory_sha256", "purpose_declaration_sha256",
                 "approach_lane_id", "property_id", "property_boundary_source_id",
                 "intersecting_street_id", "declared_purpose", "declaration_source_id"):
@@ -41,7 +42,8 @@ def audit(road: dict, property_route: dict) -> dict:
             isinstance(property_route.get("first_intersecting_street_frame"), int) and
             property_route["first_property_frame"] < property_route["first_intersecting_street_frame"],
             "property route did not enter intersecting street after property")
-    require(property_route.get("steady_red_alone_at_property_entry") is True and
+    require(property_route.get("steady_red_alone_before_property_entry") is True and
+            property_route.get("steady_red_alone_at_property_entry") is True and
             property_route.get("cross_street_not_red_at_entry") is True,
             "property-route signal observations missing")
     require(road.get("legal_result") is None and property_route.get("legal_result") is None,
@@ -52,7 +54,10 @@ def audit(road: dict, property_route: dict) -> dict:
             "property_frame_source_sha256": property_route["frame_source_sha256"],
             "map_inventory_sha256": road["map_inventory_sha256"],
             "purpose_declaration_sha256": road["purpose_declaration_sha256"],
-            "isolation_passed": True, "physical_acceptance": None, "legal_result": None}
+            "isolation_passed": True,
+            "scope": "synthetic CPU diagnostic" if road["source_kind"] == "synthetic_native_sample"
+                     else "original saved Native source comparison",
+            "physical_acceptance": None, "legal_result": None}
 
 
 if __name__ == "__main__":

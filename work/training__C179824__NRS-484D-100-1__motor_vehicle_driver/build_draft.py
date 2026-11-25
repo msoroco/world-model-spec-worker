@@ -24,8 +24,9 @@ def main():
             'actor': 'motor_vehicle_driver', 'lamp_setting_on': lamp_on,
             'rate_hz': 20, 'duration_s': 30, 'required_atoms': [], 'source_packets': [],
             'case': {'case_id': case},
-            'cameras': [{'name': name, 'width': 1280, 'height': 720} for name in
-                        ('overview', 'device_approach', 'device_face', 'vehicle_lamps')],
+            'cameras': [{'name': name, 'width': width, 'height': height} for name,width,height in
+                        (('overview',1920,1080),('approach',1280,720),
+                         ('reference_corner',1280,720),('driver_reference',1280,720))],
             'recording_description': {'channels': [
                 {'name': 'native_lamp_setting', 'unit': 'boolean', 'sampling_rate_hz': 20,
                  'method': 'original CARLA VehicleLightState readback',
@@ -35,6 +36,7 @@ def main():
                  'method': 'OpenDRIVE sign/lane readback plus independently sourced authority',
                  'time_window': '600 frames', 'reference_frame': 'signed paved road',
                  'uncertainty': 'official status and actual pixels unverified'}],
+                 'context_inputs': [],
                  'limitations': ['Class-specific chapter 484D lamp requirements not yet supplied',
                                  'Civil time and 1000-foot visibility branches remain separate',
                                  'Parked vehicle exceptions unresolved']},
@@ -51,6 +53,7 @@ def main():
             'recording_description': config['recording_description'],
             'measurement_plan': {'entrypoint': 'finalize_lamp.py',
                                  'required_sources': ['vehicle-lamps.jsonl','lamp-context.json',
+                                                      'lamp-source-review.json',
                                                       'road.xodr','video_frames.jsonl'] +
                                   ['highway-review.json','vehicle-class-review.json',
                                    'device-content-review.json','device-authority-review.json',
@@ -69,6 +72,10 @@ def main():
         entries.append({'case_id': case, 'kind': 'delivery',
                         'construction': str(path.relative_to(HERE)),
                         'construction_sha256': sha(path),
+                        'measurement_procedure': {'entrypoint': 'finalize_lamp.py',
+                                                  'output_schema': 'worker-analysis-report-v1'},
+                        'measurement_contract': f'cases/{suffix}/measurement-contract.json',
+                        'fixture_recipe': f'work/{ASSIGNMENT}/cases/{suffix}/recipe.json',
                         'candidate_risk': {'status':'physical',
                             'reason':'Actual lamp pixels, traffic-device face and travel route require Native review'},
                         'candidates': [], 'delivery_readiness': 'incomplete'})

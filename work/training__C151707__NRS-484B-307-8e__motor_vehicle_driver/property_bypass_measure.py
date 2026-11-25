@@ -46,6 +46,7 @@ def measure(frame_bytes: bytes, map_bytes: bytes, purpose_bytes: bytes) -> dict:
     first_cross = cross_frames[0] if cross_frames else None
     ordered_path = first_property is not None and first_cross is not None and first_property < first_cross
     at_property = frames[first_property] if first_property is not None else None
+    before_property = frames[first_property - 1] if first_property is not None and first_property > 0 else None
     at_cross = frames[first_cross] if first_cross is not None else None
     return {
         "format": "c151707-saved-property-bypass-diagnostic-v1",
@@ -64,6 +65,7 @@ def measure(frame_bytes: bytes, map_bytes: bytes, purpose_bytes: bytes) -> dict:
         "first_intersecting_street_frame": first_cross,
         "property_then_intersecting_street": ordered_path,
         "steady_red_alone_at_property_entry": at_property["approach_signal"] == "steady_red_alone" if at_property else None,
+        "steady_red_alone_before_property_entry": before_property["approach_signal"] == "steady_red_alone" if before_property else None,
         "cross_street_not_red_at_entry": at_cross["cross_street_signal"] == "not_red" if at_cross else None,
         "declared_purpose": intent["declared_purpose"],
         "declaration_source_id": intent["declaration_source_id"],

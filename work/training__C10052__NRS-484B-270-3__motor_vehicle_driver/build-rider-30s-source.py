@@ -59,9 +59,7 @@ def extend(row, index):
 
 
 def main():
-    if NEW.exists():
-        shutil.rmtree(NEW)
-    shutil.copytree(OLD, NEW)
+    shutil.copytree(OLD, NEW, dirs_exist_ok=True)
     for relative in ROW_FILES:
         path = NEW / relative
         rows = [json.loads(line) for line in path.read_text().splitlines()]

@@ -12,10 +12,10 @@ from geometry import SIGN_NAME, check as geometry_check, open_drive
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -20, 16, -38),
-    ('device_approach', 1280, 720, -52, -13, 7, -16),
-    ('device_face', 1280, 720, -55, -8, 5, -10),
-    ('vehicle_lamps', 1280, 720, 5, 8, 5, -8),
+    ('overview', 1920, 1080, 0, -20, 16, -38),
+    ('approach', 1280, 720, -52, -13, 7, -16),
+    ('reference_corner', 1280, 720, -55, -8, 5, -10),
+    ('driver_reference', 1280, 720, 5, 8, 5, -8),
 )
 
 

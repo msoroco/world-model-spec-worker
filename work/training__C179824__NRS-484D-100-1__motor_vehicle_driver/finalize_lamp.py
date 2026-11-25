@@ -30,8 +30,13 @@ def sha(raw):
 
 def read(root, name):
     path = root / name
-    require(path.is_file(), 'Missing required original source: ' + name)
+    require(path.is_file(), 'Missing required source: ' + name)
     return path.read_bytes()
+
+
+def reviewed_measure(poses, frame_map, context, road):
+    """Original frame/source join used for the selected lamp measurement."""
+    return measure_original(poses, frame_map, json.dumps(context, sort_keys=True).encode(), road)
 
 
 def finalize(attempt, output):
@@ -48,33 +53,46 @@ def finalize(attempt, output):
     poses = read(root, 'vehicle-lamps.jsonl')
     frame_map = read(root, 'video_frames.jsonl')
     road = read(root, 'road.xodr')
-    context_raw = read(root, 'lamp-context.json')
-    context = json.loads(context_raw)
-    require(context.get('map_source_sha256') == sha(road),
+    original_context_raw = read(root, 'lamp-context.json')
+    original_context = json.loads(original_context_raw)
+    require(original_context.get('map_source_sha256') == sha(road),
             'reviewed OpenDRIVE hash differs')
-    require(context.get('source_kind') in ('native_saved_sample', 'synthetic_native_sample'),
+    require(original_context.get('source_kind') in ('native_saved_sample', 'synthetic_native_sample'),
             'original or explicit diagnostic provenance missing')
+    source_review = json.loads(read(root, 'lamp-source-review.json'))
+    require(source_review.get('case_id') == case_id and
+            source_review.get('original_context_sha256') == sha(original_context_raw),
+            'independent review does not bind original context')
+    require(source_review.get('review_kind') == (
+        'original_source_review' if original_context['source_kind'] == 'native_saved_sample'
+        else 'synthetic_diagnostic'), 'independent review provenance differs')
+    context = dict(original_context)
+    for field in ('state', 'public_highway', 'vehicle_class', 'directive',
+                  'device_official', 'device_governs_road_id'):
+        context[field] = source_review.get(field)
     review_hashes = {}
     for field, name in REVIEW_SOURCES.items():
         raw = read(root, name)
-        require(context.get(field) == sha(raw),
+        require(source_review.get(field) == sha(raw),
                 'independent review source hash differs: ' + name)
         review = json.loads(raw)
         require(review.get('case_id') == case_id and review.get('review_kind') in
                 ('original_source_review', 'synthetic_diagnostic'),
                 'independent review identity missing: ' + name)
         require(review.get('review_kind') == (
-            'original_source_review' if context['source_kind'] == 'native_saved_sample'
+            'original_source_review' if original_context['source_kind'] == 'native_saved_sample'
             else 'synthetic_diagnostic'), 'review provenance differs: ' + name)
         review_hashes[name] = sha(raw)
+        context[field] = sha(raw)
     for camera in CAMERAS:
         video = root / (camera + '.mkv')
-        if context['source_kind'] == 'native_saved_sample':
+        if original_context['source_kind'] == 'native_saved_sample':
             require(video.is_file(), 'Missing original camera video: ' + camera)
-    observation = measure_original(poses, frame_map, context_raw, road)
+    observation = reviewed_measure(poses, frame_map, context, road)
     original_rows = [json.loads(line) for line in poses.splitlines() if line.strip()]
     trace_rows = []
     channel_rows = []
+    context_channel_rows = []
     for row in original_rows:
         xy = row.get('vehicle_xy_m')
         require(isinstance(xy, list) and len(xy) == 2 and
@@ -91,12 +109,24 @@ def finalize(attempt, output):
                              'value':{'headlamp_setting_on':row['headlamp_setting_on'],
                                       'position_lamp_setting_on':row['position_lamp_setting_on'],
                                       'device_active':row['device_active']}})
-    (root / 'trace.jsonl').write_text(''.join(json.dumps(row, allow_nan=False) + '\n'
-                                            for row in trace_rows))
+        context_channel_rows.append({'time_s':row['time_s'],
+                                     'value':{'road_id':row['road_id'],
+                                              'device_active':row['device_active'],
+                                              'official_review_bound':True}})
+    trace_bytes = (''.join(json.dumps(row, allow_nan=False) + '\n'
+                           for row in trace_rows)).encode()
+    trace_path = root / 'trace.jsonl'
+    if trace_path.exists():
+        require(trace_path.read_bytes() == trace_bytes,
+                'original trace differs from lamp source')
+    else:
+        trace_path.write_bytes(trace_bytes)
     channels = root / 'channels'
     channels.mkdir(exist_ok=True)
     (channels / 'native_lamp_setting.jsonl').write_text(''.join(
         json.dumps(row, allow_nan=False) + '\n' for row in channel_rows))
+    (channels / 'device_and_highway_context.jsonl').write_text(''.join(
+        json.dumps(row, allow_nan=False) + '\n' for row in context_channel_rows))
     expected_on = case_id.endswith('controlled_1')
     governed = observation['governed_frames']
     both = observation['both_settings_on_frames']
@@ -104,11 +134,11 @@ def finalize(attempt, output):
                                   else not bool(both))
     source_hashes = {name: sha(read(root, name)) for name in
                      ('vehicle-lamps.jsonl', 'video_frames.jsonl', 'road.xodr',
-                      'lamp-context.json')}
+                      'lamp-context.json', 'lamp-source-review.json')}
     source_hashes.update(review_hashes)
     analysis = {'format': 'worker-analysis-report-v1', 'case_id': case_id,
                 'measurements': {'lamp_device_measurement': {
-                    'method': 'original_frame_map_join_and_independent_review',
+                    'method': 'reviewed_measure',
                     'value': observation, 'sources': source_hashes}},
                 'legal_verdict_claimed': False}
     result = {'case_id': case_id, 'measured_values': observation,
@@ -131,14 +161,19 @@ def finalize(attempt, output):
               'recording_description': config['recording_description'],
               'recording_evidence': [{'name':'native_lamp_setting', 'unit':'boolean',
                                       'reference':'channels/native_lamp_setting.jsonl'},
+                                     {'name':'device_and_highway_context', 'unit':'structured',
+                                      'reference':'channels/device_and_highway_context.jsonl'},
                                      {'name':'lamp_context', 'unit':'structured',
-                                      'reference':'lamp-context.json'}],
+                                      'reference':'lamp-context.json'},
+                                     {'name':'independent_lamp_review', 'unit':'structured',
+                                      'reference':'lamp-source-review.json'}],
               'realized_observables': {},
-              'provenance_kind': context['source_kind'],
-              'diagnostic_fixture': context['source_kind'] == 'synthetic_native_sample',
+              'provenance_kind': original_context['source_kind'],
+              'diagnostic_fixture': original_context['source_kind'] == 'synthetic_native_sample',
               'accepted': False, 'legal_verdict_claimed': False}
+    from worker_exchange.native_output import write_result
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + '\n')
-    (root / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')
+    write_result(root, result)
     return analysis
 
 

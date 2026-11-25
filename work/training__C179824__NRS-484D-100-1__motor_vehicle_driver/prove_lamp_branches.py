@@ -39,7 +39,7 @@ def sample():
         frames.append({'video_frame': index, 'native_frame': native,
                        'time_s': index / 20,
                        'camera_native_frames': {name:native for name in
-                           ('overview','device_approach','device_face','vehicle_lamps')},
+                           ('overview','approach','reference_corner','driver_reference')},
                        'civil_time': (start + timedelta(seconds=index / 20)).isoformat(),
                        'visibility_1000ft': {'native_frame': native, 'distance_m': 304.8,
                                              'person_discernible': index < 200,

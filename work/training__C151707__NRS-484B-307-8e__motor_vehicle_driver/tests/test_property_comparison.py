@@ -60,6 +60,11 @@ class ComparisonAuditTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "signal observations"):
             audit(self.road, self.property_route)
 
+    def test_red_only_at_entry_does_not_establish_prior_control(self):
+        self.property_route["steady_red_alone_before_property_entry"] = False
+        with self.assertRaisesRegex(ValueError, "signal observations"):
+            audit(self.road, self.property_route)
+
 
 if __name__ == "__main__":
     unittest.main()
