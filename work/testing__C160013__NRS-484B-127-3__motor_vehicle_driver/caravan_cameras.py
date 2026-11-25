@@ -1,8 +1,8 @@
 """Four synchronized original RGB viewpoints for the Native caravan."""
 from contextlib import contextmanager
 
-PROFILE = {"overview": (1920, 1080), "caravan_gap": (1280, 720),
-           "entrant_approach": (1280, 720), "driver_reference": (1280, 720)}
+PROFILE = {"overview": (1920, 1080), "approach": (1280, 720),
+           "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 @contextmanager

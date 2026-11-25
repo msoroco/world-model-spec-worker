@@ -29,7 +29,7 @@ def run():
         suffix = entry['case_id'].rsplit('__', 1)[-1]
         for candidate in ('primary', 'fallback1'):
             selected = entry if candidate == 'primary' else entry['candidates'][0]
-            stage = REPO / '.runtime-work' / ('c160013-offline-v10-' + suffix + '-' + candidate)
+            stage = REPO / '.runtime-work' / ('c160013-offline-v11-' + suffix + '-' + candidate)
             relative_log = 'cases/' + suffix + '-' + candidate + '-offline.log'
             log = PACKAGE / relative_log
             args = [sys.executable, str(REPO / 'runtime.py'), 'offline', '--manifest', str(MANIFEST),

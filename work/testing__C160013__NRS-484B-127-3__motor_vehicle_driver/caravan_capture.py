@@ -12,7 +12,7 @@ from queue import Empty, Queue
 from caravan_control import apply, command
 from caravan_entry import plan_entry
 
-CAMERAS = ("overview", "caravan_gap", "entrant_approach", "driver_reference")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCE_KEYS = ("business_district_source", "caravan_membership_source",
                "route_source", "lane_source")
 

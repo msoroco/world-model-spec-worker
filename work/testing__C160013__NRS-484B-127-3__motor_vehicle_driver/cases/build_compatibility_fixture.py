@@ -97,9 +97,6 @@ def build(label, suffix):
     videos = [{'path': camera['name'] + '.mkv', 'frames': 900,
                'width': camera['width'], 'height': camera['height'], 'fps': 20, 'color': 'blue'}
               for camera in config['cameras']]
-    videos.extend([{'path': name + '.mkv', 'frames': 900,
-                    'width': 1280, 'height': 720, 'fps': 20, 'color': 'blue'}
-                   for name in ('approach', 'reference_corner')])
     fixture_sources = PACKAGE / 'cases' / 'fixtures' / label
     fixture_sources.mkdir(parents=True, exist_ok=True)
     sources = []

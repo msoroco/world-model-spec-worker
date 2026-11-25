@@ -60,8 +60,8 @@ def build():
                               'y': -3, 'z': .5, 'yaw_deg': 0}},
             'camera_transforms': {
                 'overview': {'x': 20, 'y': 0, 'z': 30, 'yaw_deg': 0},
-                'caravan_gap': {'x': 16, 'y': 4, 'z': 8, 'yaw_deg': -90},
-                'entrant_approach': {'x': 7, 'y': -5, 'z': 6, 'yaw_deg': 35},
+                'approach': {'x': 16, 'y': 4, 'z': 8, 'yaw_deg': -90},
+                'reference_corner': {'x': 7, 'y': -5, 'z': 6, 'yaw_deg': 35},
                 'driver_reference': {'x': 1, 'y': 0, 'z': 1.6, 'yaw_deg': 0}},
             'required_atoms': ['kin.position', 'kin.heading', 'kin.velocity']}
         for key, source in sites.items():
@@ -98,8 +98,8 @@ def build():
                                            'minimum_progress_m': 2}),
                   'cameras': [{'name': name, 'width': width, 'height': height, 'fov_deg': 90}
                               for name, (width, height) in {
-                                  'overview': (1920, 1080), 'caravan_gap': (1280, 720),
-                                  'entrant_approach': (1280, 720),
+                                  'overview': (1920, 1080), 'approach': (1280, 720),
+                                  'reference_corner': (1280, 720),
                                   'driver_reference': (1280, 720)}.items()],
                   'case': {'case_id': case_id, 'recording_description': description}}
         source_files = [{'path': name, 'source': str((ROOT / name).relative_to(ROOT.parents[1])),
