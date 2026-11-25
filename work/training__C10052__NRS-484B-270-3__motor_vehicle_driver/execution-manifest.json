@@ -1214,6 +1214,308 @@
         "receipt": "selected-pedestrian-conflict/physical-proof/proof.json",
         "sha256": "04858aea1410ebb30abbebb2895f15d27e0aa4b540af17c13c4442e0eb503b75"
       }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.bicycle": {
+          "entrypoint": "runner.py",
+          "evidence": "rider_native_samples.jsonl and video_frames.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native other-traffic actor, avoidance, camera pixels and lane occupancy require original readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -50 to -60 m"
+          ],
+          "construction": "selected-exception-c-avoid/fallback1/construction.json",
+          "construction_sha256": "1b6d902d8d59f6112808bba79d70e1eab55deccd0fe1c280167d1c8311655f9d",
+          "id": "fallback1",
+          "trigger": {
+            "metric": "approach_runway_m",
+            "source": "source-hashed exception C CPU fixture; original Native trigger pending"
+          }
+        },
+        {
+          "changed_knobs": [
+            "diversion lead increased ten frames"
+          ],
+          "construction": "selected-exception-c-avoid/fallback2/construction.json",
+          "construction_sha256": "412e805ccd5441e06a879c9db1703989105bfea2981713e7243dbb9cdc9ffdcf",
+          "id": "fallback2",
+          "trigger": {
+            "metric": "diversion_lead_frames",
+            "source": "source-hashed exception C CPU fixture; original Native trigger pending"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reference camera relocated"
+          ],
+          "construction": "selected-exception-c-avoid/fallback3/construction.json",
+          "construction_sha256": "1887e78cca494f6858e024e745719a3f9bebc56a44af2c8d857b4d1778044f14",
+          "id": "fallback3",
+          "trigger": {
+            "metric": "scripted_reference_visible_fraction",
+            "source": "source-hashed exception C CPU fixture; original Native trigger pending"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_avoid",
+      "construction": "selected-exception-c-avoid/primary/construction.json",
+      "construction_sha256": "1318fd2db90f7fcfb62e9a4f02350cc6a5399d68a4af755f252bc964fcabba1f",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_avoid",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-exception-c-avoid/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_avoid --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-exception-c-avoid/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_avoid --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exception_c source",
+        "negative_log": "selected-exception-c-avoid/delivery-negative.log",
+        "negative_log_sha256": "3c2d39e2143fa3affc5ff1fd4b0fb83f7d659c76ce514a6c4742832e3c1a384c",
+        "script": "selected-exception-c-avoid/delivery-audit.py",
+        "script_sha256": "837a6bd986c2d2afb14c69375b0b8e08e6eb826ff0a35239e3c65324ccb40f85",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-exception-c-avoid/delivery-positive.log",
+        "test_log_sha256": "b951541942d7c04c4f9bdda718d36b8b0d92c8507f24fd4ae6d190ccf055bfdf"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-exception-c-avoid/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-exception-c-avoid/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_exception_c.py",
+        "output_schema": "c10052-saved-exception-c-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "physical_preparation": {
+        "receipt": "selected-exception-c-avoid/physical-proof/proof.json",
+        "sha256": "0984ab10e1119a8ba907f22b7131adfcc75deed4c7613b9c3628037eaa7b7bfc"
+      }
+    },
+    {
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ego_speed.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/exception_context.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.extent": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.extent.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/kin.position.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/native_body_pose_control.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.bicycle": {
+          "entrypoint": "runner.py",
+          "evidence": "rider_native_samples.jsonl and video_frames.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/ru.pedestrian.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.bicycle_lane_or_path": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.bicycle_lane_or_path.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "evidence": "native_samples.jsonl and channels/st.driveway_or_alley_entrance.jsonl",
+          "method": "original Native same-tick actor, road and camera source capture"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Native other-traffic actor, avoidance, camera pixels and lane occupancy require original readback",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "approach start -50 to -60 m"
+          ],
+          "construction": "selected-exception-c-no_conflict/fallback1/construction.json",
+          "construction_sha256": "62a9d3d0c6bcacf65c54a357466238227a35fb28ef83161b25540183816ece59",
+          "id": "fallback1",
+          "trigger": {
+            "metric": "approach_runway_m",
+            "source": "source-hashed exception C CPU fixture; original Native trigger pending"
+          }
+        },
+        {
+          "changed_knobs": [
+            "diversion lead increased ten frames"
+          ],
+          "construction": "selected-exception-c-no_conflict/fallback2/construction.json",
+          "construction_sha256": "561d8f6b22d062cb0c0156571241db9077d607d1ab672973c61d6868fec14c19",
+          "id": "fallback2",
+          "trigger": {
+            "metric": "diversion_lead_frames",
+            "source": "source-hashed exception C CPU fixture; original Native trigger pending"
+          }
+        },
+        {
+          "changed_knobs": [
+            "reference camera relocated"
+          ],
+          "construction": "selected-exception-c-no_conflict/fallback3/construction.json",
+          "construction_sha256": "35e0808986c43a12f48641c581112c96258a3e19df8851c6d517a47fb7b93f80",
+          "id": "fallback3",
+          "trigger": {
+            "metric": "scripted_reference_visible_fraction",
+            "source": "source-hashed exception C CPU fixture; original Native trigger pending"
+          }
+        }
+      ],
+      "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_no_conflict",
+      "construction": "selected-exception-c-no_conflict/primary/construction.json",
+      "construction_sha256": "497e1c8d17ef7efdea9989cea185c8a3ff6a79534b3186f15b2e3b878e1f1b6f",
+      "delivery_acceptance": {
+        "case_id": "training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_no_conflict",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-exception-c-no_conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_no_conflict --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-exception-c-no_conflict/delivery-audit.py --case training__C10052__NRS-484B-270-3__motor_vehicle_driver__exception_c_no_conflict --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exception_c source",
+        "negative_log": "selected-exception-c-no_conflict/delivery-negative.log",
+        "negative_log_sha256": "c7919b7190153834360165499f68fc18775527477bd5ebf8089ce8a793dcb208",
+        "script": "selected-exception-c-no_conflict/delivery-audit.py",
+        "script_sha256": "837a6bd986c2d2afb14c69375b0b8e08e6eb826ff0a35239e3c65324ccb40f85",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "selected-exception-c-no_conflict/delivery-positive.log",
+        "test_log_sha256": "4c62dbe659c75db255cb52467e2504efff805489e37ff7ebbd15c988f8818410"
+      },
+      "fixture_recipe": "work/training__C10052__NRS-484B-270-3__motor_vehicle_driver/selected-exception-c-no_conflict/fixture-recipe.json",
+      "id": "primary",
+      "kind": "delivery",
+      "measurement_contract": "selected-exception-c-no_conflict/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_exception_c.py",
+        "output_schema": "c10052-saved-exception-c-diagnostic-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "physical_preparation": {
+        "receipt": "selected-exception-c-no_conflict/physical-proof/proof.json",
+        "sha256": "51447f99eb613a34763435816dbb11ea833b654176ff27d0a31ea6724d82f189"
+      }
     }
   ],
   "format": "worker-execution-manifest",

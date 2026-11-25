@@ -69,6 +69,17 @@ def build_one(case):
         (source/name).write_bytes(content)
     trace = rows(source/'visibility-trace.jsonl')
     frame_map = rows(source/'video_frames.jsonl')
+    source_trace = []
+    for item in trace:
+        x, y = item['ego_xy_m']
+        speed = item.get('ego_speed_mps', 0)
+        source_trace.append({'frame': item['native_frame'], 'time_s': item['time_s'],
+                             'position': {'x': x, 'y': y, 'z': 0},
+                             'position_m': [x, y, 0], 'heading_deg': 0,
+                             'speed_mps': speed, 'speed_mph': speed/.44704,
+                             'velocity_mps': [speed, 0, 0], 'control': {}})
+    (source/'trace.jsonl').write_text(''.join(
+        json.dumps(row, allow_nan=False)+'\n' for row in source_trace))
     evidence, native_frames, graphs = [], [], []
     for point, mapped in zip(trace, frame_map):
         index, frame = point['video_frame'], point['native_frame']
@@ -109,7 +120,8 @@ def build_one(case):
         'acquisition': 'synthetic_diagnostic', 'observation_contract_version': 1,
         'required_observations': ['kin.position'],
         'sources': {'road.xodr': sha(source/'road.xodr'),
-                    'visibility-trace.jsonl': sha(source/'visibility-trace.jsonl')},
+                    'visibility-trace.jsonl': sha(source/'visibility-trace.jsonl'),
+                    'trace.jsonl': sha(source/'trace.jsonl')},
         'synthetic_diagnostic': True, 'case_id': case_id})
     write(source/'acquisition-provenance.json',
           {'case_id': case_id, 'scope': 'synthetic CPU diagnostic; no original pixels'})
