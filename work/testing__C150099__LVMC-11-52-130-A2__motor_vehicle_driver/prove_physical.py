@@ -24,7 +24,7 @@ def main() -> None:
         suffix = case.removeprefix(ROOT.name + '__')
         fixtures = []
         for kind in KINDS:
-            source = REPO / '.runtime-work' / ('c150099-physical-' + suffix + '-' + kind + '-v1')
+            source = REPO / '.runtime-work' / ('c150099-physical-' + suffix + '-' + kind + '-v2')
             result = ROOT / ('cpu-physical-' + suffix + '-' + kind + '.json')
             log = ROOT / ('cpu-physical-' + suffix + '-' + kind + '.log')
             command = [str(REPO / '.venv-cpu/bin/python'), str(ROOT / 'physical_probe.py'),
@@ -41,11 +41,37 @@ def main() -> None:
                              'result': result.name, 'result_sha256': sha(result)})
         entry['physical_preparation'] = {
             'receipt': 'cpu-physical-' + suffix + '-receipt.json'}
+        life_log = ROOT / ('cpu-lifecycle-' + suffix + '.log')
+        life_command = [str(REPO / '.venv-cpu/bin/python'), str(ROOT / 'prove_lifecycle.py'),
+                        '--case', case, '--construction',
+                        str(ROOT / 'cases' / suffix / 'construction.json'), '--scratch',
+                        str(REPO / '.runtime-work' / ('c150099-lifecycle-' + suffix + '-v1'))]
+        life_env = dict(env, PYTHONPATH=str(REPO / 'runtime'),
+                        SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work' /
+                                                          ('c150099-lifecycle-output-' + suffix)))
+        life_run = subprocess.run(life_command, cwd=REPO, env=life_env, text=True,
+                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        life_log.write_text(life_run.stdout.rstrip() + '\n')
+        if life_run.returncode:
+            raise ValueError('lifecycle fixture failed: ' + suffix + '\n' + life_run.stdout[-1200:])
+        life_result = json.loads(life_run.stdout)
+        expected_events = ['capture_finished', 'encoders_closed', 'restoration_verified',
+                           'native_exit', 'owner_released', 'saved_processing_started']
+        if life_result['events'] != expected_events or not all(
+                life_result[k] for k in ('saved_only_rejected_before_owner_release',
+                                          'native_exit_rejected_before_encoder_closure',
+                                          'owner_release_rejected_before_native_exit',
+                                          'pinned_closure_accepted_after_release')):
+            raise ValueError('lifecycle fixture evidence incomplete: ' + suffix)
         receipt = {'format': 'worker-fire-lane-physical-diagnostic-proof',
                    'case_id': case, 'construction_sha256': entry['construction_sha256'],
                    'fixtures': fixtures, 'diagnostic_fixture': True,
                    'physical_acceptance_claimed': False,
-                   'lifecycle': {'status': 'pending_original_owner_release_integration'}}
+                   'lifecycle': {'events': expected_events, 'exit_code': 0,
+                                 'command': ' '.join(life_command),
+                                 'log': life_log.name, 'log_sha256': sha(life_log),
+                                 'diagnostic_fixture': True,
+                                 'original_owner_release_claimed': False}}
         path = ROOT / entry['physical_preparation']['receipt']
         path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
         entry['physical_preparation']['sha256'] = sha(path)

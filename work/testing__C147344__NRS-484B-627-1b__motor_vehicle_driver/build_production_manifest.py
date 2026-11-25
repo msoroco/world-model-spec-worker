@@ -37,7 +37,7 @@ def main() -> None:
         folder = HERE / "cases" / suffix
         attempt = SCRATCH / f"pinned-compat-v7-{short}"
         for name, origin in (("compatibility.json", attempt / "compatibility.json"),
-                             ("compatibility-analysis.log", attempt / "compatibility-analysis.log"),
+                             ("cpu-compat-analysis.log", attempt / "compatibility-analysis.log"),
                              ("negative-analysis.log", attempt / "negative-analysis.log"),
                              ("offline.log", SCRATCH / f"offline-v7-{suffix}" / "offline.log")):
             shutil.copyfile(origin, folder / name)
@@ -48,6 +48,8 @@ def main() -> None:
         command_base = f".venv-cpu/bin/python work/{ASSIGNMENT}/prove_delivery_contract.py --case {case}"
         entry = dict(source)
         entry.update(kind="delivery", status="source_gated_cpu_preparation",
+                     candidate_risk={"status": "none", "reason":
+                         "No original primary failure or reviewed alternate highway station is available. A fallback now would guess traffic geometry; inspect the first original attempt before selecting an engineering alternative."},
                      offline={"command": f".venv-cpu/bin/python runtime.py offline --manifest work/{ASSIGNMENT}/diagnostic-execution-manifest.json --case {case} --output .runtime-work/c147344-owner/offline-v7-{suffix}",
                               "exit_code": 0, "log": f"cases/{suffix}/offline.log",
                               "log_sha256": sha(folder / "offline.log"),
@@ -56,7 +58,7 @@ def main() -> None:
                                            "sha256": sha(physics)},
                      compatibility={"receipt": f"cases/{suffix}/compatibility.json",
                                     "sha256": sha(folder / "compatibility.json"),
-                                    "log": f"cases/{suffix}/compatibility-analysis.log"},
+                                    "log": f"cases/{suffix}/cpu-compat-analysis.log"},
                      negative={"log": f"cases/{suffix}/negative-analysis.log"},
                      native_handoff={"python_env_var": "CARLA_PYTHON",
                                      "host_env_var": "CARLA_HOST",

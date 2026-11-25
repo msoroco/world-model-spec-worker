@@ -87,3 +87,34 @@ class NativeSetupTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "spawn failed"):
             create(world, self.packet_path, lambda xyz, rpy: (xyz, rpy))
         self.assertTrue(world.spawned[0].destroyed)
+
+    def test_inner_lane_variant_uses_reviewed_inner_spawn(self):
+        variables = {"approach_position": "inner_lane", "receiving_direction": "one_way_left"}
+        with self.assertRaisesRegex(ValueError, "requested approach lane"):
+            validate_spawn(self.packet_path, variables)
+        self.packet["spawn_plan"]["ego"]["lane_id"] = "inner"
+        self.packet["spawn_plan"]["ego"]["location_xyz_m"] = [0, 0, 0]
+        self.write_packet()
+        actors = create(World(), self.packet_path, lambda xyz, rpy: (xyz, rpy), variables)
+        actors.close()
+
+    def test_two_way_variant_requires_distinct_reviewed_route(self):
+        variables = {"approach_position": "extreme_left", "receiving_direction": "two_way"}
+        with self.assertRaisesRegex(ValueError, "inventory"):
+            validate_spawn(self.packet_path, variables)
+        route = self.root / "two_way_routes.txt"
+        route.write_text("fixture-two-way")
+        import hashlib
+        self.packet["sources"].pop("one_way_routes")
+        self.packet["sources"]["two_way_routes"] = {
+            "path": route.name, "sha256": hashlib.sha256(route.read_bytes()).hexdigest(),
+            "citation": "fixture-two-way", "reviewer": "fixture"}
+        self.packet["receiving_one_way_to_left"] = False
+        self.packet["receiving_two_way"] = True
+        self.write_packet()
+        validate_spawn(self.packet_path, variables)
+
+    def test_conflict_variant_requires_sourced_participant(self):
+        variables = {"conflict_response_request": "pedestrian_yield"}
+        with self.assertRaisesRegex(ValueError, "requested pedestrian conflict"):
+            validate_spawn(self.packet_path, variables)

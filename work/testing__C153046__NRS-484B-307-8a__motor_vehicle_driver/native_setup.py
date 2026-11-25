@@ -17,15 +17,21 @@ def _xyz(value, name):
     return tuple(_number(x, name) for x in value)
 
 
-def validate_spawn(packet_path):
-    site = validate_site(packet_path)
+def validate_spawn(packet_path, variables=None):
+    variables = variables or {}
+    approach = variables.get("approach_position", "extreme_left")
+    receiving = variables.get("receiving_direction", "one_way_left")
+    if approach not in ("extreme_left", "inner_lane"):
+        raise ValueError("unsupported requested approach lane")
+    site = validate_site(packet_path, receiving)
     packet = json.loads(Path(packet_path).read_text())
     plan = packet.get("spawn_plan")
     if not isinstance(plan, dict) or set(plan) != {"ego", "pedestrians", "other_traffic"}:
         raise ValueError("reviewed spawn plan missing")
     ego = plan["ego"]
-    if ego.get("lane_id") != site["left_lane_id"]:
-        raise ValueError("ego not in extreme-left approach lane")
+    selected_lane = site["left_lane_id"] if approach == "extreme_left" else site["inner_lane_id"]
+    if ego.get("lane_id") != selected_lane:
+        raise ValueError("ego not in requested approach lane")
     xyz = _xyz(ego.get("location_xyz_m"), "ego")
     rotation = _xyz(ego.get("rotation_rpy_deg"), "ego rotation")
     if not ego.get("source_citation") or not ego.get("blueprint_id"):
@@ -48,6 +54,11 @@ def validate_spawn(packet_path):
                 raise ValueError("participant route missing")
             for point in actor["route_points_xyz_m"]:
                 _xyz(point, kind + " route")
+    response = variables.get("conflict_response_request", "no_conflict")
+    if response.startswith("pedestrian") and not plan["pedestrians"]:
+        raise ValueError("requested pedestrian conflict lacks sourced actor")
+    if response.startswith("traffic") and not plan["other_traffic"]:
+        raise ValueError("requested traffic conflict lacks sourced actor")
     return site, plan
 
 
@@ -62,8 +73,8 @@ class NativeActors:
         self.owned.clear()
 
 
-def create(world, packet_path, transform_factory):
-    site, plan = validate_spawn(packet_path)
+def create(world, packet_path, transform_factory, variables=None):
+    site, plan = validate_spawn(packet_path, variables)
     signals = [actor for actor in world.get_actors() if str(actor.id) == site["signal_actor_id"]]
     if len(signals) != 1:
         raise ValueError("official signal actor absent or ambiguous")

@@ -1,0 +1,152 @@
+"""Recorded-only red-left measurement from sealed original Native sources."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+from red_left_measurement import measure_exact
+
+
+def required(root: Path, relative: str) -> Path:
+    path = root / relative
+    if not path.is_file():
+        raise ValueError('Missing required source: ' + relative)
+    return path
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def read_rows(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+
+
+def build(attempt: Path) -> tuple[dict, dict]:
+    attempt = Path(attempt).resolve()
+    config = json.loads(required(attempt, 'config.json').read_text())
+    construction = json.loads(required(attempt, 'construction.json').read_text())
+    case = config['selected_case_id']
+    if construction['case_id'] != case:
+        raise ValueError('selected red-left construction differs')
+    original = attempt / 'original-attempt'
+    inventory = json.loads(required(attempt, 'original-attempt/inventory.json').read_text())
+    if inventory.get('case_id') != case:
+        raise ValueError('original inventory case changed')
+    history = required(attempt, 'original-attempt/history.jsonl')
+    frame_map = required(attempt, 'original-attempt/frame-map.json')
+    packet = required(attempt, 'original-attempt/site-packet.json')
+    if sha(history) != inventory.get('history_sha256') or \
+            sha(frame_map) != inventory.get('frame_map_sha256') or \
+            sha(packet) != inventory.get('site_sha256'):
+        raise ValueError('sealed original red-left source changed')
+    rows = read_rows(history)
+    if len(rows) != config['frame_count'] and not (inventory.get('diagnostic_fixture') is True
+                                                  and 2 <= len(rows) <= 20):
+        raise ValueError('original red-left frame count differs')
+    if any(row.get('case_id') != case or row.get('source_packet_sha256') != inventory['site_sha256']
+           for row in rows):
+        raise ValueError('original red-left case/source identity differs')
+    maps = json.loads(frame_map.read_text())['frames']
+    trace = read_rows(required(attempt, 'trace.jsonl'))
+    video = read_rows(required(attempt, 'video_frames.jsonl'))
+    if len(rows) != len(maps) or len(rows) != len(trace) or len(rows) != len(video):
+        raise ValueError('original red-left frame/trace/video counts differ')
+    for index, (row, mapped, motion, image) in enumerate(zip(rows, maps, trace, video)):
+        native = row['native_frame']
+        if mapped != {'video_frame': index, 'frame': native['frame'],
+                      'time_s': native['time_s']} or \
+                motion.get('frame') != native['frame'] or motion.get('time_s') != native['time_s'] or \
+                image.get('video_frame') != index or image.get('carla_frame') != native['frame'] or \
+                image.get('time_s') != native['time_s']:
+            raise ValueError('original red-left timestamp/frame join differs')
+    measurement = measure_exact(packet, history, case, attempt / 'case-plan.json')
+    channels = attempt / 'channels'
+    if channels.exists():
+        raise ValueError('refusing to overwrite prior red-left channels')
+    channels.mkdir()
+    observed = {
+        'signal_red_alone': lambda row: row['native_frame']['signal_state'] == 'steady_red_alone',
+        'stop_reference': lambda row: measurement['stop_reference_kind'],
+        'pre_entry_stop': lambda row: row['native_frame']['ego']['speed_m_s'],
+        'approach_lane': lambda row: row['native_frame']['ego']['lane_id'],
+        'receiving_direction': lambda row: measurement['receiving_direction'],
+        'directed_conflict': lambda row: any(
+            actor['conflict_zone_occupied'] for actor in
+            row['native_frame']['directed_participants']),
+    }
+    evidence = []
+    description = construction['recording_description']
+    for channel in description['channels']:
+        name = channel['name']
+        path = channels / (name + '.jsonl')
+        with path.open('x') as stream:
+            for row in rows:
+                stream.write(json.dumps({'time_s': row['native_frame']['time_s'],
+                                         'value': observed[name](row)}, sort_keys=True) + '\n')
+        evidence.append({'name': name, 'unit': channel['unit'],
+                         'reference': str(path.relative_to(attempt))})
+    context = channels / 'context.json'
+    context.write_text(json.dumps({'reviewed_red_left_site_packet': {
+        'sha256': inventory['site_sha256'], 'review_status':
+        'pending independent original-source review'}}, sort_keys=True) + '\n')
+    for item in description['context_inputs']:
+        evidence.append({'name': item['name'], 'unit': item['unit'],
+                         'reference': str(context.relative_to(attempt))})
+    value = {'first_entry_frame': measurement['first_entry_frame'],
+             'first_pre_entry_stop_frame': measurement['first_pre_entry_stop_frame'],
+             'red_conflict_entry_frames': measurement['red_conflict_entry_frames'],
+             'approach_lane_id': measurement['expected_approach_lane_id'],
+             'receiving_direction': measurement['receiving_direction'],
+             'stop_reference_kind': measurement['stop_reference_kind'],
+             'legal_judgment': 'unresolved'}
+    sources = {'original-attempt/history.jsonl': sha(history),
+               'original-attempt/frame-map.json': sha(frame_map),
+               'original-attempt/site-packet.json': sha(packet)}
+    report = {'format': 'worker-analysis-report', 'case_id': case,
+              'measurements': {'red_left_motion': {'value': value,
+                                                 'method': 'measure_exact',
+                                                 'sources': sources}},
+              'analysis_complete': True, 'legal_verdict_claimed': False,
+              'limitations': ['Original signal and conflict evidence require review.',
+                              'Diagnostic fixture is not a physical or legal finding.']}
+    diagnostic = inventory.get('diagnostic_fixture') is True
+    result = {'case_id': case, 'measured_values': value,
+              'target_checks': [{'target': 'original stop, lane and directed conflict',
+                                 'requested': config['case']['draft_variables'],
+                                 'measured': value, 'method': 'measure_exact',
+                                 'tolerance': 0, 'matched': False,
+                                 'physical_cause_confirmed': False,
+                                 'cause_evidence': sources}],
+              'setup_confirmed': False, 'behavior_attempted': False,
+              'maneuver_completed': False,
+              'termination_reason': 'Original physical and legal review pending',
+              'physical_failure_flags': [], 'trace_reference': 'trace.jsonl',
+              'video_references': [name + '.mkv' for name in
+                                   ('overview', 'approach', 'reference_corner',
+                                    'driver_reference')],
+              'video_frame_map_reference': 'video_frames.jsonl',
+              'recording_description': description, 'recording_evidence': evidence,
+              'realized_observables': {},
+              'provenance_kind': 'synthetic_fixture' if diagnostic else 'native',
+              'diagnostic_fixture': diagnostic, 'physical_acceptance_claimed': False}
+    return report, result
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    report, result = build(args.attempt)
+    from worker_exchange.native_output import write_result
+    write_result(args.attempt, result)
+    if args.output.exists():
+        raise ValueError('refusing to overwrite prior red-left analysis report')
+    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
+
+
+if __name__ == '__main__':
+    main()
