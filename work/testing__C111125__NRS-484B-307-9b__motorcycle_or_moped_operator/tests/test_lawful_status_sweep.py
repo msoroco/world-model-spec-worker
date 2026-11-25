@@ -10,7 +10,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from lawful_status_sweep import ASSIGNMENT, expand
+from lawful_status_sweep import ASSIGNMENT, expand, source_gated_specs
 
 
 def fixture(root: Path, kind: str) -> Path:
@@ -45,6 +45,16 @@ def fixture(root: Path, kind: str) -> Path:
 
 
 class LawfulStatusSweepTests(unittest.TestCase):
+    def test_expanded_construction_keeps_status_source_gated(self):
+        specs = source_gated_specs()
+        self.assertEqual({item["source_gate"]["comparison_id"] for item in specs},
+                         {"crosswalk_yield", "intersection_yield"})
+        self.assertEqual({item["source_gate"]["region"] for item in specs},
+                         {"adjacent_crosswalk", "intersection"})
+        self.assertTrue(all(item["source_binding"] is None and
+                            item["legal_verdict"] is None and
+                            item["source_gate"]["fail_closed_without_packet"] for item in specs))
+
     def setUp(self):
         scratch = Path.cwd() / ".runtime-work" / "c111125-9b-lawful-sweep-tests"
         scratch.mkdir(parents=True, exist_ok=True)

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from signal_measure import measure, compare
+from source_audit import audit as audit_source
 
 ROOT = Path(__file__).resolve().parent
 
@@ -15,7 +16,8 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def audit(comparison_id: str, attempts: list[str | Path]) -> dict:
+def audit(comparison_id: str, attempts: list[str | Path], *,
+          diagnostic_fixture: bool = False) -> dict:
     plan = json.loads((ROOT / "case-plan.json").read_text())
     selected = [item for item in plan["comparisons"] if item["comparison_id"] == comparison_id]
     if len(selected) != 1 or len(attempts) != len(selected[0]["case_ids"]):
@@ -30,6 +32,12 @@ def audit(comparison_id: str, attempts: list[str | Path]) -> dict:
         diagnostic_path = root / "fixture-provenance.json"
         diagnostic = (diagnostic_path.is_file() and
                       json.loads(diagnostic_path.read_text()).get("diagnostic_fixture") is True)
+        if diagnostic and not diagnostic_fixture:
+            raise ValueError("diagnostic fixture rejected in production comparison")
+        if not diagnostic_fixture:
+            source_result = audit_source(root, case_id)
+            if source_result.get("source_decode_passed") is not True:
+                raise ValueError("original four-camera source audit failed")
         for name in ("original-turn-signal.json", "original-site.json"):
             if not diagnostic and acquisition.get(name, {}).get("sha256") != sha(root / name):
                 raise ValueError("missing or stale original comparison source: " + name)
@@ -63,5 +71,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--comparison", required=True)
     parser.add_argument("--attempt", action="append", required=True)
+    parser.add_argument("--diagnostic-fixture", action="store_true",
+                        help="test-only: compare explicitly marked diagnostic fixtures")
     args = parser.parse_args()
-    print(json.dumps(audit(args.comparison, args.attempt), sort_keys=True))
+    print(json.dumps(audit(args.comparison, args.attempt,
+                           diagnostic_fixture=args.diagnostic_fixture), sort_keys=True))

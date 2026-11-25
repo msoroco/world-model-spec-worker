@@ -1,73 +1,67 @@
 {
-  "assignment_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator",
   "actor": "cycle_or_scooter_operator",
-  "cell_id": "C111329",
-  "law_id": "LVMC-11-40-070",
-  "selected_branches": [
-    {
-      "law_id": "LVMC-11-40-070",
-      "cell_id": "C111329",
-      "actor": "cycle_or_scooter_operator",
-      "requirement": "LVMC-11-40-070",
-      "branch": "Official device instruction with Police Officer exception retained",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 289,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Any person operating a bicycle, electric bicycle, or electric scooter shall obey the instructions of official traffic-control signals, signs and other control devices applicable to vehicles, unless otherwise directed by a Police Officer.",
-  "law_source": "LVMC 11.40.070",
-  "topic_inventory": {
-    "exact-text": "Any person operating a bicycle, electric bicycle, or electric scooter shall obey the instructions of official traffic-control signals, signs and other control devices applicable to vehicles, unless otherwise directed by a Police Officer."
+  "assignment_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through final response",
+        "subject": "human-powered bicycle, intersection and governing device",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through crossing or final hold",
+        "subject": "bicycle approach, governing signal or sign",
+        "view": "approach"
+      },
+      {
+        "interval": "approach through response",
+        "subject": "stop line and Police Officer gesture when declared",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through final response",
+        "subject": "bicycle forward sightline and governing instruction",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "limitations": "Prospective camera positions; original pixels and officer visibility require independent local review.",
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "actor_classification": "human-powered bicycle operator",
       "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
-      "kind": "delivery",
-      "device_type": "signal",
+      "construction_goal": "Official red instruction, operator holds",
       "device_instruction": "red",
+      "device_type": "signal",
+      "evidence_required": [
+        "original Native map and jurisdiction packet",
+        "device identity and official authority",
+        "vehicle applicability and facing direction",
+        "20 Hz device state, bicycle body and stop-line history",
+        "four synchronized camera streams",
+        "absence of contrary officer direction"
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
+      "kind": "delivery",
       "officer_direction": "none",
       "operator_motion": "hold_before_stop_line",
-      "construction_goal": "Official red instruction, operator holds",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
       "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
-      "evidence_required": [
-        "original Native map and jurisdiction packet",
-        "device identity and official authority",
-        "vehicle applicability and facing direction",
-        "20 Hz device state, bicycle body and stop-line history",
-        "four synchronized camera streams",
-        "absence of contrary officer direction"
-      ]
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
     },
     {
+      "actor_classification": "human-powered bicycle operator",
       "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
-      "kind": "delivery",
-      "device_type": "signal",
-      "device_instruction": "red",
-      "officer_direction": "none",
-      "operator_motion": "cross_stop_line",
       "construction_goal": "Same official red instruction, operator crosses",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
-      "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
+      "device_instruction": "red",
+      "device_type": "signal",
       "evidence_required": [
         "original Native map and jurisdiction packet",
         "device identity and official authority",
@@ -75,25 +69,25 @@
         "20 Hz device state, bicycle body and stop-line history",
         "four synchronized camera streams",
         "absence of contrary officer direction"
-      ]
-    },
-    {
-      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
       "kind": "delivery",
-      "device_type": "signal",
-      "device_instruction": "green",
       "officer_direction": "none",
       "operator_motion": "cross_stop_line",
-      "construction_goal": "Official green instruction and crossing",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
       "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
+    },
+    {
+      "actor_classification": "human-powered bicycle operator",
+      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
+      "construction_goal": "Official green instruction and crossing",
+      "device_instruction": "green",
+      "device_type": "signal",
       "evidence_required": [
         "original Native map and jurisdiction packet",
         "device identity and official authority",
@@ -101,25 +95,51 @@
         "20 Hz device state, bicycle body and stop-line history",
         "four synchronized camera streams",
         "absence of contrary officer direction"
-      ]
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
+      "kind": "delivery",
+      "officer_direction": "none",
+      "operator_motion": "cross_stop_line",
+      "physical_risk": {
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
     },
     {
+      "actor_classification": "human-powered bicycle operator",
       "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_officer_proceed",
-      "kind": "delivery",
-      "device_type": "signal",
+      "construction_goal": "Identified Police Officer directs otherwise at red",
       "device_instruction": "red",
+      "device_type": "signal",
+      "evidence_required": [
+        "original Native map and jurisdiction packet",
+        "device identity and official authority",
+        "vehicle applicability and facing direction",
+        "20 Hz device state, bicycle body and stop-line history",
+        "four synchronized camera streams",
+        "police identity, authority, recipient and command history"
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
+      "kind": "delivery",
       "officer_direction": "proceed",
       "operator_motion": "cross_stop_line",
-      "construction_goal": "Identified Police Officer directs otherwise at red",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
       "physical_risk": {
-        "status": "physical",
-        "reason": "Officer authority, directed recipient and timed visible command need original Native actor and synchronized independent source."
-      },
+        "reason": "Officer authority, directed recipient and timed visible command need original Native actor and synchronized independent source.",
+        "status": "physical"
+      }
+    },
+    {
+      "actor_classification": "human-powered bicycle operator",
+      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop",
+      "construction_goal": "Identified Police Officer directs stop at green",
+      "device_instruction": "green",
+      "device_type": "signal",
       "evidence_required": [
         "original Native map and jurisdiction packet",
         "device identity and official authority",
@@ -127,77 +147,25 @@
         "20 Hz device state, bicycle body and stop-line history",
         "four synchronized camera streams",
         "police identity, authority, recipient and command history"
-      ]
-    },
-    {
-      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop",
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
       "kind": "delivery",
-      "device_type": "signal",
-      "device_instruction": "green",
       "officer_direction": "stop",
       "operator_motion": "hold_before_stop_line",
-      "construction_goal": "Identified Police Officer directs stop at green",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
       "physical_risk": {
-        "status": "physical",
-        "reason": "Officer authority, directed recipient and timed visible command need original Native actor and synchronized independent source."
-      },
-      "evidence_required": [
-        "original Native map and jurisdiction packet",
-        "device identity and official authority",
-        "vehicle applicability and facing direction",
-        "20 Hz device state, bicycle body and stop-line history",
-        "four synchronized camera streams",
-        "police identity, authority, recipient and command history"
-      ]
+        "reason": "Officer authority, directed recipient and timed visible command need original Native actor and synchronized independent source.",
+        "status": "physical"
+      }
     },
     {
+      "actor_classification": "human-powered bicycle operator",
       "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_stop",
-      "kind": "delivery",
-      "device_type": "stop_sign",
-      "device_instruction": "stop",
-      "officer_direction": "none",
-      "operator_motion": "hold_before_stop_line",
       "construction_goal": "Official applicable stop sign, operator stops",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
-      "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
-      "evidence_required": [
-        "original Native map and jurisdiction packet",
-        "device identity and official authority",
-        "vehicle applicability and facing direction",
-        "20 Hz device state, bicycle body and stop-line history",
-        "four synchronized camera streams",
-        "absence of contrary officer direction"
-      ]
-    },
-    {
-      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
-      "kind": "delivery",
-      "device_type": "stop_sign",
       "device_instruction": "stop",
-      "officer_direction": "none",
-      "operator_motion": "cross_stop_line",
-      "construction_goal": "Same official applicable stop sign, operator crosses without stop",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
-      "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
+      "device_type": "stop_sign",
       "evidence_required": [
         "original Native map and jurisdiction packet",
         "device identity and official authority",
@@ -205,51 +173,25 @@
         "20 Hz device state, bicycle body and stop-line history",
         "four synchronized camera streams",
         "absence of contrary officer direction"
-      ]
-    },
-    {
-      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
       "kind": "delivery",
-      "device_type": "other_control_device",
-      "device_instruction": "no_entry",
       "officer_direction": "none",
       "operator_motion": "hold_before_stop_line",
-      "construction_goal": "Official vehicle-applicable no-entry device, operator holds",
-      "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
       "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
-      "evidence_required": [
-        "original Native map and jurisdiction packet",
-        "device identity and official authority",
-        "vehicle applicability and facing direction",
-        "20 Hz device state, bicycle body and stop-line history",
-        "four synchronized camera streams",
-        "absence of contrary officer direction"
-      ]
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
     },
     {
-      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross",
-      "kind": "delivery",
-      "device_type": "other_control_device",
-      "device_instruction": "no_entry",
-      "officer_direction": "none",
-      "operator_motion": "cross_stop_line",
-      "construction_goal": "Same official no-entry device, operator enters",
       "actor_classification": "human-powered bicycle operator",
-      "gap_ids": [
-        "no_accepted_recording",
-        "missing_original_site_and_device_source"
-      ],
-      "physical_risk": {
-        "status": "none",
-        "reason": "No specific additional physical fallback yet established; local site preflight is required."
-      },
+      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
+      "construction_goal": "Same official applicable stop sign, operator crosses without stop",
+      "device_instruction": "stop",
+      "device_type": "stop_sign",
       "evidence_required": [
         "original Native map and jurisdiction packet",
         "device identity and official authority",
@@ -257,16 +199,84 @@
         "20 Hz device state, bicycle body and stop-line history",
         "four synchronized camera streams",
         "absence of contrary officer direction"
-      ]
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
+      "kind": "delivery",
+      "officer_direction": "none",
+      "operator_motion": "cross_stop_line",
+      "physical_risk": {
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
+    },
+    {
+      "actor_classification": "human-powered bicycle operator",
+      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
+      "construction_goal": "Official vehicle-applicable no-entry device, operator holds",
+      "device_instruction": "no_entry",
+      "device_type": "other_control_device",
+      "evidence_required": [
+        "original Native map and jurisdiction packet",
+        "device identity and official authority",
+        "vehicle applicability and facing direction",
+        "20 Hz device state, bicycle body and stop-line history",
+        "four synchronized camera streams",
+        "absence of contrary officer direction"
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
+      "kind": "delivery",
+      "officer_direction": "none",
+      "operator_motion": "hold_before_stop_line",
+      "physical_risk": {
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
+    },
+    {
+      "actor_classification": "human-powered bicycle operator",
+      "case_id": "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross",
+      "construction_goal": "Same official no-entry device, operator enters",
+      "device_instruction": "no_entry",
+      "device_type": "other_control_device",
+      "evidence_required": [
+        "original Native map and jurisdiction packet",
+        "device identity and official authority",
+        "vehicle applicability and facing direction",
+        "20 Hz device state, bicycle body and stop-line history",
+        "four synchronized camera streams",
+        "absence of contrary officer direction"
+      ],
+      "gap_ids": [
+        "no_accepted_recording",
+        "missing_original_site_and_device_source"
+      ],
+      "kind": "delivery",
+      "officer_direction": "none",
+      "operator_motion": "cross_stop_line",
+      "physical_risk": {
+        "reason": "No specific additional physical fallback yet established; local site preflight is required.",
+        "status": "none"
+      }
     }
   ],
+  "cell_id": "C111329",
   "comparisons": [
     {
-      "comparison_id": "red_operator_motion",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross"
       ],
+      "comparison_id": "red_operator_motion",
+      "deliberate_differences": [
+        "observed operator_motion"
+      ],
+      "deliberate_variable": "operator_motion",
       "fixed_conditions": [
         "map_name",
         "jurisdiction_source",
@@ -278,18 +288,18 @@
         "45-second duration",
         "officer direction except when compared"
       ],
-      "deliberate_variable": "operator_motion",
-      "deliberate_differences": [
-        "observed operator_motion"
-      ],
       "legal_outcome": "unresolved; requires independent legal review"
     },
     {
-      "comparison_id": "signal_instruction",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross"
       ],
+      "comparison_id": "signal_instruction",
+      "deliberate_differences": [
+        "observed device_instruction"
+      ],
+      "deliberate_variable": "device_instruction",
       "fixed_conditions": [
         "map_name",
         "jurisdiction_source",
@@ -301,18 +311,18 @@
         "45-second duration",
         "officer direction except when compared"
       ],
-      "deliberate_variable": "device_instruction",
-      "deliberate_differences": [
-        "observed device_instruction"
-      ],
       "legal_outcome": "unresolved; requires independent legal review"
     },
     {
-      "comparison_id": "red_officer_exception",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_officer_proceed"
       ],
+      "comparison_id": "red_officer_exception",
+      "deliberate_differences": [
+        "observed officer_direction"
+      ],
+      "deliberate_variable": "officer_direction",
       "fixed_conditions": [
         "map_name",
         "jurisdiction_source",
@@ -324,18 +334,18 @@
         "45-second duration",
         "officer direction except when compared"
       ],
-      "deliberate_variable": "officer_direction",
-      "deliberate_differences": [
-        "observed officer_direction"
-      ],
       "legal_outcome": "unresolved; requires independent legal review"
     },
     {
-      "comparison_id": "green_officer_direction",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop"
       ],
+      "comparison_id": "green_officer_direction",
+      "deliberate_differences": [
+        "observed officer_direction"
+      ],
+      "deliberate_variable": "officer_direction",
       "fixed_conditions": [
         "map_name",
         "jurisdiction_source",
@@ -347,18 +357,18 @@
         "45-second duration",
         "officer direction except when compared"
       ],
-      "deliberate_variable": "officer_direction",
-      "deliberate_differences": [
-        "observed officer_direction"
-      ],
       "legal_outcome": "unresolved; requires independent legal review"
     },
     {
-      "comparison_id": "stop_sign_operator_motion",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_stop",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross"
       ],
+      "comparison_id": "stop_sign_operator_motion",
+      "deliberate_differences": [
+        "observed operator_motion"
+      ],
+      "deliberate_variable": "operator_motion",
       "fixed_conditions": [
         "map_name",
         "jurisdiction_source",
@@ -369,19 +379,19 @@
         "camera contract",
         "45-second duration",
         "officer direction except when compared"
-      ],
-      "deliberate_variable": "operator_motion",
-      "deliberate_differences": [
-        "observed operator_motion"
       ],
       "legal_outcome": "unresolved; requires independent legal review"
     },
     {
-      "comparison_id": "other_device_operator_motion",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
       ],
+      "comparison_id": "other_device_operator_motion",
+      "deliberate_differences": [
+        "observed operator_motion"
+      ],
+      "deliberate_variable": "operator_motion",
       "fixed_conditions": [
         "map_name",
         "jurisdiction_source",
@@ -393,19 +403,108 @@
         "45-second duration",
         "officer direction except when compared"
       ],
-      "deliberate_variable": "operator_motion",
-      "deliberate_differences": [
-        "observed operator_motion"
-      ],
       "legal_outcome": "unresolved; requires independent legal review"
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_recording",
+        "requirement": "Every branch in selected law",
+        "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/evidence.json",
+        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
+      },
+      {
+        "id": "missing_original_site_and_device_source",
+        "requirement": "Official vehicle-applicable device, governed bicycle approach and Police Officer exception",
+        "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json",
+        "why_existing_insufficient": "Frozen cell specifies control class only; it does not prove a local map device, authority, vehicle applicability or officer command."
+      }
+    ],
+    "method": "Read entire exact LVMC 11.40.070 text, witness and zero-entry accepted evidence inventory. Split official signal, sign, other applicable device and Police Officer exception; no physical or legal coverage is claimed.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "LVMC-11-40-070",
+  "law_source": "LVMC 11.40.070",
+  "law_text": "Any person operating a bicycle, electric bicycle, or electric scooter shall obey the instructions of official traffic-control signals, signs and other control devices applicable to vehicles, unless otherwise directed by a Police Officer.",
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "bicycle_front_body_position",
+      "source": "original Native bicycle pose and body extent against source stop line"
+    },
+    {
+      "mandatory": true,
+      "name": "bicycle_speed",
+      "source": "original Native bicycle velocity readback"
+    },
+    {
+      "mandatory": true,
+      "name": "device_instruction",
+      "source": "original governing device state and authority packet"
+    },
+    {
+      "mandatory": true,
+      "name": "police_officer_direction",
+      "source": "separate original officer actor, authority, recipient and gesture readback; none when not declared"
+    }
+  ],
+  "participant_class_dispositions": [
+    {
+      "case_ids": [
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_officer_proceed",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_stop",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
+      ],
+      "class": "human_powered_bicycle",
+      "native_requirement": "SHA-pinned original site must document human-powered bicycle classification and source",
+      "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/witnesses.json#0.required_context: Select and document a human-powered bicycle",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [],
+      "class": "electric_bicycle",
+      "coverage_claim": false,
+      "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json#law.text",
+      "status": "named_by_law_outside_selected_witness"
+    },
+    {
+      "case_ids": [],
+      "class": "electric_scooter",
+      "coverage_claim": false,
+      "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json#law.text",
+      "status": "named_by_law_outside_selected_witness"
+    }
+  ],
+  "planning_status": "partial_exact_case_and_native_measurement_implementation",
   "requirement_dispositions": [
     {
+      "case_ids": [
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_officer_proceed",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_stop",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
+        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
+      ],
+      "evidence_or_gap": "Original bicycle blueprint, actor identity and route must be read from reviewed Native source; no accepted recording exists",
       "requirement": "A selected bicycle operator is an actor named by the exact law",
       "source": "LVMC 11.40.070",
-      "status": "selected_required",
-      "evidence_or_gap": "Original bicycle blueprint, actor identity and route must be read from reviewed Native source; no accepted recording exists",
+      "status": "selected_required"
+    },
+    {
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
@@ -416,13 +515,13 @@
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
-      ]
-    },
-    {
+      ],
+      "evidence_or_gap": "Reviewed original site packet must identify authority, applicability and governing device; observed state comes from original Native trace",
       "requirement": "An official vehicle-applicable signal, sign or other control device governs the approach",
       "source": "LVMC 11.40.070",
-      "status": "selected_required",
-      "evidence_or_gap": "Reviewed original site packet must identify authority, applicability and governing device; observed state comes from original Native trace",
+      "status": "selected_required"
+    },
+    {
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
@@ -433,30 +532,13 @@
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
-      ]
-    },
-    {
+      ],
+      "evidence_or_gap": "900 original 20 Hz bicycle front-body and speed samples joined to device state and stop line; legal assessment remains unresolved",
       "requirement": "The operator response is observed against the applicable device instruction",
       "source": "LVMC 11.40.070",
-      "status": "selected_required",
-      "evidence_or_gap": "900 original 20 Hz bicycle front-body and speed samples joined to device state and stop line; legal assessment remains unresolved",
-      "case_ids": [
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_officer_proceed",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_stop",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
-      ]
+      "status": "selected_required"
     },
     {
-      "requirement": "Any contrary Police Officer direction, recipient and response timing are resolved from original sources",
-      "source": "LVMC 11.40.070",
-      "status": "selected_required",
-      "evidence_or_gap": "Officer cases require reviewed authority packet and visible command; non-officer cases require original trace with no command",
       "case_ids": [
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
@@ -467,17 +549,35 @@
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
         "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
-      ]
+      ],
+      "evidence_or_gap": "Officer cases require reviewed authority packet and visible command; non-officer cases require original trace with no command",
+      "requirement": "Any contrary Police Officer direction, recipient and response timing are resolved from original sources",
+      "source": "LVMC 11.40.070",
+      "status": "selected_required"
     }
   ],
-  "observations": [
-    "Original bicycle blueprint and actor identity",
-    "original map and jurisdiction",
-    "device ID, authority source, vehicle applicability, approach",
-    "20 Hz device-state readback and bicycle front-body trajectory against stop line",
-    "Police Officer identity, authority, recipient and timed command where present",
-    "full synchronized camera pixels and Native frame map"
+  "runtime_uncertainties": [
+    "Local Native source packet, bicycle asset and real Police Officer construction/command readback remain to be implemented and proven.",
+    "Exact offline, positive/negative compatibility, saved-only processing, semantic proposals, independent delivery audit and GPU queue are unimplemented.",
+    "Physical realization and actual camera visibility require later CARLA execution."
   ],
+  "selected_branches": [
+    {
+      "actor": "cycle_or_scooter_operator",
+      "branch": "Official device instruction with Police Officer exception retained",
+      "cell_id": "C111329",
+      "coverage_status": "pending_review",
+      "law_id": "LVMC-11-40-070",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "LVMC-11-40-070",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 289,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json",
@@ -500,41 +600,15 @@
       "sha256": "26cfa82d7c2cd252fdf6e5d43e374b3e91f1fb53a41b723e0cf60d5fed6c2aa2"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Local Native source packet, bicycle asset and real Police Officer construction/command readback remain to be implemented and proven.",
-    "Exact offline, positive/negative compatibility, saved-only processing, semantic proposals, independent delivery audit and GPU queue are unimplemented.",
-    "Physical realization and actual camera visibility require later CARLA execution."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Read entire exact LVMC 11.40.070 text, witness and zero-entry accepted evidence inventory. Split official signal, sign, other applicable device and Police Officer exception; no physical or legal coverage is claimed.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_recording",
-        "requirement": "Every branch in selected law",
-        "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/evidence.json",
-        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
-      },
-      {
-        "id": "missing_original_site_and_device_source",
-        "requirement": "Official vehicle-applicable device, governed bicycle approach and Police Officer exception",
-        "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json",
-        "why_existing_insufficient": "Frozen cell specifies control class only; it does not prove a local map device, authority, vehicle applicability or officer command."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Any person operating a bicycle, electric bicycle, or electric scooter shall obey the instructions of official traffic-control signals, signs and other control devices applicable to vehicles, unless otherwise directed by a Police Officer."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_exact_case_and_native_measurement_implementation",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 289,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Official device instruction with Police Officer exception retained",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "An intersection device can govern the selected bicycle approach independently of pedestrian or delivery-device paths.",
       "required_context": [
         "Construct the governed bicycle approach, actual device instruction and observable indication sequence.",
         "Document human-powered bicycle classification and municipal jurisdiction.",
@@ -544,40 +618,9 @@
         "Select and document a human-powered bicycle.",
         "Synchronize operator motion with device instructions and any officer direction; establish officer authority, recipient and timing if present."
       ],
-      "reason": "An intersection device can govern the selected bicycle approach independently of pedestrian or delivery-device paths."
-    }
-  ],
-  "participant_class_dispositions": [
-    {
-      "class": "human_powered_bicycle",
-      "status": "selected_required",
-      "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/witnesses.json#0.required_context: Select and document a human-powered bicycle",
-      "case_ids": [
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_stop",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_cross",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_cross",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_red_officer_proceed",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__signal_green_officer_stop",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_stop",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__stop_sign_cross",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_hold",
-        "testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator__other_device_cross"
-      ],
-      "native_requirement": "SHA-pinned original site must document human-powered bicycle classification and source"
-    },
-    {
-      "class": "electric_bicycle",
-      "status": "named_by_law_outside_selected_witness",
-      "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json#law.text",
-      "case_ids": [],
-      "coverage_claim": false
-    },
-    {
-      "class": "electric_scooter",
-      "status": "named_by_law_outside_selected_witness",
-      "source": "inputs/testing__C111329__LVMC-11-40-070__cycle_or_scooter_operator/assignment.json#law.text",
-      "case_ids": [],
-      "coverage_claim": false
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 289,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

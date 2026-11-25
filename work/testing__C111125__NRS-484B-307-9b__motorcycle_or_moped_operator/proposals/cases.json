@@ -1021,36 +1021,97 @@
   ],
   "sweep_specs": [
     {
-      "sweep_id": "lawful_crosswalk_source_pending",
+      "sweep_id": "reviewed_crosswalk_status_and_motion",
       "target_law_id": "NRS-484B-307-9b",
+      "mode": "source_bound_participant_status",
+      "status": "incomplete",
+      "rationale": "Executable exact case and source gate exist; original lawful-status and Native motion sources remain unreviewed.",
+      "missing_inputs": [
+        "Reviewed lawful-status authority and original Native participant track for crosswalk"
+      ],
       "judgment_refs": [
         {
           "phrase": "pedestrians lawfully within an adjacent crosswalk",
           "note": "Original crosswalk occupancy alone does not establish lawful status."
         }
       ],
-      "status": "incomplete",
-      "rationale": "Original lawful-status and feasible participant-motion variation have not been reviewed.",
-      "missing_inputs": [
-        "Reviewed lawful-status source and original Native participant track for crosswalk"
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator__pedestrian_crosswalk"
+      ],
+      "source_gate": {
+        "entrypoint": "lawful_status_sweep.py",
+        "packet_kind": "crosswalk",
+        "region": "adjacent_crosswalk",
+        "required_original_sources": [
+          "status_basis",
+          "participant_track",
+          "site"
+        ],
+        "required_review": [
+          "reviewer",
+          "citation",
+          "lawful_status"
+        ],
+        "required_track": "ordered Native world snapshots with participant identity and motion inside 900 frames",
+        "comparison_id": "crosswalk_yield",
+        "capture_case_id": "testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator__pedestrian_crosswalk",
+        "fail_closed_without_packet": true
+      },
+      "source_binding": null,
+      "physical_acceptance": false,
+      "legal_verdict": null,
+      "limitations": [
+        "No original status or movement packet has been supplied; the Native operator must bind one before physical comparison.",
+        "Original ego yield, camera pixels and legal permission remain unverified."
       ]
     },
     {
-      "sweep_id": "lawful_traffic_source_pending",
+      "sweep_id": "reviewed_traffic_status_and_motion",
       "target_law_id": "NRS-484B-307-9b",
+      "mode": "source_bound_participant_status",
+      "status": "incomplete",
+      "rationale": "Executable exact case and source gate exist; original lawful-status and Native motion sources remain unreviewed.",
+      "missing_inputs": [
+        "Reviewed lawful-status authority and original Native participant track for traffic"
+      ],
       "judgment_refs": [
         {
           "phrase": "other traffic lawfully using the intersection",
           "note": "Original intersection occupancy alone does not establish lawful status."
         }
       ],
-      "status": "incomplete",
-      "rationale": "Original lawful-status and feasible participant-motion variation have not been reviewed.",
-      "missing_inputs": [
-        "Reviewed lawful-status source and original Native participant track for traffic"
+      "case_ids": [
+        "testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator__lawful_traffic"
+      ],
+      "source_gate": {
+        "entrypoint": "lawful_status_sweep.py",
+        "packet_kind": "traffic",
+        "region": "intersection",
+        "required_original_sources": [
+          "status_basis",
+          "participant_track",
+          "site"
+        ],
+        "required_review": [
+          "reviewer",
+          "citation",
+          "lawful_status"
+        ],
+        "required_track": "ordered Native world snapshots with participant identity and motion inside 900 frames",
+        "comparison_id": "intersection_yield",
+        "capture_case_id": "testing__C111125__NRS-484B-307-9b__motorcycle_or_moped_operator__lawful_traffic",
+        "fail_closed_without_packet": true
+      },
+      "source_binding": null,
+      "physical_acceptance": false,
+      "legal_verdict": null,
+      "limitations": [
+        "No original status or movement packet has been supplied; the Native operator must bind one before physical comparison.",
+        "Original ego yield, camera pixels and legal permission remain unverified."
       ]
     }
   ],
+  "sweeps_expanded": true,
   "comparisons": [
     {
       "comparison_id": "complete_cycle_count",

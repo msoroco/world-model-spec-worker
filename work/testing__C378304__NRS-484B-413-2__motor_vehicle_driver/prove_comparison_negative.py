@@ -31,15 +31,22 @@ def main() -> None:
                          "config.json", "fixture-provenance.json"):
                 shutil.copy2(source / name, target / name)
             roots.append(target)
+        try:
+            audit(args.comparison, roots)
+        except ValueError as error:
+            if "diagnostic fixture rejected" not in str(error):
+                raise
+        else:
+            raise AssertionError("production comparison accepted diagnostic fixtures")
         config = json.loads((roots[-1] / "config.json").read_text())
         config["cameras"][0]["width"] += 1
         (roots[-1] / "config.json").write_text(json.dumps(config) + "\n")
         try:
-            audit(args.comparison, roots)
+            audit(args.comparison, roots, diagnostic_fixture=True)
         except ValueError as error:
             if "fixed comparison construction differs" not in str(error):
                 raise
-            print("fixed comparison construction differs; changed camera contract rejected")
+            print("production diagnostic fixture rejected; changed camera contract rejected")
             return
         raise AssertionError("changed fixed camera contract accepted")
 

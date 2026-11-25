@@ -14,6 +14,7 @@ from native_construction import ASSIGNMENT
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
+ACCEPTED = ("accepted_source_1", "accepted_source_2", "accepted_source_3")
 SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
          "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
@@ -31,7 +32,7 @@ def sha(text):
 
 
 def build(variant: str):
-    if variant not in ("both_observed", "signal_missing", "check_missing"):
+    if variant not in ("both_observed", "signal_missing", "check_missing", *ACCEPTED):
         raise ValueError("unknown controlled variant")
     case = ASSIGNMENT + "__" + variant
     source = json.loads((REPO / "runtime/fixtures/example.json").read_text())
@@ -169,7 +170,8 @@ def write_graphs(clock):
                      observed_evidence=observation_packet(row))
         graph = {"path": path, "attributes": attrs, "nodes": chosen,
                  "edges": source_edges}
-        write_adapter_graph(_graph(graph), target)
+        if not target.exists():
+            write_adapter_graph(_graph(graph), target)
         sources.append({"path": path, "source": str(target.relative_to(REPO)),
                         "sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
     return sources
@@ -191,7 +193,7 @@ def write():
               round(example_trace[-1]["time_s"] +
                     (i - len(example_trace) + 1) * .05, 9)} for i in range(900)]
     graph_sources = write_graphs(clock)
-    for variant in ("both_observed", "signal_missing", "check_missing"):
+    for variant in ("both_observed", "signal_missing", "check_missing", *ACCEPTED):
         folder = HERE / "cases" / variant
         value = build(variant)
         original = sample

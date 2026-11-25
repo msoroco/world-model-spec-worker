@@ -145,5 +145,28 @@
       "path": "tests/test_bundle.py",
       "content": "import json\nfrom pathlib import Path\nimport sys\nimport types\nimport unittest\nfrom unittest.mock import MagicMock, patch\nimport runner\n\n\nclass BundleTests(unittest.TestCase):\n    def test_exact_case_binding(self):\n        root = Path(__file__).resolve().parents[1]\n        self.assertEqual(runner.check(), json.loads((root / \"config.json\").read_text())[\"selected_case_id\"])\n\n    def test_unsourced_capture_rejected(self):\n        with patch(\"sys.argv\", [\"runner.py\", \"--output-dir\", \".\"]):\n            with self.assertRaisesRegex(ValueError, \"Reviewed original C111125\"):\n                runner.main()\n\n    def test_pinned_capture_dispatch_to_operator_session(self):\n        case_id = runner.check()\n        session = types.SimpleNamespace(restoration_verified=True)\n        context = MagicMock()\n        context.__enter__.return_value = session\n        adapter = types.SimpleNamespace(open_session=MagicMock(return_value=context))\n        exchange = types.ModuleType(\"worker_exchange\")\n        output = types.ModuleType(\"worker_exchange.native_output\")\n        output.seal_capture = MagicMock()\n        env = {\"SCENARIO_SITE_PACKET\": \"/reviewed/site.json\", \"SCENARIO_NATIVE_ADAPTER\": \"test_native_adapter\"}\n        args = [\"runner.py\", \"--output-dir\", \"/materialized/attempt\",\n                \"--host\", \"localhost\", \"--port\", \"2000\"]\n        with patch.dict(\"os.environ\", env), patch.dict(sys.modules, {\"test_native_adapter\": adapter,\n                \"worker_exchange\": exchange, \"worker_exchange.native_output\": output}), \\\n                patch(\"native_session.capture_events\") as capture, patch(\"sys.argv\", args):\n            runner.main()\n        adapter.open_session.assert_called_once_with(case_id, \"/reviewed/site.json\", \"localhost\", 2000)\n        capture.assert_called_once_with(session, \"/reviewed/site.json\", case_id, \"/materialized/attempt\")\n        output.seal_capture.assert_called_once()\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n"
     }
+  ],
+  "measurement_plan": {
+    "official_device": "900 source-bound Native aspect history; count post-stop complete aspect-return cycles",
+    "stopping": "Original motorcycle front station and zero-speed sample before source-ranked reference",
+    "cause": "Reviewed detector or official fault record; no causal inference from a steady red alone",
+    "participants": "Original crosswalk/intersection Native tracks with separately reviewed lawful-status authority; no legal verdict",
+    "media": "900 synchronized 20 Hz original four-view frames"
+  },
+  "static_checks": [
+    "exact C111125 motorcycle straight case and reviewed Native source identity",
+    "official ego-facing composite head, stop hierarchy and causal source sealed",
+    "two lawful participant sweeps fail closed without reviewed original status and Native motion packets"
+  ],
+  "termination_rules": {
+    "duration_s": 45,
+    "frame_count": 900,
+    "early_termination": "preserve failed Native attempt and withhold complete delivery"
+  },
+  "mechanisms": [
+    "source-sealed Native motorcycle and official-head construction",
+    "conservative pre-entry yield on observed crosswalk/intersection participants",
+    "separate reviewed lawful-status packets and original participant-motion audit",
+    "recorded-only measurements and four full-decode video audits"
   ]
 }

@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
-from delivery_audit import audit
+from delivery_audit import audit, audit_attempt_sources
 from analysis import finalize
 from native_capture import capture
 from native_cameras import CAMERAS
@@ -56,6 +56,13 @@ class DeliveryAuditTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "trace hash mismatch"):
                 audit(dict(CASE, device_type="signal"), site_path, site_sha, trace, "0" * 64,
                       diagnostic=True)
+            (folder / "fixture-provenance.json").write_text('{"diagnostic_fixture":true}\n')
+            with self.assertRaisesRegex(ValueError, "diagnostic fixture cannot"):
+                audit_attempt_sources(folder, dict(CASE, device_type="signal"))
+            (folder / "fixture-provenance.json").unlink()
+            (folder / "overview.png.zip").unlink()
+            with self.assertRaisesRegex(ValueError, "original camera source hash mismatch: overview"):
+                audit_attempt_sources(folder, dict(CASE, device_type="signal"))
             (folder / "original-source-hashes.json").unlink()
             with self.assertRaisesRegex(ValueError, "Missing required source: original-source-hashes.json"):
                 finalize(folder, dict(CASE, device_type="signal"))

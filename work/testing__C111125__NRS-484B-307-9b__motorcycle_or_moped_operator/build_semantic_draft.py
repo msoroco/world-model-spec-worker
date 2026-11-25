@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from build_offline_draft import recording_description
+from lawful_status_sweep import source_gated_specs
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
@@ -118,18 +119,15 @@ def build():
                                  "operator": ">=", "unit": "cycles",
                                  "test_value": source["scenario_parameters"]["full_cycles_after_stop_target"]})
         cases.append(row)
-    sweep_specs = [{"sweep_id": "lawful_" + name + "_source_pending", "target_law_id": LAW,
-                    "judgment_refs": [judgment], "status": "incomplete",
-                    "rationale": "Original lawful-status and feasible participant-motion variation have not been reviewed.",
-                    "missing_inputs": ["Reviewed lawful-status source and original Native participant track for " + name]}
-                   for name, judgment in zip(("crosswalk", "traffic"), JUDGMENTS)]
+    sweep_specs = source_gated_specs()
     case_stage = {"cell_id": CELL, "actor": ACTOR, "status": "draft", "cases": cases,
-                  "sweep_specs": sweep_specs, "comparisons": plan["comparisons"],
+                  "sweep_specs": sweep_specs, "sweeps_expanded": True,
+                  "comparisons": plan["comparisons"],
                   "source_law_text": quote, "source_assignment": "inputs/" + AID + "/assignment.json"}
     refs["cases"] = write("cases.json", case_stage)
     write("semantic-index.json", {"format": "worker-semantic-delivery", "assignment_id": AID,
                                   "stages": refs})
-    print("draft semantic stages: baseline, seven exact cases, two unresolved lawful-status sweeps")
+    print("draft semantic stages: baseline, seven exact cases, two source-gated lawful-status sweeps")
 
 
 if __name__ == "__main__":

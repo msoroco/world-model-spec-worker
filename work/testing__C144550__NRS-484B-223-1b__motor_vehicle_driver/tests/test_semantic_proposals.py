@@ -46,7 +46,7 @@ class SemanticProposalTests(unittest.TestCase):
         validate("cases", load("cases.json"), {"request": {
             "cell": cell, "actor": actor}, "dependencies": [binding],
             "templates": [expanded_template]})
-        self.assertEqual(len(load("cases.json")["cases"]), 3)
+        self.assertEqual(len(load("cases.json")["cases"]), 7)
 
 
 if __name__ == "__main__":

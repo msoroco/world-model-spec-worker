@@ -2,8 +2,8 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed",
-      "rationale": "Controlled comparison of two observed prerequisites before lane departure; legal judgment unresolved.",
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__neutral_baseline",
+      "rationale": "Neutral proposal baseline only; not a delivered recording or accepted-evidence reuse.",
       "recording_description": {
         "channels": [
           {
@@ -66,6 +66,95 @@
       },
       "target_law_id": null,
       "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ],
+      "variable_assignments": {
+        "independent_check_event": {
+          "kind": "world_setup",
+          "note": "Original driver-input source, separate from controller request.",
+          "value": true
+        },
+        "signal_request": {
+          "kind": "controller",
+          "note": "Requested signal is separately checked against original API readback.",
+          "value": true
+        }
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed",
+      "deliberate_differences": [],
+      "paired_probe_id": "both_observed-source-gated-control",
+      "probe": {
+        "comparison_or_standard": "Original API signal and independent driver input before measured lane departure; no legal cutoff.",
+        "primary_variable": "signal_request",
+        "target_value_or_branch": "both observed prerequisites, legal judgment unresolved"
+      },
+      "rationale": "Controlled comparison of two observed prerequisites before lane departure; legal judgment unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor pose and signed offset from reviewed source-lane centerline",
+            "name": "original_lane_and_pose",
+            "reference_frame": "reviewed source lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "physical lane geometry and transition require local review",
+            "unit": "metres and seconds"
+          },
+          {
+            "method": "Original actor.get_light_state each Native world tick",
+            "name": "native_signal_state",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "API signal state alone does not decide appropriateness",
+            "unit": "boolean API state"
+          },
+          {
+            "method": "Separate source-ID-bound driver-input readback, joined to Native frame/time",
+            "name": "independent_driver_input",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "observed event does not prove mental ascertainment or safety",
+            "unit": "boolean observed event"
+          },
+          {
+            "method": "Original target actor transform and velocity on each world tick",
+            "name": "target_lane_traffic",
+            "reference_frame": "reviewed destination lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "relative gap and actual safety require local physical review",
+            "unit": "metres and metres per second"
+          },
+          {
+            "method": "Four sensor BGRA frames converted to retained PNG and lossless FFV1",
+            "name": "four_camera_views",
+            "reference_frame": "same-frame Native sensor clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "actual visibility requires local pixel audit",
+            "unit": "original RGB pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed source, lane marking and live OpenDRIVE hash match",
+            "name": "reviewed_marked_multilane_highway",
+            "unit": "SHA-bound original map packet"
+          }
+        ],
+        "limitations": [
+          "Original accepted traces/video and reviewed map are absent in worker export.",
+          "Driver-input event is not a legal ascertainment finding."
+        ]
+      },
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "appropriate turn signal",
         "ascertained that such movement can be made with safety"
@@ -257,6 +346,273 @@
           "kind": "world_setup",
           "note": "Original driver-input source, separate from controller request.",
           "value": false
+        },
+        "signal_request": {
+          "kind": "controller",
+          "note": "Requested signal is separately checked against original API readback.",
+          "value": true
+        }
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1",
+      "deliberate_differences": [],
+      "paired_probe_id": "accepted_source_1-source-gated-control",
+      "probe": {
+        "comparison_or_standard": "Original API signal and independent driver input before measured lane departure; no legal cutoff.",
+        "primary_variable": "signal_request",
+        "target_value_or_branch": "both observed prerequisites, legal judgment unresolved"
+      },
+      "rationale": "New source-gated capture for exact accepted_source_1 case; accepted metadata lacks original trace/video and is not reused. Both observed prerequisites remain legal-judgment unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor pose and signed offset from reviewed source-lane centerline",
+            "name": "original_lane_and_pose",
+            "reference_frame": "reviewed source lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "physical lane geometry and transition require local review",
+            "unit": "metres and seconds"
+          },
+          {
+            "method": "Original actor.get_light_state each Native world tick",
+            "name": "native_signal_state",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "API signal state alone does not decide appropriateness",
+            "unit": "boolean API state"
+          },
+          {
+            "method": "Separate source-ID-bound driver-input readback, joined to Native frame/time",
+            "name": "independent_driver_input",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "observed event does not prove mental ascertainment or safety",
+            "unit": "boolean observed event"
+          },
+          {
+            "method": "Original target actor transform and velocity on each world tick",
+            "name": "target_lane_traffic",
+            "reference_frame": "reviewed destination lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "relative gap and actual safety require local physical review",
+            "unit": "metres and metres per second"
+          },
+          {
+            "method": "Four sensor BGRA frames converted to retained PNG and lossless FFV1",
+            "name": "four_camera_views",
+            "reference_frame": "same-frame Native sensor clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "actual visibility requires local pixel audit",
+            "unit": "original RGB pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed source, lane marking and live OpenDRIVE hash match",
+            "name": "reviewed_marked_multilane_highway",
+            "unit": "SHA-bound original map packet"
+          }
+        ],
+        "limitations": [
+          "Original accepted traces/video and reviewed map are absent in worker export.",
+          "Driver-input event is not a legal ascertainment finding."
+        ]
+      },
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ],
+      "variable_assignments": {
+        "independent_check_event": {
+          "kind": "world_setup",
+          "note": "Original driver-input source, separate from controller request.",
+          "value": true
+        },
+        "signal_request": {
+          "kind": "controller",
+          "note": "Requested signal is separately checked against original API readback.",
+          "value": true
+        }
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2",
+      "deliberate_differences": [],
+      "paired_probe_id": "accepted_source_2-source-gated-control",
+      "probe": {
+        "comparison_or_standard": "Original API signal and independent driver input before measured lane departure; no legal cutoff.",
+        "primary_variable": "signal_request",
+        "target_value_or_branch": "both observed prerequisites, legal judgment unresolved"
+      },
+      "rationale": "New source-gated capture for exact accepted_source_2 case; accepted metadata lacks original trace/video and is not reused. Both observed prerequisites remain legal-judgment unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor pose and signed offset from reviewed source-lane centerline",
+            "name": "original_lane_and_pose",
+            "reference_frame": "reviewed source lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "physical lane geometry and transition require local review",
+            "unit": "metres and seconds"
+          },
+          {
+            "method": "Original actor.get_light_state each Native world tick",
+            "name": "native_signal_state",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "API signal state alone does not decide appropriateness",
+            "unit": "boolean API state"
+          },
+          {
+            "method": "Separate source-ID-bound driver-input readback, joined to Native frame/time",
+            "name": "independent_driver_input",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "observed event does not prove mental ascertainment or safety",
+            "unit": "boolean observed event"
+          },
+          {
+            "method": "Original target actor transform and velocity on each world tick",
+            "name": "target_lane_traffic",
+            "reference_frame": "reviewed destination lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "relative gap and actual safety require local physical review",
+            "unit": "metres and metres per second"
+          },
+          {
+            "method": "Four sensor BGRA frames converted to retained PNG and lossless FFV1",
+            "name": "four_camera_views",
+            "reference_frame": "same-frame Native sensor clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "actual visibility requires local pixel audit",
+            "unit": "original RGB pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed source, lane marking and live OpenDRIVE hash match",
+            "name": "reviewed_marked_multilane_highway",
+            "unit": "SHA-bound original map packet"
+          }
+        ],
+        "limitations": [
+          "Original accepted traces/video and reviewed map are absent in worker export.",
+          "Driver-input event is not a legal ascertainment finding."
+        ]
+      },
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ],
+      "variable_assignments": {
+        "independent_check_event": {
+          "kind": "world_setup",
+          "note": "Original driver-input source, separate from controller request.",
+          "value": true
+        },
+        "signal_request": {
+          "kind": "controller",
+          "note": "Requested signal is separately checked against original API readback.",
+          "value": true
+        }
+      }
+    },
+    {
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3",
+      "deliberate_differences": [],
+      "paired_probe_id": "accepted_source_3-source-gated-control",
+      "probe": {
+        "comparison_or_standard": "Original API signal and independent driver input before measured lane departure; no legal cutoff.",
+        "primary_variable": "signal_request",
+        "target_value_or_branch": "both observed prerequisites, legal judgment unresolved"
+      },
+      "rationale": "New source-gated capture for exact accepted_source_3 case; accepted metadata lacks original trace/video and is not reused. Both observed prerequisites remain legal-judgment unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Native actor pose and signed offset from reviewed source-lane centerline",
+            "name": "original_lane_and_pose",
+            "reference_frame": "reviewed source lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "physical lane geometry and transition require local review",
+            "unit": "metres and seconds"
+          },
+          {
+            "method": "Original actor.get_light_state each Native world tick",
+            "name": "native_signal_state",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "API signal state alone does not decide appropriateness",
+            "unit": "boolean API state"
+          },
+          {
+            "method": "Separate source-ID-bound driver-input readback, joined to Native frame/time",
+            "name": "independent_driver_input",
+            "reference_frame": "original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "observed event does not prove mental ascertainment or safety",
+            "unit": "boolean observed event"
+          },
+          {
+            "method": "Original target actor transform and velocity on each world tick",
+            "name": "target_lane_traffic",
+            "reference_frame": "reviewed destination lane and original world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "relative gap and actual safety require local physical review",
+            "unit": "metres and metres per second"
+          },
+          {
+            "method": "Four sensor BGRA frames converted to retained PNG and lossless FFV1",
+            "name": "four_camera_views",
+            "reference_frame": "same-frame Native sensor clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "actual visibility requires local pixel audit",
+            "unit": "original RGB pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed source, lane marking and live OpenDRIVE hash match",
+            "name": "reviewed_marked_multilane_highway",
+            "unit": "SHA-bound original map packet"
+          }
+        ],
+        "limitations": [
+          "Original accepted traces/video and reviewed map are absent in worker export.",
+          "Driver-input event is not a legal ascertainment finding."
+        ]
+      },
+      "target_law_id": "NRS-484B-223-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ],
+      "variable_assignments": {
+        "independent_check_event": {
+          "kind": "world_setup",
+          "note": "Original driver-input source, separate from controller request.",
+          "value": true
         },
         "signal_request": {
           "kind": "controller",

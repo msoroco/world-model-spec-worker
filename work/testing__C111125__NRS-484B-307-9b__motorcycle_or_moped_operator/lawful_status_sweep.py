@@ -22,6 +22,42 @@ KINDS = {
 }
 
 
+def source_gated_specs() -> list[dict]:
+    """Executable acquisition plans; no participant status is asserted here."""
+    result = []
+    for kind, (region, suffix, phrase) in KINDS.items():
+        result.append({
+            "sweep_id": "reviewed_" + kind + "_status_and_motion",
+            "target_law_id": LAW,
+            "mode": "source_bound_participant_status",
+            "status": "incomplete",
+            "rationale": "Executable exact case and source gate exist; original lawful-status and Native motion sources remain unreviewed.",
+            "missing_inputs": ["Reviewed lawful-status authority and original Native participant track for " + kind],
+            "judgment_refs": [{"phrase": phrase,
+                               "note": ("Original crosswalk occupancy alone does not establish lawful status."
+                                        if kind == "crosswalk" else
+                                        "Original intersection occupancy alone does not establish lawful status.")}],
+            "case_ids": [ASSIGNMENT + "__" + suffix],
+            "source_gate": {
+                "entrypoint": "lawful_status_sweep.py",
+                "packet_kind": kind,
+                "region": region,
+                "required_original_sources": ["status_basis", "participant_track", "site"],
+                "required_review": ["reviewer", "citation", "lawful_status"],
+                "required_track": "ordered Native world snapshots with participant identity and motion inside 900 frames",
+                "comparison_id": "crosswalk_yield" if kind == "crosswalk" else "intersection_yield",
+                "capture_case_id": ASSIGNMENT + "__" + suffix,
+                "fail_closed_without_packet": True,
+            },
+            "source_binding": None,
+            "physical_acceptance": False,
+            "legal_verdict": None,
+            "limitations": ["No original status or movement packet has been supplied; the Native operator must bind one before physical comparison.",
+                            "Original ego yield, camera pixels and legal permission remain unverified."],
+        })
+    return result
+
+
 def _source(root: Path, ref: dict) -> Path:
     relative = ref.get("path") if isinstance(ref, dict) else None
     if not isinstance(relative, str) or not relative or Path(relative).is_absolute() or ".." in Path(relative).parts:

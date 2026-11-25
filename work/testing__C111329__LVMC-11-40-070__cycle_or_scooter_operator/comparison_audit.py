@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from saved_instruction import measure
+from delivery_audit import audit_attempt_sources
 
 
 def audit_from_sources(comparison: dict, cases: dict, site_path: Path,
@@ -84,3 +85,35 @@ def audit(comparison: dict, left: dict, right: dict) -> dict:
     if left["source_hashes"]["site"] != right["source_hashes"]["site"] and variable != "device_type":
         raise ValueError("site source changed")
     return {"format": "c111329-device-comparison-audit", "comparison_id": comparison["comparison_id"], "case_ids": comparison["case_ids"], "passed": True, "legal_assessment": "unresolved"}
+
+
+def audit_attempts(comparison_id: str, attempts: list[Path]) -> dict:
+    """Recompute a selected pair only after both original captures decode."""
+    plan = json.loads((Path(__file__).resolve().parent / "case-plan.json").read_text())
+    selected = [row for row in plan["comparisons"]
+                if row["comparison_id"] == comparison_id]
+    if len(selected) != 1 or len(attempts) != len(selected[0]["case_ids"]):
+        raise ValueError("selected comparison attempt count differs")
+    cases = {row["case_id"]: row for row in plan["cases"]}
+    checked = [audit_attempt_sources(Path(path), cases[case_id]) for path, case_id in
+               zip(attempts, selected[0]["case_ids"])]
+    if len({row["site_sha256"] for row in checked}) != 1:
+        raise ValueError("fixed original site source differs")
+    sources = {case_id: (row["trace_path"], row["trace_sha256"])
+               for case_id, row in zip(selected[0]["case_ids"], checked)}
+    result = audit_from_sources(selected[0], cases, checked[0]["site_path"],
+                                checked[0]["site_sha256"], sources)
+    result["original_source_audits"] = [
+        {"case_id": case_id, "frame_count": row["frame_count"],
+         "camera_decode": row["cameras"], "full_video_decode": row["videos"]}
+        for case_id, row in zip(selected[0]["case_ids"], checked)]
+    return result
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--comparison", required=True)
+    parser.add_argument("--attempt", required=True, action="append", type=Path)
+    args = parser.parse_args()
+    print(json.dumps(audit_attempts(args.comparison, args.attempt), sort_keys=True))

@@ -1,0 +1,644 @@
+{
+  "assignment_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "four_camera_views": {
+          "entrypoint": "camera_capture.py",
+          "evidence": "original-camera-frames/camera-manifest.json",
+          "method": "four original RGB sensors joined by Native frame"
+        },
+        "independent_driver_input": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "original-driver-input.jsonl",
+          "method": "source-ID-bound separate driver input readback"
+        },
+        "native_signal_state": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "native_signal.json",
+          "method": "original actor.get_light_state API readback"
+        },
+        "original_lane_and_pose": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "ego_pose.json",
+          "method": "original world-tick actor pose and reviewed lane offset"
+        },
+        "target_lane_traffic": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "target-traffic-history.jsonl",
+          "method": "original target actor pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Actual lane transition or target-traffic clearance may fail on reviewed geometry; local readback will measure it.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego route-follower steering gain 1.2 to 0.85",
+            "ego cruise throttle 0.30 to 0.22; target actor policy unchanged"
+          ],
+          "compatibility": {
+            "log": "proof-compat-fallback1-both_observed-analysis.log",
+            "negative_log": "proof-compat-fallback1-both_observed-negative.log",
+            "receipt": "proof-compat-fallback1-both_observed-receipt.json",
+            "sha256": "24a9619e7527beb10bf191414c53e00a417aa9428bfbf04720ce70713d35e787"
+          },
+          "construction": "cases/both_observed/fallback1/construction.json",
+          "construction_sha256": "a6dec621e23ee9d4d969a4288253e64542ea374e2e0d856b2677719c64274de4",
+          "id": "fallback1",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed --candidate fallback1 --output .runtime-work/c144550-2231/offline-fallback1-both_observed-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "a6dec621e23ee9d4d969a4288253e64542ea374e2e0d856b2677719c64274de4",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-both_observed-final.log",
+            "log_sha256": "2a657afba584c0509154083e11e9e35e7d60111ac2f2b21190a2785f2e43e80e"
+          },
+          "trigger": {
+            "failure_condition": "distance > 1.0 m at final frame or no measured source-lane departure by frame 899",
+            "metric": "final original ego position to reviewed destination centerline and 900-frame departure observation",
+            "source": "original ego_pose.json and reviewed-site.json"
+          }
+        }
+      ],
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed",
+      "compatibility": {
+        "log": "proof-compat-primary-both_observed-analysis.log",
+        "receipt": "proof-compat-primary-both_observed-receipt.json",
+        "sha256": "6db94227cf51285803f1f1e1d18054b8ea715c05e9bd0ce8642dc431b793c318"
+      },
+      "construction": "cases/both_observed/construction.json",
+      "construction_sha256": "f05a520631c240deeed0c9813017855f2b2cf44f862255e13b769e3daa66d2c4",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/both_observed/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "analysis_report": "analysis-report.json",
+        "entrypoint": "analysis.py",
+        "result": "result.json",
+        "saved_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-compat-primary-both_observed-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed --candidate primary --output .runtime-work/c144550-2231/offline-primary-both_observed-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "f05a520631c240deeed0c9813017855f2b2cf44f862255e13b769e3daa66d2c4",
+        "exit_code": 0,
+        "log": "proof-offline-primary-both_observed-final.log",
+        "log_sha256": "07d56a2a4040b648b0d83c09753fc7683e2d091044c0a4ec6f1b3adac079c5e3"
+      },
+      "physical_preparation": {
+        "receipt": "cases/both_observed/physical-preparation.json",
+        "sha256": "7f47b6f9b8b09e7d7d2c1f3287fe1fd9b8758c33ded452b8f4508793ed1af0f2"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__both_observed",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-current-tests.log",
+        "test_log_sha256": "339926b068c74ff6f7a3224f8e71a2d615601958574fc3285a9d1faef9d8a7fe"
+      }
+    },
+    {
+      "acquisition": {
+        "four_camera_views": {
+          "entrypoint": "camera_capture.py",
+          "evidence": "original-camera-frames/camera-manifest.json",
+          "method": "four original RGB sensors joined by Native frame"
+        },
+        "independent_driver_input": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "original-driver-input.jsonl",
+          "method": "source-ID-bound separate driver input readback"
+        },
+        "native_signal_state": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "native_signal.json",
+          "method": "original actor.get_light_state API readback"
+        },
+        "original_lane_and_pose": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "ego_pose.json",
+          "method": "original world-tick actor pose and reviewed lane offset"
+        },
+        "target_lane_traffic": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "target-traffic-history.jsonl",
+          "method": "original target actor pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Actual lane transition or target-traffic clearance may fail on reviewed geometry; local readback will measure it.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego route-follower steering gain 1.2 to 0.85",
+            "ego cruise throttle 0.30 to 0.22; target actor policy unchanged"
+          ],
+          "compatibility": {
+            "log": "proof-compat-fallback1-signal_missing-analysis.log",
+            "negative_log": "proof-compat-fallback1-signal_missing-negative.log",
+            "receipt": "proof-compat-fallback1-signal_missing-receipt.json",
+            "sha256": "32c84c448dc37512dfaed87f1ce6005f21eedd117081ab991e4a8376b64b40ed"
+          },
+          "construction": "cases/signal_missing/fallback1/construction.json",
+          "construction_sha256": "1658c01db8593d478df5ecc4b9596758fe5a203a68d49d2f9b1b7b944de36098",
+          "id": "fallback1",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_missing --candidate fallback1 --output .runtime-work/c144550-2231/offline-fallback1-signal_missing-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "1658c01db8593d478df5ecc4b9596758fe5a203a68d49d2f9b1b7b944de36098",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-signal_missing-final.log",
+            "log_sha256": "c5ae45df9e55c6cec0ce0548621ffa2882e8f4f373fc7005ddbcf626c4df8163"
+          },
+          "trigger": {
+            "failure_condition": "distance > 1.0 m at final frame or no measured source-lane departure by frame 899",
+            "metric": "final original ego position to reviewed destination centerline and 900-frame departure observation",
+            "source": "original ego_pose.json and reviewed-site.json"
+          }
+        }
+      ],
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_missing",
+      "compatibility": {
+        "log": "proof-compat-primary-signal_missing-analysis.log",
+        "receipt": "proof-compat-primary-signal_missing-receipt.json",
+        "sha256": "ca0abe372e7ef78c217f5c5388f69021993c846b7fc1c4e9580827c4b4b2c2e3"
+      },
+      "construction": "cases/signal_missing/construction.json",
+      "construction_sha256": "dd26ac36998fa433d4f48bc49d9ae83b95f756a0c7a773ff795997dcfc33b2e9",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/signal_missing/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "analysis_report": "analysis-report.json",
+        "entrypoint": "analysis.py",
+        "result": "result.json",
+        "saved_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-compat-primary-signal_missing-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_missing --candidate primary --output .runtime-work/c144550-2231/offline-primary-signal_missing-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "dd26ac36998fa433d4f48bc49d9ae83b95f756a0c7a773ff795997dcfc33b2e9",
+        "exit_code": 0,
+        "log": "proof-offline-primary-signal_missing-final.log",
+        "log_sha256": "33bc1ac74893edeb336d19ce77f0b6d2b8ded940d112dcb7b98a7465d4f11bbe"
+      },
+      "physical_preparation": {
+        "receipt": "cases/signal_missing/physical-preparation.json",
+        "sha256": "bc22e24a257ecc1cd24e2a0caa7c877933ab325460a026b208da2b8e8ea6d517"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_missing --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__signal_missing",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-current-tests.log",
+        "test_log_sha256": "339926b068c74ff6f7a3224f8e71a2d615601958574fc3285a9d1faef9d8a7fe"
+      }
+    },
+    {
+      "acquisition": {
+        "four_camera_views": {
+          "entrypoint": "camera_capture.py",
+          "evidence": "original-camera-frames/camera-manifest.json",
+          "method": "four original RGB sensors joined by Native frame"
+        },
+        "independent_driver_input": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "original-driver-input.jsonl",
+          "method": "source-ID-bound separate driver input readback"
+        },
+        "native_signal_state": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "native_signal.json",
+          "method": "original actor.get_light_state API readback"
+        },
+        "original_lane_and_pose": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "ego_pose.json",
+          "method": "original world-tick actor pose and reviewed lane offset"
+        },
+        "target_lane_traffic": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "target-traffic-history.jsonl",
+          "method": "original target actor pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Actual lane transition or target-traffic clearance may fail on reviewed geometry; local readback will measure it.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego route-follower steering gain 1.2 to 0.85",
+            "ego cruise throttle 0.30 to 0.22; target actor policy unchanged"
+          ],
+          "compatibility": {
+            "log": "proof-compat-fallback1-check_missing-analysis.log",
+            "negative_log": "proof-compat-fallback1-check_missing-negative.log",
+            "receipt": "proof-compat-fallback1-check_missing-receipt.json",
+            "sha256": "7adbdd789905372ff1e169b4729710592ac5b504568c1b7e793b71a44a12ed61"
+          },
+          "construction": "cases/check_missing/fallback1/construction.json",
+          "construction_sha256": "d82375240e189bef7aa966002d1eb1c662280e9484b3bd142533835b343af674",
+          "id": "fallback1",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__check_missing --candidate fallback1 --output .runtime-work/c144550-2231/offline-fallback1-check_missing-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "d82375240e189bef7aa966002d1eb1c662280e9484b3bd142533835b343af674",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-check_missing-final.log",
+            "log_sha256": "3736c97bc351963a9532a135819bea1e5397c383dc1251c3feebf8d8eac8eef6"
+          },
+          "trigger": {
+            "failure_condition": "distance > 1.0 m at final frame or no measured source-lane departure by frame 899",
+            "metric": "final original ego position to reviewed destination centerline and 900-frame departure observation",
+            "source": "original ego_pose.json and reviewed-site.json"
+          }
+        }
+      ],
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__check_missing",
+      "compatibility": {
+        "log": "proof-compat-primary-check_missing-analysis.log",
+        "receipt": "proof-compat-primary-check_missing-receipt.json",
+        "sha256": "5fc3cc92a1a475d970ee719f4cd7a1bb0103861cc761a531ff2a268db3c7f382"
+      },
+      "construction": "cases/check_missing/construction.json",
+      "construction_sha256": "0f9ca60e781eb8239a40fcb30fb2514bc21f22e7c2fd62f6981242e743518e40",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/check_missing/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "analysis_report": "analysis-report.json",
+        "entrypoint": "analysis.py",
+        "result": "result.json",
+        "saved_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-compat-primary-check_missing-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__check_missing --candidate primary --output .runtime-work/c144550-2231/offline-primary-check_missing-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "0f9ca60e781eb8239a40fcb30fb2514bc21f22e7c2fd62f6981242e743518e40",
+        "exit_code": 0,
+        "log": "proof-offline-primary-check_missing-final.log",
+        "log_sha256": "1fc1a897983344162b0840f15c50dd97af02d2911bfb0ba34ef7cc8e84804ccb"
+      },
+      "physical_preparation": {
+        "receipt": "cases/check_missing/physical-preparation.json",
+        "sha256": "74900fd836836706c57e8c34a9f8f26775d1237c9080fc9223a1c1d562a47593"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__check_missing --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__check_missing",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-current-tests.log",
+        "test_log_sha256": "339926b068c74ff6f7a3224f8e71a2d615601958574fc3285a9d1faef9d8a7fe"
+      }
+    },
+    {
+      "acquisition": {
+        "four_camera_views": {
+          "entrypoint": "camera_capture.py",
+          "evidence": "original-camera-frames/camera-manifest.json",
+          "method": "four original RGB sensors joined by Native frame"
+        },
+        "independent_driver_input": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "original-driver-input.jsonl",
+          "method": "source-ID-bound separate driver input readback"
+        },
+        "native_signal_state": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "native_signal.json",
+          "method": "original actor.get_light_state API readback"
+        },
+        "original_lane_and_pose": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "ego_pose.json",
+          "method": "original world-tick actor pose and reviewed lane offset"
+        },
+        "target_lane_traffic": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "target-traffic-history.jsonl",
+          "method": "original target actor pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Actual lane transition or target-traffic clearance may fail on reviewed geometry; local readback will measure it.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego route-follower steering gain 1.2 to 0.85",
+            "ego cruise throttle 0.30 to 0.22; target actor policy unchanged"
+          ],
+          "compatibility": {
+            "log": "proof-compat-fallback1-accepted_source_1-analysis.log",
+            "negative_log": "proof-compat-fallback1-accepted_source_1-negative.log",
+            "receipt": "proof-compat-fallback1-accepted_source_1-receipt.json",
+            "sha256": "30eacdf4d33207077446c39eacb6029b9a6b7c650491511bfc97d4c1b71d585b"
+          },
+          "construction": "cases/accepted_source_1/fallback1/construction.json",
+          "construction_sha256": "de7d729ab647d2009551f6d5644691e99ac0fb94e94589fadffd0ff77ab3eded",
+          "id": "fallback1",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1 --candidate fallback1 --output .runtime-work/c144550-2231/offline-fallback1-accepted_source_1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "de7d729ab647d2009551f6d5644691e99ac0fb94e94589fadffd0ff77ab3eded",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-accepted_source_1-final.log",
+            "log_sha256": "83421b8d03dd3886c94e2b46a750d103f4350b8cbedb625faa5a68492b830bbc"
+          },
+          "trigger": {
+            "failure_condition": "distance > 1.0 m at final frame or no measured source-lane departure by frame 899",
+            "metric": "final original ego position to reviewed destination centerline and 900-frame departure observation",
+            "source": "original ego_pose.json and reviewed-site.json"
+          }
+        }
+      ],
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1",
+      "compatibility": {
+        "log": "proof-compat-primary-accepted_source_1-analysis.log",
+        "receipt": "proof-compat-primary-accepted_source_1-receipt.json",
+        "sha256": "498e9a19333a64da3cb521a5f0225252f329a40f0796c33e23a2ea90398e8424"
+      },
+      "construction": "cases/accepted_source_1/construction.json",
+      "construction_sha256": "7f909f999a2c5602c9242d8b632c8e751db5db83cd7bc526081e3c10a1d6ae0c",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/accepted_source_1/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "analysis_report": "analysis-report.json",
+        "entrypoint": "analysis.py",
+        "result": "result.json",
+        "saved_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-compat-primary-accepted_source_1-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1 --candidate primary --output .runtime-work/c144550-2231/offline-primary-accepted_source_1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "7f909f999a2c5602c9242d8b632c8e751db5db83cd7bc526081e3c10a1d6ae0c",
+        "exit_code": 0,
+        "log": "proof-offline-primary-accepted_source_1-final.log",
+        "log_sha256": "e79e68266033623e9f2156b11cea02158313447cbd57782d1f4e2b87644afa13"
+      },
+      "physical_preparation": {
+        "receipt": "cases/accepted_source_1/physical-preparation.json",
+        "sha256": "0ba5c0ec39a06df5db5d64792b8206541782656c4c7ae2cecd503a2eb9eb2e0b"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_1",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-current-tests.log",
+        "test_log_sha256": "339926b068c74ff6f7a3224f8e71a2d615601958574fc3285a9d1faef9d8a7fe"
+      }
+    },
+    {
+      "acquisition": {
+        "four_camera_views": {
+          "entrypoint": "camera_capture.py",
+          "evidence": "original-camera-frames/camera-manifest.json",
+          "method": "four original RGB sensors joined by Native frame"
+        },
+        "independent_driver_input": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "original-driver-input.jsonl",
+          "method": "source-ID-bound separate driver input readback"
+        },
+        "native_signal_state": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "native_signal.json",
+          "method": "original actor.get_light_state API readback"
+        },
+        "original_lane_and_pose": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "ego_pose.json",
+          "method": "original world-tick actor pose and reviewed lane offset"
+        },
+        "target_lane_traffic": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "target-traffic-history.jsonl",
+          "method": "original target actor pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Actual lane transition or target-traffic clearance may fail on reviewed geometry; local readback will measure it.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego route-follower steering gain 1.2 to 0.85",
+            "ego cruise throttle 0.30 to 0.22; target actor policy unchanged"
+          ],
+          "compatibility": {
+            "log": "proof-compat-fallback1-accepted_source_2-analysis.log",
+            "negative_log": "proof-compat-fallback1-accepted_source_2-negative.log",
+            "receipt": "proof-compat-fallback1-accepted_source_2-receipt.json",
+            "sha256": "38a2a125c5dfdb7f447a5c671c467aa3d83280a798cb42637f665c01b176c611"
+          },
+          "construction": "cases/accepted_source_2/fallback1/construction.json",
+          "construction_sha256": "52e27d8af59d5ab3844b8a990ee356a39d9891439365c163f0ecc0e096c8d20a",
+          "id": "fallback1",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2 --candidate fallback1 --output .runtime-work/c144550-2231/offline-fallback1-accepted_source_2-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "52e27d8af59d5ab3844b8a990ee356a39d9891439365c163f0ecc0e096c8d20a",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-accepted_source_2-final.log",
+            "log_sha256": "6edb30450c3e148516d914163f033a6bc929bc7da0e90d93e334292cec9bb175"
+          },
+          "trigger": {
+            "failure_condition": "distance > 1.0 m at final frame or no measured source-lane departure by frame 899",
+            "metric": "final original ego position to reviewed destination centerline and 900-frame departure observation",
+            "source": "original ego_pose.json and reviewed-site.json"
+          }
+        }
+      ],
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2",
+      "compatibility": {
+        "log": "proof-compat-primary-accepted_source_2-analysis.log",
+        "receipt": "proof-compat-primary-accepted_source_2-receipt.json",
+        "sha256": "0badf9c0df12ccb03523c7271153f38af417af6ddb8b8b97eddb8e0c8f32003b"
+      },
+      "construction": "cases/accepted_source_2/construction.json",
+      "construction_sha256": "3a6fd50fe8f6c1c10285958a11721bd0d20a01571ab7870e14ce4358d0be33d1",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/accepted_source_2/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "analysis_report": "analysis-report.json",
+        "entrypoint": "analysis.py",
+        "result": "result.json",
+        "saved_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-compat-primary-accepted_source_2-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2 --candidate primary --output .runtime-work/c144550-2231/offline-primary-accepted_source_2-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "3a6fd50fe8f6c1c10285958a11721bd0d20a01571ab7870e14ce4358d0be33d1",
+        "exit_code": 0,
+        "log": "proof-offline-primary-accepted_source_2-final.log",
+        "log_sha256": "2b19c3e9f95a42e9491de3fdf0368e5592af321444208110a07f6607a7eca0c6"
+      },
+      "physical_preparation": {
+        "receipt": "cases/accepted_source_2/physical-preparation.json",
+        "sha256": "be38ac9cb6ad5074e9d59c2ac98cca2359519001148f2144f3cb4d12cc63e4d8"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_2",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-current-tests.log",
+        "test_log_sha256": "339926b068c74ff6f7a3224f8e71a2d615601958574fc3285a9d1faef9d8a7fe"
+      }
+    },
+    {
+      "acquisition": {
+        "four_camera_views": {
+          "entrypoint": "camera_capture.py",
+          "evidence": "original-camera-frames/camera-manifest.json",
+          "method": "four original RGB sensors joined by Native frame"
+        },
+        "independent_driver_input": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "original-driver-input.jsonl",
+          "method": "source-ID-bound separate driver input readback"
+        },
+        "native_signal_state": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "native_signal.json",
+          "method": "original actor.get_light_state API readback"
+        },
+        "original_lane_and_pose": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "ego_pose.json",
+          "method": "original world-tick actor pose and reviewed lane offset"
+        },
+        "target_lane_traffic": {
+          "entrypoint": "native_readbacks.py",
+          "evidence": "target-traffic-history.jsonl",
+          "method": "original target actor pose and velocity"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Actual lane transition or target-traffic clearance may fail on reviewed geometry; local readback will measure it.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "ego route-follower steering gain 1.2 to 0.85",
+            "ego cruise throttle 0.30 to 0.22; target actor policy unchanged"
+          ],
+          "compatibility": {
+            "log": "proof-compat-fallback1-accepted_source_3-analysis.log",
+            "negative_log": "proof-compat-fallback1-accepted_source_3-negative.log",
+            "receipt": "proof-compat-fallback1-accepted_source_3-receipt.json",
+            "sha256": "a9fa3252a652da87b5fb9ab96cf15a0d4e4022b902e52557e5655ed3c28ea75d"
+          },
+          "construction": "cases/accepted_source_3/fallback1/construction.json",
+          "construction_sha256": "ce5e849e541a36369460a5acca06b6de4d95ef700357eb3d72edcf4d693b833b",
+          "id": "fallback1",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3 --candidate fallback1 --output .runtime-work/c144550-2231/offline-fallback1-accepted_source_3-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "ce5e849e541a36369460a5acca06b6de4d95ef700357eb3d72edcf4d693b833b",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-accepted_source_3-final.log",
+            "log_sha256": "eff18911d382d3e93ec104e7b9887a91b0abd014d9f6b2f1e8cc76467fb97f98"
+          },
+          "trigger": {
+            "failure_condition": "distance > 1.0 m at final frame or no measured source-lane departure by frame 899",
+            "metric": "final original ego position to reviewed destination centerline and 900-frame departure observation",
+            "source": "original ego_pose.json and reviewed-site.json"
+          }
+        }
+      ],
+      "case_id": "testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3",
+      "compatibility": {
+        "log": "proof-compat-primary-accepted_source_3-analysis.log",
+        "receipt": "proof-compat-primary-accepted_source_3-receipt.json",
+        "sha256": "1416f46a732f32b325aec86c952b409bcd75e06e643ef110997dbc97886e8418"
+      },
+      "construction": "cases/accepted_source_3/construction.json",
+      "construction_sha256": "ff84bb2ff10148c5fbca91f5b68d4790192c3694613b2b41c741877dabb82253",
+      "fixture_recipe": "work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/cases/accepted_source_3/diagnostic-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "analysis_report": "analysis-report.json",
+        "entrypoint": "analysis.py",
+        "result": "result.json",
+        "saved_only": true
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "proof-compat-primary-accepted_source_3-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/manifest.draft.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3 --candidate primary --output .runtime-work/c144550-2231/offline-primary-accepted_source_3-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "ff84bb2ff10148c5fbca91f5b68d4790192c3694613b2b41c741877dabb82253",
+        "exit_code": 0,
+        "log": "proof-offline-primary-accepted_source_3-final.log",
+        "log_sha256": "18bd1b2dffcc2b181ed05593f9ff405aa0a19ce456aed2aafb00b40762839072"
+      },
+      "physical_preparation": {
+        "receipt": "cases/accepted_source_3/physical-preparation.json",
+        "sha256": "940d6b5fa4e367a4eeb9482c135c6d1aab90ef554279939fba0301bd33b1e9bd"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C144550__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3 --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # testing__C144550__NRS-484B-223-1b__motor_vehicle_driver__accepted_source_3",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-current-tests.log",
+        "test_log_sha256": "339926b068c74ff6f7a3224f8e71a2d615601958574fc3285a9d1faef9d8a7fe"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_source_gated_cpu"
+}

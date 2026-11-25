@@ -46,7 +46,12 @@ def check(root: Path = ROOT) -> dict:
         raise ValueError("assignment identity changed")
     if (config.get("rate_hz"), config.get("frame_count"), config.get("duration_s")) != (20, 900, 45):
         raise ValueError("original capture time contract changed")
-    if config.get("cameras") != list(CAMERAS):
+    cameras = config.get("cameras")
+    if (not isinstance(cameras, list) or
+            [row.get("name") for row in cameras] != list(CAMERAS) or
+            [(row.get("width"), row.get("height")) for row in cameras] !=
+            [(1920, 1080), (1280, 720), (1280, 720), (1280, 720)] or
+            any(not row.get("pose_strategy") or not row.get("fov_deg") for row in cameras)):
         raise ValueError("four-camera plan changed")
     return case
 

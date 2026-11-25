@@ -88,6 +88,10 @@ def audit(attempt, case, *, diagnostic=False, owner_receipt=None):
             raise ValueError("four saved original views missing")
         for name, size in SIZES.items():
             entry = views[name]
+            if diagnostic:
+                if entry.get("path") != name + ".mkv":
+                    raise ValueError("synthetic diagnostic camera path differs")
+                continue
             if entry.get("path") != f"{name}-{index:06d}.png":
                 raise ValueError("saved original camera path differs")
             png = required(root, "original-camera-frames/" + entry["path"])
@@ -133,7 +137,8 @@ def audit(attempt, case, *, diagnostic=False, owner_receipt=None):
             raise ValueError("independent original site, pixel and physical review absent")
     return {"format": "worker-delivery-audit-diagnostic" if diagnostic else "worker-delivery-audit",
             "case_id": case, "passed": True, "frame_count": 900,
-            "decoded_original_png_frames": 3600, "decoded_original_video_frames": 3600,
+            "decoded_original_png_frames": 0 if diagnostic else 3600,
+            "decoded_original_video_frames": 3600,
             "source_hashes": source_hashes,
             "physical_acceptance_claimed": bool(original_review),
             "legal_verdict_claimed": False}

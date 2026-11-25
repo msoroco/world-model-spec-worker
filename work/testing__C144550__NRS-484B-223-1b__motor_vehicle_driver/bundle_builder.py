@@ -12,10 +12,11 @@ HERE = Path(__file__).resolve().parent
 FILES = ("runner.py", "native_session.py", "native_construction.py",
          "native_readbacks.py", "camera_capture.py", "media_encode.py",
          "finalize_lane_change.py", "lane_change_timing.py", "analysis.py")
+ACCEPTED = ("accepted_source_1", "accepted_source_2", "accepted_source_3")
 
 
 def construct(variant: str, candidate: str = "primary") -> dict:
-    if variant not in VARIANTS:
+    if variant not in VARIANTS and variant not in ACCEPTED:
         raise ValueError("unknown controlled lane-change case")
     if candidate not in ("primary", "fallback1"):
         raise ValueError("unknown lane-change engineering candidate")
@@ -56,6 +57,16 @@ def construct(variant: str, candidate: str = "primary") -> dict:
                         "Driver-input event is not a legal ascertainment finding."]}
     config["recording_description"] = description
     files = [{"path": name, "content": (HERE / name).read_text()} for name in FILES]
+    if variant in ACCEPTED:
+        code = next(item for item in files if item["path"] == "native_construction.py")
+        anchor = '            "check_missing": (True, False)}'
+        replacement = ('            "check_missing": (True, False),\n'
+                       '            "accepted_source_1": (True, True),\n'
+                       '            "accepted_source_2": (True, True),\n'
+                       '            "accepted_source_3": (True, True)}')
+        if code["content"].count(anchor) != 1:
+            raise ValueError("accepted source-gated policy patch no longer matches")
+        code["content"] = code["content"].replace(anchor, replacement)
     if candidate == "fallback1":
         # Change only the ego route follower. The target traffic, signal and
         # independent driver-input policies stay identical across comparisons.
@@ -97,7 +108,7 @@ def construct(variant: str, candidate: str = "primary") -> dict:
 
 def build():
     root = HERE / "cases"
-    for variant in VARIANTS:
+    for variant in (*VARIANTS, *ACCEPTED):
         target = root / variant / "construction.json"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(construct(variant), indent=2, sort_keys=True) + "\n")
