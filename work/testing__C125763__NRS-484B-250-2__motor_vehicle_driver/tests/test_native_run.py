@@ -110,6 +110,7 @@ class World:
         self.vehicles = []
         self.sensors = []
         self.fail_camera = False
+        self.bad_camera_time = False
 
     def get_map(self):
         return self.map
@@ -128,7 +129,7 @@ class World:
         self.vehicles.append(actor)
         return actor
 
-    def spawn_actor(self, blueprint, transform):
+    def spawn_actor(self, blueprint, transform, attach_to=None):
         if self.fail_camera and len(self.sensors) == 2:
             return None
         sensor = Sensor(blueprint)
@@ -139,7 +140,9 @@ class World:
         self.frame += 1
         for sensor in self.sensors:
             if sensor.callback:
-                sensor.callback(NS(frame=self.frame, timestamp=(self.frame - 99) * .05,
+                sensor.callback(NS(frame=self.frame,
+                                   timestamp=(self.frame - 99) * .05 +
+                                   (.01 if self.bad_camera_time else 0),
                                    width=sensor.width, height=sensor.height,
                                    raw_data=bytes([0, 0, 255, 255]) *
                                    sensor.width * sensor.height))
@@ -170,10 +173,12 @@ class NativeRunTest(unittest.TestCase):
             'ego_lane': {'road_id': 1, 'lane_id': 1},
             'other_lane': {'road_id': 1, 'lane_id': 1},
             'ego_blueprint': 'vehicle.ego', 'other_blueprint': 'vehicle.other',
-            'release_s': {name: 0 for name in ('entry_below', 'entry_inside', 'entry_above')},
+            'release_s': {'entry_below': 0, 'entry_inside': .1, 'entry_above': .2},
             'camera_dimensions': {name: [2, 2] for name in CAMERAS},
             'camera_poses': {name: dict(x=0, y=0, z=5, pitch=-30, yaw=0, roll=0)
                              for name in CAMERAS},
+            'camera_mounts': {name: ('ego' if name == 'driver_reference' else 'world')
+                              for name in CAMERAS},
         }
         for name in ('device', 'highway'):
             path = self.root / (name + '.txt')
@@ -190,6 +195,8 @@ class NativeRunTest(unittest.TestCase):
                       frame_count=3, diagnostic_fixture=True)
         self.assertEqual(receipt['camera_view_frames'], 12)
         self.assertEqual(len(self.world.vehicles[0].controls), 3)
+        self.assertEqual([control.brake for control in self.world.vehicles[1].controls],
+                         [1.0, 1.0, 0.0])
         self.assertTrue(all(actor.destroyed for actor in self.world.vehicles))
         self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in self.world.sensors))
         self.assertFalse(self.world.settings.synchronous_mode)
@@ -208,6 +215,24 @@ class NativeRunTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'reviewed original'):
             run(self.world, Carla, self.packet, self.root / 'unreviewed',
                 'entry_inside', frame_count=3)
+        self.assertEqual(self.world.vehicles, [])
+
+    def test_camera_timestamp_failure_restores_world(self):
+        self.world.bad_camera_time = True
+        with self.assertRaisesRegex(ValueError, 'timestamp differs'):
+            run(self.world, Carla, self.packet, self.root / 'bad-time',
+                'entry_inside', frame_count=3, diagnostic_fixture=True)
+        self.assertTrue(all(actor.destroyed for actor in self.world.vehicles))
+        self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in self.world.sensors))
+        self.assertFalse(self.world.settings.synchronous_mode)
+
+    def test_original_requires_full_four_view_profile(self):
+        scene = json.loads(self.packet.read_text())
+        scene['review_status'] = 'reviewed_original'
+        self.packet.write_text(json.dumps(scene) + '\n')
+        with self.assertRaisesRegex(ValueError, '900 frames and four profile cameras'):
+            run(self.world, Carla, self.packet, self.root / 'too-small',
+                'entry_inside', frame_count=900)
         self.assertEqual(self.world.vehicles, [])
 
 

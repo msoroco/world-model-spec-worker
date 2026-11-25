@@ -30,8 +30,8 @@ def check(root=HERE):
         raise SourceError("foreign stand case")
     if (config["fps"], config["frame_count"], config["duration_s"]) != (20, 900, 45):
         raise SourceError("stand capture timebase changed")
-    expected = [("front", 1280, 720), ("rear", 1280, 720),
-                ("left", 1280, 720), ("right", 1280, 720)]
+    expected = [("overview", 1920, 1080), ("approach", 1280, 720),
+                ("reference_corner", 1280, 720), ("driver_reference", 1280, 720)]
     if [(c.get("name"), c.get("width"), c.get("height")) for c in config["cameras"]] != expected:
         raise SourceError("four stand cameras changed")
     return config, case
@@ -49,7 +49,8 @@ def run(site_ref, vehicle_ref, native_adapter, output, host="localhost", port=20
     root = Path(output).resolve()
     root.mkdir(parents=True, exist_ok=False)
     with adapter_module.open_session(host, port, config) as session:
-        constructed = construct_case(session.adapter, site_ref, vehicle_ref, case)
+        engineered = dict(case, stand_offset_m=config.get("stand_offset_m", 0.0))
+        constructed = construct_case(session.adapter, site_ref, vehicle_ref, engineered)
         if constructed["case_id"] != config["selected_case_id"]:
             raise SourceError("constructed another exact case")
         for ref, name in ((site_ref, "site-original.json"),

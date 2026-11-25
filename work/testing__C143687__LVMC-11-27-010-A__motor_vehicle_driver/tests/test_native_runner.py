@@ -22,7 +22,10 @@ class NativeRunnerTests(unittest.TestCase):
             writer.close()
             self.assertEqual(json.loads(path.read_text()), {
                 'frame': 71, 'time_s': 3.55,
-                'position_m': [2.0, 1.5, 0.0], 'case_id': 'exact-case'})
+                'position_m': [2.0, 1.5, 0.0],
+                'position': {'x': 2.0, 'y': 1.5, 'z': 0.0},
+                'heading_deg': 0.0, 'speed_mps': 0.0,
+                'case_id': 'exact-case'})
 
 
 if __name__ == '__main__':

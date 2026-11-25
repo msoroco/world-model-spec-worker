@@ -136,6 +136,8 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
         raise ValueError('fresh Native attempt directory required')
     packet, map_path = _source_packet(root, packet_path, diagnostic_fixture)
     if not diagnostic_fixture:
+        if not (root / 'construction.json').is_file() or not (root / 'runner.py').is_file():
+            raise ValueError('selected original Native construction and runner required')
         if carla is None or transforms is not None or camera_factory is not None:
             raise ValueError('production Native transforms and cameras must come from reviewed packet')
         poses = packet.get('actor_transforms')
@@ -217,6 +219,9 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
                    'map_packet': {'path': Path(packet_path).name, 'sha256': _sha(packet_path)},
                    'telemetry': {'path': Path(source['telemetry']).name, 'sha256': _sha(source['telemetry'])},
                    'frame_map': {'path': Path(source['frame_map']).name, 'sha256': _sha(source['frame_map'])},
+                   'trace': {'path': Path(source['trace']).name, 'sha256': _sha(source['trace'])},
+                   'video_frame_map': {'path': Path(source['video_frame_map']).name,
+                                       'sha256': _sha(source['video_frame_map'])},
                    'media': {name: {'path': name + '.mkv', 'sha256': _sha(root / (name + '.mkv'))}
                              for name in CAMERAS}}
     except BaseException as exc:
@@ -254,6 +259,14 @@ def run(world, *, attempt, packet_path, case_id, control_factory,
     if world.get_map().to_opendrive().encode() != loaded_map:
         raise ValueError('Native map changed during capture')
     (root / 'acquisition.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    if not diagnostic_fixture:
+        from worker_exchange.native_output import seal_capture
+        (root / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'case_id': case_id, 'assignment_id': ASSIGNMENT}, indent=2) + '\n')
+        seal_capture(root, frames=expected_frames,
+                     restoration={'restored': True, 'world_settings_readback': True},
+                     errors=[], encoder_exit_codes={name: 0 for name in CAMERAS})
     return receipt
 
 

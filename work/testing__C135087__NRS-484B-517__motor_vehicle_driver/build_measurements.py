@@ -16,7 +16,7 @@ REQUIREMENTS = (
     ("Original synchronized actor history and four camera views", "original_four_view_media", "measure_media"),
 )
 INPUTS = ["attempt-source.json", "site-original.json", "vehicle-original.json", "actor-rows.json",
-          "frame-map.json", "front.mkv", "rear.mkv", "left.mkv", "right.mkv"]
+          "frame-map.json", "overview.mkv", "approach.mkv", "reference_corner.mkv", "driver_reference.mkv"]
 
 
 def write(path, body):
@@ -28,9 +28,10 @@ def build():
     plan_path = HERE / "case-plan.json"
     plan = json.loads(plan_path.read_text())
     source = "inputs/" + AID + "/assignment.json"
+    plan["selected_branch"] = "Passenger loading with a taxicab entrant"
     plan["requirement_dispositions"] = [
         {"requirement": phrase, "source": source, "status": "selected_required",
-         "reason": "Exact witness observation; legal status requires independent original review"}
+         "evidence_or_gap": "No accepted exact-branch recording; original site, actor and media sources pending review"}
         for phrase, _, _ in REQUIREMENTS
     ]
     write(plan_path, plan)

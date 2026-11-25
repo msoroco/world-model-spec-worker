@@ -76,6 +76,8 @@ def analyze(root):
     if len(rows) != 900 or media["decoded_camera_frames"] != 3600:
         raise ValueError("complete original stand history missing")
     measurements = source["measurement"]
+    from worker_exchange.native_output import provenance_record
+    provenance = provenance_record(root)
     seals = {"attempt-source.json": sha(root / "attempt-source.json"),
              "site-original.json": sha(root / "site-original.json"),
              "vehicle-original.json": sha(root / "vehicle-original.json"),
@@ -88,7 +90,7 @@ def analyze(root):
                                       "value": method(site, vehicles, attempt, rows, measurements, media),
                                       "sources": seals}
                                for key, method in ROWS},
-              "provenance_kind": "native_original", "diagnostic_fixture": False,
+              **provenance,
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False,
               "limitations": ["Stand designation, sign adequacy, temporary and expeditious loading, and interference need independent original review."]}
     channels = config["case"]["recording_description"]["channels"]
@@ -112,12 +114,19 @@ def analyze(root):
                                            for row in rows))
         evidence.append({"name": channel["name"], "unit": channel["unit"], "reference": name})
     context = config["case"]["recording_description"]["context_inputs"][0]
-    (root / "stand-site-context.json").write_text(json.dumps(seals, indent=2) + "\n")
+    (root / "stand-site-context.json").write_text(json.dumps({context["name"]: seals}, indent=2) + "\n")
     evidence.append({"name": context["name"], "unit": context["unit"],
                      "reference": "stand-site-context.json"})
     from worker_exchange.native_output import write_result
     result = {"case_id": attempt["case_id"], "measured_values": measurements,
-              "target_checks": [], "setup_confirmed": False, "behavior_attempted": False,
+              "target_checks": [{"target": "source_observed_stand_stop",
+                                 "requested": "nonzero original stopped frames",
+                                 "measured": measurements["stopped_frames"],
+                                 "method": "900-frame original subject speed readback",
+                                 "tolerance": 0, "matched": measurements["stopped_frames"] > 0,
+                                 "physical_cause_confirmed": False,
+                                 "cause_evidence": "Original speed is an observation, not a causal or legal conclusion"}],
+              "setup_confirmed": False, "behavior_attempted": False,
               "maneuver_completed": False,
               "termination_reason": "saved-only source measurement; original physical and legal review pending",
               "physical_failure_flags": ["physical_completion_unverified"],
@@ -125,7 +134,7 @@ def analyze(root):
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": config["case"]["recording_description"],
               "recording_evidence": evidence, "realized_observables": {},
-              "provenance_kind": "native_original", "diagnostic_fixture": False,
+              **provenance,
               "physical_acceptance_claimed": False, "legal_verdict_claimed": False}
     write_result(root, result)
     return report

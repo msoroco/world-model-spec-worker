@@ -81,12 +81,34 @@ class NativeBackingRecorder:
             raise ValueError('complete 900-frame Native backing capture required')
         root = Path(directory)
         if not root.is_dir() or any((root / name).exists() for name in
-                                    ('telemetry.json', 'frame-map.json')):
+                                    ('telemetry.json', 'frame-map.json',
+                                     'trace.jsonl', 'video_frames.jsonl')):
             raise ValueError('fresh Native source destination required')
         telemetry = root / 'telemetry.json'
         frame_map = root / 'frame-map.json'
         telemetry.write_text(json.dumps(self.rows, allow_nan=False) + '\n', encoding='utf-8')
         frame_map.write_text(json.dumps(self.frame_map, allow_nan=False) + '\n', encoding='utf-8')
+        trace = root / 'trace.jsonl'
+        video_map = root / 'video_frames.jsonl'
+        with trace.open('x', encoding='utf-8') as trace_stream, video_map.open('x', encoding='utf-8') as map_stream:
+            for row, mapping in zip(self.rows, self.frame_map):
+                trace_stream.write(json.dumps({
+                    'frame': row['native_world_frame'], 'time_s': row['time_s'],
+                    'position_m': row['vehicle_xy'],
+                    'vehicle_velocity_xy_mps': row['vehicle_velocity_xy'],
+                    'pedestrian_position_m': row['pedestrian_xy'],
+                    'pedestrian_velocity_xy_mps': row['pedestrian_velocity_xy'],
+                    'reverse_gear': row['reverse_gear'], 'brake': row['brake'],
+                    'pedestrian_in_corridor': row['pedestrian_in_corridor']},
+                    allow_nan=False) + '\n')
+                map_stream.write(json.dumps({
+                    'video_frame': mapping['frame'],
+                    'carla_frame': mapping['world_frame'],
+                    'native_frame': mapping['world_frame'],
+                    'time_s': row['time_s'],
+                    'camera_world_frames': mapping['camera_world_frames']},
+                    allow_nan=False) + '\n')
         return {'telemetry': str(telemetry), 'frame_map': str(frame_map),
+                'trace': str(trace), 'video_frame_map': str(video_map),
                 'frame_count': 900,
                 'camera_status': 'same_tick_frame_join_only; encoded pixels need saved audit'}

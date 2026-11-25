@@ -53,12 +53,16 @@ def build():
                   "case_modes": {key: case[key] for key in ("loading_mode", "entrant_mode", "access_mode")},
                   "plan_sha256": sha(body), "fps": 20, "rate_hz": 20,
                   "frame_count": 900, "duration_s": 45,
-                  "cameras": [{"name": name, "width": 1280, "height": 720, "fov_deg": 90,
+                  "cameras": [{"name": name, "width": 1920 if name == "overview" else 1280,
+                               "height": 1080 if name == "overview" else 720, "fov_deg": 90,
                                "pose_strategy": "reviewed stand-relative Native RGB sensor"}
-                              for name in ("front", "rear", "left", "right")],
+                              for name in ("overview", "approach", "reference_corner", "driver_reference")],
                   "required_atoms": [],
                   "required_sources": ["reviewed_site_designation_sign", "vehicle_classification",
                                        "original_actor_rows", "original_four_camera_media"],
+                  "physical_completion": {"criterion": "travel_progress", "motion_source": "trace.jsonl",
+                                          "position_key": "position_m", "minimum_progress_m": 1.0,
+                                          "completion_goal_method": "Observed at least 1 m approach progress before the sourced stand stop; engineering diagnostic only, not a legal cutoff"},
                   "case": {"case_id": cid, "recording_description": recording_description()},
                   "diagnostic_only": True}
         contents = dict(files, **{"case-plan.json": body.decode(),
@@ -69,9 +73,24 @@ def build():
                         "files": [{"path": name, "content": content} for name, content in contents.items()]}
         target = HERE / f"construction-{suffix}.json"
         target.write_text(json.dumps(construction, indent=2) + "\n")
+        fallback = json.loads(target.read_text())
+        for item in fallback["files"]:
+            if item["path"] == "config.json":
+                alternate = json.loads(item["content"])
+                alternate["stand_offset_m"] = 0.25
+                alternate["engineering_candidate"] = "fallback1"
+                item["content"] = json.dumps(alternate, indent=2) + "\n"
+        fallback_target = HERE / f"construction-{suffix}-fallback1.json"
+        fallback_target.write_text(json.dumps(fallback, indent=2) + "\n")
         manifest_cases.append({"case_id": cid, "construction": target.name,
                                "construction_sha256": sha(target.read_bytes()),
-                               "candidate_risk": case["physical_risk"]})
+                               "candidate_risk": case["physical_risk"],
+                               "candidates": [{"id": "fallback1", "construction": fallback_target.name,
+                                               "construction_sha256": sha(fallback_target.read_bytes()),
+                                               "trigger": {"source": "Native subject spawn and curb readback",
+                                                           "metric": "subject stand placement accepted inside reviewed curb polygon",
+                                                           "failure_condition": "primary stand waypoint rejects spawn or loses curb visibility"},
+                                               "changed_knobs": ["source-bounded stand_offset_m=0.25"]}]})
     draft = {"assignment_id": AID, "status": "diagnostic_original_sources_pending",
              "cases": manifest_cases}
     (HERE / "execution-manifest.draft.json").write_text(json.dumps(draft, indent=2) + "\n")

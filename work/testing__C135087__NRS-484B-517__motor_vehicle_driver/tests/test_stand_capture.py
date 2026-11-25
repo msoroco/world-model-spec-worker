@@ -22,6 +22,11 @@ class Actor:
     def get_velocity(self):
         return type("Vector", (), {"x": self.speed, "y": 0, "z": 0})()
 
+    def get_transform(self):
+        location = type("Location", (), {"x": 0, "y": 0, "z": 0})()
+        rotation = type("Rotation", (), {"yaw": 0})()
+        return type("Transform", (), {"location": location, "rotation": rotation})()
+
 
 class World:
     def __init__(self):
@@ -63,7 +68,7 @@ class CaptureTest(unittest.TestCase):
         self.world = World()
         self.actors = {"subject": Actor(10), "entrant": Actor(11, 2),
                        "passenger": Actor(12)}
-        for name in ("front", "rear", "left", "right"):
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
             (self.root / (name + ".mkv")).write_bytes((name + " fixture bytes").encode())
 
     def test_original_rows_and_saved_audit(self):
@@ -76,22 +81,22 @@ class CaptureTest(unittest.TestCase):
                          hashlib.sha256((self.root / "actor-rows.json").read_bytes()).hexdigest())
 
     def test_camera_finalization_follows_capture_ticks(self):
-        for name in ("front", "rear", "left", "right"):
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
             (self.root / (name + ".mkv")).unlink()
         calls = []
         def finish():
             calls.append(self.world.index)
-            for name in ("front", "rear", "left", "right"):
+            for name in ("overview", "approach", "reference_corner", "driver_reference"):
                 (self.root / (name + ".mkv")).write_bytes(name.encode())
         attempt = capture(self.world, self.actors, observe, "case-a", "Town", self.root,
                           camera_finalize=finish)
         self.assertEqual(calls, [899])
         self.assertEqual(len((self.root / "trace.jsonl").read_text().splitlines()), 900)
         self.assertEqual(len((self.root / "video_frames.jsonl").read_text().splitlines()), 900)
-        self.assertEqual(set(attempt["cameras"]), {"front", "rear", "left", "right"})
+        self.assertEqual(set(attempt["cameras"]), {"overview", "approach", "reference_corner", "driver_reference"})
 
     def test_missing_camera_rejected_before_ticking(self):
-        (self.root / "rear.mkv").unlink()
+        (self.root / "approach.mkv").unlink()
         with self.assertRaisesRegex(SourceError, "camera source"):
             capture(self.world, self.actors, observe, "case-a", "Town", self.root)
         self.assertEqual(self.world.index, -1)
@@ -113,7 +118,7 @@ class CaptureTest(unittest.TestCase):
 
     def test_four_original_video_decodes_and_hash_tamper(self):
         cameras = {}
-        for name in ('front', 'rear', 'left', 'right'):
+        for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             path = self.root / (name + '.mkv')
             result = subprocess.run([
                 'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
@@ -129,13 +134,13 @@ class CaptureTest(unittest.TestCase):
         self.assertEqual(report['decoded_view_frames'], 16)
         self.assertTrue(report['diagnostic_fixture'])
         self.assertFalse(report['physical_acceptance'])
-        with (self.root / 'front.mkv').open('ab') as stream:
+        with (self.root / 'overview.mkv').open('ab') as stream:
             stream.write(b'changed')
         with self.assertRaisesRegex(SourceError, 'hash mismatch'):
             audit_media(attempt, self.root, expected_frames=4)
 
     def test_sealed_full_capture_and_video_delivery_join(self):
-        for name in ('front', 'rear', 'left', 'right'):
+        for name in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             path = self.root / (name + '.mkv')
             result = subprocess.run([
                 'ffmpeg', '-v', 'error', '-f', 'lavfi', '-i',
@@ -145,11 +150,11 @@ class CaptureTest(unittest.TestCase):
         capture(self.world, self.actors, observe, 'case-a', 'Town', self.root)
         report = audit_delivery(self.root,
                                 dimensions={name: (16, 16) for name in
-                                            ('front', 'rear', 'left', 'right')})
+                                            ('overview', 'approach', 'reference_corner', 'driver_reference')})
         self.assertEqual(report['original_frame_count'], 900)
         self.assertEqual(report['decoded_camera_frames'], 3600)
         self.assertFalse(report['physical_completion'])
-        with (self.root / 'front.mkv').open('ab') as stream:
+        with (self.root / 'overview.mkv').open('ab') as stream:
             stream.write(b'changed')
         with self.assertRaisesRegex(SourceError, 'hash mismatch'):
             audit_delivery(self.root)

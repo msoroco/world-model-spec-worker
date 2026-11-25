@@ -26,6 +26,17 @@ def _sealed_object(ref):
     return json.loads(raw)
 
 
+def _inside_polygon(point, polygon):
+    x, y = (float(value) for value in point)
+    inside = False
+    for a, b in zip(polygon, polygon[1:] + polygon[:1]):
+        ax, ay = (float(value) for value in a)
+        bx, by = (float(value) for value in b)
+        if (ay > y) != (by > y) and x < (bx - ax) * (y - ay) / (by - ay) + ax:
+            inside = not inside
+    return inside
+
+
 def validate_source(site_ref, vehicle_ref, case):
     site = _sealed_object(site_ref)
     vehicles = _sealed_object(vehicle_ref)
@@ -55,7 +66,18 @@ def construct_case(adapter, site_ref, vehicle_ref, case):
     _require(observed['map_name'] == site['map_name'], 'Native map readback mismatch')
     _require(observed['sign_visible'] and observed['sign_id'] == site['sign_id'], 'Native sign readback missing')
     _require(observed['curb_polygon'] == site['curb_polygon'], 'Native curb readback mismatch')
-    ego = adapter.spawn_subject(vehicles['subject'], site['stand_waypoint'])
+    waypoint = list(site['stand_waypoint'])
+    offset = case.get('stand_offset_m', 0.0)
+    _require(isinstance(offset, (int, float)) and not isinstance(offset, bool) and
+             math.isfinite(offset) and 0 <= offset <= 0.5,
+             'stand engineering offset outside source-gated domain')
+    if offset:
+        _require(len(waypoint) == 2 and all(math.isfinite(float(x)) for x in waypoint),
+                 'source stand waypoint invalid')
+        waypoint[1] = float(waypoint[1]) + offset
+        _require(_inside_polygon(waypoint, site['curb_polygon']),
+                 'fallback spawn waypoint leaves reviewed stand geometry')
+    ego = adapter.spawn_subject(vehicles['subject'], waypoint)
     _require(ego['actor_id'] and ego['blueprint'] == vehicles['subject']['blueprint'], 'subject readback mismatch')
     entrant = adapter.spawn_entrant(vehicles['entrant'], site['access_waypoints'], case['entrant_mode'])
     _require(entrant['actor_id'] and entrant['blueprint'] == vehicles['entrant']['blueprint'], 'entrant readback mismatch')
@@ -118,7 +140,7 @@ def audit_saved_attempt(attempt, capture_root):
     root = Path(capture_root).resolve()
     _require(attempt['source_format'] == 'native_original', 'non-original capture source')
     _require(attempt['frame_count'] == 900 and attempt['fps'] == 20, 'duration/profile mismatch')
-    _require(set(attempt['cameras']) == {'front', 'rear', 'left', 'right'}, 'four camera sources required')
+    _require(set(attempt['cameras']) == {'overview', 'approach', 'reference_corner', 'driver_reference'}, 'four camera sources required')
     def source(ref):
         p = (root / ref['path']).resolve()
         _require(p.is_relative_to(root), 'source escapes attempt root')

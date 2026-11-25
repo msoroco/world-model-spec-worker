@@ -34,9 +34,13 @@ class TraceCapture:
     def __init__(self, path):
         self.stream = Path(path).open('x', encoding='utf-8', buffering=1)
 
-    def capture(self, frame, time_s, location_xy, case_id):
+    def capture(self, frame, time_s, location_xy, case_id,
+                heading_deg=0.0, speed_mps=0.0):
         row = {'frame': frame, 'time_s': time_s, 'position_m':
-               [location_xy[0], location_xy[1], 0.0], 'case_id': case_id}
+               [location_xy[0], location_xy[1], 0.0],
+               'position': {'x': location_xy[0], 'y': location_xy[1], 'z': 0.0},
+               'heading_deg': heading_deg, 'speed_mps': speed_mps,
+               'case_id': case_id}
         self.stream.write(json.dumps(row, allow_nan=False) + '\n')
         return row
 
@@ -183,8 +187,11 @@ def run_native(bundle, output, reviewed_dir, host='127.0.0.1', port=2000):
         def on_frame(sample, snapshot):
             nonlocal count
             joined = video.append(sample, snapshot)
+            velocity = vehicle.get_velocity()
+            heading = float(vehicle.get_transform().rotation.yaw)
+            speed = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
             graph = pipeline.capture(sample['frame'], sample['time_s'],
-                                     sample['location_xy'], case_id)
+                                     sample['location_xy'], case_id, heading, speed)
             if graph['frame'] != sample['frame']:
                 raise ValueError('original trace and camera frame differ')
             frame_map.append(sample['frame'], sample['time_s'])

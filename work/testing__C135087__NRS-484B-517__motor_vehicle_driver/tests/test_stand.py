@@ -33,6 +33,16 @@ class StandTests(unittest.TestCase):
         adapter = FakeAdapter(); out = stand.construct_case(adapter, self.site, self.vehicles, CASE)
         self.assertEqual(out['entrant_id'], 'taxi'); self.assertEqual(adapter.calls[3], 'passenger')
         self.assertEqual(adapter.calls[-1], ('access', 'open'))
+    def test_source_bounded_fallback_waypoint(self):
+        class WaypointAdapter(FakeAdapter):
+            def spawn_subject(self, vehicle, waypoint):
+                self.waypoint = waypoint
+                return super().spawn_subject(vehicle, waypoint)
+        adapter = WaypointAdapter()
+        stand.construct_case(adapter, self.site, self.vehicles, dict(CASE, stand_offset_m=0.25))
+        self.assertEqual(adapter.waypoint, [1, 1.25])
+        with self.assertRaisesRegex(stand.SourceError, 'source-gated domain'):
+            stand.construct_case(FakeAdapter(), self.site, self.vehicles, dict(CASE, stand_offset_m=1))
     def test_reject_stale_source(self):
         Path(self.site['path']).write_text('{}')
         with self.assertRaisesRegex(stand.SourceError, 'hash mismatch'): stand.construct_case(FakeAdapter(), self.site, self.vehicles, CASE)
@@ -76,16 +86,16 @@ class SavedAuditTests(unittest.TestCase):
         frame_map=[dict(frame=i,time_s=i/20) for i in range(900)]
         self.attempt=dict(source_format='native_original',frame_count=900,fps=20,case_id='a',map_name='Town',subject_id='ego',entrant_id='taxi',passenger_id='walker',first_frame=0,
             actor_rows=save('rows.json',json.dumps(rows).encode()),frame_map=save('map.json',json.dumps(frame_map).encode()),
-            cameras={name:dict(save(name+'.mp4',b'fake camera source '+name.encode()),frame_count=900,fps=20) for name in ('front','rear','left','right')})
+            cameras={name:dict(save(name+'.mp4',b'fake camera source '+name.encode()),frame_count=900,fps=20) for name in ('overview','approach','reference_corner','driver_reference')})
     def test_saved_source_audit(self):
         out=stand.audit_saved_attempt(self.attempt,self.temp.name)
         self.assertEqual(out['measurement']['source_frame_count'],900)
         self.assertEqual(out['full_video_decode'],'pending_pinned_media_auditor')
     def test_reject_stale_camera(self):
-        (Path(self.temp.name)/'front.mp4').write_bytes(b'tampered')
+        (Path(self.temp.name)/'overview.mp4').write_bytes(b'tampered')
         with self.assertRaisesRegex(stand.SourceError,'saved source hash mismatch'): stand.audit_saved_attempt(self.attempt,self.temp.name)
     def test_reject_missing_camera(self):
-        del self.attempt['cameras']['rear']
+        del self.attempt['cameras']['approach']
         with self.assertRaisesRegex(stand.SourceError,'four camera'): stand.audit_saved_attempt(self.attempt,self.temp.name)
     def test_reject_missing_actor_row(self):
         p=Path(self.temp.name)/'rows.json'; rows=json.loads(p.read_text()); rows.pop(); p.write_text(json.dumps(rows)); self.attempt['actor_rows']['sha256']=hashlib.sha256(p.read_bytes()).hexdigest()

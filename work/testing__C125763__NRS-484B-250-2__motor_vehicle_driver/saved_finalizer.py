@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from crossing_timing import REQUIRED, measure
+from native_history_capture import CAMERAS, audit_media
 
 
 def finalize(attempt, output, *, expected_manifest_sha256, probe_id):
@@ -27,6 +28,16 @@ def finalize(attempt, output, *, expected_manifest_sha256, probe_id):
         raise ValueError("wrong exact assignment")
     frame_count = sum(1 for line in (attempt / "ego-body-history.jsonl").read_text(
         encoding="utf-8").splitlines() if line.strip())
+    site = json.loads((attempt / 'site-context.json').read_text(encoding='utf-8'))
+    diagnostic_fixture = frame_count != 900 or site.get('review_status') != 'reviewed_original'
+    media = None
+    if 'camera-frame-map.jsonl' in manifest:
+        dimensions = site.get('camera_dimensions')
+        if not isinstance(dimensions, dict) or set(dimensions) != set(CAMERAS):
+            raise ValueError('source-bound four-camera dimensions required')
+        media = audit_media(attempt, camera_dimensions=dimensions)
+        if media['joined_original_frames'] != frame_count:
+            raise ValueError('saved camera and body frame count differs')
     result = {
         "format": "c125763-saved-entry-finalizer-v1",
         "assignment_id": timing["assignment_id"],
@@ -36,8 +47,9 @@ def finalize(attempt, output, *, expected_manifest_sha256, probe_id):
         "original_frame_count": frame_count,
         "rate_hz": 20,
         "timing": timing,
-        "diagnostic_fixture": frame_count != 900,
-        "camera_coverage_verified": False,
+        "diagnostic_fixture": diagnostic_fixture,
+        "camera_coverage_verified": media is not None,
+        "camera_audit": media,
         "physical_acceptance": False,
         "legal_verdict_claimed": False,
     }

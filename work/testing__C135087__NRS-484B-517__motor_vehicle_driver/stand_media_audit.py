@@ -9,7 +9,7 @@ import subprocess
 from stand import SourceError
 
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def _run(args):

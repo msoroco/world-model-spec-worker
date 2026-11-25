@@ -42,14 +42,16 @@ def _json(root, ref):
     return json.loads(_sealed(root, ref).read_text(encoding="utf-8"))
 
 
-def process(attempt, expected_case):
+def process(attempt, expected_case, *, allow_diagnostic=False):
     if expected_case not in CASES:
         raise ValueError("unknown exact backing case")
     root = Path(attempt).resolve()
     receipt = json.loads((root / "acquisition.json").read_text(encoding="utf-8"))
     if receipt.get("assignment_id") != ASSIGNMENT or receipt.get("case_id") != expected_case:
         raise ValueError("acquisition exact-case identity differs")
-    if receipt.get("source_kind") != "native_original" or receipt.get("diagnostic") is not False:
+    original = receipt.get('source_kind') == 'native_original' and receipt.get('diagnostic') is False
+    diagnostic = receipt.get('source_kind') == 'synthetic_fixture' and receipt.get('diagnostic') is True
+    if not original and not (allow_diagnostic and diagnostic):
         raise ValueError("original Native acquisition required")
     packet = _json(root, receipt.get("map_packet"))
     map_source = packet.get("map_source")
@@ -59,6 +61,19 @@ def process(attempt, expected_case):
     geometry = validate_geometry(packet)
     telemetry = _json(root, receipt.get("telemetry"))
     frame_map = _json(root, receipt.get("frame_map"))
+    if 'trace' in receipt or 'video_frame_map' in receipt:
+        trace_path = _sealed(root, receipt.get('trace'))
+        video_map_path = _sealed(root, receipt.get('video_frame_map'))
+        trace = [json.loads(line) for line in trace_path.read_text().splitlines() if line]
+        video_map = [json.loads(line) for line in video_map_path.read_text().splitlines() if line]
+        if len(trace) != 900 or len(video_map) != 900:
+            raise ValueError('900 original trace and video map rows required')
+        for index, (sample, video_row) in enumerate(zip(trace, video_map)):
+            if (video_row.get('video_frame') != index or
+                    sample.get('frame') != video_row.get('carla_frame') or
+                    video_row.get('native_frame') != sample.get('frame') or
+                    abs(sample.get('time_s', -1) - video_row.get('time_s', -2)) > .001):
+                raise ValueError('original trace and video frame join differs')
     if not isinstance(telemetry, list) or len(telemetry) != 900:
         raise ValueError("900 original telemetry frames required")
     if not isinstance(frame_map, list) or len(frame_map) != 900:
@@ -102,7 +117,8 @@ def process(attempt, expected_case):
             "response_witness": witness,
             "corridor_basis": "original_map_reverse_route_and_original_pedestrian_position",
             "full_video_decode": False, "actual_pixels": False,
-            "physical_completion": False, "legal_judgment": "unresolved"}
+            "physical_completion": False, "legal_judgment": "unresolved",
+            "provenance_kind": "synthetic_fixture" if diagnostic else "native"}
 
 
 def main():

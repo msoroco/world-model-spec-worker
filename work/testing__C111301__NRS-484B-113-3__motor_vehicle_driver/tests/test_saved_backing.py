@@ -47,12 +47,24 @@ def fixture(root, case=ASSIGNMENT + "__pedestrian_yield"):
               for i in range(900)]
     maps = [{"frame": i, "cameras": {name: i for name in ("overview", "approach", "reference_corner", "driver_reference")}}
             for i in range(900)]
+    trace = root / 'trace.jsonl'
+    trace.write_text(''.join(json.dumps({'frame': i, 'time_s': row['time_s'],
+                                         'position_m': row['vehicle_xy']}) + '\n'
+                             for i, row in enumerate(frames)))
+    video_map = root / 'video_frames.jsonl'
+    video_map.write_text(''.join(json.dumps({'video_frame': i, 'carla_frame': i,
+                                             'native_frame': i, 'time_s': row['time_s']}) + '\n'
+                                 for i, row in enumerate(frames)))
     media = {name: write(root, name + ".txt", {"fixture": name}) for name in ("overview", "approach", "reference_corner", "driver_reference")}
     receipt = {"assignment_id": ASSIGNMENT, "case_id": case, "source_kind": "native_original",
                "diagnostic": False, "source_id": "original:attempt-1", "vehicle_actor_id": 7,
                "pedestrian_actor_id": 8, "map_packet": write(root, "map.json", packet),
                "telemetry": write(root, "telemetry.json", frames),
-               "frame_map": write(root, "frame-map.json", maps), "media": media}
+               "frame_map": write(root, "frame-map.json", maps),
+               "trace": {'path': trace.name, 'sha256': hashlib.sha256(trace.read_bytes()).hexdigest()},
+               "video_frame_map": {'path': video_map.name,
+                                   'sha256': hashlib.sha256(video_map.read_bytes()).hexdigest()},
+               "media": media}
     write(root, "acquisition.json", receipt)
     return receipt
 

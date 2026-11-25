@@ -20,6 +20,10 @@ from native_history_capture import CAMERAS, capture, audit_media
 
 
 CASES = ('entry_below', 'entry_inside', 'entry_above')
+PRODUCTION_DIMENSIONS = {
+    'overview': [1920, 1080], 'approach': [1280, 720],
+    'reference_corner': [1280, 720], 'driver_reference': [1280, 720],
+}
 
 
 def _pose(carla, pose):
@@ -36,10 +40,14 @@ def _pose(carla, pose):
 def _cameras(world, carla, scene):
     poses = scene.get('camera_poses')
     dimensions = scene.get('camera_dimensions')
+    mounts = scene.get('camera_mounts')
     if not isinstance(poses, dict) or set(poses) != set(CAMERAS):
         raise ValueError('four reviewed original camera poses required')
     if not isinstance(dimensions, dict) or set(dimensions) != set(CAMERAS):
         raise ValueError('four reviewed original camera dimensions required')
+    if mounts != {name: ('ego' if name == 'driver_reference' else 'world')
+                  for name in CAMERAS}:
+        raise ValueError('reviewed original camera mounts required')
     for name in CAMERAS:
         _pose(carla, poses[name])
         size = dimensions[name]
@@ -61,6 +69,8 @@ def run(world, carla, packet_path, output, case, *, frame_count=900,
     if not diagnostic_fixture and scene.get('review_status') != 'reviewed_original':
         raise ValueError('reviewed original Native site packet required')
     poses, dimensions = _cameras(world, carla, scene)
+    if not diagnostic_fixture and (frame_count != 900 or dimensions != PRODUCTION_DIMENSIONS):
+        raise ValueError('original capture requires 900 frames and four profile cameras')
     releases = scene.get('release_s')
     if (not isinstance(releases, dict) or set(releases) != set(CASES) or
             any(type(value) not in (int, float) or not math.isfinite(value) or value < 0
@@ -89,7 +99,8 @@ def run(world, carla, packet_path, output, case, *, frame_count=900,
             blueprint.set_attribute('image_size_y', str(height))
             blueprint.set_attribute('sensor_tick', '.05')
             blueprint.set_attribute('fov', '90')
-            sensor = world.spawn_actor(blueprint, _pose(carla, poses[name]))
+            sensor = world.spawn_actor(blueprint, _pose(carla, poses[name]),
+                                       attach_to=pair[0] if name == 'driver_reference' else None)
             if sensor is None:
                 raise RuntimeError('original camera spawn failed: ' + name)
             sensors.append(sensor)
@@ -118,10 +129,8 @@ def run(world, carla, packet_path, output, case, *, frame_count=900,
 
         readers = {name: lambda frame, name=name: read_camera(name, frame)
                    for name in CAMERAS}
-        start = float(world.get_snapshot().timestamp.elapsed_seconds)
-
         def before_tick(index):
-            now = start + index * .05
+            now = index * .05
             control_step(carla, pair[0], scene['ego_route'], now,
                          float(scene.get('ego_release_s', 0)))
             control_step(carla, pair[1], scene['other_route'], now, releases[case])

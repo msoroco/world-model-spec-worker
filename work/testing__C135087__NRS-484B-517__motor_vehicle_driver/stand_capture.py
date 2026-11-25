@@ -14,7 +14,7 @@ from pathlib import Path
 from stand import SourceError, audit_saved_attempt
 
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 OBSERVED = ("passenger_loading_active", "entrant_waiting",
             "entrant_about_to_enter", "access_obstructed")
 
@@ -25,6 +25,16 @@ def _speed(actor):
     if not all(math.isfinite(x) for x in values):
         raise SourceError("nonfinite live actor velocity")
     return math.sqrt(sum(x * x for x in values))
+
+
+def _pose(actor):
+    transform = actor.get_transform()
+    location = transform.location
+    position = {key: float(getattr(location, key)) for key in ("x", "y", "z")}
+    heading = float(transform.rotation.yaw)
+    if not all(math.isfinite(value) for value in (*position.values(), heading)):
+        raise SourceError("nonfinite live subject pose")
+    return position, heading
 
 
 def _write(root, name, value):
@@ -88,6 +98,7 @@ def capture(world, actors, observer, case_id, map_name, output,
                "passenger_id": actors["passenger"].id,
                "subject_speed_mps": _speed(actors["subject"]),
                "entrant_speed_mps": _speed(actors["entrant"]), **readback}
+        row["position"], row["heading_deg"] = _pose(actors["subject"])
         rows.append(row)
         frame_map.append({"frame": frame, "time_s": time_s})
     if camera_finalize is not None:
@@ -113,7 +124,10 @@ def capture(world, actors, observer, case_id, map_name, output,
     _write(root, "attempt-source.json", attempt)
     (root / "trace.jsonl").write_text("".join(json.dumps({
         "frame": row["frame"], "time_s": row["time_s"],
-        "speed_mps": row["subject_speed_mps"]}) + "\n" for row in rows))
+        "position": row["position"], "heading_deg": row["heading_deg"],
+        "position_m": [row["position"][key] for key in ("x", "y", "z")],
+        "speed_mps": row["subject_speed_mps"],
+        "speed_mph": row["subject_speed_mps"] / .44704}) + "\n" for row in rows))
     (root / "video_frames.jsonl").write_text("".join(json.dumps({
         "video_frame": i, "carla_frame": row["frame"], "time_s": row["time_s"]}) + "\n"
         for i, row in enumerate(rows)))

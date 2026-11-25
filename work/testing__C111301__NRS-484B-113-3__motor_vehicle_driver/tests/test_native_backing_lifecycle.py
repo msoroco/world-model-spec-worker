@@ -153,6 +153,8 @@ class NativeBackingLifecycleTests(unittest.TestCase):
         (root / 'acquisition.json').unlink()
         (root / 'telemetry.json').unlink()
         (root / 'frame-map.json').unlink()
+        (root / 'trace.jsonl').unlink()
+        (root / 'video_frames.jsonl').unlink()
         world = World((root / 'road.xodr').read_bytes(), fail_at)
         def camera_factory(world, vehicle, name, dimensions):
             sensor = Sensor(name)
@@ -178,6 +180,12 @@ class NativeBackingLifecycleTests(unittest.TestCase):
             self.assertFalse(world.get_settings().synchronous_mode)
             self.assertTrue((root / 'acquisition.json').is_file())
             self.assertEqual(len(json.loads((root / 'telemetry.json').read_text())), 900)
+            trace = [json.loads(line) for line in (root / 'trace.jsonl').read_text().splitlines()]
+            mapping = [json.loads(line) for line in (root / 'video_frames.jsonl').read_text().splitlines()]
+            self.assertEqual(len(trace), 900)
+            self.assertEqual(len(mapping), 900)
+            self.assertEqual(trace[0]['frame'], mapping[0]['carla_frame'])
+            self.assertEqual(mapping[-1]['video_frame'], 899)
 
     def test_failed_tick_restores_and_never_publishes(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temp:
@@ -222,6 +230,8 @@ class NativeBackingLifecycleTests(unittest.TestCase):
                           actor_transforms={'vehicle': pose, 'pedestrian': pose},
                           camera_extrinsics={name: pose for name in CAMERAS})
             (root / 'map.json').write_text(json.dumps(packet) + '\n')
+            (root / 'construction.json').write_text((ROOT / 'construction.json').read_text())
+            (root / 'runner.py').write_text((ROOT / 'runner.py').read_text())
             carla = SimpleNamespace(Transform=lambda location, rotation: (location, rotation),
                                     Location=lambda **values: values,
                                     Rotation=lambda **values: values)
@@ -230,6 +240,8 @@ class NativeBackingLifecycleTests(unittest.TestCase):
             kwargs.update(carla=carla, diagnostic_fixture=False)
             receipt = run(world, **kwargs)
             self.assertEqual(receipt['source_kind'], 'native_original')
+            self.assertTrue((root / 'capture-seal.json').is_file())
+            self.assertEqual(json.loads((root / 'capture-seal.json').read_text())['frames'], 900)
             self.assertEqual(len(world.sensors), 4)
             self.assertTrue(all(actor.destroyed for actor in world.actors))
             self.assertTrue(all(sensor.stopped and sensor.destroyed for sensor in world.sensors))

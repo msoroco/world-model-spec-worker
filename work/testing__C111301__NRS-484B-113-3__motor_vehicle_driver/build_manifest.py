@@ -26,6 +26,7 @@ def build():
             'construction_sha256': sha(HERE / construction),
             'measurement_contract': 'measurement-' + suffix + '.json',
             'measurement_procedure': {'entrypoint': 'analysis.py'},
+            'fixture_recipe': 'work/' + aid + '/diagnostic-' + suffix + '-recipe.json',
             'candidate_risk': {
                 'status': 'none',
                 'reason': 'No site-specific failure mechanism justifies an alternate before original site review.'},

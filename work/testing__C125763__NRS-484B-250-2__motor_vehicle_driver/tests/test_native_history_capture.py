@@ -83,6 +83,7 @@ class CaptureTest(unittest.TestCase):
             "cell_id": "C125763", "control": "yield_sign", "ego_highway": "A",
             "other_highway": "B", "approach_relation": "crossing", "ego_side": "left",
             "intersection_bounds_xy_m": [0, -1, 2, 1],
+            "camera_dimensions": {name: [2, 2] for name in CAMERAS},
             "ego_route": [[-5, 0, 0], [-1, 0, 0]],
             "other_route": [[0, -5, 0], [0, -1, 0]],
             "ego_blueprint": "vehicle.ego", "other_blueprint": "vehicle.other",
@@ -156,6 +157,17 @@ class CaptureTest(unittest.TestCase):
             finalize(attempt, self.root / 'result.json',
                      expected_manifest_sha256=digest, probe_id='entry_inside')
 
+    def test_full_length_fixture_stays_diagnostic(self):
+        self.ego.positions = [-2, -1, 0, 1] + [1] * 896
+        self.other.positions = [-2, -2, -1, 0] + [0] * 896
+        attempt = self.root / 'long-fixture'
+        capture(self.world, self.packet, self.ego, self.other, attempt, 900)
+        digest = hashlib.sha256((attempt / 'source-manifest.json').read_bytes()).hexdigest()
+        result = finalize(attempt, self.root / 'long-fixture-result.json',
+                          expected_manifest_sha256=digest, probe_id='entry_inside')
+        self.assertEqual(result['original_frame_count'], 900)
+        self.assertTrue(result['diagnostic_fixture'])
+
     def test_four_camera_original_clock_and_saved_decode(self):
         stream = io.BytesIO()
         Image.new('RGB', (2, 2), (1, 2, 3)).save(stream, format='PNG')
@@ -184,6 +196,26 @@ class CaptureTest(unittest.TestCase):
             capture(self.world, self.packet, self.ego, self.other,
                     self.root / 'wrong-camera', 4, camera_readers=readers,
                     camera_dimensions={name: (2, 2) for name in CAMERAS})
+
+    def test_saved_finalizer_reopens_four_camera_source(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (2, 2), (4, 5, 6)).save(stream, format='PNG')
+        image = stream.getvalue()
+        readers = {name: lambda frame, image=image: {'frame': frame, 'png_bytes': image}
+                   for name in CAMERAS}
+        output = self.root / 'camera-finalize'
+        capture(self.world, self.packet, self.ego, self.other, output, 4,
+                camera_readers=readers,
+                camera_dimensions={name: (2, 2) for name in CAMERAS})
+        digest = hashlib.sha256((output / 'source-manifest.json').read_bytes()).hexdigest()
+        result = finalize(output, self.root / 'camera-result.json',
+                          expected_manifest_sha256=digest, probe_id='entry_inside')
+        self.assertTrue(result['camera_coverage_verified'])
+        self.assertEqual(result['camera_audit']['decoded_camera_frames'], 16)
+        (output / 'original-frames/overview-000000.png').write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'bytes changed'):
+            finalize(output, self.root / 'stale-camera-result.json',
+                     expected_manifest_sha256=digest, probe_id='entry_inside')
 
 
 if __name__ == "__main__":

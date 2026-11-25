@@ -48,8 +48,16 @@ def main():
     import carla
     client = carla.Client(args.host, args.port)
     client.set_timeout(20.0)
-    receipt = run(client.get_world(), attempt=output, packet_path=output / 'map.json',
-                  case_id=selected, control_factory=carla.VehicleControl, carla=carla)
+    try:
+        receipt = run(client.get_world(), attempt=output, packet_path=output / 'map.json',
+                      case_id=selected, control_factory=carla.VehicleControl, carla=carla)
+    except BaseException as exc:
+        status = output / 'native-run-status.json'
+        if not status.exists():
+            status.write_text(json.dumps({'errors': [str(exc)], 'case_id': selected,
+                                          'capture_complete': False,
+                                          'physical_acceptance_claimed': False}, indent=2) + '\n')
+        raise
     print(json.dumps(receipt, sort_keys=True))
 
 
