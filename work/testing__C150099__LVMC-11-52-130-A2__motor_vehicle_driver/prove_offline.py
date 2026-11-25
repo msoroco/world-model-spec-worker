@@ -19,7 +19,7 @@ def main() -> None:
                TMPDIR=str(REPO / '.runtime-work'))
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
-        destination = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v2' / suffix
+        destination = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v5' / suffix
         if destination.exists():
             raise ValueError('retain prior offline attempt; choose new proof version')
         command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),

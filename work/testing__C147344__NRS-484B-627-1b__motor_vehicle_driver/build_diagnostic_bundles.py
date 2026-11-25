@@ -13,7 +13,7 @@ CELL = "C147344"
 ACTOR = "motor_vehicle_driver"
 SRC = ("runner.py", "reviewed_scene.py", "native_adapter.py",
        "right_lane_measurement.py", "finalize_follower.py", "delivery_audit.py",
-       "comparison_audit.py", "process_recorded_only.py")
+       "comparison_audit.py", "process_recorded_only.py", "analysis.py")
 TEST = '''import json
 import unittest
 from runner import check_config
@@ -53,8 +53,8 @@ def main() -> None:
                   "diagnostic_only": True, "rate_hz": 20, "duration_s": 45,
                   "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
                   "required_atoms": [],
-                  "source_packets": ["original_native_motion", "original_native_relation", "reviewed_original_site", "four_camera_video"],
-                  "case": suffix,
+                  "source_packets": [],
+                  "case": {"case_id": case_id, "variant": suffix},
                   "physical_completion": {"required_frames": 900, "original_site_required": True,
                                           "reviewed_lane_markings_required": True}}
         files = [{"path": name, "content": (HERE / name).read_text(encoding="utf-8")} for name in SRC]
@@ -69,16 +69,23 @@ def main() -> None:
                         "termination_rules": {"frames": 900, "native_sync_required": True}}
         rel = "construction.json" if index == 0 else f"cases/{suffix}/construction.json"
         write(HERE / rel, construction)
-        contract = {"case_id": case_id, "selected_requirement": "NRS 484B.627(1)(b) conditional extreme-right lane duty",
-                    "source_files": ["native-frames.jsonl", "capture/overview", "capture/approach", "capture/reference_corner", "capture/conflict", "original motion trace", "independent original follower relation"],
-                    "finalizer": "finalize_follower.py", "output": "original 900-frame lane, follower and pass observations; legal questions unresolved",
-                    "diagnostic_only": True, "original_source_required": True,
-                    "rate_hz": 20, "frames": 900}
+        plan = json.loads((HERE / "case-plan.json").read_text(encoding="utf-8"))
+        contract = {"format": "worker-measurement-contract",
+                    "requirements": [{"disposition_index": 0,
+                                      "requirement": plan["law_text"],
+                                      "source": plan["witness_review"][0]["source"],
+                                      "output_key": "right_lane_follower_observation",
+                                      "method": "right_lane_follower_observation",
+                                      "value_type": "object", "kind": "measured",
+                                      "inputs": ["trace.json", "relation.json"]}],
+                    "negative": {"remove": ["relation.json"],
+                                 "error_contains": "Missing required source: relation.json"}}
         crel = "measurement-contract.json" if index == 0 else f"cases/{suffix}/measurement-contract.json"
         write(HERE / crel, contract)
         entries.append({"case_id": case_id, "kind": "diagnostic", "construction": rel,
                         "construction_sha256": digest(HERE / rel), "measurement_contract": crel,
-                        "measurement_procedure": {"entrypoint": "finalize_follower.py"},
+                        "measurement_procedure": {"entrypoint": "analysis.py"},
+                        "fixture_recipe": str((HERE / f"cases/{suffix}/diagnostic-recipe.json").relative_to(HERE.parent.parent)),
                         "candidate_risk": {"status": "none", "reason": "Physical follower gap and lane retention risk requires original observation; no source-reviewed alternate spawn geometry is available."},
                         "candidates": []})
     runtime_sha = digest(HERE.parent.parent / "runtime/SOURCE-MANIFEST.json")

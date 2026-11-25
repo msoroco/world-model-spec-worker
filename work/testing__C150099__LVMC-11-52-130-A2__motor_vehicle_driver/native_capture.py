@@ -15,7 +15,7 @@ import zipfile
 from pathlib import Path
 
 from fire_lane import CASES, build_case
-from source_packet import validate_packet
+from source_packet import EXCEPTION_SOURCES, SOURCES, validate_packet
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 FRAMES = 900
@@ -56,7 +56,26 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
     rows = []
     frames = []
     try:
-        site_sha = hashlib.sha256(Path(packet_path).read_bytes()).hexdigest()
+        packet = json.loads(Path(packet_path).read_text())
+        source_dir = root / 'source-review'
+        source_dir.mkdir()
+        names = list(SOURCES)
+        if case.exception != 'none':
+            names.append(EXCEPTION_SOURCES[case.exception])
+        sealed_packet = dict(packet, sources={})
+        for name in names:
+            entry = dict(packet['sources'][name])
+            original_path = Path(entry['path'])
+            if not original_path.is_absolute():
+                original_path = Path(packet_path).parent / original_path
+            target = source_dir / (name + original_path.suffix)
+            raw = original_path.read_bytes()
+            if hashlib.sha256(raw).hexdigest() != entry['sha256']:
+                raise ValueError('reviewed original source changed during handoff: ' + name)
+            target.write_bytes(raw)
+            entry['path'] = str(target.relative_to(root))
+            sealed_packet['sources'][name] = entry
+        site_sha = _write(root / 'reviewed-packet.json', sealed_packet)
         _write(root / 'site.json', site)
         (root / 'road.xodr').write_bytes(map_bytes)
         body_length = adapter.ego_body_length_m()
@@ -154,6 +173,7 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
             'case_id': case_id, 'source_kind': 'original_native',
             'diagnostic_fixture': not bool(getattr(adapter, 'native_attested', False)),
             'site_sha256': site_sha,
+            'original_packet_sha256': hashlib.sha256(Path(packet_path).read_bytes()).hexdigest(),
             'history_sha256': hashlib.sha256(history.read_bytes()).hexdigest(),
             'frame_map_sha256': frame_map_sha,
             'camera_media': {name: hashlib.sha256((root / (name + '.zip')).read_bytes()).hexdigest()

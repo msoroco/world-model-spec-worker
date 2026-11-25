@@ -2,22 +2,65 @@
   "cell_id": "C149470",
   "actor": "bus_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c149470-judgment-0",
+      "target_law_id": "LVMC-11-60-030-A4",
+      "judgment_refs": [
+        {
+          "phrase": "approximately parallel to the curb",
+          "note": "Original bus heading, curb tangent and camera views need independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original site, capture or qualitative adjudication range is supplied.",
+      "missing_inputs": [
+        "reviewed source-bound original site, 900-frame attempt and independent judgment range"
+      ]
+    },
+    {
+      "sweep_id": "c149470-judgment-1",
+      "target_law_id": "LVMC-11-60-030-A4",
+      "judgment_refs": [
+        {
+          "phrase": "not to unduly impede the movement of other vehicular traffic",
+          "note": "Original traffic trajectories and available movement need independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "No reviewed original site, capture or qualitative adjudication range is supplied.",
+      "missing_inputs": [
+        "reviewed source-bound original site, 900-frame attempt and independent judgment range"
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
-      "target_law_id": "LVMC-11-60-030-A4",
-      "target_type": "boundary_probe",
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Shared source-bound non-tour-bus loading baseline without a legal finding.",
       "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -63,6 +106,97 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      }
+    },
+    {
+      "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
+      "target_law_id": "LVMC-11-60-030-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "eighteen_inch_boundary",
+      "deliberate_differences": [
+        "wheel_curb_distance_m"
+      ],
+      "variable_assignments": {
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "right_front_wheel_curb",
+            "unit": "m with uncertainty",
+            "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "stopped loading frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "wheel localization"
+          },
+          {
+            "name": "stopped_loading",
+            "unit": "structured original observation",
+            "method": "bus speed and actual loading actor state, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "actor activity review"
+          },
+          {
+            "name": "other_traffic",
+            "unit": "m/s",
+            "method": "separate vehicular traffic speed, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "traffic route review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized cameras, 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "reference_frame": "original frame/time",
+            "uncertainty": "pixel visibility review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Approximately parallel and unduly impede remain unresolved judgments.",
+          "Synthetic fixture is software diagnostic only."
+        ]
+      },
+      "probe": {
+        "primary_variable": "wheel_curb_distance_m",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": 0.4472,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 0.4472
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering probe separation about the exact eighteen-inch conversion."
       }
     },
     {
@@ -70,15 +204,31 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "eighteen_inch_boundary",
+      "deliberate_differences": [
+        "wheel_curb_distance_m"
+      ],
       "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4572
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4572,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -124,6 +274,20 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "wheel_curb_distance_m",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": 0.4572,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 0.4572
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering probe separation about the exact eighteen-inch conversion."
       }
     },
     {
@@ -131,15 +295,31 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "eighteen_inch_boundary",
+      "deliberate_differences": [
+        "wheel_curb_distance_m"
+      ],
       "variable_assignments": {
-        "location_kind": "bus_stop",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4672
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4672,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stop",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -185,6 +365,20 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "wheel_curb_distance_m",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": 0.4672,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 0.4672
+      },
+      "epsilon_used": {
+        "value": 0.01,
+        "unit": "m",
+        "rationale": "Engineering probe separation about the exact eighteen-inch conversion."
       }
     },
     {
@@ -192,15 +386,32 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "bus_stand",
-        "activity": "baggage_loading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "bus_stand",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "baggage_loading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -246,6 +457,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "bus_stand"
       }
     },
     {
@@ -253,15 +469,32 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "passenger_zone",
-        "activity": "passenger_unloading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "passenger_zone",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_unloading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -307,6 +540,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "passenger_zone"
       }
     },
     {
@@ -314,15 +552,32 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "origin_point",
-        "activity": "passenger_loading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "origin_point",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_loading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -368,6 +623,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "origin_point"
       }
     },
     {
@@ -375,15 +635,32 @@
       "target_law_id": "LVMC-11-60-030-A4",
       "target_type": "boundary_probe",
       "status": "draft",
-      "rationale": "Exact synthetic CPU probe; original site and legal judgment pending.",
+      "rationale": "Requested distance and listed-place probe; original measurements and legal judgments remain open.",
+      "paired_probe_id": "listed_place_activity",
+      "deliberate_differences": [
+        "location_kind",
+        "loading_activity"
+      ],
       "variable_assignments": {
-        "location_kind": "destination_point",
-        "activity": "passenger_unloading",
-        "target_distance_m": 0.4472
+        "wheel_curb_distance_m": {
+          "kind": "world_setup",
+          "value": 0.4472,
+          "unit": "m"
+        },
+        "location_kind": {
+          "kind": "world_setup",
+          "value": "destination_point",
+          "unit": "category"
+        },
+        "loading_activity": {
+          "kind": "world_setup",
+          "value": "passenger_unloading",
+          "unit": "category"
+        }
       },
       "unresolved_judgment_calls": [
-        "approximately parallel",
-        "unduly impede"
+        "approximately parallel to the curb",
+        "not to unduly impede the movement of other vehicular traffic"
       ],
       "recording_description": {
         "channels": [
@@ -429,6 +706,11 @@
           "Approximately parallel and unduly impede remain unresolved judgments.",
           "Synthetic fixture is software diagnostic only."
         ]
+      },
+      "probe": {
+        "primary_variable": "location_kind",
+        "comparison_or_standard": "Requested setup only; compare original stopped-loading source measurements and retain qualitative judgments.",
+        "target_value_or_branch": "destination_point"
       }
     }
   ]

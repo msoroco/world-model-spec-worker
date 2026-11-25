@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, capture
-from source_packet import SOURCES
+from source_packet import SOURCES, validate_packet
 from saved_audit import audit_planned_case
 
 PNG = b'\x89PNG\r\n\x1a\n' + b'diagnostic-pixel-source'
@@ -91,6 +91,14 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertTrue(adapter.braked and adapter.cleaned)
             self.assertTrue(inventory['diagnostic_fixture'])
             self.assertEqual(set(inventory['camera_media']), set(CAMERAS))
+            copied_packet = destination / 'reviewed-packet.json'
+            self.assertEqual(hashlib.sha256(copied_packet.read_bytes()).hexdigest(),
+                             inventory['site_sha256'])
+            self.assertEqual(validate_packet(copied_packet, case_id),
+                             json.loads((destination / 'site.json').read_text()))
+            (destination / 'source-review/posting_authority.txt').write_text('changed\n')
+            with self.assertRaisesRegex(ValueError, 'original source hash changed'):
+                validate_packet(copied_packet, case_id)
             audit = audit_planned_case(destination / 'history.jsonl',
                                        inventory['history_sha256'], case_id,
                                        inventory['site_sha256'])

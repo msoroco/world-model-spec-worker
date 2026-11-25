@@ -32,7 +32,10 @@ def check(root: Path) -> str:
     case = next((case for case in CASES if case_id == ASSIGNMENT + '__' + case.id), None)
     if case is None:
         raise ValueError('unsupported exact fire-lane case')
-    if config.get('case') != vars(case):
+    configured_case = config.get('case', {})
+    if ({key: value for key, value in configured_case.items()
+         if key != 'recording_description'} != vars(case) or
+            configured_case.get('recording_description') != config.get('recording_description')):
         raise ValueError('fire-lane case configuration changed')
     if (config.get('rate_hz'), config.get('frame_count'), config.get('duration_s')) != (20, 900, 45):
         raise ValueError('fire-lane capture duration changed')

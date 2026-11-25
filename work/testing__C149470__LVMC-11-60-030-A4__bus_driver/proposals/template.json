@@ -1,0 +1,61 @@
+{
+  "template_id": "LVMC-11-60-030-A4@bus_driver",
+  "law_id": "LVMC-11-60-030-A4",
+  "actor": "bus_driver",
+  "status": "draft",
+  "quote": "The operator of a bus, other than a tour bus, shall: Enter a bus stop, bus stand, passenger loading zone or origin or destination point on a public street in such a manner that the bus when stopped to load or unload passengers or baggage shall be in a position with the right-hand front wheel of such vehicle not farther than eighteen inches from the curb and the bus approximately parallel to the curb so as not to unduly impede the movement of other vehicular traffic.",
+  "structure": {
+    "law_id": "LVMC-11-60-030-A4",
+    "activation": {
+      "condition": "Operator of a non-tour bus enters a listed loading place on a public street and stops to load or unload passengers or baggage.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "At stopped loading, position the right-hand front wheel no farther than eighteen inches from the curb, with the bus approximately parallel, without unduly impeding other vehicular traffic.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "wheel_curb_distance_m",
+          "operator": "<=",
+          "value": 0.4572,
+          "unit": "m"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Evaluate the stopped passenger or baggage loading interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "approximately parallel to the curb",
+        "note": "Original bus heading, curb tangent and camera views need independent review."
+      },
+      {
+        "phrase": "not to unduly impede the movement of other vehicular traffic",
+        "note": "Original traffic trajectories and available movement need independent review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "wheel_curb_distance_m",
+      "kind": "world_setup",
+      "range_or_domain": "requested distance in metres; actual source interval measured separately",
+      "unit": "m"
+    },
+    {
+      "name": "location_kind",
+      "kind": "world_setup",
+      "range_or_domain": "bus stop, bus stand, passenger loading zone, origin or destination point",
+      "unit": "category"
+    },
+    {
+      "name": "loading_activity",
+      "kind": "world_setup",
+      "range_or_domain": "passenger or baggage loading or unloading",
+      "unit": "category"
+    }
+  ]
+}

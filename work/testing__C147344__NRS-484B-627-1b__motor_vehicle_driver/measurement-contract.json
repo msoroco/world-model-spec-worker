@@ -1,19 +1,24 @@
 {
-  "case_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_follower",
-  "selected_requirement": "NRS 484B.627(1)(b) conditional extreme-right lane duty",
-  "source_files": [
-    "native-frames.jsonl",
-    "capture/overview",
-    "capture/approach",
-    "capture/reference_corner",
-    "capture/conflict",
-    "original motion trace",
-    "independent original follower relation"
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway has two or more clearly marked lanes for traffic traveling in the direction in which the driver or operator is traveling, drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles.",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "right_lane_follower_observation",
+      "method": "right_lane_follower_observation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "trace.json",
+        "relation.json"
+      ]
+    }
   ],
-  "finalizer": "finalize_follower.py",
-  "output": "original 900-frame lane, follower and pass observations; legal questions unresolved",
-  "diagnostic_only": true,
-  "original_source_required": true,
-  "rate_hz": 20,
-  "frames": 900
+  "negative": {
+    "remove": [
+      "relation.json"
+    ],
+    "error_contains": "Missing required source: relation.json"
+  }
 }

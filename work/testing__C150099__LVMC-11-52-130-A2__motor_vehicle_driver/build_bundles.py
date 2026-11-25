@@ -85,7 +85,8 @@ def build() -> dict:
             'assignment_id': ASSIGNMENT, 'law_id': plan['law_id'],
             'cell_id': plan['cell_id'], 'actor': plan['actor'],
             'selected_case_id': case_id, 'supported_case_ids': sorted(expected),
-            'case': vars(case), 'plan_sha256': plan_sha,
+            'case': {**vars(case), 'recording_description': RECORDING},
+            'plan_sha256': plan_sha,
             'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
             'cameras': CAMERAS, 'required_atoms': [], 'source_packets': [],
             'diagnostic_only': True, 'recording_description': RECORDING,
@@ -96,7 +97,8 @@ def build() -> dict:
                   'source': f'work/{ASSIGNMENT}/case-plan.json'},
                  {'path': 'tests/test_bundle.py', 'content': TEST}]
         for name in ('runner.py', 'fire_lane.py', 'source_packet.py',
-                     'native_capture.py', 'saved_audit.py', 'comparison_audit.py'):
+                     'native_capture.py', 'saved_audit.py', 'comparison_audit.py',
+                     'analysis.py'):
             files.append({'path': name, 'content': (ROOT / name).read_text(),
                           'source': f'work/{ASSIGNMENT}/{name}'})
         construction = {
@@ -122,6 +124,23 @@ def build() -> dict:
         rel = f'cases/{case.id}/construction.json'
         digest = write(ROOT / rel, construction)
         (ROOT / f'cases/{case.id}/config.json').write_text(config_text)
+        disposition = plan['requirement_dispositions'][0]
+        measurement = {
+            'format': 'worker-measurement-contract', 'case_id': case_id,
+            'requirements': [{
+                'disposition_index': 0, 'requirement': disposition['requirement'],
+                'source': disposition['source'], 'output_key': 'fire_lane_occupation',
+                'kind': 'measured', 'method': 'measure_fire_lane',
+                'value_type': 'object',
+                'inputs': ['original-attempt/history.jsonl',
+                           'original-attempt/inventory.json',
+                           'original-attempt/frame_map.json',
+                           'original-attempt/site.json'],
+            }],
+            'negative': {'remove': ['original-attempt/history.jsonl'],
+                         'error_contains': 'Missing required source: original-attempt/history.jsonl'},
+        }
+        write(ROOT / f'measurement-{case.id}.json', measurement)
         entries.append({
             'case_id': case_id, 'kind': 'delivery', 'construction': rel,
             'construction_sha256': digest,
@@ -129,6 +148,9 @@ def build() -> dict:
                 'reason': 'Sign or curb target may not be present or visible in loaded map; '
                           'source review and physical attempt are required.'},
             'candidates': [], 'diagnostic_only': True,
+            'measurement_contract': f'measurement-{case.id}.json',
+            'fixture_recipe': f'work/{ASSIGNMENT}/diagnostic-{case.id}-recipe.json',
+            'measurement_procedure': {'entrypoint': 'analysis.py'},
             'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                'host_env_var': 'CARLA_HOST',
                                'port_env_var': 'CARLA_PORT'},
