@@ -116,7 +116,7 @@ def finalize(attempt, output):
         path = channel_dir / (name.replace('/', '_') + '.json')
         path.write_text(json.dumps({name: context}, separators=(',', ':')) + '\n')
         recording.append({'name': name, 'unit': item['unit'], 'reference': 'channels/' + path.name})
-    result = {'case_id': config['case_id'], 'measured_values': scope,
+    result = {'case_id': config['case_id'], 'measured_values': {key: value for key, value in scope.items() if key != 'legal_verdict'},
               'target_checks': [{'target': 'requested_cycle_center_y_m',
                 'requested': config['requested_cycle_center_y_m'],
                 'measured': round(sum(point[1] for point in tracks[300]['body_native_xy_m']) / 4, 5),

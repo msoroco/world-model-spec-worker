@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C239014__LVMC-11-43-010-B__motor_vehicle_driver__selected_a60a4f45__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "LVMC 11.43.010(B)",
+      "output_key": "roundabout_context",
+      "method": "measure_roundabout_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "roundabout-map-readback.json",
+        "road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "LVMC 11.43.010(B)",
+      "output_key": "yield_order",
+      "method": "measure_yield_order",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "control-intent.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "gap_timing",
+      "method": "measure_gap_timing",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-raw-actors.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "roundabout-map-readback.json"
+    ],
+    "error_contains": "Missing required source: roundabout-map-readback.json"
+  }
+}

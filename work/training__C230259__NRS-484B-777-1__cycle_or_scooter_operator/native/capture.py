@@ -74,8 +74,8 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
     if abs(cycle_y - CASES[case]) > .16:
         raise ValueError('Candidate bicycle offset outside predeclared physical-risk fallback')
     output = Path(output_dir).resolve()
-    if output.exists():
-        raise ValueError('Use a fresh original Native attempt directory')
+    if output.exists() and not (output / 'candidate-selection.json').is_file():
+        raise ValueError('Use the materialized selected Native attempt directory')
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
@@ -112,7 +112,10 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
         if cycle.type_id != 'vehicle.bh.crossbike' or standing.type_id != 'vehicle.tesla.model3':
             raise RuntimeError('Native actor blueprints differ')
         standing.set_simulate_physics(False)
-        output.mkdir(parents=True)
+        output.mkdir(parents=True, exist_ok=True)
+        capture = output / 'capture'
+        graph_dir = capture / 'native' / 'graphs' / 'base'
+        graph_dir.mkdir(parents=True, exist_ok=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         (output / 'native-map-readback.json').write_text(json.dumps(survey, indent=2) + '\n')
         (output / 'standing-vehicle.json').write_text(json.dumps({
@@ -120,6 +123,12 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
             'actor_id': standing.id, 'blueprint': standing.type_id,
             'body_native_xy_m': _body(standing), 'physics_disabled_for_stationary_role': True},
             indent=2) + '\n')
+        (output / 'context.json').write_text(json.dumps({
+            'source_kind': 'original_native', 'law_id': 'NRS-484B-777-1',
+            'cell_id': 'C230259', 'actor': 'cycle_or_scooter_operator',
+            'nearby_moving_traffic_count': 0, 'left_turn_requested': False,
+            'other_hazard_inventory': [], 'driving_lane_width_m': 3.5,
+            'legal_verdict': None}, indent=2) + '\n')
         for name, x, y, z, pitch in CAMERAS:
             camera_bp = bp.find('sensor.camera.rgb')
             camera_bp.set_attribute('image_size_x', '1920' if name == 'overview' else '1280')
@@ -139,7 +148,10 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
                 '-i', '-', '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1',
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, (
-                output / 'native-cycle-frames.jsonl').open('x') as trace:
+                output / 'native-cycle-frames.jsonl').open('x') as source_trace, (
+                output / 'trace.jsonl').open('x') as trace, (
+                capture / 'evidence.jsonl').open('x') as evidence, (
+                capture / 'native' / 'frames.jsonl').open('x') as graph_frames:
             first_time = None
             for index in range(FRAMES):
                 cycle.set_target_velocity(carla.Vector3D(x=3, y=0, z=0))
@@ -169,12 +181,53 @@ def execute(case, output_dir, host='127.0.0.1', port=2000, requested_y=None):
                        'source_kind': 'native_actor', 'actor_id': cycle.id,
                        'blueprint': cycle.type_id, 'body_native_xy_m': _body(cycle),
                        'standing_body_native_xy_m': _body(standing)}
-                trace.write(json.dumps(row) + '\n')
+                source_trace.write(json.dumps(row) + '\n')
+                pose = cycle.get_transform().location
+                velocity = cycle.get_velocity()
+                speed = (velocity.x**2 + velocity.y**2 + velocity.z**2)**.5
+                yaw = cycle.get_transform().rotation.yaw
+                trace.write(json.dumps({
+                    'frame': native_frame, 'time_s': time_s,
+                    'position': {'x': pose.x, 'y': pose.y, 'z': pose.z},
+                    'position_m': [pose.x, pose.y, pose.z], 'heading_deg': yaw,
+                    'speed_mps': speed, 'speed_mph': speed / .44704,
+                    'velocity_mps': [velocity.x, velocity.y, velocity.z],
+                    'control': {'throttle': 0, 'steer': 0, 'brake': 0, 'hand_brake': False}}) + '\n')
+                evidence.write(json.dumps({
+                    'original_frame': native_frame, 'replay_frame': native_frame,
+                    'recording_time_s': time_s, 'replay_simulation_time_s': time_s,
+                    'actor_id': cycle.id,
+                    'ego': {'position_m': [pose.x, pose.y, pose.z], 'heading_deg': yaw,
+                            'speed_mps': speed,
+                            'body_vertices_m': [[x, y, 0] for x, y in _body(cycle)],
+                            'speed_provenance': 'original_trace_actor_get_velocity'},
+                    'world': {'weather': {'cloudiness': world.get_weather().cloudiness,
+                                          'precipitation': world.get_weather().precipitation,
+                                          'wetness': world.get_weather().wetness,
+                                          'fog_density': world.get_weather().fog_density},
+                              'road_projection': {'road_id': 1, 'section_id': 0,
+                                                  'lane_id': -1, 's_m': pose.x + 30}}}) + '\n')
+                graph = f'graphs/base/{native_frame:08d}.adapter.json'
+                (graph_dir / f'{native_frame:08d}.adapter.json').write_text(json.dumps({
+                    'attributes': {'frame': native_frame}, 'nodes': [], 'edges': []}) + '\n')
+                graph_frames.write(json.dumps({
+                    'abstract': graph, 'adapter_graph': graph, 'base': graph,
+                    'edges': 0, 'frame': native_frame, 'nodes': 0,
+                    'simulation_time': time_s, 'time_s': time_s}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             errors = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed ' + name + ': ' + errors.decode()[-400:])
+        from measure_right_edge import digest
+        (capture / 'manifest.json').write_text(json.dumps({
+            'frames': FRAMES, 'extraction_confirmed': True,
+            'synthetic_diagnostic': False,
+            'sources': {'road.xodr': digest(output / 'road.xodr'),
+                        'trace.jsonl': digest(output / 'trace.jsonl')},
+            'required_observations': []}, indent=2) + '\n')
+        (capture / 'recorder_info.txt').write_text(
+            f'Original CARLA actor readback and synchronized RGB capture.\nCreate {cycle.id}: {cycle.type_id} (0)\n')
         from measure_right_edge import SOURCES, digest
         (output / 'source-hashes.json').write_text(json.dumps(
             {name: digest(output / name) for name in SOURCES}, indent=2) + '\n')

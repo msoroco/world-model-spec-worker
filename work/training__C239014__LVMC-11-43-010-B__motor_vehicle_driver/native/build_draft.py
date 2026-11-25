@@ -21,32 +21,40 @@ def build():
                   "law_id": "LVMC-11-43-010-B", "cell_id": "C239014",
                   "actor": "motor_vehicle_driver", "rate_hz": 20,
                   "duration_s": 30, "duration_frames": 600,
+                  "candidate_id": "primary",
+                  "required_atoms": ["kin.position", "kin.speed"],
                   "cameras": [{"name": name, "fps": 20, "width": width,
                                "height": height} for name, width, height in (
                                    ("overview", 1920, 1080),
                                    ("approach", 1280, 720),
                                    ("reference_corner", 1280, 720),
                                    ("driver_reference", 1280, 720))],
-                  "entry_release_s": release, "lead_conflict_s": 12,
+                  "condition": condition, "entry_release_s": release, "lead_conflict_s": 12,
                   "follower_conflict_s": 24,
                   "control_phases": ["approach", "entry_wait", "circulation"],
                   "source_actor_ids": ["ego", "lead", "follower"],
+                  "recording_description": {"channels": [
+                      {"name": name, "unit": "structured", "sampling_rate_hz": 20,
+                       "time_window": "600 original frames", "method": "source-joined Native readback",
+                       "reference_frame": "original Native frame and simulation time",
+                       "uncertainty": "50 ms cadence; physical identity and pixels need review"}
+                      for name in ("raw_ego_motion", "raw_circulating_motion", "frame_join")],
+                      "context_inputs": [{"name": "roundabout_map", "unit": "source_record",
+                                          "method": "Native map readback and road.xodr"}],
+                      "limitations": ["Original motion and pixels require physical review"]},
                   "physical_verified": False, "legal_verdict": None}
         construction = {"format": "worker-inline-construction", "case_id": case,
                         "cell_id": "C239014", "actor": "motor_vehicle_driver",
                         "entrypoint": "runner.py", "files": [
                             {"path": "config.json", "content": json.dumps(config, indent=2) + "\n"},
-                            {"path": "runner.py", "content": (HERE / "draft_runner.py").read_text()},
+                            {"path": "runner.py", "content": (HERE / "runner.py").read_text()},
+                            {"path": "geometry.py", "content": (HERE / "geometry.py").read_text()},
+                            {"path": "finalize.py", "content": (HERE / "finalize.py").read_text()},
                             {"path": "tests/test_offline.py", "content":
-                             (HERE / "test_draft_offline.py").read_text()}],
-                        "recording_description": {"channels": [
-                            {"name": "raw_ego_motion", "method": "original actor and frame readback",
-                             "sampling_rate_hz": 20, "time_window": "600 frames"},
-                            {"name": "raw_circulating_motion", "method": "two original actor readbacks",
-                             "sampling_rate_hz": 20, "time_window": "600 frames"},
-                            {"name": "four_camera_video", "method": "four named source streams",
-                             "sampling_rate_hz": 20, "time_window": "600 frames"}],
-                            "limitations": ["Native route, original source capture and pixels unverified"]},
+                             (HERE / "test_draft_offline.py").read_text()},
+                            {"path": "tests/test_native.py", "content":
+                             (HERE / "tests/test_native.py").read_text()}],
+                        "recording_description": config["recording_description"],
                         "status": "exact_unselected_offline_draft"}
         path = HERE / (condition + "-construction.json")
         path.write_text(json.dumps(construction, indent=2) + "\n")

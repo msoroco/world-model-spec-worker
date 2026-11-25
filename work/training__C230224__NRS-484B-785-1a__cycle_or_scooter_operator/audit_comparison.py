@@ -72,11 +72,59 @@ def audit_boundary(low, at_cap, high, original_only=True):
             'at_cap_legal_classification': None}
 
 
+def audit_selected_pair(first, second, comparison_id, original_only=True):
+    """Audit one frozen ordered speed pair without assigning a legal result."""
+    pairs = {
+        AID + '__comparison': ('controlled_1', 'controlled_2'),
+        AID + '__below_vs_requested_at_cap': ('controlled_1', 'controlled_at_cap'),
+        AID + '__requested_at_cap_vs_above': ('controlled_at_cap', 'controlled_2'),
+    }
+    if comparison_id not in pairs:
+        raise ValueError('Unknown selected scooter comparison')
+    suffix_a, suffix_b = pairs[comparison_id]
+    if first.get('case_id') != AID + '__' + suffix_a or second.get('case_id') != AID + '__' + suffix_b:
+        raise ValueError('Comparison case identities differ')
+    expected_a, expected_b = {'controlled_1': 12, 'controlled_at_cap': 15,
+                              'controlled_2': 17}[suffix_a], {'controlled_1': 12,
+                              'controlled_at_cap': 15, 'controlled_2': 17}[suffix_b]
+    for item, expected in ((first, expected_a), (second, expected_b)):
+        if item.get('format') != 'source-bound-scooter-path-speed-v1' or item.get('assignment_id') != AID:
+            raise ValueError('Wrong comparison measurement contract')
+        if abs(item.get('requested_speed_mps', -1) - expected*.44704) > 1e-8:
+            raise ValueError('Comparison requested-speed sources differ')
+        if item.get('samples') != 600 or item.get('path_center_frames') != 600:
+            raise ValueError('Scooter path occupancy incomplete')
+        if item.get('physical_acceptance_claimed') is not False or item.get('legal_result') is not None:
+            raise ValueError('Comparison claims an unsupported result')
+        if original_only and item.get('review_kind') != 'original_source_review':
+            raise ValueError('Original Native measurements required')
+        required = {'video_frames.jsonl', 'native_rider_trace.jsonl', 'scooter_context.json'}
+        if original_only:
+            required |= {'overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv'}
+        sources = item.get('source_sha256', {})
+        if not required <= set(sources) or any(len(sources[name]) != 64 for name in required):
+            raise ValueError('Comparison original source hashes missing')
+    if first.get('fixed_context') != second.get('fixed_context'):
+        raise ValueError('Comparison fixed path, device or ordinance context differs')
+    if not first['max_speed_mph'] < second['min_speed_mph']:
+        raise ValueError('Measured continuous speed separation missing')
+    return {'format': 'scooter-selected-pair-audit-v1', 'assignment_id': AID,
+            'comparison_id': comparison_id, 'case_ids': [first['case_id'], second['case_id']],
+            'requested_speeds_mph': [expected_a, expected_b],
+            'measured_extrema_mph': [first['max_speed_mph'], second['min_speed_mph']],
+            'fixed_context_checked': True, 'original_source_required': original_only,
+            'legal_result': None, 'physical_acceptance_claimed': False}
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--low', type=Path, required=True)
     parser.add_argument('--high', type=Path, required=True)
     parser.add_argument('--diagnostic', action='store_true')
+    parser.add_argument('--comparison-id')
     args = parser.parse_args()
-    print(json.dumps(audit(json.loads(args.low.read_text()), json.loads(args.high.read_text()),
-                           original_only=not args.diagnostic), sort_keys=True))
+    first, second = json.loads(args.low.read_text()), json.loads(args.high.read_text())
+    result = audit_selected_pair(first, second, args.comparison_id,
+                                 original_only=not args.diagnostic) if args.comparison_id else \
+             audit(first, second, original_only=not args.diagnostic)
+    print(json.dumps(result, sort_keys=True))

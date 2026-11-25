@@ -45,6 +45,8 @@ def main():
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
+    if args.output_dir and not args.check and not args.process_saved:
+        args.capture = True
     if sum((args.check, bool(args.process_saved), args.capture)) != 1:
         raise SystemExit('choose --check, --process-saved, or --capture')
     if args.check:

@@ -144,6 +144,9 @@ def finalize(attempt, output):
               'legal_verdict_claimed': False}
     trace = []
     speed = []
+    context = json.loads((root/'scooter_context.json').read_text())
+    derived = {name: [] for name in ('ru.electric_scooter', 'st.roadway',
+               'st.bicycle_lane_or_path', 'rel.occupies', 'dev.regulatory_sign')}
     for frame, row in zip(frames, native):
         point = row['device_center_xy_m']
         trace.append({'frame': frame['native_frame'], 'time_s': frame['time_s'],
@@ -154,6 +157,27 @@ def finalize(attempt, output):
                       'velocity_mps': [row['device_speed_mps'], 0, 0],
                       'control': {}})
         speed.append({'time_s': frame['time_s'], 'value': row['device_speed_mps']})
+        values = {
+            'ru.electric_scooter': {'device_actor_id': row['device_actor_id'],
+                'rider_actor_id': row['rider_actor_id'],
+                'classification_source': context['scooter_classification_source'],
+                'rider_excluded_mass_lb': context['scooter_rider_excluded_mass_lb'],
+                'motor_only_max_mph': context['scooter_motor_only_max_mph']},
+            'st.roadway': {'boundary_source': context['roadway_boundary_source'],
+                'review_kind': context['review_kind']},
+            'st.bicycle_lane_or_path': {'path_box_xyxy_m': context['path_box_xyxy_m'],
+                'surface_source': context['path_surface_source'],
+                'continuity_source': context['path_continuity_source'],
+                'access_source': context['path_access_source']},
+            'rel.occupies': {'device_center_xy_m': point,
+                'center_inside_reviewed_path_box': inside(point, context['path_box_xyxy_m']),
+                'full_body_occupancy_verified': False},
+            'dev.regulatory_sign': {'contrary_posting_source': context['contrary_posting_source'],
+                'ordinance_applicability_source': context['ordinance_applicability_source'],
+                'posting_pixels_verified': False},
+        }
+        for name, value in values.items():
+            derived[name].append({'time_s': frame['time_s'], 'value': value})
     trace_path = root/'trace.jsonl'
     if trace_path.exists():
         if records(trace_path) != trace:
@@ -163,6 +187,8 @@ def finalize(attempt, output):
     channels = root/'channels'
     channels.mkdir(exist_ok=True)
     (channels/'kin.speed.jsonl').write_text(''.join(json.dumps(row, allow_nan=False)+'\n' for row in speed))
+    for name, samples in derived.items():
+        (channels/(name+'.jsonl')).write_text(''.join(json.dumps(row, allow_nan=False)+'\n' for row in samples))
     requested = measurement['requested_speed_mps']
     observed = sum(row['device_speed_mps'] for row in native)/len(native)
     tolerance = .2
@@ -184,8 +210,10 @@ def finalize(attempt, output):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['recording_description'],
               'recording_evidence': [
-                  {'name': 'kin.speed', 'unit': 'm/s', 'reference': 'channels/kin.speed.jsonl'},
-                  {'name': 'device_subtype', 'unit': 'structured', 'reference': 'scooter_context.json'}],
+                  {'name': item['name'], 'unit': item['unit'],
+                   'reference': 'channels/'+item['name']+'.jsonl'}
+                  for item in config['recording_description']['channels']] +
+                  [{'name': 'device_subtype', 'unit': 'structured', 'reference': 'scooter_context.json'}],
               'realized_observables': {}, 'provenance_kind': 'synthetic_fixture',
               'diagnostic_fixture': True, 'accepted': False,
               'legal_verdict_claimed': False}

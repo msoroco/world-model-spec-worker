@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import tempfile
 
-from audit_comparison import audit, audit_boundary
+from audit_comparison import audit, audit_boundary, audit_selected_pair, AID
 from measure_scooter import measure
 from prove_scooter import fixture
 
@@ -29,6 +29,12 @@ def main():
         accepted = audit(low, high, original_only=False)
         boundary = audit_boundary(low, at_cap, high, original_only=False)
         assert boundary['at_cap_above_15_mph_frames'] == 0
+        pair_results = [audit_selected_pair(a, b, AID + '__' + name, original_only=False)
+                        for a, b, name in ((low, high, 'comparison'),
+                                           (low, at_cap, 'below_vs_requested_at_cap'),
+                                           (at_cap, high, 'requested_at_cap_vs_above'))]
+        assert all(row['fixed_context_checked'] and row['legal_result'] is None
+                   for row in pair_results)
         changed = json.loads(json.dumps(high))
         changed['fixed_context']['ordinance_review_source'] = 'different ordinance'
         rejected(low, changed, 'fixed path, device or ordinance')
@@ -56,6 +62,7 @@ def main():
         else:
             raise AssertionError('Synthetic fixtures accepted as original Native evidence')
         print(json.dumps({'comparison': accepted, 'boundary': boundary,
+                          'selected_pairs': pair_results,
                           'negative_checks': 6}, sort_keys=True))
 
 

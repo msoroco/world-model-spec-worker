@@ -1,0 +1,213 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_draft",
+  "delivery_ready": false,
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Requires reviewed genuine electric scooter asset, original Native path occupancy, and applicable ordinance source",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/controlled_1/fallback1-construction.json",
+          "construction_sha256": "62666fbedb90bbc2a14cd9b0c4648693c0ef56aec2e1d7dc3575f940d6f44f26",
+          "trigger": {
+            "source": "original Native capture spawn receipt",
+            "metric": "device_spawn_failed",
+            "failure_condition": "surveyed scooter spawn returns no actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.15 m vertical clearance at same surveyed x/y; shared across all linked cases"
+          ]
+        }
+      ],
+      "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1",
+      "construction": "selected-primary-construction.json",
+      "construction_sha256": "8ed226a2958303cef913a3b4d4d756c484795e449acfc33efc31beb8c38eebb2",
+      "kind": "delivery",
+      "measurement_contract": "cases/controlled_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "measure_scooter.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/cases/controlled_1/recipe.json",
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Native scooter velocity per-frame readback",
+          "evidence": "native_rider_trace.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_1/proof.json",
+        "sha256": "0461c9d206601d03a486169120c752d5931ff7eb156cba4de3fc9235bafc36fe"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a34165aff17696f77fdac896da28956b967332b62095eee3e4b95cfd610c9bae",
+        "command": ".venv-cpu/bin/python work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-controlled_1-selftest.log",
+        "test_log_sha256": "2e0bb3ce980dbffd4a2f82cda415599a6e866672fbeef8123f977a4baabfbe92",
+        "negative_command": ".venv-cpu/bin/python work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_1 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: native_rider_trace.jsonl",
+        "negative_log": "delivery-controlled_1-negative-selftest.log",
+        "negative_log_sha256": "e64e8e8f6379ab2e413924a5ad6bdc92e2b27b7af03c16431f9b78d9376a0598",
+        "scope": "Synthetic CPU audit mechanics only; original Native scooter, path pixels, and ordinance review remain pending"
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Requires reviewed genuine electric scooter asset, original Native path occupancy, and applicable ordinance source",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/controlled_at_cap/fallback1-construction.json",
+          "construction_sha256": "93922ad9323a93251ac7d2b3101668a1e51646b5f15eefbca8b3841aa9dfee11",
+          "trigger": {
+            "source": "original Native capture spawn receipt",
+            "metric": "device_spawn_failed",
+            "failure_condition": "surveyed scooter spawn returns no actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.15 m vertical clearance at same surveyed x/y; shared across all linked cases"
+          ]
+        }
+      ],
+      "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap",
+      "construction": "cases/controlled_at_cap/selected-primary-construction.json",
+      "construction_sha256": "db0d53db6c62395b18cb10785f720f5a6f33725ae8e290db94f802aa7d140e6f",
+      "kind": "delivery",
+      "measurement_contract": "cases/controlled_at_cap/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "measure_scooter.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/cases/controlled_at_cap/recipe.json",
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Native scooter velocity per-frame readback",
+          "evidence": "native_rider_trace.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_at_cap/proof.json",
+        "sha256": "70c782ca59c0ec97fd315112376f5a309751a9e8890b65227eb5dccc36108c65"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a34165aff17696f77fdac896da28956b967332b62095eee3e4b95cfd610c9bae",
+        "command": ".venv-cpu/bin/python work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-controlled_at_cap-selftest.log",
+        "test_log_sha256": "8e7e171890afa20d83eaa255f5f79d7a271de13059679ed031bcf527b51573ad",
+        "negative_command": ".venv-cpu/bin/python work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_at_cap --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: native_rider_trace.jsonl",
+        "negative_log": "delivery-controlled_at_cap-negative-selftest.log",
+        "negative_log_sha256": "e64e8e8f6379ab2e413924a5ad6bdc92e2b27b7af03c16431f9b78d9376a0598",
+        "scope": "Synthetic CPU audit mechanics only; original Native scooter, path pixels, and ordinance review remain pending"
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Requires reviewed genuine electric scooter asset, original Native path occupancy, and applicable ordinance source",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/controlled_2/fallback1-construction.json",
+          "construction_sha256": "b5207314f70623bfbfd4902f805bf1b7832a0b9cff0bc1ff86f2dc9040b0d616",
+          "trigger": {
+            "source": "original Native capture spawn receipt",
+            "metric": "device_spawn_failed",
+            "failure_condition": "surveyed scooter spawn returns no actor"
+          },
+          "changed_knobs": [
+            "spawn_height_offset_m: 0.15 m vertical clearance at same surveyed x/y; shared across all linked cases"
+          ]
+        }
+      ],
+      "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2",
+      "construction": "cases/controlled_2/selected-primary-construction.json",
+      "construction_sha256": "78ef4abde625d943f2408275cf4c2d9ee7252f8e9a0093ea88298002cd965b52",
+      "kind": "delivery",
+      "measurement_contract": "cases/controlled_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "measure_scooter.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "fixture_recipe": "work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/cases/controlled_2/recipe.json",
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Native scooter velocity per-frame readback",
+          "evidence": "native_rider_trace.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/controlled_2/proof.json",
+        "sha256": "309d133b7f63cef3326abb67778f01082edde3dda32ecdeb1a89362fb6da0f13"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a34165aff17696f77fdac896da28956b967332b62095eee3e4b95cfd610c9bae",
+        "command": ".venv-cpu/bin/python work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --selftest",
+        "test_exit_code": 0,
+        "test_log": "delivery-controlled_2-selftest.log",
+        "test_log_sha256": "3e8e42f038f430087e9d5c5b1ca9dcc5b73d4c765cdceb649e6dbc9d960834f9",
+        "negative_command": ".venv-cpu/bin/python work/training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator/native/delivery_audit.py --case training__C230224__NRS-484B-785-1a__cycle_or_scooter_operator__controlled_2 --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing delivery source: native_rider_trace.jsonl",
+        "negative_log": "delivery-controlled_2-negative-selftest.log",
+        "negative_log_sha256": "e64e8e8f6379ab2e413924a5ad6bdc92e2b27b7af03c16431f9b78d9376a0598",
+        "scope": "Synthetic CPU audit mechanics only; original Native scooter, path pixels, and ordinance review remain pending"
+      }
+    }
+  ]
+}
