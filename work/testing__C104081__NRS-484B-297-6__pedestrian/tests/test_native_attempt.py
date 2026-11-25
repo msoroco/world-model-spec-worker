@@ -92,8 +92,9 @@ class NativeAttemptTests(unittest.TestCase):
         constructed = {"owned_handles": ["obstacle", "walker"]}
         client = Client()
         def capture(*args, **kwargs):
-            self.output.mkdir()
-            (self.output / "source-packet.json").write_text('{"sealed": true}\n')
+            packet_output = args[7]
+            packet_output.mkdir()
+            (packet_output / "source-packet.json").write_text('{"sealed": true}\n')
         packet_sha256 = hashlib.sha256(b'{"sealed": true}\n').hexdigest()
         with patch("native_attempt.construct_native", return_value=constructed), \
              patch("native_attempt.capture_constructed_sources", side_effect=capture), \
@@ -124,8 +125,9 @@ class NativeAttemptTests(unittest.TestCase):
 
     def test_changed_saved_audit_source_prevents_receipt(self):
         def capture(*args, **kwargs):
-            self.output.mkdir()
-            (self.output / "source-packet.json").write_text('{"sealed": true}\n')
+            packet_output = args[7]
+            packet_output.mkdir()
+            (packet_output / "source-packet.json").write_text('{"sealed": true}\n')
         with patch("native_attempt.construct_native", return_value={"owned_handles": ["walker"]}), \
              patch("native_attempt.capture_constructed_sources", side_effect=capture), \
              patch("native_attempt.audit_saved", return_value={"checks": {"full_video_decode": True},
@@ -136,6 +138,33 @@ class NativeAttemptTests(unittest.TestCase):
         self.assertTrue(self.recorder.aborted)
         self.assertEqual(self.restore.calls, ["snapshot", "restore"])
         self.assertFalse((self.output / "lifecycle-receipt.json").exists())
+
+    def test_core_and_packet_stage_keep_identical_original_survey(self):
+        import types
+        self.output.mkdir()
+        (self.output / "site-survey.json").write_bytes(self.survey.read_bytes())
+        calls = []
+        def core_factory(client, walker, output, case):
+            return types.SimpleNamespace(
+                capture=lambda frame, time: calls.append((frame, time)),
+                close=lambda confirmed=True: calls.append(("close", confirmed)))
+        def capture(*args, **kwargs):
+            packet_output = args[7]
+            packet_output.mkdir()
+            (packet_output / "site-survey.json").write_bytes(self.survey.read_bytes())
+            (packet_output / "source-packet.json").write_text('{"sealed": true}\n')
+            kwargs["on_core_sample"](10, .5)
+        packet_sha256 = hashlib.sha256(b'{"sealed": true}\n').hexdigest()
+        with patch("native_attempt.construct_native", return_value={"owned_handles": ["walker"]}), \
+             patch("native_attempt.capture_constructed_sources", side_effect=capture), \
+             patch("native_attempt.audit_saved", return_value={"checks": {"full_video_decode": True},
+                                                              "source_packet_sha256": packet_sha256}):
+            run_native_attempt(Client(), object(), {}, self.case, self.survey,
+                               "c" * 64, self.adapter, lambda *args: lambda sample: {},
+                               self.recorder, self.output,
+                               core_capture_factory=core_factory, **self.kwargs)
+        self.assertEqual(calls, [(10, .5), ("close", True), ("close", True)])
+        self.assertEqual((self.output / "site-survey.json").read_bytes(), self.survey.read_bytes())
 
     def test_restore_failure_prevents_success_receipt(self):
         self.restore.fail = True

@@ -65,4 +65,10 @@ def run_bound_attempt(client, carla, plan: dict, case_id: str,
         reader_factory, None, output, restore_api=restore_api,
         camera_profile_sha256=profile_sha, traffic_plan_sha256=traffic_sha,
         pedestrian_blueprint=survey["pedestrian_blueprint"],
-        camera_rig_factory=rig_factory)
+        camera_rig_factory=rig_factory,
+        core_capture_factory=_core_capture_factory)
+
+
+def _core_capture_factory(client, walker, output, case_id):
+    from pedestrian_core_capture import PedestrianCoreCapture
+    return PedestrianCoreCapture(client, walker, output, case_id)

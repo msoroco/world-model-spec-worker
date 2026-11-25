@@ -105,7 +105,8 @@ def capture_constructed_sources(world, walker, carla, constructed: dict,
                                 survey_path: Path, case_id: str, source_reader,
                                 output: Path, *, camera_profile_sha256: str,
                                 traffic_plan_sha256: str, pedestrian_blueprint: str,
-                                speed_m_s: float = 1.4, camera_recorder=None) -> dict:
+                                speed_m_s: float = 1.4, camera_recorder=None,
+                                on_core_sample=None) -> dict:
     """Run the measured route and read all source streams at each Native tick.
 
     `source_reader(sample)` must read the just-ticked Native world, including
@@ -119,6 +120,8 @@ def capture_constructed_sources(world, walker, carla, constructed: dict,
 
     def observe(sample):
         packet.observe(sample, source_reader(sample))
+        if on_core_sample is not None:
+            on_core_sample(sample["frame"], sample["time_s"])
 
     try:
         run_constructed(world, walker, carla, constructed, survey_path, case_id,

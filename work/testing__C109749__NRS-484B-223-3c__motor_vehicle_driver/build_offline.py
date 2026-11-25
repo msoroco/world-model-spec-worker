@@ -8,13 +8,14 @@ HERE = Path(__file__).resolve().parent
 AID = HERE.name
 SOURCES = ("center_lane_site.py", "center_lane_measurement.py", "turn_merge_controller.py",
            "native_capture.py", "native_scene.py", "carla_runner.py", "saved_camera_audit.py",
-           "saved_finalizer.py", "delivery_audit.py", "comparison_audit.py")
+           "saved_finalizer.py", "delivery_audit.py", "comparison_audit.py", "analysis.py")
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 RUNNER = '''"""Run one exact Native center-turn-lane attempt from reviewed sources."""
 import argparse
 import hashlib
 import json
 import os
+import subprocess
 from pathlib import Path
 from native_capture import VIEWS
 from native_scene import run_managed_scene_capture
@@ -50,6 +51,41 @@ def transform_factory(spec):
                            carla.Rotation(pitch=rotation["pitch"], yaw=rotation["yaw"], roll=rotation["roll"]))
 
 
+def copy_reviewed_source(source_dir, output, binding):
+    relative = binding["path"]
+    source = (source_dir / relative).resolve()
+    target = (output / relative).resolve()
+    if not source.is_relative_to(source_dir.resolve()) or not target.is_relative_to(output.resolve()):
+        raise ValueError("Reviewed source path escapes its packet")
+    raw = source.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != binding["sha256"] or target.exists():
+        raise ValueError("Reviewed source hash changed or destination exists")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(raw)
+
+
+def finalize_camera_sources(root, original):
+    mapping = json.loads((original / "native/frame_map.json").read_text())["frames"]
+    trace = [json.loads(line) for line in (root / "trace.jsonl").read_text().splitlines()]
+    if len(mapping) != 900 or len(trace) != 900:
+        raise ValueError("Original camera and PipelineCapture frame counts differ")
+    rows = []
+    for index, (frame, point) in enumerate(zip(mapping, trace)):
+        if frame["frame"] != point["frame"] or abs(point["time_s"] - index / 20) > .001:
+            raise ValueError("Original camera and PipelineCapture frame identity differs")
+        rows.append({"video_frame": index, "carla_frame": frame["frame"], "time_s": point["time_s"]})
+    (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\\n" for row in rows))
+    for view in VIEWS:
+        paths = sorted((original / "camera" / view).glob("*.png"))
+        if len(paths) != 900 or [p.name for p in paths] != [f'{m["frame"]:06d}.png' for m in mapping]:
+            raise ValueError("Original camera source sequence incomplete: " + view)
+        subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
+                        "-framerate", "20", "-pattern_type", "glob", "-i",
+                        str(original / "camera" / view / "*.png"), "-frames:v", "900",
+                        "-an", "-c:v", "ffv1", "-pix_fmt", "yuv444p", str(root / (view + ".mkv"))],
+                       check=True, timeout=3600)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
@@ -74,16 +110,30 @@ def main():
     fallback_role = json.loads((Path(__file__).resolve().parent / "config.json").read_text()).get("fallback_route_role")
     if fallback_role and json.loads(spawn_bytes).get("reviewed_route_role") != fallback_role:
         raise ValueError("Fallback requires a separately reviewed alternate route")
+    original = root / "original-attempt"
+    original.mkdir(exist_ok=False)
     plan_binding = {"path": "reviewed-spawn-plan.json", "sha256": hashlib.sha256(spawn_bytes).hexdigest()}
-    (root / "reviewed-spawn-plan.json").write_bytes(spawn_bytes)
+    (original / "reviewed-spawn-plan.json").write_bytes(spawn_bytes)
+    for key in ("native_map_source", "highway_review_source"):
+        copy_reviewed_source(Path(site_path).resolve().parent, original, site[key])
     import carla
     client = carla.Client(args.host, args.port)
     client.set_timeout(30.0)
     world = client.get_world()
-    receipt = run_managed_scene_capture(world=world, attempt_root=root, case_id=case,
+    from pipeline_capture import PipelineCapture
+    receipt = run_managed_scene_capture(world=world, attempt_root=original, case_id=case,
         site=site, plan_binding=plan_binding, transform_factory=transform_factory,
-        control_factory=carla.VehicleControl)
+        control_factory=carla.VehicleControl,
+        pipeline_capture_factory=lambda ego: PipelineCapture(client, ego, root, case))
+    finalize_camera_sources(root, original)
     (root / "source-gated-capture.json").write_text(json.dumps(receipt, indent=2) + "\\n")
+    (root / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "native", "diagnostic_fixture": False,
+        "source_scope": "one original Native execution"}) + "\\n")
+    from worker_exchange.native_output import seal_capture
+    seal_capture(root, frames=900, restoration={"restored": True,
+        "method": "managed world settings/weather readback after scene and actors closed"},
+        errors=[], encoder_exit_codes={view: 0 for view in VIEWS})
 
 if __name__ == "__main__":
     main()

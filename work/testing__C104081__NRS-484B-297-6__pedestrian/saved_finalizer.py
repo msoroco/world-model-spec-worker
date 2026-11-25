@@ -84,7 +84,7 @@ def build_result(attempt: Path, case_id: str, *, diagnostic: bool = False,
 
 def finalize(attempt: Path, case_id: str, *, diagnostic: bool = False,
              decode_media: bool = True) -> Path:
-    from scenario_pipeline.worker_exchange.native_output import write_result
+    from worker_exchange.native_output import write_result
     result = build_result(attempt, case_id, diagnostic=diagnostic,
                           decode_media=decode_media)
     return write_result(attempt, result)

@@ -9,6 +9,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import shutil
 
 from delivery_audit import audit_saved
 from native_construction import construct_native
@@ -34,7 +35,7 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
                        camera_recorder, output: Path, *, restore_api,
                        camera_profile_sha256: str, traffic_plan_sha256: str,
                        pedestrian_blueprint: str, camera_rig=None,
-                       camera_rig_factory=None) -> dict:
+                       camera_rig_factory=None, core_capture_factory=None) -> dict:
     """Capture, audit, destroy owned actors and verify original world restore.
 
     ``restore_api`` is the pinned runtime worker_exchange.world_restore module.
@@ -46,13 +47,19 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
     if camera_rig is not None and camera_rig_factory is not None:
         raise ValueError("supply an owned rig or a factory, not both")
     output = Path(output)
-    if output.exists() and any(output.iterdir()):
-        raise ValueError("Native attempt output must be empty")
+    if output.exists() and any((output / name).exists() for name in
+            ("capture", "source-packet.json", "result.json", "trace.jsonl",
+             "video_frames.jsonl", "capture-seal.json")):
+        raise ValueError("Native attempt output already has acquisition evidence")
     saved = restore_api.snapshot(client)
     constructed = None
     primary_error = None
     cleanup_errors = []
     receipt = None
+    core_capture = None
+    packet_output = output.parent / (output.name + "-packet-stage")
+    if packet_output.exists():
+        raise ValueError("Native packet staging path must be fresh")
     try:
         world = client.get_world()
         configure_original_clock(world)
@@ -69,13 +76,30 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
                                               camera_recorder)
         if not callable(source_reader):
             raise ValueError("synchronized original source reader required")
+        if core_capture_factory is not None:
+            core_capture = core_capture_factory(client, walker, output, case_id)
         capture_constructed_sources(
             world, walker, carla, constructed, Path(survey_path), case_id,
-            source_reader, output, camera_profile_sha256=camera_profile_sha256,
+            source_reader, packet_output, camera_profile_sha256=camera_profile_sha256,
             traffic_plan_sha256=traffic_plan_sha256,
             pedestrian_blueprint=pedestrian_blueprint,
             camera_recorder=camera_recorder,
+            on_core_sample=core_capture.capture if core_capture is not None else None,
         )
+        if core_capture is not None:
+            core_capture.close(confirmed=True)
+        output.mkdir(parents=True, exist_ok=True)
+        for source in packet_output.iterdir():
+            destination = output / source.name
+            if destination.exists():
+                if source.name != "site-survey.json" or \
+                        hashlib.sha256(source.read_bytes()).digest() != \
+                        hashlib.sha256(destination.read_bytes()).digest():
+                    raise ValueError("original Core and pedestrian source collision")
+                source.unlink()
+                continue
+            source.replace(destination)
+        packet_output.rmdir()
         audit = audit_saved(output, case_id, decode_media=True)
         if not audit["checks"]["full_video_decode"]:
             raise ValueError("full saved camera decode required")
@@ -88,6 +112,11 @@ def run_native_attempt(client, carla, plan: dict, case_id: str, survey_path: Pat
     except BaseException as exc:
         primary_error = exc
     finally:
+        if core_capture is not None:
+            try:
+                core_capture.close(confirmed=primary_error is None)
+            except BaseException as exc:
+                cleanup_errors.append(f"Core capture close: {exc}")
         if primary_error is not None and camera_recorder is not None:
             try:
                 camera_recorder.abort()

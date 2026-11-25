@@ -19,7 +19,8 @@ from turn_merge_controller import TurnMergeController
 
 class CarlaFrameReader:
     def __init__(self, *, world, ego, receiving_vehicle, cameras, site,
-                 route_xy_m, control_factory, timeout_seconds=5.0):
+                 route_xy_m, control_factory, timeout_seconds=5.0,
+                 pipeline_capture=None):
         self.ids = validate_site(site)
         if set(cameras) != set(VIEWS):
             raise ValueError('four original camera sensors required')
@@ -30,6 +31,7 @@ class CarlaFrameReader:
         self.cameras = cameras
         self.control_factory = control_factory
         self.timeout_seconds = timeout_seconds
+        self.pipeline_capture = pipeline_capture
         self.controller = TurnMergeController(route_xy_m)
         self.queues = {view: Queue(maxsize=4) for view in VIEWS}
         self.listening = []
@@ -79,6 +81,8 @@ class CarlaFrameReader:
         elapsed = timestamp - self.first_time
         if abs(elapsed - index / 20) > .001:
             raise ValueError('Native world clock drift')
+        if self.pipeline_capture is not None:
+            self.pipeline_capture.capture(frame, elapsed)
         ego_waypoint = self.world.get_map().get_waypoint(self.ego.get_location(), project_to_road=False)
         other_waypoint = self.world.get_map().get_waypoint(self.receiving_vehicle.get_location(), project_to_road=False)
         if ego_waypoint is None or other_waypoint is None:
@@ -118,7 +122,8 @@ class CarlaFrameReader:
 
 
 def run_capture(*, attempt_root, case_id, site, world, ego, receiving_vehicle,
-                cameras, route_xy_m, control_factory, count=900, dimensions=None):
+                cameras, route_xy_m, control_factory, count=900, dimensions=None,
+                pipeline_capture=None):
     """Drive and seal one exact case; caller owns actor/world lease."""
     if case_id.rsplit('__', 1)[-1] not in {
             'below_50ft', 'at_50ft', 'above_50ft', 'no_merge'}:
@@ -140,7 +145,8 @@ def run_capture(*, attempt_root, case_id, site, world, ego, receiving_vehicle,
         raise ValueError('live OpenDRIVE differs from reviewed Native map source')
     reader = CarlaFrameReader(world=world, ego=ego, receiving_vehicle=receiving_vehicle,
                               cameras=cameras, site=site, route_xy_m=route_xy_m,
-                              control_factory=control_factory)
+                              control_factory=control_factory,
+                              pipeline_capture=pipeline_capture)
     try:
         pixels = sensor_frame_reader(attempt_root, reader, dimensions)
         return capture_original(attempt_root, case_id, site, pixels, count)

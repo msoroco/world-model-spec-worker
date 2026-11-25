@@ -435,17 +435,23 @@ class CrossingTests(unittest.TestCase):
                                           'position_m': [x, y, 0],
                                           'heading_deg': 0,
                                           'speed_mps': 0,
+                                          'velocity_mps': [0, 0, 0],
                                           'body_vertices_m': vertices}]}
             (native / graph_ref).write_text(json.dumps({
                 'format': 'native-adapter-graph-v1',
+                'multigraph': False,
                 'metadata': {'frame': frame,
                              'observed_evidence': observed},
                 'nodes': [], 'edges': []}))
-            graph_index.append({'frame': frame, 'adapter_graph': graph_ref})
+            graph_index.append({'frame': frame, 'simulation_time': row['elapsed_seconds'],
+                                'adapter_graph': graph_ref})
             evidence.append({'actor_id': 42, 'original_frame': frame,
+                             'replay_frame': frame,
                              'recording_time_s': row['elapsed_seconds'],
+                             'replay_simulation_time_s': row['elapsed_seconds'],
                              'ego': {'position_m': [x, y, 0],
                                      'heading_deg': 0, 'speed_mps': 0,
+                                     'speed_provenance': 'synthetic_native_sample',
                                      'body_vertices_m': vertices},
                              'original_observations': observed,
                              'world': {'weather': {}}})
@@ -457,9 +463,18 @@ class CrossingTests(unittest.TestCase):
                           'velocity_mps': [0, 0, 0], 'control': {}})
         (native / 'frames.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in graph_index))
         (attempt / 'capture/evidence.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in evidence))
+        (attempt / 'capture/recorder_info.txt').write_text(
+            'Create 42: walker.pedestrian.0001 (synthetic diagnostic)\n')
         (attempt / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in trace))
+        shutil.copyfile(ROOT / 'diagnostic-road.xodr', attempt / 'road.xodr')
         (attempt / 'capture/manifest.json').write_text(json.dumps({
-            'case_id': case_id, 'frames': 900, 'extraction_confirmed': True}))
+            'case_id': case_id, 'frames': 900, 'extraction_confirmed': True,
+            'status': 'diagnostic_only',
+            'acquisition': 'synthetic_diagnostic_fixture',
+            'diagnostic_fixture': True,
+            'sources': {
+                name: hashlib.sha256((attempt / name).read_bytes()).hexdigest()
+                for name in ('road.xodr', 'trace.jsonl')}}))
         (attempt / 'fixture-provenance.json').write_text(json.dumps({
             'diagnostic_fixture': True,
             'scope': 'CPU fake Native publication test; no physical site claim'}))

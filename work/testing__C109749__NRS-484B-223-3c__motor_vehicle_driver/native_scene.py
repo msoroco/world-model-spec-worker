@@ -6,6 +6,7 @@ checks identity and cleanup, not whether a legal highway designation is true.
 from __future__ import annotations
 
 from contextlib import contextmanager
+from contextlib import nullcontext
 import hashlib
 import json
 from pathlib import Path
@@ -137,7 +138,8 @@ def spawn_scene(world, attempt_root, case_id, site, plan_binding, transform_fact
 
 
 def run_scene_capture(*, world, attempt_root, case_id, site, plan_binding,
-                      transform_factory, control_factory, count=900, dimensions=None):
+                      transform_factory, control_factory, count=900, dimensions=None,
+                      pipeline_capture_factory=None):
     """Spawn, drive, seal and release one original attempt.
 
     The caller owns the existing world lease and settings. Default duration is
@@ -148,12 +150,16 @@ def run_scene_capture(*, world, attempt_root, case_id, site, plan_binding,
     scene, route = spawn_scene(world, attempt_root, case_id, site,
                                plan_binding, transform_factory)
     try:
-        receipt = run_capture(attempt_root=attempt_root, case_id=case_id, site=site,
-                              world=world, ego=scene.ego,
-                              receiving_vehicle=scene.receiving_vehicle,
-                              cameras=scene.cameras, route_xy_m=route,
-                              control_factory=control_factory, count=count,
-                              dimensions=dimensions)
+        capture_context = (pipeline_capture_factory(scene.ego)
+                           if pipeline_capture_factory is not None else nullcontext(None))
+        with capture_context as pipeline_capture:
+            receipt = run_capture(attempt_root=attempt_root, case_id=case_id, site=site,
+                                  world=world, ego=scene.ego,
+                                  receiving_vehicle=scene.receiving_vehicle,
+                                  cameras=scene.cameras, route_xy_m=route,
+                                  control_factory=control_factory, count=count,
+                                  dimensions=dimensions,
+                                  pipeline_capture=pipeline_capture)
         return {'capture_receipt': receipt, 'spawn_plan_sha256': scene.plan_sha256,
                 'physical_acceptance_claimed': False}
     finally:

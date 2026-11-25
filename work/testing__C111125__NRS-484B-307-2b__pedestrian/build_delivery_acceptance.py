@@ -36,7 +36,7 @@ def main():
         case_id = case['case_id']
         suffix = case_id.removeprefix(ROOT.name + '__')
         folder = ROOT / 'cases' / suffix
-        attempt = SCRATCH / ('selected-compat-' + suffix + '-delivery-v6')
+        attempt = SCRATCH / ('selected-compat-' + suffix + '-delivery-v7')
         compatibility = folder / 'delivery-compatibility-draft.json'
         command = [sys.executable, str(ROOT / 'prove_delivery_acceptance.py'),
                    '--case', case_id, '--attempt', str(attempt),

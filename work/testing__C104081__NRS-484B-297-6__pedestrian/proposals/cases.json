@@ -1,0 +1,547 @@
+{
+  "cell_id": "C104081",
+  "actor": "pedestrian",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared reference for authored bypass comparisons.",
+      "variable_assignments": {
+        "pedestrian_direction": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "intervening_area_blocked": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "sidewalk_obstruction_end_m": {
+          "kind": "world_setup",
+          "value": 34
+        },
+        "sidewalk_obstruction_kind": {
+          "kind": "world_setup",
+          "value": "impassable_section"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Same-frame original Native walker body, Core graph and four-camera join",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          },
+          {
+            "name": "nearest_traffic_distance_m",
+            "unit": "m",
+            "method": "Original walker and surveyed traffic actor centers by frame",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Actor center separation does not establish due care",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 retained site survey, source packet and Core graph capture"
+          }
+        ],
+        "limitations": [
+          "Diagnostic geometry cannot establish physical or legal acceptance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "with due care",
+        "as far to the side of the highway near the sidewalk as possible",
+        "if the area between the lane and the sidewalk is impassable",
+        "as soon as practicable"
+      ]
+    },
+    {
+      "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__clear_intervening",
+      "target_law_id": "NRS-484B-297-6",
+      "target_type": "judgment_sweep",
+      "rationale": "Intervening area remains traversable in the authored geometry; bypass stays between sidewalk and designated lane.",
+      "variable_assignments": {
+        "pedestrian_direction": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "intervening_area_blocked": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "sidewalk_obstruction_end_m": {
+          "kind": "world_setup",
+          "value": 34
+        },
+        "sidewalk_obstruction_kind": {
+          "kind": "world_setup",
+          "value": "impassable_section"
+        }
+      },
+      "paired_probe_id": "clear_intervening",
+      "deliberate_differences": [
+        "intervening_area_blocked"
+      ],
+      "probe": {
+        "primary_variable": "intervening_area_blocked",
+        "comparison_or_standard": "source-reviewed sidewalk bypass context",
+        "target_value_or_branch": false
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Same-frame original Native walker body, Core graph and four-camera join",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          },
+          {
+            "name": "nearest_traffic_distance_m",
+            "unit": "m",
+            "method": "Original walker and surveyed traffic actor centers by frame",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Actor center separation does not establish due care",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 retained site survey, source packet and Core graph capture"
+          }
+        ],
+        "limitations": [
+          "Diagnostic geometry cannot establish physical or legal acceptance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "with due care",
+        "as far to the side of the highway near the sidewalk as possible",
+        "if the area between the lane and the sidewalk is impassable",
+        "as soon as practicable"
+      ]
+    },
+    {
+      "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_intervening",
+      "target_law_id": "NRS-484B-297-6",
+      "target_type": "judgment_sweep",
+      "rationale": "A constructed barrier occupies the intervening area; authored route uses the designated bicycle lane.",
+      "variable_assignments": {
+        "pedestrian_direction": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "intervening_area_blocked": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "sidewalk_obstruction_end_m": {
+          "kind": "world_setup",
+          "value": 34
+        },
+        "sidewalk_obstruction_kind": {
+          "kind": "world_setup",
+          "value": "impassable_section"
+        }
+      },
+      "paired_probe_id": "blocked_intervening",
+      "deliberate_differences": [
+        "intervening_area_blocked"
+      ],
+      "probe": {
+        "primary_variable": "intervening_area_blocked",
+        "comparison_or_standard": "source-reviewed sidewalk bypass context",
+        "target_value_or_branch": true
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Same-frame original Native walker body, Core graph and four-camera join",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          },
+          {
+            "name": "nearest_traffic_distance_m",
+            "unit": "m",
+            "method": "Original walker and surveyed traffic actor centers by frame",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Actor center separation does not establish due care",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 retained site survey, source packet and Core graph capture"
+          }
+        ],
+        "limitations": [
+          "Diagnostic geometry cannot establish physical or legal acceptance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "with due care",
+        "as far to the side of the highway near the sidewalk as possible",
+        "if the area between the lane and the sidewalk is impassable",
+        "as soon as practicable"
+      ]
+    },
+    {
+      "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_opposite",
+      "target_law_id": "NRS-484B-297-6",
+      "target_type": "judgment_sweep",
+      "rationale": "Same barrier and sidewalk obstruction, traversed in the opposite longitudinal direction.",
+      "variable_assignments": {
+        "pedestrian_direction": {
+          "kind": "world_setup",
+          "value": -1
+        },
+        "intervening_area_blocked": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "sidewalk_obstruction_end_m": {
+          "kind": "world_setup",
+          "value": 34
+        },
+        "sidewalk_obstruction_kind": {
+          "kind": "world_setup",
+          "value": "impassable_section"
+        }
+      },
+      "paired_probe_id": "blocked_opposite",
+      "deliberate_differences": [
+        "pedestrian_direction",
+        "intervening_area_blocked"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_direction",
+        "comparison_or_standard": "source-reviewed sidewalk bypass context",
+        "target_value_or_branch": -1
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Same-frame original Native walker body, Core graph and four-camera join",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          },
+          {
+            "name": "nearest_traffic_distance_m",
+            "unit": "m",
+            "method": "Original walker and surveyed traffic actor centers by frame",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Actor center separation does not establish due care",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 retained site survey, source packet and Core graph capture"
+          }
+        ],
+        "limitations": [
+          "Diagnostic geometry cannot establish physical or legal acceptance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "with due care",
+        "as far to the side of the highway near the sidewalk as possible",
+        "if the area between the lane and the sidewalk is impassable",
+        "as soon as practicable"
+      ]
+    },
+    {
+      "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__blocked_late_return",
+      "target_law_id": "NRS-484B-297-6",
+      "target_type": "judgment_sweep",
+      "rationale": "Sidewalk obstruction and intervening barrier extend six engineering metres, moving the first authored return opportunity.",
+      "variable_assignments": {
+        "pedestrian_direction": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "intervening_area_blocked": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "sidewalk_obstruction_end_m": {
+          "kind": "world_setup",
+          "value": 40
+        },
+        "sidewalk_obstruction_kind": {
+          "kind": "world_setup",
+          "value": "impassable_section"
+        }
+      },
+      "paired_probe_id": "blocked_late_return",
+      "deliberate_differences": [
+        "intervening_area_blocked",
+        "sidewalk_obstruction_end_m"
+      ],
+      "probe": {
+        "primary_variable": "intervening_area_blocked",
+        "comparison_or_standard": "source-reviewed sidewalk bypass context",
+        "target_value_or_branch": true
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Same-frame original Native walker body, Core graph and four-camera join",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          },
+          {
+            "name": "nearest_traffic_distance_m",
+            "unit": "m",
+            "method": "Original walker and surveyed traffic actor centers by frame",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Actor center separation does not establish due care",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 retained site survey, source packet and Core graph capture"
+          }
+        ],
+        "limitations": [
+          "Diagnostic geometry cannot establish physical or legal acceptance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "with due care",
+        "as far to the side of the highway near the sidewalk as possible",
+        "if the area between the lane and the sidewalk is impassable",
+        "as soon as practicable"
+      ]
+    },
+    {
+      "case_id": "testing__C104081__NRS-484B-297-6__pedestrian__missing_sidewalk",
+      "target_law_id": "NRS-484B-297-6",
+      "target_type": "judgment_sweep",
+      "rationale": "An authored missing sidewalk section replaces the impassable surface section; intervening area stays clear.",
+      "variable_assignments": {
+        "pedestrian_direction": {
+          "kind": "world_setup",
+          "value": 1
+        },
+        "intervening_area_blocked": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "sidewalk_obstruction_end_m": {
+          "kind": "world_setup",
+          "value": 34
+        },
+        "sidewalk_obstruction_kind": {
+          "kind": "world_setup",
+          "value": "missing_section"
+        }
+      },
+      "paired_probe_id": "missing_sidewalk",
+      "deliberate_differences": [
+        "sidewalk_obstruction_kind"
+      ],
+      "probe": {
+        "primary_variable": "sidewalk_obstruction_kind",
+        "comparison_or_standard": "source-reviewed sidewalk bypass context",
+        "target_value_or_branch": "missing_section"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "pedestrian_body_center_xy_m",
+            "unit": "structured",
+            "method": "Same-frame original Native walker body, Core graph and four-camera join",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+            "sampling_rate_hz": 20,
+            "unit_views": [
+              {
+                "unit": "m",
+                "fields": {
+                  "/value/x": "m",
+                  "/value/y": "m"
+                }
+              }
+            ]
+          },
+          {
+            "name": "nearest_traffic_distance_m",
+            "unit": "m",
+            "method": "Original walker and surveyed traffic actor centers by frame",
+            "time_window": "all 900 original Native frames",
+            "reference_frame": "reviewed Native map world XY",
+            "uncertainty": "Actor center separation does not establish due care",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_provenance",
+            "unit": "metadata",
+            "method": "SHA-256 retained site survey, source packet and Core graph capture"
+          }
+        ],
+        "limitations": [
+          "Diagnostic geometry cannot establish physical or legal acceptance."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "with due care",
+        "as far to the side of the highway near the sidewalk as possible",
+        "if the area between the lane and the sidewalk is impassable",
+        "as soon as practicable"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "sidewalk-judgment-1",
+      "target_law_id": "NRS-484B-297-6",
+      "judgment_refs": [
+        {
+          "phrase": "with due care",
+          "note": "Requires source-reviewed physical context; no synthetic cutoff or legal verdict."
+        }
+      ],
+      "rationale": "No legal or physical cutoff can be inferred from diagnostic geometry.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "original hill-crest site survey",
+        "reviewed original participant observations"
+      ]
+    },
+    {
+      "sweep_id": "sidewalk-judgment-2",
+      "target_law_id": "NRS-484B-297-6",
+      "judgment_refs": [
+        {
+          "phrase": "as far to the side of the highway near the sidewalk as possible",
+          "note": "Requires source-reviewed physical context; no synthetic cutoff or legal verdict."
+        }
+      ],
+      "rationale": "No legal or physical cutoff can be inferred from diagnostic geometry.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "original hill-crest site survey",
+        "reviewed original participant observations"
+      ]
+    },
+    {
+      "sweep_id": "sidewalk-judgment-3",
+      "target_law_id": "NRS-484B-297-6",
+      "judgment_refs": [
+        {
+          "phrase": "if the area between the lane and the sidewalk is impassable",
+          "note": "Requires source-reviewed physical context; no synthetic cutoff or legal verdict."
+        }
+      ],
+      "rationale": "No legal or physical cutoff can be inferred from diagnostic geometry.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "original hill-crest site survey",
+        "reviewed original participant observations"
+      ]
+    },
+    {
+      "sweep_id": "sidewalk-judgment-4",
+      "target_law_id": "NRS-484B-297-6",
+      "judgment_refs": [
+        {
+          "phrase": "as soon as practicable",
+          "note": "Requires source-reviewed physical context; no synthetic cutoff or legal verdict."
+        }
+      ],
+      "rationale": "No legal or physical cutoff can be inferred from diagnostic geometry.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "original hill-crest site survey",
+        "reviewed original participant observations"
+      ]
+    }
+  ],
+  "diagnostic_only": true
+}

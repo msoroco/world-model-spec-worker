@@ -37,7 +37,7 @@ def main():
         candidates = ['primary'] if suffix in ('other_device_stop', 'flashing_no_countdown_wait') else ['primary', 'fallback1']
         for candidate in candidates:
             tag = 'delivery' if candidate == 'primary' else candidate
-            output = SCRATCH / ('selected-offline-' + suffix + '-' + tag + '-v6')
+            output = SCRATCH / ('selected-offline-' + suffix + '-' + tag + '-v7')
             if output.exists():
                 raise ValueError('retain prior offline output: ' + str(output))
             command = [sys.executable, str(REPO / 'runtime.py'), 'offline',
@@ -49,7 +49,7 @@ def main():
             log = folder / ('delivery-offline-draft.log' if candidate == 'primary'
                             else 'fallback1-offline.log')
             log.write_text(text.rstrip() + '\n')
-            output = SCRATCH / ('selected-compat-' + suffix + '-' + tag + '-v6')
+            output = SCRATCH / ('selected-compat-' + suffix + '-' + tag + '-v7')
             if output.exists():
                 raise ValueError('retain prior compatibility output: ' + str(output))
             command = [sys.executable, str(REPO / 'runtime.py'), 'compatibility',

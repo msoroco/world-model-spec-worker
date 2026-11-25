@@ -129,7 +129,7 @@ def build():
                                ASSIGNMENT + '/execution-manifest.draft.json --case ' +
                                case['case_id'] + ' --candidate fallback1 --output ' +
                                '.runtime-work/c111125-owner/selected-offline-' + suffix +
-                               '-fallback1-v6',
+                               '-fallback1-v7',
                     'exit_code': 0, 'log': str(fb_offline.relative_to(ROOT)),
                     'log_sha256': _sha(fb_offline)}
             if all(p.is_file() for p in (fb_compat, fb_positive, fb_negative)):
@@ -153,7 +153,7 @@ def build():
                 'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' +
                            ASSIGNMENT + '/execution-manifest.draft.json --case ' +
                            case['case_id'] + ' --output .runtime-work/c111125-owner/selected-offline-' +
-                           suffix + '-delivery-v6',
+                           suffix + '-delivery-v7',
                 'exit_code': 0, 'log': str(offline.relative_to(ROOT)),
                 'log_sha256': _sha(offline)}
         physical = ROOT / 'cases' / suffix / 'physical-preparation.draft.json'

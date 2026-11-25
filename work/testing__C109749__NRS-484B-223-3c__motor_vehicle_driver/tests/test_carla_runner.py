@@ -95,6 +95,15 @@ class CarlaRunnerTests(unittest.TestCase):
         self.assertEqual({row['receiving_vehicle_actor_id'] for row in trace['samples']}, {12})
         self.assertTrue(all(sensor.stopped for sensor in self.sensors.values()))
         self.assertEqual(len(self.ego.controls), 4)
+    def test_pipeline_capture_uses_exact_original_tick_and_time(self):
+        class Capture:
+            def __init__(self): self.frames = []
+            def capture(self, frame, time_s): self.frames.append((frame, time_s))
+        pipeline = Capture()
+        self.run_case(pipeline_capture=pipeline)
+        self.assertEqual([frame for frame, _ in pipeline.frames], [101, 102, 103, 104])
+        for (_, observed), expected in zip(pipeline.frames, [0.0, .05, .1, .15]):
+            self.assertAlmostEqual(observed, expected)
     def test_changed_receiving_lane_rejects_and_releases_sensors(self):
         self.world.bad_other = True
         with self.assertRaisesRegex(ValueError, 'receiving traffic left'):

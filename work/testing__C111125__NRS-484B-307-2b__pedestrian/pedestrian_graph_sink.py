@@ -102,7 +102,7 @@ class PedestrianGraphSink:
             'ego': {'position_m': subject['position_m'],
                     'heading_deg': subject['heading_deg'],
                     'speed_mps': subject['speed_mps'],
-                    'speed_provenance': 'original_actor_get_velocity',
+                    'speed_provenance': 'original_trace_actor_get_velocity',
                     'body_vertices_m': subject['body_vertices_m']},
             'original_observations': observation,
             'world': {'weather': {}},

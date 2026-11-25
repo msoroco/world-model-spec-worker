@@ -24,7 +24,7 @@ def digest(value):
 
 def summary(suffix, scratch):
     repo = ROOT.parents[1]
-    origin = repo / '.runtime-work/c111125-owner' / ('selected-compat-' + suffix + '-delivery-v6')
+    origin = repo / '.runtime-work/c111125-owner' / ('selected-compat-' + suffix + '-delivery-v7')
     if not origin.is_dir():
         raise ValueError('selected diagnostic compatibility source missing')
     folder = scratch / suffix

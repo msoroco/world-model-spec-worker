@@ -11,13 +11,17 @@ SOURCE_FILES = (
     "geometry.py", "native_construction.py", "native_walking.py", "native_source_packet.py",
     "native_readback.py", "native_actor_adapter.py", "native_camera_capture.py", "native_camera_rig.py", "native_attempt.py",
     "native_bound_attempt.py",
+    "pedestrian_core_capture.py", "native_publication.py", "saved_finalizer.py",
     "saved_measurement.py", "delivery_audit.py", "comparison_audit.py",
+    "compare_saved.py",
 )
 
 RUNNER = '''"""Exact sidewalk-bypass diagnostic bundle entrypoint."""
 import argparse
 import hashlib
 import json
+import os
+import shutil
 from pathlib import Path
 from geometry import construct, audit_design
 from native_walking import FPS
@@ -54,12 +58,42 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
+    parser.add_argument("--host")
+    parser.add_argument("--port", type=int)
     args = parser.parse_args()
     case = check()
     if args.check:
         print("diagnostic sidewalk-bypass bundle passed: " + case)
         return
-    raise ValueError("Surveyed Native sidewalk, bicycle lane, local transform and original walker capture required")
+    if not args.output_dir or not args.host or not args.port:
+        raise ValueError("Native output and host/port required")
+    source_name = os.environ.get("SCENARIO_PEDESTRIAN_SOURCE_ROOT")
+    if not source_name:
+        raise ValueError("reviewed original hill-crest source root required")
+    source = Path(source_name).resolve()
+    output = Path(args.output_dir).resolve()
+    if not source.is_dir() or not output.is_dir() or source == output:
+        raise ValueError("reviewed source/output roots invalid")
+    names = ("site-survey.json", "camera-profile.json", "traffic-plan.json")
+    for name in names:
+        original = source / name
+        target = output / name
+        if not original.is_file() or target.exists():
+            raise ValueError("missing or colliding original source: " + name)
+        shutil.copyfile(original, target)
+        if hashlib.sha256(original.read_bytes()).digest() != hashlib.sha256(target.read_bytes()).digest():
+            raise ValueError("original source changed while copying")
+    import carla
+    from native_bound_attempt import run_bound_attempt
+    from native_publication import publish_original
+    from worker_exchange import world_restore
+    client = carla.Client(args.host, args.port)
+    client.set_timeout(30)
+    plan = json.loads((output / "case-plan.json").read_text())
+    run_bound_attempt(client, carla, plan, case, output / names[0],
+                      output / names[1], output / names[2], output,
+                      restore_api=world_restore)
+    publish_original(output, case)
 
 
 if __name__ == "__main__":
@@ -80,13 +114,40 @@ class BundleTests(unittest.TestCase):
 
     def test_refuses_unsurveyed_native_capture(self):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
-            with self.assertRaisesRegex(ValueError, "Surveyed Native sidewalk"):
+            with self.assertRaisesRegex(ValueError, "Native output and host/port"):
+                runner.main()
+
+    def test_refuses_missing_reviewed_source(self):
+        with patch("sys.argv", ["runner.py", "--output-dir", ".", "--host", "127.0.0.1", "--port", "2000"]), patch.dict("os.environ", {}, clear=True):
+            with self.assertRaisesRegex(ValueError, "reviewed original hill-crest source"):
                 runner.main()
 
 
 if __name__ == "__main__":
     unittest.main()
 '''
+
+RECORDING_DESCRIPTION = {
+    "channels": [{
+        "name": "pedestrian_body_center_xy_m", "unit": "structured",
+        "method": "Same-frame original Native walker body, Core graph and four-camera join",
+        "time_window": "all 900 original Native frames", "reference_frame": "reviewed Native map world XY",
+        "uncertainty": "Original geometry, visibility and legal due care require reviewed source",
+        "sampling_rate_hz": 20,
+        "unit_views": [{"unit": "m", "fields": {"/value/x": "m", "/value/y": "m"}}],
+    }, {
+        "name": "nearest_traffic_distance_m", "unit": "m",
+        "method": "Original walker and surveyed traffic actor centers by frame",
+        "time_window": "all 900 original Native frames", "reference_frame": "reviewed Native map world XY",
+        "uncertainty": "Actor center separation does not establish due care",
+        "sampling_rate_hz": 20,
+    }],
+    "context_inputs": [{
+        "name": "source_provenance", "unit": "metadata",
+        "method": "SHA-256 retained site survey, source packet and Core graph capture",
+    }],
+    "limitations": ["Diagnostic geometry cannot establish physical or legal acceptance."],
+}
 
 
 def build():
@@ -115,7 +176,7 @@ def build():
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_survey_pending", "channels": config["cameras"]},
+            "recording_description": RECORDING_DESCRIPTION,
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }
         output = HERE / ("construction-" + suffix + ".json")
@@ -123,9 +184,13 @@ def build():
         rows.append({"case_id": case, "construction": output.name,
                      "construction_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
                      "candidate_risk": {"status": "physical", "reason": item["physical_risk_assessment"]["risk"]}})
-    (HERE / "execution-manifest.draft.json").write_text(json.dumps({
-        "assignment_id": AID, "status": "diagnostic_offline_only_original_survey_pending", "cases": rows,
-    }, indent=2) + "\n")
+    semantic_index = HERE / "proposals/semantic-index.json"
+    manifest = {"assignment_id": AID,
+                "status": "diagnostic_offline_only_original_survey_pending",
+                "cases": rows}
+    if semantic_index.is_file():
+        manifest["semantic_index_sha256"] = hashlib.sha256(semantic_index.read_bytes()).hexdigest()
+    (HERE / "execution-manifest.draft.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print("built", len(rows), "exact sidewalk-bypass diagnostic constructions")
 
 

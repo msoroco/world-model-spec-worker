@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C109749__NRS-484B-223-3c__motor_vehicle_driver__at_50ft",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "single exclusive shared center lane for turns by both directions",
+      "source": "NRS 484B.223(3)(c)",
+      "output_key": "observed_lane_design",
+      "method": "measure_lane_design",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/native/capture-receipt.json",
+        "original-attempt/native/site-packet.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "left turn onto highway then center-lane travel before merging with traffic",
+      "source": "NRS 484B.223(3)(c)",
+      "output_key": "observed_turn_and_merge",
+      "method": "measure_turn_and_merge",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/native/capture-receipt.json",
+        "original-attempt/native/trace.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "no more than 50 feet",
+      "source": "NRS 484B.223(3)(c)",
+      "output_key": "observed_center_lane_travel",
+      "method": "measure_distance",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/native/capture-receipt.json",
+        "original-attempt/native/trace.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-attempt/native/site-packet.json"
+    ],
+    "error_contains": "Missing required source: original-attempt/native/site-packet.json"
+  },
+  "legal_judgment": "unresolved"
+}
