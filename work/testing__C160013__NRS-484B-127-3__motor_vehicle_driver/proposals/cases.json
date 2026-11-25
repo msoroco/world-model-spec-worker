@@ -4,14 +4,41 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_can_occupy_gap",
-      "target_law_id": "NRS-484B-127-3",
-      "target_type": "diagnostic",
-      "rationale": "Original-source CPU compatibility for selected caravan gap outcome.",
-      "variable_assignments": {},
-      "unresolved_judgment_calls": [
-        "Actual district and caravan status and without-danger judgment need Native source review."
-      ],
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__baseline_non_caravan",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Isolate caravan activation by removing reviewed membership.",
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "pass_without_entry"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 10
+        }
+      },
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -74,13 +101,42 @@
       }
     },
     {
-      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_cannot_occupy_gap",
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_can_occupy_gap",
       "target_law_id": "NRS-484B-127-3",
-      "target_type": "diagnostic",
-      "rationale": "Original-source CPU compatibility for selected caravan gap outcome.",
-      "variable_assignments": {},
+      "target_type": "boundary_probe",
+      "rationale": "Source-backed physical gap occupancy contrast; legal sufficiency remains unresolved.",
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "enter_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 10
+        }
+      },
       "unresolved_judgment_calls": [
-        "Actual district and caravan status and without-danger judgment need Native source review."
+        "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger"
       ],
       "recording_description": {
         "channels": [
@@ -141,9 +197,144 @@
           "Statutory without-danger judgment has no supplied numeric cutoff.",
           "Diagnostic site does not establish Native map or camera review."
         ]
+      },
+      "paired_probe_id": "caravan_gap_occupancy",
+      "deliberate_differences": [
+        "entrant_route_target",
+        "caravan_spacing_target"
+      ],
+      "probe": {
+        "primary_variable": "caravan_spacing_target",
+        "comparison_or_standard": "physical body-gap and occupancy contrast, not a statutory threshold",
+        "target_value_or_branch": 10
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_cannot_occupy_gap",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "boundary_probe",
+      "rationale": "Source-backed physical gap occupancy contrast; legal sufficiency remains unresolved.",
+      "variable_assignments": {
+        "outside_business_district": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_membership": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "caravan_body_gap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_gap_occupancy": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "member_contact": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "entrant_route_target": {
+          "kind": "controller",
+          "value": "approach_selected_gap"
+        },
+        "caravan_spacing_target": {
+          "kind": "controller",
+          "value": 3
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native complete bodies",
+            "name": "caravan_member_bodies",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "original Native complete body",
+            "name": "entering_vehicle_body",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "polygon metres"
+          },
+          {
+            "method": "projected complete-body edges on sourced highway",
+            "name": "inter_body_opening",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "metres"
+          },
+          {
+            "method": "complete entrant body inside same-lane gap",
+            "name": "entrant_gap_occupancy",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          },
+          {
+            "method": "original complete-body intersection",
+            "name": "member_contact",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "original 45-second Native capture",
+            "uncertainty": "between-frame motion unresolved",
+            "unit": "boolean"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed district, route, lane and caravan membership",
+            "name": "road_context",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "Statutory without-danger judgment has no supplied numeric cutoff.",
+          "Diagnostic site does not establish Native map or camera review."
+        ]
+      },
+      "paired_probe_id": "caravan_gap_occupancy",
+      "deliberate_differences": [
+        "entrant_route_target",
+        "caravan_spacing_target"
+      ],
+      "probe": {
+        "primary_variable": "caravan_spacing_target",
+        "comparison_or_standard": "physical body-gap and occupancy contrast, not a statutory threshold",
+        "target_value_or_branch": 3
       }
     }
   ],
-  "sweep_specs": [],
-  "sweeps_expanded": []
+  "sweep_specs": [
+    {
+      "sweep_id": "caravan_spacing_judgment",
+      "target_law_id": "NRS-484B-127-3",
+      "judgment_refs": [
+        {
+          "phrase": "sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger",
+          "note": "Physical entry and body separation are observable; the statutory sufficiency and danger judgment has no supplied numerical cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical spacing and combination occupancy must be sampled without choosing a legal cutoff.",
+      "missing_inputs": [
+        "A supported Native controller for independently varying member spacing while preserving a reviewed caravan route and all original bodies.",
+        "A physical towing/combination participant and feasible range/spacing evidence for its entry."
+      ]
+    }
+  ]
 }
