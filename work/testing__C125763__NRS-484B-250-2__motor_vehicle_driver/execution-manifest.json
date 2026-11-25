@@ -5,55 +5,206 @@
       "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "b117cc4de81ff6477efc20cf0aae5f8728a7a1f329e97a60cace7d171de4da39",
+      "construction_sha256": "956bb23360645f7c9961b828e1f6f80f9836e746fa13e857a8ba97eebe404b6a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Both vehicles may not reach the intersection or remain in the four camera views during original capture."
       },
       "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original footprint entry timing and applicability context",
+        "source": "crossing_timing.py"
+      },
+      "measurement_contract": "cases/entry_inside/measurement-contract.json",
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/entry_inside/fixture-recipe.json",
+      "acquisition": {
+        "intersection_entry_time_difference": {
+          "entrypoint": "crossing_timing.py",
+          "method": "measure original body polygon entry transitions on a 20 Hz source-sealed clock",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl",
+            "site-context.json",
+            "road.xodr"
+          ]
+        }
+      },
+      "compatibility": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside --output .runtime-work/c125763-owner/compat-inside-v6 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "compat-entry_inside-receipt.json",
+        "sha256": "895a246953d587a51fda532507e3db35b08d20871afb5347489eeff87e0eae4c",
+        "log": "compat-entry_inside-analysis.log",
+        "negative_log": "compat-entry_inside-negative.log"
+      },
+      "negative": {
+        "log": "compat-entry_inside-negative.log",
+        "log_sha256": "11f2026562d7bb7c78fd8327265cf8b6e7eacbf08905a56456911d5606a5cea1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside --attempt .runtime-work/c125763-owner/compat-inside-v6 --output .runtime-work/c125763-owner/saved-inside-v3 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside --attempt .runtime-work/c125763-owner/compat-inside-missing-other-v6 --output .runtime-work/c125763-owner/saved-inside-missing-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-entry_inside.log",
+        "test_log_sha256": "8613eb96522e13777cce6eb105471228287412e1a2b6381b6c9a08b4e61fbcd5",
+        "feedback_test_exit_code": 0,
+        "feedback_log": "cpu-saved-entry_inside-missing-source.log",
+        "feedback_log_sha256": "1d2eb5348ef6f26b5d0e999359a9dd2d752c84b27151da43dd0cf60bfbd159c5",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-compose/output TMPDIR=$PWD/.runtime-work/c125763-compose/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside --output .runtime-work/c125763-bundle/entry-inside-v1 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "b117cc4de81ff6477efc20cf0aae5f8728a7a1f329e97a60cace7d171de4da39",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside --output .runtime-work/c125763-owner/offline-entry_inside-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "956bb23360645f7c9961b828e1f6f80f9836e746fa13e857a8ba97eebe404b6a",
         "exit_code": 0,
-        "log": "cpu-offline-entry_inside.log",
-        "log_sha256": "059d14aaae536e92135366a5a69c265926719430e8a3e59cd34f777eca70608b"
+        "log": "cpu-offline-entry_inside-analysis.log",
+        "log_sha256": "ed1bf89e54597ecbde1b181529ba05457cd7be2783cc50017a55716d0e1d6b44"
       }
     },
     {
       "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
       "kind": "delivery",
       "construction": "cases/entry_below/construction.json",
-      "construction_sha256": "4b985a50db20176ff72a5e8f09ca04756296a1e57363ff062a40a5db231d355a",
+      "construction_sha256": "8fe955d1735cfc9a9f58dffb79ac0a34bcbcc97bb96e21d98c5266037184ca80",
       "candidate_risk": {
         "status": "physical",
         "reason": "Both vehicles may not reach the intersection or remain in the four camera views during original capture."
       },
       "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original footprint entry timing and applicability context",
+        "source": "crossing_timing.py"
+      },
+      "measurement_contract": "cases/entry_below/measurement-contract.json",
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/entry_below/fixture-recipe.json",
+      "acquisition": {
+        "intersection_entry_time_difference": {
+          "entrypoint": "crossing_timing.py",
+          "method": "measure original body polygon entry transitions on a 20 Hz source-sealed clock",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl",
+            "site-context.json",
+            "road.xodr"
+          ]
+        }
+      },
+      "compatibility": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below --output .runtime-work/c125763-owner/compat-entry_below-v6 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "compat-entry_below-receipt.json",
+        "sha256": "c81bc0eb17cf9d4d7a081521cccc35c101b5d3a515b8d2a0229e3cc89925eac9",
+        "log": "compat-entry_below-analysis.log",
+        "negative_log": "compat-entry_below-negative.log"
+      },
+      "negative": {
+        "log": "compat-entry_below-negative.log",
+        "log_sha256": "910dcdff27dafe8cb1288b96b284250d741bfb33c2f1aa50207dcb004642834e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below --attempt .runtime-work/c125763-owner/compat-entry_below-v6 --output .runtime-work/c125763-owner/saved-entry_below-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below --attempt .runtime-work/c125763-owner/compat-below-missing-v6 --output .runtime-work/c125763-owner/saved-below-missing-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-entry_below.log",
+        "test_log_sha256": "37fc514e5e68eee47419d31f61dccbcd22585b0a651783ffa4e4c261a44e9dcf",
+        "feedback_test_exit_code": 0,
+        "feedback_log": "cpu-saved-entry_below-missing-source.log",
+        "feedback_log_sha256": "6a8d21886ac532b974ce2909cccbdb956cb2809357c45059609ae6ae3e1ccea3",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-compose/output TMPDIR=$PWD/.runtime-work/c125763-compose/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below --output .runtime-work/c125763-bundle/entry-below-v1 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "4b985a50db20176ff72a5e8f09ca04756296a1e57363ff062a40a5db231d355a",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below --output .runtime-work/c125763-owner/offline-entry_below-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "8fe955d1735cfc9a9f58dffb79ac0a34bcbcc97bb96e21d98c5266037184ca80",
         "exit_code": 0,
-        "log": "cpu-offline-entry_below.log",
-        "log_sha256": "2b6be535f69fb2b000a3d30e9bb6902dfccd046698e28a125f393a15dacde357"
+        "log": "cpu-offline-entry_below-analysis.log",
+        "log_sha256": "552c150968dddecee35eb35ffd7d5cf1a0ed8d1e21c2d3b304ef43a9c2800d5d"
       }
     },
     {
       "case_id": "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above",
       "kind": "delivery",
       "construction": "cases/entry_above/construction.json",
-      "construction_sha256": "37c4fa0bb131365b89a9cbae041df86c4cf2642852c8c844a7b82fe3b6fae0b1",
+      "construction_sha256": "2515437a1637f08dba4da0cc5592755118af714bf70e24bd06f95ee413ce810a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Both vehicles may not reach the intersection or remain in the four camera views during original capture."
       },
       "candidates": [],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original footprint entry timing and applicability context",
+        "source": "crossing_timing.py"
+      },
+      "measurement_contract": "cases/entry_above/measurement-contract.json",
+      "fixture_recipe": "work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/cases/entry_above/fixture-recipe.json",
+      "acquisition": {
+        "intersection_entry_time_difference": {
+          "entrypoint": "crossing_timing.py",
+          "method": "measure original body polygon entry transitions on a 20 Hz source-sealed clock",
+          "evidence": [
+            "ego-body-history.jsonl",
+            "other-body-history.jsonl",
+            "site-context.json",
+            "road.xodr"
+          ]
+        }
+      },
+      "compatibility": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above --output .runtime-work/c125763-owner/compat-entry_above-v6 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "receipt": "compat-entry_above-receipt.json",
+        "sha256": "7765e3956eb61ecf597b9098478db5ff45a560d689c512d7280a11971050a59d",
+        "log": "compat-entry_above-analysis.log",
+        "negative_log": "compat-entry_above-negative.log"
+      },
+      "negative": {
+        "log": "compat-entry_above-negative.log",
+        "log_sha256": "706845c7cdc4ca6726520afbadb9649ae9bac878cbe578d6e6206eb5f06671eb"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above --attempt .runtime-work/c125763-owner/compat-entry_above-v6 --output .runtime-work/c125763-owner/saved-entry_above-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "feedback_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above --attempt .runtime-work/c125763-owner/compat-above-missing-v6 --output .runtime-work/c125763-owner/saved-above-missing-v1 --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-entry_above.log",
+        "test_log_sha256": "814dbf5bed89ae755484b1ac3153b53242ae6a260c34bd6c51a3c0691371ccd8",
+        "feedback_test_exit_code": 0,
+        "feedback_log": "cpu-saved-entry_above-missing-source.log",
+        "feedback_log_sha256": "f3676b907ba31e517378d33ec27d84a410a0478bb0a3693a4a9a82a217630973",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false
+      },
       "offline": {
-        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-compose/output TMPDIR=$PWD/.runtime-work/c125763-compose/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above --output .runtime-work/c125763-bundle/entry-above-v1 --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "37c4fa0bb131365b89a9cbae041df86c4cf2642852c8c844a7b82fe3b6fae0b1",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c125763-owner/output TMPDIR=$PWD/.runtime-work/c125763-owner MPLCONFIGDIR=$PWD/.runtime-work/c125763-owner/mpl PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125763__NRS-484B-250-2__motor_vehicle_driver/execution-manifest.json --case testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above --output .runtime-work/c125763-owner/offline-entry_above-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "2515437a1637f08dba4da0cc5592755118af714bf70e24bd06f95ee413ce810a",
         "exit_code": 0,
-        "log": "cpu-offline-entry_above.log",
-        "log_sha256": "478675636a3c2c0c835e818b49fc0aee7ad628556f833686edd2889236306229"
+        "log": "cpu-offline-entry_above-analysis.log",
+        "log_sha256": "9c2f8625e27b56e0f86d8e66b13cebc9231f0b71900041fa01890db21920ddd2"
       }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "comparisons": [
+    {
+      "comparison_id": "entry_timing_range",
+      "case_ids": [
+        "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_below",
+        "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_inside",
+        "testing__C125763__NRS-484B-250-2__motor_vehicle_driver__entry_above"
+      ],
+      "fixed_conditions": [
+        "same reviewed C125763 map and median-opening geometry",
+        "same yield-sign device status and subsection 4 uncertainty",
+        "same ego/other highway and left/right approach roles",
+        "same vehicle blueprints, weather, four camera positions and 20 Hz original capture"
+      ],
+      "deliberate_differences": [
+        "other vehicle release schedule and realized entry-time difference"
+      ],
+      "legal_limit": "Training bounds are coverage targets, not an approximately-same-time legal threshold."
     }
   ]
 }

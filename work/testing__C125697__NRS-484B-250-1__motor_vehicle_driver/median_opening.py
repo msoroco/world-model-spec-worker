@@ -100,9 +100,13 @@ def construct_native(world, scene, location_factory, blueprint_library, signal_r
         raise
 
 
-def requested_ego_control(ego_before_entry, other_inside, source_fresh):
-    """Conservative request; measured behavior remains a separate observation."""
-    if not source_fresh or (ego_before_entry and other_inside):
+def requested_ego_control(ego_before_entry, other_inside, source_fresh,
+                          response_mode="yield_before_entry"):
+    """Return the selected controller request, never a measured or legal result."""
+    if response_mode not in ("yield_before_entry", "advance_before_other_exit"):
+        raise ValueError("unknown exact-case ego response request")
+    if not source_fresh or (response_mode == "yield_before_entry" and
+                            ego_before_entry and other_inside):
         return "brake"
     return "proceed"
 
@@ -137,12 +141,16 @@ def measure_saved(trace, scene, expected_frames=900):
             raise ValueError("governing signal did not remain inoperative")
         for name in ("ego", "other"):
             actor = frame[name]
-            if actor.get("id") != trace["actor_ids"][name] or actor.get("road_id") != scene[f"{name}_approach_road_id"]:
-                raise ValueError("actor or approach road source changed")
+            if actor.get("id") != trace["actor_ids"][name]:
+                raise ValueError("actor identity changed")
+            if type(actor.get("road_id")) is not int:
+                raise ValueError("actor live road ID missing")
             vertices = actor.get("body_vertices_xy_m")
             if not isinstance(vertices, list) or len(vertices) != 4 or any(len(p) != 2 or not all(math.isfinite(v) for v in p) for p in vertices):
                 raise ValueError("original body footprint missing")
             inside = _rect_overlap(vertices, box)
+            if entries[name] is None and not inside and actor.get("road_id") != scene[f"{name}_approach_road_id"]:
+                raise ValueError("actor approach road source changed")
             if index == 0 and inside:
                 raise ValueError("entry was not observed from outside")
             if inside and not prior[name] and entries[name] is None:

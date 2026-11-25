@@ -20,6 +20,12 @@ class OfflineBundleTests(unittest.TestCase):
             files = {item['path']: item['content'] for item in package['files']}
             config = json.loads(files['config.json'])
             self.assertEqual(config['selected_case_id'], row['case_id'])
+            suffix = row['case_id'].rsplit('__', 1)[1]
+            self.assertEqual(config['requested_ego_response'],
+                             'yield_before_entry' if suffix == 'precedence'
+                             else 'advance_before_other_exit')
+            self.assertEqual(files['median_opening.py'],
+                             (ROOT / 'median_opening.py').read_text())
             self.assertEqual(config['plan_sha256'], hashlib.sha256(
                 (ROOT / 'case-plan.json').read_bytes()).hexdigest())
             self.assertEqual(config['required_sources'],

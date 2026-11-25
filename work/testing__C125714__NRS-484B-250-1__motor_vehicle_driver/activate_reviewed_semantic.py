@@ -10,8 +10,10 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from reviewed_delivery_author import ROOT, REPO, SUFFIXES
+from opendrive_route_preflight import preflight as route_preflight
 
 
 def sha(path: Path) -> str:
@@ -37,7 +39,12 @@ def activate(candidate_root: Path, assignment: dict) -> dict:
         document = json.loads(construction.read_text())
         if document.get("diagnostic_only") is not False:
             raise ValueError("diagnostic construction cannot activate semantic binding")
-        receipt = REPO / row["source_preflight"]
+        receipt_rel = Path(row["source_preflight"])
+        if receipt_rel.is_absolute() or ".." in receipt_rel.parts:
+            raise ValueError("candidate source preflight path escapes repository")
+        receipt = REPO / receipt_rel
+        if receipt.is_symlink() or not receipt.resolve().is_relative_to(REPO):
+            raise ValueError("candidate source preflight path escapes repository")
         proof = json.loads(receipt.read_text())
         files = {item["path"]: item["content"] for item in document["files"]}
         scene = json.loads(files["scene.json"])
@@ -52,6 +59,16 @@ def activate(candidate_root: Path, assignment: dict) -> dict:
                 or proof.get("physical_acceptance_claimed") is not False
                 or proof.get("legal_acceptance_claimed") is not False):
             raise ValueError("candidate source preflight does not bind original packet and map")
+        with TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c125714-semantic-route-") as temporary:
+            source_dir = Path(temporary)
+            scene_path = source_dir / "scene.json"
+            map_path = source_dir / "map.xodr"
+            scene_path.write_text(files["scene.json"], encoding="utf-8")
+            map_path.write_text(files["reviewed-map.xodr"], encoding="utf-8")
+            route = route_preflight(map_path, [scene_path])
+        if (proof.get("route_preflight_map_sha256") != map_sha
+                or proof.get("route_binding") != route["cases"][row["case_id"]]):
+            raise ValueError("candidate source preflight lacks exact route binding")
     draft = ROOT / "proposals"
     proposals = candidate_root / "proposals"
     if not proposals.is_dir():

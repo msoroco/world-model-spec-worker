@@ -1,7 +1,7 @@
 {
   "format": "worker-ordered-gpu-queue",
   "status": "partial_current_runtime_ready_assignments",
-  "note": "Partial ordered queue of current-runtime strict-ready packages; physical and local acceptance are pending. For C111610/283-1a, set PROCESSED_ROOT to the process-saved output parent and PROCESSED to its selected versioned vNNNN child before running the additional source audit. For C111610/283-1a and C111278/LVMC-11-16-040, SAVED_ATTEMPT is the saved attempt directory, ATTEMPT is the canonical numeric attempt ID, PROCESSED_ROOT is the process-saved output parent, and PROCESSED is its selected versioned vNNNN child. C202480 and C229404 source audits write SOURCE_AUDIT; canonical local delivery auditor must supply AUDIT for accept-delivery. C229404 now requires full original FFV1 stream decode and independent source review before acceptance; its separate SOURCE_AUDIT is not the canonical AUDIT. C227749 requires reviewed-site.json and original reviewed-source-documents in each exact attempt before Native execution; SOURCE_AUDIT is its separate physical source review, while AUDIT is the canonical local delivery audit for accept-delivery. C111125/307-2b requires case-specific reviewed site and original source packet before Native execution; its production source and comparison audits are separate from canonical local AUDIT acceptance. C158196 requires a source-reviewed original site bundle before Native execution and independent-source-review.json bound to each sealed original attempt; SOURCE_AUDIT and comparison receipts are separate from canonical local AUDIT acceptance.",
+  "note": "Partial ordered queue of current-runtime strict-ready packages; physical and local acceptance are pending. For C111610/283-1a, set PROCESSED_ROOT to the process-saved output parent and PROCESSED to its selected versioned vNNNN child before running the additional source audit. For C111610/283-1a and C111278/LVMC-11-16-040, SAVED_ATTEMPT is the saved attempt directory, ATTEMPT is the canonical numeric attempt ID, PROCESSED_ROOT is the process-saved output parent, and PROCESSED is its selected versioned vNNNN child. C202480 and C229404 source audits write SOURCE_AUDIT; canonical local delivery auditor must supply AUDIT for accept-delivery. C229404 now requires full original FFV1 stream decode and independent source review before acceptance; its separate SOURCE_AUDIT is not the canonical AUDIT. C227749 requires reviewed-site.json and original reviewed-source-documents in each exact attempt before Native execution; SOURCE_AUDIT is its separate physical source review, while AUDIT is the canonical local delivery audit for accept-delivery. C111125/307-2b requires case-specific reviewed site and original source packet before Native execution; its production source and comparison audits are separate from canonical local AUDIT acceptance. C158196 requires a source-reviewed original site bundle before Native execution and independent-source-review.json bound to each sealed original attempt; SOURCE_AUDIT and comparison receipts are separate from canonical local AUDIT acceptance. C111301 requires a reviewed original map/junction packet and matching OpenDRIVE in each prepared attempt before Native execution; its separate SOURCE_AUDIT requires a sealed native-exit record and OWNER_RELEASE_RECEIPT. Its two comparison commands require LEFT_OWNER_RELEASE_RECEIPT and RIGHT_OWNER_RELEASE_RECEIPT for the distinct original attempts; neither source audit nor comparison is the canonical AUDIT supplied to accept-delivery.",
   "assignments": [
     "testing__C229023__LVMC-11-30-030__motor_vehicle_driver",
     "testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
@@ -60,7 +60,8 @@
     "testing__C229404__NRS-484B-477-2__motor_vehicle_driver",
     "testing__C111125__NRS-484B-307-2b__pedestrian",
     "testing__C158196__NRS-484B-257-2__motor_vehicle_driver",
-    "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver"
+    "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver",
+    "testing__C111301__NRS-484B-113-3__motor_vehicle_driver"
   ],
   "cases": [
     {
@@ -4590,6 +4591,58 @@
       "owner_release_command": "CASE_ID=testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
       "additional_source_audit_command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c143687-source-audit\" .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/delivery_audit.py --case testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__not_designated --attempt \"$ATTEMPT\" --acquisition \"$ATTEMPT/acquisition.json\" > \"$SOURCE_AUDIT\"",
       "candidate_commands": {}
+    },
+    {
+      "order": 308,
+      "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+      "execute_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/c111301-local-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-audit\" TMPDIR=\"$PWD/.runtime-work/c111301-local-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/original_source_audit.py --attempt \"$ATTEMPT\" --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {}
+    },
+    {
+      "order": 309,
+      "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue",
+      "execute_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/c111301-local-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-audit\" TMPDIR=\"$PWD/.runtime-work/c111301-local-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/original_source_audit.py --attempt \"$ATTEMPT\" --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {}
+    },
+    {
+      "order": 310,
+      "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+      "execute_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/c111301-local-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-audit\" TMPDIR=\"$PWD/.runtime-work/c111301-local-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/original_source_audit.py --attempt \"$ATTEMPT\" --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {}
+    },
+    {
+      "order": 311,
+      "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
+      "case_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue",
+      "prepare_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" prepare-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue",
+      "execute_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "capture_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+      "accept_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" accept-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111301__NRS-484B-113-3__motor_vehicle_driver --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" --audit \"$AUDIT\" --review-archive /external/archive",
+      "postprocessing_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/execution-manifest.json --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+      "owner_release_command": "CASE_ID=testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue .venv-cpu/bin/python runtime.py owner-released --attempt \"$ATTEMPT\" --receipt \"$OWNER_RELEASE_RECEIPT\" --acknowledge-owner-released",
+      "additional_source_audit_command": "mkdir -p \"$PWD/.runtime-work/c111301-local-audit\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-audit\" TMPDIR=\"$PWD/.runtime-work/c111301-local-audit\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/original_source_audit.py --attempt \"$ATTEMPT\" --case testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" --output \"$SOURCE_AUDIT\"",
+      "candidate_commands": {}
     }
   ],
   "comparison_audit_commands": [
@@ -6460,6 +6513,24 @@
         "testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver__maintenance_vehicle"
       ],
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C143687__LVMC-11-27-010-A__motor_vehicle_driver/comparison_delivery.py --comparison trail_maintenance_vehicle --baseline \"$LEFT_ATTEMPT\" --variant \"$RIGHT_ATTEMPT\" > \"$COMPARISON_AUDIT\""
+    },
+    {
+      "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
+      "comparison_id": "pedestrian_yield_response",
+      "case_ids": [
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_yield",
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__pedestrian_continue"
+      ],
+      "command": "mkdir -p \"$PWD/.runtime-work/c111301-local-comparison\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-comparison\" TMPDIR=\"$PWD/.runtime-work/c111301-local-comparison\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/sealed_pedestrian_comparison.py --yield-attempt \"$LEFT_ATTEMPT\" --continue-attempt \"$RIGHT_ATTEMPT\" --yield-owner-release-receipt \"$LEFT_OWNER_RELEASE_RECEIPT\" --continue-owner-release-receipt \"$RIGHT_OWNER_RELEASE_RECEIPT\" --output \"$COMPARISON_AUDIT\""
+    },
+    {
+      "assignment_id": "testing__C111301__NRS-484B-113-3__motor_vehicle_driver",
+      "comparison_id": "traffic_yield_response",
+      "case_ids": [
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_yield",
+        "testing__C111301__NRS-484B-113-3__motor_vehicle_driver__traffic_continue"
+      ],
+      "command": "mkdir -p \"$PWD/.runtime-work/c111301-local-comparison\" && SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c111301-local-comparison\" TMPDIR=\"$PWD/.runtime-work/c111301-local-comparison\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C111301__NRS-484B-113-3__motor_vehicle_driver/saved_traffic_comparison.py --yield-attempt \"$LEFT_ATTEMPT\" --continue-attempt \"$RIGHT_ATTEMPT\" --yield-owner-release-receipt \"$LEFT_OWNER_RELEASE_RECEIPT\" --continue-owner-release-receipt \"$RIGHT_OWNER_RELEASE_RECEIPT\" --output \"$COMPARISON_AUDIT\""
     }
   ]
 }

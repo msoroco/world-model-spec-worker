@@ -15,7 +15,35 @@ ASSIGNMENT = HERE.name
 LAW = "NRS-484B-257-1"
 ACTOR = "motor_vehicle_driver"
 TEMPLATE = LAW + "@" + ACTOR
-KINDS = ("nearest_view_response", "nearest_view_uninterrupted")
+KINDS = (
+    "nearest_view_response", "nearest_view_uninterrupted",
+    "marked_stop_line_response", "marked_stop_line_uninterrupted",
+    "near_side_marked_crosswalk_response", "near_side_marked_crosswalk_uninterrupted",
+    "near_side_sidewalk_derived_crosswalk_response",
+    "near_side_sidewalk_derived_crosswalk_uninterrupted",
+    "approaching_phase_probe", "later_history_probe", "nearest_view_stopped",
+)
+
+REFERENCE = {
+    "nearest_view": "no stop line or near-side crosswalk; reviewed nearest-view point",
+    "marked_stop_line": "clearly marked stop line governs before any crosswalk",
+    "near_side_marked_crosswalk": "no stop line; marked near-side crosswalk governs",
+    "near_side_sidewalk_derived_crosswalk": "no stop line; source-reviewed sidewalk-derived near-side crosswalk governs",
+}
+
+
+def case_settings(kind: str) -> dict:
+    if kind not in KINDS:
+        raise ValueError("unknown statutory case")
+    reference = next((name for name in REFERENCE if kind.startswith(name)), "nearest_view")
+    response = "stopped" if kind == "nearest_view_stopped" else (
+        "response" if kind.endswith("response") or kind == "approaching_phase_probe"
+        else "uninterrupted")
+    traffic = ("approaching_before_entry" if kind == "approaching_phase_probe" else
+               "later_across_or_within_history" if kind == "later_history_probe" else
+               "occupied_at_reference")
+    return {"response_mode": response, "stopping_reference": REFERENCE[reference],
+            "through_traffic_phase": traffic}
 
 
 def recording_description() -> dict:
@@ -81,6 +109,10 @@ def build() -> dict:
          "range_or_domain": "source-reviewed through-highway actor route and schedule"},
         {"name": "capture_profile", "kind": "world_setup",
          "range_or_domain": "four original camera streams, 20 Hz, 900 frames"},
+        {"name": "stopping_reference", "kind": "world_setup",
+         "range_or_domain": "source-reviewed stop line, near-side crosswalk or nearest-view hierarchy"},
+        {"name": "through_traffic_phase", "kind": "world_setup",
+         "range_or_domain": "occupied, approaching before entry or later across-or-within history"},
     ]
     template = {"status": "draft", "law_id": LAW, "actor": ACTOR,
                 "template_id": TEMPLATE, "quote": quote,
@@ -129,7 +161,9 @@ def build() -> dict:
     base = {item["name"]: {"kind": item["kind"], "value": {
         "response_mode": "response", "reviewed_site": "source-reviewed C158208 site",
         "through_traffic": "fixed original through-highway route and schedule",
-        "capture_profile": "four original camera streams, 20 Hz, 900 frames"}[item["name"]]}
+        "capture_profile": "four original camera streams, 20 Hz, 900 frames",
+        "stopping_reference": REFERENCE["nearest_view"],
+        "through_traffic_phase": "occupied_at_reference"}[item["name"]]}
         for item in parameters}
     cases = [{"case_id": ASSIGNMENT + "__semantic_baseline", "target_law_id": None,
               "target_type": "baseline", "rationale": "Shared source-dependent setup reference; no separate recording.",
@@ -137,14 +171,19 @@ def build() -> dict:
               "variable_assignments": base}]
     for kind in KINDS:
         assignments = json.loads(json.dumps(base))
-        assignments["response_mode"]["value"] = "response" if kind.endswith("response") else "uninterrupted"
+        settings = case_settings(kind)
+        for name, value in settings.items():
+            assignments[name]["value"] = value
+        changed = [name for name in settings if assignments[name]["value"] != base[name]["value"]]
+        if not changed:
+            changed = ["response_mode"]
         cases.append({"case_id": ASSIGNMENT + "__" + kind, "target_law_id": LAW,
-                      "target_type": "boundary_probe", "paired_probe_id": "yield_nearest_view",
-                      "deliberate_differences": ["response_mode"],
-                      "probe": {"primary_variable": "response_mode",
-                                "comparison_or_standard": "yield_nearest_view",
+                      "target_type": "boundary_probe", "paired_probe_id": "yield_" + kind.rsplit("_", 1)[0],
+                      "deliberate_differences": changed,
+                      "probe": {"primary_variable": changed[0],
+                                "comparison_or_standard": "statutory-matrix.draft.json",
                                 "target_value_or_branch": kind},
-                      "rationale": "Source-bound comparison of realized response near the reviewed first view.",
+                      "rationale": "Source-bound comparison of the selected stopping reference, response and through-traffic timing.",
                       "recording_description": description,
                       "unresolved_judgment_calls": unresolved,
                       "variable_assignments": assignments})
@@ -161,7 +200,7 @@ def build() -> dict:
     index = {"format": "worker-semantic-delivery", "assignment_id": ASSIGNMENT,
              "stages": references}
     (directory / "semantic-index.json").write_text(json.dumps(index, indent=2) + "\n")
-    return {"stage_count": 9, "selected_cases": 2}
+    return {"stage_count": 9, "selected_cases": len(KINDS)}
 
 
 if __name__ == "__main__":

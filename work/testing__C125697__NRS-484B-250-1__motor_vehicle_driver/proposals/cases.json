@@ -1,0 +1,278 @@
+{
+  "cell_id": "C125697",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c125697-judgment-1",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "intersection",
+          "note": "Identify the same physical roadway crossing for both vehicles; a median opening label alone is insufficient."
+        }
+      ],
+      "rationale": "Original reviewed roadway, device and actor histories are absent; no legal boundary is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device packet and accepted original actor histories"
+      ]
+    },
+    {
+      "sweep_id": "c125697-judgment-2",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "different highway",
+          "note": "Review original road and public-highway identity sources for both approaches."
+        }
+      ],
+      "rationale": "Original reviewed roadway, device and actor histories are absent; no legal boundary is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device packet and accepted original actor histories"
+      ]
+    },
+    {
+      "sweep_id": "c125697-judgment-3",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "entered the intersection",
+          "note": "Use original footprint transitions with an uninterrupted Native frame clock."
+        }
+      ],
+      "rationale": "Original reviewed roadway, device and actor histories are absent; no legal boundary is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device packet and accepted original actor histories"
+      ]
+    },
+    {
+      "sweep_id": "c125697-judgment-4",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "intersections controlled by official traffic-control devices",
+          "note": "Review the governing device and subsection 4 separately; inoperative readback is not an applicability ruling."
+        }
+      ],
+      "rationale": "Original reviewed roadway, device and actor histories are absent; no legal boundary is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device packet and accepted original actor histories"
+      ]
+    },
+    {
+      "sweep_id": "c125697-judgment-5",
+      "target_law_id": "NRS-484B-250-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "approaching each other from opposite directions",
+          "note": "Review original approach trajectories and left-turn intent for the statutory exclusion."
+        }
+      ],
+      "rationale": "Original reviewed roadway, device and actor histories are absent; no legal boundary is inferred.",
+      "missing_inputs": [
+        "reviewed original site/device packet and accepted original actor histories"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__precedence",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled requested response contrast; observed entry and exit order is measured, not presumed.",
+      "variable_assignments": {
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield_before_entry"
+        }
+      },
+      "paired_probe_id": "inoperative_signal_precedence",
+      "deliberate_differences": [
+        "ego_response_request"
+      ],
+      "probe": {
+        "primary_variable": "ego_response_request",
+        "comparison_or_standard": "original body entry relative to other exit",
+        "target_value_or_branch": "precedence"
+      },
+      "unresolved_judgment_calls": [
+        "intersection",
+        "different highway",
+        "entered the intersection",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_body_history",
+            "unit": "native record",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized actor IDs, road IDs and four-corner body footprints",
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed roadway crossing bounds",
+            "uncertainty": "original site and realized motion remain unreviewed"
+          },
+          {
+            "name": "governing_signal_readback",
+            "unit": "native record",
+            "sampling_rate_hz": 20,
+            "method": "original governing signal readback joined to Native frame and elapsed clock",
+            "time_window": "all 900 original frames",
+            "reference_frame": "identified crossing approaches",
+            "uncertainty": "governing device and subsection 4 applicability remain unreviewed"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, public-highway and official-device records"
+          },
+          {
+            "name": "approach_and_turn_intent",
+            "unit": "source",
+            "method": "source-hashed route geometry and original actor heading histories"
+          }
+        ],
+        "limitations": [
+          "A diagnostic source packet cannot establish a legal right-of-way judgment.",
+          "An inoperative signal alone does not establish whether subsection 4 overrides the official-device exclusion.",
+          "Original body motion and four-camera physical visibility remain unreviewed."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__advance",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled requested response contrast; observed entry and exit order is measured, not presumed.",
+      "variable_assignments": {
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "advance_before_other_exit"
+        }
+      },
+      "paired_probe_id": "inoperative_signal_precedence",
+      "deliberate_differences": [
+        "ego_response_request"
+      ],
+      "probe": {
+        "primary_variable": "ego_response_request",
+        "comparison_or_standard": "original body entry relative to other exit",
+        "target_value_or_branch": "advance"
+      },
+      "unresolved_judgment_calls": [
+        "intersection",
+        "different highway",
+        "entered the intersection",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_body_history",
+            "unit": "native record",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized actor IDs, road IDs and four-corner body footprints",
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed roadway crossing bounds",
+            "uncertainty": "original site and realized motion remain unreviewed"
+          },
+          {
+            "name": "governing_signal_readback",
+            "unit": "native record",
+            "sampling_rate_hz": 20,
+            "method": "original governing signal readback joined to Native frame and elapsed clock",
+            "time_window": "all 900 original frames",
+            "reference_frame": "identified crossing approaches",
+            "uncertainty": "governing device and subsection 4 applicability remain unreviewed"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, public-highway and official-device records"
+          },
+          {
+            "name": "approach_and_turn_intent",
+            "unit": "source",
+            "method": "source-hashed route geometry and original actor heading histories"
+          }
+        ],
+        "limitations": [
+          "A diagnostic source packet cannot establish a legal right-of-way judgment.",
+          "An inoperative signal alone does not establish whether subsection 4 overrides the official-device exclusion.",
+          "Original body motion and four-camera physical visibility remain unreviewed."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C125697__NRS-484B-250-1__motor_vehicle_driver__semantic_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Semantic reference only; no extra recording.",
+      "variable_assignments": {
+        "ego_response_request": {
+          "kind": "controller",
+          "value": "yield_before_entry"
+        }
+      },
+      "deliberate_differences": [],
+      "unresolved_judgment_calls": [
+        "intersection",
+        "different highway",
+        "entered the intersection",
+        "intersections controlled by official traffic-control devices",
+        "approaching each other from opposite directions"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "intersection_body_history",
+            "unit": "native record",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized actor IDs, road IDs and four-corner body footprints",
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed roadway crossing bounds",
+            "uncertainty": "original site and realized motion remain unreviewed"
+          },
+          {
+            "name": "governing_signal_readback",
+            "unit": "native record",
+            "sampling_rate_hz": 20,
+            "method": "original governing signal readback joined to Native frame and elapsed clock",
+            "time_window": "all 900 original frames",
+            "reference_frame": "identified crossing approaches",
+            "uncertainty": "governing device and subsection 4 applicability remain unreviewed"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_site_device_highway_packet",
+            "unit": "source",
+            "method": "source-hashed original OpenDRIVE, public-highway and official-device records"
+          },
+          {
+            "name": "approach_and_turn_intent",
+            "unit": "source",
+            "method": "source-hashed route geometry and original actor heading histories"
+          }
+        ],
+        "limitations": [
+          "A diagnostic source packet cannot establish a legal right-of-way judgment.",
+          "An inoperative signal alone does not establish whether subsection 4 overrides the official-device exclusion.",
+          "Original body motion and four-camera physical visibility remain unreviewed."
+        ]
+      }
+    }
+  ]
+}

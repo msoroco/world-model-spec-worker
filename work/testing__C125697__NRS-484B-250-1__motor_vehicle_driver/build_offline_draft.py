@@ -36,6 +36,10 @@ def check():
             config["crossing_kind"] != "median_opening_roadway_crossing" or
             config["governing_signal_state"] != "inoperative"):
         raise ValueError("Statutory crossing or governing signal contract changed")
+    expected_response = ("yield_before_entry" if case.endswith("__precedence")
+                         else "advance_before_other_exit")
+    if config["requested_ego_response"] != expected_response:
+        raise ValueError("Exact-case response request changed")
     if (config["rate_hz"] != 20 or config["frame_count"] != 900 or
             config["duration_s"] != 45 or
             config["cameras"] != ["front", "rear", "left", "right"]):
@@ -118,8 +122,7 @@ def build():
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case,
             "entrypoint": "runner.py", "diagnostic_only": True,
-            "recording_description": {"status": "diagnostic_only_original_sources_pending",
-                                      "channels": list(CAMERAS)},
+            "recording_description": item["recording_description"],
             "files": [{"path": name, "content": body} for name, body in files.items()],
         }
         path = HERE / ("construction-" + suffix + ".json")

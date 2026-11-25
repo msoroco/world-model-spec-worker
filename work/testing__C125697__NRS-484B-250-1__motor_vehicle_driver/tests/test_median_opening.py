@@ -173,6 +173,16 @@ class MedianOpeningTests(unittest.TestCase):
         del saved["frames"][50]["native_elapsed_seconds"]
         with self.assertRaisesRegex(ValueError, "Native frame/clock missing"):
             MODULE.measure_saved(saved, s)
+        saved = trace(s)
+        saved["frames"][1]["ego"]["road_id"] = 99
+        with self.assertRaisesRegex(ValueError, "approach road source changed"):
+            MODULE.measure_saved(saved, s)
+        saved = trace(s)
+        for frame in saved["frames"][40:]:
+            frame["other"]["road_id"] = 99
+        for frame in saved["frames"][60:]:
+            frame["ego"]["road_id"] = 98
+        self.assertTrue(MODULE.measure_saved(saved, s)["other_entered_before_ego"])
 
     def test_comparison_rejects_changed_fixed_source(self):
         a, b = scene(), scene("advance")
@@ -186,6 +196,12 @@ class MedianOpeningTests(unittest.TestCase):
         self.assertEqual(MODULE.requested_ego_control(True, True, True), "brake")
         self.assertEqual(MODULE.requested_ego_control(True, False, False), "brake")
         self.assertEqual(MODULE.requested_ego_control(True, False, True), "proceed")
+        self.assertEqual(MODULE.requested_ego_control(
+            True, True, True, "advance_before_other_exit"), "proceed")
+        self.assertEqual(MODULE.requested_ego_control(
+            True, True, False, "advance_before_other_exit"), "brake")
+        with self.assertRaisesRegex(ValueError, "unknown exact-case"):
+            MODULE.requested_ego_control(True, True, True, "invented")
 
 
 if __name__ == "__main__":

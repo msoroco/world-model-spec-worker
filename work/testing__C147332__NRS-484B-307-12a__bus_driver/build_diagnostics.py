@@ -66,11 +66,13 @@ def diagnostic(scene, kind):
         streams["bus-body-history.jsonl"].append({**common,
             "source_path": "original-capture.txt",
             "source_sha256": digest(files["original-capture.txt"]), "bus_actor_id": 7,
+            "bus_heading_deg": 0.0,
             "bus_footprint": footprint})
         streams["lane-signal-history.jsonl"].append({**common,
             "source_path": "sign-state-original.jsonl", "highway_id": "synthetic-highway",
             "placement": "over_individual_lanes", "faces_bus": True,
             "lanes": [{"lane_id": lane, "direction": "bus_direction",
+                       "head_heading_deg": 180.0,
                        "lateral_bounds_m": bounds,
                        "symbol": "down_green_arrow" if lane in green else "dark"}
                       for lane, bounds in (("east", [-3.6, 0.0]), ("west", [-7.2, -3.6]))],

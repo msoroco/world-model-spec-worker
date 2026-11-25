@@ -53,11 +53,14 @@ def _polygon_gap(first: list, second: list) -> float:
                for i in range(len(a) - 1) for j in range(len(b) - 1))
 
 
-def _source_levels(source: dict, survey: dict, clearance_path: Path) -> dict:
+def _source_levels(source: dict, survey: dict, clearance_path: Path) -> tuple[dict, dict]:
     refs = source.get("source_refs")
     if not isinstance(refs, list) or len(refs) != 3:
         raise ValueError("three original clearance source refs are required")
     levels = {}
+    frames = {}
+    seen_sources = set()
+    case_prefix = "testing__C102642__NRS-484B-153-2__motor_vehicle_driver__"
     for ref in refs:
         if not isinstance(ref, dict) or ref.get("level") not in (
                 "below", "inside", "above") or ref["level"] in levels:
@@ -67,12 +70,22 @@ def _source_levels(source: dict, survey: dict, clearance_path: Path) -> dict:
             path = clearance_path.parent / path
         if not path.is_file() or not isinstance(ref.get("sha256"), str):
             raise ValueError("original clearance source file is missing")
+        if ref["sha256"] in seen_sources:
+            raise ValueError("clearance levels must use distinct original frames")
+        seen_sources.add(ref["sha256"])
         sample = _read_hashed(path, ref["sha256"])
         if sample.get("source_kind") != "native_original_clearance_frame":
             raise ValueError("original Native clearance frame is required")
         if (sample.get("map_sha256") != survey["map_sha256"] or
                 sample.get("loading_site_id") != survey["loading_site_id"]):
             raise ValueError("original clearance frame does not join surveyed site")
+        case_id = sample.get("case_id")
+        if (case_id != ref.get("case_id") or not isinstance(case_id, str) or
+                not case_id.startswith(case_prefix) or
+                not case_id[len(case_prefix):]):
+            raise ValueError("original clearance frame does not join assignment case")
+        if not sample.get("source_observation_id"):
+            raise ValueError("original clearance frame observation identity is missing")
         if type(sample.get("frame_id")) is not int or sample["frame_id"] < 0:
             raise ValueError("original clearance frame identity is missing")
         if sample.get("door_open") is not True or not (
@@ -82,9 +95,13 @@ def _source_levels(source: dict, survey: dict, clearance_path: Path) -> dict:
             raise ValueError("door and moving traffic must overlap in source frame")
         levels[ref["level"]] = _polygon_gap(
             sample.get("door_vertices_xy"), sample.get("passing_body_vertices_xy"))
+        frames[ref["level"]] = {"case_id": case_id,
+                                "source_observation_id": sample["source_observation_id"],
+                                "frame_id": sample["frame_id"],
+                                "sha256": ref["sha256"]}
     if set(levels) != {"below", "inside", "above"}:
         raise ValueError("three original clearance levels are required")
-    return levels
+    return levels, frames
 
 
 def validate_sweep_sources(survey_path: Path, survey_sha256: str,
@@ -102,7 +119,7 @@ def validate_sweep_sources(survey_path: Path, survey_sha256: str,
     if source["map_sha256"] != survey["map_sha256"] or source[
             "loading_site_id"] != survey["loading_site_id"]:
         raise ValueError("clearance source does not join the surveyed site")
-    levels = _source_levels(source, survey, clearance_path)
+    levels, frames = _source_levels(source, survey, clearance_path)
     declared = source.get("door_body_gap_levels_m")
     if not isinstance(declared, dict) or set(declared) != set(levels):
         raise ValueError("three declared clearance levels are required")
@@ -125,6 +142,7 @@ def validate_sweep_sources(survey_path: Path, survey_sha256: str,
         "loading_site_id": survey["loading_site_id"],
         "source_observation_id": source["source_observation_id"],
         "levels_m": levels,
+        "source_frames": frames,
         "selected_cases": sorted(sites),
         "legal_interference": "unresolved_judgment",
         "physical_feasibility": "unverified_until_native_capture",

@@ -35,6 +35,22 @@ class ActivateReviewedSemanticTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "does not bind original packet and map"):
                 activate(output, assignment)
 
+    def test_rejects_forged_route_binding(self):
+        assignment = json.loads((REPO / "inputs" / ROOT.name / "assignment.json").read_text())
+        with TemporaryDirectory(dir=REPO / ".runtime-work") as source, \
+             TemporaryDirectory(dir=REPO / ".runtime-work") as candidate, \
+             TemporaryDirectory(dir=REPO / ".runtime-work") as preflight:
+            fixture(source)
+            output = Path(candidate) / "candidate"
+            receipts = Path(preflight) / "preflight"
+            author(source, ROOT / "candidate-map.xodr", output, receipts, scratch_output=True)
+            receipt = receipts / "precedence/preflight.json"
+            content = json.loads(receipt.read_text())
+            content["route_binding"]["ego"]["road_sequence"] = ["31", "31", "31"]
+            receipt.write_text(json.dumps(content))
+            with self.assertRaisesRegex(ValueError, "lacks exact route binding"):
+                activate(output, assignment)
+
 
 if __name__ == "__main__":
     unittest.main()
