@@ -17,3 +17,11 @@ Resume commands:
 Pinned CPU preflight passes. No frozen input, runtime or batch file was edited; no Git command was run. Assignment and full-gate output are retained in `assignment-check.log` and `strict-gate.log`.
 
 Checkpoint: assignment-scoped static check passed. Complete strict gate next reports missing result `testing__C160013__NRS-484B-127-3__motor_vehicle_driver`; this is unfinished worker preparation, not an external dependency.
+
+## 2026-11-25 signed-entrance saved-source measurement
+
+`intersection_yield_measure.py` now hashes the original entrance inventory, crossing history and frame map; rejects incomplete/duplicate lane devices and a signed supposedly non-obligated other entrance; computes ego and other intersection occupancy from complete body vertices and a sourced polygon; joins original frame IDs; and exposes per-frame conflict times without a legal hazard cutoff. It separately records pre-entry stop observation, governing-signal exception candidacy and whether the other body was inside at entry. Judgment of immediate hazard and cautious progression remains unresolved. The six-test CPU suite passes, including missing-source, stale-frame, signed-other and controlled-signal negatives; `cpu-tests.log` is SHA-bound in `result.json`. Runtime verify and preflight passed on this turn.
+
+Still required before readiness: Native entrance/device acquisition and full traffic construction; exact cases, four cameras and saved finalizer integration; approaching-hazard sweep; justified fallbacks; source-bound offline/compatibility/process-saved proofs; canonical proposals; independent delivery/comparison audits; assignment-scoped strict gate. Current result remains partial.
+
+`original_crossing_capture.py` now acquires one same-frame Native sample with eight ego/other body vertices, speed, current lanes, sourced entrance-lane identities, affected-lane signal governance and distances to a supplied conflict point. It rejects same-entrance traffic and missing body data. The caller must still source the conflict point and entrance identities, join the frame with all cameras, and integrate this sampler into an exact runner. The package CPU suite now has eight passing tests.

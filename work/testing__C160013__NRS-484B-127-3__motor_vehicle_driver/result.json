@@ -1,15 +1,15 @@
 {
   "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
   "input_sha256": "4fba3a867ccff1a6eeaedafd206433b355923d019a7a428e744bc62c92c04454",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "f18f2af012eb4a87a3b99406db26822a78121261f976b42afa4c99ad26afdf86"
+      "sha256": "955c98fd32cc02c79d8caecc48b5bddb4ecc444539274a1a60d47a4a33d8b01f"
     },
     {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c160013-comparison-proof PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/cases/prove_comparison.py",
@@ -364,10 +364,53 @@
       "exit_code": 0,
       "log": "cases/qualified-towing-sweep-delivery-contract-check.log",
       "sha256": "3925d7788f25e2aca9ae54b3ce5da3b2f49e6ac3a6449760fdc6d56ed63d9ecf"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c160013-selected-contract-output .venv-cpu/bin/python inline execution_manifest.validate",
+      "exit_code": 0,
+      "log": "cases/selected-execution-contract.log",
+      "sha256": "b8abfcf66e350d6fd7d37f0094678907b54dc5ca3d0369aba19f93af5bbcd62c"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c160013-selected-contract-output .venv-cpu/bin/python inline semantic_delivery.validate",
+      "exit_code": 0,
+      "log": "cases/selected-semantic-contract.log",
+      "sha256": "799236ce3793d8f470530078601dfccf507e1122ee3defa36a9d537c07c68de7"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c160013-selected-contract-output .venv-cpu/bin/python inline package_compatibility.check_receipts",
+      "exit_code": 0,
+      "log": "cases/selected-compatibility-contract.log",
+      "sha256": "a9ac0c3ac83c40e1b4c3416066d63d324ee9f8c144641dfeed72d140b6557245"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c160013-selected-contract-output .venv-cpu/bin/python inline branch_coverage.validate_evidence",
+      "exit_code": 0,
+      "log": "cases/selected-evidence-contract.log",
+      "sha256": "af5d8a21858f42808c9bcc17012b77bcc2fd6ab3b071dbd4a05f13f410470541"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c160013-selected-contract-output .venv-cpu/bin/python inline delivery_handoff.validate_case",
+      "exit_code": 0,
+      "log": "cases/selected-delivery-contract.log",
+      "sha256": "dd7374b653d888e2b3e1bba4a30beb18a44f834a0e1dd731d9e2a8e3d365f5a0"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
+      "exit_code": 0,
+      "log": "cases/current-runtime-verify.log",
+      "sha256": "e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cases/current-runtime-preflight.log",
+      "sha256": "4976f3cbe59262c48e82679601de15c8e424a2b682a93c267d19e9209c589ad2"
     }
   ],
   "remaining_gpu_checks": [
     "Actual outside-business highway status, caravan membership, gap occupation without danger and camera visibility."
   ],
-  "reason": "The previously selected pair retains current CPU proofs. The towing candidate and three assignment-qualified spacing sweep cases now pass exact primary/fallback offline and compatibility proofs, three recorded-only source rebuilds, synthetic met/not_met/unverified physical contracts, a six-case staged semantic chain, fixed-condition sweep comparison, and independent positive/negative delivery audits. Canonical on-disk selection, exact plan/root construction/queue integration and scoped strict readiness still remain worker-owned CPU work. Native motion, actual pixels, reviewed site and statutory without-danger judgment remain unverified."
+  "reason": null,
+  "first_gpu_delivery_command": "C160013_REVIEW_BUNDLE=$REVIEW_BUNDLE PYTHONPATH=runtime/scenario_pipeline $CARLA_PYTHON -m worker_exchange execute-delivery --repo . --batch batch.json --db $DB --assignment testing__C160013__NRS-484B-127-3__motor_vehicle_driver --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__entrant_can_occupy_gap --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
