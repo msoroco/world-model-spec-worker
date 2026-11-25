@@ -6,7 +6,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-sys.path.insert(0, str(ROOT / 'runtime/pipeline'))
+sys.path.insert(0, str(ROOT / 'runtime'))
 from scenario_pipeline.worker_exchange.candidate_constructions import validate
 
 
@@ -23,7 +23,8 @@ def main():
     assert summary['runtime_manifest_sha256'] == manifest['runtime_manifest_sha256']
     assert len(summary['results']) == 8
     sources = ('runner.py', 'geometry.py', 'engineering.py', 'signal_clock.py',
-               'measure_countdown.py', 'finalize.py', 'audit_display_frames.py', 'road.xodr')
+               'measure_countdown.py', 'finalize.py', 'audit_display_frames.py',
+               'audit_governing_context.py', 'road.xodr')
     configs = {}
     seen = set()
     for case in manifest['cases']:

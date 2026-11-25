@@ -7,6 +7,7 @@ import subprocess
 
 from measure_countdown import measure, sha
 from audit_display_frames import audit as audit_display_frames
+from audit_governing_context import audit as audit_governing_context
 
 
 def required(folder, name):
@@ -142,6 +143,7 @@ def finalize(attempt, output):
         raise ValueError('Full 30-second countdown window changed')
     joins = verify_original_joins(attempt, count)
     display_integrity = audit_display_frames(attempt, count)
+    governing_context = audit_governing_context(attempt)
     analysis = report(attempt, config['case_id'])
     measured = analysis['measurements']['flashing_countdown_clearance']['value']
     context = json.loads(required(attempt, 'countdown-context.json').read_text())
@@ -196,6 +198,7 @@ def finalize(attempt, output):
                     original_joins=joins, video_frames=videos,
                     source_derived_channel_hashes=channel_hashes,
                     display_integrity=display_integrity,
+                    governing_context=governing_context,
                     scope='saved source joins and video decode; no physical signal or legal finding')
     output.write_text(json.dumps(analysis, indent=2, allow_nan=False) + '\n')
     (attempt / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')

@@ -24,8 +24,9 @@ def write_rows(path, rows):
 
 def run_finalizer(attempt):
     env = dict(os.environ)
-    env['PYTHONPATH'] = os.pathsep.join((str(ROOT / 'runtime/pipeline/scenario_pipeline'),
-        str(ROOT / 'runtime/pipeline/python'), str(HERE / 'native'), env.get('PYTHONPATH', '')))
+    env['PYTHONPATH'] = os.pathsep.join((str(ROOT / 'runtime'),
+        str(ROOT / 'runtime/scenario_pipeline'), str(HERE / 'native'),
+        env.get('PYTHONPATH', '')))
     return subprocess.run([sys.executable, str(HERE / 'native/finalize.py'),
         '--attempt', str(attempt), '--output', str(attempt / 'analysis-report.json')],
         cwd=ROOT, env=env, capture_output=True, text=True, timeout=300)
@@ -106,6 +107,7 @@ def main():
             result = json.loads((good / 'result.json').read_text())
             assert report['display_integrity']['pixel_integrity_verified'] is True
             assert report['display_integrity']['frames'] == FRAMES
+            assert report['governing_context']['governing_device_source_verified'] is False
             assert result['accepted'] is False and result['legal_verdict_claimed'] is False
             assert len(report['source_derived_channel_hashes']) == 5
             assert all((good / 'channels' / (name + '.jsonl')).is_file()
@@ -142,6 +144,7 @@ def main():
                 'preexisting_channel_rejected': True,
                 'source_derived_channel_hashes': report['source_derived_channel_hashes'],
                 'display_integrity': report['display_integrity'],
+                'governing_context': report['governing_context'],
                 'physical_acceptance_claimed': False})
     assert [row['relation'] for row in records] == ['before_zero', 'at_or_after_zero']
     print(json.dumps({'passed': True, 'records': records, 'selected_cases': 0,

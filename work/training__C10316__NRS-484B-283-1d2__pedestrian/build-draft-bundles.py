@@ -11,6 +11,7 @@ SOURCES = {'runner.py': 'runner.py', 'geometry.py': 'geometry.py',
            'engineering.py': 'engineering.py', 'signal_clock.py': 'signal_clock.py',
            'measure_countdown.py': 'measure_countdown.py', 'finalize.py': 'finalize.py',
            'audit_display_frames.py': 'audit_display_frames.py',
+           'audit_governing_context.py': 'audit_governing_context.py',
            'road.xodr': 'road.xodr', 'tests/test_offline.py': 'test_offline.py'}
 
 

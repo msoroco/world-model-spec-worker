@@ -134,7 +134,7 @@ def measure(samples_path, context_path):
         'source_kind': kind, 'original_frames': len(rows), 'rate_hz': RATE_HZ,
         'entry': bracket(first_entry), 'full_body_clearance': clearance, 'displayed_zero': zero_event,
         'clearance_relative_to_displayed_zero': relation,
-        'governing_device_observed': kind == 'native_observation',
-        'highway_boundary_observed': kind == 'native_observation',
+        'governing_device_observed': False,
+        'highway_boundary_observed': False,
         'exceptions_reviewed': False, 'legal_verdict_claimed': False,
     }

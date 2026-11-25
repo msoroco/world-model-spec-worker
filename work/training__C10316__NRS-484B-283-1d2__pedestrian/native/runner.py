@@ -198,6 +198,7 @@ def execute(config, output, host, port):
             'source_kind': 'native_observation', 'crosswalk_id': CROSSWALK_ID,
             'device_id': DEVICE_ID, 'device_governs_crosswalk': False,
             'device_faces_pedestrian': False,
+            'display_source_kind': 'debug_draw_string',
             'near_highway_edge_xy_m': [-3.5, -.65], 'crossing_forward_xy': [1, 0],
             'highway_span_m': 7, 'highway_boundary_source': 'authored_map_pending_native_review',
             'authored_map_sha256': hashlib.sha256((HERE / 'road.xodr').read_bytes()).hexdigest(),
