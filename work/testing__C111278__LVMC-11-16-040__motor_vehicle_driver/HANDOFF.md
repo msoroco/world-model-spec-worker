@@ -119,3 +119,26 @@ All twelve primary/fallback positive and negative compatibility checks pass. Six
 These CPU fixtures are explicitly synthetic. The first real delivery must still provide reviewed municipal site authority and physical Native sight, motion, camera and occluder evidence. No actual Native capture or legal visibility finding is claimed. The six exact case and four comparison conditions remain fixed.
 
 Final 54-test assignment suite passed in 85.790 seconds, including the original 3,600-image full-decode fixture. After pinning that log in `result.json`, the exact scoped strict gate passed again. `cpu-final-all-tests.log` SHA256 is `c0e9199bae75b75cc6099f161619e83319d53a104e9b1b921d8e4ccbd4b37ae6`; `cpu-final-strict.log` SHA256 is `72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca`. Assignment hygiene scan found 221 UTF-8 text files, none over 2 MiB and no trailing whitespace, blank EOF or conflict markers.
+
+## 2026-11-24 production audit queue entrypoints
+
+`delivery_audit.py` now accepts an exact `--case`, the original `--attempt`, the saved processing version directory `--processed` containing `processing.json`, and a new `--output` under `.runtime-work/`. It rejects synthetic provenance and verifies the sealed Native sight and all 3,600 original camera PNGs, the saved processing result and original-source hashes, original sight/video frame joins, four full 900-frame video decodes, and every original actor-census frame. The actor census must be recorded before saved processing so that `original_source_hashes` binds it; a missing or late census is a failed source audit. This CLI reports engineering source joins only, with no physical-visibility or legal conclusion.
+
+Example exact delivery command:
+
+```bash
+.venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/delivery_audit.py --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_at --attempt "$BLOCKED_AT_SAVED_ATTEMPT" --processed "$BLOCKED_AT_SAVED_VERSION_DIR" --output "$PWD/.runtime-work/c111278-blocked-at-delivery-audit.json"
+```
+
+`comparison_audit.py` accepts one of `speed_boundary`, `sight_condition`, `through_exception`, or `control_exception`, repeats `--attempt` in that comparison's declared order, and writes a new receipt under `.runtime-work/`. Its saved-sight verifier requires sealed original Native sources and all 3,600 original camera PNGs for each attempt. Exact ordered templates:
+
+```bash
+.venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/comparison_audit.py --comparison speed_boundary --attempt "$BLOCKED_BELOW_SAVED_ATTEMPT" --attempt "$BLOCKED_AT_SAVED_ATTEMPT" --attempt "$BLOCKED_ABOVE_SAVED_ATTEMPT" --output "$PWD/.runtime-work/c111278-speed-boundary-audit.json"
+.venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/comparison_audit.py --comparison sight_condition --attempt "$BLOCKED_AT_SAVED_ATTEMPT" --attempt "$CLEAR_AT_SAVED_ATTEMPT" --output "$PWD/.runtime-work/c111278-sight-condition-audit.json"
+.venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/comparison_audit.py --comparison through_exception --attempt "$BLOCKED_AT_SAVED_ATTEMPT" --attempt "$THROUGH_BLOCKED_SAVED_ATTEMPT" --output "$PWD/.runtime-work/c111278-through-exception-audit.json"
+.venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/comparison_audit.py --comparison control_exception --attempt "$BLOCKED_AT_SAVED_ATTEMPT" --attempt "$CONTROLLED_BLOCKED_SAVED_ATTEMPT" --output "$PWD/.runtime-work/c111278-control-exception-audit.json"
+```
+
+The two new focused CLI tests cover a valid production-shaped source join and altered-frame rejection, plus exact comparison order and rejection. They use mocked image/video decoders; the existing full-decode tests independently exercise the real decoders. Current status remains partial until the final suite and exact scoped strict gate pass after the rebuilt construction hashes.
+
+The final 56-test assignment suite passed in 83.520 seconds, including the 3,600-image full decode. The rebuilt twelve offline and twelve compatibility checks, six delivery audit probes and six saved-only diagnostic runs passed. The exact scoped strict ready gate passed after the new CLI test and current static log hashes were pinned in `result.json`. `cpu-production-audit-focused.log` SHA256 is `e54419f4eb29090545f07117190e8ffe273cc940cb7cd03864bdbb061367d6d1`; `cpu-production-audit-all-tests.log` SHA256 is `fb0c763084b7025d20755faf262c60c5d829616baffa938196b58a41fa828532`; `cpu-production-audit-strict.log` SHA256 is `72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca`. Direct production CLI smoke calls against diagnostic saved attempts also rejected as required: delivery exited 1 with `diagnostic fixture cannot be a production audit`, and comparison exited 1 with `original Native capture required`. `result.json` is restored to `ready` / `delivery_prepared`.

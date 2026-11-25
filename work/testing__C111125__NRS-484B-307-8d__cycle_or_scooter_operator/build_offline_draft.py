@@ -38,54 +38,7 @@ def recording_description():
         "limitations": ["The selected cell fixes straight movement; turns are not claimed.",
                         "Diagnostic fixture phases do not prove a detector fault or physical visibility."]}
 
-RUNNER = '''"""Exact bicycle red-signal bundle preflight."""
-import argparse
-import hashlib
-import json
-from pathlib import Path
-from native_capture import CAMERAS, PROFILE_SIZES
-
-
-VARIANTS = {"two_cycles_failed_detection", "one_cycle", "three_cycles", "signal_changes", "no_prior_stop", "fails_to_yield"}
-
-
-def check():
-    root = Path(__file__).resolve().parent
-    config = json.loads((root / "config.json").read_text())
-    source = (root / "case-plan.json").read_bytes()
-    if hashlib.sha256(source).hexdigest() != config["plan_sha256"]:
-        raise ValueError("Exact plan source changed")
-    case = config["selected_case_id"]
-    entries = [row for row in json.loads(source)["cases"] if row["case_id"] == case]
-    if len(entries) != 1 or not case.startswith(config["assignment_id"] + "__"):
-        raise ValueError("Exact case absent")
-    suffix = case.removeprefix(config["assignment_id"] + "__")
-    if suffix not in VARIANTS or config["case_suffix"] != suffix:
-        raise ValueError("Exact red-signal variant changed")
-    if config["rate_hz"] != 20 or config["frame_count"] != 900 or config["duration_s"] != 45:
-        raise ValueError("Original timebase changed")
-    if config["cameras"] != list(CAMERAS) or config["camera_sizes"] != {k: list(v) for k, v in PROFILE_SIZES.items()}:
-        raise ValueError("Original camera profile changed")
-    if config["required_sources"] != ["map", "device", "detector", "bicycle_blueprint", "native_trace", "original_camera_media"]:
-        raise ValueError("Original source requirements changed")
-    return case
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true")
-    parser.add_argument("--output-dir")
-    args = parser.parse_args()
-    case = check()
-    if args.check:
-        print("diagnostic bicycle red-signal bundle passed: " + case)
-        return
-    raise ValueError("Reviewed Native map/device/detector, bicycle rider and original camera capture required")
-
-
-if __name__ == "__main__":
-    main()
-'''
+RUNNER = (HERE / 'runner.py').read_text(encoding='utf-8')
 
 TEST = '''import json
 from pathlib import Path
@@ -101,7 +54,7 @@ class BundleTests(unittest.TestCase):
 
     def test_refuses_unsourced_native_capture(self):
         with patch("sys.argv", ["runner.py", "--output-dir", "."]):
-            with self.assertRaisesRegex(ValueError, "Reviewed Native map/device/detector"):
+            with self.assertRaises(SystemExit):
                 runner.main()
 
 
@@ -133,7 +86,7 @@ def build():
             "source_inventory": ["native-site.json", "packet.json", "native.json", "device.json",
                                  "detector.json", "geometry.json", "source/map.json",
                                  "source/device.json", "source/detector.json", "source/blueprint.json"],
-            "required_atoms": [], "diagnostic_only": True,
+            "required_atoms": [], "diagnostic_only": False,
         }
         config["case"] = {"case_id": case, "recording_description": recording_description()}
         files = {name: (HERE / name).read_text() for name in SOURCE_FILES}
@@ -143,7 +96,7 @@ def build():
         construction = {
             "law_id": config["law_id"], "cell_id": config["cell_id"],
             "actor": config["actor"], "case_id": case,
-            "entrypoint": "runner.py", "diagnostic_only": True,
+            "entrypoint": "runner.py", "diagnostic_only": False,
             "recording_description": recording_description(),
             "files": [{"path": path, "content": content} for path, content in files.items()],
         }

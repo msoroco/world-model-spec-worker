@@ -16,6 +16,7 @@ from native_attempt import run as run_ticks
 from native_cameras import spawn as spawn_cameras
 from native_packets import source_hashes
 from native_recorder import FourStreamRecorder
+from source_authority import verify as verify_source_authority
 
 
 def _sha(path):
@@ -137,6 +138,7 @@ def run_with_client(scene, attempt, client, carla, *, snapshot_world, restore_wo
 def run_native(scene, attempt, host="127.0.0.1", port=2000):
     """Production entrypoint; importing this module never imports CARLA."""
     root = _materialized(scene, attempt)
+    verify_source_authority(scene, root)
     output_root = (_private_root() / "c227824-runtime").resolve()
     output_root.mkdir(parents=True, exist_ok=True)
     os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(output_root)

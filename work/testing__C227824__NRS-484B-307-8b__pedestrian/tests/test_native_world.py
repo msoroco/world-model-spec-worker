@@ -135,6 +135,7 @@ class NativeWorldTests(unittest.TestCase):
 
         fake_carla = NS(Client=lambda host, port: FakeClient())
         with patch.dict(sys.modules, {"carla": fake_carla}), \
+             patch("native_world.verify_source_authority", return_value={"source_reviewed": True}), \
              patch("native_world.run_with_client", return_value={"prepared": True}) as run:
             result = run_native(self.scene, self.root)
         self.assertTrue(result["prepared"])

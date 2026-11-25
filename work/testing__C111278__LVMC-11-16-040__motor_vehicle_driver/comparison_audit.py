@@ -1,6 +1,8 @@
 """Independent saved-source checks for the four exact sight comparisons."""
 from __future__ import annotations
 
+import argparse
+import json
 from pathlib import Path
 
 from saved_sight import verify
@@ -60,3 +62,26 @@ def audit(attempts: dict, comparison_id: str) -> dict:
             "source_join_passed": True,
             "legal_conclusion": None,
             "physical_visibility_claimed": False}
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Audit exact original C111278 comparison")
+    parser.add_argument("--comparison", choices=tuple(PAIRS), required=True)
+    parser.add_argument("--attempt", type=Path, action="append", required=True,
+                        help="repeat in the comparison's declared case order")
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args(argv)
+    suffixes = PAIRS[args.comparison][0]
+    if len(args.attempt) != len(suffixes):
+        parser.error("exact ordered comparison attempt count differs")
+    output = args.output.resolve()
+    if ".runtime-work" not in output.parts or output.exists():
+        raise ValueError("new comparison output must be under .runtime-work")
+    attempts = dict(zip(suffixes, (path.resolve() for path in args.attempt)))
+    value = audit(attempts, args.comparison)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+if __name__ == "__main__":
+    main()

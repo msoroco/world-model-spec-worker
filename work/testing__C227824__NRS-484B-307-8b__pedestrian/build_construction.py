@@ -18,6 +18,7 @@ MODULES = ("runner.py", "case-plan.json", "materialize_cases.py", "build_selecte
            "crossing_map.py",
            "native_world.py", "native_attempt.py",
            "native_packets.py", "native_signal.py", "native_cameras.py",
+           "source_authority.py",
            "native_recorder.py", "walker_control.py", "saved_entry.py",
            "entry_measurement.py", "analysis.py", "delivery_audit.py",
            "comparison_audit.py", "comparison_delivery.py", "physical_entry.py")

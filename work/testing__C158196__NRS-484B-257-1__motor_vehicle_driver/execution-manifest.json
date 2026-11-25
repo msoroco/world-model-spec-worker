@@ -1,0 +1,548 @@
+{
+  "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+      "kind": "delivery",
+      "construction": "construction-nearest_view_hold.json",
+      "construction_sha256": "cebf3eace576860f094601b34b2b16a3277924f46d2d37ad91dea1026d456c91",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-nearest_view_hold.json",
+          "construction_sha256": "00d2e4af5102a18b328138bedf922340a347bc69e41aaf091277ad0dad79fef8",
+          "trigger": {
+            "source": "reviewed primary Native site packet and pre-drive survey",
+            "metric": "nearest-view location, line/crosswalk exclusions and controlling-device geometry",
+            "failure_condition": "primary reviewed site fails one exact C158196 physical location or device requirement"
+          },
+          "changed_knobs": [
+            "select independently reviewed secondary original Native site packet site-fallback1.json after primary site fails pre-drive survey"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold --candidate fallback1 --output .runtime-work/c158196-owner-nov24/fallback-offline-hold",
+            "construction_sha256": "00d2e4af5102a18b328138bedf922340a347bc69e41aaf091277ad0dad79fef8",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-nearest_view_hold.log",
+            "log_sha256": "51bbc06dd2f882a1aafbb83f9284e2b9b6d43e67645d322f117edc5be3411756"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback-compatibility-nearest_view_hold.json",
+            "sha256": "40e3370563700fca3b940b1318a6d066e7c5cba6db48ed8dd920cd4534b14d0b",
+            "log": "cpu-fallback-nearest_view_hold-compatibility-analysis.log",
+            "negative_log": "cpu-fallback-nearest_view_hold-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "cases/nearest_view_hold/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/diagnostic-nearest_view_hold-recipe.json",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold --candidate primary --output .runtime-work/c158196-owner-nov24/final-offline-nearest_view_hold",
+        "construction_sha256": "cebf3eace576860f094601b34b2b16a3277924f46d2d37ad91dea1026d456c91",
+        "exit_code": 0,
+        "log": "cpu-final-offline-nearest_view_hold.log",
+        "log_sha256": "ead6886f1e4e75357ffcbc714791242959a724902f245387615a922027722217"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-nearest_view_hold.json",
+        "sha256": "5e95115b7fe5bf5d0e197dbf30820c5513e5b3cccc9eb41a81fac2f14218d14f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "missing_proofs": [
+        "reviewed original C158196 site, Native adapter and present-day physical capture sources pending"
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "saved-processing-nearest_view_hold.json",
+        "test_log_sha256": "ed39a0439ec1ca22e2e9848b087f16d016a1b278f95e2c795912472c2bf18f67",
+        "proof_scope": "sealed synthetic diagnostic source only; original Native physical capture pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold .runtime-work/c158196-owner-nov24/compat-hold-v5 --diagnostic",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold .runtime-work/c158196-owner-nov24/compat-hold-v5",
+        "script": "delivery_audit.py",
+        "script_sha256": "e68ac7700823db72de33677ea02a00fa8953c08fd11a6079447ccafef2acf41b",
+        "test_log": "cpu-delivery-positive-nearest_view_hold.log",
+        "test_log_sha256": "89232246a158584cae14c221850b19673a29c29a668fbed544cadbce231181fd",
+        "negative_log": "cpu-delivery-negative-nearest_view_hold.log",
+        "negative_log_sha256": "352087c747fea8c02c43edbadb2712c7387e3f64989d6b6f3eeed38e7f440c23"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold --candidate primary --output .runtime-work/c158196-owner-nov24/final-primary-compat-nearest_view_hold",
+        "receipt": "cpu-compatibility-nearest_view_hold.json",
+        "sha256": "039feb71d134e04f1f74f9cca1c633fa60fade87d22034ab8e64e20617bbfb41",
+        "log": "cpu-nearest_view_hold-compatibility-analysis.log",
+        "negative_log": "cpu-nearest_view_hold-negative-analysis.log"
+      },
+      "acquisition": {
+        "original_ego_body_speed": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_through_body": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_view_rays": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_device_control": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "camera-frame-map.json"
+        }
+      },
+      "negative": {
+        "log": "cpu-nearest_view_hold-negative-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue",
+      "kind": "delivery",
+      "construction": "construction-nearest_view_continue.json",
+      "construction_sha256": "cf1c787890e2b6a072b9d881ba665cf3fde234c7e336d10f4dad3d180e875f7e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-nearest_view_continue.json",
+          "construction_sha256": "2d0665108343ce977455889f7762805de2161f5b8759c69dcf9409eae78dcd68",
+          "trigger": {
+            "source": "reviewed primary Native site packet and pre-drive survey",
+            "metric": "nearest-view location, line/crosswalk exclusions and controlling-device geometry",
+            "failure_condition": "primary reviewed site fails one exact C158196 physical location or device requirement"
+          },
+          "changed_knobs": [
+            "select independently reviewed secondary original Native site packet site-fallback1.json after primary site fails pre-drive survey"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue --candidate fallback1 --output .runtime-work/c158196-owner-nov24/fallback-offline-nearest_view_continue",
+            "construction_sha256": "2d0665108343ce977455889f7762805de2161f5b8759c69dcf9409eae78dcd68",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-nearest_view_continue.log",
+            "log_sha256": "2acfd5b489e109929fa0d69899fa898664c942c90b3552c0a5b0e8f472521729"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback-compatibility-nearest_view_continue.json",
+            "sha256": "d5ca32878066f21ac09ef91edaac770603fb4eb9a568029611dacb7b4ccabeef",
+            "log": "cpu-fallback-nearest_view_continue-compatibility-analysis.log",
+            "negative_log": "cpu-fallback-nearest_view_continue-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "cases/nearest_view_continue/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/diagnostic-nearest_view_continue-recipe.json",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue --candidate primary --output .runtime-work/c158196-owner-nov24/final-offline-nearest_view_continue",
+        "construction_sha256": "cf1c787890e2b6a072b9d881ba665cf3fde234c7e336d10f4dad3d180e875f7e",
+        "exit_code": 0,
+        "log": "cpu-final-offline-nearest_view_continue.log",
+        "log_sha256": "a42795a2e6c454fa8e54491355d5ef1b65835cf721a0aa55532a24c71111894f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-nearest_view_continue.json",
+        "sha256": "cb582e841da9f8947b7321d8da250f8dba5ba4f761d5cfa5a567aae1926acb10"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "missing_proofs": [
+        "reviewed original C158196 site, Native adapter and present-day physical capture sources pending"
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "saved-processing-nearest_view_continue.json",
+        "test_log_sha256": "23b821a7cf00b47c39309f2d96916902c5a351f08a539c4448e91b25be36aa7d",
+        "proof_scope": "sealed synthetic diagnostic source only; original Native physical capture pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue .runtime-work/c158196-owner-nov24/compat-nearest_view_continue-v5 --diagnostic",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue .runtime-work/c158196-owner-nov24/compat-nearest_view_continue-v5",
+        "script": "delivery_audit.py",
+        "script_sha256": "e68ac7700823db72de33677ea02a00fa8953c08fd11a6079447ccafef2acf41b",
+        "test_log": "cpu-delivery-positive-nearest_view_continue.log",
+        "test_log_sha256": "e7e292b6e442ed7afa6f02b5194eac07d356a7060e42372047dc890645508058",
+        "negative_log": "cpu-delivery-negative-nearest_view_continue.log",
+        "negative_log_sha256": "352087c747fea8c02c43edbadb2712c7387e3f64989d6b6f3eeed38e7f440c23"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue --candidate primary --output .runtime-work/c158196-owner-nov24/final-primary-compat-nearest_view_continue",
+        "receipt": "cpu-compatibility-nearest_view_continue.json",
+        "sha256": "5dd260577502cab1d2b8a835a8ebf4e6c3a0572da26da5171d0c88ac3e18a52e",
+        "log": "cpu-nearest_view_continue-compatibility-analysis.log",
+        "negative_log": "cpu-nearest_view_continue-negative-analysis.log"
+      },
+      "acquisition": {
+        "original_ego_body_speed": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_through_body": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_view_rays": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_device_control": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "camera-frame-map.json"
+        }
+      },
+      "negative": {
+        "log": "cpu-nearest_view_continue-negative-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear",
+      "kind": "delivery",
+      "construction": "construction-nearest_view_clear.json",
+      "construction_sha256": "7984539eed08873bd203e478dd793457ed1675b4baaa7246e6ea8ef61dd4338c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-nearest_view_clear.json",
+          "construction_sha256": "1a1b68faacbd9a04043688e2f816f2e9979ddd79bdf7c55cb75ef77a2082b4ce",
+          "trigger": {
+            "source": "reviewed primary Native site packet and pre-drive survey",
+            "metric": "nearest-view location, line/crosswalk exclusions and controlling-device geometry",
+            "failure_condition": "primary reviewed site fails one exact C158196 physical location or device requirement"
+          },
+          "changed_knobs": [
+            "select independently reviewed secondary original Native site packet site-fallback1.json after primary site fails pre-drive survey"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear --candidate fallback1 --output .runtime-work/c158196-owner-nov24/fallback-offline-nearest_view_clear",
+            "construction_sha256": "1a1b68faacbd9a04043688e2f816f2e9979ddd79bdf7c55cb75ef77a2082b4ce",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-nearest_view_clear.log",
+            "log_sha256": "e8d700441d7316d69389ca51338ac4975ce9d7b37800a3d96eddd855ce49eaea"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback-compatibility-nearest_view_clear.json",
+            "sha256": "5dbb07b34b2be4fe665ea20daa355de801540671bee98eae84f368bd3f7ceadd",
+            "log": "cpu-fallback-nearest_view_clear-compatibility-analysis.log",
+            "negative_log": "cpu-fallback-nearest_view_clear-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "cases/nearest_view_clear/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/diagnostic-nearest_view_clear-recipe.json",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear --candidate primary --output .runtime-work/c158196-owner-nov24/final-offline-nearest_view_clear",
+        "construction_sha256": "7984539eed08873bd203e478dd793457ed1675b4baaa7246e6ea8ef61dd4338c",
+        "exit_code": 0,
+        "log": "cpu-final-offline-nearest_view_clear.log",
+        "log_sha256": "e1f9b8cc30c8dae886750e80dc9f28d3455b23a40d72b24956b4c707d675b99d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-nearest_view_clear.json",
+        "sha256": "a8acb25e64d72659f6f7966c214a8aaaced4d0b0cde935316e8147506c01061b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "missing_proofs": [
+        "reviewed original C158196 site, Native adapter and present-day physical capture sources pending"
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "saved-processing-nearest_view_clear.json",
+        "test_log_sha256": "ca5dc3f8d504186f9894e6d93aaba4b00cffde890cfbb52e5c4bdef29e14fa40",
+        "proof_scope": "sealed synthetic diagnostic source only; original Native physical capture pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear .runtime-work/c158196-owner-nov24/compat-nearest_view_clear-v5 --diagnostic",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear .runtime-work/c158196-owner-nov24/compat-nearest_view_clear-v5",
+        "script": "delivery_audit.py",
+        "script_sha256": "e68ac7700823db72de33677ea02a00fa8953c08fd11a6079447ccafef2acf41b",
+        "test_log": "cpu-delivery-positive-nearest_view_clear.log",
+        "test_log_sha256": "97d1eaeb99dff380ec5b1a9f88a793a248a77ba25ff2a3aade193d0d573976f3",
+        "negative_log": "cpu-delivery-negative-nearest_view_clear.log",
+        "negative_log_sha256": "352087c747fea8c02c43edbadb2712c7387e3f64989d6b6f3eeed38e7f440c23"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear --candidate primary --output .runtime-work/c158196-owner-nov24/final-primary-compat-nearest_view_clear",
+        "receipt": "cpu-compatibility-nearest_view_clear.json",
+        "sha256": "b75d6168ba833ab78fa2b776145bf267e4bbdf105c54465b3e0f86023d6e15da",
+        "log": "cpu-nearest_view_clear-compatibility-analysis.log",
+        "negative_log": "cpu-nearest_view_clear-negative-analysis.log"
+      },
+      "acquisition": {
+        "original_ego_body_speed": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_through_body": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_view_rays": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_device_control": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "camera-frame-map.json"
+        }
+      },
+      "negative": {
+        "log": "cpu-nearest_view_clear-negative-analysis.log"
+      }
+    },
+    {
+      "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception",
+      "kind": "delivery",
+      "construction": "construction-active_signal_exception.json",
+      "construction_sha256": "d7c2eef519ff527dd731a8fb7ebf0cc1e03777b19ede5341bffa10a0efba459f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Near-side viewpoint and signal/sign coexistence may be impossible at selected site; require measured pre-drive site validation."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction-active_signal_exception.json",
+          "construction_sha256": "62c18e247e4dca3522f865ffa801a437ffe07f15d92191165e5b48b9e3d12ea0",
+          "trigger": {
+            "source": "reviewed primary Native site packet and pre-drive survey",
+            "metric": "nearest-view location, line/crosswalk exclusions and controlling-device geometry",
+            "failure_condition": "primary reviewed site fails one exact C158196 physical location or device requirement"
+          },
+          "changed_knobs": [
+            "select independently reviewed secondary original Native site packet site-fallback1.json after primary site fails pre-drive survey"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --candidate fallback1 --output .runtime-work/c158196-owner-nov24/fallback-offline-active_signal_exception",
+            "construction_sha256": "62c18e247e4dca3522f865ffa801a437ffe07f15d92191165e5b48b9e3d12ea0",
+            "exit_code": 0,
+            "log": "cpu-fallback-offline-active_signal_exception.log",
+            "log_sha256": "a9502db042d309ac23bf523e7d9ce9b0513c5223221711f1c75fe27be96d6c4c"
+          },
+          "compatibility": {
+            "receipt": "cpu-fallback-compatibility-active_signal_exception.json",
+            "sha256": "8a27217e62e0f3c5b6cc927849502cdc1623fd49c1d085e447effb8374b36e2b",
+            "log": "cpu-fallback-active_signal_exception-compatibility-analysis.log",
+            "negative_log": "cpu-fallback-active_signal_exception-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "measurement_contract": "cases/active_signal_exception/measurement-contract.json",
+      "fixture_recipe": "work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/diagnostic-active_signal_exception-recipe.json",
+      "preparation_status": "cpu_delivery_prepared_source_gated",
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --candidate primary --output .runtime-work/c158196-owner-nov24/final-offline-active_signal_exception",
+        "construction_sha256": "d7c2eef519ff527dd731a8fb7ebf0cc1e03777b19ede5341bffa10a0efba459f",
+        "exit_code": 0,
+        "log": "cpu-final-offline-active_signal_exception.log",
+        "log_sha256": "d583120adef57b6830f808ea01744673f07282cc444b4b6a7ff3167f8383d305"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-active_signal_exception.json",
+        "sha256": "3e1fecc3321cfccf203015efb03e0a6863521b1f556bf9556d58a88eacad58d4"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "missing_proofs": [
+        "reviewed original C158196 site, Native adapter and present-day physical capture sources pending"
+      ],
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_exit_code": 0,
+        "test_log": "saved-processing-active_signal_exception.json",
+        "test_log_sha256": "b84d1c5592fb2107df638a1985002faebe87a99f312e280610de70d6b383b807",
+        "proof_scope": "sealed synthetic diagnostic source only; original Native physical capture pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception .runtime-work/c158196-owner-nov24/compat-active_signal_exception-v5 --diagnostic",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception .runtime-work/c158196-owner-nov24/compat-active_signal_exception-v5",
+        "script": "delivery_audit.py",
+        "script_sha256": "e68ac7700823db72de33677ea02a00fa8953c08fd11a6079447ccafef2acf41b",
+        "test_log": "cpu-delivery-positive-active_signal_exception.log",
+        "test_log_sha256": "3294c073201cfc7fb48fd76b0d602ce02e4b2ac80ab253f39e18530934263565",
+        "negative_log": "cpu-delivery-negative-active_signal_exception.log",
+        "negative_log_sha256": "352087c747fea8c02c43edbadb2712c7387e3f64989d6b6f3eeed38e7f440c23"
+      },
+      "compatibility": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158196__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception --candidate primary --output .runtime-work/c158196-owner-nov24/final-primary-compat-active_signal_exception",
+        "receipt": "cpu-compatibility-active_signal_exception.json",
+        "sha256": "bba0204093e6f8a3be17f1b234679ed9bce59a5d0b940651f77965e1e14ae370",
+        "log": "cpu-active_signal_exception-compatibility-analysis.log",
+        "negative_log": "cpu-active_signal_exception-negative-analysis.log"
+      },
+      "acquisition": {
+        "original_ego_body_speed": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_through_body": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_view_rays": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "original_device_control": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "nearest-view-original.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Saved source-hashed projection of original Native frame, body, route, device and camera observations",
+          "evidence": "camera-frame-map.json"
+        }
+      },
+      "negative": {
+        "log": "cpu-active_signal_exception-negative-analysis.log"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_original_site_pending",
+  "format": "worker-execution-manifest"
+}

@@ -1,0 +1,122 @@
+{
+  "law_id": "NRS-484B-257-1",
+  "cell_id": "C158196",
+  "actor": "motor_vehicle_driver",
+  "assignment_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver",
+  "input_sha256": "9d804a3458eaf04ca6c3572860bd4e7e3389d43dfbbf4ac504cd9d9e6064c238",
+  "selected_case_id": "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+  "supported_case_ids": [
+    "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_hold",
+    "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_continue",
+    "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__nearest_view_clear",
+    "testing__C158196__NRS-484B-257-1__motor_vehicle_driver__active_signal_exception"
+  ],
+  "rate_hz": 20,
+  "duration_s": 45,
+  "frame_count": 900,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "overhead full intersection including all vehicle bodies, sign and controlling devices",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego approach and through-highway sight line",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "near-side corner, crosswalk and stop-line exclusions",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "driver sightline to through traffic and governing device",
+      "fov_deg": 90
+    }
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "case": {
+    "kind": "nearest_view_hold",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "original_ego_body_speed",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original body corners, velocity and front station by Native frame.",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sample and source precision"
+        },
+        {
+          "name": "original_through_body",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original through-highway body and center station by Native frame.",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sample and source precision"
+        },
+        {
+          "name": "original_view_rays",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original raycast from observed ego body to observed through vehicle.",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sample and source precision"
+        },
+        {
+          "name": "original_device_control",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original sign and per-frame governing signal or officer readback.",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sample and source precision"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Four synchronized original camera frame identities.",
+          "time_window": "approach through intersection clearance",
+          "reference_frame": "original Native frame and time",
+          "uncertainty": "20 Hz sample and source precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "site_geometry",
+          "unit": "structured record",
+          "method": "Surveyed connected routes, through-highway status and intersection polygon."
+        },
+        {
+          "name": "reference_exclusions",
+          "unit": "structured record",
+          "method": "Surveyed absence of marked stop line and near-side or sidewalk-derived crosswalk."
+        },
+        {
+          "name": "governing_device",
+          "unit": "structured record",
+          "method": "Observed proper yield sign and absence or presence of actual controlling signal."
+        }
+      ],
+      "limitations": [
+        "Physical site, motion and camera visibility remain unverified.",
+        "Immediate hazard and right of way remain legal judgments."
+      ]
+    }
+  }
+}
