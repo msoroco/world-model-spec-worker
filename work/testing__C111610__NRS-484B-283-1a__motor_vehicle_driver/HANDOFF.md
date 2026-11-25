@@ -125,3 +125,30 @@ Pinned `runtime.py offline --manifest ... --case CASE --output .runtime-work/c11
 - `build_measurement_contracts.py` writes seven case-specific contracts for every selected frozen requirement (3–5 per case). Each binds a named `analysis.py` method, output type, and exact retained source files. All seven passed the pinned measurement contract structure validator.
 - `proof-measurement-contracts.log` verifies the occupied-destination diagnostic report against exact source hashes and confirms removing `capture/exception_review.json` fails with the required case-source error. This is diagnostic software evidence; other exact cases still need their generated positive/negative compatibility and saved processing proofs.
 - After adding the methods, all 14 primary/fallback inline bundles were regenerated and reran pinned offline proof. The 42-test assignment suite passed again in `cpu-measurement-tests.log`.
+
+## 2026-11-24 full positive and negative compatibility milestone
+
+- All seven primary and seven same-case fallback diagnostic fixtures passed pinned `runtime.py compatibility`. Each run executed the embedded selected analyzer, selected requirement measurements and missing-source negative test, native result validation, Lean/Core conversion, four-view render and final decode. Receipt, selected analysis log and negative log are SHA-bound in `execution-manifest.json`.
+- These are synthetic software fixtures, not Native motion or original camera evidence. Saved processing and delivery/comparison acceptance remain to be proved. Status remains partial.
+
+## 2026-11-24 saved processing diagnostic proof
+
+- Fresh exact synthetic fixture attempts passed pinned `runtime.py process-saved` for all seven primary and all seven fallback constructions (14/14). Each run preserved original sources, joined nine diagnostic frames, rebuilt the selected analyzer and derived media, and decoded the final video. `saved-processing-diagnostic-proof.json` records receipt hashes and diagnostic scope.
+- Physical acceptance and legal verdict remain unclaimed. Original Native site/motion/pixel evidence and independent delivery/comparison proofs remain outstanding.
+
+- Seven exact `post_capture` manifest entries now bind the primary saved-only command, feedback path and SHA-bound diagnostic receipt/log. The corresponding fallback saved runs are summarized in `saved-processing-diagnostic-proof.json`. The 14 runs remain synthetic software evidence only.
+
+## 2026-11-24 physical classification and lifecycle diagnostics
+
+- All seven exact cases passed three pinned synthetic physical classifications: complete motion (`met`), incomplete motion (`not_met`) and missing source (`unverified`), 21 checks total. Each result records source hashes and claims no physical or legal acceptance. `physical_preparation` receipts are SHA-bound in the manifest.
+- The ordered synthetic closure probe sealed capture, recorded Native exit, attested owner release and started saved processing. The sealed synthetic fixture was correctly rejected at the Native speed provenance guard; the unsealed diagnostic saved processing tests above passed separately. Actual Native completion remains unverified.
+
+## 2026-11-24 independent exact delivery CPU audits
+
+- `delivery_acceptance.py` independently checks each exact diagnostic saved result, unchanged original source hashes, participant/site/camera packet presence, trace/frame time joins and four decoded camera streams. All seven positive probes passed. Each negative probe removed the original exception review packet and failed with the expected source-preservation error.
+- The manifest binds the script and positive/negative logs per case. Diagnostic checks explicitly claim no physical or legal acceptance; production review requires Native provenance, full 600-frame history and measured physical completion.
+
+## 2026-11-24 strict assignment delivery gate passed
+
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C111610__NRS-484B-283-1a__motor_vehicle_driver --complete --require-delivery-ready` passed with exit 0 after all seven exact cases, semantic, physical preparation, package compatibility and independent delivery contracts were bound. `result.json` now reports `ready` with `readiness_kind: delivery_prepared`.
+- The package is prepared for the exact Native GPU queue. CPU synthetic fixtures remain diagnostic and do not claim actual motion, visibility, legal compliance or final physical delivery acceptance.

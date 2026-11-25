@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import copy
 from pathlib import Path
 
 from nearest_view import REQUIRED_SOURCES
@@ -61,7 +62,12 @@ def build_case(case: str) -> dict:
                     "officer_controlling": False})
         trace.append({"frame": frame, "time_s": time,
                       "position": {"x": front - .5, "y": 0, "z": 0},
-                      "heading_deg": 0, "speed_mps": speed})
+                      "position_m": [front - .5, 0, 0],
+                      "heading_deg": 0, "speed_mps": speed,
+                      "speed_mph": speed / .44704,
+                      "velocity_mps": [speed, 0, 0],
+                      "control": {"throttle": 0, "brake": 1,
+                                  "hand_brake": False}})
         mapping.append({"video_frame": index, "carla_frame": frame,
                         "native_frame": frame, "time_s": time})
         history.append({"frame": frame, "time_s": time,
@@ -102,6 +108,71 @@ def build_case(case: str) -> dict:
         path.write_text("".join(json.dumps(row, separators=(",", ":")) + "\n" for row in rows))
         if path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError("diagnostic source exceeds work size cap: " + str(path))
+    # The pinned example supplies a wire-format exemplar only. Every emitted
+    # frame below is generated for this diagnostic case and is source joined.
+    example = json.loads((ROOT / "runtime/fixtures/example.json").read_text())
+    exemplar = json.loads(example["files"]["capture/evidence.jsonl"].splitlines()[0])
+    road = example["files"]["road.xodr"]
+    (folder / "road.xodr").write_text(road)
+    evidence_rows, frame_rows, graphs = [], [], []
+    for index, sample in enumerate(frames):
+        frame, time = sample["frame"], sample["time_s"]
+        pose = trace[index]["position"]
+        speed = sample["ego_speed_mps"]
+        event = copy.deepcopy(exemplar)
+        event.update(original_frame=frame, replay_frame=frame, actor_id=205,
+                     recording_time_s=time, replay_simulation_time_s=time)
+        event["ego"].update(position_m=[pose["x"], pose["y"], pose["z"]],
+                            heading_deg=0, speed_mps=speed,
+                            speed_provenance="synthetic_native_sample")
+        event["original_observations"].update(frame=frame, time_s=time,
+                                               rgb_sensors=[{"actor_id": 209,
+                                                             "blueprint": "sensor.camera.rgb"}],
+                                               devices=[],
+                                               relations=[])
+        event["original_observations"]["participants"] = []
+        event["world"]["road_projection"].update(s_m=pose["x"])
+        evidence_rows.append(event)
+        graph_path = f"graphs/base/{frame:08d}.adapter.json"
+        frame_rows.append({"frame": frame, "simulation_time": time,
+                           "abstract": None, "base": None, "nodes": 1,
+                           "edges": 0, "extraction_seconds": 0,
+                           "capture_seconds": 0, "adapter_graph": graph_path})
+        ego = {"id": "ego", "attributes": {
+            "vertex": [pose["x"], pose["y"], pose["z"]],
+            "sem_class": "ego", "entity_id": 205,
+            "forward": [1, 0, 0]}}
+        graph = {"path": "capture/native/" + graph_path,
+                 "attributes": {"frame": frame, "simulation_time_s": time,
+                                "units": {"position": "m", "carla_speed": "m/s"},
+                                "observed_evidence": event["original_observations"]},
+                 "nodes": [ego], "edges": []}
+        graphs.append(graph)
+    for name, rows in (("capture/evidence.jsonl", evidence_rows),
+                       ("capture/native/frames.jsonl", frame_rows)):
+        path = folder / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("".join(json.dumps(row, separators=(",", ":")) + "\n"
+                                for row in rows))
+        if path.stat().st_size > 2 * 1024 * 1024:
+            raise ValueError("diagnostic source exceeds work size cap: " + str(path))
+    (folder / "capture/recorder_info.txt").write_text(
+        "Version: 1\nMap: OpenDriveMap\n Create 205: vehicle.lincoln.mkz_2020 (0) at (0, 0, 0)\n")
+    native_facts = {"map": "Carla/Maps/OpenDriveMap", "junctions": [],
+                    "crosswalk_vertices_m": [],
+                    "crosswalk_inventory_scope": "diagnostic synthetic metadata"}
+    _write(folder / "capture/native_map_facts.json", native_facts)
+    manifest = {"status": "draft", "acquisition": "diagnostic_fixture",
+                "case_id": case_id, "source_run": "diagnostic:c158196",
+                "map": "Carla/Maps/OpenDriveMap", "frames": 900,
+                "required_observations": [], "extraction_confirmed": True,
+                "sources": {"road.xodr": _sha(folder / "road.xodr"),
+                            "trace.jsonl": _sha(folder / "trace.jsonl")},
+                "complete_driving_lanes": False,
+                "observation_contract_version": 2,
+                "native_map_facts": {"path": "native_map_facts.json",
+                                     "sha256": _sha(folder / "capture/native_map_facts.json")}}
+    _write(folder / "capture/manifest.json", manifest)
     _write(folder / "control_context.json", {
         "source_kind": "diagnostic_fixture_control_context",
         "intersection_polygon_xy_m": [[4.5, -2], [8, -2], [8, 2], [4.5, 2]]})
@@ -114,10 +185,10 @@ def build_case(case: str) -> dict:
                "height": 1080 if name == "overview" else 720,
                "fps": 20, "color": "black"} for name in VIEWS]
     specification = HERE / ("diagnostic-" + case + "-spec.json")
-    _write(specification, {"files": {}, "graphs": [], "videos": videos})
-    inventory = [{"path": path.name,
+    _write(specification, {"files": {}, "graphs": graphs, "videos": videos})
+    inventory = [{"path": str(path.relative_to(folder)),
                   "source": str(path.relative_to(ROOT)), "sha256": _sha(path)}
-                 for path in sorted(folder.iterdir()) if path.is_file()]
+                 for path in sorted(folder.rglob("*")) if path.is_file()]
     recipe = HERE / ("diagnostic-" + case + "-recipe.json")
     _write(recipe, {"format": "worker-fixture-recipe", "sources": inventory,
                     "generator": {"source": str(specification.relative_to(ROOT)),

@@ -109,3 +109,13 @@ The exact scoped strict gate was run and still exits 1 on truthful partial/missi
 - Current scoped strict log: `cpu-current-strict.log`.
 - Physical outcome and lifecycle receipts: `physical-<case>-proof.json`.
 - Exact offline logs: `proof-offline-<case>-<candidate>.log`.
+
+## 2026-11-24 final CPU delivery preparation
+
+The frozen assignment declares zero `source_observation_terms`. The final case plan therefore has an empty required `source_observation_mapping`; five useful source notes remain separately in `source_observation_notes`. All plan-hash-dependent proposals, contracts, bundles, diagnostic recipes, physical probes, exact offline checks, compatibility receipts, acquisition mapping, delivery audits and saved-only receipts were rebuilt after this correction.
+
+All twelve primary/fallback positive and negative compatibility checks pass. Six independent synthetic delivery audits verify synchronized 900-frame four-camera videos, all-frame actor census joins and a negative altered stream. Six saved-only diagnostic runs pass, preserving source hashes and frame time joins. The current assignment-scoped static check and exact `worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready` gate both pass. `result.json` is now `ready` with `delivery_prepared` readiness and a canonical first GPU delivery command.
+
+These CPU fixtures are explicitly synthetic. The first real delivery must still provide reviewed municipal site authority and physical Native sight, motion, camera and occluder evidence. No actual Native capture or legal visibility finding is claimed. The six exact case and four comparison conditions remain fixed.
+
+Final 54-test assignment suite passed in 85.790 seconds, including the original 3,600-image full-decode fixture. After pinning that log in `result.json`, the exact scoped strict gate passed again. `cpu-final-all-tests.log` SHA256 is `c0e9199bae75b75cc6099f161619e83319d53a104e9b1b921d8e4ccbd4b37ae6`; `cpu-final-strict.log` SHA256 is `72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca`. Assignment hygiene scan found 221 UTF-8 text files, none over 2 MiB and no trailing whitespace, blank EOF or conflict markers.

@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C111278__LVMC-11-16-040__motor_vehicle_driver",
   "input_sha256": "37e80eef6f088ae3632520288109e2a435ac0b77d72a32e6c2445d4656023cfc",
-  "status": "partial",
-  "readiness_kind": "partial_six_exact_semantic_physical_offline_proofs",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -36,12 +36,6 @@
       "sha256": "72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-comparison-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "command": ".venv-cpu/bin/python work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/build_semantic_proposals.py",
       "exit_code": 0,
       "log": "cpu-semantic-build.log",
@@ -72,12 +66,6 @@
       "sha256": "72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-semantic-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/tests -p test_native_case_runner.py -v",
       "exit_code": 0,
       "log": "cpu-native-runner-focused.log",
@@ -100,12 +88,6 @@
       "exit_code": 0,
       "log": "cpu-native-runner-static.log",
       "sha256": "72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-native-runner-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     },
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/tests -p test_native_case_runner.py -v",
@@ -132,12 +114,6 @@
       "sha256": "72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-boundary-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-source-readers-sealed-all-tests.log",
@@ -156,14 +132,15 @@
       "sha256": "72449632cf9a16d56c5f784f1942dfac109e8eabdff0d9004f271a08c68250ca"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-current-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111278__LVMC-11-16-040__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-final-all-tests.log",
+      "sha256": "c0e9199bae75b75cc6099f161619e83319d53a104e9b1b921d8e4ccbd4b37ae6"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six exact source-bound case constructions and one bounded controller-gain fallback per case are built. Nine-stage semantic delivery validates. All six primary and six fallback offline checks pass against current construction hashes; six synthetic physical outcome/lifecycle proofs pass. Full assignment suite passed 54 tests including 3,600-camera decode; current scoped static check passes. Diagnostic positive/negative compatibility, fixture recipes, saved-only delivery receipts, acquisition mapping and physical Native source review remain worker-owned work. Original municipal site authority, physical sight, motion and camera capture remain unverified. Strict scoped gate still fails on truthful partial status."
+  "reason": "Six exact source-bound cases have complete CPU preparation proofs. Reviewed municipal site authority and physical Native sight, motion, and camera capture remain open for the dispatched GPU job.",
+  "first_gpu_delivery_command": "C111278_SITE_ROOT=\"$C111278_SITE_ROOT\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C111278__LVMC-11-16-040__motor_vehicle_driver --case testing__C111278__LVMC-11-16-040__motor_vehicle_driver__blocked_below --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -25,6 +25,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-destination_occupied_absent.log",
             "log_sha256": "9b2fded6364dae464071963733e22d8466eaea5ab8695505c807b892c26891b9"
+          },
+          "compatibility": {
+            "receipt": "cases/destination_occupied_absent/compat-fallback1-compatibility.json",
+            "log": "cases/destination_occupied_absent/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/destination_occupied_absent/compat-fallback1-negative-analysis.log",
+            "sha256": "261345ea823cf3d3099d003bf2d49c958df3a6cd2196d04dc73aaf17f81471b0"
           }
         }
       ],
@@ -49,6 +55,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-destination_occupied_absent.log",
         "log_sha256": "56ce356a1ed0c2d335846b408434fab13f21fab82485ba82bbc95646ec991b23"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/destination_occupied_absent/compat-primary-compatibility.json",
+        "log": "cases/destination_occupied_absent/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/destination_occupied_absent/compat-primary-negative-analysis.log",
+        "sha256": "704a8516d7fa05d47170566dcf37cbb3582ff2aca6ccbd87842bd1d045a3c9b1"
+      },
+      "negative": {
+        "log": "cases/destination_occupied_absent/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_absent --output .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_absent --output .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/destination_occupied_absent/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/destination_occupied_absent/saved-processing-receipt.json",
+        "receipt_sha256": "e0f3aca5aadcdc4bee55f9184179a1878bac8b6cd00c1894f2ab765233135e6e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-destination_occupied_absent-proof.json",
+        "sha256": "e2188acf83418be8f5f8c59e6fcc4962728d671725198127339e55898e7009e1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_absent",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_absent",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-destination_occupied_absent",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-destination_occupied_absent.log",
+        "test_log_sha256": "93d02a7dcfd1b04476f54bc786f0f529619f1b490554c485a381a2700822e5f4",
+        "negative_log": "delivery-negative-destination_occupied_absent.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     },
     {
@@ -75,6 +172,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-destination_occupied_nonoperating.log",
             "log_sha256": "93d92300443341f77675b0265aead43d5e35d4aa570aaef670759f570212119b"
+          },
+          "compatibility": {
+            "receipt": "cases/destination_occupied_nonoperating/compat-fallback1-compatibility.json",
+            "log": "cases/destination_occupied_nonoperating/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/destination_occupied_nonoperating/compat-fallback1-negative-analysis.log",
+            "sha256": "93cc24a20288d59716a5ab6f36c68d24f0290618f6d4d620f350a596a9c1cd41"
           }
         }
       ],
@@ -99,6 +202,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-destination_occupied_nonoperating.log",
         "log_sha256": "efb637be19e49c8ea5e8de72ca7b4a2830f348f911c1083a790860f12d66e9f7"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/destination_occupied_nonoperating/compat-primary-compatibility.json",
+        "log": "cases/destination_occupied_nonoperating/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/destination_occupied_nonoperating/compat-primary-negative-analysis.log",
+        "sha256": "e89f2d91ed9491824d272084c73969909fbca4a445b294946bf82a22edb5822c"
+      },
+      "negative": {
+        "log": "cases/destination_occupied_nonoperating/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_nonoperating --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_nonoperating --output .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_nonoperating --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_nonoperating --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_nonoperating --output .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_nonoperating --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/destination_occupied_nonoperating/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/destination_occupied_nonoperating/saved-processing-receipt.json",
+        "receipt_sha256": "516ef9a0a30140a28224f8a093161b86488ea1304c32d621a3c38b6f898af360"
+      },
+      "physical_preparation": {
+        "receipt": "physical-destination_occupied_nonoperating-proof.json",
+        "sha256": "166b1eed480c82740d8072936105ca75b2adb480305635a7697266572b909251"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_nonoperating",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_nonoperating --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_nonoperating/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_nonoperating",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_nonoperating --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_nonoperating/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-destination_occupied_nonoperating",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-destination_occupied_nonoperating.log",
+        "test_log_sha256": "53f0757c23b3626b35d60b19ca6bcaf8bf38b956d8f9e98edaaa53891c00b698",
+        "negative_log": "delivery-negative-destination_occupied_nonoperating.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     },
     {
@@ -125,6 +319,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-destination_clear_absent.log",
             "log_sha256": "2bc0e1c88208076902a6dd6a10037f84654d4e31511b8e067c32811af933e6af"
+          },
+          "compatibility": {
+            "receipt": "cases/destination_clear_absent/compat-fallback1-compatibility.json",
+            "log": "cases/destination_clear_absent/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/destination_clear_absent/compat-fallback1-negative-analysis.log",
+            "sha256": "bf6ed00ba0ca0dba1140bf7c5fc804a6edd5a33e140b5ec66e6155dfa19d3974"
           }
         }
       ],
@@ -149,6 +349,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-destination_clear_absent.log",
         "log_sha256": "7c97a680d1d641fee53db83c15e913e405fbf4b5e29e115344398a4edbe0455f"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/destination_clear_absent/compat-primary-compatibility.json",
+        "log": "cases/destination_clear_absent/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/destination_clear_absent/compat-primary-negative-analysis.log",
+        "sha256": "60ddd99a492b4d2a27fe4747c3c6d01f3043b8b1176c9a130f764bbe8954ca45"
+      },
+      "negative": {
+        "log": "cases/destination_clear_absent/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_clear_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_clear_absent --output .runtime-work/c111610-283/saved-v1-output-primary-destination_clear_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_clear_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_clear_absent --output .runtime-work/c111610-283/saved-v1-output-primary-destination_clear_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/destination_clear_absent/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/destination_clear_absent/saved-processing-receipt.json",
+        "receipt_sha256": "66558a09fbf59f771de924b2dd6429a2df8df4b21554473ed918d67bca9c2e1d"
+      },
+      "physical_preparation": {
+        "receipt": "physical-destination_clear_absent-proof.json",
+        "sha256": "48a1c3913ef95a9c64e48439ca2516370a984fe15b8e32699e8d2ac3b4f3c787"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_clear_absent",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_clear_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_clear_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_clear_absent",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_clear_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_clear_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-destination_clear_absent",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-destination_clear_absent.log",
+        "test_log_sha256": "c55bdab48da5f9ccf5d299ffd29aeae26fa67fa9361c9c553c357dc5a5e9b974",
+        "negative_log": "delivery-negative-destination_clear_absent.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     },
     {
@@ -175,6 +466,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-opposite_close_absent.log",
             "log_sha256": "8637bb3de531736f8457d60359c708ed680cbe7d2d3e4a1c5a8db26f0ea7a714"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_close_absent/compat-fallback1-compatibility.json",
+            "log": "cases/opposite_close_absent/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/opposite_close_absent/compat-fallback1-negative-analysis.log",
+            "sha256": "ee8819e6dd7fe74d053dce70d1482f89a704c387926122784136467342e58288"
           }
         }
       ],
@@ -199,6 +496,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-opposite_close_absent.log",
         "log_sha256": "6302092e8c8f235feed4c9a640b494cfae4a0d4211ea3d05947a184e99854214"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/opposite_close_absent/compat-primary-compatibility.json",
+        "log": "cases/opposite_close_absent/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/opposite_close_absent/compat-primary-negative-analysis.log",
+        "sha256": "fa5647c77d1f6a544401f9bd05daa4ff1c6e4187f287a8bbe81118569ae15a48"
+      },
+      "negative": {
+        "log": "cases/opposite_close_absent/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_close_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-opposite_close_absent --output .runtime-work/c111610-283/saved-v1-output-primary-opposite_close_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_close_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-opposite_close_absent --output .runtime-work/c111610-283/saved-v1-output-primary-opposite_close_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/opposite_close_absent/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/opposite_close_absent/saved-processing-receipt.json",
+        "receipt_sha256": "0f1be7856f2b68cf2440c18a3a6aaca63eaede05928f4301fed79fc4e49a6a92"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_close_absent-proof.json",
+        "sha256": "76176c7065f1553a521a463d413fe6c54578e6c4b78e121a7f925b16dab4481e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_close_absent",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_close_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-opposite_close_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-opposite_close_absent",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_close_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-opposite_close_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-opposite_close_absent",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-opposite_close_absent.log",
+        "test_log_sha256": "21bd507918b7083b6bcfbcb44a0044513d293eb68505726ad51148b6dfa30800",
+        "negative_log": "delivery-negative-opposite_close_absent.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     },
     {
@@ -225,6 +613,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-opposite_far_absent.log",
             "log_sha256": "25b08af7a619ecc1851077438ff32c461bc18616f019cf129258f3add10eae9d"
+          },
+          "compatibility": {
+            "receipt": "cases/opposite_far_absent/compat-fallback1-compatibility.json",
+            "log": "cases/opposite_far_absent/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/opposite_far_absent/compat-fallback1-negative-analysis.log",
+            "sha256": "31f71c5b84a2be3ff5d1296a33ac971d35a4174e81504573e0d89cf23557747f"
           }
         }
       ],
@@ -249,6 +643,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-opposite_far_absent.log",
         "log_sha256": "0db7eeef1e37df1c1fd495481f4e17557f3b4f124c5d4fdd8710fc34cb7ffcbe"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/opposite_far_absent/compat-primary-compatibility.json",
+        "log": "cases/opposite_far_absent/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/opposite_far_absent/compat-primary-negative-analysis.log",
+        "sha256": "77e4ea09c745385d80bac67fcdc415f629f17f6fd5a6c2d5e67679e94d65be0f"
+      },
+      "negative": {
+        "log": "cases/opposite_far_absent/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_far_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-opposite_far_absent --output .runtime-work/c111610-283/saved-v1-output-primary-opposite_far_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_far_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-opposite_far_absent --output .runtime-work/c111610-283/saved-v1-output-primary-opposite_far_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/opposite_far_absent/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/opposite_far_absent/saved-processing-receipt.json",
+        "receipt_sha256": "cd70e576eb3139664150e9920dbdd5a032abd960bbc0015bb2a73c1f357712f1"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_far_absent-proof.json",
+        "sha256": "3b580f2be4d1c457f000b40f5c71a6c5660ed7a37ac2ed99e5d4b73ffac8758d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_far_absent",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_far_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-opposite_far_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-opposite_far_absent",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__opposite_far_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-opposite_far_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-opposite_far_absent",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-opposite_far_absent.log",
+        "test_log_sha256": "186083d088b16366baa1feaab3440e67c4e745cf64f73a58b671b3b7890c7989",
+        "negative_log": "delivery-negative-opposite_far_absent.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     },
     {
@@ -275,6 +760,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-outside_crosswalk_absent.log",
             "log_sha256": "dbf2245c2fb18cf0b0b1121aacdbd5a8229d85221d7cf748b12e5a32a7482c84"
+          },
+          "compatibility": {
+            "receipt": "cases/outside_crosswalk_absent/compat-fallback1-compatibility.json",
+            "log": "cases/outside_crosswalk_absent/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/outside_crosswalk_absent/compat-fallback1-negative-analysis.log",
+            "sha256": "9ad5ec8fb09b6d9cd0a74170bb6476709ff9a95ea73ec405a9d0f70a1480a976"
           }
         }
       ],
@@ -299,6 +790,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-outside_crosswalk_absent.log",
         "log_sha256": "59456aa9f11a756272419f31592fc343f9f1841d53b45305d611bad68f184d9c"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/outside_crosswalk_absent/compat-primary-compatibility.json",
+        "log": "cases/outside_crosswalk_absent/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/outside_crosswalk_absent/compat-primary-negative-analysis.log",
+        "sha256": "3d4e5f5fccf2899d07c7284937dae8baa1191f025c380bb9cefc5fbae79afde9"
+      },
+      "negative": {
+        "log": "cases/outside_crosswalk_absent/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__outside_crosswalk_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-outside_crosswalk_absent --output .runtime-work/c111610-283/saved-v1-output-primary-outside_crosswalk_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__outside_crosswalk_absent --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-outside_crosswalk_absent --output .runtime-work/c111610-283/saved-v1-output-primary-outside_crosswalk_absent --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/outside_crosswalk_absent/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/outside_crosswalk_absent/saved-processing-receipt.json",
+        "receipt_sha256": "778d1923df2acc85477b2292f305045ebbca6bbddf0089ccfb78ca9e0a41716e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-outside_crosswalk_absent-proof.json",
+        "sha256": "f461eeb492db243c07c5df980e206f88fbd7d6072d57de6efc98a165a288de4a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__outside_crosswalk_absent",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__outside_crosswalk_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-outside_crosswalk_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-outside_crosswalk_absent",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__outside_crosswalk_absent --processed .runtime-work/c111610-283/saved-v1-output-primary-outside_crosswalk_absent/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-outside_crosswalk_absent",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-outside_crosswalk_absent.log",
+        "test_log_sha256": "84a81b0fc1956ff892b62946aa2aacccf153f790723ba8d8955507f812f472e7",
+        "negative_log": "delivery-negative-outside_crosswalk_absent.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     },
     {
@@ -325,6 +907,12 @@
             "exit_code": 0,
             "log": "proof-offline-fallback1-destination_occupied_operating.log",
             "log_sha256": "991c2a2b115cbf489fb8a31f070f0df08b046834db32d9690c3e53c737118f47"
+          },
+          "compatibility": {
+            "receipt": "cases/destination_occupied_operating/compat-fallback1-compatibility.json",
+            "log": "cases/destination_occupied_operating/compat-fallback1-compatibility-analysis.log",
+            "negative_log": "cases/destination_occupied_operating/compat-fallback1-negative-analysis.log",
+            "sha256": "8cc69c87a5b2571c89eb645cf3c21dddaee6995953a66802e6372ed75b22f75f"
           }
         }
       ],
@@ -349,6 +937,97 @@
         "exit_code": 0,
         "log": "proof-offline-primary-destination_occupied_operating.log",
         "log_sha256": "fd3553db5b5fec77b9c8ff21a7ec1a371cd6db7907965d71f94261e5e020a2a4"
+      },
+      "acquisition": {
+        "original_map_and_highway_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "crosswalk_vertices_and_classification": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "all_destination_direction_lanes": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "official_device_inventory_and_state": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/site.json"
+        },
+        "ego_turn_and_brake_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/ego.json"
+        },
+        "pedestrian_body_and_entry_history": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/pedestrian.json"
+        },
+        "exception_review": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/exception_review.json"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_capture.py",
+          "method": "capture",
+          "evidence": "capture/frame_map.json"
+        }
+      },
+      "compatibility": {
+        "receipt": "cases/destination_occupied_operating/compat-primary-compatibility.json",
+        "log": "cases/destination_occupied_operating/compat-primary-compatibility-analysis.log",
+        "negative_log": "cases/destination_occupied_operating/compat-primary-negative-analysis.log",
+        "sha256": "4a766cae43ae98c15595e64e8d2357569eabaf042fbdc81a923efbb1a4c6d56b"
+      },
+      "negative": {
+        "log": "cases/destination_occupied_operating/compat-primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_operating --output .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_operating --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/execution-manifest.json --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_operating --output .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_operating --library runtime/library --validator .runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck # inspect fresh vNNNN/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "cases/destination_occupied_operating/saved-processing.log",
+        "test_log_sha256": "05a73f4fe52485f2e6217bcbfcf2120673b4455198d98f1f7f2b08c36e374b39",
+        "receipt": "cases/destination_occupied_operating/saved-processing-receipt.json",
+        "receipt_sha256": "09467d6dd9cf983797d1a5857381b9d3dcc93854fcbed3975d945c2ec40f20b5"
+      },
+      "physical_preparation": {
+        "receipt": "physical-destination_occupied_operating-proof.json",
+        "sha256": "3e99919240420d6ffac5df30abb36ec9e2e871ffa82fb0e6d9e6fc4281dcd646"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_operating/v0001 --diagnostic --attempt .runtime-work/c111610-283/saved-v1-attempt-primary-destination_occupied_operating",
+        "negative_command": ".venv-cpu/bin/python work/testing__C111610__NRS-484B-283-1a__motor_vehicle_driver/delivery_acceptance.py --case testing__C111610__NRS-484B-283-1a__motor_vehicle_driver__destination_occupied_operating --processed .runtime-work/c111610-283/saved-v1-output-primary-destination_occupied_operating/v0001 --diagnostic --attempt .runtime-work/c111610-283/delivery-v1-negative-destination_occupied_operating",
+        "script": "delivery_acceptance.py",
+        "script_sha256": "fbc2bced308321efffc2a1954c288300a7a3f8e99bc242500bdb280332dae3de",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "original acquisition missing or changed: capture/exception_review.json",
+        "test_log": "delivery-positive-destination_occupied_operating.log",
+        "test_log_sha256": "08a7ca09c7246fca0d75543e008a5ea2db3c09c385e15240f5be519c81c47271",
+        "negative_log": "delivery-negative-destination_occupied_operating.log",
+        "negative_log_sha256": "a73d877bad4ce14a416b7b11ba077c504ed1bd5e47edd3ea50b0ade85280b7fe",
+        "scope": "positive and negative diagnostic CPU proof; Native physical acceptance deferred"
       }
     }
   ],
