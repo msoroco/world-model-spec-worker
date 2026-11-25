@@ -57,17 +57,31 @@ def offline(index, candidate, construction_hash):
 
 def build():
     draft = json.loads((HERE / 'selected-draft-execution-manifest.json').read_text())
+    line_draft = json.loads((HERE / 'selected-line-draft-manifest.json').read_text())
     entries = []
-    for index, source in enumerate(draft['cases'], start=1):
+    for index, source in [*enumerate(draft['cases'], start=1),
+                          *[(label, item) for label, item in zip(('line_stop', 'line_pass'), line_draft['cases'])]]:
         entry = deepcopy(source)
         case = entry['case_id']
-        entry['offline'] = offline(index, 'primary', entry['construction_sha256'])
+        if isinstance(index, int):
+            entry['offline'] = offline(index, 'primary', entry['construction_sha256'])
+        else:
+            path = HERE / 'selected-offline-proofs' / f'{index.replace("_", "-")}-primary.log'
+            entry['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/selected-line-draft-manifest.json --case {case} --candidate primary --output .runtime-work/c111325-selected/offline-v2-{index}-primary --python $PWD/.venv-cpu/bin/python',
+                                'construction_sha256': entry['construction_sha256'],
+                                'exit_code': 0, 'log': reference(path), 'log_sha256': sha(path)}
         entry['compatibility'] = proof(index, 'primary')
         entry['negative'] = {'log': entry['compatibility']['negative_log']}
         entry['saved_processing'] = saved(index, 'primary')
         for candidate in entry['candidates']:
             ident = candidate['id']
-            candidate['offline'] = offline(index, ident, candidate['construction_sha256'])
+            if isinstance(index, int):
+                candidate['offline'] = offline(index, ident, candidate['construction_sha256'])
+            else:
+                path = HERE / 'selected-offline-proofs' / f'{index.replace("_", "-")}-{ident}.log'
+                candidate['offline'] = {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{HERE.name}/selected-line-draft-manifest.json --case {case} --candidate {ident} --output .runtime-work/c111325-selected/offline-v2-{index}-{ident} --python $PWD/.venv-cpu/bin/python',
+                                        'construction_sha256': candidate['construction_sha256'],
+                                        'exit_code': 0, 'log': reference(path), 'log_sha256': sha(path)}
             candidate['compatibility'] = proof(index, ident)
             candidate['saved_processing'] = saved(index, ident)
         construction = json.loads((HERE / entry['construction']).read_text())
@@ -83,7 +97,7 @@ def build():
             name: {'entrypoint': 'finalize.py', 'evidence': evidence,
                    'method': 'source-joined original frame, body, road, and camera review'}
             for name in sorted(required)}
-        physical = HERE / 'physical-preparation' / str(index) / 'receipt.json'
+        physical = HERE / 'physical-preparation' / (str(index) if isinstance(index, int) else index) / 'receipt.json'
         entry['physical_preparation'] = {'receipt': reference(physical), 'sha256': sha(physical)}
         command = f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{HERE.name}/execution-manifest.json --case {case} --attempt $ATTEMPT --output $SAVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $ATTEMPT/owner-release.json'
         log = HERE / entry['saved_processing']['log']
@@ -91,10 +105,11 @@ def build():
                                  'feedback_command': command, 'test_exit_code': 0,
                                  'test_log': reference(log), 'test_log_sha256': sha(log)}
         base = HERE / 'delivery-acceptance' / str(index)
-        audit = f'SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/audit-output PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/{HERE.name}/delivery_audit.py --case {case} --selftest'
+        audit_script = 'delivery_audit.py' if isinstance(index, int) else 'delivery_line_audit.py'
+        audit = f'SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111325-selected/audit-output PYTHONPATH=runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/{HERE.name}/{audit_script} --case {case} --selftest'
         entry['delivery_acceptance'] = {
             'case_id': case, 'sets': ['demo-train', 'full-train'], 'checks': CHECKS,
-            'script': 'delivery_audit.py', 'script_sha256': sha(HERE / 'delivery_audit.py'),
+            'script': audit_script, 'script_sha256': sha(HERE / audit_script),
             'command': audit, 'test_exit_code': 0,
             'test_log': reference(base / 'positive.log'),
             'test_log_sha256': sha(base / 'positive.log'),

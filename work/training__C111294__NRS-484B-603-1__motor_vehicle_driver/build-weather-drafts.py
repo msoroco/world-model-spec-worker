@@ -12,8 +12,9 @@ def revise(text):
     return text
 
 
-def build(old, new):
-    source = HERE / f'current-v2-{old}-diagnostic/construction.json'
+def build(old, new, candidate='primary'):
+    source = HERE / (f'current-v2-{old}-diagnostic/construction.json' if candidate == 'primary'
+                     else f'current-v2-{old}-fallback1-diagnostic/construction.json')
     construction = json.loads(source.read_text())
     construction['case_id'] = revise(construction['case_id'])
     for entry in construction['files']:
@@ -79,7 +80,7 @@ def measure_weather_approach(folder: Path, value: dict) -> dict:
             data = json.loads(content)
             content = json.dumps(data, indent=2) + '\n'
         entry['content'] = content
-    target = HERE / 'weather-branch-drafts' / new
+    target = HERE / 'weather-branch-drafts' / (new if candidate == 'primary' else new + '-fallback1')
     target.mkdir(parents=True, exist_ok=True)
     (target / 'construction.json').write_text(json.dumps(construction, indent=2) + '\n')
     for entry in construction['files']:
@@ -94,3 +95,4 @@ def measure_weather_approach(folder: Path, value: dict) -> dict:
 if __name__ == '__main__':
     for old, new in PAIRS:
         print(build(old, new))
+        print(build(old, new, 'fallback1'))

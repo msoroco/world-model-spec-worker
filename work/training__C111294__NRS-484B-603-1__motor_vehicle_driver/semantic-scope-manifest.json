@@ -1,0 +1,303 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_preparation_diagnostic_only",
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "measurement_contract": "current-v2-probe_a-measurement-contract.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native cross-traffic timing and ego approach-speed realization are unobserved; a source-measured retry may shift common cross-traffic spawn or earlier braking without changing case or camera contract."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-approach-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-v2-probe_a-fallback1-diagnostic/construction.json",
+          "construction_sha256": "ad19af168d23444d196edd929651900489f119103982da925a74e98039dd570d",
+          "trigger": {
+            "source": "original Native ego velocity and intersection approach position",
+            "metric": "approach-to-preentry speed reduction, mph",
+            "failure_condition": "primary reduction below 3 mph engineering retry trigger"
+          },
+          "changed_knobs": [
+            "earlier brake onset",
+            "common other-vehicle spawn position"
+          ],
+          "offline": {
+            "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+            "candidate_id": "fallback1",
+            "construction_sha256": "ad19af168d23444d196edd929651900489f119103982da925a74e98039dd570d",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_a-fallback1-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c111294-current/offline-probe_a-fallback1-fixed --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "current-v2-probe_a-fallback1-offline.log",
+            "log_sha256": "f6dc76b1279c6c717a11b15d2f39d854dff2ebbeed1035a3e01337c97358c231"
+          },
+          "compatibility": {
+            "receipt": "current-v2-probe_a-fallback1-compatibility.json",
+            "sha256": "e7b5b0bb4214ed64b2351da902b95b39b28eeb81e585f52e7dc7fb5793209a3c",
+            "log": "current-v2-probe_a-fallback1-positive.log",
+            "negative_log": "current-v2-probe_a-fallback1-negative.log"
+          },
+          "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_a-recipe.json"
+        }
+      ],
+      "id": "primary",
+      "construction": "current-v2-probe_a-diagnostic/construction.json",
+      "construction_sha256": "eda90e290a0088417d93679bebb41265fa6ffc8f290f2184917089ddb5ba0cec",
+      "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_a-recipe.json",
+      "offline": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+        "candidate_id": "primary",
+        "construction_sha256": "eda90e290a0088417d93679bebb41265fa6ffc8f290f2184917089ddb5ba0cec",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_a-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c111294-current/offline-probe_a-primary-fixed --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "current-v2-probe_a-primary-offline.log",
+        "log_sha256": "f6dc76b1279c6c717a11b15d2f39d854dff2ebbeed1035a3e01337c97358c231"
+      },
+      "compatibility": {
+        "receipt": "current-v2-probe_a-compatibility.json",
+        "sha256": "82ef00b2ff1c9e056b64f70894be1ffd1126532ed4380b99b481363b45084066",
+        "log": "current-v2-probe_a-positive.log",
+        "negative_log": "current-v2-probe_a-negative.log"
+      },
+      "negative": {
+        "log": "current-v2-probe_a-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_a/proof.json",
+        "sha256": "cace4bcc6adb4964650800349e8f5fe6badd8c1e3ee7232fce3a4ff7554e3695"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "observed_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v*/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "current-v2-probe_a-saved-process.log",
+        "test_log_sha256": "fab3644a0200076bdf90658f8206d6f633af306f9d0498c489c4bdaaaa67a160",
+        "processing_receipt": "current-v2-probe_a-saved-processing.json",
+        "processing_sha256": "fab3644a0200076bdf90658f8206d6f633af306f9d0498c489c4bdaaaa67a160"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ff07866cc13a6133867da7e417c9849629b29771c152d3264ca27f40ec8c18f8",
+        "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_a --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native result required",
+        "test_log": "delivery-probe_a-positive.log",
+        "test_log_sha256": "300c070faaf2deb3ef632f9d84aefc39c4e65305e38171f4a0f3b62c9d2e7461",
+        "negative_log": "delivery-probe_a-negative.log",
+        "negative_log_sha256": "ebc9ad5e9882c5ad0ec93fb21d83918c2c604e961e9b72746769feecaaad3795"
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "measurement_contract": "current-v2-probe_b-measurement-contract.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native cross-traffic timing and ego approach-speed realization are unobserved; a source-measured retry may shift common cross-traffic spawn or earlier braking without changing case or camera contract."
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-approach-diagnostic-v1"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-v2-probe_b-fallback1-diagnostic/construction.json",
+          "construction_sha256": "1defc4b98a899cd06f129c6aea3528173ac04bf27c5ebaaa4b767a283538f7f8",
+          "trigger": {
+            "source": "original Native ego velocity and other-vehicle trajectory",
+            "metric": "approach-to-preentry reduction and original other-vehicle timing",
+            "failure_condition": "primary reduction above 1 mph or original other-vehicle timing fails source review"
+          },
+          "changed_knobs": [
+            "common other-vehicle spawn position; speed held equal across pair"
+          ],
+          "offline": {
+            "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+            "candidate_id": "fallback1",
+            "construction_sha256": "1defc4b98a899cd06f129c6aea3528173ac04bf27c5ebaaa4b767a283538f7f8",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_b-fallback1-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c111294-current/offline-probe_b-fallback1-fixed --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "current-v2-probe_b-fallback1-offline.log",
+            "log_sha256": "f6dc76b1279c6c717a11b15d2f39d854dff2ebbeed1035a3e01337c97358c231"
+          },
+          "compatibility": {
+            "receipt": "current-v2-probe_b-fallback1-compatibility.json",
+            "sha256": "95d140032972da7bd0524414bf976528fda379cf4810628f330af278e01c88ba",
+            "log": "current-v2-probe_b-fallback1-positive.log",
+            "negative_log": "current-v2-probe_b-fallback1-negative.log"
+          },
+          "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_b-recipe.json"
+        }
+      ],
+      "id": "primary",
+      "construction": "current-v2-probe_b-diagnostic/construction.json",
+      "construction_sha256": "2226a67cb4e7155402851d2ef3569df968adf0a29b8996a9869ee231e8a44fdd",
+      "fixture_recipe": "work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_b-recipe.json",
+      "offline": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+        "candidate_id": "primary",
+        "construction_sha256": "2226a67cb4e7155402851d2ef3569df968adf0a29b8996a9869ee231e8a44fdd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/current-v2-probe_b-diagnostic-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c111294-current/offline-probe_b-primary-fixed --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "current-v2-probe_b-primary-offline.log",
+        "log_sha256": "f6dc76b1279c6c717a11b15d2f39d854dff2ebbeed1035a3e01337c97358c231"
+      },
+      "compatibility": {
+        "receipt": "current-v2-probe_b-compatibility.json",
+        "sha256": "98792ca27cae96bcc7e181627f58dc2e43020a5867c869c6bf610014c0b2fc2a",
+        "log": "current-v2-probe_b-positive.log",
+        "negative_log": "current-v2-probe_b-negative.log"
+      },
+      "negative": {
+        "log": "current-v2-probe_b-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_b/proof.json",
+        "sha256": "bca1c201c03b9f42d34f3680b9cdd049efcee144ade4ab9672f68f1e9540da8b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "ego_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "observed_speed": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "runner.py",
+          "method": "20 Hz original Native actor pose/velocity, road and camera acquisition with source-joined saved channels",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl, road.xodr and four synchronized original videos"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/execution-manifest.json --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/v*/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "current-v2-probe_b-saved-process.log",
+        "test_log_sha256": "9e5cf53a0638c87088ca3f046e9899fed276f0833374282080917ec336b9069f",
+        "processing_receipt": "current-v2-probe_b-saved-processing.json",
+        "processing_sha256": "9e5cf53a0638c87088ca3f046e9899fed276f0833374282080917ec336b9069f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ff07866cc13a6133867da7e417c9849629b29771c152d3264ca27f40ec8c18f8",
+        "command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C111294__NRS-484B-603-1__motor_vehicle_driver/delivery_audit.py --case training__C111294__NRS-484B-603-1__motor_vehicle_driver__probe_b --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native result required",
+        "test_log": "delivery-probe_b-positive.log",
+        "test_log_sha256": "91cbec152c7d84637d7ef10a503fb705e773121db3e17840703dd93895b57b2a",
+        "negative_log": "delivery-probe_b-negative.log",
+        "negative_log_sha256": "ebc9ad5e9882c5ad0ec93fb21d83918c2c604e961e9b72746769feecaaad3795"
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_a",
+      "construction": "weather-branch-drafts/weather_probe_a/construction.json",
+      "construction_sha256": "2b68b996a3be45df8cb4016c34629f98c70c9aac3f5493232e4fe2110a99b98d"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__weather_probe_b",
+      "construction": "weather-branch-drafts/weather_probe_b/construction.json",
+      "construction_sha256": "d5cb40a59093945048872bee4e10a80a92158715b9a8295608d0518c037eece3"
+    }
+  ]
+}

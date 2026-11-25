@@ -42,9 +42,11 @@ def build():
                 },
                 'parameter_refs': [
                     {'name': 'near_side_crosswalk_present', 'kind': 'world_setup',
-                     'range_or_domain': 'true in this selected branch; other statutory alternatives require separate cases'},
+                     'range_or_domain': 'true for crosswalk cases, false for no-crosswalk marked-line cases'},
                     {'name': 'requested_pre_crosswalk_stop', 'kind': 'controller',
                      'range_or_domain': 'true or false; request is not measured behavior'},
+                    {'name': 'requested_pre_line_stop', 'kind': 'controller',
+                     'range_or_domain': 'true or false when the marked-line branch applies'},
                     {'name': 'measured_pre_crosswalk_stop', 'kind': 'subject_behavior',
                      'range_or_domain': 'source-measured Boolean; no legal conclusion'},
                 ]}
@@ -54,18 +56,22 @@ def build():
                'established_contexts': [{'name': 'C111325 signed near-side approach',
                                          'source': 'Frozen catalog cell; physical governing sign and crosswalk require original review'}],
                'law_refs': [{'template_id': TEMPLATE, 'binding_kind': 'direct'}],
-               'context_refs': [], 'fixed_parameters': [
-                   {'name': 'near_side_crosswalk_present', 'kind': 'world_setup',
-                    'range_or_domain': 'true for selected pair', 'used_by_laws': [LAW_ID]}],
+               'context_refs': [], 'fixed_parameters': [],
                'variable_parameters': [
+                   {'name': 'near_side_crosswalk_present', 'kind': 'world_setup',
+                    'range_or_domain': 'true/false by selected statutory branch', 'used_by_laws': [LAW_ID]},
                    {'name': 'requested_pre_crosswalk_stop', 'kind': 'controller',
                     'range_or_domain': 'true/false', 'used_by_laws': [LAW_ID]},
+                   {'name': 'requested_pre_line_stop', 'kind': 'controller',
+                    'range_or_domain': 'true/false on the marked-line branch', 'used_by_laws': [LAW_ID]},
                    {'name': 'measured_pre_crosswalk_stop', 'kind': 'subject_behavior',
                     'range_or_domain': 'source-measured true/false', 'used_by_laws': [LAW_ID]}]}
     refs['bindings'] = write('bindings.json', binding)
     description = json.loads((HERE / 'selected-probe-1-primary-construction.json').read_text())['recording_description']
-    assignments = lambda requested: {
-        'requested_pre_crosswalk_stop': {'kind': 'controller', 'value': requested, 'unit': 'boolean'},
+    assignments = lambda requested, crosswalk=True: {
+        'near_side_crosswalk_present': {'kind': 'world_setup', 'value': crosswalk, 'unit': 'boolean'},
+        'requested_pre_crosswalk_stop': {'kind': 'controller', 'value': requested if crosswalk else None, 'unit': 'boolean'},
+        'requested_pre_line_stop': {'kind': 'controller', 'value': requested if not crosswalk else None, 'unit': 'boolean'},
         'measured_pre_crosswalk_stop': {'kind': 'subject_behavior', 'value': None, 'unit': 'boolean'},
     }
     cases = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
@@ -88,12 +94,25 @@ def build():
                     'recording_description': description,
                     'unresolved_judgment_calls': []}
                    for index, requested in ((1, True), (2, False))],
+                 *[{'case_id': HERE.name + '__' + label,
+                    'target_law_id': LAW_ID,
+                    'target_type': 'compliant_attempt' if requested else 'violating_attempt',
+                    'paired_probe_id': HERE.name + '__marked_line_comparison',
+                    'deliberate_differences': ['requested_pre_line_stop'],
+                    'probe': {'primary_variable': 'requested_pre_line_stop',
+                              'comparison_or_standard': 'source-measured full body halt before marked line with no crosswalk; no legal verdict',
+                              'target_value_or_branch': requested},
+                    'rationale': 'No-crosswalk marked-line controlled request; physical line rendering and actual halt need original review',
+                    'variable_assignments': assignments(requested, False),
+                    'recording_description': description,
+                    'unresolved_judgment_calls': []}
+                   for label, requested in (('line_stop', True), ('line_pass', False))],
              ]}
     refs['cases'] = write('cases.json', cases)
     write('semantic-index.json', {'format': 'worker-semantic-delivery',
                                   'assignment_id': HERE.name,
                                   'status': 'draft', 'stages': refs})
-    return {'selected_cases': 2, 'index_sha256': refs['cases']['sha256']}
+    return {'selected_cases': 4, 'index_sha256': refs['cases']['sha256']}
 
 
 if __name__ == '__main__':

@@ -32,8 +32,11 @@ def check_result(result, case):
     if measured.get('reduction_necessity_legally_verified') is not False:
         raise ValueError('Necessity claimed without independent review')
     names = {row.get('name') for row in result.get('recording_evidence', [])}
-    if not {'ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'} <= names:
-        raise ValueError('Ego or other-traffic recording missing')
+    required = {'ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'}
+    if 'weather_probe' in case:
+        required.add('weather_parameters')
+    if not required <= names:
+        raise ValueError('Ego, other-traffic or weather recording missing')
     if not result.get('target_checks') or not result.get('realized_observables'):
         raise ValueError('Missing physical target or realized observables')
     if result.get('behavior_attempted') is not True or result.get('maneuver_completed') is not True:
@@ -51,7 +54,7 @@ def check_join(frame_map, trace):
     return len(frames)
 
 
-def check_review(review, attempt, frame_map, trace):
+def check_review(review, attempt, frame_map, trace, case):
     if review.get('format') != 'c111294-603-1-original-source-review-v1' or not review.get('reviewer') or review.get('reviewer') == 'synthetic-cpu-fixture':
         raise ValueError('Independent original source review required')
     if review.get('physical_completion_reviewed') is not True:
@@ -61,6 +64,13 @@ def check_review(review, attempt, frame_map, trace):
     expected = {'video_frames.jsonl': frame_map, 'converted/trace.json': trace}
     for name in ('native_samples.jsonl', 'road.xodr'):
         expected[name] = source(attempt, name)
+    if 'weather_probe' in case:
+        for name in ('context.json', 'capture/evidence.jsonl'):
+            expected[name] = source(attempt, name)
+        context = json.loads(expected['context.json'].read_text())
+        evidence = [json.loads(line) for line in expected['capture/evidence.jsonl'].read_text().splitlines()]
+        if context.get('weather_parameters', {}).get('wetness', 0) <= 0 or len(evidence) != 600 or any(row.get('world', {}).get('weather', {}).get('wetness', 0) <= 0 for row in evidence):
+            raise ValueError('Original wet-weather condition unverified')
     for name, path in expected.items():
         if review.get('source_sha256', {}).get(name) != digest(path):
             raise ValueError('Review lacks exact original source hash: ' + name)
@@ -84,7 +94,7 @@ def audit(args):
     frame_map = source(attempt, 'video_frames.jsonl')
     trace = source(attempt, args.trace)
     review = json.loads(source(attempt, args.review).read_text())
-    check_review(review, attempt, frame_map, trace)
+    check_review(review, attempt, frame_map, trace, args.case)
     frames = check_join(frame_map, trace)
     video = source(attempt, args.video)
     output = Path(args.output).resolve()
@@ -111,7 +121,7 @@ def selftest(case, negative):
               'accepted': False, 'legal_verdict_claimed': False, 'setup_confirmed': False,
               'behavior_attempted': True, 'maneuver_completed': True, 'target_checks': [{'target': 'speed_profile', 'matched': True}],
               'realized_observables': {'ego_speed': {'value': 10}},
-              'recording_evidence': [{'name': name} for name in ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose')],
+              'recording_evidence': [{'name': name} for name in (('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose', 'weather_parameters') if 'weather_probe' in case else ('ego_pose', 'ego_speed', 'observed_speed', 'other_vehicle_pose'))],
               'measured_values': {'frames': 600, 'approach_start_mph': 28.8, 'preentry_mph': 20.0,
                                   'crossing_peak_mph': 20.0, 'measured_decrease_mph': 8.8,
                                   'reduction_necessity_legally_verified': False}}

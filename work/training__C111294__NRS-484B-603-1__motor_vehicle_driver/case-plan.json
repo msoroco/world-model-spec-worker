@@ -44,9 +44,12 @@
       "requirement": "NRS-484B-603-1",
       "source": "NRS 484B.603(1)",
       "branch": "special hazard involving pedestrians",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Frozen C111294 is intersection/travel/other_vehicle; this alternative needs a compatible source-authorized cell or source-backed existing-evidence disposition. No physical or legal claim."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b"
+      ],
+      "evidence_or_gap": "Same-cell original Native walker trajectory is requested and source-bound; synthetic CPU proof is diagnostic, with original physical conflict and legal necessity pending review."
     },
     {
       "requirement": "NRS-484B-603-1",
@@ -92,6 +95,22 @@
       "target_type": "boundary_probe",
       "physical_target": "decrease speed as requested while approaching a source-observed wet highway condition at the assigned intersection",
       "comparison_variable": "hazard_approach_speed_profile"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+      "target_law_id": "NRS-484B-603-1",
+      "kind": "selected_cpu_preparation",
+      "target_type": "boundary_probe",
+      "physical_target": "decrease speed near source-observed crossing pedestrian at assigned intersection",
+      "comparison_variable": "hazard_approach_speed_profile"
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b",
+      "target_law_id": "NRS-484B-603-1",
+      "kind": "selected_cpu_preparation",
+      "target_type": "boundary_probe",
+      "physical_target": "hold speed near source-observed crossing pedestrian at assigned intersection",
+      "comparison_variable": "hazard_approach_speed_profile"
     }
   ],
   "comparisons": [
@@ -122,6 +141,21 @@
       "deliberate_differences": [
         "hazard_approach_speed_profile"
       ]
+    },
+    {
+      "comparison_id": "pedestrian_hazard_speed_profile",
+      "case_ids": [
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_a",
+        "training__C111294__NRS-484B-603-1__motor_vehicle_driver__pedestrian_probe_b"
+      ],
+      "fixed_conditions": [
+        "same C111294 authored intersection geometry",
+        "same original pedestrian route and initial state",
+        "same other-vehicle route and initial state"
+      ],
+      "deliberate_differences": [
+        "hazard_approach_speed_profile"
+      ]
     }
   ],
   "observations": [
@@ -144,6 +178,11 @@
       "name": "other_vehicle_pose",
       "mandatory": true,
       "reason": "Original Native joined source channel for the controlled intersection approach measurement"
+    },
+    {
+      "name": "pedestrian_pose",
+      "mandatory": true,
+      "reason": "Original Native walker position readback for special pedestrian hazard"
     }
   ],
   "sources": [
@@ -314,12 +353,14 @@
       "evidence": "Exact law names this alternative or context; frozen intersection/other-vehicle cell and current sources do not establish it as an observed channel."
     },
     "ru.pedestrian": {
-      "channels": [],
+      "channels": [
+        "pedestrian_pose"
+      ],
       "source_refs": [
-        "duration-600-drafts/probe_a/primary/construction.json",
+        "pedestrian-branch-drafts/pedestrian_probe_a/construction.json",
         "inputs/training__C111294__NRS-484B-603-1__motor_vehicle_driver/assignment.json"
       ],
-      "evidence": "Exact law names this alternative or context; frozen intersection/other-vehicle cell and current sources do not establish it as an observed channel."
+      "evidence": "Original Native walker position is requested for every frame; synthetic fixture validates only the CPU join, with legal hazard and physical completion pending review."
     },
     "env.precipitation": {
       "channels": [],
@@ -367,5 +408,32 @@
       ],
       "evidence": "Exact law names this alternative or context; frozen intersection/other-vehicle cell and current sources do not establish it as an observed channel."
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego body, authored road and approach geometry",
+        "interval": "entire 30 s attempt"
+      },
+      {
+        "view": "approach",
+        "subject": "ego forward path, intersection and source-visible weather",
+        "interval": "entire 30 s attempt"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other-traffic conflict path and intersection corner",
+        "interval": "entire 30 s attempt"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "intersection crossing and both participant trajectories",
+        "interval": "entire 30 s attempt"
+      }
+    ]
   }
 }

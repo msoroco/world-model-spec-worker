@@ -38,9 +38,12 @@
       "requirement": "NRS-484A-450-2",
       "source": "NRS 484A.450(2)",
       "branch": "no-crosswalk marked-stop-line branch",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__line_stop",
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__line_pass"
+      ],
+      "evidence_or_gap": "Selected CPU draft pair uses a source-authored no-crosswalk marked-line road; physical line rendering and original Native behavior await local review."
     },
     {
       "requirement": "NRS-484A-450-2",
@@ -91,6 +94,42 @@
       "gap_ids": [
         "near_side_crosswalk_source"
       ]
+    },
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__line_stop",
+      "target_law_id": "NRS-484A-450-2",
+      "kind": "selected_delivery_draft",
+      "target_type": "compliant_attempt",
+      "physical_target": "full stop before clearly marked stop line",
+      "comparison_variable": "stop_before_applicable_boundary",
+      "source_branch": "no-crosswalk marked-stop-line branch",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "construction_manifest": "selected-line-draft-manifest.json",
+      "gap_ids": [
+        "no_crosswalk_stop_line_source"
+      ]
+    },
+    {
+      "case_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__line_pass",
+      "target_law_id": "NRS-484A-450-2",
+      "kind": "selected_delivery_draft",
+      "target_type": "violating_attempt",
+      "physical_target": "cross marked stop line without full stop",
+      "comparison_variable": "stop_before_applicable_boundary",
+      "source_branch": "no-crosswalk marked-stop-line branch",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "construction_manifest": "selected-line-draft-manifest.json",
+      "gap_ids": [
+        "no_crosswalk_stop_line_source"
+      ]
     }
   ],
   "comparisons": [
@@ -106,6 +145,20 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C111325__NRS-484A-450-2__motor_vehicle_driver__marked_line_comparison",
+      "case_ids": [
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__line_stop",
+        "training__C111325__NRS-484A-450-2__motor_vehicle_driver__line_pass"
+      ],
+      "deliberate_differences": [
+        "requested_stop_before_marked_line"
+      ],
+      "fixed_conditions": [
+        "same authored signed approach with no crosswalk and one marked line",
+        "same actor, cameras, source frame/time model and intersection geometry"
       ]
     }
   ],
@@ -194,6 +247,10 @@
     {
       "path": "inputs/training__C111325__NRS-484A-450-2__motor_vehicle_driver/assignment.json",
       "sha256": "a2c4b90f3430a71b5d68ac4ed9cee596065ad0cea45fbc4b89b1d44306f48252"
+    },
+    {
+      "path": "work/training__C111325__NRS-484A-450-2__motor_vehicle_driver/native/road_stop_line.xodr",
+      "sha256": "7078684cbeabe50a7a90404ab2be051e8b443d623b8aa98a74ec189b375bd835"
     }
   ],
   "unverified_physical_assumptions": [

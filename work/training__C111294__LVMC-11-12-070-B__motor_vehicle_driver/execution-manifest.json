@@ -1,0 +1,258 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_delivery_cpu_in_progress",
+  "cases": [
+    {
+      "case_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "draft-primary/construction.json",
+      "construction_sha256": "a6efc892199eed6d8e240118135201fe9137a4ddb22dac21b9fef3ec0a79dd5d",
+      "fixture_recipe": "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/current-v2-probe-1-fixture-recipe.json",
+      "measurement_contract": "current-v2-probe-1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original through body may overshoot its requested hold before the entering vehicle clears"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/probe_1/fallback1/construction.json",
+          "construction_sha256": "5853555fe08f0dab85a9b2668d7a531d37629db4f72943e7d1e98138277307dc",
+          "trigger": {
+            "source": "original Native road, full-body poses and native_samples.jsonl",
+            "metric": "through body position at the first requested hold, before entrant clearing",
+            "failure_condition": "observed full through body overshoots the source-reviewed hold location before the entrant clears"
+          },
+          "changed_knobs": [
+            "through authored upstream start 65 m to 70 m; fixed road, entrant, controller and capture contract retained"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/execution-manifest.json --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1 --candidate fallback1 --output .runtime-work/c111294-selected-probe-1-fallback-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5853555fe08f0dab85a9b2668d7a531d37629db4f72943e7d1e98138277307dc",
+            "log": "fallback-probe-1-offline.log",
+            "log_sha256": "d3809aaa3b0dbbe282f0f05c1dd6e4816276592b35463b55c851f7c92f708265"
+          },
+          "compatibility": {
+            "receipt": "selected-probe-1-fallback1-compatibility.json",
+            "sha256": "b5cf557364791f86638325b3d3ee4903af9a0d65c1f3aa1002b5e12d939560a2",
+            "log": "selected-probe-1-fallback1-analysis.log",
+            "negative_log": "selected-probe-1-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/execution-manifest.json --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1 --candidate primary --output .runtime-work/c111294-selected-probe-1-primary-offline --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "a6efc892199eed6d8e240118135201fe9137a4ddb22dac21b9fef3ec0a79dd5d",
+        "log": "native-live-probe-1-offline.log",
+        "log_sha256": "7d02c74e09094c9df409853dfa12aba9cbc702325e75dba31a5cc003ccb6fff7"
+      },
+      "compatibility": {
+        "receipt": "current-v2-probe-1-compatibility.json",
+        "sha256": "d9b78d99b7ee1c5b39b6827320cb2c6e1c72e668421bb3f56a2fc459fc3279e0",
+        "log": "current-v2-probe-1-compatibility-analysis.log",
+        "negative_log": "current-v2-probe-1-negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v2-probe-1-negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "current-v2-probe-1-saved-proof.json",
+        "sha256": "f7c1fb809d1ad5b0a2b42a29da21837db9f04c3bded40fe34c1e242f75d2fedc"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "through_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "Original 20 Hz through actor transform, velocity, road/lane and body readback",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl and original four cameras"
+        },
+        "entrant_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "Original 20 Hz entrant actor transform, velocity, road/lane and body readback",
+          "evidence": "native_samples.jsonl, capture/evidence.jsonl and authored-road.xodr"
+        },
+        "frame_join": {
+          "entrypoint": "live_capture.py",
+          "method": "Synchronize both original actor observations to each Native tick and four camera frames",
+          "evidence": "video_frames.jsonl, trace.jsonl and capture/native/frames.jsonl"
+        }
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/execution-manifest.json --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "current-v2-probe-1-saved-proof.json",
+        "test_log_sha256": "f7c1fb809d1ad5b0a2b42a29da21837db9f04c3bded40fe34c1e242f75d2fedc"
+      },
+      "physical_preparation": {
+        "case_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1",
+        "receipt": "physical-proof/probe_1/proof.json",
+        "sha256": "c2d0dd3dad64508cc0265f15c057f00dad54b67af9270f996a87e44aa90c7128"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery-audit.py",
+        "script_sha256": "744980a0646fae536a8787900b3961b5d3834e2a5d06744ca38583b9638c8373",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/delivery-audit.py --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1 --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe-1-positive.log",
+        "test_log_sha256": "ff0edbdadb3792daa0944ee3d47fdc4b5a107a215df0aeeb26f9528f09be943a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/delivery-audit.py --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_1",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native two-actor body passage and four camera pixels required for delivery acceptance",
+        "negative_log": "delivery-probe-1-negative.log",
+        "negative_log_sha256": "9b401c766598d7e69ad64c6a757f16ccf7fec1ecaad2cecc9c251022748a8405"
+      }
+    },
+    {
+      "case_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "draft-controlled/construction.json",
+      "construction_sha256": "94543a93cb1d56b0c2024e81a43bcc3c223f8e85bde53a97d2e244148d81c73a",
+      "fixture_recipe": "work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/current-v2-probe-2-fixture-recipe.json",
+      "measurement_contract": "current-v2-probe-2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c111294-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original through body may overshoot its requested hold before the entering vehicle clears"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/probe_2/fallback1/construction.json",
+          "construction_sha256": "d2fa88041411a7bc4674e408e06a7f54e9d6e5f0d888b7d185cda38871b85c07",
+          "trigger": {
+            "source": "original Native road, full-body poses and native_samples.jsonl",
+            "metric": "through body position at the first requested hold, before entrant clearing",
+            "failure_condition": "observed full through body overshoots the source-reviewed hold location before the entrant clears"
+          },
+          "changed_knobs": [
+            "through authored upstream start 65 m to 70 m; fixed road, entrant, controller and capture contract retained"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/execution-manifest.json --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2 --candidate fallback1 --output .runtime-work/c111294-selected-probe-2-fallback-offline --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d2fa88041411a7bc4674e408e06a7f54e9d6e5f0d888b7d185cda38871b85c07",
+            "log": "fallback-probe-2-offline.log",
+            "log_sha256": "0205b2ec99b3441f3ded9df9afd91144e30a70908779e976ef489b1fe8e73d36"
+          },
+          "compatibility": {
+            "receipt": "selected-probe-2-fallback1-compatibility.json",
+            "sha256": "fcb552b7554560f79f269da10fb9b2a9d279834bc33f5f185d6cc72e92f32cfa",
+            "log": "selected-probe-2-fallback1-analysis.log",
+            "negative_log": "selected-probe-2-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/execution-manifest.json --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2 --candidate primary --output .runtime-work/c111294-selected-probe-2-primary-offline --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "94543a93cb1d56b0c2024e81a43bcc3c223f8e85bde53a97d2e244148d81c73a",
+        "log": "native-live-probe-2-offline.log",
+        "log_sha256": "3f73e5facf88547d20976a90279d99ec724aa6cde664d1aebcb3a34d78fd6f95"
+      },
+      "compatibility": {
+        "receipt": "current-v2-probe-2-compatibility.json",
+        "sha256": "690d38c62acb8c65be1dc56b1af556b73c38b26080719ef401b2428b0d20acf3",
+        "log": "current-v2-probe-2-compatibility-analysis.log",
+        "negative_log": "current-v2-probe-2-negative-analysis.log"
+      },
+      "negative": {
+        "log": "current-v2-probe-2-negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "current-v2-probe-2-saved-proof.json",
+        "sha256": "1bf35201935ea490c5eaaa47c72dc18a4c847e0d5b1b23b7a09c93cb10677518"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "through_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "Original 20 Hz through actor transform, velocity, road/lane and body readback",
+          "evidence": "native_samples.jsonl, trace.jsonl, capture/evidence.jsonl and original four cameras"
+        },
+        "entrant_body_pose": {
+          "entrypoint": "live_capture.py",
+          "method": "Original 20 Hz entrant actor transform, velocity, road/lane and body readback",
+          "evidence": "native_samples.jsonl, capture/evidence.jsonl and authored-road.xodr"
+        },
+        "frame_join": {
+          "entrypoint": "live_capture.py",
+          "method": "Synchronize both original actor observations to each Native tick and four camera frames",
+          "evidence": "video_frames.jsonl, trace.jsonl and capture/native/frames.jsonl"
+        }
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/execution-manifest.json --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "current-v2-probe-2-saved-proof.json",
+        "test_log_sha256": "1bf35201935ea490c5eaaa47c72dc18a4c847e0d5b1b23b7a09c93cb10677518"
+      },
+      "physical_preparation": {
+        "case_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2",
+        "receipt": "physical-proof/probe_2/proof.json",
+        "sha256": "ce90adc574c169cd2ba50e3da135d56d762902d9bac9a0d1f912fa59b9077666"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery-audit.py",
+        "script_sha256": "744980a0646fae536a8787900b3961b5d3834e2a5d06744ca38583b9638c8373",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/delivery-audit.py --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2 --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-probe-2-positive.log",
+        "test_log_sha256": "fcd077a470ed6253e482fcd0fd6aba19be3321b813717debe647e02d2077090f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111294__LVMC-11-12-070-B__motor_vehicle_driver/delivery-audit.py --case training__C111294__LVMC-11-12-070-B__motor_vehicle_driver__probe_2",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native two-actor body passage and four camera pixels required for delivery acceptance",
+        "negative_log": "delivery-probe-2-negative.log",
+        "negative_log_sha256": "9b401c766598d7e69ad64c6a757f16ccf7fec1ecaad2cecc9c251022748a8405"
+      }
+    }
+  ]
+}
