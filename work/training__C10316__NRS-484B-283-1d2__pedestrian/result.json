@@ -1,12 +1,12 @@
 {
   "assignment_id": "training__C10316__NRS-484B-283-1d2__pedestrian",
   "input_sha256": "66e2389dac4d63e9bfea0108080729d5dbbc4bd8886c881b2b42284d7d8b824f",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Eight source-bound unselected bundles pass pinned offline. Current v2 public compatibility and recorded-only saved processing pass for all four probe_01 candidates including exact missing-source negatives; probe_02 is running. Two 600-frame synthetic saved positives and six damaged-source negatives pass. Both cases have synthetic complete/incomplete/missing physical outcome and ordered lifecycle CPU fixtures. Authored Native head/readback and independent original pixel/governance review protocol are implemented, but original legibility, statutory exception applicability, semantic/delivery acceptance and exact strict ready gate remain unproved.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Two source-bound selected countdown cases and six risk fallbacks pass current-runtime CPU compatibility, exact missing-source negatives, recorded-only saved processing, semantic, synthetic physical, comparison, and independent delivery audits. Native head/readback and original review gates are prepared. Original signal legibility, exception applicability, road status, walker crossing, and physical acceptance remain for local execution and independent review.",
   "planned_case_count": 2,
-  "candidate_count": 0,
-  "selected_delivery_case_count": 0,
+  "candidate_count": 4,
+  "selected_delivery_case_count": 2,
   "reuse_count": 0,
   "source_law_review": "Exact NRS 484B.283(1)(d)(2) reviewed against frozen cross-reference packets. Recovered summary omits introductory exceptions. NRS 484B.287 location/diagonal conditions and cited NRS 484B.290/484B.350 relationships require context review; mapped LVMC source text is not presumed equivalent. See statutory-context-review.json.",
   "applied_update": 16,
@@ -87,13 +87,14 @@
     "saved_finalizer_log_sha256": "1dd070710d5985dbdc845dfd9998b92b369b759c68dd8d7ce64af74563a464c5"
   },
   "cpu_current_public_compatibility": {
-    "status": "four_probe_01_candidate_chains_passed_probe_02_running",
-    "passed_candidate_chains": 4,
-    "expected_candidate_chains": 8,
-    "manifest_sha256": "bc95c9526bfd4cf754ef93795b5e9bc515bdfd511845578a9bd54941f26af168",
-    "positive_and_missing_source_negative": true,
-    "recorded_only_saved": true,
-    "physical_acceptance_claimed": false
+    "status": "passed",
+    "source_bound_chains": 8,
+    "positive_compatibility": 8,
+    "missing_source_negatives": 8,
+    "recorded_only_saved": 8,
+    "proof": "current-public/proof.json",
+    "sha256": "136a3592b4668014f55f3a4d765438332cfc42cc515a1d85cdc1ec9765ed6a18",
+    "physical_or_legal_acceptance_claimed": false
   },
   "cpu_current_scoped_checks": {
     "complete_exit_code": 0,
@@ -108,5 +109,68 @@
     "proof_index": "physical-proof/index.json",
     "proof_index_sha256": "7e50e3024ec9bbf1f828742c89b530856d8e8e154989980396006e57b5a10ea2",
     "physical_acceptance_claimed": false
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C10316__NRS-484B-283-1d2__pedestrian --case training__C10316__NRS-484B-283-1d2__pedestrian__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "current-preflight.log",
+      "sha256": "31fc1b6cade3182ec889105977be44bddf9fb4242e4ef705d0450de77933d9e6"
+    },
+    {
+      "command": ".venv-cpu/bin/python run-draft-offline.py",
+      "exit_code": 0,
+      "log": "governing-offline-proof.log",
+      "sha256": "c5aaa1c4aba98fe66d923c9e6e523edf0bad8f554c8ac7a334116f8ce14a9455"
+    },
+    {
+      "command": ".venv-cpu/bin/python audit-draft-offline.py",
+      "exit_code": 0,
+      "log": "governing-offline-audit.log",
+      "sha256": "2bd658af752bd9330c943bd34249b25f6d47e85bde37c38931cf85f17c37d82f"
+    },
+    {
+      "command": ".venv-cpu/bin/python prove-governing-context.py",
+      "exit_code": 0,
+      "log": "governing-context-proof.log",
+      "sha256": "055f2343d62e1aafae7f1c4116d6ef0514c30140cbd3e2a680597c31d40c01ad"
+    },
+    {
+      "command": ".venv-cpu/bin/python prove-window-finalizer.py",
+      "exit_code": 0,
+      "log": "governing-window-proof.log",
+      "sha256": "acc6b59f18099cf1c839694accc07e2a38e95e86cfee79545bd111389b92bd8a"
+    },
+    {
+      "command": ".venv-cpu/bin/python run-current-public.py",
+      "exit_code": 0,
+      "log": "current-public-run.log",
+      "sha256": "eb02e3f7c948a130255955b922e28366acaad147b2e93fa304133c61bb535a2d"
+    },
+    {
+      "command": ".venv-cpu/bin/python audit-current-comparison.py",
+      "exit_code": 0,
+      "log": "current-comparison-audit.log",
+      "sha256": "0fd3b0cf895b02b972bf621f3788324b259330c6ab575aeb1396d88e19657135"
+    },
+    {
+      "command": ".venv-cpu/bin/python prove-delivery.py",
+      "exit_code": 0,
+      "log": "current-delivery-proof.log",
+      "sha256": "d58d25b1a38a1f7394831a2001e1015edf718f940e618b4fef33bab01be044ca"
+    },
+    {
+      "command": ".venv-cpu/bin/python validate-selected.py",
+      "exit_code": 0,
+      "log": "selected-validator.log",
+      "sha256": "692296468b21fbcf6c923ddb3fc2c062ad20707a90c3c4347fbd6b370d274418"
+    }
+  ],
+  "cpu_current_comparison": {
+    "status": "passed",
+    "proof": "current-comparison-audit.json",
+    "sha256": "2812b093bb277b462d95c2121ab12943a2265c51291f324d9a52337a98df4ec9",
+    "physical_or_legal_acceptance_claimed": false
   }
 }

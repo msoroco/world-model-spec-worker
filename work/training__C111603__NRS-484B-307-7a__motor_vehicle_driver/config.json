@@ -16,7 +16,8 @@
         -75,
         0,
         0
-      ]
+      ],
+      "pose_strategy": "fixed_scene_overview_of_travel"
     },
     {
       "name": "approach",
@@ -33,7 +34,8 @@
         -5,
         0,
         0
-      ]
+      ],
+      "pose_strategy": "fixed_scene_overview_of_travel"
     },
     {
       "name": "reference_corner",
@@ -50,7 +52,8 @@
         -12,
         -45,
         0
-      ]
+      ],
+      "pose_strategy": "fixed_scene_overview_of_travel"
     },
     {
       "name": "driver_reference",
@@ -67,7 +70,8 @@
         -10,
         0,
         0
-      ]
+      ],
+      "pose_strategy": "fixed_relative_to_subject_vehicle"
     }
   ],
   "candidate_id": "primary",
@@ -108,9 +112,38 @@
         "time_window": "600 frames / 30 seconds",
         "reference_frame": "original world and frame time",
         "uncertainty": "Actual arrow pixels and legal status require independent review"
+      },
+      {
+        "name": "turn_history",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "source-joined original Native actor history and four synchronized cameras",
+        "time_window": "600 frames / 30 seconds",
+        "reference_frame": "original world and frame time",
+        "uncertainty": "Actual arrow pixels and legal status require independent review"
+      },
+      {
+        "name": "four_camera_video",
+        "unit": "video",
+        "sampling_rate_hz": 20,
+        "method": "source-joined original Native actor history and four synchronized cameras",
+        "time_window": "600 frames / 30 seconds",
+        "reference_frame": "original world and frame time",
+        "uncertainty": "Actual arrow pixels and legal status require independent review"
       }
     ],
-    "context_inputs": [],
+    "context_inputs": [
+      {
+        "name": "source_law_and_signal_governance",
+        "unit": "structured",
+        "method": "source-hashed exact law and signal-request context; governance review pending"
+      },
+      {
+        "name": "lawful_status_review",
+        "unit": "structured",
+        "method": "saved source review fields remain pending; no legal label"
+      }
+    ],
     "limitations": [
       "Controller request is not arrow governance or lawful status.",
       "Original source pixels, pedestrian status and cautiousness require independent review."
@@ -122,7 +155,11 @@
   "status": "unselected_cpu_diagnostic",
   "supported_case_ids": [
     "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
-    "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2"
+    "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2",
+    "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_clearance",
+    "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_overlap",
+    "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_absent",
+    "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_present"
   ],
   "ego_release_frame": 320,
   "ego_throttle": 0.22,

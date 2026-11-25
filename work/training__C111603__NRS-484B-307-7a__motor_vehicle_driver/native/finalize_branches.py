@@ -103,6 +103,11 @@ def finalize(attempt, output):
         raise ValueError('Exact selected statutory branch differs')
     metric, values = measure(attempt, case, config)
     mapping = read_rows(attempt / 'video_frames.jsonl')
+    values['turn_history'] = read_rows(attempt / 'turn-history.jsonl')
+    values['four_camera_video'] = [
+        {'video_frame': frame['video_frame'],
+         'source_views': [view + '.mkv' for view in VIEWS]}
+        for frame in mapping]
     description = construction['recording_description']
     channels = attempt / 'channels'
     channels.mkdir()
@@ -116,6 +121,23 @@ def finalize(attempt, output):
             for frame, value in zip(mapping, values[name]):
                 stream.write(json.dumps({'time_s': frame['time_s'], 'value': value}) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': ref})
+    contexts = {
+        'source_law_and_signal_governance': {
+            'law_id': config['law_id'], 'signal_request_source': 'arrow-context.json',
+            'signal_request_sha256': sha(attempt / 'arrow-context.json'),
+            'governance_status': 'original_source_review_pending'},
+        'lawful_status_review': {
+            'pedestrian': 'original_source_review_pending',
+            'other_traffic': 'original_source_review_pending',
+            'cautiousness': 'original_source_review_pending'},
+    }
+    for context in description['context_inputs']:
+        name = context['name']
+        if name not in contexts:
+            raise ValueError('Unknown declared source context: ' + name)
+        ref = 'channels/' + name + '.json'
+        (attempt / ref).write_text(json.dumps({name: contexts[name]}, indent=2) + '\n')
+        evidence.append({'name': name, 'unit': context['unit'], 'reference': ref})
     report = {'format': 'worker-analysis-report', 'case_id': case,
               'measurements': {'statutory_branch_measurement': {
                   'method': 'measure', 'value': metric,

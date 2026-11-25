@@ -1,0 +1,126 @@
+{
+  "format": "worker-unselected-draft-construction-manifest-v1",
+  "assignment_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_diagnostic_cpu",
+  "cases": [
+    {
+      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_1",
+      "kind": "delivery",
+      "measurement_contract": "current-measurement-controlled_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c394300-3a-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native center-lane design, movement, original pixels and purpose require saved review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-candidates/controlled_1/fallback1/construction.json",
+          "construction_sha256": "2dfc9245294a5e8e2aaedb673837c4f8c160eb815bc3bf85c3e83cf5291ecffe",
+          "trigger": {
+            "metric": "center_lane_approach_span_m",
+            "threshold_m": 10.0,
+            "reason": "Need enough measured center-lane approach to classify use before the first turn opportunity."
+          },
+          "changed_knobs": [
+            "route_start_x_m",
+            "entry_advance_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "current-candidates/controlled_1/fallback2/construction.json",
+          "construction_sha256": "f7de5af5056b62b5ff2b0a1f99a310a3474f3d1807778099275c1bdfdccaad41",
+          "trigger": {
+            "metric": "max_pre_turn_route_error_m",
+            "threshold_m": 0.75,
+            "reason": "Body tracking near the first turn opportunity must preserve which movement occurred."
+          },
+          "changed_knobs": [
+            "controller_knobs"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "current-candidates/controlled_1/fallback3/construction.json",
+          "construction_sha256": "f66762138010763982a06087f92bc9a6883624782e558b2b38d1e772161d217d",
+          "trigger": {
+            "metric": "center_lane_and_body_visible_fraction",
+            "threshold": 0.9,
+            "reason": "The center lane and subject body must be visible at the decisive frames."
+          },
+          "changed_knobs": [
+            "camera_plan"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "current-candidates/controlled_1/primary/construction.json",
+      "construction_sha256": "c4cebfff0159ad4ebc49d46d1585651700a9c15e11b774f6d489e659b876e4fa",
+      "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_1-recipe.json"
+    },
+    {
+      "case_id": "training__C394300__NRS-484B-223-3a__motor_vehicle_driver__controlled_2",
+      "kind": "delivery",
+      "measurement_contract": "current-measurement-controlled_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c394300-3a-saved-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native center-lane design, movement, original pixels and purpose require saved review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "current-candidates/controlled_2/fallback1/construction.json",
+          "construction_sha256": "cab55a9efa65f44e664de16f6c5d1cf8c72c9eb7ff9fb1123898c218ef62538d",
+          "trigger": {
+            "metric": "center_lane_approach_span_m",
+            "threshold_m": 10.0,
+            "reason": "Need enough measured center-lane approach to classify use before the first turn opportunity."
+          },
+          "changed_knobs": [
+            "route_start_x_m",
+            "entry_advance_m"
+          ]
+        },
+        {
+          "id": "fallback2",
+          "construction": "current-candidates/controlled_2/fallback2/construction.json",
+          "construction_sha256": "e26e3a62c2c42a961d874f44b81860eacee7d32b06fe1d9df1e0d596856f35c6",
+          "trigger": {
+            "metric": "max_pre_turn_route_error_m",
+            "threshold_m": 0.75,
+            "reason": "Body tracking near the first turn opportunity must preserve which movement occurred."
+          },
+          "changed_knobs": [
+            "controller_knobs"
+          ]
+        },
+        {
+          "id": "fallback3",
+          "construction": "current-candidates/controlled_2/fallback3/construction.json",
+          "construction_sha256": "b0b1c86ba1d7d97f067d3ca899ad6c6537b4166245e0ed118ee3e885b668245e",
+          "trigger": {
+            "metric": "center_lane_and_body_visible_fraction",
+            "threshold": 0.9,
+            "reason": "The center lane and subject body must be visible at the decisive frames."
+          },
+          "changed_knobs": [
+            "camera_plan"
+          ]
+        }
+      ],
+      "id": "primary",
+      "construction": "current-candidates/controlled_2/primary/construction.json",
+      "construction_sha256": "0fa6c36ff817ed713af823d4a696936e969f7d4abcbdb9a727281bea432bd515",
+      "fixture_recipe": "work/training__C394300__NRS-484B-223-3a__motor_vehicle_driver/selected-v2-controlled_2-recipe.json"
+    }
+  ]
+}

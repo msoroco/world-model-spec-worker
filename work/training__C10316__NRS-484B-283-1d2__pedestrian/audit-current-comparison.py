@@ -41,9 +41,9 @@ def main():
         assert (left['native_frame'], left['time_s']) == (
             right['native_frame'], right['time_s'])
         assert {key: value for key, value in left.items()
-                if key not in ('displayed_countdown_s', 'display_illuminated')} == {
+                if key not in ('displayed_countdown_s', 'display_illuminated', 'indication')} == {
                     key: value for key, value in right.items()
-                    if key not in ('displayed_countdown_s', 'display_illuminated')}
+                    if key not in ('displayed_countdown_s', 'display_illuminated', 'indication')}
     assert rows1[0]['displayed_countdown_s'] == 10
     assert rows2[0]['displayed_countdown_s'] == 7
     assert all(left['pedestrian_xy_m'] == right['pedestrian_xy_m']

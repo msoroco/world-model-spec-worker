@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from branch_scenarios import BRANCHES, rows
+from build_selected import SELECTED
 
 ROOT = Path(__file__).resolve().parents[1]
 AID = ROOT.name
@@ -19,7 +20,7 @@ def dump(path, value):
 
 
 def channel(name):
-    return {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+    return {'name': name, 'unit': 'video' if name == 'four_camera_video' else 'structured', 'sampling_rate_hz': 20,
             'method': '600 source-joined original Native actor and signal-request rows',
             'time_window': '600 frames / 30 seconds',
             'reference_frame': 'original world and frame time',
@@ -34,7 +35,6 @@ def build():
     concurrent_runner = (ROOT / 'native/native_runner_concurrent.py').read_text()
     finalizer = (ROOT / 'native/finalize_branches.py').read_text()
     branch_source = (ROOT / 'native/branch_scenarios.py').read_text()
-    branch_keys = tuple(BRANCHES)
     output = []
     for branch, spec in BRANCHES.items():
         request = rows(branch)
@@ -49,8 +49,12 @@ def build():
                      if branch.startswith('pedestrian_')
                      else ('ego_motion', 'arrow_request', 'concurrent_request'))
             construction['recording_description'] = {
-                'channels': [channel(name) for name in names],
-                'context_inputs': [],
+                'channels': [channel(name) for name in (*names, 'turn_history', 'four_camera_video')],
+                'context_inputs': [
+                    {'name': 'source_law_and_signal_governance', 'unit': 'structured',
+                     'method': 'source-hashed exact law and signal-request context; governance review pending'},
+                    {'name': 'lawful_status_review', 'unit': 'structured',
+                     'method': 'saved source review fields remain pending; no legal label'}],
                 'limitations': ['Request is not official signal governance or legal status.',
                                 'Original pixels, lawful pedestrian status and cautiousness require review.']}
             construction['measurement_plan'] = ('Join 600 saved actor and signal-request rows to four camera sources; '
@@ -61,7 +65,7 @@ def build():
                                           'source-bound saved-only measurement']
             config = copy.deepcopy(template_config)
             config.update(case_id=case, selected_case_id=case,
-                          supported_case_ids=[AID + '__' + key for key in branch_keys],
+                          supported_case_ids=[AID + '__' + key for key in SELECTED],
                           candidate_id=candidate,
                           case_suffix=branch,
                           ego_release_frame=spec['release_frame'],

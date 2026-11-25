@@ -1,96 +1,401 @@
 {
+  "cell_id": "C111603",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
-      "rationale": "Unselected flashing-arrow other-traffic yield timing diagnostic",
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral context anchor; not a delivery capture.",
+      "variable_assignments": {
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "no_simultaneous_left_indication_requested"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "right"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 320
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Retained original-frame synthetic source row",
-            "name": "ego_request",
-            "reference_frame": "original frame/time",
+            "name": "ego_motion",
+            "unit": "structured",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
-            "unit": "structured"
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
           },
           {
-            "method": "Retained original-frame synthetic source row",
+            "name": "other_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
             "name": "arrow_request",
-            "reference_frame": "original frame/time",
+            "unit": "structured",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
-            "unit": "structured"
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
           },
           {
-            "method": "Retained original-frame synthetic source row",
-            "name": "other_request",
-            "reference_frame": "original frame/time",
+            "name": "turn_history",
+            "unit": "structured",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
-            "unit": "structured"
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
         "limitations": [
-          "Synthetic request only; official arrow governance, lawful other traffic, pedestrians and cautiousness unverified"
+          "Controller request is not arrow governance or lawful status.",
+          "Original source pixels, pedestrian status and cautiousness require independent review."
         ]
       },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ]
+    },
+    {
+      "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_1",
       "target_law_id": "NRS-484B-307-7a",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "One-intervention requested source contrast; actual governance, lawful status and cautiousness remain unresolved.",
       "variable_assignments": {
-        "requested_other_inside_at_entry": false
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "no_simultaneous_left_indication_requested"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "right"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 320
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_comparison",
+      "deliberate_differences": [
+        "ego_release_frame"
+      ],
+      "probe": {
+        "primary_variable": "ego_release_frame",
+        "comparison_or_standard": "source-bound requested contrast without a legal cutoff",
+        "target_value_or_branch": "controlled_1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
+            "name": "other_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
+            "name": "arrow_request",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
+        "limitations": [
+          "Controller request is not arrow governance or lawful status.",
+          "Original source pixels, pedestrian status and cautiousness require independent review."
+        ]
       }
     },
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_2",
-      "rationale": "Unselected flashing-arrow other-traffic yield timing diagnostic",
+      "target_law_id": "NRS-484B-307-7a",
+      "target_type": "judgment_sweep",
+      "rationale": "One-intervention requested source contrast; actual governance, lawful status and cautiousness remain unresolved.",
+      "variable_assignments": {
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "no_simultaneous_left_indication_requested"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "right"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 200
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__controlled_comparison",
+      "deliberate_differences": [
+        "ego_release_frame"
+      ],
+      "probe": {
+        "primary_variable": "ego_release_frame",
+        "comparison_or_standard": "source-bound requested contrast without a legal cutoff",
+        "target_value_or_branch": "controlled_2"
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Retained original-frame synthetic source row",
-            "name": "ego_request",
-            "reference_frame": "original frame/time",
+            "name": "ego_motion",
+            "unit": "structured",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
-            "unit": "structured"
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
           },
           {
-            "method": "Retained original-frame synthetic source row",
+            "name": "other_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
             "name": "arrow_request",
-            "reference_frame": "original frame/time",
+            "unit": "structured",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
-            "unit": "structured"
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
           },
           {
-            "method": "Retained original-frame synthetic source row",
-            "name": "other_request",
-            "reference_frame": "original frame/time",
+            "name": "turn_history",
+            "unit": "structured",
             "sampling_rate_hz": 20,
-            "time_window": "30 s / 600 frames",
-            "uncertainty": "50 ms frame bracket; physical and legal review pending",
-            "unit": "structured"
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "source-joined original Native actor history and four synchronized cameras",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Actual arrow pixels and legal status require independent review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
         "limitations": [
-          "Synthetic request only; official arrow governance, lawful other traffic, pedestrians and cautiousness unverified"
+          "Controller request is not arrow governance or lawful status.",
+          "Original source pixels, pedestrian status and cautiousness require independent review."
         ]
-      },
-      "target_law_id": "NRS-484B-307-7a",
-      "target_type": "attempt",
-      "variable_assignments": {
-        "requested_other_inside_at_entry": true
       }
     },
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_clearance",
-      "rationale": "Selected source-bound statutory branch request; physical and legal review pending",
+      "target_law_id": "NRS-484B-307-7a",
+      "target_type": "judgment_sweep",
+      "rationale": "One-intervention requested source contrast; actual governance, lawful status and cautiousness remain unresolved.",
+      "variable_assignments": {
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "no_simultaneous_left_indication_requested"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "right"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 320
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_comparison",
+      "deliberate_differences": [
+        "ego_release_frame"
+      ],
+      "probe": {
+        "primary_variable": "ego_release_frame",
+        "comparison_or_standard": "source-bound requested contrast without a legal cutoff",
+        "target_value_or_branch": "pedestrian_clearance"
+      },
       "recording_description": {
         "channels": [
           {
@@ -128,25 +433,95 @@
             "time_window": "600 frames / 30 seconds",
             "reference_frame": "original world and frame time",
             "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
         "limitations": [
           "Request is not official signal governance or legal status.",
           "Original pixels, lawful pedestrian status and cautiousness require review."
         ]
-      },
-      "target_law_id": "NRS-484B-307-7a",
-      "target_type": "attempt",
-      "variable_assignments": {
-        "ego_release_frame": 320,
-        "requested_concurrent_left_indication": false,
-        "requested_movement": "right"
       }
     },
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_overlap",
-      "rationale": "Selected source-bound statutory branch request; physical and legal review pending",
+      "target_law_id": "NRS-484B-307-7a",
+      "target_type": "judgment_sweep",
+      "rationale": "One-intervention requested source contrast; actual governance, lawful status and cautiousness remain unresolved.",
+      "variable_assignments": {
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "no_simultaneous_left_indication_requested"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "right"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 200
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__pedestrian_comparison",
+      "deliberate_differences": [
+        "ego_release_frame"
+      ],
+      "probe": {
+        "primary_variable": "ego_release_frame",
+        "comparison_or_standard": "source-bound requested contrast without a legal cutoff",
+        "target_value_or_branch": "pedestrian_overlap"
+      },
       "recording_description": {
         "channels": [
           {
@@ -184,25 +559,95 @@
             "time_window": "600 frames / 30 seconds",
             "reference_frame": "original world and frame time",
             "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
         "limitations": [
           "Request is not official signal governance or legal status.",
           "Original pixels, lawful pedestrian status and cautiousness require review."
         ]
-      },
-      "target_law_id": "NRS-484B-307-7a",
-      "target_type": "attempt",
-      "variable_assignments": {
-        "ego_release_frame": 200,
-        "requested_concurrent_left_indication": false,
-        "requested_movement": "right"
       }
     },
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_absent",
-      "rationale": "Selected source-bound statutory branch request; physical and legal review pending",
+      "target_law_id": "NRS-484B-307-7a",
+      "target_type": "judgment_sweep",
+      "rationale": "One-intervention requested source contrast; actual governance, lawful status and cautiousness remain unresolved.",
+      "variable_assignments": {
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "no_simultaneous_left_indication_requested"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 220
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_comparison",
+      "deliberate_differences": [
+        "concurrent_indication"
+      ],
+      "probe": {
+        "primary_variable": "concurrent_indication",
+        "comparison_or_standard": "source-bound requested contrast without a legal cutoff",
+        "target_value_or_branch": "concurrent_absent"
+      },
       "recording_description": {
         "channels": [
           {
@@ -231,25 +676,95 @@
             "time_window": "600 frames / 30 seconds",
             "reference_frame": "original world and frame time",
             "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
         "limitations": [
           "Request is not official signal governance or legal status.",
           "Original pixels, lawful pedestrian status and cautiousness require review."
         ]
-      },
-      "target_law_id": "NRS-484B-307-7a",
-      "target_type": "attempt",
-      "variable_assignments": {
-        "ego_release_frame": 220,
-        "requested_concurrent_left_indication": false,
-        "requested_movement": "left"
       }
     },
     {
       "case_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_present",
-      "rationale": "Selected source-bound statutory branch request; physical and legal review pending",
+      "target_law_id": "NRS-484B-307-7a",
+      "target_type": "judgment_sweep",
+      "rationale": "One-intervention requested source contrast; actual governance, lawful status and cautiousness remain unresolved.",
+      "variable_assignments": {
+        "signal_governance": {
+          "kind": "world_setup",
+          "value": "requested_flashing_yellow_turn_arrow_unverified"
+        },
+        "concurrent_indication": {
+          "kind": "world_setup",
+          "value": "requested_simultaneous_left_indication"
+        },
+        "ego_turn_path": {
+          "kind": "controller",
+          "value": "left"
+        },
+        "ego_release_frame": {
+          "kind": "controller",
+          "value": 220
+        },
+        "pedestrian_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "other_traffic_lawful_status": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "cautious_entry_status": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal",
+        "cautiously enter the intersection",
+        "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+        "pedestrians lawfully within the intersection or an adjacent crosswalk",
+        "other traffic lawfully within the intersection"
+      ],
+      "paired_probe_id": "training__C111603__NRS-484B-307-7a__motor_vehicle_driver__concurrent_comparison",
+      "deliberate_differences": [
+        "concurrent_indication"
+      ],
+      "probe": {
+        "primary_variable": "concurrent_indication",
+        "comparison_or_standard": "source-bound requested contrast without a legal cutoff",
+        "target_value_or_branch": "concurrent_present"
+      },
       "recording_description": {
         "channels": [
           {
@@ -278,22 +793,122 @@
             "time_window": "600 frames / 30 seconds",
             "reference_frame": "original world and frame time",
             "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
+          },
+          {
+            "name": "four_camera_video",
+            "unit": "video",
+            "sampling_rate_hz": 20,
+            "method": "600 source-joined original Native actor and signal-request rows",
+            "time_window": "600 frames / 30 seconds",
+            "reference_frame": "original world and frame time",
+            "uncertainty": "Physical signal governance, lawful pedestrian status and cautiousness require review"
           }
         ],
-        "context_inputs": [],
+        "context_inputs": [
+          {
+            "name": "source_law_and_signal_governance",
+            "unit": "structured",
+            "method": "source-hashed exact law and signal-request context; governance review pending"
+          },
+          {
+            "name": "lawful_status_review",
+            "unit": "structured",
+            "method": "saved source review fields remain pending; no legal label"
+          }
+        ],
         "limitations": [
           "Request is not official signal governance or legal status.",
           "Original pixels, lawful pedestrian status and cautiousness require review."
         ]
-      },
-      "target_law_id": "NRS-484B-307-7a",
-      "target_type": "attempt",
-      "variable_assignments": {
-        "ego_release_frame": 220,
-        "requested_concurrent_left_indication": true,
-        "requested_movement": "left"
       }
     }
   ],
-  "format": "worker-case-proposals"
+  "sweep_specs": [
+    {
+      "sweep_id": "pending-1",
+      "target_law_id": "NRS-484B-307-7a",
+      "judgment_refs": [
+        {
+          "phrase": "facing the signal",
+          "note": "Original signal placement, orientation, visible indication and ego approach require independent review."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native physical feasibility and independent lawful-status/source review remain pending."
+      ],
+      "rationale": "These selected branch contrasts do not define a physical judgment sweep or legal threshold."
+    },
+    {
+      "sweep_id": "pending-2",
+      "target_law_id": "NRS-484B-307-7a",
+      "judgment_refs": [
+        {
+          "phrase": "cautiously enter the intersection",
+          "note": "Motion measurements cannot decide cautiousness; original source and independent judgment remain necessary."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native physical feasibility and independent lawful-status/source review remain pending."
+      ],
+      "rationale": "These selected branch contrasts do not define a physical judgment sweep or legal threshold."
+    },
+    {
+      "sweep_id": "pending-3",
+      "target_law_id": "NRS-484B-307-7a",
+      "judgment_refs": [
+        {
+          "phrase": "movement indicated by the arrow signal, or other such movement as is permitted by other signal indications displayed at the same time",
+          "note": "Original arrow and concurrent indication pixels and governance must be reviewed separately."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native physical feasibility and independent lawful-status/source review remain pending."
+      ],
+      "rationale": "These selected branch contrasts do not define a physical judgment sweep or legal threshold."
+    },
+    {
+      "sweep_id": "pending-4",
+      "target_law_id": "NRS-484B-307-7a",
+      "judgment_refs": [
+        {
+          "phrase": "pedestrians lawfully within the intersection or an adjacent crosswalk",
+          "note": "Pedestrian location and lawful status require original participant and signal context."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native physical feasibility and independent lawful-status/source review remain pending."
+      ],
+      "rationale": "These selected branch contrasts do not define a physical judgment sweep or legal threshold."
+    },
+    {
+      "sweep_id": "pending-5",
+      "target_law_id": "NRS-484B-307-7a",
+      "judgment_refs": [
+        {
+          "phrase": "other traffic lawfully within the intersection",
+          "note": "Other-vehicle location and lawful status require original participant and signal context."
+        }
+      ],
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original Native physical feasibility and independent lawful-status/source review remain pending."
+      ],
+      "rationale": "These selected branch contrasts do not define a physical judgment sweep or legal threshold."
+    }
+  ],
+  "sweeps_expanded": true,
+  "original_native_observed": false
 }

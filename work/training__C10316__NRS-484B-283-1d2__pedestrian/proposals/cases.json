@@ -1,11 +1,23 @@
 {
+  "cell_id": "C10316",
+  "actor": "pedestrian",
+  "status": "draft",
   "cases": [
     {
-      "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
-      "target_law_id": "NRS-484B-283-1d2",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected common crossing context.",
+      "variable_assignments": {
+        "actual_clearance_time": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_displayed_zero_s": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -13,7 +25,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -21,8 +33,8 @@
             "name": "kin.heading",
             "unit": "unit vector",
             "sampling_rate_hz": 20,
-            "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "method": "Direction calculated from adjacent original pedestrian poses",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -31,7 +43,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -40,7 +52,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Requested frame-synchronized indication, countdown and illumination",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -49,7 +61,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and countdown source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -67,19 +79,135 @@
           "Event timing alone does not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_displayed_zero_s",
-      "requested_setting": 10,
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "is flashing and is accompanied by a countdown timer",
+        "in the direction of the signal",
+        "complete the crossing before the countdown timer gets to zero",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
+    },
+    {
+      "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
+      "target_law_id": "NRS-484B-283-1d2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare full-body clearance against requested displayed zero while retaining original-display and statutory judgments.",
+      "paired_probe_id": "c10316-countdown-clearance-pair",
+      "deliberate_differences": [
+        "requested_displayed_zero_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_displayed_zero_s",
+        "comparison_or_standard": "original full-body clearance versus displayed zero",
+        "target_value_or_branch": 10
+      },
+      "variable_assignments": {
+        "actual_clearance_time": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_displayed_zero_s": {
+          "kind": "world_setup",
+          "value": 10
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pedestrian pose and footprint",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "kin.heading",
+            "unit": "unit vector",
+            "sampling_rate_hz": 20,
+            "method": "Direction calculated from adjacent original pedestrian poses",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Full original body versus authored highway edges",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "native_display_program",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Requested frame-synchronized indication, countdown and illumination",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          },
+          {
+            "name": "display_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original RGB frame hash joined to Native frame and countdown source",
+            "time_window": "entire 600-frame 30-second crossing",
+            "reference_frame": "Native source frame/time and authored crossing coordinates",
+            "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "introductory_exceptions",
+            "unit": "structured",
+            "method": "Independent statutory and original context review"
+          }
+        ],
+        "limitations": [
+          "Requested debug display is not a verified physical pedestrian signal",
+          "Original display pixels and signal governance require independent saved audit",
+          "Event timing alone does not assign a legal verdict"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "is flashing and is accompanied by a countdown timer",
+        "in the direction of the signal",
+        "complete the crossing before the countdown timer gets to zero",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_02",
       "target_law_id": "NRS-484B-283-1d2",
-      "target_type": "planned_delivery_comparison",
-      "cell_id": "C10316",
-      "actor": "pedestrian",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare full-body clearance against requested displayed zero while retaining original-display and statutory judgments.",
+      "paired_probe_id": "c10316-countdown-clearance-pair",
+      "deliberate_differences": [
+        "requested_displayed_zero_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_displayed_zero_s",
+        "comparison_or_standard": "original full-body clearance versus displayed zero",
+        "target_value_or_branch": 7
+      },
+      "variable_assignments": {
+        "actual_clearance_time": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_displayed_zero_s": {
+          "kind": "world_setup",
+          "value": 7
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -87,7 +215,7 @@
             "unit": "m",
             "sampling_rate_hz": 20,
             "method": "Original Native pedestrian pose and footprint",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -95,8 +223,8 @@
             "name": "kin.heading",
             "unit": "unit vector",
             "sampling_rate_hz": 20,
-            "method": "Original Native pedestrian transform",
-            "time_window": "entire 240-frame 12-second crossing",
+            "method": "Direction calculated from adjacent original pedestrian poses",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -105,7 +233,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Full original body versus authored highway edges",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -114,7 +242,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Requested frame-synchronized indication, countdown and illumination",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           },
@@ -123,7 +251,7 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "method": "Original RGB frame hash joined to Native frame and countdown source",
-            "time_window": "entire 240-frame 12-second crossing",
+            "time_window": "entire 600-frame 30-second crossing",
             "reference_frame": "Native source frame/time and authored crossing coordinates",
             "uncertainty": "50 ms event brackets; original pixel, device governance and highway status unverified"
           }
@@ -141,12 +269,58 @@
           "Event timing alone does not assign a legal verdict"
         ]
       },
-      "sweep_measurements": [],
-      "comparison_variable": "requested_displayed_zero_s",
-      "requested_setting": 7,
-      "status": "draft_not_selected",
-      "exception_review": "unresolved",
-      "legal_verdict_claimed": false
+      "unresolved_judgment_calls": [
+        "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+        "is flashing and is accompanied by a countdown timer",
+        "in the direction of the signal",
+        "complete the crossing before the countdown timer gets to zero",
+        "Except as otherwise provided in NRS 484B.287",
+        "484B.290",
+        "484B.350"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c10316-original-countdown-and-exception-review",
+      "target_law_id": "NRS-484B-283-1d2",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place",
+          "note": "The authored head and Native readback need original symbol and route-governance review."
+        },
+        {
+          "phrase": "is flashing and is accompanied by a countdown timer",
+          "note": "Original synchronized indication and legible countdown digits must be reviewed."
+        },
+        {
+          "phrase": "in the direction of the signal",
+          "note": "The source route and signal facing direction must be joined."
+        },
+        {
+          "phrase": "complete the crossing before the countdown timer gets to zero",
+          "note": "Full body crossing completion and the original displayed-zero bracket must be measured."
+        },
+        {
+          "phrase": "Except as otherwise provided in NRS 484B.287",
+          "note": "The crossing-location and diagonal exceptions require original context."
+        },
+        {
+          "phrase": "484B.290",
+          "note": "The cited blind-person exception requires original context."
+        },
+        {
+          "phrase": "484B.350",
+          "note": "The cited school-lane exception requires original context."
+        }
+      ],
+      "rationale": "Two source-shaped deadline probes are prepared; actual display governance and cited-law applicability need original local review.",
+      "missing_inputs": [
+        "Original Native countdown pixels and governance",
+        "Independent exception-context review"
+      ]
     }
   ]
 }

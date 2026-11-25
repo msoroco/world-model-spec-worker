@@ -40,24 +40,24 @@
     {
       "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
       "target_law_id": "NRS-484B-283-1d2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "crossing fully clears far curb before displayed zero",
       "comparison_variable": "completion time relative to displayed zero",
-      "selection_status": "not_selected",
+      "selection_status": "selected_cpu_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "source_bound_cpu_prepared"
     },
     {
       "case_id": "training__C10316__NRS-484B-283-1d2__pedestrian__probe_02",
       "target_law_id": "NRS-484B-283-1d2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "crossing still occupies road when displayed zero",
       "comparison_variable": "completion time relative to displayed zero",
-      "selection_status": "not_selected",
+      "selection_status": "selected_cpu_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "source_bound_cpu_prepared"
     }
   ],
   "comparisons": [
@@ -133,51 +133,35 @@
     "Countdown display and pedestrian control need an authored, frame-synchronized Native device; exception contexts must be checked."
   ],
   "runtime_gaps": [
-    "Native runner is authored but unexecuted; physical map/route/footprint/display and camera implementation remain unverified.",
-    "Four exact candidate bundles per case pass pinned offline and synthetic v1 positive/negative compatibility; strict v2 recipe proof remains absent.",
-    "Synthetic saved measured-result, Core/video and independent source/comparison audits pass; physical Native and independent delivery acceptance remain absent.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Native head and original countdown pixels require independent local review.",
+    "Cited statutory exception applicability and legal judgment remain open.",
+    "No CARLA execution or accepted recording is claimed by CPU preparation."
   ],
   "observations": [
     {
-      "name": "dev.pedestrian_signal",
+      "name": "kin.position",
       "mandatory": true,
-      "reason": "state dont_walk_flashing with a countdown attribute"
+      "reason": "Retain source-bound original observations for kin.position"
     },
     {
-      "name": "dev.governs",
+      "name": "kin.heading",
       "mandatory": true,
-      "reason": "it faces the pedestrian's direction"
-    },
-    {
-      "name": "ru.subject",
-      "mandatory": true,
-      "reason": "the pedestrian judged"
-    },
-    {
-      "name": "st.crosswalk",
-      "mandatory": true,
-      "reason": "the crossing"
+      "reason": "Retain source-bound original observations for kin.heading"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
-      "reason": "the pedestrian's position in the crossing"
+      "reason": "Retain source-bound original observations for rel.occupies"
     },
     {
-      "name": "kin.time",
+      "name": "native_display_program",
       "mandatory": true,
-      "reason": "the countdown's remaining time against the crossing"
+      "reason": "Retain source-bound original observations for native_display_program"
     },
     {
-      "name": "st.road_edge",
+      "name": "display_camera_frame_join",
       "mandatory": true,
-      "reason": "the far curb that completes the crossing"
-    },
-    {
-      "name": "kin.speed",
-      "mandatory": true,
-      "reason": "whether the crossing can be completed in time"
+      "reason": "Retain source-bound original observations for display_camera_frame_join"
     }
   ],
   "sources": [
@@ -209,7 +193,7 @@
         "training__C10316__NRS-484B-283-1d2__pedestrian__probe_01",
         "training__C10316__NRS-484B-283-1d2__pedestrian__probe_02"
       ],
-      "evidence_or_gap": "Eight unselected exact bundles pass pinned offline and synthetic v1 package positive/negative CPU checks with independent receipt, saved-source and comparison audits; Native physical display, strict v2 and delivery acceptance remain unproved."
+      "evidence_or_gap": "Two exact source-shaped countdown cases have current public and recorded-only CPU proofs; original physical display, route governance and statutory exception applicability await local capture review."
     }
   ],
   "statutory_review": {
@@ -302,5 +286,153 @@
     "synthetic_saved_summary": "saved-countdown-summary.json",
     "synthetic_v1_package_summary": "draft-package-countdown-summary.json",
     "physical_trigger_measurements": 0
+  },
+  "source_observation_mapping": {
+    "dev.pedestrian_signal": {
+      "evidence": "state dont_walk_flashing with a countdown attribute; original Native and pixel review pending",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "it faces the pedestrian's direction; original Native and pixel review pending",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "the pedestrian judged; original Native and pixel review pending",
+      "channels": [
+        "kin.position",
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "st.crosswalk": {
+      "evidence": "the crossing; original Native and pixel review pending",
+      "channels": [
+        "rel.occupies",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "the pedestrian's position in the crossing; original Native and pixel review pending",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "kin.time": {
+      "evidence": "the countdown's remaining time against the crossing; original Native and pixel review pending",
+      "channels": [
+        "native_display_program",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "the far curb that completes the crossing; original Native and pixel review pending",
+      "channels": [
+        "rel.occupies",
+        "display_camera_frame_join"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "whether the crossing can be completed in time; original Native and pixel review pending",
+      "channels": [
+        "kin.position",
+        "kin.heading"
+      ],
+      "source_refs": [
+        "countdown_samples.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "video_frames.jsonl",
+        "driver_reference.mkv",
+        "road.xodr"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "entire authored alley crossing, body and signal",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian route and full body at highway entry",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "marked crosswalk and both highway edges",
+        "interval": "all 600 frames / 0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "head, flashing indication and displayed countdown",
+        "interval": "all 600 frames / 0-30 s"
+      }
+    ]
   }
 }

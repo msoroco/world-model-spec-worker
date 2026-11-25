@@ -7,6 +7,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AID = ROOT.name
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+SELECTED = ('controlled_1', 'controlled_2', 'pedestrian_clearance',
+            'pedestrian_overlap', 'concurrent_absent', 'concurrent_present')
 
 
 def sha(path):
@@ -18,7 +20,7 @@ def dump(path, value):
 
 
 def channel(name):
-    return {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
+    return {'name': name, 'unit': 'video' if name == 'four_camera_video' else 'structured', 'sampling_rate_hz': 20,
             'method': 'source-joined original Native actor history and four synchronized cameras',
             'time_window': '600 frames / 30 seconds',
             'reference_frame': 'original world and frame time',
@@ -30,8 +32,13 @@ def build():
     for case, source in (('controlled_1', 'primary'), ('controlled_2', 'contrast')):
         base = json.loads((ROOT / f'current-v2-{source}-construction.json').read_text())
         recording = {'channels': [channel(x) for x in
-                                  ('ego_motion', 'other_motion', 'arrow_request')],
-                     'context_inputs': [],
+                                  ('ego_motion', 'other_motion', 'arrow_request',
+                                   'turn_history', 'four_camera_video')],
+                     'context_inputs': [
+                         {'name': 'source_law_and_signal_governance', 'unit': 'structured',
+                          'method': 'source-hashed exact law and signal-request context; governance review pending'},
+                         {'name': 'lawful_status_review', 'unit': 'structured',
+                          'method': 'saved source review fields remain pending; no legal label'}],
                      'limitations': ['Controller request is not arrow governance or lawful status.',
                                      'Original source pixels, pedestrian status and cautiousness require independent review.']}
         base['status'] = 'selected_delivery_prepared'
@@ -53,7 +60,7 @@ def build():
             config = json.loads(existing['config.json']['content'])
             config.update(case_id=AID + '__' + case,
                           selected_case_id=AID + '__' + case,
-                          supported_case_ids=[AID + '__controlled_1', AID + '__controlled_2'],
+                          supported_case_ids=[AID + '__' + key for key in SELECTED],
                           cell_id='C111603', law_id='NRS-484B-307-7a',
                           actor='motor_vehicle_driver', candidate_id=candidate,
                           duration_s=30, rate_hz=20,
@@ -67,7 +74,10 @@ def build():
                           cameras=[{'name': name, 'width': width, 'height': height,
                                     'fps': 20, 'fov_deg': 90,
                                     'location_xyz_m': xyz,
-                                    'rotation_pyr_deg': pyr}
+                                    'rotation_pyr_deg': pyr,
+                                    'pose_strategy': ('fixed_relative_to_subject_vehicle'
+                                                      if name == 'driver_reference'
+                                                      else 'fixed_scene_overview_of_travel')}
                                    for name, width, height, xyz, pyr in (
                                        ('overview', 1920, 1080, [0, 0, 28], [-75, 0, 0]),
                                        ('approach', 1280, 720, [0, 0, 2.4], [-5, 0, 0]),

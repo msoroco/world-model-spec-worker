@@ -131,6 +131,61 @@ def capture_provenance(attempt,count):
             'native_executed':native},native
 
 
+def derive_channels(attempt,count,description):
+    """Rebuild the delivered channels from retained acquisition, never fixture channels."""
+    attempt=Path(attempt)
+    destination=attempt/'channels'
+    mapping=_rows(attempt,'video_frames.jsonl')
+    samples=_rows(attempt,'native_samples.jsonl')
+    evidence=_rows(attempt,'capture/evidence.jsonl')
+    survey=json.loads(_required(attempt,'road_geometry.json').read_text())
+    purpose=json.loads(_required(attempt,'declared_purpose.json').read_text())
+    if any(len(rows)!=count for rows in (mapping,samples,evidence)):
+        raise ValueError('Cannot derive channels from incomplete original sources')
+    expected={item['name'] for item in description['channels']}
+    names={'st.intersection','st.centre_turn_lane','rel.occupies','kin.position',
+           'kin.path_length','kin.heading','drv.turning',
+           'native_body_pose_control','camera_frame_join'}
+    if expected!=names:raise ValueError('Recording channels differ from source derivation')
+    if destination.exists():
+        # Native capture writes these before sealing. Its original bytes stay frozen.
+        if {p.stem for p in destination.glob('*.jsonl')}!=names:
+            raise ValueError('Original Native channel set differs')
+        for name in names:
+            rows=_rows(attempt,'channels/'+name+'.jsonl')
+            if len(rows)!=count or any(abs(float(row['time_s'])-float(mapping[i]['time_s']))>1e-4
+                                       for i,row in enumerate(rows)):
+                raise ValueError('Original Native channel frame/time join differs: '+name)
+        return
+    destination.mkdir()
+    cumulative=0.0
+    previous=None
+    streams={name:(destination/(name+'.jsonl')).open('x') for name in names}
+    try:
+        for index,(frame,sample,record) in enumerate(zip(mapping,samples,evidence)):
+            xy=sample['native_center_xy_m']
+            if previous is not None:cumulative+=math.dist(previous,xy)
+            previous=xy
+            forward=sample.get('native_forward_xy')
+            heading=(math.degrees(math.atan2(forward[1],forward[0])) if forward else
+                     record['ego']['heading_deg'])
+            values={'st.intersection':survey,'st.centre_turn_lane':survey,
+                    'rel.occupies':sample['native_body_xy_m'],'kin.position':xy,
+                    'kin.path_length':{'observed_cumulative_m':round(cumulative,6)},
+                    'kin.heading':heading,
+                    'drv.turning':{'authored_intent':purpose['case'],
+                                   'observed_forward':forward or [1,0],
+                                   'observed_road_id':sample['native_road_id']},
+                    'native_body_pose_control':sample,
+                    'camera_frame_join':{'native_frame':frame['native_frame'],
+                                         'video_frame':frame['video_frame']}}
+            for name,stream in streams.items():
+                stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name]},
+                                        allow_nan=False)+'\n')
+    finally:
+        for stream in streams.values():stream.close()
+
+
 def finalize(attempt,output):
     from worker_exchange.native_output import validate_result, provenance_record
     attempt=Path(attempt).resolve();output=Path(output).resolve()
@@ -144,6 +199,7 @@ def finalize(attempt,output):
     counts={name:_video_frames(_required(attempt,name)) for name in videos}
     if set(counts.values())!={count}:raise ValueError('Source camera frame count differs')
     provenance,native=capture_provenance(attempt,count)
+    derive_channels(attempt,count,config['recording_description'])
     movement=dict(report['measurements']['center_turn_purpose_and_movement']['value'])
     movement.pop('legal_verdict',None)
     observed=movement['requested_movement_observed_in_saved_rows']
