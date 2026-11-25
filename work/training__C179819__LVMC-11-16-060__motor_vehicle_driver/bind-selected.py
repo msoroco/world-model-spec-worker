@@ -29,6 +29,14 @@ def main():
             "sha256": sha(proof / "compatibility.json"),
             "log": reference(proof / "public-analysis.log"),
             "negative_log": reference(proof / "negative-analysis.log")}
+        entry["negative"] = {"log": reference(proof / "negative-analysis.log"),
+            "log_sha256": sha(proof / "negative-analysis.log")}
+        entry["acquisition"] = {
+            "kin.speed": {"entrypoint": "runner.py", "method": "original Native velocity magnitude at each frame", "evidence": ["actor-poses.jsonl"]},
+            "dev.speed_limit_sign": {"entrypoint": "runner.py", "method": "original four-camera RGB and independent sign survey", "evidence": ["reference_corner.mkv", "sign-survey-native.json", "sign-survey.json"]},
+            "dev.governs": {"entrypoint": "runner.py", "method": "original route position joined to reviewed sign intervals", "evidence": ["actor-poses.jsonl", "sign-survey.json"]},
+            "st.roadway": {"entrypoint": "runner.py", "method": "original OpenDRIVE and Native waypoint readback plus street review", "evidence": ["road.xodr", "sign-survey-native.json", "street-status.json"]},
+            "rel.occupies": {"entrypoint": "runner.py", "method": "original actor position and Native lane readback", "evidence": ["actor-poses.jsonl", "sign-survey-native.json"]}}
         entry["post_capture"] = {"recorded_only": True,
             "command": "runtime.py process-saved --manifest work/" + ASSIGNMENT +
                 "/execution-manifest.json --case " + entry["case_id"] +

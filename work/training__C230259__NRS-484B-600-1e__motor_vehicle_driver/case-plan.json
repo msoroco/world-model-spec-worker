@@ -52,38 +52,44 @@
     {
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-600-1e",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "travel at 75 mph",
+      "physical_target": "request 75 mph on reviewed clear route",
       "comparison_variable": "measured speed while driving",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_primary_offline_passed",
+      "construction_path": "native/probe_01-construction.json",
+      "construction_sha256": "8240f52ddb5bb76f3b0fe8b107f7ed9a3df8e324bdb057f7bd78f9ad56b5d690",
+      "selection_reason": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite."
     },
     {
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-600-1e",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "travel at 79.5 mph",
+      "physical_target": "request 80 mph on reviewed clear route",
       "comparison_variable": "measured speed while driving",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "native_primary_offline_passed",
+      "construction_path": "native/probe_02-construction.json",
+      "construction_sha256": "381d2405c8ee45910cee0f67d363502408d6c7949a8d6982d6187b7364c01077",
+      "selection_reason": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite."
     },
     {
       "case_id": "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-600-1e",
       "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "travel at 85 mph",
+      "physical_target": "request 85 mph on reviewed clear route",
       "comparison_variable": "measured speed while driving",
       "selection_status": "selected",
       "expected_label": null,
       "construction_status": "native_primary_offline_passed",
-      "construction_path": "native/selected-primary-construction.json",
-      "construction_sha256": "119e43a35cedc57a27f596df00b3d2f1011ace515611efe413743512650c1267",
-      "selection_reason": "Exact source says greater than 80 mph in any event. Both frozen witness rows have no accepted membership. Select above-cap 85 mph requested-speed attempt, while measuring actual Native velocity without a posted-sign dependency."
+      "construction_path": "native/probe_03-construction.json",
+      "construction_sha256": "2a71d61b64634f624625eb76e8d7f761201049a4107a544e7261087983c20ee0",
+      "selection_reason": "Controlled requested-speed attempt; actual Native velocity decides the observed below/at/above relation, with no posted-limit prerequisite."
     }
   ],
   "comparisons": [
@@ -123,13 +129,13 @@
     },
     {
       "term": "ru.subject",
-      "note": "the vehicle judged \u2014 any kind"
+      "note": "the vehicle judged — any kind"
     }
   ],
   "source_dependencies": [
     {
       "path": "inputs/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/assignment.json",
-      "sha256": "1eece3c1ae66add2e063d9f4cc68f688128429b24974ec4b0dcfbebe15402bdc"
+      "sha256": "397b2e1997858036a01f5f4225adc4cecae5a756da735a1ec30f96152d8735a9"
     },
     {
       "path": "inputs/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/witnesses.json",
@@ -140,10 +146,9 @@
     "No posted speed sign is needed for this absolute limit; 80 mph may be physically unsafe on this road, requiring route/capability proof."
   ],
   "runtime_gaps": [
-    "Selected above-cap primary passes pinned offline, but full manifest compatibility, saved processing, semantic proposal, audit, and comparison CPU proofs remain.",
-    "Probe_01 and probe_02 need distinct below-cap Native constructions and controlled measured-speed comparison.",
-    "Local map survey must verify clear route and vehicle capability for requested 85 mph; actual observed speed can differ.",
-    "No CARLA capture, original velocity review, accepted recording, or legal verdict is claimed."
+    "Three exact survey-gated Native constructions pass pinned offline; full runtime compatibility, process-saved, semantic and delivery audits remain.",
+    "Measured at-boundary 80 mph is a physical target; requested 80 mph does not prove observed equality.",
+    "Local map survey must verify clear route and vehicle capability; actual speed, camera pixels and physical safety remain unverified."
   ],
   "observations": [
     {
@@ -159,7 +164,7 @@
     {
       "name": "ru.subject",
       "mandatory": true,
-      "reason": "the vehicle judged \u2014 any kind"
+      "reason": "the vehicle judged — any kind"
     }
   ],
   "sources": [
@@ -174,12 +179,10 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "No posted speed sign is needed for this absolute limit; 80 mph may be physically unsafe on this road, requiring route/capability proof.",
-    "No CARLA execution or accepted recording is claimed."
+    "Three Native primary constructions have pinned offline proofs but no original CARLA capture.",
+    "No full runtime compatibility, process-saved, semantic proposal or independent delivery audit receipts yet.",
+    "No source-hashed equivalence receipt for accepted recordings; current target membership is empty.",
+    "No observed velocity or measured below/at/above comparison; requested speed is only controller input."
   ],
   "requirement_dispositions": [
     {
@@ -192,7 +195,7 @@
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "Probe_03 selected with inline Native primary and pinned offline plus synthetic velocity proof; remaining cases and complete CPU delivery proofs are open."
+      "evidence_or_gap": "All three distinct requested-speed constructions pass pinned offline. Source-bound saved compatibility, delivery audit and measured physical comparison remain unproved."
     },
     {
       "requirement": "NRS-484B-600-1e",
@@ -204,35 +207,41 @@
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
         "training__C230259__NRS-484B-600-1e__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "Probe_03 selected with inline Native primary and pinned offline plus synthetic velocity proof; remaining cases and complete CPU delivery proofs are open."
+      "evidence_or_gap": "All three distinct requested-speed constructions pass pinned offline. Source-bound saved compatibility, delivery audit and measured physical comparison remain unproved."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "kin.velocity",
-      "measurement": "three original Native velocity components joined to source frame IDs",
+  "source_observation_mapping": {
+    "kin.velocity": {
+      "evidence": "Three original Native velocity components joined to original frame and actor identity",
+      "channels": [
+        "kin.velocity"
+      ],
       "source_refs": [
         "native_motion.jsonl:velocity_x_mps",
         "native_motion.jsonl:velocity_y_mps",
         "native_motion.jsonl:velocity_z_mps"
       ]
     },
-    {
-      "term": "kin.speed",
-      "measurement": "Euclidean norm of Native velocity divided by 0.44704 m/s per mph; frames above statutory 80 mph reported without tolerance-based verdict",
+    "kin.speed": {
+      "evidence": "Euclidean norm of original Native velocity converted using 0.44704 metres per second per mph; no legal tolerance is introduced",
+      "channels": [
+        "kin.speed"
+      ],
       "source_refs": [
         "native_motion.jsonl:velocity_x_mps",
         "video_frames.jsonl:native_frame"
       ]
     },
-    {
-      "term": "ru.subject",
-      "measurement": "source-reviewed ego actor ID and vehicle identity; driving state per frame",
+    "ru.subject": {
+      "evidence": "Reviewed vehicle identity and per-frame driving state bound to source actor ID",
+      "channels": [
+        "ru.subject"
+      ],
       "source_refs": [
         "road_context.json:vehicle_identity_source",
         "native_motion.jsonl:ego_actor_id",
         "native_motion.jsonl:driving_state"
       ]
     }
-  ]
+  }
 }

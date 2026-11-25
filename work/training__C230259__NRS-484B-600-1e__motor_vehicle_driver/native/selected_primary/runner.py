@@ -140,8 +140,11 @@ def capture(survey, output, host, port):
             if proc.wait(timeout=120):
                 raise RuntimeError('Source camera encoding failed')
         (output/'road_context.template.json').write_text(json.dumps({
-            'assignment_id': AID, 'review_kind': 'original_source_review',
-            'ego_actor_id': ego.id, 'camera_sha256': {}, 'review_required': True}, indent=2)+'\n')
+            'assignment_id': AID, 'case_id': CASE, 'review_kind': 'original_source_review',
+            'ego_actor_id': ego.id, 'camera_sha256': {}, 'review_required': True,
+            'route_source': survey['route_source'],
+            'vehicle_identity_source': survey['vehicle_capability_source'],
+            'driving_state_source': 'Original Native per-frame controlled vehicle state'}, indent=2)+'\n')
         return {'case_id': CASE, 'source_frames': COUNT, 'requested_target_mps': target_mps,
                 'physical_acceptance_claimed': False}
     finally:

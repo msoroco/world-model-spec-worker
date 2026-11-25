@@ -1,9 +1,8 @@
 {
   "assignment_id": "training__C179819__LVMC-11-16-060__motor_vehicle_driver",
   "input_sha256": "c2102b9ee5e0fca38685461f20cb5d4fa814d65ffa28f2a56a35704a37c3f138",
-  "status": "partial",
-  "reason": "Four revised exact primary and controller-gain fallback constructions pass current-v14 offline and physical lifecycle CPU fixtures; canonical semantic chain validates. Revised public compatibility, selected manifest and saved-only/audit proof refresh remain in progress; original Native physical and independent street/sign authority are unreviewed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 4,
   "candidate_count": 2,
   "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
@@ -12,13 +11,31 @@
   "unresolved_branch_count": 0,
   "applied_update": 16,
   "cpu_checkpoint": {
-    "draft_manifest": "draft-execution-manifest.json",
-    "offline_case_count": 8,
-    "measurement_contract_count": 4,
+    "selected_manifest": "execution-manifest.json",
+    "selected_cases": 4,
+    "primary_and_fallback_offline_passed": 8,
+    "primary_and_fallback_public_compatibility_passed": 8,
+    "recorded_only_saved_passed": 4,
     "physical_preparation_case_count": 4,
     "semantic_stage_count": 7,
-    "public_compatibility_v14_complete": false,
-    "recorded_only_v14_complete": false,
+    "independent_delivery_positive_negative_passed": 4,
+    "independent_comparison_positive_negative_passed": 2,
+    "original_native_executed": false,
     "diagnostic_only": true
-  }
+  },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C179819__LVMC-11-16-060__motor_vehicle_driver --case training__C179819__LVMC-11-16-060__motor_vehicle_driver__probe_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": "PYTHONPATH=$PWD/native:$PWD/../../runtime/scenario_pipeline ../../.venv-cpu/bin/python -m unittest discover -s native/tests -p test*.py -v",
+      "log": "proofs/cpu-tests.log",
+      "sha256": "25c494a5c995bf0b6a4224d06d9fb94ea7a7ad72c4b426f305c3387e9a50dc86",
+      "exit_code": 0
+    },
+    {
+      "command": "PYTHONPATH=$PWD:$PWD/../../runtime/scenario_pipeline ../../.venv-cpu/bin/python -m unittest discover -s tests -p test*.py -v",
+      "log": "proofs/selected-cpu-tests.log",
+      "sha256": "2bfde0249b7803402e73908415eed3bfc55b166aa74230dde224ac241a455ed0",
+      "exit_code": 0
+    }
+  ]
 }

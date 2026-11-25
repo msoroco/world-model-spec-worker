@@ -26,24 +26,32 @@ def audit():
     selected = {entry['case_id']: entry for entry in manifest['cases']}
     plan = read(WORK / 'case-plan.json')
     rows = []
-    for path in sorted(WORK.glob('current-*-primary-saved-summary.json')):
-        summary = read(path)
-        if summary['frames'] < 36000:
-            continue
-        case_id = summary['case_id']
+    for path in sorted(WORK.glob('current-*-primary-selected-saved-proof.json')):
+        proof = read(path)
+        case_id = proof['case_id']
         entry = selected[case_id]
         slug = case_id.rsplit('__', 1)[-1]
-        audit_path = path.with_name(path.name.replace('-summary.json', '-audit.json'))
-        require(audit_path.is_file(), 'Missing selected audit: ' + slug)
-        prior = read(audit_path)
-        require(prior['passed'] is True and prior['manifest_sha256'] == manifest_sha and
-                prior['construction_sha256'] == entry['construction_sha256'] and
-                prior['processing_sha256'] == summary['processing_sha256'],
-                'Saved audit differs from current selection: ' + slug)
-        processing_path = REPO / summary['processing_ignored_path']
-        require(processing_path.is_file() and sha(processing_path) == summary['processing_sha256'],
-                'Processing source differs: ' + slug)
-        result = processing_path.parent
+        require(proof['selected_manifest_sha256'] == manifest_sha and
+                proof['runtime_manifest_sha256'] == manifest['runtime_manifest_sha256'] and
+                proof['candidate_id'] == 'primary' and proof['recorded_only'] is True and
+                proof['source_preserved'] is True and
+                proof['official_public_compatibility_claimed'] is False,
+                'Current selected saved proof differs: ' + slug)
+        case_scratch = REPO / '.runtime-work/owner150142/long-selected-v1' / slug
+        matches = [candidate.parent for candidate in case_scratch.glob('saved*/v0001/processing.json')
+                   if sha(candidate) == proof['processing_sha256']]
+        require(len(matches) == 1, 'Missing exact current selected saved source: ' + slug)
+        result = matches[0]
+        processing_path = result / 'processing.json'
+        require(processing_path.is_file() and sha(processing_path) == proof['processing_sha256'] and
+                sha(result / 'analysis/analysis-report.json') == proof['analysis_report_sha256'] and
+                sha(result / 'analysis/result.json') == proof['result_sha256'] and
+                sha(result / 'final-decode.json') == proof['final_decode_sha256'],
+                'Current selected processing source differs: ' + slug)
+        for index in range(4):
+            require(sha(result / ('source-%d.json' % index)) ==
+                    proof['source_decode_sha256']['source-%d' % index],
+                    'Current selected original source decode differs: ' + slug)
         analysis = result / 'analysis'
         selection = read(analysis / 'candidate-selection.json')
         require(selection['case_id'] == case_id and selection['candidate_id'] == 'primary' and
@@ -52,7 +60,7 @@ def audit():
                 'Selected Native source differs: ' + slug)
         checked = validate_exception_measurement(
             analysis, plan, case_id, 'synthetic_native_sample')
-        require(checked['frames'] == summary['frames'], 'Measured frame count differs: ' + slug)
+        require(checked['frames'] == proof['final_video']['frames'], 'Measured frame count differs: ' + slug)
         joined = validate_rows(lines(analysis / 'native-raw-actors.jsonl'),
                                lines(analysis / 'video_frames.jsonl'),
                                lines(analysis / 'trace.jsonl'),
@@ -62,18 +70,20 @@ def audit():
         require(joined['red_curb_stop_or_park_observed'] is True,
                 'Missing source-observed red curb relation: ' + slug)
         rows.append({'case_id': case_id, 'frames': checked['frames'],
-                     'processing_sha256': summary['processing_sha256'],
-                     'audit_sha256': sha(audit_path)})
+                     'processing_sha256': proof['processing_sha256'],
+                     'proof_sha256': sha(path)})
     require(len(rows) == 16, 'Expected all 16 selected long primary cases')
     negatives = []
-    for path in sorted(WORK.glob('update902-*-process-saved.log')):
-        slug = path.name.removeprefix('update902-').removesuffix('-process-saved.log')
-        if slug.startswith(('ordinary_', 'contrast')):
+    short_index = read(WORK / 'current-short-selected-saved-index.json')
+    require(short_index['manifest_sha256'] == manifest_sha and short_index['passed'] is True,
+            'Current selected short saved index differs')
+    for saved in short_index['rows']:
+        slug = saved['case']
+        if slug in ('reference', 'contrast', 'ordinary_red_signed'):
             continue
-        saved = read(path)
         case_id = WORK.name + '__' + slug
         entry = selected[case_id]
-        analysis = Path(saved['analysis_directory'])
+        analysis = Path(saved['scratch_result']) / 'v0001/analysis'
         require(REPO / '.runtime-work' in analysis.parents and analysis.is_dir(),
                 'Short saved analysis path differs: ' + slug)
         selection = read(analysis / 'candidate-selection.json')
@@ -111,9 +121,12 @@ def audit():
                 negatives.append('missing_native_actor_frame')
             else:
                 raise ValueError('Incomplete Native actor source passed')
+        processing_path = analysis.parent / 'processing.json'
+        require(sha(processing_path) == saved['processing']['processing']['sha256'],
+                'Current selected short processing differs: ' + slug)
         rows.append({'case_id': case_id, 'frames': checked['frames'],
-                     'processing_sha256': sha(analysis.parent / 'processing.json'),
-                     'saved_log_sha256': sha(path)})
+                     'processing_sha256': sha(processing_path),
+                     'returned_processing_sha256': sha(WORK / saved['processing']['processing']['path'])})
     require(len(rows) == 27, 'Expected 16 long plus 11 short selected exceptions')
     require(negatives == ['synthetic_as_original', 'missing_native_actor_frame'],
             'Current selected source negatives missing')
